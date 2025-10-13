@@ -1,1 +1,6 @@
-<template>ss</template>
+<template>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
+  <NuxtRouteAnnouncer />
+</template>
