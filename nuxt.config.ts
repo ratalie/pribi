@@ -11,7 +11,10 @@ export default defineNuxtConfig({
     "@nuxt/scripts",
     "@nuxt/test-utils",
     "@nuxtjs/tailwindcss",
+    "@nuxtjs/i18n",
     "shadcn-nuxt",
+    "@pinia/nuxt",
+    "pinia-plugin-persistedstate/nuxt",
   ],
   shadcn: {
     /**
