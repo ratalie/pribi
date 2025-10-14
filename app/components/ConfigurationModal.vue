@@ -110,7 +110,7 @@
         </div>
 
         <!-- Contenido principal -->
-        <div class="flex-1 overflow-y-auto min-w-fit">
+        <div class="flex-1 overflow-y-auto min-w-fit custom-scrollbar">
           <!-- Dashboard Admin -->
           <div v-if="activeSection === 'dashboard'" class="space-y-6">
             <div>
@@ -248,6 +248,21 @@
               </CardContent>
             </Card>
 
+            <!-- Tipografía -->
+            <Card>
+              <CardHeader>
+                <CardTitle class="text-lg">{{
+                  t("config.typography")
+                }}</CardTitle>
+                <CardDescription>{{
+                  t("config.typographyDesc")
+                }}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <FontSelector />
+              </CardContent>
+            </Card>
+
             <!-- Notificaciones -->
             <Card>
               <CardHeader>
@@ -354,14 +369,15 @@
         </div>
       </div>
 
-      <DialogFooter class="border-t pt-4">
-        <Button variant="outline" @click="closeModal">
-          {{ t("common.cancel") }}
-        </Button>
-        <Button @click="saveSettings">
-          {{ t("common.save") }}
-        </Button>
-      </DialogFooter>
+      <!-- Botón Cancelar flotante -->
+      <Button
+        variant="outline"
+        size="sm"
+        class="absolute top-4 right-4 z-10"
+        @click="isOpen = false"
+      >
+        {{ t("common.cancel") }}
+      </Button>
     </DialogContent>
   </Dialog>
 </template>
@@ -387,7 +403,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
+  // DialogFooter,
 } from "@/components/ui/dialog";
 import {
   Card,
@@ -400,6 +416,7 @@ import { useLanguage } from "~/composables/useLanguage";
 import { getIcon } from "~/utils/iconMapper";
 import ThemeSelector from "./ThemeSelector.vue";
 import LanguageSelect from "./LanguageSelect.vue";
+import FontSelector from "./FontSelector.vue";
 
 // Props
 interface Props {
@@ -442,15 +459,4 @@ const integrationItems = [
   { key: "gmail", label: "config.gmail", icon: "Mail" },
   { key: "googledrive", label: "config.googleDrive", icon: "HardDrive" },
 ];
-
-// Métodos
-const closeModal = () => {
-  isOpen.value = false;
-};
-
-const saveSettings = () => {
-  // Lógica para guardar configuraciones
-  console.log("Guardando configuraciones...");
-  closeModal();
-};
 </script>

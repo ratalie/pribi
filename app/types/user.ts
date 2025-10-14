@@ -23,3 +23,11 @@ export interface Permission {
 export type Theme = "light" | "dark" | "system";
 
 export type Language = "es" | "en" | "pt" | "fr" | "de";
+
+export type Font =
+  | "Inter"
+  | "Roboto"
+  | "Open Sans"
+  | "Fira Code"
+  | "JetBrains Mono"
+  | "Cascadia Code";

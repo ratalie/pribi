@@ -56,29 +56,45 @@ export const useTheme = () => {
     }
   };
 
-  // Cambiar tema
+  // Cambiar tema con reactividad mejorada
   const setTheme = (theme: Theme) => {
+    // Actualizar estado reactivo (esto disparará los watchers)
     currentTheme.value = theme;
 
-    if (import.meta.client) {
-      localStorage.setItem("probo-theme", theme);
-
-      if (theme === "system") {
-        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-          .matches
-          ? "dark"
-          : "light";
-        applyTheme(systemTheme);
-      } else {
-        applyTheme(theme);
-      }
-    }
+    // El localStorage y aplicación de tema se maneja en el watcher
+    // Esto garantiza reactividad consistente
   };
 
-  // Watch para cambios en effectiveTheme
-  watch(effectiveTheme, (newTheme) => {
-    applyTheme(newTheme);
-  });
+  // Watch para cambios en effectiveTheme con immediate
+  watch(
+    effectiveTheme,
+    (newTheme) => {
+      applyTheme(newTheme);
+    },
+    { immediate: true }
+  );
+
+  // Watch adicional para currentTheme para reactividad mejorada
+  watch(
+    currentTheme,
+    (newTheme) => {
+      if (import.meta.client) {
+        localStorage.setItem("probo-theme", newTheme);
+
+        // Aplicar tema inmediatamente
+        if (newTheme === "system") {
+          const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+            .matches
+            ? "dark"
+            : "light";
+          applyTheme(systemTheme);
+        } else {
+          applyTheme(newTheme);
+        }
+      }
+    },
+    { flush: "sync" }
+  ); // Ejecutar de forma síncrona
 
   return {
     currentTheme: readonly(currentTheme),

@@ -48,6 +48,19 @@ const translations = {
     "config.notificationsDesc": "Configura tus preferencias de notificaciones",
     "config.emailNotifications": "Notificaciones por email",
     "config.pushNotifications": "Notificaciones push",
+    "config.primaryFont": "Fuente Principal",
+    "config.primaryFontDesc": "Fuente para textos generales e interfaz",
+    "config.secondaryFont": "Fuente de Código",
+    "config.secondaryFontDesc": "Fuente para código y elementos monospace",
+    "config.fontPreview": "Vista Previa",
+    "config.previewPrimary": "Texto de ejemplo con fuente principal",
+    "config.previewPrimaryDesc":
+      "Así se verá el texto general de la aplicación",
+    "config.previewCode": "Hola mundo! 123",
+    "config.currentPrimary": "Fuente principal actual",
+    "config.currentSecondary": "Fuente de código actual",
+    "config.typography": "Tipografía",
+    "config.typographyDesc": "Personaliza las fuentes de la aplicación",
     "config.modalTitle": "Configuración",
     "config.modalDesc": "Personaliza tu experiencia en PROBO",
     "config.administration": "Administración",
@@ -148,6 +161,19 @@ const translations = {
     "config.notificationsDesc": "Configure your notification preferences",
     "config.emailNotifications": "Email notifications",
     "config.pushNotifications": "Push notifications",
+    "config.primaryFont": "Primary Font",
+    "config.primaryFontDesc": "Font for general text and interface",
+    "config.secondaryFont": "Code Font",
+    "config.secondaryFontDesc": "Font for code and monospace elements",
+    "config.fontPreview": "Preview",
+    "config.previewPrimary": "Sample text with primary font",
+    "config.previewPrimaryDesc":
+      "This is how general application text will look",
+    "config.previewCode": "Hello world! 123",
+    "config.currentPrimary": "Current primary font",
+    "config.currentSecondary": "Current code font",
+    "config.typography": "Typography",
+    "config.typographyDesc": "Customize application fonts",
     "config.modalTitle": "Settings",
     "config.modalDesc": "Customize your PROBO experience",
     "config.administration": "Administration",
@@ -213,13 +239,15 @@ export const useLanguage = () => {
     }
   });
 
-  // Función para traducir texto
-  const t = (key: string): string => {
-    const langTranslations =
-      translations[currentLanguage.value as keyof typeof translations] ||
-      translations.es;
-    return langTranslations[key as keyof typeof langTranslations] || key;
-  };
+  // Función computed reactiva para traducir texto
+  const t = computed(() => {
+    return (key: string): string => {
+      const langTranslations =
+        translations[currentLanguage.value as keyof typeof translations] ||
+        translations.es;
+      return langTranslations[key as keyof typeof langTranslations] || key;
+    };
+  });
 
   // Cambiar idioma
   const setLanguage = (language: Language) => {
@@ -242,7 +270,7 @@ export const useLanguage = () => {
   return {
     currentLanguage: readonly(currentLanguage),
     availableLanguages,
-    t,
+    t: t.value, // Devolvemos el valor computed como función reactiva
     setLanguage,
   };
 };
