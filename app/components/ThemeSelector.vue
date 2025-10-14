@@ -9,7 +9,7 @@
       >
         <div class="flex items-center space-x-2">
           <Sun class="w-4 h-4" />
-          <span class="text-sm font-medium">Claro</span>
+          <span class="text-sm font-medium">{{ t("theme.light") }}</span>
         </div>
         <div class="mt-2 rounded border bg-background p-1">
           <div class="h-4 w-full rounded bg-muted" />
@@ -24,7 +24,7 @@
       >
         <div class="flex items-center space-x-2">
           <Moon class="w-4 h-4" />
-          <span class="text-sm font-medium">Oscuro</span>
+          <span class="text-sm font-medium">{{ t("theme.dark") }}</span>
         </div>
         <div class="mt-2 rounded border border-gray-600 bg-gray-800 p-1">
           <div class="h-4 w-full rounded bg-gray-700" />
@@ -39,7 +39,7 @@
       >
         <div class="flex items-center space-x-2">
           <Monitor class="w-4 h-4" />
-          <span class="text-sm font-medium">Sistema</span>
+          <span class="text-sm font-medium">{{ t("theme.system") }}</span>
         </div>
         <div class="mt-2 flex rounded border">
           <div class="w-1/2 rounded-l bg-background p-1">
@@ -54,9 +54,9 @@
 
     <!-- Current effective theme indicator -->
     <div class="text-xs text-muted-foreground">
-      Tema actual: {{ effectiveTheme }}
+      {{ t("theme.current") }}: {{ effectiveTheme }}
       <span v-if="currentTheme === 'system'">
-        (siguiendo preferencia del sistema)
+        ({{ t("theme.systemFollow") }})
       </span>
     </div>
   </div>
@@ -65,8 +65,9 @@
 <script setup lang="ts">
 import { Sun, Moon, Monitor } from "lucide-vue-next";
 import { useTheme } from "~/composables/useTheme";
-import type { Theme } from "~/types/user";
+import { useLanguage } from "~/composables/useLanguage";
 
 // Composables
 const { currentTheme, effectiveTheme, setTheme } = useTheme();
+const { t } = useLanguage();
 </script>

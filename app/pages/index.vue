@@ -2,9 +2,11 @@
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-3xl font-bold tracking-tight">Dashboard PROBO</h1>
+        <h1 class="text-3xl font-bold tracking-tight">
+          {{ t("dashboard.title") }}
+        </h1>
         <p class="text-muted-foreground">
-          Bienvenido a tu plataforma de gestión legal corporativa
+          {{ t("dashboard.subtitle") }}
         </p>
       </div>
     </div>
@@ -147,6 +149,10 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useLanguage } from "~/composables/useLanguage";
+
+// Composables
+const { t } = useLanguage();
 
 // Metadata
 useHead({

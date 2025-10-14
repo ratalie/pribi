@@ -22,7 +22,7 @@
 
     <!-- Current language indicator -->
     <div class="text-xs text-muted-foreground">
-      Idioma actual: {{ getCurrentLanguageName() }}
+      {{ t("language.current") }}: {{ getCurrentLanguageName() }}
     </div>
   </div>
 </template>
@@ -32,7 +32,7 @@ import { useLanguage } from "~/composables/useLanguage";
 import type { Language } from "~/types/user";
 
 // Composables
-const { currentLanguage, availableLanguages, setLanguage } = useLanguage();
+const { currentLanguage, availableLanguages, setLanguage, t } = useLanguage();
 
 // Métodos
 const getCurrentLanguageName = () => {
