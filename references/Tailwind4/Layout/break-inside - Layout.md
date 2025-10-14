@@ -1,0 +1,60 @@
+---
+title: break-inside - Layout
+source: https://tailwindcss.com/docs/break-inside
+author:
+  - "[[@tailwindcss]]"
+published:
+created: 2025-10-14
+description: Utilities for controlling how a column or page should break within an element.
+tags:
+  - clippings
+updated: 2025-10-14T00:04
+---
+[Docs](https://tailwindcss.com/docs) [Blog](https://tailwindcss.com/blog) [Showcase](https://tailwindcss.com/showcase) [Sponsor](https://tailwindcss.com/sponsor) [Plus](https://tailwindcss.com/plus?ref=top)
+
+1. Layout
+2. break-inside
+
+Layout
+
+## break-inside
+
+Utilities for controlling how a column or page should break within an element.
+
+| Class | Styles |
+| --- | --- |
+| `break-inside-auto` | `break-inside: auto;` |
+| `break-inside-avoid` | `break-inside: avoid;` |
+| `break-inside-avoid-page` | `break-inside: avoid-page;` |
+| `break-inside-avoid-column` | `break-inside: avoid-column;` |
+
+Use utilities like `break-inside-column` and `break-inside-avoid-page` to control how a column or page break should behave within an element:
+
+```
+<div class="columns-2">
+  <p>Well, let me tell you something, ...</p>
+  <p class="break-inside-avoid-column">Sure, go ahead, laugh...</p>
+  <p>Maybe we can live without...</p>
+  <p>Look. If you think this is...</p>
+</div>
+```
+
+Prefix a `break-inside` utilitywith a breakpoint variant like `md:` to only apply the utility at mediumscreen sizes and above:
+
+```
+<div class="break-inside-avoid-column md:break-inside-auto ...">
+  <!-- ... -->
+</div>
+```
+
+Learn more about using variants in the [variants documentation](https://tailwindcss.com/docs/hover-focus-and-other-states).
+
+![Build UIs that don’t suck — 5-day mini-course](https://tailwindcss.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fcourse-promo.a67fd268.jpg&w=384&q=75)
+
+5-day mini-course
+
+Build UIs that don’t suck.
+
+Short, tactical video lessons from the creator of Tailwind CSS, delivered directly to your inbox every day for a week.
+
+[Get the free course](https://tailwindcss.com/build-uis-that-dont-suck)

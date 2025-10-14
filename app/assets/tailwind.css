@@ -31,15 +31,15 @@
   --color-input: #e2e8f0;
   --color-ring: #64748b;
 
-  /* Variables específicas del sidebar */
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  /* Variables específicas del sidebar - LIGHT THEME */
+  --color-sidebar: #f8fafc;
+  --color-sidebar-foreground: #0f172a;
+  --color-sidebar-primary: #334155;
+  --color-sidebar-primary-foreground: #f8fafc;
+  --color-sidebar-accent: #f1f5f9;
+  --color-sidebar-accent-foreground: #334155;
+  --color-sidebar-border: #e2e8f0;
+  --color-sidebar-ring: #64748b;
 
   /* Animaciones accordion */
   --animate-accordion-down: accordion-down 0.2s ease-out;
@@ -122,6 +122,16 @@
   --color-border: #334155; /* Border medio */
   --color-input: #334155; /* Input medio */
   --color-ring: #60a5fa; /* Ring azul claro */
+
+  /* Variables específicas del sidebar - DARK THEME */
+  --color-sidebar: #1e293b; /* Fondo oscuro del sidebar */
+  --color-sidebar-foreground: #f8fafc; /* Texto claro */
+  --color-sidebar-primary: #60a5fa; /* Primary claro */
+  --color-sidebar-primary-foreground: #0f172a; /* Texto oscuro */
+  --color-sidebar-accent: #334155; /* Accent medio */
+  --color-sidebar-accent-foreground: #f8fafc; /* Texto claro */
+  --color-sidebar-border: #334155; /* Border medio */
+  --color-sidebar-ring: #60a5fa; /* Ring claro */
 
   /* Variables CSS tradicionales para modo oscuro */
   --background: #0f172a; /* Fondo oscuro - slate-900 */

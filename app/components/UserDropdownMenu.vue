@@ -30,7 +30,10 @@
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" class="w-56">
+      <DropdownMenuContent
+        align="end"
+        class="w-56 bg-background text-foreground border-border"
+      >
         <DropdownMenuItem @click="handleOpenProfile">
           <User class="w-4 h-4 mr-2" />
           {{ t("user.profile") }}

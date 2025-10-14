@@ -4,7 +4,7 @@
       class="fixed inset-0 z-50 bg-black/20 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
     />
     <DialogContent
-      class="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] max-h-[90vh] overflow-hidden border shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-lg p-6 gap-4 grid w-full min-w-fit bg-safe text-safe border-safe"
+      class="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] max-h-[90vh] overflow-hidden border shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-lg p-6 gap-4 grid w-full min-w-fit bg-safe text-safe border-safe bg-red-500"
     >
       <DialogHeader>
         <DialogTitle class="text-2xl">{{ t("config.modalTitle") }}</DialogTitle>
@@ -370,14 +370,14 @@
       </div>
 
       <!-- Botón Cancelar flotante -->
-      <Button
+      <!-- <Button
         variant="outline"
         size="sm"
         class="absolute top-4 right-4 z-10"
         @click="isOpen = false"
       >
         {{ t("common.cancel") }}
-      </Button>
+      </Button> -->
     </DialogContent>
   </Dialog>
 </template>
