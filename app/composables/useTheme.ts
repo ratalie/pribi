@@ -40,12 +40,26 @@ export const useTheme = () => {
     }
   });
 
-  // Aplicar tema al DOM
+  // Aplicar tema al DOM con debug
   const applyTheme = (theme: "light" | "dark") => {
     if (import.meta.client) {
       const root = document.documentElement;
+
+      // Debug info
+      console.log(`🔧 Applying theme: ${theme}`);
+      console.log("Before:", root.className);
+
+      // Limpiar clases de tema existentes
       root.classList.remove("light", "dark");
+
+      // Aplicar nueva clase de tema
       root.classList.add(theme);
+
+      // Debug info
+      console.log("After:", root.className);
+
+      // Forzar recálculo de CSS
+      root.style.colorScheme = theme;
     }
   };
 
@@ -65,36 +79,23 @@ export const useTheme = () => {
     // Esto garantiza reactividad consistente
   };
 
-  // Watch para cambios en effectiveTheme con immediate
+  // Watch principal para effectiveTheme (maneja todos los casos)
   watch(
     effectiveTheme,
     (newTheme) => {
+      console.log(`🎨 Applying theme: ${newTheme}`);
       applyTheme(newTheme);
     },
     { immediate: true }
   );
 
-  // Watch adicional para currentTheme para reactividad mejorada
-  watch(
-    currentTheme,
-    (newTheme) => {
-      if (import.meta.client) {
-        localStorage.setItem("probo-theme", newTheme);
-
-        // Aplicar tema inmediatamente
-        if (newTheme === "system") {
-          const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-            .matches
-            ? "dark"
-            : "light";
-          applyTheme(systemTheme);
-        } else {
-          applyTheme(newTheme);
-        }
-      }
-    },
-    { flush: "sync" }
-  ); // Ejecutar de forma síncrona
+  // Watch para currentTheme solo para persistence
+  watch(currentTheme, (newTheme) => {
+    if (import.meta.client) {
+      console.log(`💾 Saving theme to localStorage: ${newTheme}`);
+      localStorage.setItem("probo-theme", newTheme);
+    }
+  });
 
   return {
     currentTheme: readonly(currentTheme),

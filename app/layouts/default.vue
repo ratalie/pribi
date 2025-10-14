@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen overflow-hidden bg-background">
+  <div class="flex h-screen overflow-hidden bg-safe">
     <!-- Sidebar -->
     <ProboSidebar />
 
@@ -15,19 +15,7 @@
 
 <script setup lang="ts">
 import ProboSidebar from "~/components/ProboSidebar.vue";
-import { useTheme } from "~/composables/useTheme";
 
-// Initialize theme on app mount
-onMounted(() => {
-  // This ensures theme is applied immediately
-  const { effectiveTheme } = useTheme();
-  watch(
-    effectiveTheme,
-    (theme) => {
-      document.documentElement.classList.remove("light", "dark");
-      document.documentElement.classList.add(theme);
-    },
-    { immediate: true }
-  );
-});
+// El tema se maneja completamente en useTheme.ts
+// No duplicamos lógica aquí para evitar conflictos
 </script>

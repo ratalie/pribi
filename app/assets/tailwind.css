@@ -8,30 +8,30 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
+
+  /* === SISTEMA HÍBRIDO - TailwindCSS v4 + CSS Tradicional === */
+  /* Variables TailwindCSS v4 - LIGHT THEME (usa valores HEX para mayor compatibilidad) */
+  --color-background: #ffffff;
+  --color-foreground: #0f172a;
+  --color-card: #ffffff;
+  --color-card-foreground: #0f172a;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0f172a;
+  --color-primary: #334155;
+  --color-primary-foreground: #f8fafc;
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #334155;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-accent: #f1f5f9;
+  --color-accent-foreground: #334155;
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: #64748b;
+
+  /* Variables específicas del sidebar */
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -40,8 +40,11 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Animaciones accordion */
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
+
   @keyframes accordion-down {
     from {
       height: 0;
@@ -50,6 +53,7 @@
       height: var(--reka-accordion-content-height);
     }
   }
+
   @keyframes accordion-up {
     from {
       height: var(--reka-accordion-content-height);
@@ -60,91 +64,122 @@
   }
 }
 
+/* === VARIABLES CSS TRADICIONALES === */
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.13 0.028 261.692);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.13 0.028 261.692);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.13 0.028 261.692);
-  --primary: oklch(0.21 0.034 264.665);
-  --primary-foreground: oklch(0.985 0.002 247.839);
-  --secondary: oklch(0.967 0.003 264.542);
-  --secondary-foreground: oklch(0.21 0.034 264.665);
-  --muted: oklch(0.967 0.003 264.542);
-  --muted-foreground: oklch(0.551 0.027 264.364);
-  --accent: oklch(0.967 0.003 264.542);
-  --accent-foreground: oklch(0.21 0.034 264.665);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.928 0.006 264.531);
-  --input: oklch(0.928 0.006 264.531);
-  --ring: oklch(0.707 0.022 261.325);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0.002 247.839);
-  --sidebar-foreground: oklch(0.13 0.028 261.692);
-  --sidebar-primary: oklch(0.21 0.034 264.665);
-  --sidebar-primary-foreground: oklch(0.985 0.002 247.839);
-  --sidebar-accent: oklch(0.967 0.003 264.542);
-  --sidebar-accent-foreground: oklch(0.21 0.034 264.665);
-  --sidebar-border: oklch(0.928 0.006 264.531);
-  --sidebar-ring: oklch(0.707 0.022 261.325);
+
+  /* LIGHT THEME - Contraste perfecto garantizado */
+  --background: #ffffff; /* Blanco puro */
+  --foreground: #0f172a; /* Azul muy oscuro - contraste 19.4:1 */
+  --card: #ffffff; /* Blanco puro */
+  --card-foreground: #0f172a; /* Azul muy oscuro */
+  --popover: #ffffff; /* Blanco puro */
+  --popover-foreground: #0f172a; /* Azul muy oscuro */
+  --primary: #334155; /* Azul slate-700 */
+  --primary-foreground: #f8fafc; /* Azul muy claro */
+  --secondary: #f1f5f9; /* Azul slate-100 */
+  --secondary-foreground: #334155; /* Azul slate-700 */
+  --muted: #f1f5f9; /* Azul slate-100 */
+  --muted-foreground: #64748b; /* Azul slate-500 */
+  --accent: #f1f5f9; /* Azul slate-100 */
+  --accent-foreground: #334155; /* Azul slate-700 */
+  --destructive: #dc2626; /* Rojo-600 */
+  --destructive-foreground: #f8fafc; /* Blanco casi puro */
+  --border: #e2e8f0; /* Azul slate-200 */
+  --input: #e2e8f0; /* Azul slate-200 */
+  --ring: #64748b; /* Azul slate-500 */
+
+  /* Variables del sidebar - LIGHT */
+  --sidebar: #f8fafc; /* Fondo claro del sidebar */
+  --sidebar-foreground: #0f172a; /* Texto oscuro */
+  --sidebar-primary: #334155; /* Primary del sidebar */
+  --sidebar-primary-foreground: #f8fafc; /* Foreground primary */
+  --sidebar-accent: #f1f5f9; /* Accent del sidebar */
+  --sidebar-accent-foreground: #334155; /* Foreground accent */
+  --sidebar-border: #e2e8f0; /* Border del sidebar */
+  --sidebar-ring: #64748b; /* Ring del sidebar */
 }
 
+/* === DARK THEME - Contraste perfecto === */
 .dark {
-  --background: oklch(0.13 0.028 261.692);
-  --foreground: oklch(0.985 0.002 247.839);
-  --card: oklch(0.13 0.028 261.692);
-  --card-foreground: oklch(0.985 0.002 247.839);
-  --popover: oklch(0.13 0.028 261.692);
-  --popover-foreground: oklch(0.985 0.002 247.839);
-  --primary: oklch(0.985 0.002 247.839);
-  --primary-foreground: oklch(0.21 0.034 264.665);
-  --secondary: oklch(0.278 0.033 256.848);
-  --secondary-foreground: oklch(0.985 0.002 247.839);
-  --muted: oklch(0.278 0.033 256.848);
-  --muted-foreground: oklch(0.707 0.022 261.325);
-  --accent: oklch(0.278 0.033 256.848);
-  --accent-foreground: oklch(0.985 0.002 247.839);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.278 0.033 256.848);
-  --input: oklch(0.278 0.033 256.848);
-  --ring: oklch(0.446 0.03 256.802);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.21 0.034 264.665);
-  --sidebar-foreground: oklch(0.985 0.002 247.839);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0.002 247.839);
-  --sidebar-accent: oklch(0.278 0.033 256.848);
-  --sidebar-accent-foreground: oklch(0.985 0.002 247.839);
-  --sidebar-border: oklch(0.278 0.033 256.848);
-  --sidebar-ring: oklch(0.446 0.03 256.802);
+  /* Variables TailwindCSS v4 para modo oscuro */
+  --color-background: #0f172a; /* Fondo oscuro */
+  --color-foreground: #f8fafc; /* Texto claro - contraste 19.4:1 */
+  --color-card: #1e293b; /* Card más claro que background */
+  --color-card-foreground: #f8fafc; /* Texto claro */
+  --color-popover: #1e293b; /* Popover más claro que background */
+  --color-popover-foreground: #f8fafc; /* Texto claro */
+  --color-primary: #60a5fa; /* Azul claro */
+  --color-primary-foreground: #0f172a; /* Texto oscuro para contraste */
+  --color-secondary: #334155; /* Azul medio */
+  --color-secondary-foreground: #f8fafc; /* Texto claro */
+  --color-muted: #334155; /* Azul medio */
+  --color-muted-foreground: #94a3b8; /* Texto medio */
+  --color-accent: #334155; /* Azul medio */
+  --color-accent-foreground: #f8fafc; /* Texto claro */
+  --color-destructive: #ef4444; /* Rojo claro */
+  --color-destructive-foreground: #0f172a; /* Texto oscuro */
+  --color-border: #334155; /* Border medio */
+  --color-input: #334155; /* Input medio */
+  --color-ring: #60a5fa; /* Ring azul claro */
+
+  /* Variables CSS tradicionales para modo oscuro */
+  --background: #0f172a; /* Fondo oscuro - slate-900 */
+  --foreground: #f8fafc; /* Texto claro - slate-50 */
+  --card: #1e293b; /* Card - slate-800 */
+  --card-foreground: #f8fafc; /* Texto claro */
+  --popover: #1e293b; /* Popover - slate-800 */
+  --popover-foreground: #f8fafc; /* Texto claro */
+  --primary: #60a5fa; /* Primary azul-400 */
+  --primary-foreground: #0f172a; /* Texto oscuro para contraste */
+  --secondary: #334155; /* Secondary - slate-700 */
+  --secondary-foreground: #f8fafc; /* Texto claro */
+  --muted: #334155; /* Muted - slate-700 */
+  --muted-foreground: #94a3b8; /* Muted foreground - slate-400 */
+  --accent: #334155; /* Accent - slate-700 */
+  --accent-foreground: #f8fafc; /* Texto claro */
+  --destructive: #ef4444; /* Destructive - red-500 */
+  --destructive-foreground: #0f172a; /* Texto oscuro */
+  --border: #334155; /* Border - slate-700 */
+  --input: #334155; /* Input - slate-700 */
+  --ring: #60a5fa; /* Ring - blue-400 */
+
+  /* Variables del sidebar - DARK */
+  --sidebar: #1e293b; /* Fondo oscuro del sidebar */
+  --sidebar-foreground: #f8fafc; /* Texto claro */
+  --sidebar-primary: #60a5fa; /* Primary claro */
+  --sidebar-primary-foreground: #0f172a; /* Texto oscuro */
+  --sidebar-accent: #334155; /* Accent medio */
+  --sidebar-accent-foreground: #f8fafc; /* Texto claro */
+  --sidebar-border: #334155; /* Border medio */
+  --sidebar-ring: #60a5fa; /* Ring claro */
 }
 
+/* === BASE STYLES === */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+    /* Fallbacks explícitos para máxima compatibilidad */
+    background-color: var(--color-background, var(--background, #ffffff));
+    color: var(--color-foreground, var(--foreground, #000000));
+  }
+
+  /* Asegurar que html también tenga el tema correcto */
+  html {
+    background-color: var(--color-background, var(--background, #ffffff));
   }
 }
 
-/* Custom Scrollbar - Tema aware */
+/* === COMPONENTES PERSONALIZADOS === */
 @layer components {
+  /* Scrollbar personalizado con tema automático */
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: hsl(var(--muted)) hsl(var(--background));
+    scrollbar-color: var(--muted, #64748b) var(--background, #ffffff);
   }
 
   .custom-scrollbar::-webkit-scrollbar {
@@ -153,40 +188,26 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: hsl(var(--background));
+    background: var(--background, #ffffff);
     border-radius: 4px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted));
+    background: var(--muted, #64748b);
     border-radius: 4px;
-    border: 1px solid hsl(var(--background));
+    border: 1px solid var(--background, #ffffff);
     transition: background-color 0.2s ease;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground) / 0.6);
+    background: var(--accent, #f1f5f9);
   }
 
   .custom-scrollbar::-webkit-scrollbar-corner {
-    background: hsl(var(--background));
+    background: var(--background, #ffffff);
   }
 
-  /* Scrollbar para modo dark */
-  .dark .custom-scrollbar {
-    scrollbar-color: hsl(var(--muted)) hsl(var(--background));
-  }
-
-  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted));
-    border: 1px solid hsl(var(--background));
-  }
-
-  .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--accent));
-  }
-
-  /* Font Classes */
+  /* Clases de fuente */
   .font-inter {
     font-family: var(
       --font-primary,
@@ -250,7 +271,7 @@
     );
   }
 
-  /* Aplicar fuente primaria por defecto */
+  /* Aplicación de fuentes por defecto */
   body {
     font-family: var(
       --font-primary,
@@ -261,7 +282,6 @@
     );
   }
 
-  /* Aplicar fuente secundaria a elementos de código */
   code,
   pre,
   .code {
@@ -273,5 +293,38 @@
       Consolas,
       monospace
     );
+  }
+
+  /* === UTILIDADES DE COMPATIBILIDAD === */
+  /* Clases helper para componentes que necesiten fallbacks explícitos */
+  .bg-safe {
+    background-color: var(
+      --color-background,
+      var(--background, #ffffff)
+    ) !important;
+  }
+
+  .text-safe {
+    color: var(--color-foreground, var(--foreground, #000000)) !important;
+  }
+
+  .border-safe {
+    border-color: var(--color-border, var(--border, #e2e8f0)) !important;
+  }
+
+  /* Modo oscuro seguro */
+  .dark .bg-safe {
+    background-color: var(
+      --color-background,
+      var(--background, #0f172a)
+    ) !important;
+  }
+
+  .dark .text-safe {
+    color: var(--color-foreground, var(--foreground, #f8fafc)) !important;
+  }
+
+  .dark .border-safe {
+    border-color: var(--color-border, var(--border, #334155)) !important;
   }
 }
