@@ -1,0 +1,3 @@
+/* /index.html 200
+/api/* https://api.tu-dominio.com/api/:splat 200
+/_nuxt/* /_nuxt/:splat 200

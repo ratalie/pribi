@@ -3,6 +3,8 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
 
+  ssr: false,
+
   modules: [
     "@nuxt/eslint",
     "@nuxt/fonts",
@@ -16,6 +18,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
   ],
+
   shadcn: {
     /**
      * Prefix for all the imported component
