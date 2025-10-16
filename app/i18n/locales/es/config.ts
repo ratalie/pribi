@@ -69,4 +69,8 @@ export default {
   notificationsDesc: "Configura tus preferencias de notificaciones",
   emailNotifications: "Notificaciones por email",
   pushNotifications: "Notificaciones push",
+
+  // Paleta de colores
+  colorPalette: "Paleta de Colores",
+  colorPaletteDesc: "Elige la paleta que mejor se adapte a tu estilo",
 };

@@ -26,8 +26,8 @@
           <Moon class="w-4 h-4" />
           <span class="text-sm font-medium">{{ t("theme.dark") }}</span>
         </div>
-        <div class="mt-2 rounded border border-gray-600 bg-gray-800 p-1">
-          <div class="h-4 w-full rounded bg-gray-700" />
+        <div class="mt-2 rounded border border-muted bg-card p-1">
+          <div class="h-4 w-full rounded bg-muted" />
         </div>
       </div>
 
@@ -45,8 +45,8 @@
           <div class="w-1/2 rounded-l bg-background p-1">
             <div class="h-4 w-full rounded bg-muted" />
           </div>
-          <div class="w-1/2 rounded-r border-l border-gray-600 bg-gray-800 p-1">
-            <div class="h-4 w-full rounded bg-gray-700" />
+          <div class="w-1/2 rounded-r border-l border-muted bg-card p-1">
+            <div class="h-4 w-full rounded bg-muted" />
           </div>
         </div>
       </div>

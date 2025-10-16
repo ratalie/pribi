@@ -32,7 +32,7 @@
 
       <DropdownMenuContent
         align="end"
-        class="w-56 bg-gray-50 text-foreground border-border"
+        class="w-56 bg-card text-card-foreground border-border"
       >
         <DropdownMenuItem @click="handleOpenProfile">
           <User class="w-4 h-4 mr-2" />

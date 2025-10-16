@@ -69,4 +69,8 @@ export default {
   notificationsDesc: "配置您的通知偏好",
   emailNotifications: "电子邮件通知",
   pushNotifications: "推送通知",
+  
+  // Paleta de colores
+  colorPalette: "Color Palette",
+  colorPaletteDesc: "Choose the palette that best suits your style",
 } as const;

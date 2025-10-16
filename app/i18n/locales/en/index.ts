@@ -8,6 +8,7 @@ import messages from "./messages";
 import time from "./time";
 import theme from "./theme";
 import pages from "./pages";
+import palette from "./palette";
 
 export default {
   common,
@@ -20,4 +21,5 @@ export default {
   time,
   theme,
   pages,
+  palette,
 } as const;

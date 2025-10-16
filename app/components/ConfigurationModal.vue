@@ -4,7 +4,7 @@
       class="fixed inset-0 z-50 bg-black/20 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
     />
     <DialogContent
-      class="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] max-h-[90vh] overflow-hidden border shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-lg p-6 gap-4 grid w-full min-w-fit bg-safe text-safe border-safe bg-gray-100"
+      class="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] max-h-[90vh] overflow-hidden border shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-lg p-6 gap-4 grid w-full min-w-fit bg-background text-foreground border-border"
     >
       <DialogHeader>
         <DialogTitle class="text-2xl">{{ t("config.modalTitle") }}</DialogTitle>
@@ -233,6 +233,21 @@
               </CardContent>
             </Card>
 
+            <!-- Paleta de Colores -->
+            <Card>
+              <CardHeader>
+                <CardTitle class="text-lg">{{
+                  t("config.colorPalette")
+                }}</CardTitle>
+                <CardDescription>{{
+                  t("config.colorPaletteDesc")
+                }}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <PaletteSelector />
+              </CardContent>
+            </Card>
+
             <!-- Idioma -->
             <Card>
               <CardHeader>
@@ -415,6 +430,7 @@ import {
 import { useProboI18n } from "~/composables/useProboI18n";
 import { getIcon } from "~/utils/iconMapper";
 import ThemeSelector from "./ThemeSelector.vue";
+import PaletteSelector from "./PaletteSelector.vue";
 import LanguageSelect from "./LanguageSelect.vue";
 import FontSelector from "./FontSelector.vue";
 

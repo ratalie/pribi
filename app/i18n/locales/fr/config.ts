@@ -69,6 +69,10 @@ export const frConfig = {
   notificationsDesc: "Configurez vos préférences de notification",
   emailNotifications: "Notifications par email",
   pushNotifications: "Notifications push",
+  
+  // Paleta de colores
+  colorPalette: "Color Palette",
+  colorPaletteDesc: "Choose the palette that best suits your style",
 };
 
 export default frConfig;

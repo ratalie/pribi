@@ -69,6 +69,10 @@ export const deConfig = {
   notificationsDesc: "Konfigurieren Sie Ihre Benachrichtigungseinstellungen",
   emailNotifications: "E-Mail-Benachrichtigungen",
   pushNotifications: "Push-Benachrichtigungen",
+  
+  // Paleta de colores
+  colorPalette: "Color Palette",
+  colorPaletteDesc: "Choose the palette that best suits your style",
 };
 
 export default deConfig;

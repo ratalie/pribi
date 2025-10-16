@@ -3,35 +3,51 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ============================================
+   TAILWIND 4 - SISTEMA DE VARIABLES CSS
+   Arquitectura: 4 Paletas × 2 Modos = 8 Temas
+   ============================================ */
+
 @theme inline {
+  /* === RADII === */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  /* === SISTEMA HÍBRIDO - TailwindCSS v4 + CSS Tradicional === */
-  /* Variables TailwindCSS v4 - LIGHT THEME (usa valores HEX para mayor compatibilidad) */
+  /* ============================================
+     PALETA BASE (Purple/Slate) - LIGHT MODE
+     Tema predeterminado - Profesional y corporativo
+     ============================================ */
+
+  /* Core Colors */
   --color-background: #ffffff;
   --color-foreground: #0f172a;
   --color-card: #ffffff;
   --color-card-foreground: #0f172a;
   --color-popover: #ffffff;
   --color-popover-foreground: #0f172a;
-  --color-primary: #334155;
-  --color-primary-foreground: #f8fafc;
-  --color-secondary: #f1f5f9;
+
+  /* Brand Colors */
+  --color-primary: #334155; /* slate-700 */
+  --color-primary-foreground: #f8fafc; /* slate-50 */
+  --color-secondary: #f1f5f9; /* slate-100 */
   --color-secondary-foreground: #334155;
+
+  /* UI Colors */
   --color-muted: #f1f5f9;
   --color-muted-foreground: #64748b;
   --color-accent: #f1f5f9;
   --color-accent-foreground: #334155;
-  --color-destructive: #dc2626;
+  --color-destructive: #dc2626; /* red-600 */
   --color-destructive-foreground: #f8fafc;
-  --color-border: #e2e8f0;
-  --color-input: #e2e8f0;
-  --color-ring: #64748b;
 
-  /* Variables específicas del sidebar - LIGHT THEME */
+  /* Borders & Inputs */
+  --color-border: #e2e8f0; /* slate-200 */
+  --color-input: #e2e8f0;
+  --color-ring: #64748b; /* slate-500 */
+
+  /* Sidebar */
   --color-sidebar: #f8fafc;
   --color-sidebar-foreground: #0f172a;
   --color-sidebar-primary: #334155;
@@ -41,7 +57,7 @@
   --color-sidebar-border: #e2e8f0;
   --color-sidebar-ring: #64748b;
 
-  /* Animaciones accordion */
+  /* === ANIMATIONS === */
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 
@@ -64,108 +80,142 @@
   }
 }
 
-/* === VARIABLES CSS TRADICIONALES === */
+/* ============================================
+   DARK MODE - PALETA BASE
+   ============================================ */
+.dark {
+  /* Core Colors */
+  --color-background: #0f172a; /* slate-900 */
+  --color-foreground: #f8fafc; /* slate-50 */
+  --color-card: #1e293b; /* slate-800 */
+  --color-card-foreground: #f8fafc;
+  --color-popover: #1e293b;
+  --color-popover-foreground: #f8fafc;
+
+  /* Brand Colors */
+  --color-primary: #60a5fa; /* blue-400 */
+  --color-primary-foreground: #0f172a;
+  --color-secondary: #334155; /* slate-700 */
+  --color-secondary-foreground: #f8fafc;
+
+  /* UI Colors */
+  --color-muted: #334155;
+  --color-muted-foreground: #94a3b8; /* slate-400 */
+  --color-accent: #334155;
+  --color-accent-foreground: #f8fafc;
+  --color-destructive: #ef4444; /* red-500 */
+  --color-destructive-foreground: #0f172a;
+
+  /* Borders & Inputs */
+  --color-border: #334155;
+  --color-input: #334155;
+  --color-ring: #60a5fa;
+
+  /* Sidebar */
+  --color-sidebar: #1e293b;
+  --color-sidebar-foreground: #f8fafc;
+  --color-sidebar-primary: #60a5fa;
+  --color-sidebar-primary-foreground: #0f172a;
+  --color-sidebar-accent: #334155;
+  --color-sidebar-accent-foreground: #f8fafc;
+  --color-sidebar-border: #334155;
+  --color-sidebar-ring: #60a5fa;
+}
+
+/* ============================================
+   PALETA OCEANIC (Blue/Teal) - LIGHT MODE
+   Fresco, tecnológico, confiable
+   ============================================ */
+html[data-palette="oceanic"] {
+  --color-primary: #0ea5e9; /* sky-500 */
+  --color-primary-foreground: #ffffff;
+  --color-accent: #e0f2fe; /* sky-100 */
+  --color-accent-foreground: #075985; /* sky-900 */
+  --color-ring: #0ea5e9;
+
+  --color-sidebar-primary: #0ea5e9;
+  --color-sidebar-accent: #e0f2fe;
+  --color-sidebar-ring: #0ea5e9;
+}
+
+html[data-palette="oceanic"].dark {
+  --color-primary: #38bdf8; /* sky-400 */
+  --color-primary-foreground: #0c4a6e; /* sky-950 */
+  --color-accent: #0c4a6e;
+  --color-accent-foreground: #e0f2fe;
+  --color-ring: #38bdf8;
+
+  --color-sidebar-primary: #38bdf8;
+  --color-sidebar-accent: #0c4a6e;
+  --color-sidebar-ring: #38bdf8;
+}
+
+/* ============================================
+   PALETA FOREST (Green/Emerald) - LIGHT MODE
+   Natural, crecimiento, estabilidad
+   ============================================ */
+html[data-palette="forest"] {
+  --color-primary: #10b981; /* emerald-500 */
+  --color-primary-foreground: #ffffff;
+  --color-accent: #d1fae5; /* emerald-100 */
+  --color-accent-foreground: #065f46; /* emerald-800 */
+  --color-ring: #10b981;
+
+  --color-sidebar-primary: #10b981;
+  --color-sidebar-accent: #d1fae5;
+  --color-sidebar-ring: #10b981;
+}
+
+html[data-palette="forest"].dark {
+  --color-primary: #34d399; /* emerald-400 */
+  --color-primary-foreground: #064e3b; /* emerald-950 */
+  --color-accent: #064e3b;
+  --color-accent-foreground: #d1fae5;
+  --color-ring: #34d399;
+
+  --color-sidebar-primary: #34d399;
+  --color-sidebar-accent: #064e3b;
+  --color-sidebar-ring: #34d399;
+}
+
+/* ============================================
+   PALETA SUNSET (Orange/Pink) - LIGHT MODE
+   Energético, creativo, moderno
+   ============================================ */
+html[data-palette="sunset"] {
+  --color-primary: #f97316; /* orange-500 */
+  --color-primary-foreground: #ffffff;
+  --color-accent: #fed7aa; /* orange-200 */
+  --color-accent-foreground: #9a3412; /* orange-800 */
+  --color-ring: #f97316;
+
+  --color-sidebar-primary: #f97316;
+  --color-sidebar-accent: #fed7aa;
+  --color-sidebar-ring: #f97316;
+}
+
+html[data-palette="sunset"].dark {
+  --color-primary: #fb923c; /* orange-400 */
+  --color-primary-foreground: #7c2d12; /* orange-950 */
+  --color-accent: #7c2d12;
+  --color-accent-foreground: #fed7aa;
+  --color-ring: #fb923c;
+
+  --color-sidebar-primary: #fb923c;
+  --color-sidebar-accent: #7c2d12;
+  --color-sidebar-ring: #fb923c;
+}
+
+/* ============================================
+   VARIABLE DE RADIUS GLOBAL
+   ============================================ */
 :root {
   --radius: 0.625rem;
-
-  /* LIGHT THEME - Contraste perfecto garantizado */
-  --background: #ffffff; /* Blanco puro */
-  --foreground: #0f172a; /* Azul muy oscuro - contraste 19.4:1 */
-  --card: #ffffff; /* Blanco puro */
-  --card-foreground: #0f172a; /* Azul muy oscuro */
-  --popover: #ffffff; /* Blanco puro */
-  --popover-foreground: #0f172a; /* Azul muy oscuro */
-  --primary: #334155; /* Azul slate-700 */
-  --primary-foreground: #f8fafc; /* Azul muy claro */
-  --secondary: #f1f5f9; /* Azul slate-100 */
-  --secondary-foreground: #334155; /* Azul slate-700 */
-  --muted: #f1f5f9; /* Azul slate-100 */
-  --muted-foreground: #64748b; /* Azul slate-500 */
-  --accent: #f1f5f9; /* Azul slate-100 */
-  --accent-foreground: #334155; /* Azul slate-700 */
-  --destructive: #dc2626; /* Rojo-600 */
-  --destructive-foreground: #f8fafc; /* Blanco casi puro */
-  --border: #e2e8f0; /* Azul slate-200 */
-  --input: #e2e8f0; /* Azul slate-200 */
-  --ring: #64748b; /* Azul slate-500 */
-
-  /* Variables del sidebar - LIGHT */
-  --sidebar: #f8fafc; /* Fondo claro del sidebar */
-  --sidebar-foreground: #0f172a; /* Texto oscuro */
-  --sidebar-primary: #334155; /* Primary del sidebar */
-  --sidebar-primary-foreground: #f8fafc; /* Foreground primary */
-  --sidebar-accent: #f1f5f9; /* Accent del sidebar */
-  --sidebar-accent-foreground: #334155; /* Foreground accent */
-  --sidebar-border: #e2e8f0; /* Border del sidebar */
-  --sidebar-ring: #64748b; /* Ring del sidebar */
 }
 
-/* === DARK THEME - Contraste perfecto === */
-.dark {
-  /* Variables TailwindCSS v4 para modo oscuro */
-  --color-background: #0f172a; /* Fondo oscuro */
-  --color-foreground: #f8fafc; /* Texto claro - contraste 19.4:1 */
-  --color-card: #1e293b; /* Card más claro que background */
-  --color-card-foreground: #f8fafc; /* Texto claro */
-  --color-popover: #1e293b; /* Popover más claro que background */
-  --color-popover-foreground: #f8fafc; /* Texto claro */
-  --color-primary: #60a5fa; /* Azul claro */
-  --color-primary-foreground: #0f172a; /* Texto oscuro para contraste */
-  --color-secondary: #334155; /* Azul medio */
-  --color-secondary-foreground: #f8fafc; /* Texto claro */
-  --color-muted: #334155; /* Azul medio */
-  --color-muted-foreground: #94a3b8; /* Texto medio */
-  --color-accent: #334155; /* Azul medio */
-  --color-accent-foreground: #f8fafc; /* Texto claro */
-  --color-destructive: #ef4444; /* Rojo claro */
-  --color-destructive-foreground: #0f172a; /* Texto oscuro */
-  --color-border: #334155; /* Border medio */
-  --color-input: #334155; /* Input medio */
-  --color-ring: #60a5fa; /* Ring azul claro */
-
-  /* Variables específicas del sidebar - DARK THEME */
-  --color-sidebar: #1e293b; /* Fondo oscuro del sidebar */
-  --color-sidebar-foreground: #f8fafc; /* Texto claro */
-  --color-sidebar-primary: #60a5fa; /* Primary claro */
-  --color-sidebar-primary-foreground: #0f172a; /* Texto oscuro */
-  --color-sidebar-accent: #334155; /* Accent medio */
-  --color-sidebar-accent-foreground: #f8fafc; /* Texto claro */
-  --color-sidebar-border: #334155; /* Border medio */
-  --color-sidebar-ring: #60a5fa; /* Ring claro */
-
-  /* Variables CSS tradicionales para modo oscuro */
-  --background: #0f172a; /* Fondo oscuro - slate-900 */
-  --foreground: #f8fafc; /* Texto claro - slate-50 */
-  --card: #1e293b; /* Card - slate-800 */
-  --card-foreground: #f8fafc; /* Texto claro */
-  --popover: #1e293b; /* Popover - slate-800 */
-  --popover-foreground: #f8fafc; /* Texto claro */
-  --primary: #60a5fa; /* Primary azul-400 */
-  --primary-foreground: #0f172a; /* Texto oscuro para contraste */
-  --secondary: #334155; /* Secondary - slate-700 */
-  --secondary-foreground: #f8fafc; /* Texto claro */
-  --muted: #334155; /* Muted - slate-700 */
-  --muted-foreground: #94a3b8; /* Muted foreground - slate-400 */
-  --accent: #334155; /* Accent - slate-700 */
-  --accent-foreground: #f8fafc; /* Texto claro */
-  --destructive: #ef4444; /* Destructive - red-500 */
-  --destructive-foreground: #0f172a; /* Texto oscuro */
-  --border: #334155; /* Border - slate-700 */
-  --input: #334155; /* Input - slate-700 */
-  --ring: #60a5fa; /* Ring - blue-400 */
-
-  /* Variables del sidebar - DARK */
-  --sidebar: #1e293b; /* Fondo oscuro del sidebar */
-  --sidebar-foreground: #f8fafc; /* Texto claro */
-  --sidebar-primary: #60a5fa; /* Primary claro */
-  --sidebar-primary-foreground: #0f172a; /* Texto oscuro */
-  --sidebar-accent: #334155; /* Accent medio */
-  --sidebar-accent-foreground: #f8fafc; /* Texto claro */
-  --sidebar-border: #334155; /* Border medio */
-  --sidebar-ring: #60a5fa; /* Ring claro */
-}
-
-/* === BASE STYLES === */
+/* ============================================
+   BASE STYLES
+   ============================================ */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -173,23 +223,21 @@
 
   body {
     @apply bg-background text-foreground;
-    /* Fallbacks explícitos para máxima compatibilidad */
-    background-color: var(--color-background, var(--background, #ffffff));
-    color: var(--color-foreground, var(--foreground, #000000));
   }
 
-  /* Asegurar que html también tenga el tema correcto */
   html {
-    background-color: var(--color-background, var(--background, #ffffff));
+    @apply bg-background;
   }
 }
 
-/* === COMPONENTES PERSONALIZADOS === */
+/* ============================================
+   CUSTOM COMPONENTS
+   ============================================ */
 @layer components {
-  /* Scrollbar personalizado con tema automático */
+  /* Scrollbar personalizado */
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: var(--muted, #64748b) var(--background, #ffffff);
+    scrollbar-color: var(--color-muted) var(--color-background);
   }
 
   .custom-scrollbar::-webkit-scrollbar {
@@ -198,26 +246,19 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: var(--background, #ffffff);
-    border-radius: 4px;
+    @apply bg-background rounded;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: var(--muted, #64748b);
-    border-radius: 4px;
-    border: 1px solid var(--background, #ffffff);
+    @apply bg-muted rounded border border-background;
     transition: background-color 0.2s ease;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: var(--accent, #f1f5f9);
+    @apply bg-accent;
   }
 
-  .custom-scrollbar::-webkit-scrollbar-corner {
-    background: var(--background, #ffffff);
-  }
-
-  /* Clases de fuente */
+  /* Fuentes */
   .font-inter {
     font-family: var(
       --font-primary,
@@ -281,7 +322,6 @@
     );
   }
 
-  /* Aplicación de fuentes por defecto */
   body {
     font-family: var(
       --font-primary,
@@ -303,38 +343,5 @@
       Consolas,
       monospace
     );
-  }
-
-  /* === UTILIDADES DE COMPATIBILIDAD === */
-  /* Clases helper para componentes que necesiten fallbacks explícitos */
-  .bg-safe {
-    background-color: var(
-      --color-background,
-      var(--background, #ffffff)
-    ) !important;
-  }
-
-  .text-safe {
-    color: var(--color-foreground, var(--foreground, #000000)) !important;
-  }
-
-  .border-safe {
-    border-color: var(--color-border, var(--border, #e2e8f0)) !important;
-  }
-
-  /* Modo oscuro seguro */
-  .dark .bg-safe {
-    background-color: var(
-      --color-background,
-      var(--background, #0f172a)
-    ) !important;
-  }
-
-  .dark .text-safe {
-    color: var(--color-foreground, var(--foreground, #f8fafc)) !important;
-  }
-
-  .dark .border-safe {
-    border-color: var(--color-border, var(--border, #334155)) !important;
   }
 }
