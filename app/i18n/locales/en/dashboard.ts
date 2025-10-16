@@ -1,0 +1,17 @@
+export default {
+  title: "PROBO Dashboard",
+  subtitle: "Welcome to your corporate legal management platform",
+  companiesRegistered: "Registered Companies",
+  documentsGenerated: "Generated Documents",
+  activeUsers: "Active Users",
+  aiQueries: "AI Queries",
+  recentActivity: "Recent Activity",
+  quickAccess: "Quick Access",
+  mostUsedFunctions: "Most used functions",
+  newCompany: "New Company",
+  consultAI: "Consult AI",
+  viewDocuments: "View Documents",
+  sinceLastMonth: "since last month",
+  registered: "registered a new company",
+  generated: "generated a report",
+} as const;

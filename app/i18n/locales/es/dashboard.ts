@@ -1,0 +1,17 @@
+export default {
+  title: "Dashboard PROBO",
+  subtitle: "Bienvenido a tu plataforma de gestión legal corporativa",
+  companiesRegistered: "Sociedades Registradas",
+  documentsGenerated: "Documentos Generados",
+  activeUsers: "Usuarios Activos",
+  aiQueries: "Consultas IA",
+  recentActivity: "Actividad Reciente",
+  quickAccess: "Accesos Rápidos",
+  mostUsedFunctions: "Funciones más utilizadas",
+  newCompany: "Nueva Sociedad",
+  consultAI: "Consultar IA",
+  viewDocuments: "Ver Documentos",
+  sinceLastMonth: "desde el mes pasado",
+  registered: "registró una nueva sociedad",
+  generated: "generó un reporte",
+} as const;
