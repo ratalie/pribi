@@ -8,6 +8,7 @@ import { frValidation } from "./validation";
 import { frMessages } from "./messages";
 import { frTime } from "./time";
 import { frTheme } from "./theme";
+import { frPages } from "./pages";
 
 // Exportaciones individuales
 export { frCommon as common };
@@ -19,6 +20,7 @@ export { frValidation as validation };
 export { frMessages as messages };
 export { frTime as time };
 export { frTheme as theme };
+export { frPages as pages };
 
 // Exportación por defecto con toda la estructura
 export default {
@@ -31,4 +33,5 @@ export default {
   messages: frMessages,
   time: frTime,
   theme: frTheme,
+  pages: frPages,
 };

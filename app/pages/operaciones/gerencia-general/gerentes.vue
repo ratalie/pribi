@@ -1,9 +1,9 @@
 <template>
-  <PageTitle title-key="pages.chatIA" />
+  <PageTitle title-key="pages.gerentes" />
 </template>
 
 <script setup lang="ts">
 useHead({
-  title: "Chat IA - PROBO",
+  title: "Gerentes - PROBO",
 });
 </script>

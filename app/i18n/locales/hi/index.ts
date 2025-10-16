@@ -7,6 +7,7 @@ import validation from "./validation";
 import messages from "./messages";
 import time from "./time";
 import theme from "./theme";
+import pages from "./pages";
 
 export default {
   common,
@@ -18,4 +19,5 @@ export default {
   messages,
   time,
   theme,
+  pages,
 } as const;

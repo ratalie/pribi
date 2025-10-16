@@ -8,6 +8,7 @@ import { deValidation } from "./validation";
 import { deMessages } from "./messages";
 import { deTime } from "./time";
 import { deTheme } from "./theme";
+import { dePages } from "./pages";
 
 // Exportaciones individuales
 export { deCommon as common };
@@ -19,6 +20,7 @@ export { deValidation as validation };
 export { deMessages as messages };
 export { deTime as time };
 export { deTheme as theme };
+export { dePages as pages };
 
 // Exportación por defecto con toda la estructura
 export default {
@@ -31,4 +33,5 @@ export default {
   messages: deMessages,
   time: deTime,
   theme: deTheme,
+  pages: dePages,
 };
