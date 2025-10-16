@@ -17,4 +17,6 @@ export default {
   finish: "Finalizar",
   saveChanges: "Guardar Cambios",
   new: "Nuevo",
+  collapse: "Colapsar",
+  expand: "Expandir",
 } as const;

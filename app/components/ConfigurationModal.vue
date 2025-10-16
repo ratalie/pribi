@@ -412,7 +412,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useLanguage } from "~/composables/useLanguage";
+import { useProboI18n } from "~/composables/useProboI18n";
 import { getIcon } from "~/utils/iconMapper";
 import ThemeSelector from "./ThemeSelector.vue";
 import LanguageSelect from "./LanguageSelect.vue";
@@ -431,7 +431,7 @@ const emit = defineEmits<{
 }>();
 
 // Composables
-const { t } = useLanguage();
+const { t } = useProboI18n();
 
 // Estado reactivo
 const activeSection = ref("preferences");

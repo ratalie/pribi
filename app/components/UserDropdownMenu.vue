@@ -82,12 +82,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useLanguage } from "~/composables/useLanguage";
+import { useProboI18n } from "~/composables/useProboI18n";
 import { useUser } from "~/composables/useUser";
 import ConfigurationModal from "./ConfigurationModal.vue";
 
 // Composables
-const { t } = useLanguage();
+const { t } = useProboI18n();
 const { currentUser, logout } = useUser();
 
 // Estado del modal

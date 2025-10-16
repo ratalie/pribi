@@ -31,31 +31,31 @@ git commit -m "checkpoint: antes de migración i18n"
 // AGREGAR estas claves al final del archivo (después de las existentes)
 export default {
   // ... claves existentes ...
-  
+
   // Navegación PROBO específica
-  registroSocietario: 'Registro Societario',
-  sociedades: 'Sociedades',
-  sucursales: 'Sucursales',
-  operaciones: 'Operaciones de Órgano de Control',
-  directorio: 'Directorio',
-  gerenciaGeneral: 'Gerencia General',
-  juntaAccionistas: 'Junta de Accionistas',
-  directores: 'Directores',
-  gerentes: 'Gerentes',
-  accionistas: 'Accionistas',
-  historico: 'Histórico',
-  storage: 'Storage',
-  almacen: 'Almacén',
-  documentosGenerados: 'Documentos Generados',
-  features: 'Features',
-  chatIA: 'Chat IA',
-  documentosIA: 'Documentos IA',
-  reporteria: 'Reportería',
-  planServicio: 'Plan de Servicio',
-  personalizacion: 'Personalización',
-  configuracion: 'Configuración',
-  ayuda: 'Ayuda',
-}
+  registroSocietario: "Registro Societario",
+  sociedades: "Sociedades",
+  sucursales: "Sucursales",
+  operaciones: "Operaciones de Órgano de Control",
+  directorio: "Directorio",
+  gerenciaGeneral: "Gerencia General",
+  juntaAccionistas: "Junta de Accionistas",
+  directores: "Directores",
+  gerentes: "Gerentes",
+  accionistas: "Accionistas",
+  historico: "Histórico",
+  storage: "Storage",
+  almacen: "Almacén",
+  documentosGenerados: "Documentos Generados",
+  features: "Features",
+  chatIA: "Chat IA",
+  documentosIA: "Documentos IA",
+  reporteria: "Reportería",
+  planServicio: "Plan de Servicio",
+  personalizacion: "Personalización",
+  configuracion: "Configuración",
+  ayuda: "Ayuda",
+};
 ```
 
 **Archivo:** `app/i18n/locales/en/navigation.ts`
@@ -63,34 +63,35 @@ export default {
 ```typescript
 export default {
   // ... existing keys ...
-  
+
   // PROBO specific navigation
-  registroSocietario: 'Corporate Registry',
-  sociedades: 'Companies',
-  sucursales: 'Branches',
-  operaciones: 'Control Body Operations',
-  directorio: 'Directory',
-  gerenciaGeneral: 'General Management',
-  juntaAccionistas: 'Shareholders Meeting',
-  directores: 'Directors',
-  gerentes: 'Managers',
-  accionistas: 'Shareholders',
-  historico: 'History',
-  storage: 'Storage',
-  almacen: 'Warehouse',
-  documentosGenerados: 'Generated Documents',
-  features: 'Features',
-  chatIA: 'AI Chat',
-  documentosIA: 'AI Documents',
-  reporteria: 'Reporting',
-  planServicio: 'Service Plan',
-  personalizacion: 'Customization',
-  configuracion: 'Settings',
-  ayuda: 'Help',
-}
+  registroSocietario: "Corporate Registry",
+  sociedades: "Companies",
+  sucursales: "Branches",
+  operaciones: "Control Body Operations",
+  directorio: "Directory",
+  gerenciaGeneral: "General Management",
+  juntaAccionistas: "Shareholders Meeting",
+  directores: "Directors",
+  gerentes: "Managers",
+  accionistas: "Shareholders",
+  historico: "History",
+  storage: "Storage",
+  almacen: "Warehouse",
+  documentosGenerados: "Generated Documents",
+  features: "Features",
+  chatIA: "AI Chat",
+  documentosIA: "AI Documents",
+  reporteria: "Reporting",
+  planServicio: "Service Plan",
+  personalizacion: "Customization",
+  configuracion: "Settings",
+  ayuda: "Help",
+};
 ```
 
 **Repetir para:**
+
 - `app/i18n/locales/zh/navigation.ts` (Chino)
 - `app/i18n/locales/hi/navigation.ts` (Hindi)
 - `app/i18n/locales/de/navigation.ts` (Alemán)
@@ -105,12 +106,12 @@ export default {
 ```typescript
 export default {
   // ... claves existentes ...
-  
+
   // Acciones adicionales
-  collapse: 'Colapsar',
-  expand: 'Expandir',
-  new: 'Nuevo',
-}
+  collapse: "Colapsar",
+  expand: "Expandir",
+  new: "Nuevo",
+};
 ```
 
 **Archivo:** `app/i18n/locales/en/common.ts`
@@ -118,11 +119,11 @@ export default {
 ```typescript
 export default {
   // ... existing keys ...
-  
-  collapse: 'Collapse',
-  expand: 'Expand',
-  new: 'New',
-}
+
+  collapse: "Collapse",
+  expand: "Expand",
+  new: "New",
+};
 ```
 
 **Repetir para zh, hi, de, fr**
@@ -136,11 +137,11 @@ export default {
 ```typescript
 export default {
   // ... claves existentes ...
-  
+
   // Usuario adicional
-  settings: 'Configuración',
-  logout: 'Cerrar Sesión',
-}
+  settings: "Configuración",
+  logout: "Cerrar Sesión",
+};
 ```
 
 **Archivo:** `app/i18n/locales/en/user.ts`
@@ -148,10 +149,10 @@ export default {
 ```typescript
 export default {
   // ... existing keys ...
-  
-  settings: 'Settings',
-  logout: 'Sign Out',
-}
+
+  settings: "Settings",
+  logout: "Sign Out",
+};
 ```
 
 **Repetir para zh, hi, de, fr**
@@ -203,6 +204,7 @@ t("config.administration") → t("config.administration") // ✓ ya existe
 ```
 
 **Verificación:**
+
 ```bash
 # Abrir en navegador
 # Clic en botón configuración (esquina superior derecha)
@@ -261,6 +263,7 @@ t("nav.ayuda") → t("navigation.ayuda")
 ```
 
 **Verificación:**
+
 ```bash
 # Verificar en navegador que el sidebar muestra traducciones correctas
 # Cambiar idioma y verificar que sidebar se actualiza
@@ -452,6 +455,7 @@ const { t } = useI18n();
 ```
 
 **Comando para actualizar automáticamente:**
+
 ```bash
 # Linux/Mac
 find app/components app/pages -type f -name "*.vue" -exec sed -i 's/useProboI18n/useI18n/g' {} +
@@ -475,7 +479,7 @@ git diff
  */
 export const useI18n = () => {
   // ... resto del código igual
-}
+};
 ```
 
 ---
@@ -490,28 +494,28 @@ export const useI18n = () => {
 export default defineNuxtPlugin(() => {
   if (import.meta.client) {
     // Migrar del sistema antiguo al nuevo
-    const oldLangKey = 'probo-language'
-    const newLangKey = 'i18n_redirected'
-    
-    const oldLang = localStorage.getItem(oldLangKey)
-    const newLang = localStorage.getItem(newLangKey)
-    
+    const oldLangKey = "probo-language";
+    const newLangKey = "i18n_redirected";
+
+    const oldLang = localStorage.getItem(oldLangKey);
+    const newLang = localStorage.getItem(newLangKey);
+
     // Si existe preferencia antigua pero no la nueva
     if (oldLang && !newLang) {
-      console.log(`[i18n] Migrando preferencia de idioma: ${oldLang}`)
-      localStorage.setItem(newLangKey, oldLang)
-      localStorage.removeItem(oldLangKey)
+      console.log(`[i18n] Migrando preferencia de idioma: ${oldLang}`);
+      localStorage.setItem(newLangKey, oldLang);
+      localStorage.removeItem(oldLangKey);
     }
-    
+
     // Limpiar otras claves antiguas si existen
-    const oldKeys = ['language', 'lang', 'locale']
-    oldKeys.forEach(key => {
+    const oldKeys = ["language", "lang", "locale"];
+    oldKeys.forEach((key) => {
       if (localStorage.getItem(key)) {
-        localStorage.removeItem(key)
+        localStorage.removeItem(key);
       }
-    })
+    });
   }
-})
+});
 ```
 
 ---
@@ -521,6 +525,7 @@ export default defineNuxtPlugin(() => {
 ### 5.1 Tests Funcionales
 
 **Test 1: Cambio de idioma**
+
 ```
 1. Abrir http://localhost:3000
 2. Clic en botón de configuración (esquina superior derecha)
@@ -534,6 +539,7 @@ export default defineNuxtPlugin(() => {
 ```
 
 **Test 2: Persistencia de idioma**
+
 ```
 1. Cambiar idioma a "中文"
 2. Refrescar página (F5)
@@ -542,6 +548,7 @@ export default defineNuxtPlugin(() => {
 ```
 
 **Test 3: Traducciones del sidebar**
+
 ```
 1. Cambiar idioma a cada uno de los 6 idiomas
 2. Verificar que todos los items del sidebar tienen traducción
@@ -550,6 +557,7 @@ export default defineNuxtPlugin(() => {
 ```
 
 **Test 4: Modal de configuración**
+
 ```
 1. Abrir modal de configuración
 2. Cambiar entre pestañas
@@ -558,6 +566,7 @@ export default defineNuxtPlugin(() => {
 ```
 
 **Test 5: Formateadores**
+
 ```
 1. Ir a http://localhost:3000/i18n-demo
 2. Cambiar idioma
@@ -625,6 +634,7 @@ npx nuxi typecheck
 ## 🌍 Internacionalización
 
 Esta aplicación soporta 6 idiomas:
+
 - 🇪🇸 Español (es) - Default
 - 🇬🇧 English (en)
 - 🇨🇳 中文 (zh)
@@ -635,6 +645,7 @@ Esta aplicación soporta 6 idiomas:
 ### Uso de traducciones
 
 \`\`\`vue
+
 <script setup lang="ts">
 import { useI18n } from '~/composables/useI18n'
 
@@ -652,6 +663,7 @@ const { t, locale, changeLocale } = useI18n()
 ### Estructura de traducciones
 
 Las traducciones están organizadas en categorías:
+
 - `common.*` - Acciones y textos comunes
 - `navigation.*` - Items de navegación
 - `config.*` - Configuración
@@ -693,7 +705,7 @@ const { t } = useI18n()
 ## ❌ Incorrecto (ya no existe)
 
 \`\`\`typescript
-import { useLanguage } from '~/composables/useLanguage'  // ❌ ELIMINADO
+import { useLanguage } from '~/composables/useLanguage' // ❌ ELIMINADO
 const { t } = useLanguage()
 \`\`\`
 ```
@@ -755,6 +767,7 @@ const { t } = useLanguage()
 Antes de hacer merge, verificar:
 
 **Código:**
+
 - [ ] Todos los componentes migrados a `useI18n`
 - [ ] Cero referencias a `useLanguage` en código
 - [ ] `app/composables/useLanguage.ts` eliminado
@@ -762,11 +775,13 @@ Antes de hacer merge, verificar:
 - [ ] Plugin de migración de localStorage creado
 
 **Traducciones:**
+
 - [ ] Todas las claves del sistema antiguo tienen equivalente
 - [ ] 6 idiomas completos (es, en, zh, hi, de, fr)
 - [ ] No hay claves `undefined` en ningún idioma
 
 **Testing:**
+
 - [ ] Cambio de idioma funciona
 - [ ] Persistencia funciona
 - [ ] Build de producción exitoso
@@ -774,12 +789,14 @@ Antes de hacer merge, verificar:
 - [ ] No hay errores en consola
 
 **Documentación:**
+
 - [ ] README.md actualizado
 - [ ] SISTEMA_I18N_GUIA_USO.md actualizado
 - [ ] CHANGELOG.md creado/actualizado
 - [ ] Comentarios en código actualizados
 
 **Git:**
+
 - [ ] Commits descriptivos
 - [ ] Branch actualizado con main
 - [ ] Sin conflictos
@@ -826,6 +843,7 @@ git push origin main
 El sistema i18n ahora está completamente unificado y modernizado.
 
 **Próximos pasos sugeridos:**
+
 1. Monitorear errores en producción
 2. Considerar agregar tests automatizados
 3. Evaluar feedback de usuarios sobre traducciones

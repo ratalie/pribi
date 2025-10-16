@@ -149,10 +149,10 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { useLanguage } from "~/composables/useLanguage";
+import { useProboI18n } from "~/composables/useProboI18n";
 
 // Composables
-const { t } = useLanguage();
+const { t } = useProboI18n();
 
 // Metadata
 useHead({

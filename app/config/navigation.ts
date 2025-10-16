@@ -4,12 +4,12 @@ export const navigationSections: NavigationSection[] = [
   {
     id: "registro-societario",
     title: "Registro Societario",
-    translationKey: "nav.registroSocietario",
+    translationKey: "navigation.registroSocietario",
     items: [
       {
         id: "sociedades",
         label: "Sociedades",
-        translationKey: "nav.sociedades",
+        translationKey: "navigation.sociedades",
         icon: "Building2",
         href: "/registro-societario/sociedades",
         roles: ["admin", "manager", "user"],
@@ -17,7 +17,7 @@ export const navigationSections: NavigationSection[] = [
       {
         id: "sucursales",
         label: "Sucursales",
-        translationKey: "nav.sucursales",
+        translationKey: "navigation.sucursales",
         icon: "MapPin",
         href: "/registro-societario/sucursales",
         roles: ["admin", "manager", "user"],
@@ -27,33 +27,33 @@ export const navigationSections: NavigationSection[] = [
   {
     id: "operaciones",
     title: "Operaciones de Órgano de Control",
-    translationKey: "nav.operaciones",
+    translationKey: "navigation.operaciones",
     items: [
       {
         id: "directorio",
         label: "Directorio",
-        translationKey: "nav.directorio",
+        translationKey: "navigation.directorio",
         icon: "Users",
         hasSubmenu: true,
         submenuItems: [
           {
             id: "directorio-dashboard",
             label: "Dashboard",
-            translationKey: "nav.dashboard",
+            translationKey: "navigation.dashboard",
             icon: "LayoutDashboard",
             href: "/operaciones/directorio/dashboard",
           },
           {
             id: "directores",
             label: "Directores",
-            translationKey: "nav.directores",
+            translationKey: "navigation.directores",
             icon: "UserCheck",
             href: "/operaciones/directorio/directores",
           },
           {
             id: "directorio-historico",
             label: "Histórico",
-            translationKey: "nav.historico",
+            translationKey: "navigation.historico",
             icon: "History",
             href: "/operaciones/directorio/historico",
           },
@@ -63,28 +63,28 @@ export const navigationSections: NavigationSection[] = [
       {
         id: "gerencia-general",
         label: "Gerencia General",
-        translationKey: "nav.gerenciaGeneral",
+        translationKey: "navigation.gerenciaGeneral",
         icon: "Briefcase",
         hasSubmenu: true,
         submenuItems: [
           {
             id: "gerencia-dashboard",
             label: "Dashboard",
-            translationKey: "nav.dashboard",
+            translationKey: "navigation.dashboard",
             icon: "LayoutDashboard",
             href: "/operaciones/gerencia-general/dashboard",
           },
           {
             id: "gerentes",
             label: "Gerentes",
-            translationKey: "nav.gerentes",
+            translationKey: "navigation.gerentes",
             icon: "UserCog",
             href: "/operaciones/gerencia-general/gerentes",
           },
           {
             id: "gerencia-historico",
             label: "Histórico",
-            translationKey: "nav.historico",
+            translationKey: "navigation.historico",
             icon: "History",
             href: "/operaciones/gerencia-general/historico",
           },
@@ -94,28 +94,28 @@ export const navigationSections: NavigationSection[] = [
       {
         id: "junta-accionistas",
         label: "Junta de Accionistas",
-        translationKey: "nav.juntaAccionistas",
+        translationKey: "navigation.juntaAccionistas",
         icon: "Crown",
         hasSubmenu: true,
         submenuItems: [
           {
             id: "junta-dashboard",
             label: "Dashboard",
-            translationKey: "nav.dashboard",
+            translationKey: "navigation.dashboard",
             icon: "LayoutDashboard",
             href: "/operaciones/junta-accionistas/dashboard",
           },
           {
             id: "accionistas",
             label: "Accionistas",
-            translationKey: "nav.accionistas",
+            translationKey: "navigation.accionistas",
             icon: "Users2",
             href: "/operaciones/junta-accionistas/accionistas",
           },
           {
             id: "junta-historico",
             label: "Histórico",
-            translationKey: "nav.historico",
+            translationKey: "navigation.historico",
             icon: "History",
             href: "/operaciones/junta-accionistas/historico",
           },
@@ -127,12 +127,12 @@ export const navigationSections: NavigationSection[] = [
   {
     id: "storage",
     title: "Storage",
-    translationKey: "nav.storage",
+    translationKey: "navigation.storage",
     items: [
       {
         id: "almacen",
         label: "Almacén",
-        translationKey: "nav.almacen",
+        translationKey: "navigation.almacen",
         icon: "Archive",
         href: "/storage/almacen",
         roles: ["admin", "manager", "user"],
@@ -140,7 +140,7 @@ export const navigationSections: NavigationSection[] = [
       {
         id: "documentos-generados",
         label: "Documentos Generados",
-        translationKey: "nav.documentosGenerados",
+        translationKey: "navigation.documentosGenerados",
         icon: "FileText",
         href: "/storage/documentos-generados",
         roles: ["admin", "manager", "user"],
@@ -150,12 +150,12 @@ export const navigationSections: NavigationSection[] = [
   {
     id: "features",
     title: "Features",
-    translationKey: "nav.features",
+    translationKey: "navigation.features",
     items: [
       {
         id: "chat-ia",
         label: "Chat IA",
-        translationKey: "nav.chatIA",
+        translationKey: "navigation.chatIA",
         icon: "MessageCircle",
         href: "/features/chat-ia",
         roles: ["admin", "manager", "user"],
@@ -163,7 +163,7 @@ export const navigationSections: NavigationSection[] = [
       {
         id: "documentos-ia",
         label: "Documentos IA",
-        translationKey: "nav.documentosIA",
+        translationKey: "navigation.documentosIA",
         icon: "FileSearch",
         href: "/features/documentos-ia",
         roles: ["admin", "manager", "user"],
@@ -171,7 +171,7 @@ export const navigationSections: NavigationSection[] = [
       {
         id: "reporteria",
         label: "Reportería",
-        translationKey: "nav.reporteria",
+        translationKey: "navigation.reporteria",
         icon: "BarChart3",
         href: "/features/reporteria",
         roles: ["admin", "manager"],

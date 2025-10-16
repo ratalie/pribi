@@ -19,6 +19,28 @@ export default defineNuxtConfig({
     "pinia-plugin-persistedstate/nuxt",
   ],
 
+  i18n: {
+    defaultLocale: "es",
+    strategy: "no_prefix",
+
+    locales: [
+      { code: "es", name: "Español" },
+      { code: "en", name: "English" },
+      { code: "zh", name: "中文" },
+      { code: "hi", name: "हिन्दी" },
+      { code: "de", name: "Deutsch" },
+      { code: "fr", name: "Français" },
+    ],
+
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: "i18n_redirected",
+      redirectOn: "root",
+      alwaysRedirect: false,
+      fallbackLocale: "es",
+    },
+  },
+
   shadcn: {
     /**
      * Prefix for all the imported component

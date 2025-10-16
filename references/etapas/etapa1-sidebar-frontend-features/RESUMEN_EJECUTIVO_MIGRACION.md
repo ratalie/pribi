@@ -17,6 +17,7 @@ Eliminar completamente el sistema antiguo de i18n y consolidar en una arquitectu
 ### ✅ Completado (40%)
 
 1. **Infraestructura Nueva**
+
    - ✓ @nuxtjs/i18n instalado y configurado
    - ✓ Composable `useProboI18n.ts` creado
    - ✓ Plugin de carga de traducciones funcionando
@@ -24,6 +25,7 @@ Eliminar completamente el sistema antiguo de i18n y consolidar en una arquitectu
    - ✓ Tipos TypeScript (`LocaleCode`) definidos
 
 2. **Componentes Migrados**
+
    - ✓ `LanguageSelect.vue` (100% funcional)
    - ✓ Páginas de prueba (`test-i18n.vue`, `i18n-demo.vue`)
 
@@ -36,6 +38,7 @@ Eliminar completamente el sistema antiguo de i18n y consolidar en una arquitectu
 ### ⏳ Pendiente (60%)
 
 1. **Componentes a Migrar** (6 componentes)
+
    - ⏳ ConfigurationModal.vue
    - ⏳ ProboSidebar.vue
    - ⏳ UserDropdownMenu.vue
@@ -44,6 +47,7 @@ Eliminar completamente el sistema antiguo de i18n y consolidar en una arquitectu
    - ⏳ pages/index.vue
 
 2. **Traducciones Faltantes**
+
    - ⏳ Claves de navegación específicas de PROBO
      - `navigation.registroSocietario`
      - `navigation.sociedades`
@@ -58,26 +62,28 @@ Eliminar completamente el sistema antiguo de i18n y consolidar en una arquitectu
 
 ## 🚨 PROBLEMAS DETECTADOS
 
-| # | Problema | Impacto | Solución |
-|---|----------|---------|----------|
-| 1 | 6 componentes usan sistema antiguo | ALTO | Migrar imports a useProboI18n |
-| 2 | 13 referencias a useLanguage en código | ALTO | Reemplazar con useProboI18n |
-| 3 | Claves de navegación faltantes | MEDIO | Completar navigation.ts |
-| 4 | useLanguage.ts todavía existe | MEDIO | Eliminar archivo |
-| 5 | useCustomI18n.ts existe | BAJO | Eliminar archivo |
+| #   | Problema                               | Impacto | Solución                      |
+| --- | -------------------------------------- | ------- | ----------------------------- |
+| 1   | 6 componentes usan sistema antiguo     | ALTO    | Migrar imports a useProboI18n |
+| 2   | 13 referencias a useLanguage en código | ALTO    | Reemplazar con useProboI18n   |
+| 3   | Claves de navegación faltantes         | MEDIO   | Completar navigation.ts       |
+| 4   | useLanguage.ts todavía existe          | MEDIO   | Eliminar archivo              |
+| 5   | useCustomI18n.ts existe                | BAJO    | Eliminar archivo              |
 
 ---
 
 ## 📋 PLAN DE ACCIÓN RESUMIDO
 
 ### FASE 1: Completar Traducciones (30 min)
+
 ```bash
 # Agregar claves faltantes a navigation.ts (6 archivos)
-# Agregar claves faltantes a common.ts (6 archivos)  
+# Agregar claves faltantes a common.ts (6 archivos)
 # Agregar claves faltantes a user.ts (6 archivos)
 ```
 
 ### FASE 2: Migrar Componentes (60 min)
+
 ```bash
 # Para cada componente:
 # 1. Cambiar import: useLanguage → useProboI18n
@@ -86,6 +92,7 @@ Eliminar completamente el sistema antiguo de i18n y consolidar en una arquitectu
 ```
 
 **Componentes:**
+
 1. ConfigurationModal.vue (15 min)
 2. ProboSidebar.vue (15 min) ⭐ Crítico
 3. UserDropdownMenu.vue (10 min)
@@ -94,6 +101,7 @@ Eliminar completamente el sistema antiguo de i18n y consolidar en una arquitectu
 6. pages/index.vue (5 min)
 
 ### FASE 3: Limpieza (20 min)
+
 ```bash
 # Eliminar archivos antiguos
 rm app/composables/useLanguage.ts
@@ -104,6 +112,7 @@ rm app/composables/useCustomI18n.ts
 ```
 
 ### FASE 4: Testing y Documentación (30 min)
+
 ```bash
 # Build y testing
 npm run build
@@ -131,6 +140,7 @@ La migración estará completa cuando:
 ```
 
 **Checklist de validación:**
+
 - [ ] Script de verificación pasa sin errores
 - [ ] Build de producción exitoso (`npm run build`)
 - [ ] Cambio de idioma funciona en toda la app
@@ -142,6 +152,7 @@ La migración estará completa cuando:
 ## 📁 ARCHIVOS CLAVE
 
 ### Documentación
+
 ```
 references/etapas/etapa1-sidebar-frontend-features/
 ├── PLAN_MIGRACION_I18N_COMPLETO.md      # Plan detallado (este archivo)
@@ -151,12 +162,14 @@ references/etapas/etapa1-sidebar-frontend-features/
 ```
 
 ### Scripts
+
 ```
 scripts/
 └── verify-i18n-migration.sh              # Script de verificación automática
 ```
 
 ### Código a Migrar
+
 ```
 app/
 ├── composables/
@@ -179,6 +192,7 @@ app/
 ## 🚀 CÓMO EMPEZAR
 
 ### Opción 1: Migración Manual
+
 ```bash
 # 1. Leer la guía ejecutable
 cat references/etapas/etapa1-sidebar-frontend-features/MIGRACION_I18N_EJECUTABLE.md
@@ -188,6 +202,7 @@ cat references/etapas/etapa1-sidebar-frontend-features/MIGRACION_I18N_EJECUTABLE
 ```
 
 ### Opción 2: Migración Asistida (Recomendado)
+
 ```bash
 # 1. Crear branch de trabajo
 git checkout -b feature/migrate-i18n-final
@@ -248,10 +263,12 @@ git push origin feature/migrate-i18n-final
 Si encuentras problemas durante la migración:
 
 1. **Revisar documentación:**
+
    - `MIGRACION_I18N_EJECUTABLE.md` - Guía paso a paso
    - `PLAN_MIGRACION_I18N_COMPLETO.md` - Plan detallado
 
 2. **Ejecutar verificación:**
+
    ```bash
    ./scripts/verify-i18n-migration.sh
    ```
@@ -277,10 +294,12 @@ Si encuentras problemas durante la migración:
 ### Mejoras Post-Migración
 
 1. **Testing automatizado:**
+
    - Agregar tests E2E para cambio de idioma
    - Tests unitarios para composable i18n
 
 2. **CI/CD:**
+
    - Integrar script de verificación en pipeline
    - Validar traducciones completas en PR
 
@@ -294,12 +313,14 @@ Si encuentras problemas durante la migración:
 ## 📈 MÉTRICAS DE PROGRESO
 
 ### Antes de la Migración
+
 - 2 sistemas i18n coexistiendo
 - 5 idiomas con traducciones parciales
 - ~150 claves de traducción
 - Código duplicado en composables
 
 ### Después de la Migración
+
 - 1 sistema i18n unificado
 - 6 idiomas con traducciones completas
 - ~4,500 claves de traducción organizadas
@@ -314,6 +335,7 @@ Si encuentras problemas durante la migración:
 **Recomendación:** Empezar con la **Opción 2: Migración Asistida**
 
 **Próxima acción sugerida:**
+
 ```bash
 # Crear branch de trabajo
 git checkout -b feature/migrate-i18n-final

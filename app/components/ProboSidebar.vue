@@ -192,13 +192,13 @@ import {
 } from "@/components/ui/collapsible";
 import { navigationSections } from "~/config/navigation";
 import { getIcon } from "~/utils/iconMapper";
-import { useLanguage } from "~/composables/useLanguage";
+import { useProboI18n } from "~/composables/useProboI18n";
 import { useUser } from "~/composables/useUser";
 import UserDropdownMenu from "./UserDropdownMenu.vue";
 
 // Composables
 const route = useRoute();
-const { t } = useLanguage();
+const { t } = useProboI18n();
 const { canViewModule } = useUser();
 
 // Estado del sidebar

@@ -112,7 +112,7 @@
 <script setup lang="ts">
 import { Check } from "lucide-vue-next";
 import { useFont } from "~/composables/useFont";
-import { useLanguage } from "~/composables/useLanguage";
+import { useProboI18n } from "~/composables/useProboI18n";
 import type { Font } from "~/types/user";
 
 // Composables
@@ -127,5 +127,5 @@ const {
   setSecondaryFont,
 } = useFont();
 
-const { t } = useLanguage();
+const { t } = useProboI18n();
 </script>

@@ -65,9 +65,9 @@
 <script setup lang="ts">
 import { Sun, Moon, Monitor } from "lucide-vue-next";
 import { useTheme } from "~/composables/useTheme";
-import { useLanguage } from "~/composables/useLanguage";
+import { useProboI18n } from "~/composables/useProboI18n";
 
 // Composables
 const { currentTheme, effectiveTheme, setTheme } = useTheme();
-const { t } = useLanguage();
+const { t } = useProboI18n();
 </script>

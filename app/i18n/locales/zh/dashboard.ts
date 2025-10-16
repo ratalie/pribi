@@ -1,0 +1,17 @@
+export default {
+  title: "PROBO 仪表板",
+  subtitle: "欢迎使用您的企业法律管理平台",
+  companiesRegistered: "注册公司",
+  documentsGenerated: "生成的文档",
+  activeUsers: "活跃用户",
+  aiQueries: "AI查询",
+  recentActivity: "最近活动",
+  quickAccess: "快速访问",
+  mostUsedFunctions: "最常用功能",
+  newCompany: "新公司",
+  consultAI: "咨询AI",
+  viewDocuments: "查看文档",
+  sinceLastMonth: "自上个月以来",
+  registered: "注册了新公司",
+  generated: "生成了报告",
+} as const;

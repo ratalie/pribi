@@ -1,0 +1,17 @@
+export default {
+  title: "PROBO डैशबोर्ड",
+  subtitle: "आपके कॉर्पोरेट कानूनी प्रबंधन प्लेटफॉर्म में आपका स्वागत है",
+  companiesRegistered: "पंजीकृत कंपनियां",
+  documentsGenerated: "जेनरेटेड दस्तावेज़",
+  activeUsers: "सक्रिय उपयोगकर्ता",
+  aiQueries: "AI प्रश्न",
+  recentActivity: "हाल की गतिविधि",
+  quickAccess: "त्वरित पहुंच",
+  mostUsedFunctions: "सबसे अधिक उपयोग किए जाने वाले फ़ंक्शन",
+  newCompany: "नई कंपनी",
+  consultAI: "AI से परामर्श करें",
+  viewDocuments: "दस्तावेज़ देखें",
+  sinceLastMonth: "पिछले महीने से",
+  registered: "नई कंपनी पंजीकृत की",
+  generated: "रिपोर्ट जेनरेट की",
+} as const;
