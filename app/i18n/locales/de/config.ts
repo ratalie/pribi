@@ -1,58 +1,74 @@
 export const deConfig = {
-  // Configuración general
-  settings: "Einstellungen",
-  generalSettings: "Allgemeine Einstellungen",
+  title: "Konfiguration",
+  administration: "Verwaltung",
+  personal: "Persönlich",
+  integrations: "Integrationen",
   preferences: "Einstellungen",
-  configuration: "Konfiguration",
-
-  // Apariencia
   appearance: "Erscheinungsbild",
-  theme: "Thema",
-  darkMode: "Dunkler Modus",
-  lightMode: "Heller Modus",
-  systemMode: "Systemmodus",
-
-  // Idioma y región
+  selectTheme: "Thema auswählen",
+  lightTheme: "Hell",
+  darkTheme: "Dunkel",
+  systemTheme: "System",
   language: "Sprache",
-  region: "Region",
-  timezone: "Zeitzone",
-  dateFormat: "Datumsformat",
-  timeFormat: "Zeitformat",
-  numberFormat: "Zahlenformat",
+  selectLanguage: "Sprache auswählen",
+  typography: "Typografie",
+  primaryFont: "Hauptschriftart",
+  secondaryFont: "Code-Schriftart",
+  dashboard: "Dashboard",
+  billing: "Abrechnung",
+  users: "Benutzer",
+  general: "Allgemein",
+  profile: "Profil",
+  gmail: "Gmail",
+  googleDrive: "Google Drive",
 
-  // Notificaciones
+  // Beschreibungen
+  appearanceDesc: "Passen Sie das App-Thema an",
+  languageDesc: "Wählen Sie Ihre bevorzugte Sprache",
+  typographyDesc: "Passen Sie die App-Schriftarten an",
+  modalTitle: "Konfiguration",
+  modalDesc: "Personalisieren Sie Ihre PROBO-Erfahrung",
+  adminDashboard: "Admin-Dashboard",
+  adminDashboardDesc: "Konfigurieren Sie das Admin-Panel",
+  dashboardSettings: "Dashboard-Einstellungen",
+  dashboardSettingsDesc: "Passen Sie Ihr Haupt-Dashboard an",
+  billingDesc: "Verwalten Sie Abrechnung und Zahlungen",
+  billingSettings: "Abrechnungseinstellungen",
+  billingSettingsDesc: "Zahlungsmethoden und Pläne verwalten",
+  usersDesc: "Systembenutzer verwalten",
+  userSettings: "Benutzerverwaltung",
+  userSettingsDesc: "Benutzer erstellen, bearbeiten und verwalten",
+  generalDesc: "Allgemeine Systemeinstellungen",
+  generalSettings: "Allgemeine Einstellungen",
+  generalSettingsDesc: "Grundeinstellungen der Anwendung",
+  preferencesDesc: "Passen Sie Ihre Benutzererfahrung an",
+  profileDesc: "Verwalten Sie Ihre persönlichen Informationen",
+  profileSettings: "Profileinstellungen",
+  profileSettingsDesc: "Aktualisieren Sie Ihre Informationen und Einstellungen",
+  gmailDesc: "Gmail-Integration",
+  gmailIntegration: "Gmail-Integration",
+  gmailIntegrationDesc: "Verbinden Sie Ihr Gmail-Konto zum Synchronisieren von E-Mails",
+  connectGmail: "Gmail verbinden",
+  googleDriveDesc: "Google Drive-Integration",
+  googleDriveIntegration: "Google Drive-Integration",
+  googleDriveIntegrationDesc: "Verbinden Sie Google Drive zum Speichern von Dokumenten",
+  connectGoogleDrive: "Google Drive verbinden",
+
+  // Schriftarten und Typografie
+  primaryFontDesc: "Schriftart für allgemeine Texte und Benutzeroberfläche",
+  secondaryFontDesc: "Schriftart für Code und Monospace-Elemente",
+  fontPreview: "Vorschau",
+  previewPrimary: "Beispieltext mit Hauptschriftart",
+  previewPrimaryDesc: "So wird der allgemeine Text der Anwendung aussehen",
+  previewCode: "Hallo Welt! 123",
+  currentPrimary: "Aktuelle Hauptschriftart",
+  currentSecondary: "Aktuelle Code-Schriftart",
+
+  // Benachrichtigungen
   notifications: "Benachrichtigungen",
+  notificationsDesc: "Konfigurieren Sie Ihre Benachrichtigungseinstellungen",
   emailNotifications: "E-Mail-Benachrichtigungen",
   pushNotifications: "Push-Benachrichtigungen",
-  soundNotifications: "Ton-Benachrichtigungen",
-
-  // Privacidad y seguridad
-  privacy: "Datenschutz",
-  security: "Sicherheit",
-  permissions: "Berechtigungen",
-
-  // Cuenta
-  account: "Konto",
-  profile: "Profil",
-  billing: "Abrechnung",
-  subscription: "Abonnement",
-
-  // Aplicación
-  application: "Anwendung",
-  performance: "Leistung",
-  storage: "Speicher",
-  backup: "Sicherung",
-
-  // Acciones
-  save: "Speichern",
-  reset: "Zurücksetzen",
-  restore: "Wiederherstellen",
-  export: "Exportieren",
-  import: "Importieren",
-
-  // Estados
-  saved: "Gespeichert",
-  saving: "Speichert...",
-  error: "Fehler",
-  success: "Erfolgreich",
 };
+
+export default deConfig;

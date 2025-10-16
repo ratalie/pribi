@@ -1,42 +1,54 @@
 export const frNavigation = {
-  // Navigation principale
-  home: "Accueil",
+  // Sections principales de la barre latérale
   dashboard: "Tableau de bord",
-  profile: "Profil",
-  settings: "Paramètres",
-  help: "Aide",
-  about: "À propos",
-  contact: "Contact",
+  registro: "Registre d'entreprise",
+  registroSocietario: "Registre d'entreprise",
+  documentacion: "Génération de procès-verbaux",
+  gestion: "Gestion des livres",
+  storage: "Stockage",
+  features: "Fonctionnalités",
 
-  // Sections
-  overview: "Vue d'ensemble",
-  analytics: "Analytiques",
-  reports: "Rapports",
-  users: "Utilisateurs",
-  projects: "Projets",
-  tasks: "Tâches",
-  calendar: "Calendrier",
-  messages: "Messages",
-  notifications: "Notifications",
+  // Sous-sections Registre d'entreprise
+  sociedades: "Sociétés",
+  sucursales: "Succursales",
+  accionistas: "Actionnaires",
+  administradores: "Administrateurs",
+  domicilios: "Domiciles",
+  certificados: "Certificats",
 
-  // Gestion
-  administration: "Administration",
-  management: "Gestion",
-  configuration: "Configuration",
-  preferences: "Préférences",
+  // Sous-sections Opérations
+  operaciones: "Opérations d'organe de contrôle",
+  directorio: "Conseil d'administration",
+  directores: "Directeurs",
+  gerenciaGeneral: "Direction générale",
+  gerentes: "Gestionnaires",
+  juntaAccionistas: "Assemblée des actionnaires",
+  historico: "Historique",
 
-  // Actions de navigation
-  goTo: "Aller à",
-  navigate: "Naviguer",
-  browse: "Parcourir",
-  explore: "Explorer",
+  // Sous-sections Documentation
+  juntas: "Assemblées",
+  actas: "Procès-verbaux",
+  temas: "Sujets",
+  votacion: "Vote",
 
-  // Fil d'Ariane
-  breadcrumb: "Fil d'Ariane",
-  currentPage: "Page actuelle",
+  // Sous-sections Gestion
+  librosAccionistas: "Livres d'actionnaires",
+  librosActas: "Livres de procès-verbaux",
 
-  // Menu mobile
-  openMenu: "Ouvrir le menu",
-  closeMenu: "Fermer le menu",
-  toggleMenu: "Basculer le menu",
-};
+  // Sous-sections Stockage
+  almacen: "Entrepôt",
+  documentosGenerados: "Documents générés",
+  plantillasGuardadas: "Modèles enregistrés",
+
+  // Sous-sections Fonctionnalités
+  chatIA: "Chat IA",
+  documentosIA: "Documents IA",
+  reporteria: "Rapports",
+  planServicio: "Plan de service",
+  personalizacion: "Personnalisation",
+  configuracion: "Configuration",
+  ayuda: "Aide",
+  calculadoraLegal: "Calculatrice juridique",
+} as const;
+
+export default frNavigation;

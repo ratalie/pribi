@@ -1,42 +1,54 @@
 export const deNavigation = {
-  // Navegación principal
-  home: "Startseite",
+  // Hauptabschnitte der Seitenleiste
   dashboard: "Dashboard",
-  profile: "Profil",
-  settings: "Einstellungen",
-  help: "Hilfe",
-  about: "Über uns",
-  contact: "Kontakt",
+  registro: "Unternehmensregister",
+  registroSocietario: "Unternehmensregister",
+  documentacion: "Protokollerstellung",
+  gestion: "Bücherverwaltung",
+  storage: "Speicher",
+  features: "Funktionen",
 
-  // Secciones
-  overview: "Übersicht",
-  analytics: "Analytik",
-  reports: "Berichte",
-  users: "Benutzer",
-  projects: "Projekte",
-  tasks: "Aufgaben",
-  calendar: "Kalender",
-  messages: "Nachrichten",
-  notifications: "Benachrichtigungen",
+  // Unterabschnitte Unternehmensregister
+  sociedades: "Unternehmen",
+  sucursales: "Niederlassungen",
+  accionistas: "Aktionäre",
+  administradores: "Verwalter",
+  domicilios: "Domizile",
+  certificados: "Zertifikate",
 
-  // Gestión
-  administration: "Verwaltung",
-  management: "Management",
-  configuration: "Konfiguration",
-  preferences: "Einstellungen",
+  // Unterabschnitte Operationen
+  operaciones: "Kontrollorganoperationen",
+  directorio: "Vorstand",
+  directores: "Direktoren",
+  gerenciaGeneral: "Geschäftsführung",
+  gerentes: "Manager",
+  juntaAccionistas: "Hauptversammlung",
+  historico: "Historie",
 
-  // Acciones de navegación
-  goTo: "Gehen zu",
-  navigate: "Navigieren",
-  browse: "Durchsuchen",
-  explore: "Erkunden",
+  // Unterabschnitte Dokumentation
+  juntas: "Versammlungen",
+  actas: "Protokolle",
+  temas: "Themen",
+  votacion: "Abstimmung",
 
-  // Breadcrumbs
-  breadcrumb: "Brotkrümel",
-  currentPage: "Aktuelle Seite",
+  // Unterabschnitte Verwaltung
+  librosAccionistas: "Aktionärsbücher",
+  librosActas: "Protokollbücher",
 
-  // Menu móvil
-  openMenu: "Menü öffnen",
-  closeMenu: "Menü schließen",
-  toggleMenu: "Menü umschalten",
-};
+  // Unterabschnitte Speicher
+  almacen: "Lager",
+  documentosGenerados: "Generierte Dokumente",
+  plantillasGuardadas: "Gespeicherte Vorlagen",
+
+  // Unterabschnitte Funktionen
+  chatIA: "KI-Chat",
+  documentosIA: "KI-Dokumente",
+  reporteria: "Berichtswesen",
+  planServicio: "Serviceplan",
+  personalizacion: "Personalisierung",
+  configuracion: "Konfiguration",
+  ayuda: "Hilfe",
+  calculadoraLegal: "Rechtsrechner",
+} as const;
+
+export default deNavigation;

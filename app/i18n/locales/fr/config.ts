@@ -1,58 +1,74 @@
 export const frConfig = {
-  // Configuration générale
-  settings: "Paramètres",
-  generalSettings: "Paramètres généraux",
+  title: "Configuration",
+  administration: "Administration",
+  personal: "Personnel",
+  integrations: "Intégrations",
   preferences: "Préférences",
-  configuration: "Configuration",
-
-  // Apparence
   appearance: "Apparence",
-  theme: "Thème",
-  darkMode: "Mode sombre",
-  lightMode: "Mode clair",
-  systemMode: "Mode système",
-
-  // Langue et région
+  selectTheme: "Sélectionner le thème",
+  lightTheme: "Clair",
+  darkTheme: "Sombre",
+  systemTheme: "Système",
   language: "Langue",
-  region: "Région",
-  timezone: "Fuseau horaire",
-  dateFormat: "Format de date",
-  timeFormat: "Format d'heure",
-  numberFormat: "Format de nombre",
+  selectLanguage: "Sélectionner la langue",
+  typography: "Typographie",
+  primaryFont: "Police principale",
+  secondaryFont: "Police de code",
+  dashboard: "Tableau de bord",
+  billing: "Facturation",
+  users: "Utilisateurs",
+  general: "Général",
+  profile: "Profil",
+  gmail: "Gmail",
+  googleDrive: "Google Drive",
+
+  // Descriptions
+  appearanceDesc: "Personnalisez le thème de l'application",
+  languageDesc: "Sélectionnez votre langue préférée",
+  typographyDesc: "Personnalisez les polices de l'application",
+  modalTitle: "Configuration",
+  modalDesc: "Personnalisez votre expérience PROBO",
+  adminDashboard: "Tableau de bord Admin",
+  adminDashboardDesc: "Configurez le panneau d'administration",
+  dashboardSettings: "Paramètres du tableau de bord",
+  dashboardSettingsDesc: "Personnalisez votre tableau de bord principal",
+  billingDesc: "Gérez la facturation et les paiements",
+  billingSettings: "Paramètres de facturation",
+  billingSettingsDesc: "Gérez les méthodes de paiement et les plans",
+  usersDesc: "Gérez les utilisateurs du système",
+  userSettings: "Gestion des utilisateurs",
+  userSettingsDesc: "Créer, modifier et gérer les utilisateurs",
+  generalDesc: "Paramètres généraux du système",
+  generalSettings: "Paramètres généraux",
+  generalSettingsDesc: "Paramètres de base de l'application",
+  preferencesDesc: "Personnalisez votre expérience utilisateur",
+  profileDesc: "Gérez vos informations personnelles",
+  profileSettings: "Paramètres de profil",
+  profileSettingsDesc: "Mettez à jour vos informations et préférences",
+  gmailDesc: "Intégration Gmail",
+  gmailIntegration: "Intégration Gmail",
+  gmailIntegrationDesc: "Connectez votre compte Gmail pour synchroniser les emails",
+  connectGmail: "Connecter Gmail",
+  googleDriveDesc: "Intégration Google Drive",
+  googleDriveIntegration: "Intégration Google Drive",
+  googleDriveIntegrationDesc: "Connectez Google Drive pour stocker des documents",
+  connectGoogleDrive: "Connecter Google Drive",
+
+  // Polices et typographie
+  primaryFontDesc: "Police pour les textes généraux et l'interface",
+  secondaryFontDesc: "Police pour le code et les éléments monospace",
+  fontPreview: "Aperçu",
+  previewPrimary: "Texte d'exemple avec police principale",
+  previewPrimaryDesc: "Voici comment apparaîtra le texte général de l'application",
+  previewCode: "Bonjour le monde! 123",
+  currentPrimary: "Police principale actuelle",
+  currentSecondary: "Police de code actuelle",
 
   // Notifications
   notifications: "Notifications",
-  emailNotifications: "Notifications par e-mail",
+  notificationsDesc: "Configurez vos préférences de notification",
+  emailNotifications: "Notifications par email",
   pushNotifications: "Notifications push",
-  soundNotifications: "Notifications sonores",
-
-  // Confidentialité et sécurité
-  privacy: "Confidentialité",
-  security: "Sécurité",
-  permissions: "Permissions",
-
-  // Compte
-  account: "Compte",
-  profile: "Profil",
-  billing: "Facturation",
-  subscription: "Abonnement",
-
-  // Application
-  application: "Application",
-  performance: "Performance",
-  storage: "Stockage",
-  backup: "Sauvegarde",
-
-  // Actions
-  save: "Enregistrer",
-  reset: "Réinitialiser",
-  restore: "Restaurer",
-  export: "Exporter",
-  import: "Importer",
-
-  // États
-  saved: "Enregistré",
-  saving: "Enregistrement...",
-  error: "Erreur",
-  success: "Succès",
 };
+
+export default frConfig;
