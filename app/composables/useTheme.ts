@@ -5,7 +5,7 @@ export const useTheme = () => {
   const currentTheme = ref<Theme>("system");
 
   // Tema efectivo considerando preferencia del sistema
-  const effectiveTheme = computed(() => {
+  const effectiveTheme = computed<"light" | "dark" | "purple">(() => {
     if (currentTheme.value === "system") {
       // En el lado del cliente, detectar preferencia del sistema
       if (import.meta.client) {
@@ -15,13 +15,14 @@ export const useTheme = () => {
       }
       return "light"; // Fallback para SSR
     }
-    return currentTheme.value;
+    // Si es light, dark o purple, retornar directamente
+    return currentTheme.value as "light" | "dark" | "purple";
   });
 
   // Inicializar tema desde localStorage al montar
   onMounted(() => {
     const stored = localStorage.getItem("probo-theme") as Theme;
-    if (stored && ["light", "dark", "system"].includes(stored)) {
+    if (stored && ["light", "dark", "purple", "system"].includes(stored)) {
       currentTheme.value = stored;
     }
 
@@ -41,7 +42,7 @@ export const useTheme = () => {
   });
 
   // Aplicar tema al DOM con debug
-  const applyTheme = (theme: "light" | "dark") => {
+  const applyTheme = (theme: "light" | "dark" | "purple") => {
     if (import.meta.client) {
       const root = document.documentElement;
 
@@ -50,7 +51,7 @@ export const useTheme = () => {
       console.log("Before:", root.className);
 
       // Limpiar clases de tema existentes
-      root.classList.remove("light", "dark");
+      root.classList.remove("light", "dark", "purple");
 
       // Aplicar nueva clase de tema
       root.classList.add(theme);
@@ -58,8 +59,8 @@ export const useTheme = () => {
       // Debug info
       console.log("After:", root.className);
 
-      // Forzar recálculo de CSS
-      root.style.colorScheme = theme;
+      // Forzar recálculo de CSS (purple se comporta como dark)
+      root.style.colorScheme = theme === "light" ? "light" : "dark";
     }
   };
 

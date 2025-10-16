@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { useTheme } from "~/composables/useTheme";
-import { usePalette } from "~/composables/usePalette";
 
 const { currentTheme, setTheme } = useTheme();
-const { currentPalette, setPalette } = usePalette();
 
-const themes = ["light", "dark", "system"] as const;
-const palettes = ["base", "oceanic", "forest", "sunset"] as const;
+const themes = ["light", "dark", "purple", "system"] as const;
 </script>
 
 <template>
@@ -40,28 +37,6 @@ const palettes = ["base", "oceanic", "forest", "sunset"] as const;
             @click="setTheme(theme)"
           >
             {{ theme }}
-          </button>
-        </div>
-      </div>
-
-      <!-- Test de Paletas -->
-      <div class="bg-card border border-border rounded-lg p-6 space-y-4">
-        <h2 class="text-2xl font-semibold text-card-foreground">
-          Palette Selector
-        </h2>
-        <div class="flex gap-4 flex-wrap">
-          <button
-            v-for="palette in palettes"
-            :key="palette"
-            :class="
-              currentPalette === palette
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground'
-            "
-            class="px-4 py-2 rounded-md transition-colors"
-            @click="setPalette(palette)"
-          >
-            {{ palette }}
           </button>
         </div>
       </div>
@@ -167,19 +142,11 @@ const palettes = ["base", "oceanic", "forest", "sunset"] as const;
         <h2 class="text-2xl font-semibold text-card-foreground">
           Current Settings
         </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="p-4 bg-muted rounded-lg">
-            <p class="text-sm text-muted-foreground mb-1">Current Theme:</p>
-            <p class="text-lg font-semibold text-foreground">
-              {{ currentTheme }}
-            </p>
-          </div>
-          <div class="p-4 bg-muted rounded-lg">
-            <p class="text-sm text-muted-foreground mb-1">Current Palette:</p>
-            <p class="text-lg font-semibold text-foreground">
-              {{ currentPalette }}
-            </p>
-          </div>
+        <div class="p-4 bg-muted rounded-lg">
+          <p class="text-sm text-muted-foreground mb-1">Current Theme:</p>
+          <p class="text-lg font-semibold text-foreground">
+            {{ currentTheme }}
+          </p>
         </div>
       </div>
     </div>

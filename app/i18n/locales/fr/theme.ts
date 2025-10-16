@@ -1,10 +1,15 @@
 export const frTheme = {
   // Thèmes
+  title: "Thème",
+  description: "Sélectionnez votre préférence de thème",
   theme: "Thème",
   themes: "Thèmes",
   light: "Clair",
   dark: "Sombre",
+  purple: "Violet",
   system: "Système",
+  active: "Actif",
+  following: "Suivi",
 
   // Couleurs
   colors: "Couleurs",
@@ -38,7 +43,6 @@ export const frTheme = {
 
   // États visuels
   hover: "Survol",
-  active: "Actif",
   focus: "Focus",
   disabled: "Désactivé",
 

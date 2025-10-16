@@ -233,21 +233,6 @@
               </CardContent>
             </Card>
 
-            <!-- Paleta de Colores -->
-            <Card>
-              <CardHeader>
-                <CardTitle class="text-lg">{{
-                  t("config.colorPalette")
-                }}</CardTitle>
-                <CardDescription>{{
-                  t("config.colorPaletteDesc")
-                }}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <PaletteSelector />
-              </CardContent>
-            </Card>
-
             <!-- Idioma -->
             <Card>
               <CardHeader>
@@ -430,7 +415,6 @@ import {
 import { useProboI18n } from "~/composables/useProboI18n";
 import { getIcon } from "~/utils/iconMapper";
 import ThemeSelector from "./ThemeSelector.vue";
-import PaletteSelector from "./PaletteSelector.vue";
 import LanguageSelect from "./LanguageSelect.vue";
 import FontSelector from "./FontSelector.vue";
 

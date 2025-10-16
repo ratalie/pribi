@@ -20,7 +20,14 @@ export interface Permission {
   action: string;
 }
 
-export type Theme = "light" | "dark" | "system";
+/**
+ * Temas disponibles en PROBO
+ * - light: Tema claro (blanco)
+ * - dark: Tema oscuro (negro)
+ * - purple: Tema morado (personalizado)
+ * - system: Sigue la preferencia del sistema operativo (light/dark)
+ */
+export type Theme = "light" | "dark" | "purple" | "system";
 
 export type Language = "es" | "en" | "pt" | "fr" | "de";
 

@@ -1,10 +1,15 @@
 export const deTheme = {
   // Temas
+  title: "Thema",
+  description: "Wählen Sie Ihre Themenpräferenz",
   theme: "Thema",
   themes: "Themen",
   light: "Hell",
   dark: "Dunkel",
+  purple: "Lila",
   system: "System",
+  active: "Aktiv",
+  following: "Folgend",
 
   // Colores
   colors: "Farben",
@@ -38,7 +43,6 @@ export const deTheme = {
 
   // Estados visuales
   hover: "Hover",
-  active: "Aktiv",
   focus: "Fokus",
   disabled: "Deaktiviert",
 
