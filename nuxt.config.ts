@@ -1,4 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
@@ -12,22 +15,18 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@nuxt/scripts",
     "@nuxt/test-utils",
-    "@nuxtjs/tailwindcss",
     "@nuxtjs/i18n",
     "shadcn-nuxt",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
   ],
 
-  // Configuración de CSS para Tailwind 4
+  // CSS global - Tailwind 4
   css: ["~/assets/tailwind.css"],
 
-  // Configuración de Tailwind
-  tailwindcss: {
-    cssPath: "~/assets/tailwind.css",
-    configPath: false, // Deshabilitamos el archivo de config JS, usamos CSS puro
-    exposeConfig: false,
-    viewer: true,
+  // Vite plugins - Tailwind 4 directo
+  vite: {
+    plugins: [tailwindcss()],
   },
 
   i18n: {

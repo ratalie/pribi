@@ -20,7 +20,7 @@
             ? 'border-primary bg-primary/5 shadow-sm'
             : 'border-border hover:border-primary/50 hover:bg-accent/50',
         ]"
-        @click="setTheme('light')"
+        @click="handleThemeClick('light')"
       >
         <Sun
           class="w-8 h-8"
@@ -64,7 +64,7 @@
             ? 'border-primary bg-primary/5 shadow-sm'
             : 'border-border hover:border-primary/50 hover:bg-accent/50',
         ]"
-        @click="setTheme('dark')"
+        @click="handleThemeClick('dark')"
       >
         <Moon
           class="w-8 h-8"
@@ -107,7 +107,7 @@
             ? 'border-primary bg-primary/5 shadow-sm'
             : 'border-border hover:border-primary/50 hover:bg-accent/50',
         ]"
-        @click="setTheme('purple')"
+        @click="handleThemeClick('purple')"
       >
         <Palette
           class="w-8 h-8"
@@ -152,7 +152,7 @@
             ? 'border-primary bg-primary/5 shadow-sm'
             : 'border-border hover:border-primary/50 hover:bg-accent/50',
         ]"
-        @click="setTheme('system')"
+        @click="handleThemeClick('system')"
       >
         <Monitor
           class="w-8 h-8"
@@ -214,4 +214,20 @@ import { useProboI18n } from "~/composables/useProboI18n";
 // Composables
 const { currentTheme, effectiveTheme, setTheme } = useTheme();
 const { t } = useProboI18n();
+
+// Logging para debug
+const handleThemeClick = (theme: "light" | "dark" | "purple" | "system") => {
+  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  console.log("🖱️ [ThemeSelector] BOTÓN CLICKEADO");
+  console.log("  📝 Tema clickeado:", theme);
+  console.log("  📊 Estado ANTES:");
+  console.log("    - currentTheme.value:", currentTheme.value);
+  console.log("    - effectiveTheme.value:", effectiveTheme.value);
+  console.log("  🎯 Llamando setTheme...");
+  setTheme(theme);
+  console.log("  📊 Estado DESPUÉS:");
+  console.log("    - currentTheme.value:", currentTheme.value);
+  console.log("    - effectiveTheme.value:", effectiveTheme.value);
+  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+};
 </script>

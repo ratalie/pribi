@@ -1,57 +1,46 @@
 @import "tailwindcss";
 
 /* ============================================
-   TAILWIND 4 - @theme (Light Mode Base)
-   Variables definidas directamente en @theme
+   CUSTOM VARIANTS - Definir PRIMERO
+   Tailwind 4 requiere estos para dark mode manual
    ============================================ */
+@custom-variant light (&:where(.light, .light *));
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant purple (&:where(.purple, .purple *));
 
-@theme {
+/* ============================================
+   THEME INLINE - Variables Base (Light Mode)
+   Tailwind 4 - Usar 'inline' para acceso directo
+   ============================================ */
+@theme inline {
   /* === RADII === */
   --radius-sm: calc(0.625rem - 4px);
   --radius-md: calc(0.625rem - 2px);
   --radius-lg: 0.625rem;
   --radius-xl: calc(0.625rem + 4px);
 
-  /* ============================================
-     PALETA BASE (Purple/Slate) - LIGHT MODE
-     Valores directos en OKLCH
-     ============================================ */
-
-  /* Core Colors */
-  --color-background: #ffffff; /* white */
-  --color-foreground: #1e293b; /* slate-900 */
-  --color-card: #ffffff;
-  --color-card-foreground: #1e293b;
-  --color-popover: #ffffff;
-  --color-popover-foreground: #1e293b;
-
-  /* Brand Colors */
-  --color-primary: oklch(0.21 0.034 264.665); /* slate-700 */
-  --color-primary-foreground: oklch(0.985 0.002 247.839); /* slate-50 */
-  --color-secondary: oklch(0.967 0.003 264.542); /* slate-100 */
+  /* === LIGHT MODE COLORS (Base) === */
+  --color-background: oklch(1 0 0); /* white */
+  --color-foreground: oklch(0.21 0.034 264.665); /* slate-900 */
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.21 0.034 264.665);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.21 0.034 264.665);
+  --color-primary: oklch(0.21 0.034 264.665);
+  --color-primary-foreground: oklch(0.985 0.002 247.839);
+  --color-secondary: oklch(0.967 0.003 264.542);
   --color-secondary-foreground: oklch(0.21 0.034 264.665);
-
-  /* UI Colors */
   --color-muted: oklch(0.967 0.003 264.542);
   --color-muted-foreground: oklch(0.551 0.027 264.364);
   --color-accent: oklch(0.967 0.003 264.542);
   --color-accent-foreground: oklch(0.21 0.034 264.665);
-  --color-destructive: oklch(0.577 0.245 27.325); /* red */
+  --color-destructive: oklch(0.577 0.245 27.325);
   --color-destructive-foreground: oklch(0.985 0.002 247.839);
-
-  /* Borders & Inputs */
-  --color-border: oklch(0.928 0.006 264.531); /* slate-200 */
+  --color-border: oklch(0.928 0.006 264.531);
   --color-input: oklch(0.928 0.006 264.531);
-  --color-ring: oklch(0.707 0.022 261.325); /* slate-500 */
+  --color-ring: oklch(0.707 0.022 261.325);
 
-  /* Charts */
-  --color-chart-1: oklch(0.646 0.222 41.116);
-  --color-chart-2: oklch(0.6 0.118 184.704);
-  --color-chart-3: oklch(0.398 0.07 227.392);
-  --color-chart-4: oklch(0.828 0.189 84.429);
-  --color-chart-5: oklch(0.769 0.188 70.08);
-
-  /* Sidebar */
+  /* === SIDEBAR (Light) === */
   --color-sidebar: oklch(0.985 0.002 247.839);
   --color-sidebar-foreground: oklch(0.13 0.028 261.692);
   --color-sidebar-primary: oklch(0.21 0.034 264.665);
@@ -61,75 +50,62 @@
   --color-sidebar-border: oklch(0.928 0.006 264.531);
   --color-sidebar-ring: oklch(0.707 0.022 261.325);
 
+  /* === CHARTS === */
+  --color-chart-1: oklch(0.646 0.222 41.116);
+  --color-chart-2: oklch(0.6 0.118 184.704);
+  --color-chart-3: oklch(0.398 0.07 227.392);
+  --color-chart-4: oklch(0.828 0.189 84.429);
+  --color-chart-5: oklch(0.769 0.188 70.08);
+
   /* === ANIMATIONS === */
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
-
-  @keyframes accordion-down {
-    from {
-      height: 0;
-    }
-    to {
-      height: var(--reka-accordion-content-height);
-    }
-  }
-
-  @keyframes accordion-up {
-    from {
-      height: var(--reka-accordion-content-height);
-    }
-    to {
-      height: 0;
-    }
-  }
 }
 
 /* ============================================
-   DARK MODE - Media Query
+   LIGHT MODE - Clase .light (explícita)
+   Mismo que el @theme pero aplicado con clase
    ============================================ */
-@media (prefers-color-scheme: dark) {
-  @theme {
-    --color-background: oklch(0.13 0.028 261.692);
-    --color-foreground: oklch(0.985 0.002 247.839);
-    --color-card: oklch(0.13 0.028 261.692);
-    --color-card-foreground: oklch(0.985 0.002 247.839);
-    --color-popover: oklch(0.13 0.028 261.692);
-    --color-popover-foreground: oklch(0.985 0.002 247.839);
-    --color-primary: oklch(0.985 0.002 247.839);
-    --color-primary-foreground: oklch(0.21 0.034 264.665);
-    --color-secondary: oklch(0.278 0.033 256.848);
-    --color-secondary-foreground: oklch(0.985 0.002 247.839);
-    --color-muted: oklch(0.278 0.033 256.848);
-    --color-muted-foreground: oklch(0.707 0.022 261.325);
-    --color-accent: oklch(0.278 0.033 256.848);
-    --color-accent-foreground: oklch(0.985 0.002 247.839);
-    --color-destructive: oklch(0.396 0.141 25.723);
-    --color-destructive-foreground: oklch(0.637 0.237 25.331);
-    --color-border: oklch(0.278 0.033 256.848);
-    --color-input: oklch(0.278 0.033 256.848);
-    --color-ring: oklch(0.446 0.03 256.802);
-    --color-chart-1: oklch(0.488 0.243 264.376);
-    --color-chart-2: oklch(0.696 0.17 162.48);
-    --color-chart-3: oklch(0.769 0.188 70.08);
-    --color-chart-4: oklch(0.627 0.265 303.9);
-    --color-chart-5: oklch(0.645 0.246 16.439);
-    --color-sidebar: oklch(0.21 0.034 264.665);
-    --color-sidebar-foreground: oklch(0.985 0.002 247.839);
-    --color-sidebar-primary: oklch(0.488 0.243 264.376);
-    --color-sidebar-primary-foreground: oklch(0.985 0.002 247.839);
-    --color-sidebar-accent: oklch(0.278 0.033 256.848);
-    --color-sidebar-accent-foreground: oklch(0.985 0.002 247.839);
-    --color-sidebar-border: oklch(0.278 0.033 256.848);
-    --color-sidebar-ring: oklch(0.446 0.03 256.802);
-  }
+html.light {
+  --color-background: oklch(1 0 0);
+  --color-foreground: oklch(0.21 0.034 264.665);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.21 0.034 264.665);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.21 0.034 264.665);
+  --color-primary: oklch(0.21 0.034 264.665);
+  --color-primary-foreground: oklch(0.985 0.002 247.839);
+  --color-secondary: oklch(0.967 0.003 264.542);
+  --color-secondary-foreground: oklch(0.21 0.034 264.665);
+  --color-muted: oklch(0.967 0.003 264.542);
+  --color-muted-foreground: oklch(0.551 0.027 264.364);
+  --color-accent: oklch(0.967 0.003 264.542);
+  --color-accent-foreground: oklch(0.21 0.034 264.665);
+  --color-destructive: oklch(0.577 0.245 27.325);
+  --color-destructive-foreground: oklch(0.985 0.002 247.839);
+  --color-border: oklch(0.928 0.006 264.531);
+  --color-input: oklch(0.928 0.006 264.531);
+  --color-ring: oklch(0.707 0.022 261.325);
+  --color-chart-1: oklch(0.646 0.222 41.116);
+  --color-chart-2: oklch(0.6 0.118 184.704);
+  --color-chart-3: oklch(0.398 0.07 227.392);
+  --color-chart-4: oklch(0.828 0.189 84.429);
+  --color-chart-5: oklch(0.769 0.188 70.08);
+  --color-sidebar: oklch(0.985 0.002 247.839);
+  --color-sidebar-foreground: oklch(0.13 0.028 261.692);
+  --color-sidebar-primary: oklch(0.21 0.034 264.665);
+  --color-sidebar-primary-foreground: oklch(0.985 0.002 247.839);
+  --color-sidebar-accent: oklch(0.967 0.003 264.542);
+  --color-sidebar-accent-foreground: oklch(0.21 0.034 264.665);
+  --color-sidebar-border: oklch(0.928 0.006 264.531);
+  --color-sidebar-ring: oklch(0.707 0.022 261.325);
 }
 
 /* ============================================
-   DARK MODE - Clase .dark (Custom Variant)
+   DARK MODE - Clase .dark
+   FUERA de @theme según documentación Tailwind 4
    ============================================ */
-@custom-variant dark (&:is(.dark *));
-
-:root .dark {
+html.dark {
   --color-background: oklch(0.13 0.028 261.692);
   --color-foreground: oklch(0.985 0.002 247.839);
   --color-card: oklch(0.13 0.028 261.692);
@@ -166,55 +142,33 @@
 
 /* ============================================
    PURPLE MODE - Tema morado personalizado
+   FUERA de @theme según documentación Tailwind 4
    ============================================ */
-@custom-variant purple (&:is(.purple *));
-
-:root .purple {
-  /* Fondo oscuro con tinte morado */
+html.purple {
   --color-background: oklch(0.15 0.04 285);
   --color-foreground: oklch(0.98 0.005 285);
-
-  /* Cards con tinte morado más sutil */
   --color-card: oklch(0.18 0.03 285);
   --color-card-foreground: oklch(0.98 0.005 285);
-
-  /* Popovers */
   --color-popover: oklch(0.18 0.03 285);
   --color-popover-foreground: oklch(0.98 0.005 285);
-
-  /* Primary en tonos morados vibrantes */
   --color-primary: oklch(0.65 0.25 285);
   --color-primary-foreground: oklch(1 0 0);
-
-  /* Secondary con morado más sutil */
   --color-secondary: oklch(0.25 0.08 285);
   --color-secondary-foreground: oklch(0.95 0.01 285);
-
-  /* Muted con tinte morado */
   --color-muted: oklch(0.25 0.06 285);
   --color-muted-foreground: oklch(0.65 0.08 285);
-
-  /* Accent morado brillante */
   --color-accent: oklch(0.35 0.12 285);
   --color-accent-foreground: oklch(0.95 0.01 285);
-
-  /* Destructive igual que dark */
   --color-destructive: oklch(0.396 0.141 25.723);
   --color-destructive-foreground: oklch(0.637 0.237 25.331);
-
-  /* Borders con tinte morado */
   --color-border: oklch(0.3 0.06 285);
   --color-input: oklch(0.3 0.06 285);
   --color-ring: oklch(0.65 0.25 285);
-
-  /* Charts con tonos morados */
   --color-chart-1: oklch(0.65 0.25 285);
   --color-chart-2: oklch(0.6 0.2 300);
   --color-chart-3: oklch(0.55 0.18 270);
   --color-chart-4: oklch(0.7 0.22 290);
   --color-chart-5: oklch(0.5 0.15 280);
-
-  /* Sidebar con morado */
   --color-sidebar: oklch(0.18 0.03 285);
   --color-sidebar-foreground: oklch(0.98 0.005 285);
   --color-sidebar-primary: oklch(0.65 0.25 285);
@@ -223,6 +177,27 @@
   --color-sidebar-accent-foreground: oklch(0.95 0.01 285);
   --color-sidebar-border: oklch(0.3 0.06 285);
   --color-sidebar-ring: oklch(0.65 0.25 285);
+}
+
+/* ============================================
+   KEYFRAMES - Definir fuera de @theme
+   ============================================ */
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--reka-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--reka-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
 }
 
 /* ============================================
