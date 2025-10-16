@@ -19,6 +19,17 @@ export default defineNuxtConfig({
     "pinia-plugin-persistedstate/nuxt",
   ],
 
+  // Configuración de CSS para Tailwind 4
+  css: ["~/assets/tailwind.css"],
+
+  // Configuración de Tailwind
+  tailwindcss: {
+    cssPath: "~/assets/tailwind.css",
+    configPath: false, // Deshabilitamos el archivo de config JS, usamos CSS puro
+    exposeConfig: false,
+    viewer: true,
+  },
+
   i18n: {
     defaultLocale: "es",
     strategy: "no_prefix",

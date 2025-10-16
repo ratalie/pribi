@@ -1,61 +1,65 @@
 @import "tailwindcss";
-@import "tw-animate-css";
-
-@custom-variant dark (&:is(.dark *));
 
 /* ============================================
-   TAILWIND 4 - SISTEMA DE VARIABLES CSS
-   Arquitectura: 4 Paletas × 2 Modos = 8 Temas
+   TAILWIND 4 - @theme (Light Mode Base)
+   Variables definidas directamente en @theme
    ============================================ */
 
-@theme inline {
+@theme {
   /* === RADII === */
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: calc(0.625rem - 4px);
+  --radius-md: calc(0.625rem - 2px);
+  --radius-lg: 0.625rem;
+  --radius-xl: calc(0.625rem + 4px);
 
   /* ============================================
      PALETA BASE (Purple/Slate) - LIGHT MODE
-     Tema predeterminado - Profesional y corporativo
+     Valores directos en OKLCH
      ============================================ */
 
   /* Core Colors */
-  --color-background: #ffffff;
-  --color-foreground: #0f172a;
+  --color-background: #ffffff; /* white */
+  --color-foreground: #1e293b; /* slate-900 */
   --color-card: #ffffff;
-  --color-card-foreground: #0f172a;
+  --color-card-foreground: #1e293b;
   --color-popover: #ffffff;
-  --color-popover-foreground: #0f172a;
+  --color-popover-foreground: #1e293b;
 
   /* Brand Colors */
-  --color-primary: #334155; /* slate-700 */
-  --color-primary-foreground: #f8fafc; /* slate-50 */
-  --color-secondary: #f1f5f9; /* slate-100 */
-  --color-secondary-foreground: #334155;
+  --color-primary: oklch(0.21 0.034 264.665); /* slate-700 */
+  --color-primary-foreground: oklch(0.985 0.002 247.839); /* slate-50 */
+  --color-secondary: oklch(0.967 0.003 264.542); /* slate-100 */
+  --color-secondary-foreground: oklch(0.21 0.034 264.665);
 
   /* UI Colors */
-  --color-muted: #f1f5f9;
-  --color-muted-foreground: #64748b;
-  --color-accent: #f1f5f9;
-  --color-accent-foreground: #334155;
-  --color-destructive: #dc2626; /* red-600 */
-  --color-destructive-foreground: #f8fafc;
+  --color-muted: oklch(0.967 0.003 264.542);
+  --color-muted-foreground: oklch(0.551 0.027 264.364);
+  --color-accent: oklch(0.967 0.003 264.542);
+  --color-accent-foreground: oklch(0.21 0.034 264.665);
+  --color-destructive: oklch(0.577 0.245 27.325); /* red */
+  --color-destructive-foreground: oklch(0.985 0.002 247.839);
 
   /* Borders & Inputs */
-  --color-border: #e2e8f0; /* slate-200 */
-  --color-input: #e2e8f0;
-  --color-ring: #64748b; /* slate-500 */
+  --color-border: oklch(0.928 0.006 264.531); /* slate-200 */
+  --color-input: oklch(0.928 0.006 264.531);
+  --color-ring: oklch(0.707 0.022 261.325); /* slate-500 */
+
+  /* Charts */
+  --color-chart-1: oklch(0.646 0.222 41.116);
+  --color-chart-2: oklch(0.6 0.118 184.704);
+  --color-chart-3: oklch(0.398 0.07 227.392);
+  --color-chart-4: oklch(0.828 0.189 84.429);
+  --color-chart-5: oklch(0.769 0.188 70.08);
 
   /* Sidebar */
-  --color-sidebar: #f8fafc;
-  --color-sidebar-foreground: #0f172a;
-  --color-sidebar-primary: #334155;
-  --color-sidebar-primary-foreground: #f8fafc;
-  --color-sidebar-accent: #f1f5f9;
-  --color-sidebar-accent-foreground: #334155;
-  --color-sidebar-border: #e2e8f0;
-  --color-sidebar-ring: #64748b;
+  --color-sidebar: oklch(0.985 0.002 247.839);
+  --color-sidebar-foreground: oklch(0.13 0.028 261.692);
+  --color-sidebar-primary: oklch(0.21 0.034 264.665);
+  --color-sidebar-primary-foreground: oklch(0.985 0.002 247.839);
+  --color-sidebar-accent: oklch(0.967 0.003 264.542);
+  --color-sidebar-accent-foreground: oklch(0.21 0.034 264.665);
+  --color-sidebar-border: oklch(0.928 0.006 264.531);
+  --color-sidebar-ring: oklch(0.707 0.022 261.325);
 
   /* === ANIMATIONS === */
   --animate-accordion-down: accordion-down 0.2s ease-out;
@@ -81,136 +85,158 @@
 }
 
 /* ============================================
-   DARK MODE - PALETA BASE
+   DARK MODE - Media Query
    ============================================ */
-.dark {
-  /* Core Colors */
-  --color-background: #0f172a; /* slate-900 */
-  --color-foreground: #f8fafc; /* slate-50 */
-  --color-card: #1e293b; /* slate-800 */
-  --color-card-foreground: #f8fafc;
-  --color-popover: #1e293b;
-  --color-popover-foreground: #f8fafc;
-
-  /* Brand Colors */
-  --color-primary: #60a5fa; /* blue-400 */
-  --color-primary-foreground: #0f172a;
-  --color-secondary: #334155; /* slate-700 */
-  --color-secondary-foreground: #f8fafc;
-
-  /* UI Colors */
-  --color-muted: #334155;
-  --color-muted-foreground: #94a3b8; /* slate-400 */
-  --color-accent: #334155;
-  --color-accent-foreground: #f8fafc;
-  --color-destructive: #ef4444; /* red-500 */
-  --color-destructive-foreground: #0f172a;
-
-  /* Borders & Inputs */
-  --color-border: #334155;
-  --color-input: #334155;
-  --color-ring: #60a5fa;
-
-  /* Sidebar */
-  --color-sidebar: #1e293b;
-  --color-sidebar-foreground: #f8fafc;
-  --color-sidebar-primary: #60a5fa;
-  --color-sidebar-primary-foreground: #0f172a;
-  --color-sidebar-accent: #334155;
-  --color-sidebar-accent-foreground: #f8fafc;
-  --color-sidebar-border: #334155;
-  --color-sidebar-ring: #60a5fa;
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-background: oklch(0.13 0.028 261.692);
+    --color-foreground: oklch(0.985 0.002 247.839);
+    --color-card: oklch(0.13 0.028 261.692);
+    --color-card-foreground: oklch(0.985 0.002 247.839);
+    --color-popover: oklch(0.13 0.028 261.692);
+    --color-popover-foreground: oklch(0.985 0.002 247.839);
+    --color-primary: oklch(0.985 0.002 247.839);
+    --color-primary-foreground: oklch(0.21 0.034 264.665);
+    --color-secondary: oklch(0.278 0.033 256.848);
+    --color-secondary-foreground: oklch(0.985 0.002 247.839);
+    --color-muted: oklch(0.278 0.033 256.848);
+    --color-muted-foreground: oklch(0.707 0.022 261.325);
+    --color-accent: oklch(0.278 0.033 256.848);
+    --color-accent-foreground: oklch(0.985 0.002 247.839);
+    --color-destructive: oklch(0.396 0.141 25.723);
+    --color-destructive-foreground: oklch(0.637 0.237 25.331);
+    --color-border: oklch(0.278 0.033 256.848);
+    --color-input: oklch(0.278 0.033 256.848);
+    --color-ring: oklch(0.446 0.03 256.802);
+    --color-chart-1: oklch(0.488 0.243 264.376);
+    --color-chart-2: oklch(0.696 0.17 162.48);
+    --color-chart-3: oklch(0.769 0.188 70.08);
+    --color-chart-4: oklch(0.627 0.265 303.9);
+    --color-chart-5: oklch(0.645 0.246 16.439);
+    --color-sidebar: oklch(0.21 0.034 264.665);
+    --color-sidebar-foreground: oklch(0.985 0.002 247.839);
+    --color-sidebar-primary: oklch(0.488 0.243 264.376);
+    --color-sidebar-primary-foreground: oklch(0.985 0.002 247.839);
+    --color-sidebar-accent: oklch(0.278 0.033 256.848);
+    --color-sidebar-accent-foreground: oklch(0.985 0.002 247.839);
+    --color-sidebar-border: oklch(0.278 0.033 256.848);
+    --color-sidebar-ring: oklch(0.446 0.03 256.802);
+  }
 }
 
 /* ============================================
-   PALETA OCEANIC (Blue/Teal) - LIGHT MODE
-   Fresco, tecnológico, confiable
+   DARK MODE - Clase .dark (Custom Variant)
+   ============================================ */
+@custom-variant dark (&:is(.dark *));
+
+:root .dark {
+  --color-background: oklch(0.13 0.028 261.692);
+  --color-foreground: oklch(0.985 0.002 247.839);
+  --color-card: oklch(0.13 0.028 261.692);
+  --color-card-foreground: oklch(0.985 0.002 247.839);
+  --color-popover: oklch(0.13 0.028 261.692);
+  --color-popover-foreground: oklch(0.985 0.002 247.839);
+  --color-primary: oklch(0.985 0.002 247.839);
+  --color-primary-foreground: oklch(0.21 0.034 264.665);
+  --color-secondary: oklch(0.278 0.033 256.848);
+  --color-secondary-foreground: oklch(0.985 0.002 247.839);
+  --color-muted: oklch(0.278 0.033 256.848);
+  --color-muted-foreground: oklch(0.707 0.022 261.325);
+  --color-accent: oklch(0.278 0.033 256.848);
+  --color-accent-foreground: oklch(0.985 0.002 247.839);
+  --color-destructive: oklch(0.396 0.141 25.723);
+  --color-destructive-foreground: oklch(0.637 0.237 25.331);
+  --color-border: oklch(0.278 0.033 256.848);
+  --color-input: oklch(0.278 0.033 256.848);
+  --color-ring: oklch(0.446 0.03 256.802);
+  --color-chart-1: oklch(0.488 0.243 264.376);
+  --color-chart-2: oklch(0.696 0.17 162.48);
+  --color-chart-3: oklch(0.769 0.188 70.08);
+  --color-chart-4: oklch(0.627 0.265 303.9);
+  --color-chart-5: oklch(0.645 0.246 16.439);
+  --color-sidebar: oklch(0.21 0.034 264.665);
+  --color-sidebar-foreground: oklch(0.985 0.002 247.839);
+  --color-sidebar-primary: oklch(0.488 0.243 264.376);
+  --color-sidebar-primary-foreground: oklch(0.985 0.002 247.839);
+  --color-sidebar-accent: oklch(0.278 0.033 256.848);
+  --color-sidebar-accent-foreground: oklch(0.985 0.002 247.839);
+  --color-sidebar-border: oklch(0.278 0.033 256.848);
+  --color-sidebar-ring: oklch(0.446 0.03 256.802);
+}
+
+/* ============================================
+   PALETA OCEANIC (Blue/Sky)
    ============================================ */
 html[data-palette="oceanic"] {
-  --color-primary: #0ea5e9; /* sky-500 */
-  --color-primary-foreground: #ffffff;
-  --color-accent: #e0f2fe; /* sky-100 */
-  --color-accent-foreground: #075985; /* sky-900 */
-  --color-ring: #0ea5e9;
-
-  --color-sidebar-primary: #0ea5e9;
-  --color-sidebar-accent: #e0f2fe;
-  --color-sidebar-ring: #0ea5e9;
+  --color-primary: oklch(0.647 0.161 232.661);
+  --color-primary-foreground: oklch(1 0 0);
+  --color-accent: oklch(0.957 0.028 232.924);
+  --color-accent-foreground: oklch(0.324 0.078 232.661);
+  --color-ring: oklch(0.647 0.161 232.661);
+  --color-sidebar-primary: oklch(0.647 0.161 232.661);
+  --color-sidebar-accent: oklch(0.957 0.028 232.924);
+  --color-sidebar-ring: oklch(0.647 0.161 232.661);
 }
 
 html[data-palette="oceanic"].dark {
-  --color-primary: #38bdf8; /* sky-400 */
-  --color-primary-foreground: #0c4a6e; /* sky-950 */
-  --color-accent: #0c4a6e;
-  --color-accent-foreground: #e0f2fe;
-  --color-ring: #38bdf8;
-
-  --color-sidebar-primary: #38bdf8;
-  --color-sidebar-accent: #0c4a6e;
-  --color-sidebar-ring: #38bdf8;
+  --color-primary: oklch(0.767 0.155 232.924);
+  --color-primary-foreground: oklch(0.221 0.041 232.661);
+  --color-accent: oklch(0.221 0.041 232.661);
+  --color-accent-foreground: oklch(0.957 0.028 232.924);
+  --color-ring: oklch(0.767 0.155 232.924);
+  --color-sidebar-primary: oklch(0.767 0.155 232.924);
+  --color-sidebar-accent: oklch(0.221 0.041 232.661);
+  --color-sidebar-ring: oklch(0.767 0.155 232.924);
 }
 
 /* ============================================
-   PALETA FOREST (Green/Emerald) - LIGHT MODE
-   Natural, crecimiento, estabilidad
+   PALETA FOREST (Green/Emerald)
    ============================================ */
 html[data-palette="forest"] {
-  --color-primary: #10b981; /* emerald-500 */
-  --color-primary-foreground: #ffffff;
-  --color-accent: #d1fae5; /* emerald-100 */
-  --color-accent-foreground: #065f46; /* emerald-800 */
-  --color-ring: #10b981;
-
-  --color-sidebar-primary: #10b981;
-  --color-sidebar-accent: #d1fae5;
-  --color-sidebar-ring: #10b981;
+  --color-primary: oklch(0.655 0.172 162.48);
+  --color-primary-foreground: oklch(1 0 0);
+  --color-accent: oklch(0.948 0.074 162.48);
+  --color-accent-foreground: oklch(0.333 0.101 162.48);
+  --color-ring: oklch(0.655 0.172 162.48);
+  --color-sidebar-primary: oklch(0.655 0.172 162.48);
+  --color-sidebar-accent: oklch(0.948 0.074 162.48);
+  --color-sidebar-ring: oklch(0.655 0.172 162.48);
 }
 
 html[data-palette="forest"].dark {
-  --color-primary: #34d399; /* emerald-400 */
-  --color-primary-foreground: #064e3b; /* emerald-950 */
-  --color-accent: #064e3b;
-  --color-accent-foreground: #d1fae5;
-  --color-ring: #34d399;
-
-  --color-sidebar-primary: #34d399;
-  --color-sidebar-accent: #064e3b;
-  --color-sidebar-ring: #34d399;
+  --color-primary: oklch(0.765 0.159 162.48);
+  --color-primary-foreground: oklch(0.227 0.065 162.48);
+  --color-accent: oklch(0.227 0.065 162.48);
+  --color-accent-foreground: oklch(0.948 0.074 162.48);
+  --color-ring: oklch(0.765 0.159 162.48);
+  --color-sidebar-primary: oklch(0.765 0.159 162.48);
+  --color-sidebar-accent: oklch(0.227 0.065 162.48);
+  --color-sidebar-ring: oklch(0.765 0.159 162.48);
 }
 
 /* ============================================
-   PALETA SUNSET (Orange/Pink) - LIGHT MODE
-   Energético, creativo, moderno
+   PALETA SUNSET (Orange)
    ============================================ */
 html[data-palette="sunset"] {
-  --color-primary: #f97316; /* orange-500 */
-  --color-primary-foreground: #ffffff;
-  --color-accent: #fed7aa; /* orange-200 */
-  --color-accent-foreground: #9a3412; /* orange-800 */
-  --color-ring: #f97316;
-
-  --color-sidebar-primary: #f97316;
-  --color-sidebar-accent: #fed7aa;
-  --color-sidebar-ring: #f97316;
+  --color-primary: oklch(0.679 0.192 41.116);
+  --color-primary-foreground: oklch(1 0 0);
+  --color-accent: oklch(0.892 0.091 70.08);
+  --color-accent-foreground: oklch(0.394 0.143 41.116);
+  --color-ring: oklch(0.679 0.192 41.116);
+  --color-sidebar-primary: oklch(0.679 0.192 41.116);
+  --color-sidebar-accent: oklch(0.892 0.091 70.08);
+  --color-sidebar-ring: oklch(0.679 0.192 41.116);
 }
 
 html[data-palette="sunset"].dark {
-  --color-primary: #fb923c; /* orange-400 */
-  --color-primary-foreground: #7c2d12; /* orange-950 */
-  --color-accent: #7c2d12;
-  --color-accent-foreground: #fed7aa;
-  --color-ring: #fb923c;
-
-  --color-sidebar-primary: #fb923c;
-  --color-sidebar-accent: #7c2d12;
-  --color-sidebar-ring: #fb923c;
-}
-
-/* ============================================
-   VARIABLE DE RADIUS GLOBAL
-   ============================================ */
-:root {
-  --radius: 0.625rem;
+  --color-primary: oklch(0.738 0.17 41.116);
+  --color-primary-foreground: oklch(0.267 0.088 41.116);
+  --color-accent: oklch(0.267 0.088 41.116);
+  --color-accent-foreground: oklch(0.892 0.091 70.08);
+  --color-ring: oklch(0.738 0.17 41.116);
+  --color-sidebar-primary: oklch(0.738 0.17 41.116);
+  --color-sidebar-accent: oklch(0.267 0.088 41.116);
+  --color-sidebar-ring: oklch(0.738 0.17 41.116);
 }
 
 /* ============================================
