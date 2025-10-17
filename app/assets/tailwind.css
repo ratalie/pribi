@@ -43,7 +43,7 @@
   --color-border: var(--color-border);
   --color-input: var(--color-input);
   --color-ring: var(--color-ring);
-  
+
   --color-sidebar: var(--color-sidebar);
   --color-sidebar-foreground: var(--color-sidebar-foreground);
   --color-sidebar-primary: var(--color-sidebar-primary);
@@ -52,7 +52,7 @@
   --color-sidebar-accent-foreground: var(--color-sidebar-accent-foreground);
   --color-sidebar-border: var(--color-sidebar-border);
   --color-sidebar-ring: var(--color-sidebar-ring);
-  
+
   --color-chart-1: var(--color-chart-1);
   --color-chart-2: var(--color-chart-2);
   --color-chart-3: var(--color-chart-3);
