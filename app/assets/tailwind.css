@@ -4,21 +4,31 @@
    CUSTOM VARIANTS - Definir PRIMERO
    Tailwind 4 requiere estos para dark mode manual
    ============================================ */
-@custom-variant light (&:where(.light, .light *));
-@custom-variant dark (&:where(.dark, .dark *));
-@custom-variant purple (&:where(.purple, .purple *));
+@custom-variant light (.light &);
+@custom-variant dark (.dark &);
+@custom-variant purple (.purple &);
 
 /* ============================================
-   THEME INLINE - Variables Base (Light Mode)
-   Tailwind 4 - Usar 'inline' para acceso directo
+   @THEME - SOLO para configuración de Tailwind
+   NO poner variables de color aquí
    ============================================ */
-@theme inline {
+@theme {
   /* === RADII === */
   --radius-sm: calc(0.625rem - 4px);
   --radius-md: calc(0.625rem - 2px);
   --radius-lg: 0.625rem;
   --radius-xl: calc(0.625rem + 4px);
 
+  /* === ANIMATIONS === */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+}
+
+/* ============================================
+   :root - Variables CSS Base (Light Mode por defecto)
+   Estas SÍ son accesibles con var()
+   ============================================ */
+:root {
   /* === LIGHT MODE COLORS (Base) === */
   --color-background: oklch(1 0 0); /* white */
   --color-foreground: oklch(0.21 0.034 264.665); /* slate-900 */
@@ -56,54 +66,11 @@
   --color-chart-3: oklch(0.398 0.07 227.392);
   --color-chart-4: oklch(0.828 0.189 84.429);
   --color-chart-5: oklch(0.769 0.188 70.08);
-
-  /* === ANIMATIONS === */
-  --animate-accordion-down: accordion-down 0.2s ease-out;
-  --animate-accordion-up: accordion-up 0.2s ease-out;
-}
-
-/* ============================================
-   LIGHT MODE - Clase .light (explícita)
-   Mismo que el @theme pero aplicado con clase
-   ============================================ */
-html.light {
-  --color-background: oklch(1 0 0);
-  --color-foreground: oklch(0.21 0.034 264.665);
-  --color-card: oklch(1 0 0);
-  --color-card-foreground: oklch(0.21 0.034 264.665);
-  --color-popover: oklch(1 0 0);
-  --color-popover-foreground: oklch(0.21 0.034 264.665);
-  --color-primary: oklch(0.21 0.034 264.665);
-  --color-primary-foreground: oklch(0.985 0.002 247.839);
-  --color-secondary: oklch(0.967 0.003 264.542);
-  --color-secondary-foreground: oklch(0.21 0.034 264.665);
-  --color-muted: oklch(0.967 0.003 264.542);
-  --color-muted-foreground: oklch(0.551 0.027 264.364);
-  --color-accent: oklch(0.967 0.003 264.542);
-  --color-accent-foreground: oklch(0.21 0.034 264.665);
-  --color-destructive: oklch(0.577 0.245 27.325);
-  --color-destructive-foreground: oklch(0.985 0.002 247.839);
-  --color-border: oklch(0.928 0.006 264.531);
-  --color-input: oklch(0.928 0.006 264.531);
-  --color-ring: oklch(0.707 0.022 261.325);
-  --color-chart-1: oklch(0.646 0.222 41.116);
-  --color-chart-2: oklch(0.6 0.118 184.704);
-  --color-chart-3: oklch(0.398 0.07 227.392);
-  --color-chart-4: oklch(0.828 0.189 84.429);
-  --color-chart-5: oklch(0.769 0.188 70.08);
-  --color-sidebar: oklch(0.985 0.002 247.839);
-  --color-sidebar-foreground: oklch(0.13 0.028 261.692);
-  --color-sidebar-primary: oklch(0.21 0.034 264.665);
-  --color-sidebar-primary-foreground: oklch(0.985 0.002 247.839);
-  --color-sidebar-accent: oklch(0.967 0.003 264.542);
-  --color-sidebar-accent-foreground: oklch(0.21 0.034 264.665);
-  --color-sidebar-border: oklch(0.928 0.006 264.531);
-  --color-sidebar-ring: oklch(0.707 0.022 261.325);
 }
 
 /* ============================================
    DARK MODE - Clase .dark
-   FUERA de @theme según documentación Tailwind 4
+   Override de :root cuando html tiene clase .dark
    ============================================ */
 html.dark {
   --color-background: oklch(0.13 0.028 261.692);
@@ -205,15 +172,17 @@ html.purple {
    ============================================ */
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--color-border);
+    outline-color: oklch(from var(--color-ring) l c h / 0.5);
   }
 
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
   }
 
   html {
-    @apply bg-background;
+    background-color: var(--color-background);
   }
 }
 
@@ -233,16 +202,19 @@ html.purple {
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    @apply bg-background rounded;
+    background-color: var(--color-background);
+    border-radius: 0.25rem;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-muted rounded border border-background;
+    background-color: var(--color-muted);
+    border-radius: 0.25rem;
+    border: 1px solid var(--color-background);
     transition: background-color 0.2s ease;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    @apply bg-accent;
+    background-color: var(--color-accent);
   }
 
   /* Fuentes */
