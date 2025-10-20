@@ -7,7 +7,7 @@
       size="sm"
       @click="toggleSidebar"
     >
-      <Menu class="w-4 h-4 text-sidebar-foreground" />
+      <Menu class="w-4 h-4 text-white" />
     </Button>
 
     <!-- Sidebar Container -->
@@ -27,22 +27,25 @@
               to="/"
               class="flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
-              <div
+              <!-- <div
                 class="w-8 h-8 rounded-full bg-sidebar-primary flex items-center justify-center"
               >
                 <div class="w-5 h-5 rounded-full border-2 border-sidebar" />
               </div>
-              <span
-                class="text-sidebar-foreground text-xl font-bold tracking-tight"
-              >
+              <span class="text-white text-xl font-bold tracking-tight">
                 PROBO
-              </span>
+              </span> -->
+              <img
+                class="cursor-pointer object-cover"
+                :src="logoProbo"
+                alt="logo"
+              >
             </NuxtLink>
 
             <Button
               variant="ghost"
               size="sm"
-              class="w-8 h-8 p-0 text-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
+              class="w-8 h-8 p-0 text-white hover:text-white hover:bg-sidebar-accent transition-colors"
               @click="toggleSidebar"
             >
               <X class="w-4 h-4" />
@@ -66,7 +69,7 @@
                 <CollapsibleTrigger as-child>
                   <Button
                     variant="ghost"
-                    class="w-full flex items-center justify-between px-3 py-2 text-muted-foreground text-sm hover:text-sidebar-foreground hover:bg-transparent h-auto font-normal"
+                    class="w-full flex items-center justify-between px-3 py-2 text-white text-sm hover:text-white hover:bg-primary-400 h-auto font-normal"
                   >
                     <span>{{ t(section.translationKey) }}</span>
                     <ChevronDown
@@ -92,7 +95,10 @@
                           <CollapsibleTrigger as-child>
                             <Button
                               variant="ghost"
-                              class="w-full flex items-center justify-between px-3 py-2.5 text-sidebar-foreground text-sm hover:bg-sidebar-accent rounded-lg h-auto font-normal"
+                              class="w-full flex items-center justify-between px-3 py-2.5 text-white text-sm hover:bg-primary-400 rounded-lg h-auto font-normal"
+                              :class="{
+                                'bg-primary-200': isActive(item.href),
+                              }"
                             >
                               <div class="flex items-center gap-3">
                                 <component
@@ -121,10 +127,9 @@
                               <NuxtLink
                                 v-if="canViewModule(subItem.id)"
                                 :to="subItem.href || '#'"
-                                class="flex items-center gap-3 px-3 py-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent rounded-lg transition-colors"
+                                class="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white rounded-lg transition-colors"
                                 :class="{
-                                  'bg-sidebar-accent text-sidebar-accent-foreground':
-                                    isActive(subItem.href),
+                                  'text-white': isActive(subItem.href),
                                 }"
                               >
                                 <component
@@ -143,10 +148,9 @@
                       <template v-else>
                         <NuxtLink
                           :to="item.href || '#'"
-                          class="flex items-center gap-3 px-3 py-2.5 text-sm text-sidebar-foreground hover:bg-sidebar-accent rounded-lg transition-colors"
+                          class="flex items-center gap-3 px-3 py-2.5 text-sm text-white hover:bg-primary-400 rounded-lg transition-colors"
                           :class="{
-                            'bg-sidebar-accent text-sidebar-accent-foreground':
-                              isActive(item.href),
+                            'bg-primary-200': isActive(item.href),
                           }"
                         >
                           <component
@@ -195,6 +199,7 @@ import { getIcon } from "~/utils/iconMapper";
 import { useProboI18n } from "~/composables/useProboI18n";
 import { useUser } from "~/composables/useUser";
 import UserDropdownMenu from "./UserDropdownMenu.vue";
+import logoProbo from "~/assets/icons/logo-probo.svg";
 
 // Composables
 const route = useRoute();

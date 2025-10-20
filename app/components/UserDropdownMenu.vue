@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-center gap-3 px-2 py-2 hover:bg-sidebar-accent rounded-lg transition-colors cursor-pointer"
+    class="flex items-center gap-3 px-2 py-2 hover:bg-primary-400 rounded-lg transition-colors cursor-pointer"
   >
     <Avatar class="w-10 h-10">
       <AvatarImage
@@ -15,18 +15,18 @@
     </Avatar>
 
     <div class="flex-1 min-w-0">
-      <p class="text-sidebar-foreground text-sm font-medium">
+      <p class="text-white text-sm font-medium">
         {{ currentUser.name }}
       </p>
-      <p class="text-muted-foreground text-xs">
+      <p class="text-gray-300 text-xs">
         {{ currentUser.title }}
       </p>
     </div>
 
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
-        <Button variant="ghost" class="w-8 h-8 p-0 hover:bg-sidebar-accent">
-          <ChevronDown class="w-4 h-4" />
+        <Button variant="ghost" class="w-8 h-8 p-0 hover:bg-primary-400">
+          <ChevronDown class="w-4 h-4 text-white" />
         </Button>
       </DropdownMenuTrigger>
 
