@@ -27,14 +27,6 @@
               to="/"
               class="flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
-              <!-- <div
-                class="w-8 h-8 rounded-full bg-sidebar-primary flex items-center justify-center"
-              >
-                <div class="w-5 h-5 rounded-full border-2 border-sidebar" />
-              </div>
-              <span class="text-white text-xl font-bold tracking-tight">
-                PROBO
-              </span> -->
               <img
                 class="cursor-pointer object-cover"
                 :src="logoProbo"

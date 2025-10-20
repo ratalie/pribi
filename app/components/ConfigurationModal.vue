@@ -32,8 +32,8 @@
                     cn(
                       'w-full text-left px-3 py-2 text-sm rounded-lg transition-colors cursor-pointer',
                       activeSection === item.key
-                        ? 'bg-primary text-primary-foreground'
-                        : 'hover:bg-accent hover:text-accent-foreground'
+                        ? 'bg-primary-400 text-white'
+                        : 'hover:bg-primary-200 hover:text-white'
                     )
                   "
                   @click="activeSection = item.key"
@@ -62,8 +62,8 @@
                     cn(
                       'w-full text-left px-3 py-2 text-sm rounded-lg transition-colors cursor-pointer',
                       activeSection === item.key
-                        ? 'bg-primary text-primary-foreground'
-                        : 'hover:bg-accent hover:text-accent-foreground'
+                        ? 'bg-primary-400 text-white'
+                        : 'hover:bg-primary-200 hover:text-white'
                     )
                   "
                   @click="activeSection = item.key"
@@ -92,8 +92,8 @@
                     cn(
                       'w-full text-left px-3 py-2 text-sm rounded-lg transition-colors cursor-pointer',
                       activeSection === item.key
-                        ? 'bg-primary text-primary-foreground'
-                        : 'hover:bg-accent hover:text-accent-foreground'
+                        ? 'bg-primary-400 text-white'
+                        : 'hover:bg-primary-200 hover:text-white'
                     )
                   "
                   @click="activeSection = item.key"
@@ -245,21 +245,6 @@
               </CardHeader>
               <CardContent>
                 <LanguageSelect />
-              </CardContent>
-            </Card>
-
-            <!-- Tipografía -->
-            <Card>
-              <CardHeader>
-                <CardTitle class="text-lg">{{
-                  t("config.typography")
-                }}</CardTitle>
-                <CardDescription>{{
-                  t("config.typographyDesc")
-                }}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <FontSelector />
               </CardContent>
             </Card>
 
@@ -416,7 +401,6 @@ import { useProboI18n } from "~/composables/useProboI18n";
 import { getIcon } from "~/utils/iconMapper";
 import ThemeSelector from "./ThemeSelector.vue";
 import LanguageSelect from "./LanguageSelect.vue";
-import FontSelector from "./FontSelector.vue";
 
 // Props
 interface Props {
