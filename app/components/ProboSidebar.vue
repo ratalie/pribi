@@ -31,7 +31,7 @@
                 class="cursor-pointer object-cover"
                 :src="logoProbo"
                 alt="logo"
-              >
+              />
             </NuxtLink>
 
             <Button
@@ -87,7 +87,7 @@
                           <CollapsibleTrigger as-child>
                             <Button
                               variant="ghost"
-                              class="w-full flex items-center justify-between px-3 py-2.5 text-white text-sm hover:bg-primary-400 rounded-lg h-auto font-normal"
+                              class="w-full flex items-center justify-between px-3 py-2.5 text-white text-sm hover:bg-primary-400 hover:text-white rounded-lg h-auto font-normal"
                               :class="{
                                 'bg-primary-200': isActive(item.href),
                               }"
