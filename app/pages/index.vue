@@ -2,10 +2,10 @@
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-3xl font-bold tracking-tight">
+        <h1 class="text-3xl font-bold tracking-tight text-gray-800">
           {{ t("dashboard.title") }}
         </h1>
-        <p class="text-muted-foreground">
+        <p class="text-gray-500">
           {{ t("dashboard.subtitle") }}
         </p>
       </div>
