@@ -3,7 +3,7 @@
     <!-- Toggle Button - Solo visible cuando está colapsado -->
     <Button
       v-if="isCollapsed"
-      class="fixed top-4 left-4 z-40 w-10 h-10 bg-sidebar border border-sidebar-border shadow-lg hover:bg-sidebar-accent transition-colors p-0"
+      class="fixed top-4 left-4 z-40 w-10 h-10 bg-sidebar border border-sidebar-border shadow-lg bg-primary-800 hover:bg-primary-600 transition-colors p-0"
       size="sm"
       @click="toggleSidebar"
     >
@@ -37,7 +37,7 @@
             <Button
               variant="ghost"
               size="sm"
-              class="w-8 h-8 p-0 text-white hover:text-white hover:bg-sidebar-accent transition-colors"
+              class="w-8 h-8 p-0 text-white hover:text-white hover:bg-primary-200 transition-colors"
               @click="toggleSidebar"
             >
               <X class="w-4 h-4" />
@@ -87,9 +87,9 @@
                           <CollapsibleTrigger as-child>
                             <Button
                               variant="ghost"
-                              class="w-full flex items-center justify-between px-3 py-2.5 text-white text-sm hover:bg-primary-400 hover:text-white rounded-lg h-auto font-normal"
+                              class="w-full flex items-center justify-between px-3 py-2.5 text-white text-sm hover:bg-primary-200 hover:text-white rounded-lg h-auto font-normal"
                               :class="{
-                                'bg-primary-200': isActive(item.href),
+                                'bg-primary-400': isActive(item.href),
                               }"
                             >
                               <div class="flex items-center gap-3">
@@ -140,9 +140,9 @@
                       <template v-else>
                         <NuxtLink
                           :to="item.href || '#'"
-                          class="flex items-center gap-3 px-3 py-2.5 text-sm text-white hover:bg-primary-400 rounded-lg transition-colors"
+                          class="flex items-center gap-3 px-3 py-2.5 text-sm text-white hover:bg-primary-200 rounded-lg transition-colors"
                           :class="{
-                            'bg-primary-200': isActive(item.href),
+                            'bg-primary-400': isActive(item.href),
                           }"
                         >
                           <component
