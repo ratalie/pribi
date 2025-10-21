@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import DatosSociedadStep from "~/modules/registro-sociedades/components/DatosSociedadStep.vue";
+import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 </script>
 
 <template>
-  <DatosSociedadStep mode="crear" />
+  <DatosSociedadStep :mode="EntityModeEnum.CREAR" />
 </template>

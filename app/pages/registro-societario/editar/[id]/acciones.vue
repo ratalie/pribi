@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DatosSociedadStep from "~/modules/registro-sociedades/components/DatosSociedadStep.vue";
+import AccionesStep from "~/modules/registro-sociedades/components/AccionesStep.vue";
 import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
 const route = useRoute();
@@ -7,5 +7,5 @@ const societyId = route.params.id as string;
 </script>
 
 <template>
-  <DatosSociedadStep :mode="EntityModeEnum.EDITAR" :society-id="societyId" />
+  <AccionesStep :mode="EntityModeEnum.EDITAR" :society-id="societyId" />
 </template>
