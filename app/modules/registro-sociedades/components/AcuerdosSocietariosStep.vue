@@ -10,6 +10,6 @@ defineProps<Props>();
 </script>
 
 <template>
-  <div>Datos de distribución de acciones: {{ mode }}</div>
+  <div>Acuerdos societarios: {{ mode }}</div>
   <p v-if="mode === EntityModeEnum.EDITAR && societyId">ID: {{ societyId }}</p>
 </template>
