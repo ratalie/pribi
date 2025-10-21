@@ -1,80 +1,36 @@
 # Probo Frontend v3
 
-Aplicación moderna desarrollada con Nuxt 4, TypeScript, Tailwind 4 e internacionalización (i18n) para 6 idiomas.
+Aplicación moderna desarrollada con **Nuxt 4**, **TypeScript**, **Tailwind 4** e **i18n** para 6 idiomas.
 
-## 🏗️ Arquitectura de Componentes
+## 🚀 Quick Start
 
-Este proyecto implementa el patrón **"Three-Layer Component Architecture"** que combina:
-
-- **Atomic Design Pattern**: Separación en componentes reutilizables
-- **Headless Component Pattern**: Lógica pura sin estilos
-- **Wrapper/Container Pattern**: Estilos sobre lógica base
-- **Composite Pattern**: Lógica de negocio específica
-
-### Estructura de Capas
-
-```
-Base Layer (Headless)     →  Lógica pura, sin estilos
-    ↓
-UI Layer (Wrapper)        →  Estilos + Base, reutilizable
-    ↓
-Custom Layer (Composite)  →  Lógica de negocio + UI específica
+```bash
+npm install
+npm run dev
 ```
 
-## 📁 Estructura de Carpetas
+## 📚 Documentación
 
-### Componentes
+- **[🏗️ Arquitectura](./docs/ARCHITECTURE.md)** - Patrones de componentes y módulos de negocio
+- **[🛣️ Routing](./docs/ROUTING.md)** - Sistema de rutas y navegación
 
-```
-app/components/
-├── base/                    # Lógica pura (headless components)
-│   ├── inputs/
-│   │   ├── text/
-│   │   │   ├── BaseTextInput.vue      # Lógica: validación, formateo
-│   │   │   ├── ui/
-│   │   │   │   ├── TextInput.vue      # Wrapper con estilos
-│   │   │   │   └── TextArea.vue       # Variante multilinea
-│   │   │   └── custom/
-│   │   │       └── ClientNameInput.vue # Lógica específica de negocio
-│   │   ├── number/
-│   │   ├── search/
-│   │   └── select/
-│   └── tables/
-│       ├── data-table/
-│       ├── simple-table/
-│       └── tree-table/
-├── ui/                      # Componentes de interfaz reutilizables
-└── composite/               # Componentes específicos de flujo/negocio
-```
+## 🏗️ Stack Tecnológico
 
-### Tipos y Utilidades
+- **Nuxt 4** - Framework fullstack Vue
+- **TypeScript** - Tipado estático
+- **Tailwind 4** - CSS con variables nativas
+- **shadcn-vue** - Componentes UI
+- **Nuxt i18n** - Internacionalización
+- **Lucide Vue** - Iconografía
 
-```
-├── types/
-│   ├── inputs/              # Interfaces para inputs
-│   ├── tables/              # Interfaces para tablas
-│   └── enums/               # Enums para variants, estados
-├── composables/
-│   ├── inputs/              # Hooks reactivos para inputs
-│   ├── tables/              # Hooks para tablas
-│   ├── api/                 # Hooks para APIs
-│   └── business/            # Lógica de negocio específica
-├── utils/
-│   ├── inputs/              # Funciones puras para inputs
-│   ├── tables/              # Utilidades para tablas
-│   └── formatters/          # Formateo de datos
-└── constants/
-    ├── inputs/              # Configuraciones de inputs
-    └── tables/              # Configuraciones de tablas
-```
+## 🎯 Características Principales
 
-## ✅ Ventajas de esta Arquitectura
-
-- **Máxima reutilización**: Base se usa en múltiples contextos
-- **Mantenimiento sencillo**: Cambios aislados por capa
-- **Testing granular**: Cada capa se testea independientemente
-- **Escalabilidad**: Fácil agregar variantes o funcionalidades
-- **Consistencia**: UI layer garantiza diseño uniforme
+- ✅ **4 Modos de Tema** (Light/Dark/Purple/System)
+- ✅ **2 Idiomas** soportados
+- ✅ **Sidebar de Navegación** responsive
+- ✅ **Modal de Configuraciones**
+- ✅ **Routing por Módulos** escalable
+- ✅ **Arquitectura de 3 Capas** para componentes
 
 ## 🎨 Sistema de Temas
 
@@ -89,12 +45,16 @@ Variables CSS centralizadas en Tailwind 4 para colores, fuentes y espaciado.
 
 ## 🌍 Internacionalización
 
-Soporte completo para 6 idiomas:
+Soporte completo para 2 idiomas:
 
 - 🇺🇸 Inglés (en)
 - 🇪🇸 Español (es)
 
 Utiliza Nuxt i18n con composables personalizados para gestión de traducciones.
+
+---
+
+Para información detallada sobre arquitectura y routing, consulta la [documentación completa](./docs/).
 
 ## Setup
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AcuerdosSocietariosStep from "~/modules/registro-sociedades/components/AcuerdosSocietariosStep.vue";
+import AcuerdosSocietariosStep from "~/modules/registro-sociedades/components/steps/AcuerdosSocietariosStep.vue";
 import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 </script>
 
