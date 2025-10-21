@@ -1,33 +1,38 @@
 <template>
   <div
-    class="flex items-center gap-3 px-2 py-2 hover:bg-primary-400 rounded-lg transition-colors cursor-pointer"
+    class="group/dropdown flex items-center gap-3 px-2 py-2 rounded-lg transition-colors hover:bg-primary-400/80"
   >
-    <Avatar class="w-10 h-10">
-      <AvatarImage
-        :src="currentUser.avatar || '/placeholder.svg'"
-        :alt="currentUser.name"
-      />
-      <AvatarFallback
-        class="bg-sidebar-primary text-sidebar-primary-foreground"
-      >
-        {{ getInitials(currentUser.name) }}
-      </AvatarFallback>
-    </Avatar>
-
-    <div class="flex-1 min-w-0">
-      <p class="text-white text-sm font-medium">
-        {{ currentUser.name }}
-      </p>
-      <p class="text-gray-300 text-xs">
-        {{ currentUser.title }}
-      </p>
-    </div>
-
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
-        <Button variant="ghost" class="w-8 h-8 p-0 hover:bg-primary-400">
-          <ChevronDown class="w-4 h-4 text-white" />
-        </Button>
+        <div class="flex items-center gap-8 w-full cursor-pointer">
+          <div class="flex item-center gap-4">
+            <Avatar class="w-10 h-10">
+              <AvatarImage
+                :src="currentUser.avatar || '/placeholder.svg'"
+                :alt="currentUser.name"
+              />
+              <AvatarFallback
+                class="bg-sidebar-primary text-sidebar-primary-foreground"
+              >
+                {{ getInitials(currentUser.name) }}
+              </AvatarFallback>
+            </Avatar>
+
+            <div class="flex-1 min-w-0">
+              <p class="text-white text-sm font-medium">
+                {{ currentUser.name }}
+              </p>
+              <p
+                class="text-gray-300 text-xs group-hover/dropdown:text-gray-100 transition-colors"
+              >
+                {{ currentUser.title }}
+              </p>
+            </div>
+          </div>
+          <ChevronDown
+            class="w-4 h-4 text-white transition-transform group-hover/dropdown:rotate-180 duration-200"
+          />
+        </div>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
@@ -60,7 +65,6 @@
       </DropdownMenuContent>
     </DropdownMenu>
   </div>
-
   <!-- Configuration Modal -->
   <ConfigurationModal v-model:open="isConfigModalOpen" />
 </template>
@@ -73,7 +77,6 @@ import {
   HelpCircle,
   LogOut,
 } from "lucide-vue-next";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
