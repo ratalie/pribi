@@ -18,18 +18,36 @@ Se implementó **file-based routing** con estructura separada para máxima legib
 ## Estructura de Rutas - Registro Societario
 
 ```
-app/pages/registro-societario/
+app/pages/registro-societario/sociedades/
+├── index.vue                        → /registro-societario/sociedades (lista)
 ├── crear/
-│   ├── datos-sociedad.vue           → /registro-societario/crear/datos-sociedad
-│   ├── accionistas.vue              → /registro-societario/crear/accionistas
-│   ├── directorio.vue               → /registro-societario/crear/directorio
-│   └── ... (6 pasos adicionales)
+│   ├── datos-sociedad.vue          → /registro-societario/sociedades/crear/datos-sociedad
+│   ├── accionistas.vue             → /registro-societario/sociedades/crear/accionistas
+│   ├── directorio.vue              → /registro-societario/sociedades/crear/directorio
+│   └── ... (steps adicionales)
 └── editar/
     └── [id]/
-        ├── datos-sociedad.vue       → /registro-societario/editar/123/datos-sociedad
-        ├── accionistas.vue          → /registro-societario/editar/123/accionistas
-        ├── directorio.vue           → /registro-societario/editar/123/directorio
-        └── ... (6 pasos adicionales)
+        ├── datos-sociedad.vue      → /registro-societario/sociedades/editar/123/datos-sociedad
+        ├── accionistas.vue         → /registro-societario/sociedades/editar/123/accionistas
+        ├── directorio.vue          → /registro-societario/sociedades/editar/123/directorio
+        └── ... (steps adicionales)
+```
+
+```
+
+app/pages/registro-societario/sucursales/
+├── index.vue                        → /registro-societario/sucursales (lista)
+├── crear/
+│   ├── datos-sucursal.vue          → /registro-societario/sucursales/crear/datos-sucursal
+│   ├── ubicacion.vue               → /registro-societario/sucursales/crear/ubicacion
+│   ├── representantes.vue          → /registro-societario/sucursales/crear/representantes
+│   └── ... (steps específicos)
+└── editar/
+    └── [id]/
+        ├── datos-sucursal.vue      → /registro-societario/sucursales/editar/456/datos-sucursal
+        ├── ubicacion.vue           → /registro-societario/sucursales/editar/456/ubicacion
+        ├── representantes.vue      → /registro-societario/sucursales/editar/456/representantes
+        └── ... (steps específicos)
 ```
 
 ## Patrón de Implementación
