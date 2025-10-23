@@ -16,7 +16,12 @@
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
     titleMenu?: string;
-    actions?: { label: string; separatorLine?: boolean; onClick: (id: string) => void }[];
+    actions?: {
+      label: string;
+      icon?: string;
+      separatorLine?: boolean;
+      onClick: (id: string) => void;
+    }[];
   }>();
 
   const table = useVueTable({

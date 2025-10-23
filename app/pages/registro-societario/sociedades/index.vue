@@ -40,12 +40,14 @@
     },
     {
       label: "Editar",
+      icon: "SquarePen",
       onClick: (itemId: string) => {
         console.log("Editar", itemId);
       },
     },
     {
       label: "Eliminar",
+      icon: "Trash2",
       onClick: (itemId: string) => {
         console.log("Eliminar para:", itemId);
       },

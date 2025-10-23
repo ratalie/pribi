@@ -13,7 +13,12 @@
   const props = defineProps<{
     itemId: string;
     titleMenu?: string;
-    actions?: { label: string; separatorLine?: boolean; onClick: (id: string) => void }[];
+    actions?: {
+      label: string;
+      icon?: string;
+      separatorLine?: boolean;
+      onClick: (id: string) => void;
+    }[];
   }>();
 
   const actionsList = computed(() => {
@@ -33,7 +38,14 @@
     <DropdownMenuContent align="end">
       <DropdownMenuLabel v-if="titleMenu">{{ titleMenu }}</DropdownMenuLabel>
       <template v-for="(action, index) in actionsList" :key="action.label">
-        <DropdownMenuItem @click="action.onClick(itemId)">{{ action.label }}</DropdownMenuItem>
+        <DropdownMenuItem class="flex items-center gap-2" @click="action.onClick(itemId)">
+          <component
+            :is="getIcon(action.icon || '')"
+            v-if="getIcon(action.icon || '')"
+            class="w-4 h-4"
+          />
+          {{ action.label }}
+        </DropdownMenuItem>
         <DropdownMenuSeparator v-if="index < actionsList.length - 1 && action.separatorLine" />
       </template>
     </DropdownMenuContent>
