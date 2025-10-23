@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="TData, TValue">
+<script setup lang="ts" generic="TData extends BaseCheckboxRow, TValue">
   import {
     Table,
     TableBody,
@@ -9,8 +9,14 @@
   } from "@/components/ui/table";
   import type { ColumnDef } from "@tanstack/vue-table";
   import { FlexRender, getCoreRowModel, useVueTable } from "@tanstack/vue-table";
+  import Checkbox from "~/components/ui/checkbox/Checkbox.vue";
   import DataTableDropDown from "../DataTableDropDown.vue";
   import EmptyTableMessage from "../EmptyTableMessage.vue";
+
+  export interface BaseCheckboxRow {
+    id: string;
+    checked: boolean;
+  }
 
   const props = defineProps<{
     columns: ColumnDef<TData, TValue>[];
@@ -23,6 +29,9 @@
       onClick: (id: string) => void;
     }[];
   }>();
+
+  const emits = defineEmits(["update:checkedItems"]);
+  const selectedAllChecked = ref(false);
 
   const table = useVueTable({
     get data() {
@@ -40,6 +49,18 @@
     <Table>
       <TableHeader>
         <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
+          <TableHead>
+            <Checkbox
+              :model-value="selectedAllChecked"
+              @update:model-value="
+                (value) => {
+                  selectedAllChecked = Boolean(value);
+                  emits('update:checkedItems', selectedAllChecked);
+                }
+              "
+            />
+          </TableHead>
+
           <TableHead
             v-for="header in headerGroup.headers"
             :key="header.id"
@@ -56,6 +77,10 @@
       <TableBody>
         <template v-if="table.getRowModel().rows?.length">
           <TableRow v-for="row in table.getRowModel().rows" :key="row.id">
+            <TableCell>
+              <Checkbox v-model="row.original.checked" />
+            </TableCell>
+
             <TableCell
               v-for="cell in row.getVisibleCells()"
               :key="cell.id"
@@ -67,7 +92,7 @@
             <!-- Celda de acciones -->
             <TableCell v-if="actions" class="w-12">
               <DataTableDropDown
-                :item-id="(row.original as any).id"
+                :item-id="row.original.id"
                 :title-menu="titleMenu"
                 :actions="actions"
               />
