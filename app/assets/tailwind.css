@@ -13,6 +13,12 @@
    Variables que Tailwind convertirá en clases
    ============================================ */
 @theme {
+  /* === FONTS === */
+  --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-primary: "Gabarito", ui-sans-serif, system-ui, sans-serif;
+  --font-secondary: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Fira Code", ui-monospace, SFMono-Regular, Consolas, monospace;
+
   /* === RADII === */
   --radius-sm: calc(0.625rem - 4px);
   --radius-md: calc(0.625rem - 2px);
@@ -93,6 +99,12 @@
    Estas SÍ son accesibles con var()
    ============================================ */
 :root {
+  /* === FONT VARIABLES === */
+  --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-primary: "Gabarito", ui-sans-serif, system-ui, sans-serif;
+  --font-secondary: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Fira Code", ui-monospace, SFMono-Regular, Consolas, monospace;
+
   /* === LIGHT MODE COLORS (Base) === */
   --color-background: oklch(1 0 0); /* white */
   --color-foreground: oklch(0.21 0.034 264.665); /* slate-900 */
@@ -367,78 +379,104 @@ html.purple {
     background-color: var(--color-accent);
   }
 
-  /* Fuentes */
+  /* === FUENTES ACTUALIZADAS === */
+  .font-sans {
+    font-family: var(--font-sans);
+  }
+
+  .font-primary {
+    font-family: var(--font-primary);
+  }
+
+  .font-secondary {
+    font-family: var(--font-secondary);
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  /* Backwards compatibility - mantener clases existentes */
   .font-inter {
-    font-family: var(
-      --font-primary,
-      Inter,
-      ui-sans-serif,
-      system-ui,
-      sans-serif
-    );
+    font-family: var(--font-sans); /* Ahora usa Public Sans */
   }
 
   .font-roboto {
-    font-family: var(
-      --font-primary,
-      Roboto,
-      ui-sans-serif,
-      system-ui,
-      sans-serif
-    );
+    font-family: var(--font-secondary); /* Ahora usa Manrope */
   }
 
   .font-opensans {
-    font-family: var(
-      --font-primary,
-      "Open Sans",
-      ui-sans-serif,
-      system-ui,
-      sans-serif
-    );
+    font-family: var(--font-secondary); /* Ahora usa Manrope */
   }
 
   .font-firacode {
-    font-family: var(
-      --font-secondary,
-      "Fira Code",
-      ui-monospace,
-      SFMono-Regular,
-      Consolas,
-      monospace
-    );
+    font-family: var(--font-mono);
   }
 
   .font-jetbrains {
-    font-family: var(
-      --font-secondary,
-      "JetBrains Mono",
-      ui-monospace,
-      SFMono-Regular,
-      Consolas,
-      monospace
-    );
+    font-family: var(--font-mono);
   }
 
   .font-cascadia {
-    font-family: var(
-      --font-secondary,
-      "Cascadia Code",
-      ui-monospace,
-      SFMono-Regular,
-      Consolas,
-      monospace
-    );
+    font-family: var(--font-mono);
+  }
+
+  /* === TIPOGRAFÍA SIMPLE === */
+  .t-h1 {
+    font-size: 51.2px !important;
+    line-height: 57.6px !important;
+  }
+  .t-h2 {
+    font-size: 41.6px !important;
+    line-height: 51.2px !important;
+  }
+  .t-h3 {
+    font-size: 35.2px !important;
+    line-height: 51.2px !important;
+  }
+  .t-h4 {
+    font-size: 25.6px !important;
+    line-height: 32px !important;
+  }
+  .t-h5 {
+    font-size: 20.8px !important;
+    line-height: 32px !important;
+  }
+  .t-h6 {
+    font-size: 16px !important;
+    line-height: 25.6px !important;
+  }
+  .t-t1 {
+    font-size: 14.4px !important;
+    line-height: 16px !important;
+  }
+  .t-t2 {
+    font-size: 12.8px !important;
+    line-height: 14.4px !important;
+  }
+  .t-b1 {
+    font-size: 12.8px !important;
+    line-height: 14.4px !important;
+  }
+  .t-b2 {
+    font-size: 11.2px !important;
+    line-height: 12.8px !important;
+  }
+  .t-c1 {
+    font-size: 9.6px !important;
+    line-height: 12.8px !important;
+  }
+  .t-sp {
+    font-size: 8px !important;
+    line-height: 12.8px !important;
+  }
+  .t-ov {
+    font-size: 8.8px !important;
+    line-height: 12.8px !important;
   }
 
   body {
-    font-family: var(
-      --font-primary,
-      Inter,
-      ui-sans-serif,
-      system-ui,
-      sans-serif
-    );
+    font-family: var(--font-primary, Inter, ui-sans-serif, system-ui, sans-serif);
   }
 
   code,
