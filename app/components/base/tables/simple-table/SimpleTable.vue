@@ -43,7 +43,7 @@
           <TableHead
             v-for="header in headerGroup.headers"
             :key="header.id"
-            class="font-primary text-gray-800 dark:text-gray-100 t-t2 font-semibold h-16"
+            class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
           >
             <FlexRender
               v-if="!header.isPlaceholder"

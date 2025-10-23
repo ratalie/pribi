@@ -39,7 +39,7 @@
       <DropdownMenuLabel v-if="titleMenu">{{ titleMenu }}</DropdownMenuLabel>
       <template v-for="(action, index) in actionsList" :key="action.label">
         <DropdownMenuItem
-          class="flex items-center gap-3 text-gray-700 font-secondary t-t2 font-medium dark:text-gray-300"
+          class="flex items-center gap-3 text-gray-700 font-secondary t-t2 font-medium dark:text-gray-900"
           @click="action.onClick(itemId)"
         >
           <component
