@@ -1,8 +1,5 @@
 <script setup lang="ts">
-  import {
-    getColumns,
-    type TableColumn,
-  } from "~/components/base/tables/simple-table/getColumns";
+  import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import { ItemStateEnum } from "~/types/enums/ItemStateEnum";
 
@@ -17,7 +14,6 @@
     nombre_comercial: string;
     tipo_sociedad: string;
     estado: ItemStateEnum;
-    amount: number;
   }
 
   const societyHeaders: TableColumn<ISocietyTable>[] = [
@@ -26,7 +22,34 @@
     { key: "nombre_comercial", label: "Nombre Comercial", type: "text" },
     { key: "tipo_sociedad", label: "Tipo de Sociedad", type: "text" },
     { key: "estado", label: "Estado", type: "status" },
-    { key: "amount", label: "Amount", type: "text" },
+  ];
+
+  const actions = [
+    {
+      label: "Detalles",
+      onClick: (itemId: string) => {
+        console.log("Ver detalles de:", itemId);
+      },
+    },
+    {
+      label: "Ver resumen",
+      separatorLine: true,
+      onClick: (itemId: string) => {
+        console.log("Ver resumen de:", itemId);
+      },
+    },
+    {
+      label: "Editar",
+      onClick: (itemId: string) => {
+        console.log("Editar", itemId);
+      },
+    },
+    {
+      label: "Eliminar",
+      onClick: (itemId: string) => {
+        console.log("Eliminar para:", itemId);
+      },
+    },
   ];
 
   const columns = getColumns(societyHeaders);
@@ -35,22 +58,20 @@
   async function getData(): Promise<ISocietyTable[]> {
     return [
       {
-        id: "1",
+        id: "uuid-1",
         razon_social: "BANCO BBVA PERU",
         ruc: "12345678901",
         nombre_comercial: "Comercial 1",
         tipo_sociedad: "Sociedad Anónima",
         estado: ItemStateEnum.COMPLETADO,
-        amount: 10000,
       },
       {
-        id: "2",
+        id: "uuid-2",
         razon_social: "SHALOM EMPRESARIAL S.A.C.",
         ruc: "10987654321",
         nombre_comercial: "Comercial 2",
         tipo_sociedad: "Sociedad Limitada",
         estado: ItemStateEnum.PENDIENTE,
-        amount: 2500.151,
       },
     ];
   }
@@ -64,6 +85,6 @@
   <div>
     <PageTitle title-key="pages.sociedades" />
 
-    <SimpleTable :columns="columns" :data="data" />
+    <SimpleTable :columns="columns" :data="data" title-menu="Actions" :actions="actions" />
   </div>
 </template>

@@ -3,7 +3,8 @@ import { h } from "vue";
 import { ItemStateEnum } from "~/types/enums/ItemStateEnum";
 
 export interface BaseTableRow {
-  estado: ItemStateEnum | string;
+  id: string;
+  estado?: ItemStateEnum | string;
 }
 
 export interface TableColumn<T extends BaseTableRow> {
@@ -22,7 +23,7 @@ export const getColumns = <T extends BaseTableRow>(
         header: () => h("div", { class: "pl-4" }, header.label),
         cell: ({ row }) => {
           const value = row.getValue(header.key as string);
-          const status = row.original.estado;
+          const status = row.original.estado || "";
 
           const getStatusClass = (status: ItemStateEnum | string) => {
             switch (status) {

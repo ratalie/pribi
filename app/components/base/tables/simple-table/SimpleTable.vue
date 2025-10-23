@@ -1,40 +1,40 @@
 <!-- components/payments/data-table.vue -->
 <script setup lang="ts" generic="TData, TValue">
-import type { ColumnDef } from "@tanstack/vue-table";
-import { FlexRender, getCoreRowModel, useVueTable } from "@tanstack/vue-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "@/components/ui/table";
+  import type { ColumnDef } from "@tanstack/vue-table";
+  import { FlexRender, getCoreRowModel, useVueTable } from "@tanstack/vue-table";
+  import DataTableDropDown from "../DataTableDropDown.vue";
 
-const props = defineProps<{
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-}>();
+  const props = defineProps<{
+    columns: ColumnDef<TData, TValue>[];
+    data: TData[];
+    titleMenu?: string;
+    actions?: { label: string; separatorLine?: boolean; onClick: (id: string) => void }[];
+  }>();
 
-const table = useVueTable({
-  get data() {
-    return props.data;
-  },
-  get columns() {
-    return props.columns;
-  },
-  getCoreRowModel: getCoreRowModel(),
-});
+  const table = useVueTable({
+    get data() {
+      return props.data;
+    },
+    get columns() {
+      return props.columns;
+    },
+    getCoreRowModel: getCoreRowModel(),
+  });
 </script>
 
 <template>
   <div>
     <Table>
       <TableHeader>
-        <TableRow
-          v-for="headerGroup in table.getHeaderGroups()"
-          :key="headerGroup.id"
-        >
+        <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
           <TableHead
             v-for="header in headerGroup.headers"
             :key="header.id"
@@ -56,9 +56,15 @@ const table = useVueTable({
               :key="cell.id"
               class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
             >
-              <FlexRender
-                :render="cell.column.columnDef.cell"
-                :props="cell.getContext()"
+              <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+            </TableCell>
+
+            <!-- Celda de acciones -->
+            <TableCell v-if="actions" class="w-12">
+              <DataTableDropDown
+                :item-id="(row.original as any).id"
+                :title-menu="titleMenu"
+                :actions="actions"
               />
             </TableCell>
           </TableRow>
