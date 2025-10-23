@@ -1,5 +1,5 @@
-<!-- components/payments/data-table.vue -->
 <script setup lang="ts" generic="TData, TValue">
+  import SadFaceLogo from "@/assets/icons/sad-face-logo.svg";
   import {
     Table,
     TableBody,
@@ -76,8 +76,13 @@
         </template>
         <template v-else>
           <TableRow>
-            <TableCell :colspan="props.columns.length" class="h-24 text-center">
-              No results.
+            <TableCell :colspan="props.columns.length" class="h-24">
+              <div
+                class="flex items-center justify-center gap-3 text-gray-700 font-secondary t-t2 font-medium dark:text-gray-900"
+              >
+                <img class="object-cover" :src="SadFaceLogo" alt="logo" />
+                <p>No hay contenidos en esta lista</p>
+              </div>
             </TableCell>
           </TableRow>
         </template>
