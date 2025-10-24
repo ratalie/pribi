@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import BaseButton from "~/components/base/buttons/BaseButton.vue";
-  import CompositeButton from "~/components/base/buttons/composite/CompositeButton.vue";
+  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import { ItemStateEnum } from "~/types/enums/ItemStateEnum";
@@ -92,12 +92,12 @@
     <SimpleTable :columns="columns" :data="data" title-menu="Actions" :actions="actions" />
 
     <div class="flex gap-4">
-      <BaseButton label="Descargar" size="md" icon="Download" :is-loading="true" />
-      <BaseButton label="Descargar" size="md" icon="Download" />
-      <BaseButton label="Agregar Sociedad" size="lg" icon="Plus" />
-      <BaseButton label="Siguiente" size="md" variant="primary_outline" />
-      <BaseButton label="Agregar" size="sm" variant="secondary" />
-      <BaseButton
+      <ActionButton label="Descargar" size="md" icon="Download" :is-loading="true" />
+      <ActionButton label="Descargar" size="md" icon="Download" />
+      <ActionButton label="Agregar Sociedad" size="lg" icon="Plus" />
+      <ActionButton label="Siguiente" size="md" variant="primary_outline" />
+      <ActionButton label="Agregar" size="sm" variant="secondary" />
+      <ActionButton
         label="Guardar y continuar"
         size="xl"
         variant="secondary_outline"
@@ -106,6 +106,6 @@
       />
     </div>
 
-    <CompositeButton variant="secondary">Botón Compuesto</CompositeButton>
+    <BaseButton variant="secondary">Botón Compuesto</BaseButton>
   </div>
 </template>
