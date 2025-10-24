@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import BaseButton from "~/components/base/buttons/BaseButton.vue";
+  import CompositeButton from "~/components/base/buttons/composite/CompositeButton.vue";
   import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import { ItemStateEnum } from "~/types/enums/ItemStateEnum";
@@ -104,5 +105,7 @@
         icon-position="right"
       />
     </div>
+
+    <CompositeButton variant="secondary">Botón Compuesto</CompositeButton>
   </div>
 </template>
