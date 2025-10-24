@@ -91,6 +91,7 @@
     <SimpleTable :columns="columns" :data="data" title-menu="Actions" :actions="actions" />
 
     <div class="flex gap-4">
+      <BaseButton label="Descargar" size="md" icon="Download" :is-loading="true" />
       <BaseButton label="Descargar" size="md" icon="Download" />
       <BaseButton label="Agregar Sociedad" size="lg" icon="Plus" />
       <BaseButton label="Siguiente" size="md" variant="primary_outline" />

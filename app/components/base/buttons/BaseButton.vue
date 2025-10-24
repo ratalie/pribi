@@ -7,6 +7,7 @@
     size?: ButtonVariants["size"];
     icon?: string;
     iconPosition?: "left" | "right";
+    isLoading?: boolean;
     label: string;
   }
 
@@ -23,11 +24,15 @@
 </script>
 
 <template>
-  <Button :variant="variant" :size="size">
+  <Button :variant="variant" :size="size" :disabled="isLoading">
     <component
-      :is="getIcon(icon)"
+      :is="isLoading ? getIcon('LoaderCircle') : getIcon(icon)"
       v-if="icon"
-      :class="[getSizeIcon(), iconPosition === 'right' ? 'order-2' : 'order-1']"
+      :class="[
+        getSizeIcon(),
+        iconPosition === 'right' ? 'order-2' : 'order-1',
+        isLoading ? 'animate-spin' : '',
+      ]"
     />
 
     <span :class="iconPosition === 'right' ? 'order-1' : 'order-2'">

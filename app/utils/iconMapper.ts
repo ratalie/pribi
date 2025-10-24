@@ -14,6 +14,7 @@ import {
   History,
   Languages,
   LayoutDashboard,
+  LoaderCircle,
   LogOut,
   MapPin,
   Menu,
@@ -70,6 +71,7 @@ const iconMap = {
   Download,
   Plus,
   ArrowRight,
+  LoaderCircle,
 };
 
 export const getIcon = (iconName: string) => {
