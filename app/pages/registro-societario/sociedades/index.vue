@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import BaseButton from "~/components/base/buttons/BaseButton.vue";
   import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import { ItemStateEnum } from "~/types/enums/ItemStateEnum";
@@ -88,5 +89,19 @@
     <PageTitle title-key="pages.sociedades" />
 
     <SimpleTable :columns="columns" :data="data" title-menu="Actions" :actions="actions" />
+
+    <div class="flex gap-4">
+      <BaseButton label="Descargar" size="md" icon="Download" />
+      <BaseButton label="Agregar Sociedad" size="lg" icon="Plus" />
+      <BaseButton label="Siguiente" size="md" variant="primary_outline" />
+      <BaseButton label="Agregar" size="sm" variant="secondary" />
+      <BaseButton
+        label="Guardar y continuar"
+        size="xl"
+        variant="secondary_outline"
+        icon="ArrowRight"
+        icon-position="right"
+      />
+    </div>
   </div>
 </template>

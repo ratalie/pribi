@@ -1,11 +1,13 @@
 import {
   Archive,
+  ArrowRight,
   BarChart3,
   Briefcase,
   Building2,
   ChevronDown,
   ChevronRight,
   Crown,
+  Download,
   FileSearch,
   FileText,
   HelpCircle,
@@ -20,6 +22,7 @@ import {
   Moon,
   Package,
   Palette,
+  Plus,
   Settings,
   SquarePen,
   Sun,
@@ -64,6 +67,9 @@ const iconMap = {
   Monitor,
   SquarePen,
   Trash2,
+  Download,
+  Plus,
+  ArrowRight,
 };
 
 export const getIcon = (iconName: string) => {
