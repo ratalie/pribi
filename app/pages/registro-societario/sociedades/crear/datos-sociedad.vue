@@ -1,55 +1,17 @@
 <script setup lang="ts">
-import SearchInput from "@/components/base/inputs/text/ui/SearchInput.vue";
-import SelectInput from "@/components/base/inputs/text/ui/SelectInput.vue";
-import NameInput from "@/components/base/inputs/text/custom/NameInput.vue";
-import SimpleTextInput from "@/components/base/inputs/text/custom/SimpleTextInput.vue";
-import DateInput from "@/components/base/inputs/text/ui/DateInput.vue";
-import { societyTypeOptions } from "@/constants/inputs/society-types";
-import { officeOptions } from "@/constants/inputs/office-options";
-import type { SelectOption } from "@/types/inputs/select";
-import { useFormValidation } from "@/composables/useFormValidation";
-import { ref } from "vue";
+  import NameInput from "@/components/base/inputs/text/custom/NameInput.vue";
+  import RucInput from "@/components/base/inputs/text/custom/RucInput.vue";
+  import SimpleTextInput from "@/components/base/inputs/text/custom/SimpleTextInput.vue";
+  import DateInput from "@/components/base/inputs/text/ui/DateInput.vue";
+  import SelectInput from "@/components/base/inputs/text/ui/SelectInput.vue";
+  import { useFormValidation } from "@/composables/useFormValidation";
+  import { officeOptions } from "@/constants/inputs/office-options";
+  import { societyTypeOptions } from "@/constants/inputs/society-types";
+  import type { SelectOption } from "@/types/inputs/select";
+  import { ref } from "vue";
 
-// Datos del formulario
-const form = ref({
-  numeroRuc: "",
-  tipoSociedad: "",
-  razonSocial: "",
-  nombreComercial: "",
-  direccion: "",
-  distrito: "",
-  provincia: "",
-  departamento: "",
-  fechaInscripcionRuc: "",
-  actividadExterior: "",
-  fechaEscrituraPublica: "",
-  partidaRegistral: "",
-  oficinaRegistral: "",
-});
-
-// Opciones tipadas
-const societyOptions: SelectOption[] = societyTypeOptions;
-const officeSelectOptions: SelectOption[] = officeOptions as SelectOption[];
-
-// Composable de validación centralizado
-const {
-  validationMessage,
-  isValid,
-  handleTextValidation,
-  handleSelectValidation,
-  handleDateValidation,
-  clearValidations,
-} = useFormValidation();
-
-// Manejador de envío
-const handleSubmit = () => {
-  console.log("Formulario enviado:", form.value);
-  alert(`Formulario enviado:\n${JSON.stringify(form.value, null, 2)}`);
-};
-
-// Manejador para limpiar formulario
-const handleClear = () => {
-  form.value = {
+  // Datos del formulario
+  const form = ref({
     numeroRuc: "",
     tipoSociedad: "",
     razonSocial: "",
@@ -63,27 +25,64 @@ const handleClear = () => {
     fechaEscrituraPublica: "",
     partidaRegistral: "",
     oficinaRegistral: "",
+  });
+
+  // Opciones tipadas
+  const societyOptions: SelectOption[] = societyTypeOptions;
+  const officeSelectOptions: SelectOption[] = officeOptions as SelectOption[];
+
+  // Composable de validación centralizado
+  const {
+    isValid,
+    handleTextValidation,
+    handleSelectValidation,
+    handleDateValidation,
+    clearValidations,
+  } = useFormValidation();
+
+  // Manejador de envío
+  const handleSubmit = () => {
+    console.log("Formulario enviado:", form.value);
+    alert(`Formulario enviado:\n${JSON.stringify(form.value, null, 2)}`);
   };
-  clearValidations();
-};
+
+  // Manejador para limpiar formulario
+  const handleClear = () => {
+    form.value = {
+      numeroRuc: "",
+      tipoSociedad: "",
+      razonSocial: "",
+      nombreComercial: "",
+      direccion: "",
+      distrito: "",
+      provincia: "",
+      departamento: "",
+      fechaInscripcionRuc: "",
+      actividadExterior: "",
+      fechaEscrituraPublica: "",
+      partidaRegistral: "",
+      oficinaRegistral: "",
+    };
+    clearValidations();
+  };
 </script>
 
 <template>
-  <div class="min-h-screen ">
+  <div class="min-h-screen">
     <!-- Formulario principal -->
     <div class="bg-white p-8">
       <!-- Header -->
       <div class="mb-8">
-        <h1 class="text-2xl font-bold text-gray-900">Datos principales</h1>
-        <p class="text-gray-600 mt-2">Complete todos los datos requeridos.</p>
+        <h1 class="text-2xl font-bold text-gray-700">Datos principales</h1>
+        <p class="text-gray-700 mt-2">Complete todos los datos requeridos.</p>
       </div>
 
       <!-- Formulario -->
       <form class="space-y-6" @submit.prevent="handleSubmit">
         <!-- Fila 1: RUC y Tipo de Sociedad -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-          <div>
-            <SearchInput
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          <div class="w-full">
+            <RucInput
               v-model="form.numeroRuc"
               label="Número de RUC"
               label-id="numero-ruc"
@@ -94,7 +93,7 @@ const handleClear = () => {
               @validation="handleTextValidation"
             />
           </div>
-          <div>
+          <div class="w-full">
             <SelectInput
               v-model="form.tipoSociedad"
               label="Tipo de Sociedad"
@@ -109,7 +108,7 @@ const handleClear = () => {
 
         <!-- Fila 2: Razón Social y Nombre Comercial -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-          <div>
+          <div class="w-full">
             <NameInput
               v-model="form.razonSocial"
               name-type="full"
@@ -119,7 +118,7 @@ const handleClear = () => {
               @validation="handleTextValidation"
             />
           </div>
-          <div>
+          <div class="w-full">
             <NameInput
               v-model="form.nombreComercial"
               name-type="full"
@@ -133,7 +132,7 @@ const handleClear = () => {
 
         <!-- Fila 3: Dirección y Distrito -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-          <div>
+          <div class="w-full">
             <SimpleTextInput
               v-model="form.direccion"
               label="Dirección"
@@ -142,7 +141,7 @@ const handleClear = () => {
               :required="true"
             />
           </div>
-          <div>
+          <div class="w-full">
             <SimpleTextInput
               v-model="form.distrito"
               label="Distrito"
@@ -155,7 +154,7 @@ const handleClear = () => {
 
         <!-- Fila 4: Provincia y Departamento -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-          <div>
+          <div class="w-full">
             <SimpleTextInput
               v-model="form.provincia"
               label="Provincia"
@@ -164,7 +163,7 @@ const handleClear = () => {
               :required="true"
             />
           </div>
-          <div>
+          <div class="w-full">
             <SimpleTextInput
               v-model="form.departamento"
               label="Departamento"
@@ -176,8 +175,8 @@ const handleClear = () => {
         </div>
 
         <!-- Fila 5: Fecha de Inscripción RUC y Actividad Exterior -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-          <div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          <div class="w-full">
             <DateInput
               v-model="form.fechaInscripcionRuc"
               label="Fecha de Inscripción en el RUC"
@@ -188,7 +187,7 @@ const handleClear = () => {
               @validation="handleDateValidation"
             />
           </div>
-          <div>
+          <div class="w-full">
             <SimpleTextInput
               v-model="form.actividadExterior"
               label="Actividad Exterior"
@@ -200,8 +199,8 @@ const handleClear = () => {
         </div>
 
         <!-- Fila 6: Fecha de Escritura Pública y Partida Registral -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-          <div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          <div class="w-full">
             <DateInput
               v-model="form.fechaEscrituraPublica"
               label="Fecha de Escritura Pública de Constitución"
@@ -212,7 +211,7 @@ const handleClear = () => {
               @validation="handleDateValidation"
             />
           </div>
-          <div>
+          <div class="w-full">
             <SimpleTextInput
               v-model="form.partidaRegistral"
               label="Partida Registral"
@@ -225,7 +224,7 @@ const handleClear = () => {
 
         <!-- Fila 7: Oficina Registral (solo una columna) -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-          <div>
+          <div class="w-full">
             <SelectInput
               v-model="form.oficinaRegistral"
               label="Oficina Registral"
@@ -237,35 +236,6 @@ const handleClear = () => {
           </div>
         </div>
 
-        <!-- Estado de validación -->
-        <div
-          v-if="validationMessage"
-          class="bg-red-50 border border-red-200 rounded-lg p-4"
-        >
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <svg
-                class="h-5 w-5 text-red-400"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </div>
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-red-800">
-                Error de validación
-              </h3>
-              <div class="mt-2 text-sm text-red-700">
-                {{ validationMessage }}
-              </div>
-            </div>
-          </div>
-        </div>
 
         <!-- Botones -->
         <div class="flex justify-end space-x-4 pt-6">
