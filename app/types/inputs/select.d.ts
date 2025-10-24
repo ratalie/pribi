@@ -5,7 +5,7 @@ export interface SelectOption {
   id: number;
   label: string;
   name: string;
-  value: number;
+  value: string | number;
   acronimo: string;
 }
 

@@ -1,232 +1,239 @@
 <script setup lang="ts">
-import NameInput from "@/components/base/inputs/text/custom/NameInput.vue";
 import SearchInput from "@/components/base/inputs/text/ui/SearchInput.vue";
-import RucInput from "@/components/base/inputs/text/custom/RucInput.vue";
-import type { TextInputValidation } from "@/types/inputs/text";
 import SelectInput from "@/components/base/inputs/text/ui/SelectInput.vue";
+import NameInput from "@/components/base/inputs/text/custom/NameInput.vue";
+import SimpleTextInput from "@/components/base/inputs/text/custom/SimpleTextInput.vue";
+import DateInput from "@/components/base/inputs/text/ui/DateInput.vue";
 import { societyTypeOptions } from "@/constants/inputs/society-types";
-import type { SelectOption, SelectValidation } from "@/types/inputs/select";
+import { officeOptions } from "@/constants/inputs/office-options";
+import type { SelectOption } from "@/types/inputs/select";
+import { useFormValidation } from "@/composables/useFormValidation";
 import { ref } from "vue";
 
 // Datos del formulario
 const form = ref({
-  nombreCompleto: "",
-  nombre: "",
-  apellido: "",
-  busqueda: "",
-  ruc: "",
+  numeroRuc: "",
   tipoSociedad: "",
+  razonSocial: "",
+  nombreComercial: "",
+  direccion: "",
+  distrito: "",
+  provincia: "",
+  departamento: "",
+  fechaInscripcionRuc: "",
+  actividadExterior: "",
+  fechaEscrituraPublica: "",
+  partidaRegistral: "",
+  oficinaRegistral: "",
 });
 
 // Opciones tipadas
-const options: SelectOption[] = societyTypeOptions;
+const societyOptions: SelectOption[] = societyTypeOptions;
+const officeSelectOptions: SelectOption[] = officeOptions as SelectOption[];
 
-// Estado de validación
-const validationMessage = ref("");
-const isValid = ref(false);
-
-// Manejador de validación para inputs de texto
-const handleTextValidation = (validation: TextInputValidation) => {
-  console.log("Validación de texto:", validation);
-
-  if (!validation.isValid) {
-    validationMessage.value = validation.errorMessage || "";
-    isValid.value = false;
-  } else {
-    validationMessage.value = "";
-    isValid.value = true;
-  }
-};
-
-// Manejador de validación para selects
-const handleSelectValidation = (validation: SelectValidation) => {
-  console.log("Validación de select:", validation);
-
-  if (!validation.isValid) {
-    validationMessage.value = validation.errorMessage || "";
-    isValid.value = false;
-  } else {
-    validationMessage.value = "";
-    isValid.value = true;
-  }
-};
-
-// Manejador para cambios en el input de búsqueda
-const handleSearchInput = (value: string) => {
-  console.log("datos-sociedad.vue - Valor de búsqueda cambiado:", value);
-  console.log("datos-sociedad.vue - Form completo:", form.value);
-};
+// Composable de validación centralizado
+const {
+  validationMessage,
+  isValid,
+  handleTextValidation,
+  handleSelectValidation,
+  handleDateValidation,
+  clearValidations,
+} = useFormValidation();
 
 // Manejador de envío
 const handleSubmit = () => {
   console.log("Formulario enviado:", form.value);
   alert(`Formulario enviado:\n${JSON.stringify(form.value, null, 2)}`);
 };
+
+// Manejador para limpiar formulario
+const handleClear = () => {
+  form.value = {
+    numeroRuc: "",
+    tipoSociedad: "",
+    razonSocial: "",
+    nombreComercial: "",
+    direccion: "",
+    distrito: "",
+    provincia: "",
+    departamento: "",
+    fechaInscripcionRuc: "",
+    actividadExterior: "",
+    fechaEscrituraPublica: "",
+    partidaRegistral: "",
+    oficinaRegistral: "",
+  };
+  clearValidations();
+};
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 py-8">
-    <div class="max-w-2xl mx-auto px-4">
+  <div class="min-h-screen ">
+    <!-- Formulario principal -->
+    <div class="bg-white p-8">
       <!-- Header -->
       <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Formulario de Prueba</h1>
-        <p class="text-gray-600 mt-2">
-          Probando el componente NameInput con diferentes estilos
-        </p>
+        <h1 class="text-2xl font-bold text-gray-900">Datos principales</h1>
+        <p class="text-gray-600 mt-2">Complete todos los datos requeridos.</p>
       </div>
 
       <!-- Formulario -->
       <form class="space-y-6" @submit.prevent="handleSubmit">
-        <!-- Card principal -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 class="text-xl font-semibold text-gray-900 mb-6">
-            Datos Personales
-          </h2>
-
-          <div class="space-y-6">
-            <!-- Input de nombre completo -->
-            <div>
-              <!-- <label class="block text-sm font-medium text-gray-700 mb-2">
-                Nombre Completo *
-              </label> -->
-              <NameInput
-                v-model="form.nombreCompleto"
-                name-type="full"
-                label="Nombre Completo"
-                label-id="nombre-completo"
-                :required="true"
-                :show-character-count="true"
-                custom-classes="h-12 text-lg font-medium"
-                :auto-capitalize="true"
-                @validation="handleTextValidation"
-              />
-            </div>
-
-            <!-- Input de búsqueda -->
-            <div>
-              <SearchInput
-                v-model="form.busqueda"
-                label="Buscar en la base de datos"
-                label-id="busqueda"
-                placeholder="Ingrese el número"
-                :show-search-icon="true"
-                icon-position="right"
-                :required="false"
-                @validation="handleTextValidation"
-                @input="handleSearchInput"
-              />
-            </div>
-
-            <!-- Input de RUC -->
-            <div>
-              <RucInput
-                v-model="form.ruc"
-                label="RUC de la empresa"
-                label-id="ruc-empresa"
-                :required="true"
-                :show-character-count="true"
-                custom-classes="h-12 text-lg font-medium"
-                @validation="handleTextValidation"
-              />
-            </div>
-
-            <!-- Input de nombre -->
-            <div>
-              <SelectInput
-                v-model="form.tipoSociedad"
-                label="Tipo de Sociedad"
-                :options="options"
-                :required="true"
-                placeholder="Agregar Nuevo"
-                custom-classes="rounded-lg"
-                @validation="handleSelectValidation"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Nombre
-              </label>
-              <NameInput
-                v-model="form.nombre"
-                name-type="first"
-                custom-classes="h-10 text-base"
-                @validation="handleTextValidation"
-              />
-            </div>
-
-            <!-- Input de apellido -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Apellido
-              </label>
-              <NameInput
-                v-model="form.apellido"
-                name-type="last"
-                custom-classes="h-10 text-base"
-                @validation="handleTextValidation"
-              />
-            </div>
+        <!-- Fila 1: RUC y Tipo de Sociedad -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+          <div>
+            <SearchInput
+              v-model="form.numeroRuc"
+              label="Número de RUC"
+              label-id="numero-ruc"
+              placeholder="Ingrese el número de RUC"
+              :required="true"
+              :show-search-icon="true"
+              icon-position="right"
+              @validation="handleTextValidation"
+            />
+          </div>
+          <div>
+            <SelectInput
+              v-model="form.tipoSociedad"
+              label="Tipo de Sociedad"
+              :options="societyOptions"
+              :required="true"
+              placeholder="Elige el tipo de sociedad"
+              custom-classes="h-10 mb-0"
+              @validation="handleSelectValidation"
+            />
           </div>
         </div>
 
-        <!-- Card de estilos diferentes -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 class="text-xl font-semibold text-gray-900 mb-6">
-            Diferentes Estilos
-          </h2>
+        <!-- Fila 2: Razón Social y Nombre Comercial -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+          <div>
+            <NameInput
+              v-model="form.razonSocial"
+              name-type="full"
+              label="Razón Social"
+              label-id="razon-social"
+              :required="true"
+              @validation="handleTextValidation"
+            />
+          </div>
+          <div>
+            <NameInput
+              v-model="form.nombreComercial"
+              name-type="full"
+              label="Nombre Comercial"
+              label-id="nombre-comercial"
+              :required="false"
+              @validation="handleTextValidation"
+            />
+          </div>
+        </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Estilo pequeño -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Estilo Pequeño
-              </label>
-              <NameInput
-                v-model="form.nombre"
-                name-type="first"
-                custom-classes="h-8 text-sm"
-                placeholder="Input pequeño"
-              />
-            </div>
+        <!-- Fila 3: Dirección y Distrito -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+          <div>
+            <SimpleTextInput
+              v-model="form.direccion"
+              label="Dirección"
+              label-id="direccion"
+              placeholder="Ingrese la dirección"
+              :required="true"
+            />
+          </div>
+          <div>
+            <SimpleTextInput
+              v-model="form.distrito"
+              label="Distrito"
+              label-id="distrito"
+              placeholder="Ingrese el distrito"
+              :required="true"
+            />
+          </div>
+        </div>
 
-            <!-- Estilo grande -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Estilo Grande
-              </label>
-              <NameInput
-                v-model="form.apellido"
-                name-type="last"
-                custom-classes="h-14 text-xl font-bold"
-                placeholder="Input grande"
-              />
-            </div>
+        <!-- Fila 4: Provincia y Departamento -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+          <div>
+            <SimpleTextInput
+              v-model="form.provincia"
+              label="Provincia"
+              label-id="provincia"
+              placeholder="Ingrese la provincia"
+              :required="true"
+            />
+          </div>
+          <div>
+            <SimpleTextInput
+              v-model="form.departamento"
+              label="Departamento"
+              label-id="departamento"
+              placeholder="Ingrese el departamento"
+              :required="true"
+            />
+          </div>
+        </div>
 
-            <!-- Con borde personalizado -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Borde Personalizado
-              </label>
-              <NameInput
-                v-model="form.nombreCompleto"
-                name-type="full"
-                custom-classes="h-10 border-2 border-blue-300 focus:border-blue-500"
-                placeholder="Borde azul"
-              />
-            </div>
+        <!-- Fila 5: Fecha de Inscripción RUC y Actividad Exterior -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+          <div>
+            <DateInput
+              v-model="form.fechaInscripcionRuc"
+              label="Fecha de Inscripción en el RUC"
+              label-id="fecha-inscripcion-ruc"
+              placeholder="Selecciona la fecha de inscripción"
+              :required="true"
+              date-format="dd/MM/yyyy"
+              @validation="handleDateValidation"
+            />
+          </div>
+          <div>
+            <SimpleTextInput
+              v-model="form.actividadExterior"
+              label="Actividad Exterior"
+              label-id="actividad-exterior"
+              placeholder="Ingrese la actividad exterior"
+              :required="false"
+            />
+          </div>
+        </div>
 
-            <!-- Con fondo personalizado -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Fondo Personalizado
-              </label>
-              <NameInput
-                v-model="form.nombre"
-                name-type="first"
-                custom-classes="h-10 bg-gray-100 focus:bg-white"
-                placeholder="Fondo gris"
-              />
-            </div>
+        <!-- Fila 6: Fecha de Escritura Pública y Partida Registral -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+          <div>
+            <DateInput
+              v-model="form.fechaEscrituraPublica"
+              label="Fecha de Escritura Pública de Constitución"
+              label-id="fecha-escritura-publica"
+              placeholder="Selecciona la fecha de escritura"
+              :required="true"
+              date-format="dd/MM/yyyy"
+              @validation="handleDateValidation"
+            />
+          </div>
+          <div>
+            <SimpleTextInput
+              v-model="form.partidaRegistral"
+              label="Partida Registral"
+              label-id="partida-registral"
+              placeholder="Ingrese la partida registral"
+              :required="true"
+            />
+          </div>
+        </div>
+
+        <!-- Fila 7: Oficina Registral (solo una columna) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+          <div>
+            <SelectInput
+              v-model="form.oficinaRegistral"
+              label="Oficina Registral"
+              :options="officeSelectOptions"
+              :required="true"
+              placeholder="Elige la oficina registral"
+              @validation="handleSelectValidation"
+            />
           </div>
         </div>
 
@@ -260,37 +267,12 @@ const handleSubmit = () => {
           </div>
         </div>
 
-        <!-- Valores actuales (para debug) -->
-        <div class="bg-gray-100 rounded-lg p-4">
-          <h3 class="text-sm font-medium text-gray-700 mb-2">
-            Valores Actuales:
-          </h3>
-          <div class="text-sm text-gray-600 space-y-1">
-            <p><strong>Nombre completo:</strong> "{{ form.nombreCompleto }}"</p>
-            <p><strong>Búsqueda:</strong> "{{ form.busqueda }}"</p>
-            <p><strong>RUC:</strong> "{{ form.ruc }}"</p>
-            <p><strong>Tipo de Sociedad:</strong> "{{ form.tipoSociedad }}"</p>
-            <p><strong>Nombre:</strong> "{{ form.nombre }}"</p>
-            <p><strong>Apellido:</strong> "{{ form.apellido }}"</p>
-            <p><strong>Válido:</strong> {{ isValid ? "Sí" : "No" }}</p>
-          </div>
-        </div>
-
         <!-- Botones -->
-        <div class="flex justify-end space-x-4">
+        <div class="flex justify-end space-x-4 pt-6">
           <button
             type="button"
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            @click="
-              form = {
-                nombreCompleto: '',
-                nombre: '',
-                apellido: '',
-                busqueda: '',
-                ruc: '',
-                tipoSociedad: '',
-              }
-            "
+            @click="handleClear"
           >
             Limpiar
           </button>

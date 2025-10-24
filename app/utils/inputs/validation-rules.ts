@@ -7,6 +7,10 @@ import type {
   BaseTextInputProps,
   TextInputValidation,
 } from "@/types/inputs/text";
+import type {
+  BaseDateInputProps,
+  DateInputValidation,
+} from "@/types/inputs/date";
 
 export function validateTextInput(
   value: string,
@@ -155,4 +159,128 @@ function filterByPattern(value: string, pattern: RegExp): string {
 
   // Por defecto, no filtrar
   return value;
+}
+
+// 👇 Funciones de validación para fechas
+export function validateDateInput(
+  value: string,
+  props: BaseDateInputProps
+): DateInputValidation {
+  console.log("🔍 validateDateInput - Input:", { value, props });
+
+  let sanitizedValue = value;
+  let formattedValue = value;
+
+  // 1. Sanitización básica - remover espacios
+  sanitizedValue = sanitizedValue.trim();
+
+  // 2. Validar formato de fecha ISO si hay valor
+  if (sanitizedValue && !isValidISODate(sanitizedValue)) {
+    // Si no es ISO válido, intentar convertir desde otros formatos
+    const convertedDate = convertToISODate(sanitizedValue);
+    if (convertedDate) {
+      sanitizedValue = convertedDate;
+    }
+  }
+
+  // 3. Formatear para mostrar
+  if (sanitizedValue) {
+    formattedValue = formatDateForDisplay(sanitizedValue, props.dateFormat);
+  }
+
+  // 4. Validaciones
+  const errors: string[] = [];
+
+  // Validación de requerido
+  if (props.required && !sanitizedValue) {
+    errors.push(VALIDATION_MESSAGES.OBLIGATORIO);
+  }
+
+  // Validación de fecha válida
+  if (sanitizedValue && !isValidISODate(sanitizedValue)) {
+    errors.push("Fecha inválida");
+  }
+
+  // Validación de fecha mínima
+  if (sanitizedValue && props.minDate) {
+    if (sanitizedValue < props.minDate) {
+      errors.push(
+        `La fecha debe ser posterior a ${formatDateForDisplay(
+          props.minDate,
+          props.dateFormat
+        )}`
+      );
+    }
+  }
+
+  // Validación de fecha máxima
+  if (sanitizedValue && props.maxDate) {
+    if (sanitizedValue > props.maxDate) {
+      errors.push(
+        `La fecha debe ser anterior a ${formatDateForDisplay(
+          props.maxDate,
+          props.dateFormat
+        )}`
+      );
+    }
+  }
+
+  const result = {
+    isValid: errors.length === 0,
+    errorMessage: errors[0] || "",
+    sanitizedValue,
+    formattedValue,
+  };
+
+  console.log("🔍 validateDateInput - Resultado final:", result);
+  return result;
+}
+
+function isValidISODate(dateString: string): boolean {
+  const date = new Date(dateString);
+  return (
+    date instanceof Date &&
+    !isNaN(date.getTime()) &&
+    !!dateString.match(/^\d{4}-\d{2}-\d{2}$/)
+  );
+}
+
+function convertToISODate(dateString: string): string | null {
+  // Intentar convertir desde formato DD/MM/YYYY
+  const ddmmyyyy = dateString.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (ddmmyyyy && ddmmyyyy[1] && ddmmyyyy[2] && ddmmyyyy[3]) {
+    const [, day, month, year] = ddmmyyyy;
+    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  }
+
+  // Intentar convertir desde formato MM/DD/YYYY
+  const mmddyyyy = dateString.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (mmddyyyy && mmddyyyy[1] && mmddyyyy[2] && mmddyyyy[3]) {
+    const [, month, day, year] = mmddyyyy;
+    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  }
+
+  return null;
+}
+
+function formatDateForDisplay(isoDate: string, format?: string): string {
+  if (!isoDate) return "";
+
+  const date = new Date(isoDate);
+  if (isNaN(date.getTime())) return isoDate;
+
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear();
+
+  switch (format) {
+    case "dd/MM/yyyy":
+      return `${day}/${month}/${year}`;
+    case "MM/dd/yyyy":
+      return `${month}/${day}/${year}`;
+    case "yyyy-MM-dd":
+      return isoDate;
+    default:
+      return `${day}/${month}/${year}`; // Formato por defecto
+  }
 }
