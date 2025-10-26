@@ -191,7 +191,7 @@
     </Select>
 
     <!-- 👇 Mensaje de validación con espacio reservado -->
-    <div class="min-h-[1.25rem]">
+    <div class="min-h-5">
       <div v-if="props.showValidation && validation.errorMessage" class="text-sm text-red-500">
         {{ validation.errorMessage }}
       </div>
