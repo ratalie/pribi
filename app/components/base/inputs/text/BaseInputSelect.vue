@@ -33,16 +33,21 @@
   const inputClasses = computed(() =>
     clsx(
       // Estilos base
-      "w-full",
+      "w-full !border-gray-500",
+      // Usar data-state para cuando el select está abierto (reka-ui usa data-state)
+      "data-[state=open]:!border-gray-700 data-[state=open]:!border-2",
+      "data-[state=open]:!ring-2 data-[state=open]:!ring-[var(--color-outline-ring)] data-[state=open]:!ring-offset-4",
       // Variantes
       {
-        "border-red-500 focus:border-red-500": props.variant === "error",
-        "border-green-500 focus:border-green-500": props.variant === "success",
+        "!border-red-500 data-[state=open]:!border-red-500 data-[state=open]:!ring-red-500":
+          props.variant === "error",
+        "!border-green-500 data-[state=open]:!border-green-500 data-[state=open]:!ring-green-500":
+          props.variant === "success",
       },
       // Tamaños
       {
         "h-8 text-sm": props.size === "sm",
-        "h-9 text-base": props.size === "md",
+        "!h-[40px] text-sm": props.size === "md",
         "h-10 text-lg": props.size === "lg",
       },
       // Clases personalizadas

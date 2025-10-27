@@ -7,9 +7,7 @@ export const razonSocialSchema = z
   .refine((s) => /^\p{Lu}/u.test(s), {
     message: "La razón social debe comenzar con mayúscula",
   });
-export const tipoSociedadSchema = z.object({
-  tipoSociedad: z.string().nonempty("El tipo de sociedad es obligatorio").min(2, "El tipo de sociedad debe tener al menos 2 caracteres"),
-});
+export const tipoSociedadSchema = z.string().nonempty("El tipo de sociedad es obligatorio");
 
 export const nombreComercialSchema = z
   .string()
