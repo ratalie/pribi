@@ -11,6 +11,7 @@
   import { Form } from "vee-validate";
   import { ref } from "vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
+  import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import {
     actividadExteriorSchema,
     departamentoSchema,
@@ -20,6 +21,7 @@
     partidaRegistralSchema,
     provinciaSchema,
     razonSocialSchema,
+    tipoSociedadSchema,
   } from "~/modules/registro-sociedades/schemas/datosSociedad";
 
   // Datos del formulario
@@ -109,6 +111,14 @@
           :schema="razonSocialSchema"
         />
 
+        <SelectInputZod
+          v-model="form.tipoSociedad"
+          :options="societyOptions"
+          name="tipo-sociedad"
+          label="Tipo de Sociedad (Zod)"
+          placeholder="Ingrese el tipo de sociedad"
+          :schema="tipoSociedadSchema"
+        />
         <TextInputZod
           v-model="form.nombreComercial"
           name="nombre-comercial"
