@@ -13,6 +13,7 @@ export const razonSocialSchema = z
   .refine((s) => /^\p{Lu}/u.test(s), {
     message: "La razón social debe comenzar con mayúscula",
   });
+export const tipoSociedadSchema = z.string().nonempty("El tipo de sociedad es obligatorio");
 
 export const nombreComercialSchema = z
   .string()
@@ -59,4 +60,5 @@ export const datosSociedadSchema = z.object({
   departamento: departamentoSchema,
   actividadExterior: actividadExteriorSchema,
   partidaRegistral: partidaRegistralSchema,
+  tipoSociedad: tipoSociedadSchema,
 });

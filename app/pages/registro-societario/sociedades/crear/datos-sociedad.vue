@@ -2,7 +2,6 @@
   import NameInput from "@/components/base/inputs/text/custom/NameInput.vue";
   import RucInput from "@/components/base/inputs/text/custom/RucInput.vue";
   import SimpleTextInput from "@/components/base/inputs/text/custom/SimpleTextInput.vue";
-  import DateInput from "@/components/base/inputs/text/ui/DateInput.vue";
   import SelectInput from "@/components/base/inputs/text/ui/SelectInput.vue";
   import { useFormValidation } from "@/composables/useFormValidation";
   import { officeOptions } from "@/constants/inputs/office-options";
@@ -10,7 +9,7 @@
   import type { SelectOption } from "@/types/inputs/select";
   import { Form } from "vee-validate";
   import { ref } from "vue";
-  import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
+  import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
   import {
     actividadExteriorSchema,
@@ -22,6 +21,7 @@
     provinciaSchema,
     razonSocialSchema,
     rucSchema,
+    tipoSociedadSchema,
   } from "~/modules/registro-sociedades/schemas/datosSociedad";
 
   // Datos del formulario
@@ -34,7 +34,6 @@
     distrito: "",
     provincia: "",
     departamento: "",
-    fechaInscripcionRuc: "",
     actividadExterior: "",
     fechaEscrituraPublica: "",
     partidaRegistral: "",
@@ -81,7 +80,6 @@
       distrito: "",
       provincia: "",
       departamento: "",
-      fechaInscripcionRuc: "",
       actividadExterior: "",
       fechaEscrituraPublica: "",
       partidaRegistral: "",
@@ -132,6 +130,14 @@
           :schema="razonSocialSchema"
         />
 
+        <SelectInputZod
+          v-model="form.tipoSociedad"
+          :options="societyOptions"
+          name="tipo-sociedad"
+          label="Tipo de Sociedad (Zod)"
+          placeholder="Ingrese el tipo de sociedad"
+          :schema="tipoSociedadSchema"
+        />
         <TextInputZod
           v-model="form.nombreComercial"
           name="nombre-comercial"
@@ -304,19 +310,8 @@
           </div>
         </div>
 
-        <!-- Fila 5: Fecha de Inscripción RUC y Actividad Exterior -->
+        <!-- Fila 5: Actividad Exterior -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-          <div class="w-full">
-            <DateInput
-              v-model="form.fechaInscripcionRuc"
-              label="Fecha de Inscripción en el RUC"
-              label-id="fecha-inscripcion-ruc"
-              placeholder="Selecciona la fecha de inscripción"
-              :required="true"
-              date-format="dd/MM/yyyy"
-              @validation="handleDateValidation"
-            />
-          </div>
           <div class="w-full">
             <SimpleTextInput
               v-model="form.actividadExterior"
@@ -328,19 +323,8 @@
           </div>
         </div>
 
-        <!-- Fila 6: Fecha de Escritura Pública y Partida Registral -->
+        <!-- Fila 6: Partida Registral -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-          <div class="w-full">
-            <DateInput
-              v-model="form.fechaEscrituraPublica"
-              label="Fecha de Escritura Pública de Constitución"
-              label-id="fecha-escritura-publica"
-              placeholder="Selecciona la fecha de escritura"
-              :required="true"
-              date-format="dd/MM/yyyy"
-              @validation="handleDateValidation"
-            />
-          </div>
           <div class="w-full">
             <SimpleTextInput
               v-model="form.partidaRegistral"
