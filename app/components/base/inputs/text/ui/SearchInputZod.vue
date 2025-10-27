@@ -73,7 +73,7 @@
         <BaseButton
           type="button"
           variant="secondary"
-          class="h-10 w-10 p-0 absolute right-0 top-1/2 -translate-y-1/2 rounded-l-none"
+          class="h-10 w-10 p-0 absolute right-0 top-1/2 -translate-y-1/2 rounded-l-none bg-gray-900 hover:bg-gray-700 transition-colors"
           :disabled="isLoading"
           @click="handleSearch"
         >
