@@ -12,6 +12,7 @@
   import { ref } from "vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
+  import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
   import {
     actividadExteriorSchema,
     departamentoSchema,
@@ -22,6 +23,7 @@
     provinciaSchema,
     razonSocialSchema,
     tipoSociedadSchema,
+    fechaInscripcionRucSchema,
   } from "~/modules/registro-sociedades/schemas/datosSociedad";
 
   // Datos del formulario
@@ -118,6 +120,13 @@
           label="Tipo de Sociedad (Zod)"
           placeholder="Ingrese el tipo de sociedad"
           :schema="tipoSociedadSchema"
+        />
+        <DateInputZod
+          v-model="form.fechaInscripcionRuc"
+          name="fecha-inscripcion-ruc"
+          label="Fecha de Inscripción en el RUC (Zod)"
+          placeholder="Ingrese la fecha de inscripción"
+          :schema="fechaInscripcionRucSchema"
         />
         <TextInputZod
           v-model="form.nombreComercial"

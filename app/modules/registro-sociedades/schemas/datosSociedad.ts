@@ -9,6 +9,8 @@ export const razonSocialSchema = z
   });
 export const tipoSociedadSchema = z.string().nonempty("El tipo de sociedad es obligatorio");
 
+export const fechaInscripcionRucSchema = z.string().nonempty("La fecha de inscripción en el RUC es obligatoria");
+
 export const nombreComercialSchema = z
   .string()
   .nonempty("El nombre comercial es obligatorio")
@@ -54,4 +56,5 @@ export const datosSociedadSchema = z.object({
   actividadExterior: actividadExteriorSchema,
   partidaRegistral: partidaRegistralSchema,
   tipoSociedad: tipoSociedadSchema,
+  fechaInscripcionRuc: fechaInscripcionRucSchema,
 });
