@@ -24,6 +24,7 @@ import {
   Package,
   Palette,
   Plus,
+  Search,
   Settings,
   SquarePen,
   Sun,
@@ -72,6 +73,7 @@ const iconMap = {
   Plus,
   ArrowRight,
   LoaderCircle,
+  Search,
 };
 
 export const getIcon = (iconName: string) => {

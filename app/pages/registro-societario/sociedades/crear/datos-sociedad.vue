@@ -10,6 +10,7 @@
   import type { SelectOption } from "@/types/inputs/select";
   import { Form } from "vee-validate";
   import { ref } from "vue";
+  import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
   import {
     actividadExteriorSchema,
@@ -20,6 +21,7 @@
     partidaRegistralSchema,
     provinciaSchema,
     razonSocialSchema,
+    rucSchema,
   } from "~/modules/registro-sociedades/schemas/datosSociedad";
 
   // Datos del formulario
@@ -51,6 +53,17 @@
     handleDateValidation,
     clearValidations,
   } = useFormValidation();
+
+  const isLoadingRuc = ref(false);
+
+  const handleSearchRuc = (ruc: string) => {
+    isLoadingRuc.value = true;
+
+    setTimeout(() => {
+      console.log("Datos encontrados para RUC:", ruc);
+      isLoadingRuc.value = false;
+    }, 1500);
+  };
 
   // Manejador de envío
   const handleSubmit = () => {
@@ -101,6 +114,16 @@
         @submit="handleSubmit"
         @invalid-submit="handleInvalidSubmit"
       >
+        <SearchInputZod
+          v-model="form.numeroRuc"
+          name="numero-ruc"
+          label="Número de RUC (Zod)"
+          placeholder="Ingrese el número de RUC"
+          :schema="rucSchema"
+          :is-loading="isLoadingRuc"
+          @search="handleSearchRuc"
+        />
+
         <TextInputZod
           v-model="form.razonSocial"
           name="razon-social"

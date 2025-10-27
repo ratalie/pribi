@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+export const rucSchema = z
+  .string()
+  .nonempty("El RUC es obligatorio")
+  .length(11, "El RUC debe tener exactamente 11 dígitos")
+  .regex(/^20\d{9}$/, "El RUC debe empezar con 20");
+
 export const razonSocialSchema = z
   .string()
   .nonempty("La razón social es obligatoria")
@@ -44,6 +50,7 @@ export const partidaRegistralSchema = z
   .min(2, "La partida registral debe tener al menos 2 caracteres");
 
 export const datosSociedadSchema = z.object({
+  ruc: rucSchema,
   razonSocial: razonSocialSchema,
   nombreComercial: nombreComercialSchema,
   direccion: direccionSchema,
