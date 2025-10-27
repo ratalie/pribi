@@ -8,7 +8,19 @@
   import { officeOptions } from "@/constants/inputs/office-options";
   import { societyTypeOptions } from "@/constants/inputs/society-types";
   import type { SelectOption } from "@/types/inputs/select";
+  import { Form } from "vee-validate";
   import { ref } from "vue";
+  import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
+  import {
+    actividadExteriorSchema,
+    departamentoSchema,
+    direccionSchema,
+    distritoSchema,
+    nombreComercialSchema,
+    partidaRegistralSchema,
+    provinciaSchema,
+    razonSocialSchema,
+  } from "~/modules/registro-sociedades/schemas/datosSociedad";
 
   // Datos del formulario
   const form = ref({
@@ -43,7 +55,6 @@
   // Manejador de envío
   const handleSubmit = () => {
     console.log("Formulario enviado:", form.value);
-    alert(`Formulario enviado:\n${JSON.stringify(form.value, null, 2)}`);
   };
 
   // Manejador para limpiar formulario
@@ -65,6 +76,13 @@
     };
     clearValidations();
   };
+
+  const handleInvalidSubmit = (ctx: any) => {
+    // ctx.errors contiene los errores de validación
+    // Puedes mostrar un toast, alert, o log
+    console.log("Errores en el formulario:", ctx.errors);
+    // O usa tu sistema de notificaciones/toast aquí
+  };
 </script>
 
 <template>
@@ -78,6 +96,95 @@
       </div>
 
       <!-- Formulario -->
+      <Form
+        class="grid grid-cols-2 gap-14"
+        @submit="handleSubmit"
+        @invalid-submit="handleInvalidSubmit"
+      >
+        <TextInputZod
+          v-model="form.razonSocial"
+          name="razon-social"
+          label="Razón Social (Zod)"
+          placeholder="Ingrese la razón social"
+          :schema="razonSocialSchema"
+        />
+
+        <TextInputZod
+          v-model="form.nombreComercial"
+          name="nombre-comercial"
+          label="Nombre Comercial (Zod)"
+          placeholder="Ingrese el nombre comercial"
+          :schema="nombreComercialSchema"
+        />
+
+        <TextInputZod
+          v-model="form.direccion"
+          name="direccion"
+          label="Dirección (Zod)"
+          placeholder="Ingrese la dirección"
+          :schema="direccionSchema"
+        />
+
+        <TextInputZod
+          v-model="form.distrito"
+          name="distrito"
+          label="Distrito (Zod)"
+          placeholder="Ingrese el distrito"
+          :schema="distritoSchema"
+        />
+
+        <TextInputZod
+          v-model="form.provincia"
+          name="provincia"
+          label="Provincia (Zod)"
+          placeholder="Ingrese la provincia"
+          :schema="provinciaSchema"
+        />
+
+        <TextInputZod
+          v-model="form.departamento"
+          name="departamento"
+          label="Departamento (Zod)"
+          placeholder="Ingrese el departamento"
+          :schema="departamentoSchema"
+        />
+
+        <TextInputZod
+          v-model="form.actividadExterior"
+          name="actividad-exterior"
+          label="Actividad Exterior (Zod)"
+          placeholder="Ingrese la actividad exterior"
+          :schema="actividadExteriorSchema"
+        />
+
+        <TextInputZod
+          v-model="form.partidaRegistral"
+          name="partida-registral"
+          label="Partida Registral (Zod)"
+          placeholder="Ingrese la partida registral"
+          :schema="partidaRegistralSchema"
+        />
+
+        <!-- Botones -->
+        <div class="flex justify-end space-x-4 pt-6">
+          <button
+            type="button"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            @click="handleClear"
+          >
+            Limpiar
+          </button>
+
+          <button
+            type="submit"
+            :disabled="!isValid"
+            class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Enviar Formulario
+          </button>
+        </div>
+      </Form>
+
       <form class="space-y-6" @submit.prevent="handleSubmit">
         <!-- Fila 1: RUC y Tipo de Sociedad -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
@@ -235,7 +342,6 @@
             />
           </div>
         </div>
-
 
         <!-- Botones -->
         <div class="flex justify-end space-x-4 pt-6">
