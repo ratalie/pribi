@@ -10,6 +10,7 @@
     size?: "sm" | "md" | "lg";
     placeholder?: string;
     type?: string;
+    isDisabled?: boolean;
   }
 
   const props = defineProps<Props>();
@@ -33,7 +34,11 @@
       // Tamaños
       props.size === "sm" && "h-8 px-2 text-sm",
       props.size === "md" && "h-10 px-3 text-base",
-      props.size === "lg" && "h-12 px-4 text-lg"
+      props.size === "lg" && "h-12 px-4 text-lg",
+
+      // Deshabilitado
+      props.isDisabled &&
+        "disabled:!bg-gray-200 disabled:!cursor-not-allowed disabled:!opacity-100"
     )
   );
 </script>
@@ -45,6 +50,7 @@
     :class="inputClasses"
     :placeholder="props.placeholder"
     :type="props.type || 'text'"
+    :disabled="props.isDisabled"
     v-on="$attrs"
   />
 </template>

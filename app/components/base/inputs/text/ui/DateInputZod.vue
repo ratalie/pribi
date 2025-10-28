@@ -10,6 +10,7 @@
     label?: string;
     placeholder?: string;
     schema: ZodTypeAny;
+    isDisabled?: boolean;
   }
 
   const props = defineProps<Props>();
@@ -51,6 +52,7 @@
           :size="'md'"
           :placeholder="placeholder"
           class="block"
+          :is-disabled="isDisabled"
           @blur="setTouched(true)"
         />
       </div>

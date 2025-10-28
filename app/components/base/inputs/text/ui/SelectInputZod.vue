@@ -11,6 +11,7 @@
     placeholder?: string;
     schema: ZodTypeAny;
     options?: T[];
+    isDisabled?: boolean;
   }
 
   const props = defineProps<Props>();
@@ -50,6 +51,7 @@
         :size="'md'"
         :placeholder="placeholder"
         :options="options"
+        :is-disabled="isDisabled"
         @blur="setTouched(true)"
       />
     </div>
