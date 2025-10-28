@@ -1,10 +1,13 @@
 <script setup lang="ts">
   import { Form } from "vee-validate";
+  import BaseButton from "~/components/base/buttons/BaseButton.vue";
+  import CardTitle from "~/components/base/cards/CardTitle.vue";
   import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
   import SwitchTabs from "~/components/base/Switch/SwitchTabs.vue";
+  import Switch from "~/components/ui/switch/Switch.vue";
   import { officeOptions } from "~/constants/inputs/office-options";
   import { societyTypeOptions } from "~/constants/inputs/society-types";
   import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
@@ -25,7 +28,6 @@
     rucSchema,
     tipoSociedadSchema,
   } from "../../schemas/datosSociedad";
-
   interface Props {
     mode: EntityModeEnum;
     societyId?: string;
@@ -56,6 +58,7 @@
   const officeSelectOptions: TypeOption[] = officeOptions;
 
   const isLoadingRuc = ref(false);
+  const isActive = ref(true);
 
   const handleSearchRuc = (ruc: string) => {
     isLoadingRuc.value = true;
@@ -85,11 +88,71 @@
   <div class="min-h-screen">
     <!-- Formulario principal -->
     <div class="bg-white p-8">
-      <!-- Header -->
-      <div class="mb-8">
-        <h1 class="text-2xl font-bold text-gray-700">Datos principales</h1>
-        <p class="text-gray-700 mt-2">Complete todos los datos requeridos.</p>
-      </div>
+      <!-- Ejemplo 2: Con un botón -->
+      <CardTitle
+        title="Datos principales"
+        body="Complete todos los datos requeridos."
+        class="mb-8"
+      >
+        <template #actions>
+          <BaseButton variant="primary" size="md">Guardar</BaseButton>
+        </template>
+      </CardTitle>
+
+      <!-- Ejemplo 3: Con un icono (descomenta para usar) -->
+      <CardTitle
+        title="Datos principales"
+        body="Complete todos los datos requeridos."
+        class="mb-8"
+      >
+        <template #actions>
+          <button
+            class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+              />
+            </svg>
+          </button>
+        </template>
+      </CardTitle>
+
+      <!-- Ejemplo 6: Con badge pegado al título -->
+      <CardTitle
+        title="Datos principales"
+        body="Complete todos los datos requeridos."
+        class="mb-8"
+      >
+        <template #switch>
+          <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded">
+            Nuevo
+          </span>
+        </template>
+        <template #actions>
+          <BaseButton variant="primary" size="md">Guardar</BaseButton>
+        </template>
+      </CardTitle>
+
+      <!-- Ejemplo 7: Solo con switch, sin actions -->
+      <CardTitle
+        title="Datos principales"
+        body="Active o desactive esta sección."
+        class="mb-8"
+      >
+        <template #switch>
+          <Switch v-model:checked="isActive" />
+        </template>
+      </CardTitle>
 
       <SwitchTabs opcion-a="El Directorio" opcion-b="La Junta de Accionistas">
         <template #opcion-a>
