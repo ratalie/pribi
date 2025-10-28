@@ -1,7 +1,6 @@
-// app/constants/inputs/society-types.ts
-import type { SelectOption } from "@/types/inputs/select";
+import type { TypeOption } from "~/types/TypeOptions";
 
-export const societyTypeOptions: SelectOption[] = [
+export const societyTypeOptions: TypeOption[] = [
   {
     id: 1,
     label: "Sociedad Anónima (S.A.)",

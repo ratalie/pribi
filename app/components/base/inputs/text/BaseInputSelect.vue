@@ -6,18 +6,24 @@
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select";
-  import type { SelectOption } from "@/types/inputs/select";
   import { useVModel } from "@vueuse/core";
   import clsx from "clsx";
 
-  interface Props {
+  export interface BaseSelectOption {
+    id: string | number;
+    value: string | number;
+    label: string;
+  }
+
+  interface Props<T extends BaseSelectOption = BaseSelectOption> {
     id: string;
     modelValue: string;
     variant?: "default" | "error" | "success";
     size?: "sm" | "md" | "lg";
     placeholder?: string;
     customClasses?: string;
-    options?: SelectOption[];
+    options?: T[];
+    isDisabled?: boolean;
   }
 
   const props = defineProps<Props>();
@@ -34,30 +40,30 @@
     clsx(
       // Estilos base
       "w-full !border-gray-500",
-      // Usar data-state para cuando el select está abierto (reka-ui usa data-state)
       "data-[state=open]:!border-gray-700 data-[state=open]:!border-2",
       "data-[state=open]:!ring-2 data-[state=open]:!ring-[var(--color-outline-ring)] data-[state=open]:!ring-offset-4",
+
       // Variantes
-      {
-        "!border-red-500 data-[state=open]:!border-red-500 data-[state=open]:!ring-red-500":
-          props.variant === "error",
-        "!border-green-500 data-[state=open]:!border-green-500 data-[state=open]:!ring-green-500":
-          props.variant === "success",
-      },
+      props.variant === "error" &&
+        "!border-red-500 data-[state=open]:!border-red-500 data-[state=open]:!ring-red-500",
+      props.variant === "success" &&
+        "!border-green-500 data-[state=open]:!border-green-500 data-[state=open]:!ring-green-500",
+
       // Tamaños
-      {
-        "h-8 text-sm": props.size === "sm",
-        "!h-[40px] text-sm": props.size === "md",
-        "h-10 text-lg": props.size === "lg",
-      },
-      // Clases personalizadas
-      props.customClasses
+      props.size === "sm" && "h-8 text-sm",
+      props.size === "md" && "!h-[40px] text-sm",
+      props.size === "lg" && "h-10 text-lg",
+
+      // Deshabilitado
+      props.customClasses,
+      props.isDisabled &&
+        "disabled:!bg-gray-200 disabled:!cursor-not-allowed disabled:!opacity-100"
     )
   );
 </script>
 
 <template>
-  <Select :id="props.id" v-model="modelValue" v-on="$attrs">
+  <Select :id="props.id" v-model="modelValue" :disabled="props.isDisabled" v-on="$attrs">
     <SelectTrigger :class="inputClasses">
       <SelectValue :placeholder="props.placeholder" />
     </SelectTrigger>

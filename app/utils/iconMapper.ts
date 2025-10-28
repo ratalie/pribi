@@ -4,6 +4,7 @@ import {
   BarChart3,
   Briefcase,
   Building2,
+  Calendar,
   ChevronDown,
   ChevronRight,
   Crown,
@@ -24,6 +25,7 @@ import {
   Package,
   Palette,
   Plus,
+  Search,
   Settings,
   SquarePen,
   Sun,
@@ -72,6 +74,8 @@ const iconMap = {
   Plus,
   ArrowRight,
   LoaderCircle,
+  Search,
+  Calendar,
 };
 
 export const getIcon = (iconName: string) => {

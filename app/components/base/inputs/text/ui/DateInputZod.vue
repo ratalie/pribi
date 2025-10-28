@@ -43,15 +43,19 @@
       <label v-if="label" :for="name" class="t-t2 font-primary text-gray-900 font-bold">
         {{ label }}
       </label>
-      <BaseInput
-        :id="name"
-        v-model="value"
-        :variant="errorMessage ? 'error' : 'default'"
-        :size="'md'"
-        :placeholder="placeholder"
-        :is-disabled="isDisabled"
-        @blur="setTouched(true)"
-      />
+      <div class="relative w-full">
+        <BaseInput
+          :id="name"
+          v-model="value"
+          type="date"
+          :variant="errorMessage ? 'error' : 'default'"
+          :size="'md'"
+          :placeholder="placeholder"
+          class="block"
+          :is-disabled="isDisabled"
+          @blur="setTouched(true)"
+        />
+      </div>
     </div>
     <p v-if="meta.touched || errorMessage" class="t-t2 -bottom-7 pl-2 text-red-600 absolute">
       {{ errorMessage }}
