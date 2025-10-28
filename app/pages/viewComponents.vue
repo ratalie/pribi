@@ -1,13 +1,17 @@
 <script setup lang="ts">
   import BaseButton from "~/components/base/buttons/BaseButton.vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
-  import RucInput from "~/components/base/inputs/text/custom/RucInput.vue";
-  import SelectInput from "~/components/base/inputs/text/ui/SelectInput.vue";
+  import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
+  import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
   import CheckboxTable from "~/components/base/tables/checkbox-table/CheckboxTable.vue";
   import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
-  import { razonSocialSchema } from "~/modules/registro-sociedades/schemas/datosSociedad";
+  import {
+    razonSocialSchema,
+    rucSchema,
+    tipoSociedadSchema,
+  } from "~/modules/registro-sociedades/schemas/datosSociedad";
   import { ItemStateEnum } from "~/types/enums/ItemStateEnum";
 
   //tabla simple
@@ -124,9 +128,21 @@
   //zod input
   const form = ref({
     razonSocial: "",
+    tipoSociedad: "",
     numeroRuc: "",
     oficinaRegistral: "",
   });
+
+  const isLoading = ref(false);
+
+  const handleSearch = (numberDoc: string) => {
+    isLoading.value = true;
+
+    setTimeout(() => {
+      console.log("Datos encontrados:", numberDoc);
+      isLoading.value = false;
+    }, 1500);
+  };
 
   const options = [
     { id: 1, acronimo: "LIM", name: "Lima", label: "Lima", value: "lima" },
@@ -180,24 +196,23 @@
       <p class="text-primary font-bold t-h6">Lista de botones</p>
 
       <div class="flex flex-col gap-8">
-        <RucInput
+        <SearchInputZod
           v-model="form.numeroRuc"
-          label="Input de busqueda"
-          label-id="busqueda"
+          name="input-de-busqueda"
+          label="Input de búsqueda"
           placeholder="Ingrese el número a buscar"
-          :required="true"
-          :show-search-icon="true"
-          icon-position="right"
-          @validation="() => {}"
+          :schema="rucSchema"
+          :is-loading="isLoading"
+          @search="handleSearch"
         />
 
-        <SelectInput
-          v-model="form.oficinaRegistral"
-          label="Input de selección"
+        <SelectInputZod
+          v-model="form.tipoSociedad"
           :options="options"
-          :required="true"
-          placeholder="Elige una opción"
-          @validation="() => {}"
+          name="input-de-selección"
+          label="Input de selección"
+          placeholder="Seleccione una opción"
+          :schema="tipoSociedadSchema"
         />
 
         <TextInputZod
