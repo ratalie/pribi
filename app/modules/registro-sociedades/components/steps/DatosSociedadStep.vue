@@ -4,6 +4,7 @@
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
+  import SwitchTabs from "~/components/base/Switch/SwitchTabs.vue";
   import { officeOptions } from "~/constants/inputs/office-options";
   import { societyTypeOptions } from "~/constants/inputs/society-types";
   import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
@@ -89,6 +90,15 @@
         <h1 class="text-2xl font-bold text-gray-700">Datos principales</h1>
         <p class="text-gray-700 mt-2">Complete todos los datos requeridos.</p>
       </div>
+
+      <SwitchTabs opcion-a="El Directorio" opcion-b="La Junta de Accionistas">
+        <template #opcion-a>
+          <div>EL DIRECTORIO</div>
+        </template>
+        <template #opcion-b>
+          <div>LA JUNTA DE ACCIONISTAS</div>
+        </template>
+      </SwitchTabs>
 
       <!-- Formulario -->
       <Form
