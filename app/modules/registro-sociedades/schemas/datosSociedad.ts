@@ -41,10 +41,22 @@ export const departamentoSchema = z
   .nonempty("El departamento es obligatorio")
   .min(2, "El departamento debe tener al menos 2 caracteres");
 
+export const fechaInscripcionRucSchema = z
+  .string()
+  .nonempty("La fecha de inscripción de RUC es obligatoria");
+
 export const actividadExteriorSchema = z
   .string()
   .nonempty("La actividad exterior es obligatoria")
   .min(2, "La actividad exterior debe tener al menos 2 caracteres");
+
+export const fechaEscrituraPublicaSchema = z
+  .string()
+  .nonempty("La fecha de escritura pública es obligatoria");
+
+export const fechaRegistrosPublicosSchema = z
+  .string()
+  .nonempty("La fecha de registros públicos es obligatoria");
 
 export const oficinaRegistralSchema = z
   .string()
@@ -64,7 +76,10 @@ export const datosSociedadSchema = z.object({
   distrito: distritoSchema,
   provincia: provinciaSchema,
   departamento: departamentoSchema,
+  fechaInscripcionRuc: fechaInscripcionRucSchema,
   actividadExterior: actividadExteriorSchema,
+  fechaEscrituraPublica: fechaEscrituraPublicaSchema,
+  fechaRegistrosPublicos: fechaRegistrosPublicosSchema,
   oficinaRegistral: oficinaRegistralSchema,
   partidaRegistral: partidaRegistralSchema,
 });

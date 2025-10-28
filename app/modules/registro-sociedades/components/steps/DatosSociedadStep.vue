@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { Form } from "vee-validate";
+  import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
@@ -12,6 +13,9 @@
     departamentoSchema,
     direccionSchema,
     distritoSchema,
+    fechaEscrituraPublicaSchema,
+    fechaInscripcionRucSchema,
+    fechaRegistrosPublicosSchema,
     nombreComercialSchema,
     oficinaRegistralSchema,
     partidaRegistralSchema,
@@ -38,8 +42,10 @@
     distrito: "",
     provincia: "",
     departamento: "",
+    fechaInscripcionRuc: "",
     actividadExterior: "",
     fechaEscrituraPublica: "",
+    fechaRegistrosPublicos: "",
     partidaRegistral: "",
     oficinaRegistral: "",
   });
@@ -70,6 +76,8 @@
     console.log("Errores en el formulario:", ctx.errors);
     // O usa tu sistema de notificaciones/toast aquí
   };
+
+  // Fecha seleccionada
 </script>
 
 <template>
@@ -155,12 +163,36 @@
           :schema="departamentoSchema"
         />
 
+        <DateInputZod
+          v-model="form.fechaInscripcionRuc"
+          name="fecha-inscripcion-ruc"
+          label="Fecha de Inscripción de RUC (Zod)"
+          placeholder="Ingrese la fecha de inscripción de RUC"
+          :schema="fechaInscripcionRucSchema"
+        />
+
         <TextInputZod
           v-model="form.actividadExterior"
           name="actividad-exterior"
           label="Actividad Exterior (Zod)"
           placeholder="Ingrese la actividad exterior"
           :schema="actividadExteriorSchema"
+        />
+
+        <DateInputZod
+          v-model="form.fechaEscrituraPublica"
+          name="fecha-escritura-publica"
+          label="Fecha de Escritura Pública (Zod)"
+          placeholder="Ingrese la fecha de escritura pública"
+          :schema="fechaEscrituraPublicaSchema"
+        />
+
+        <DateInputZod
+          v-model="form.fechaRegistrosPublicos"
+          name="fecha-registros-publicos"
+          label="Fecha de Registros Públicos (Zod)"
+          placeholder="Ingrese la fecha de registros públicos"
+          :schema="fechaRegistrosPublicosSchema"
         />
 
         <SelectInputZod
