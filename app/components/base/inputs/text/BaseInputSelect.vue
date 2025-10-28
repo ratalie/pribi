@@ -6,18 +6,23 @@
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select";
-  import type { SelectOption } from "@/types/inputs/select";
   import { useVModel } from "@vueuse/core";
   import clsx from "clsx";
 
-  interface Props {
+  export interface BaseSelectOption {
+    id: string | number;
+    value: string | number;
+    label: string;
+  }
+
+  interface Props<T extends BaseSelectOption = BaseSelectOption> {
     id: string;
     modelValue: string;
     variant?: "default" | "error" | "success";
     size?: "sm" | "md" | "lg";
     placeholder?: string;
     customClasses?: string;
-    options?: SelectOption[];
+    options?: T[];
   }
 
   const props = defineProps<Props>();

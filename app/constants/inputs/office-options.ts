@@ -1,7 +1,6 @@
-// app/constants/inputs/office-options.ts
-import type { SelectOption } from "@/types/inputs/select";
+import type { TypeOption } from "~/types/TypeOptions";
 
-export const officeOptions: SelectOption[] = [
+export const officeOptions: TypeOption[] = [
   { id: 1, label: "LIMA", name: "LIMA", value: "LIMA", acronimo: "LIM" },
   {
     id: 2,

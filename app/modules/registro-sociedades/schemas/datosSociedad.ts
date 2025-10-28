@@ -13,6 +13,7 @@ export const razonSocialSchema = z
   .refine((s) => /^\p{Lu}/u.test(s), {
     message: "La razón social debe comenzar con mayúscula",
   });
+
 export const tipoSociedadSchema = z.string().nonempty("El tipo de sociedad es obligatorio");
 
 export const nombreComercialSchema = z
@@ -45,6 +46,10 @@ export const actividadExteriorSchema = z
   .nonempty("La actividad exterior es obligatoria")
   .min(2, "La actividad exterior debe tener al menos 2 caracteres");
 
+export const oficinaRegistralSchema = z
+  .string()
+  .nonempty("La oficina registral es obligatoria");
+
 export const partidaRegistralSchema = z
   .string()
   .nonempty("La partida registral es obligatoria")
@@ -52,6 +57,7 @@ export const partidaRegistralSchema = z
 
 export const datosSociedadSchema = z.object({
   ruc: rucSchema,
+  tipoSociedad: tipoSociedadSchema,
   razonSocial: razonSocialSchema,
   nombreComercial: nombreComercialSchema,
   direccion: direccionSchema,
@@ -59,6 +65,6 @@ export const datosSociedadSchema = z.object({
   provincia: provinciaSchema,
   departamento: departamentoSchema,
   actividadExterior: actividadExteriorSchema,
+  oficinaRegistral: oficinaRegistralSchema,
   partidaRegistral: partidaRegistralSchema,
-  tipoSociedad: tipoSociedadSchema,
 });

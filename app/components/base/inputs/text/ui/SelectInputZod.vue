@@ -1,17 +1,16 @@
 <script setup lang="ts">
-  import type { SelectOption } from "@/types/inputs/select";
   import { useField } from "vee-validate";
   import { watch } from "vue";
   import type { ZodTypeAny } from "zod";
-  import BaseInputSelect from "../BaseInputSelect.vue";
+  import BaseInputSelect, { type BaseSelectOption } from "../BaseInputSelect.vue";
 
-  interface Props {
+  interface Props<T extends BaseSelectOption = BaseSelectOption> {
     name: string;
     modelValue: string;
     label?: string;
     placeholder?: string;
     schema: ZodTypeAny;
-    options?: SelectOption[];
+    options?: T[];
   }
 
   const props = defineProps<Props>();
