@@ -1,3 +1,18 @@
+<script setup lang="ts">
+  import { Menu } from "lucide-vue-next";
+  import ProboSidebar from "~/components/ProboSidebar.vue";
+  import Button from "~/components/ui/button/Button.vue";
+
+  const route = useRoute();
+  const isFlowLayout = computed(() => route.meta.flowLayout === true);
+
+  const isCollapsed = ref(false);
+
+  const toggleSidebar = () => {
+    isCollapsed.value = !isCollapsed.value;
+  };
+</script>
+
 <template>
   <div class="flex h-screen overflow-hidden bg-safe">
     <!-- Toggle Button - Solo visible cuando está colapsado -->
@@ -20,21 +35,12 @@
     <!-- Main Content -->
     <div class="flex-1 flex flex-col overflow-hidden">
       <!-- Main Content Area -->
-      <main class="flex-1 overflow-y-auto p-12">
-        <slot />
+      <main class="flex-1 overflow-y-auto">
+        <NuxtLayout v-if="isFlowLayout" name="flow-layout">
+          <slot />
+        </NuxtLayout>
+        <slot v-else />
       </main>
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-  import { Menu } from "lucide-vue-next";
-  import ProboSidebar from "~/components/ProboSidebar.vue";
-  import Button from "~/components/ui/button/Button.vue";
-
-  const isCollapsed = ref(false);
-
-  const toggleSidebar = () => {
-    isCollapsed.value = !isCollapsed.value;
-  };
-</script>

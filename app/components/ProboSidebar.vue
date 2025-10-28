@@ -61,11 +61,12 @@
 <template>
   <!-- Sidebar Container -->
   <SidebarProvider class="w-auto">
+    <!-- Sidebar base -->
     <Sidebar
       :class="
         cn(
           'bg-sidebar h-screen flex flex-col overflow-hidden border-r border-sidebar-border',
-          isCollapsed ? 'w-0 opacity-0' : 'w-[280px] opacity-100'
+          isCollapsed ? 'w-0 opacity-0' : 'w-[300px] opacity-100'
         )
       "
     >
