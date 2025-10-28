@@ -1,9 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+</script>
 
 <template>
   <div class="flex flex-col h-screen">
     <!-- Header -->
-    <div class="h-[104px] border-y">
+    <div class="h-26 border-y">
       <h1 class="text-2xl font-bold">Flow Layout</h1>
     </div>
     <!-- Body -->
@@ -12,12 +14,15 @@
         <p>Progress bar</p>
       </div>
 
-      <div class="flex-1 overflow-y-auto">
-        <div class="flex-1">
+      <div class="flex-1 flex flex-col">
+        <div class="flex-1 overflow-y-auto">
           <slot />
         </div>
-        <div class="h-[92px] border-t sticky bottom-0 bg-white z-10 shrink-0">
-          <div>Footer content</div>
+
+        <div
+          class="h-[92px] border-t sticky bottom-0 bg-white z-10 shrink-0 flex items-center justify-end px-16"
+        >
+          <ActionButton label="Siguiente" size="md" />
         </div>
       </div>
     </div>
