@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
-  import ProgressNavBar from "~/components/flow-layout/ProgressNavBar.vue";
+  import HeaderProgressNavbar from "~/components/flow-layout/HeaderProgressNavbar.vue";
+  import ProgressNavbar from "~/components/flow-layout/ProgressNavbar.vue";
 
   const { steps } = useProgressNavbarRoutes();
 </script>
@@ -8,13 +9,12 @@
 <template>
   <div class="flex flex-col h-screen">
     <!-- Header -->
-    <div class="h-26 border-y">
-      <h1 class="text-2xl font-bold">Flow Layout</h1>
-    </div>
+    <HeaderProgressNavbar :steps="steps" />
+
     <!-- Body -->
     <div class="flex min-h-0 flex-1">
       <div class="w-[401px] border-r p-4">
-        <ProgressNavBar :steps="steps" />
+        <ProgressNavbar :steps="steps" />
       </div>
 
       <div class="flex-1 flex flex-col">
@@ -22,6 +22,7 @@
           <slot />
         </div>
 
+        <!-- Footer -->
         <div
           class="h-[92px] border-t sticky bottom-0 bg-white z-10 shrink-0 flex items-center justify-end px-16"
         >

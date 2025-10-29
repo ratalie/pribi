@@ -11,19 +11,19 @@ export const societyRegisterNavigation = (mode: string): NavigationStep[] => {
     {
       title: "Accionistas",
       description: "Agrega los accionistas de la Sociedad",
-      status: "current",
+      status: "completed",
       route: `/registro-societario/sociedades/${mode}/accionistas`,
     },
     {
       title: "Capital Social y Acciones",
       description: "Completa información sobre las acciones",
-      status: "empty",
+      status: "completed",
       route: `/registro-societario/sociedades/${mode}/acciones`,
     },
     {
       title: "Asignación de Acciones",
       description: "Distribuye Tipos de Acciones entre los Accionistas",
-      status: "empty",
+      status: "current",
       route: `/registro-societario/sociedades/${mode}/asignacion-acciones`,
     },
     {
