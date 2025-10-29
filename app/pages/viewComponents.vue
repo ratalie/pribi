@@ -1,6 +1,8 @@
 <script setup lang="ts">
   import BaseButton from "~/components/base/buttons/BaseButton.vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+  import FileUploadDragDrop from "~/components/base/inputs/FileUploadDragDrop.vue";
+  import FileUploadDragDropMultiple from "~/components/base/inputs/FileUploadDragDropMultiple.vue";
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
@@ -14,6 +16,11 @@
   } from "~/modules/registro-sociedades/schemas/datosSociedad";
   import { ItemStateEnum } from "~/types/enums/ItemStateEnum";
 
+  const uploadedFile = ref<File | null>(null);
+  const uploadedFiles = ref<File[]>([]);
+
+  import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
+  
   //tabla simple
   export interface ISocietyTable {
     id: string;
@@ -223,6 +230,46 @@
           :schema="razonSocialSchema"
         />
       </div>
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <!-- Ejemplo 1: DEFAULT - Grande con título -->
+      <FileUploadDragDrop
+        v-model="uploadedFile"
+        title="Subir documento"
+        subtitle="Arrastra tu archivo o haz clic para seleccionarlo"
+        variant="default"
+        format-description=".docx, .pdf (max 5 MB)"
+      />
+
+      <!-- Ejemplo 2: COMPACT - Mediano sin título -->
+      <FileUploadDragDrop
+        v-model="uploadedFile"
+        variant="compact"
+        click-message="Cargar archivo"
+        drag-message="o arrastra aquí"
+      />
+
+      <!-- Ejemplo 3: INLINE - Horizontal compacto -->
+      <FileUploadDragDrop
+        v-model="uploadedFile"
+        variant="inline"
+        click-message="Adjuntar"
+        :hide-description="true"
+      />
+
+      <!-- Ejemplo 4: Múltiples archivos -->
+      <FileUploadDragDropMultiple
+        v-model="uploadedFiles"
+        title="Subir múltiples documentos"
+        subtitle="Puedes adjuntar varios archivos a la vez"
+        :max-files="10"
+        :max-size-m-b="5"
+      />
+    </div>
+
+    
+      <SimpleSwitchYesNo />
     </div>
   </div>
 </template>
