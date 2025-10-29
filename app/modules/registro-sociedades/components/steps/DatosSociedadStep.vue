@@ -6,7 +6,6 @@
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
-  import SwitchTabs from "~/components/base/Switch/SwitchTabs.vue";
   import Switch from "~/components/ui/switch/Switch.vue";
   import { officeOptions } from "~/constants/inputs/office-options";
   import { societyTypeOptions } from "~/constants/inputs/society-types";

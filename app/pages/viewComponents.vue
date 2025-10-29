@@ -19,6 +19,8 @@
   const uploadedFile = ref<File | null>(null);
   const uploadedFiles = ref<File[]>([]);
 
+  import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
+  
   //tabla simple
   export interface ISocietyTable {
     id: string;
@@ -267,5 +269,7 @@
     </div>
 
     
+      <SimpleSwitchYesNo />
+    </div>
   </div>
 </template>
