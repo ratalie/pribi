@@ -172,7 +172,7 @@
     >
       <!-- Grid de archivos centrado -->
       <div class="flex justify-center">
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           <div
             v-for="(file, index) in files"
             :key="`${file.name}-${index}`"
@@ -182,36 +182,36 @@
             <!-- Botón eliminar (tachito) -->
             <button
               type="button"
-              class="absolute top-1 right-1 p-1 rounded-md hover:bg-red-100 hover:text-red-600 transition-colors"
+              class="absolute top-1 right-1 p-1 rounded-md hover:bg-red-100 hover:text-red-600 transition-colors z-10"
               @click="removeFile(index)"
             >
               <Icon icon="heroicons:trash" class="h-4 w-4 text-gray-600" />
             </button>
 
             <!-- Contenido del card -->
-            <div class="flex flex-col items-center gap-[6px] text-center pt-0.5">
+            <div class="flex flex-col items-center gap-[2px] text-center pt-0.5">
               <!-- Nombre del archivo (arriba) -->
-              <div class="w-full flex justify-start">
+              <div class="w-full flex justify-start pr-6">
                 <p
-                  class="text-[9px] font-medium text-gray-800 line-clamp-1 w-[75%] text-left px-0.5"
+                  class="text-[11px] font-medium text-gray-800 line-clamp-1 w-full text-left px-0.5"
                 >
                   {{ file.name }}
                 </p>
               </div>
 
               <!-- Icono del tipo de archivo (centro - gris simple) -->
-              <div class="h-12 w-12 my-0.5 flex items-center justify-center">
+              <div class="h-14 w-14 my-0.5 flex items-center justify-center">
                 <img
                   v-if="getFileIcon(file) === 'pdf-Icon' || getFileIcon(file) === 'word-Icon'"
                   :src="`/_nuxt/assets/icons/${getFileIcon(file)}.svg`"
                   :alt="getFileIcon(file)"
-                  class="h-8 w-6"
+                  class="h-10 w-7"
                 />
-                <Icon v-else :icon="getFileIcon(file)" class="h-10 w-10 text-gray-400" />
+                <Icon v-else :icon="getFileIcon(file)" class="h-12 w-12 text-gray-400" />
               </div>
 
               <!-- Tamaño del archivo (abajo) -->
-              <p class="text-[8px] text-gray-500 font-medium">
+              <p class="text-[10px] text-gray-500 font-medium">
                 {{ formatFileSize(file.size) }}
               </p>
             </div>
@@ -228,7 +228,7 @@
             <div class="bg-white rounded-full p-1 shadow-sm">
               <Icon icon="heroicons:plus" class="h-4 w-4 text-primary-600" />
             </div>
-            <p class="text-[9px] font-medium text-gray-600 text-center">
+            <p class="text-[11px] font-medium text-gray-600 text-center">
               Agregar más archivos
             </p>
           </div>
