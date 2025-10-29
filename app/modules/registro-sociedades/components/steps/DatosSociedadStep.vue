@@ -87,6 +87,8 @@
   <div class="min-h-screen">
     <!-- Formulario principal -->
     <div class="bg-white p-8">
+      <SimpleSwitchYesNo />
+
       <!-- Ejemplo 2: Con un botón -->
       <CardTitle
         title="Datos principales"
