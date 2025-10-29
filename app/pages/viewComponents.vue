@@ -13,7 +13,8 @@
     tipoSociedadSchema,
   } from "~/modules/registro-sociedades/schemas/datosSociedad";
   import { ItemStateEnum } from "~/types/enums/ItemStateEnum";
-
+  import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
+  
   //tabla simple
   export interface ISocietyTable {
     id: string;
@@ -223,6 +224,10 @@
           :schema="razonSocialSchema"
         />
       </div>
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <SimpleSwitchYesNo />
     </div>
   </div>
 </template>

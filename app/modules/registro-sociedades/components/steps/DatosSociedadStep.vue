@@ -6,7 +6,6 @@
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
-  import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
   import Switch from "~/components/ui/switch/Switch.vue";
   import { officeOptions } from "~/constants/inputs/office-options";
   import { societyTypeOptions } from "~/constants/inputs/society-types";
@@ -88,7 +87,6 @@
   <div class="min-h-screen">
     <!-- Formulario principal -->
     <div class="bg-white p-8">
-      <SimpleSwitchYesNo />
       <!-- Ejemplo 2: Con un botón -->
       <CardTitle
         title="Datos principales"
