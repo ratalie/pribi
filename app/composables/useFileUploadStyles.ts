@@ -43,7 +43,7 @@ export function useFileUploadStyles(
 
     switch (variant) {
       case "compact":
-        return "h-24";
+        return "h-27";
       case "inline":
         return "h-16";
       case "default":

@@ -77,14 +77,14 @@
     { immediate: true }
   );
 
-  // Obtener icono según tipo de archivo (iconos grises simples)
+  // Obtener icono según tipo de archivo (iconos SVG personalizados)
   const getFileIcon = (file: File): string => {
     const type = file.type;
     const name = file.name.toLowerCase();
 
     // PDF
     if (type === "application/pdf" || name.endsWith(".pdf")) {
-      return "heroicons:document-text";
+      return "pdf-Icon";
     }
 
     // Word
@@ -94,7 +94,7 @@
       name.endsWith(".doc") ||
       name.endsWith(".docx")
     ) {
-      return "heroicons:document-text";
+      return "word-Icon";
     }
 
     // Excel
@@ -121,7 +121,7 @@
     <div
       v-if="!hasFiles"
       :class="[
-        'relative h-48 border-2 border-dashed rounded-lg transition-all',
+        'relative h-38 border-2 border-dashed rounded-lg transition-all',
         'flex items-center justify-center cursor-pointer',
         isDragging
           ? 'border-primary-600 bg-primary-50'
@@ -176,29 +176,42 @@
           <div
             v-for="(file, index) in files"
             :key="`${file.name}-${index}`"
-            class="relative aspect-square border border-gray-200 rounded-lg p-3 bg-white hover:shadow-md transition-shadow group"
+            class="relative border border-gray-200 rounded-lg p-1.5 bg-white hover:shadow-md transition-shadow group"
+            style="height: 110px; width: 114px"
           >
-            <!-- Botón eliminar (tres puntos) -->
+            <!-- Botón eliminar (tachito) -->
             <button
               type="button"
-              class="absolute top-2 right-2 p-1 rounded-md hover:bg-gray-100 transition-colors"
+              class="absolute top-1 right-1 p-1 rounded-md hover:bg-red-100 hover:text-red-600 transition-colors"
               @click="removeFile(index)"
             >
-              <Icon icon="heroicons:ellipsis-vertical" class="h-4 w-4 text-gray-600" />
+              <Icon icon="heroicons:trash" class="h-4 w-4 text-gray-600" />
             </button>
 
             <!-- Contenido del card -->
-            <div class="flex flex-col items-center gap-1.5 text-center pt-1">
+            <div class="flex flex-col items-center gap-[6px] text-center pt-0.5">
               <!-- Nombre del archivo (arriba) -->
-              <p class="text-[11px] font-medium text-gray-800 line-clamp-1 w-full px-1">
-                {{ file.name }}
-              </p>
+              <div class="w-full flex justify-start">
+                <p
+                  class="text-[9px] font-medium text-gray-800 line-clamp-1 w-[75%] text-left px-0.5"
+                >
+                  {{ file.name }}
+                </p>
+              </div>
 
               <!-- Icono del tipo de archivo (centro - gris simple) -->
-              <Icon :icon="getFileIcon(file)" class="h-14 w-14 text-gray-400 my-1" />
+              <div class="h-12 w-12 my-0.5 flex items-center justify-center">
+                <img
+                  v-if="getFileIcon(file) === 'pdf-Icon' || getFileIcon(file) === 'word-Icon'"
+                  :src="`/_nuxt/assets/icons/${getFileIcon(file)}.svg`"
+                  :alt="getFileIcon(file)"
+                  class="h-8 w-6"
+                />
+                <Icon v-else :icon="getFileIcon(file)" class="h-10 w-10 text-gray-400" />
+              </div>
 
               <!-- Tamaño del archivo (abajo) -->
-              <p class="text-[10px] text-gray-500 font-medium">
+              <p class="text-[8px] text-gray-500 font-medium">
                 {{ formatFileSize(file.size) }}
               </p>
             </div>
@@ -207,14 +220,15 @@
           <!-- Card "Agregar más archivos" -->
           <div
             v-if="canAddMore"
-            class="aspect-square rounded-lg p-3 transition-all cursor-pointer bg-transparent hover:bg-primary-100 flex flex-col items-center justify-center gap-3"
+            class="rounded-lg p-1.5 transition-all cursor-pointer bg-transparent hover:bg-primary-100 flex flex-col items-center justify-center gap-0.5"
+            style="height: 110px; width: 114px"
             @click="openFilePicker()"
           >
             <!-- Círculo blanco con plus -->
-            <div class="bg-white rounded-full p-2.5 shadow-sm">
-              <Icon icon="heroicons:plus" class="h-5 w-5 text-primary-600" />
+            <div class="bg-white rounded-full p-1 shadow-sm">
+              <Icon icon="heroicons:plus" class="h-4 w-4 text-primary-600" />
             </div>
-            <p class="text-[11px] font-medium text-gray-600 text-center">
+            <p class="text-[9px] font-medium text-gray-600 text-center">
               Agregar más archivos
             </p>
           </div>
@@ -222,7 +236,7 @@
       </div>
 
       <!-- Footer solo con "Eliminar todos" -->
-      <div class="flex justify-end items-center pt-4 mt-2">
+      <div class="flex justify-end items-center mt-1">
         <button
           type="button"
           class="text-xs text-gray-600 hover:text-red-600 font-medium transition-colors flex items-center gap-1.5"
