@@ -1,6 +1,8 @@
 <script setup lang="ts">
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import ProgressNavBar from "~/components/flow-layout/ProgressNavBar.vue";
+
+  const { steps } = useProgressNavbarRoutes();
 </script>
 
 <template>
@@ -12,7 +14,7 @@
     <!-- Body -->
     <div class="flex min-h-0 flex-1">
       <div class="w-[401px] border-r p-4">
-        <ProgressNavBar />
+        <ProgressNavBar :steps="steps" />
       </div>
 
       <div class="flex-1 flex flex-col">

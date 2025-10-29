@@ -1,6 +1,7 @@
 <script setup lang="ts">
   interface Props {
     status?: "empty" | "current" | "completed";
+    isFinalItem?: boolean;
   }
 
   defineProps<Props>();
@@ -49,6 +50,7 @@
 
     <!-- linea vertical -->
     <div
+      v-if="!isFinalItem"
       :class="[
         'w-0.5 h-8 relative transition-colors duration-300',
         {
