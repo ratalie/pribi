@@ -3,13 +3,13 @@
   import HeaderProgressNavbar from "~/components/flow-layout/HeaderProgressNavbar.vue";
   import ProgressNavbar from "~/components/flow-layout/ProgressNavbar.vue";
 
-  const { steps } = useProgressNavbarRoutes();
+  const { steps, currentStepIndex } = useProgressNavbarRoutes();
 </script>
 
 <template>
   <div class="flex flex-col h-screen">
     <!-- Header -->
-    <HeaderProgressNavbar :steps="steps" />
+    <HeaderProgressNavbar :steps="steps" :current-step-index="currentStepIndex" />
 
     <!-- Body -->
     <div class="flex min-h-0 flex-1">

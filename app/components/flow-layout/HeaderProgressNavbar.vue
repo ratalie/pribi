@@ -1,20 +1,36 @@
 <script setup lang="ts">
   import type { NavigationStep } from "~/types/navigationSteps";
+  import BaseButton from "../base/buttons/BaseButton.vue";
 
   interface Props {
     steps: NavigationStep[];
+    currentStepIndex: number;
   }
 
-  defineProps<Props>();
+  const props = defineProps<Props>();
 
-  function isShort(text: string, max: number = 15) {
+  const router = useRouter();
+
+  const goBackStep = () => {
+    if (props.currentStepIndex > 0) {
+      const prevStep = props.steps[props.currentStepIndex - 1];
+      router.push(prevStep!.route);
+    }
+  };
+
+  const isShort = (text: string, max: number = 15) => {
     return text.length <= max;
-  }
+  };
 </script>
 
 <template>
   <div class="h-26 flex flex-col justify-center px-4 gap-4 border-y">
-    <h1 class="text-2xl font-bold">Agregar nueva sociedad</h1>
+    <div class="flex gap-2">
+      <BaseButton variant="ghost" @click="goBackStep">
+        <component :is="getIcon('ArrowLeft')" v-if="getIcon('ArrowLeft')" class="w-5 h-5" />
+      </BaseButton>
+      <h1 class="text-2xl font-bold">Agregar nueva sociedad</h1>
+    </div>
     <div class="flex gap-4">
       <div
         v-for="step in steps"

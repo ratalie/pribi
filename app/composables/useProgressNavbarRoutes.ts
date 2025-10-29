@@ -24,7 +24,12 @@ export const useProgressNavbarRoutes = () => {
     { immediate: true }
   );
 
+  const currentStepIndex = computed(() => {
+    return progressNavbar.steps.findIndex((step) => step.route === route.path);
+  });
+
   return {
     steps: progressNavbar.steps,
+    currentStepIndex,
   };
 };
