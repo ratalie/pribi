@@ -3,6 +3,7 @@
   import BaseButton from "~/components/base/buttons/BaseButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import FileUploadDragDrop from "~/components/base/inputs/FileUploadDragDrop.vue";
+  import FileUploadDragDropMultiple from "~/components/base/inputs/FileUploadDragDropMultiple.vue";
   import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
@@ -61,6 +62,7 @@
   const isLoadingRuc = ref(false);
   const isActive = ref(true);
   const uploadedFile = ref<File | null>(null);
+  const uploadedFiles = ref<File[]>([]);
 
   const handleSearchRuc = (ruc: string) => {
     isLoadingRuc.value = true;
@@ -154,6 +156,20 @@
         format-description="Solo PDF (5 MB max)"
         accept-extensions=".pdf"
         :accepted-types="['application/pdf']"
+      />
+
+      <!-- ============================================ -->
+      <!-- NUEVO: Múltiples archivos -->
+      <!-- ============================================ -->
+      <FileUploadDragDropMultiple
+        v-model="uploadedFiles"
+        title="Subir múltiples documentos"
+        subtitle="Puedes subir hasta 10 archivos"
+        click-message="Seleccionar archivos"
+        drag-message="o arrastra varios a la vez"
+        :max-files="10"
+        :max-size-m-b="5"
+        format-description=".pdf, .doc, .docx, .xls, .xlsx (max 5 MB c/u)"
       />
 
       <!-- Ejemplo 2: Con un botón -->
