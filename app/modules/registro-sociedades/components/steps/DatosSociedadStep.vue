@@ -2,8 +2,6 @@
   import { Form } from "vee-validate";
   import BaseButton from "~/components/base/buttons/BaseButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
-  import FileUploadDragDrop from "~/components/base/inputs/FileUploadDragDrop.vue";
-  import FileUploadDragDropMultiple from "~/components/base/inputs/FileUploadDragDropMultiple.vue";
   import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
@@ -61,8 +59,6 @@
 
   const isLoadingRuc = ref(false);
   const isActive = ref(true);
-  const uploadedFile = ref<File | null>(null);
-  const uploadedFiles = ref<File[]>([]);
 
   const handleSearchRuc = (ruc: string) => {
     isLoadingRuc.value = true;
@@ -93,84 +89,6 @@
     <!-- Formulario principal -->
     <div class="bg-white p-8">
       <SimpleSwitchYesNo />
-
-      <!-- Ejemplo 1: DEFAULT - Grande con título -->
-      <FileUploadDragDrop
-        v-model="uploadedFile"
-        title="Subir documento"
-        subtitle="Arrastra tu archivo o haz clic para seleccionarlo"
-        variant="default"
-        format-description=".docx, .pdf (max 5 MB)"
-      />
-
-      <!-- Ejemplo 2: COMPACT - Mediano sin título -->
-      <FileUploadDragDrop
-        v-model="uploadedFile"
-        variant="compact"
-        click-message="Cargar archivo"
-        drag-message="o arrastra aquí"
-      />
-
-      <!-- Ejemplo 3: INLINE - Horizontal compacto -->
-      <FileUploadDragDrop
-        v-model="uploadedFile"
-        variant="inline"
-        click-message="Adjuntar"
-        :hide-description="true"
-      />
-
-      <!-- Ejemplo 4: CUSTOM - Altura 80px, fondo blanco -->
-      <FileUploadDragDrop
-        v-model="uploadedFile"
-        variant="custom"
-        custom-height="80px"
-        custom-bg-color="#ffffff"
-        custom-border-color="#e5e7eb"
-        custom-icon="heroicons:camera"
-        icon-size="h-8 w-8"
-        click-message="Subir foto"
-        format-description="JPG, PNG (max 2 MB)"
-        accept-extensions=".jpg,.png"
-        :accepted-types="['image/jpeg', 'image/png']"
-        :max-size-m-b="2"
-      />
-
-      <!-- Ejemplo 5: MICRO - 30px de altura, super compacto -->
-      <FileUploadDragDrop
-        v-model="uploadedFile"
-        variant="custom"
-        custom-height="30px"
-        custom-width="200px"
-        custom-icon="heroicons:arrow-up-circle"
-        custom-icon-bg="bg-gray-100"
-        icon-size="h-3 w-3"
-        click-message="Adjuntar"
-        :hide-title="true"
-        :hide-description="true"
-      />
-
-      <!-- Ejemplo 6: Solo PDF, icono personalizado -->
-      <FileUploadDragDrop
-        v-model="uploadedFile"
-        custom-icon="heroicons:document-arrow-up"
-        format-description="Solo PDF (5 MB max)"
-        accept-extensions=".pdf"
-        :accepted-types="['application/pdf']"
-      />
-
-      <!-- ============================================ -->
-      <!-- NUEVO: Múltiples archivos -->
-      <!-- ============================================ -->
-      <FileUploadDragDropMultiple
-        v-model="uploadedFiles"
-        title="Subir múltiples documentos"
-        subtitle="Puedes subir hasta 10 archivos"
-        click-message="Seleccionar archivos"
-        drag-message="o arrastra varios a la vez"
-        :max-files="10"
-        :max-size-m-b="5"
-        format-description=".pdf, .doc, .docx, .xls, .xlsx (max 5 MB c/u)"
-      />
 
       <!-- Ejemplo 2: Con un botón -->
       <CardTitle
