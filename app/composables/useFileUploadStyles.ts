@@ -85,14 +85,14 @@ export function useFileUploadStyles(
     }
 
     if (isDragging.value) {
-      return "border-primary-600 bg-primary-50";
+      return "border-primary-600 bg-primary-75";
     }
 
     if (hasFile.value) {
       return "border-primary-200 bg-white";
     }
 
-    return "border-primary-200 bg-primary-50 hover:border-primary-400 hover:bg-primary-100";
+    return "border-primary-200 bg-primary-75 hover:border-primary-400 hover:bg-primary-100";
   });
 
   // Container classes combinadas

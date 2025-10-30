@@ -115,6 +115,7 @@
   --color-neutral-white-20: var(--color-neutral-white-20);
   --color-neutral-white-24: var(--color-neutral-white-24);
   --color-neutral-white-32: var(--color-neutral-white-32);
+  --color-neutral-white-40: var(--color-neutral-white-40);
   --color-neutral-white-48: var(--color-neutral-white-48);
   --color-neutral-white-64: var(--color-neutral-white-64);
   --color-neutral-white-76: var(--color-neutral-white-76);
@@ -220,6 +221,7 @@
   --color-neutral-white-20: hsla(0, 0%, 100%, 0.2);
   --color-neutral-white-24: hsla(0, 0%, 100%, 0.24);
   --color-neutral-white-32: hsla(0, 0%, 100%, 0.32);
+  --color-neutral-white-40: hsl(215.38, 16.32%, 46.86%);
   --color-neutral-white-48: hsla(0, 0%, 100%, 0.48);
   --color-neutral-white-64: hsla(0, 0%, 100%, 0.64);
   --color-neutral-white-76: hsla(0, 0%, 100%, 0.76);
