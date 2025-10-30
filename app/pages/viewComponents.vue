@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import BaseButton from "~/components/base/buttons/BaseButton.vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+  import CardTitle from "~/components/base/cards/CardTitle.vue";
   import FileUploadDragDrop from "~/components/base/inputs/FileUploadDragDrop.vue";
   import FileUploadDragDropMultiple from "~/components/base/inputs/FileUploadDragDropMultiple.vue";
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
@@ -141,6 +142,7 @@
   });
 
   const isLoading = ref(false);
+  const isActive = ref(true);
 
   const handleSearch = (numberDoc: string) => {
     isLoading.value = true;
@@ -230,6 +232,74 @@
           :schema="razonSocialSchema"
         />
       </div>
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <!-- Ejemplo 2: Con un botón -->
+      <CardTitle
+        title="Datos principales"
+        body="Complete todos los datos requeridos."
+        class="mb-8"
+      >
+        <template #actions>
+          <BaseButton variant="primary" size="md">Guardar</BaseButton>
+        </template>
+      </CardTitle>
+
+      <!-- Ejemplo 3: Con un icono (descomenta para usar) -->
+      <CardTitle
+        title="Datos principales"
+        body="Complete todos los datos requeridos."
+        class="mb-8"
+      >
+        <template #actions>
+          <button
+            class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+              />
+            </svg>
+          </button>
+        </template>
+      </CardTitle>
+
+      <!-- Ejemplo 6: Con badge pegado al título -->
+      <CardTitle
+        title="Datos principales"
+        body="Complete todos los datos requeridos."
+        class="mb-8"
+      >
+        <template #switch>
+          <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded">
+            Nuevo
+          </span>
+        </template>
+        <template #actions>
+          <BaseButton variant="primary" size="md">Guardar</BaseButton>
+        </template>
+      </CardTitle>
+
+      <!-- Ejemplo 7: Solo con switch, sin actions -->
+      <CardTitle
+        title="Datos principales"
+        body="Active o desactive esta sección."
+        class="mb-8"
+      >
+        <template #switch>
+          <Switch v-model:checked="isActive" />
+        </template>
+      </CardTitle>
     </div>
 
     <div class="flex flex-col gap-4">
