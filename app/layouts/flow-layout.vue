@@ -13,7 +13,7 @@
 
     <!-- Body -->
     <div class="flex min-h-0 flex-1">
-      <div class="w-[401px] border-r p-4">
+      <div class="w-[401px] border-r px-6 py-14">
         <ProgressNavBar :steps="steps" />
       </div>
 
