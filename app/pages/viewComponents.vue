@@ -6,6 +6,7 @@
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
+  import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
   import CheckboxTable from "~/components/base/tables/checkbox-table/CheckboxTable.vue";
   import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
@@ -19,8 +20,6 @@
   const uploadedFile = ref<File | null>(null);
   const uploadedFiles = ref<File[]>([]);
 
-  import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
-  
   //tabla simple
   export interface ISocietyTable {
     id: string;
@@ -268,8 +267,6 @@
       />
     </div>
 
-    
-      <SimpleSwitchYesNo />
-    </div>
+    <SimpleSwitchYesNo />
   </div>
 </template>

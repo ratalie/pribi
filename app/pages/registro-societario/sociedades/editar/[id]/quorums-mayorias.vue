@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import QuorumMayoriasStep from "~/modules/registro-sociedades/components/steps/QuorumMayoriasStep.vue";
-import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import QuorumMayoriasStep from "~/modules/registro-sociedades/components/steps/QuorumMayoriasStep.vue";
+  import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
-const route = useRoute();
-const societyId = route.params.id as string;
+  definePageMeta({
+    flowLayout: true,
+  });
+
+  const route = useRoute();
+  const societyId = route.params.id as string;
 </script>
 
 <template>

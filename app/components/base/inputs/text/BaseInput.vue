@@ -11,6 +11,7 @@
     placeholder?: string;
     type?: string;
     isDisabled?: boolean;
+    class?: string;
   }
 
   const props = defineProps<Props>();
@@ -38,7 +39,10 @@
 
       // Deshabilitado
       props.isDisabled &&
-        "disabled:!bg-gray-200 disabled:!cursor-not-allowed disabled:!opacity-100"
+        "disabled:!bg-gray-200 disabled:!cursor-not-allowed disabled:!opacity-100",
+
+      // Clases adicionales
+      props.class
     )
   );
 </script>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import AsignacionAccionesStep from "~/modules/registro-sociedades/components/steps/AsignacionAccionesStep.vue";
+  import ResumenStep from "~/modules/registro-sociedades/components/steps/ResumenStep.vue";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   definePageMeta({
@@ -8,5 +8,5 @@
 </script>
 
 <template>
-  <AsignacionAccionesStep :mode="EntityModeEnum.CREAR" />
+  <ResumenStep :mode="EntityModeEnum.CREAR" />
 </template>
