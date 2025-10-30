@@ -22,6 +22,7 @@ export const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
+        xs: "h-[44px] w-[50px] t-t2 gap-1",
         default: "h-9 px px-4 py-2 has-[>svg]:px-3",
         sm: "h-[40px] w-[95px] t-t2 gap-1",
         md: "h-[44px] w-[152px] t-t1 gap-2",
