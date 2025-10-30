@@ -3,9 +3,9 @@
   import BaseButton from "~/components/base/buttons/BaseButton.vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
+  import OutLineCard from "~/components/base/cards/OutLineCard.vue";
   import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
-  import OutLineCard from "~/components/cards/OutLineCard.vue";
   import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   interface Props {

@@ -9,7 +9,7 @@
 
 <template>
   <div
-    class="border border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center gap-2"
+    class="border border-gray-100 rounded-lg p-6 flex flex-col items-center justify-center gap-3"
   >
     <p class="font-secondary font-extrabold t-b1 text-gray-700">{{ title }}</p>
     <span class="font-secondary font-bold t-b1 text-gray-700">{{ value }}</span>
