@@ -15,6 +15,8 @@
 
   const getSizeIcon = () => {
     switch (props.size) {
+      case "xs":
+        return "size-3";
       case "xl":
         return "size-5";
       default:
