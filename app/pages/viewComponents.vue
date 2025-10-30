@@ -7,6 +7,7 @@
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
   import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
+  import SwitchTabs from "~/components/base/Switch/SwitchTabs.vue";
   import CheckboxTable from "~/components/base/tables/checkbox-table/CheckboxTable.vue";
   import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
@@ -268,5 +269,39 @@
     </div>
 
     <SimpleSwitchYesNo />
+
+    <div class="flex flex-col gap-4">
+      <p class="text-primary font-bold t-h6">SwitchTabs - Variantes</p>
+
+      <!-- Variante Default -->
+      <div class="flex flex-col gap-2">
+        <p class="text-sm text-gray-600">Variante Default (gris)</p>
+        <SwitchTabs opcion-a="El Directorio" opcion-b="La Junta de Accionistas">
+          <template #opcion-a>
+            <div>EL DIRECTORIO</div>
+          </template>
+          <template #opcion-b>
+            <div>LA JUNTA DE ACCIONISTAS</div>
+          </template>
+        </SwitchTabs>
+      </div>
+
+      <!-- Variante Primary -->
+      <div class="flex flex-col gap-2">
+        <p class="text-sm text-gray-600">Variante Primary (azul)</p>
+        <SwitchTabs
+          opcion-a="El Directorio"
+          opcion-b="La Junta de Accionistas"
+          variant="primary"
+        >
+          <template #opcion-a>
+            <div>EL DIRECTORIO</div>
+          </template>
+          <template #opcion-b>
+            <div>LA JUNTA DE ACCIONISTAS</div>
+          </template>
+        </SwitchTabs>
+      </div>
+    </div>
   </div>
 </template>
