@@ -30,10 +30,20 @@
     { key: "tipo_acciones", label: "Tipo de Acciones", type: "text" },
     { key: "acciones_suscritas", label: "Acciones Suscritas", type: "text" },
     { key: "participacion", label: "Participación", type: "text" },
-    { key: "derecho_voto", label: "Derecho a Voto", type: "text" },
-    { key: "redimibles", label: "Redimibles", type: "text" },
-    { key: "derechos_especiales", label: "Derechos Especiales", type: "text" },
-    { key: "obligaciones_adicionales", label: "Obligaciones Adicionales", type: "text" },
+    { key: "derecho_voto", label: "Derecho a Voto", type: "icons", icons: ["Check", "X"] },
+    { key: "redimibles", label: "Redimibles", type: "icons", icons: ["Check", "X"] },
+    {
+      key: "derechos_especiales",
+      label: "Derechos Especiales",
+      type: "icons",
+      icons: ["FileCheck", "X"],
+    },
+    {
+      key: "obligaciones_adicionales",
+      label: "Obligaciones Adicionales",
+      type: "icons",
+      icons: ["FileCheck", "X"],
+    },
   ];
 
   const columns = getColumns(societyHeaders);
