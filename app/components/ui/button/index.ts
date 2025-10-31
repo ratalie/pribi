@@ -26,9 +26,9 @@ export const buttonVariants = cva(
         default: "h-9 px px-4 py-2 has-[>svg]:px-3",
         sm: "h-[40px] w-[95px] t-t2 gap-1",
         md: "h-[44px] w-[152px] t-t1 gap-2",
-        lg: "h-[44px] w-[180px] t-t1 gap-2",
-        xl: "h-[52px] w-[232px] t-h6 gap-2",
-        xxl: "h-[64px] w-[232px] t-h6 gap-2",
+        lg: "h-[44px] w-[180px] t-t2 gap-2",
+        xl: "h-[52px] w-[232px] t-t2 gap-2",
+        xxl: "h-[64px] w-[232px] t-t2 gap-2",
       },
     },
     defaultVariants: {

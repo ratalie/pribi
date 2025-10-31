@@ -1,6 +1,5 @@
 <script setup lang="ts">
-  import editarIcon from "~/assets/icons/editar.svg";
-  import eliminarIcon from "~/assets/icons/eliminar.svg";
+  import { SquarePen, Trash2 } from "lucide-vue-next";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SecondaryCard from "~/components/base/cards/SecondaryCard.vue";
@@ -21,6 +20,13 @@
     reglas_firma?: string;
     vacio?: string;
     descripcion?: string;
+    detalles?: string;
+    detalleFilas?: {
+      desde: string;
+      hasta: string;
+      tipoFirma: string;
+      firmantes: string;
+    }[];
   }
 
   defineProps<Props>();
@@ -30,7 +36,7 @@
     { key: "tipo_poder", label: "Tipo de Poder", type: "text" },
     { key: "vigencia", label: "Vigencia", type: "text" },
     { key: "reglas_firma", label: "Reglas de Firma", type: "text" },
-    { key: "vacio", label: "", type: "text" },
+    { key: "detalles", label: "", type: "text" },
   ];
 
   const poderesData = ref<PoderRow[]>([
@@ -38,13 +44,37 @@
       id: "1",
       tipo_poder: "Facultades Administrativas",
       vigencia: "2025-01-01 a 2026-01-01",
-      reglas_firma: "4",
+      reglas_firma: "1",
+      detalles: "Ver detalles",
+      detalleFilas: [
+        {
+          desde: "S/ 40.00",
+          hasta: "S/ 90.00",
+          tipoFirma: "A sola firma",
+          firmantes: "No requiere otra firma",
+        },
+      ],
     },
     {
       id: "2",
       tipo_poder: "Facultades Bancarias",
       vigencia: "2025-01-01 a 2026-01-01",
       reglas_firma: "2",
+      detalles: "Ver detalles",
+      detalleFilas: [
+        {
+          desde: "S/ 50.00",
+          hasta: "S/ 500.00",
+          tipoFirma: "A sola firma",
+          firmantes: "No requiere otra firma",
+        },
+        {
+          desde: "S/ 50.00",
+          hasta: "Sin límite",
+          tipoFirma: "A firma conjunta",
+          firmantes: "1 Apoderado de Grupo A, 3 Apoderados de Grupo B",
+        },
+      ],
     },
   ]);
 
@@ -106,31 +136,29 @@
               background-color="bg-white"
               width="w-full"
             >
-              <p class="t-t3 font-secondary text-gray-700 font-normal">
+              <p class="t-t2 font-secondary text-gray-700 font-normal">
                 Facultades Administrativas
               </p>
             </SecondaryCard>
             <SecondaryCard
-              padding-y="p-2"
-              padding-x="p-8"
+              padding="p-9"
               border-radius="rounded-lg"
               border-color="border-gray-200"
               background-color="bg-white"
             >
               <div class="flex items-center justify-center h-full">
-                <img :src="editarIcon" alt="Editar" class="w-6 h-6" />
+                <SquarePen class="w-4 h-4" />
               </div>
             </SecondaryCard>
 
             <SecondaryCard
-              padding-y="p-2"
-              padding-x="p-8"
+              padding="p-9"
               border-radius="rounded-lg"
               border-color="border-gray-200"
               background-color="bg-gray-700"
             >
               <div class="flex items-center justify-center h-full">
-                <img :src="eliminarIcon" alt="Eliminar" class="w-6 h-6" />
+                <Trash2 class="w-4 h-4 text-white" />
               </div>
             </SecondaryCard>
           </div>
@@ -142,29 +170,27 @@
               background-color="bg-white"
               width="w-full"
             >
-              <p class="t-t3 font-secondary text-gray-700 font-normal">Facultades Bancarias</p>
+              <p class="t-t2 font-secondary text-gray-700 font-normal">Facultades Bancarias</p>
             </SecondaryCard>
             <SecondaryCard
-              padding-y="p-2"
-              padding-x="p-8"
+              padding="p-9"
               border-radius="rounded-lg"
               border-color="border-gray-200"
               background-color="bg-white"
             >
               <div class="flex items-center justify-center h-full">
-                <img :src="editarIcon" alt="Editar" class="w-6 h-6" />
+                <SquarePen class="w-4 h-4" />
               </div>
             </SecondaryCard>
 
             <SecondaryCard
-              padding-y="p-2"
-              padding-x="p-8"
+              padding="p-9"
               border-radius="rounded-lg"
               border-color="border-gray-200"
               background-color="bg-gray-700"
             >
               <div class="flex items-center justify-center h-full">
-                <img :src="eliminarIcon" alt="Eliminar" class="w-6 h-6" />
+                <Trash2 class="w-4 h-4 text-white" />
               </div>
             </SecondaryCard>
           </div>
