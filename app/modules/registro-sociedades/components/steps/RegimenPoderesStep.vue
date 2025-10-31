@@ -1,4 +1,6 @@
 <script setup lang="ts">
+  import editarIcon from "~/assets/icons/editar.svg";
+  import eliminarIcon from "~/assets/icons/eliminar.svg";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SecondaryCard from "~/components/base/cards/SecondaryCard.vue";
@@ -27,8 +29,8 @@
   const poderesColumns: TableColumn<PoderRow>[] = [
     { key: "tipo_poder", label: "Tipo de Poder", type: "text" },
     { key: "vigencia", label: "Vigencia", type: "text" },
-      { key: "reglas_firma", label: "Reglas de Firma", type: "text" },
-      { key: "vacio", label: "", type: "text" },
+    { key: "reglas_firma", label: "Reglas de Firma", type: "text" },
+    { key: "vacio", label: "", type: "text" },
   ];
 
   const poderesData = ref<PoderRow[]>([
@@ -116,7 +118,7 @@
               background-color="bg-white"
             >
               <div class="flex items-center justify-center h-full">
-                <img src="/_nuxt/assets/icons/editar.svg" alt="Editar" class="w-6 h-6" />
+                <img :src="editarIcon" alt="Editar" class="w-6 h-6" />
               </div>
             </SecondaryCard>
 
@@ -128,7 +130,7 @@
               background-color="bg-gray-700"
             >
               <div class="flex items-center justify-center h-full">
-                <img src="/_nuxt/assets/icons/eliminar.svg" alt="Eliminar" class="w-6 h-6" />
+                <img :src="eliminarIcon" alt="Eliminar" class="w-6 h-6" />
               </div>
             </SecondaryCard>
           </div>
@@ -150,7 +152,7 @@
               background-color="bg-white"
             >
               <div class="flex items-center justify-center h-full">
-                <img src="/_nuxt/assets/icons/editar.svg" alt="Editar" class="w-6 h-6" />
+                <img :src="editarIcon" alt="Editar" class="w-6 h-6" />
               </div>
             </SecondaryCard>
 
@@ -162,7 +164,7 @@
               background-color="bg-gray-700"
             >
               <div class="flex items-center justify-center h-full">
-                <img src="/_nuxt/assets/icons/eliminar.svg" alt="Eliminar" class="w-6 h-6" />
+                <img :src="eliminarIcon" alt="Eliminar" class="w-6 h-6" />
               </div>
             </SecondaryCard>
           </div>

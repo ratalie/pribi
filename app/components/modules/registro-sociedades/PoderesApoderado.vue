@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { ref } from "vue";
+  import displayArrowIcon from "~/assets/icons/display-arrow.svg";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
@@ -72,7 +73,7 @@
     <CardTitle :title="apoderadoTitle" body="">
       <template #preActions>
         <img
-          src="/_nuxt/assets/icons/display-arrow.svg"
+          :src="displayArrowIcon"
           alt="Expandir"
           class="w-3.5 h-3.5 mr-2 cursor-pointer transition-transform duration-200"
           :style="{ transform: isExpanded ? 'rotate(0deg)' : 'rotate(-90deg)' }"
