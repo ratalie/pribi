@@ -9,7 +9,7 @@ export const porcentajeSchema = z
       return !isNaN(num) && num > 0 && num <= 100;
     },
     {
-      message: "El porcentaje debe ser mayor que 0 y menor o igual a 100",
+      message: "",
     }
   );
 
