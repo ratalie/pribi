@@ -4,6 +4,7 @@
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import OutLineCard from "~/components/base/cards/OutLineCard.vue";
   import SharesCard from "~/components/base/cards/SharesCard.vue";
+  import AsignationTable from "~/components/base/tables/asignacion-acciones-table/AsignationTable.vue";
   import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   interface Props {
@@ -20,7 +21,35 @@
     { id: "4", nombre: "Clase B", acciones_asignadas: "100", acciones_suscritas: "2,000" },
   ]);
 
-  const _actions = [
+  const data = ref([
+    {
+      id: "1",
+      accionista: "Carlos Andrés Ramírez Torres",
+      tipos: "2 tipos",
+      acciones: [
+        { clase: "Clase A", acciones: 30, porcentaje: 10.5 },
+        { clase: "Clase B", acciones: 20, porcentaje: 3.79 },
+      ],
+    },
+    {
+      id: "2",
+      accionista: "María Fernanda López García",
+      tipos: "1 tipo",
+      acciones: [{ clase: "Comunes", acciones: 50, porcentaje: 5.0 }],
+    },
+    {
+      id: "3",
+      accionista: "Juan Pablo Martínez Sánchez",
+      tipos: "3 tipos",
+      acciones: [
+        { clase: "Preferentes", acciones: 40, porcentaje: 4.0 },
+        { clase: "Clase A", acciones: 25, porcentaje: 8.79 },
+        { clase: "Clase B", acciones: 15, porcentaje: 2.5 },
+      ],
+    },
+  ]);
+
+  const actions = [
     {
       label: "Editar",
       icon: "SquarePen",
@@ -39,7 +68,7 @@
 </script>
 
 <template>
-  <div class="h-full w-full p-14 flex flex-col gap-12">
+  <div class="p-14 flex flex-col gap-12">
     <CardTitle
       title="Asignación de Acciones"
       body="Distribuye las acciones entre los accionistas."
@@ -74,5 +103,7 @@
       <OutLineCard title="Total de Acciones Asignadas" value="1,000" />
       <OutLineCard title="Capital Social" value="S/ 1,000" />
     </div>
+
+    <AsignationTable :data="data" :actions="actions" />
   </div>
 </template>
