@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const porcentajeSchema = z
   .string()
-  .nonempty("El porcentaje es obligatorio")
+  .nonempty("")
   .refine(
     (val) => {
       const num = parseFloat(val);
