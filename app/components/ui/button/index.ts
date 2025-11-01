@@ -14,6 +14,7 @@ export const buttonVariants = cva(
         secondary: "bg-gray-700 text-neutral-white-100 hover:bg-gray-700/80",
         secondary_outline:
           "border border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-neutral-white-100",
+        pill: "rounded-full bg-gray-75 text-gray-800 hover:bg-gray-100",
         destructive:
           "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:

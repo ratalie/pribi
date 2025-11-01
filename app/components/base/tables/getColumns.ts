@@ -10,7 +10,8 @@ export interface BaseTableRow {
 export interface TableColumn<T extends BaseTableRow> {
   key: keyof T;
   label: string;
-  type: "text" | "status";
+  type: "text" | "status" | "icons";
+  icons?: string[];
 }
 
 export const getColumns = <T extends BaseTableRow>(
@@ -45,6 +46,22 @@ export const getColumns = <T extends BaseTableRow>(
             },
             String(value)
           );
+        },
+      };
+    }
+
+    if (header.type === "icons") {
+      return {
+        accessorKey: header.key,
+        header: () => header.label,
+        cell: ({ row }) => {
+          const value = row.getValue(String(header.key));
+          const icons = header.icons || [];
+          const iconName = value && icons[0] ? icons[0] : icons[1] ? icons[1] : "";
+
+          return h("span", {}, [
+            h(getIcon(iconName), { class: "size-5 text-primary font-medium" }),
+          ]);
         },
       };
     }

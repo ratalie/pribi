@@ -6,11 +6,13 @@ import {
   Briefcase,
   Building2,
   Calendar,
+  Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   Crown,
   Download,
+  FileCheck,
   FileSearch,
   FileText,
   HelpCircle,
@@ -80,6 +82,8 @@ const iconMap = {
   LoaderCircle,
   Search,
   Calendar,
+  Check,
+  FileCheck,
 };
 
 export const getIcon = (iconName: string) => {

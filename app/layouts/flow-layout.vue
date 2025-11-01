@@ -13,11 +13,11 @@
 
     <!-- Body -->
     <div class="flex min-h-0 flex-1">
-      <div class="w-[401px] border-r px-6 py-14">
+      <div class="w-[401px] shrink-0 border-r px-6 py-14">
         <ProgressNavBar :steps="steps" />
       </div>
 
-      <div class="flex-1 flex flex-col">
+      <div class="flex-1 flex flex-col min-w-0">
         <div class="flex-1 overflow-y-auto">
           <slot />
         </div>
