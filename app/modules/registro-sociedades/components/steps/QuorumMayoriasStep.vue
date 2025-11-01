@@ -55,7 +55,7 @@
             />
           </QuorumTable>
 
-          <h3 class="font-secondary text-gray-800 font-semibold t-h5">Segunda Convocatoria</h3>
+          <h3 class="font-secondary text-gray-800 font-semibold t-h6">Segunda Convocatoria</h3>
           <QuorumTable :header-list="headersQuorum" columns="grid-cols-3">
             <QuorumRowTable :is-preview="isPreview" quorum-type="Simple" />
             <QuorumRowTable
@@ -75,7 +75,6 @@
       <SimpleCard>
         <div class="flex flex-col gap-12">
           <CardTitle title="Quórum Mínimo Para Tomar Acuerdos" body="" />
-          <h3 class="font-secondary text-gray-800 font-semibold t-h5">Primera Convocatoria</h3>
           <QuorumTable :header-list="headersQuorum" columns="grid-cols-3">
             <QuorumRowTable
               :is-preview="isPreview"
