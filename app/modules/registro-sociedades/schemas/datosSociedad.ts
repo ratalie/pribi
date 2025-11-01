@@ -67,19 +67,6 @@ export const partidaRegistralSchema = z
   .nonempty("La partida registral es obligatoria")
   .min(2, "La partida registral debe tener al menos 2 caracteres");
 
-export const porcentajeSchema = z
-  .string()
-  .nonempty("El porcentaje es obligatorio")
-  .refine(
-    (val) => {
-      const num = parseFloat(val);
-      return !isNaN(num) && num > 0 && num <= 100;
-    },
-    {
-      message: "El porcentaje debe ser mayor que 0 y menor o igual a 100",
-    }
-  );
-
 export const datosSociedadSchema = z.object({
   ruc: rucSchema,
   tipoSociedad: tipoSociedadSchema,

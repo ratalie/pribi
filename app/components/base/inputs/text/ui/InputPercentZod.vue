@@ -2,7 +2,7 @@
   import { useField } from "vee-validate";
   import { watch } from "vue";
   import type { ZodTypeAny } from "zod";
-  import InputPercent from "./InputPercent.vue";
+  import InputPercent from "../BaseInputPercent.vue";
 
   interface Props {
     name: string;

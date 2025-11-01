@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import InputPercentZod from "@/components/base/inputs/text/ui/InputPercentZod.vue";
   import { ref, watch } from "vue";
-  import { porcentajeSchema } from "~/modules/registro-sociedades/schemas/datosSociedad";
+  import { porcentajeSchema } from "~/modules/registro-sociedades/schemas/quorumMayoria";
 
   interface Props {
     quorumType?: string; // También acepta quorum-type desde kebab-case
@@ -76,7 +76,12 @@
             </p>
           </div>
         </div>
-        <p v-if="props.ruler" class="min-w-0 truncate text-gray-700 t-t2 font-secondary font-medium">{{ textBody }}</p>
+        <p
+          v-if="props.ruler"
+          class="min-w-0 truncate text-gray-700 t-t2 font-secondary font-medium"
+        >
+          {{ textBody }}
+        </p>
         <p v-else class="min-w-0 text-gray-700 t-t2 font-secondary font-medium">
           El número de acciones con derecho a voto que estén presentes.
         </p>
