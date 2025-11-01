@@ -99,7 +99,6 @@
       icon: "Trash2",
       onClick: (id: string) => {
         console.log("Eliminar poder", id);
-        poderesData.value = poderesData.value.filter((p) => p.id !== id);
       },
     },
   ];
