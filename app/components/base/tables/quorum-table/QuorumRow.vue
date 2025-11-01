@@ -44,10 +44,10 @@
 </script>
 <template>
   <tr class="border-b border-button-secondary">
-    <td class="font-secondary text-gray-700 text-t2 font-medium py-7 px-7">
+    <td class="font-secondary text-gray-700 t-t2 font-medium py-7 px-7">
       {{ quorumType }}
     </td>
-    <td class="font-secondary text-t2 text-gray-700 font-medium py-7 px-7">
+    <td class="font-secondary t-t2 text-gray-700 font-medium py-7 px-7">
       <div class="flex flex-wrap gap-2 items-center">
         <div v-if="props.ruler" class="flex gap-2 items-center shrink-0">
           <p class="whitespace-nowrap">{{ ruler }}</p>
@@ -63,7 +63,7 @@
                 v-model="value"
                 name="quorum-percent-input"
                 :schema="porcentajeSchema"
-                class="px-0 text-gray-700 text-t2 font-secondary font-semibold border-none focus:border-none outline-none focus:outline-none"
+                class="px-0 text-gray-700 t-t2 font-secondary font-semibold border-none focus:border-none outline-none focus:outline-none"
                 :is-disabled="isPreview"
               />
               <span>%</span>
@@ -76,8 +76,8 @@
             </p>
           </div>
         </div>
-        <p v-if="props.ruler" class="min-w-0 truncate text-gray-700 text-t2 font-secondary font-medium">{{ textBody }}</p>
-        <p v-else class="min-w-0 text-gray-700 text-t2 font-secondary font-medium">
+        <p v-if="props.ruler" class="min-w-0 truncate text-gray-700 t-t2 font-secondary font-medium">{{ textBody }}</p>
+        <p v-else class="min-w-0 text-gray-700 t-t2 font-secondary font-medium">
           El número de acciones con derecho a voto que estén presentes.
         </p>
       </div>
