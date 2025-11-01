@@ -1,11 +1,12 @@
 <script setup lang="ts">
   import { SquarePen, Trash2 } from "lucide-vue-next";
+  import BaseButton from "~/components/base/buttons/BaseButton.vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SecondaryCard from "~/components/base/cards/SecondaryCard.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import type { TableColumn } from "~/components/base/tables/getColumns";
-  import PoderesApoderado from "~/components/modules/registro-sociedades/PoderesApoderado.vue";
+  import PoderesApoderado from "~/modules/registro-sociedades/components/steps/regimen-poderes/PoderesApoderado.vue";
   // import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   interface Props {
@@ -140,27 +141,19 @@
                 Facultades Administrativas
               </p>
             </SecondaryCard>
-            <SecondaryCard
-              padding="p-9"
-              border-radius="rounded-lg"
-              border-color="border-gray-200"
-              background-color="bg-white"
+            <BaseButton
+              variant="ghost"
+              class="py-10! px-8! rounded-lg border border-gray-200 bg-white hover:bg-gray-100 transition-colors"
             >
-              <div class="flex items-center justify-center h-full">
-                <SquarePen class="w-4 h-4" />
-              </div>
-            </SecondaryCard>
+              <SquarePen class="w-4 h-4 text-gray-700" />
+            </BaseButton>
 
-            <SecondaryCard
-              padding="p-9"
-              border-radius="rounded-lg"
-              border-color="border-gray-200"
-              background-color="bg-gray-700"
+            <BaseButton
+              variant="ghost"
+              class="py-10! px-8! rounded-lg border border-gray-200 bg-gray-700 hover:bg-gray-600 transition-colors"
             >
-              <div class="flex items-center justify-center h-full">
-                <Trash2 class="w-4 h-4 text-white" />
-              </div>
-            </SecondaryCard>
+              <Trash2 class="w-4 h-4 text-white" />
+            </BaseButton>
           </div>
           <div class="flex gap-2 w-full">
             <SecondaryCard
@@ -172,27 +165,19 @@
             >
               <p class="t-t2 font-secondary text-gray-700 font-normal">Facultades Bancarias</p>
             </SecondaryCard>
-            <SecondaryCard
-              padding="p-9"
-              border-radius="rounded-lg"
-              border-color="border-gray-200"
-              background-color="bg-white"
+            <BaseButton
+              variant="ghost"
+              class="py-10! px-8! rounded-lg border border-gray-200 bg-white hover:bg-gray-100 transition-colors"
             >
-              <div class="flex items-center justify-center h-full">
-                <SquarePen class="w-4 h-4" />
-              </div>
-            </SecondaryCard>
+              <SquarePen class="w-4 h-4 text-gray-700" />
+            </BaseButton>
 
-            <SecondaryCard
-              padding="p-9"
-              border-radius="rounded-lg"
-              border-color="border-gray-200"
-              background-color="bg-gray-700"
+            <BaseButton
+              variant="ghost"
+              class="py-10! px-8! rounded-lg border border-gray-200 bg-gray-700 hover:bg-gray-600 transition-colors"
             >
-              <div class="flex items-center justify-center h-full">
-                <Trash2 class="w-4 h-4 text-white" />
-              </div>
-            </SecondaryCard>
+              <Trash2 class="w-4 h-4 text-white" />
+            </BaseButton>
           </div>
         </div>
       </SimpleCard>
