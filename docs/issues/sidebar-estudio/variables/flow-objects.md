@@ -1,340 +1,424 @@
-# 📦 Objetos TypeScript Base - Flow System
+# 📦 Objetos TypeScript Base - Flow System (Estructura Agrupada)
 
 ## 🎯 Objetivo
 
-Definir los objetos TypeScript para los 3 flujos principales:
+Definir los objetos TypeScript para los 3 flujos principales usando la **estructura agrupada** correcta:
 
-1. **Registro Sociedades** (10+ pasos)
-2. **Sucursales** (4-5 pasos)
-3. **Junta de Accionistas** (8+ pasos)
+1. **Registro Sociedades** (10+ pasos secuenciales)
+2. **Sucursales** (5 pasos simples)
+3. **Junta de Accionistas** (jerárquico con sidebar derecho)
 
 ---
 
-## 🏗️ FlowItem Base (Tipo Principal)
+## 🏗️ FlowItem Base (Estructura Agrupada)
 
 ```typescript
 interface FlowItem {
-  // Identidad
-  id: string;
-  label: string;
-  description?: string;
-  icon?: string;
-  badge?: string;
+  // === IDENTIDAD ===
+  // ¿Quién soy? ¿Cómo me identifico?
+  identity: {
+    id: string; // Único: "datos-sociedad"
+    label: string; // UI: "Datos de Sociedad"
+    description?: string; // Ayuda extra
+    icon?: string; // Icono visual
+    badge?: string; // Badge "Nuevo", "Opcional"
+  };
 
-  // Jerarquía
-  level: number;
-  order: number;
-  parentId?: string;
-  childrenIds?: string[];
+  // === JERARQUÍA ===
+  // ¿Dónde estoy en el árbol? ¿Quién es mi padre/hijos?
+  hierarchy: {
+    level: 1 | 2 | 3 | 4; // Mi nivel en el árbol
+    order: number; // Mi posición (1, 2, 3...)
+    parentId?: string; // ID de mi padre
+    children?: FlowItem[]; // Mis hijos
+  };
 
-  // Navegación
-  path: string;
-  href?: string;
-  anchor?: string;
+  // === NAVEGACIÓN ===
+  // ¿A dónde voy cuando me clickean?
+  navigation?: {
+    path?: string; // Ruta de página: "/registro/datos-sociedad"
+    href?: string; // Anchor o externa: "#seccion-1"
+  };
 
-  // Comportamiento
-  isOptional?: boolean;
-  isLocked?: boolean;
-  requiresCompletion?: boolean;
-  isCompleted?: boolean;
-  isActive?: boolean;
+  // === COMPORTAMIENTO ===
+  // ¿Cómo me comporto? ¿Puedo saltarme? ¿Estoy bloqueado?
+  behavior?: {
+    isOptional?: boolean; // ¿Puedo saltarme?
+    isLocked?: boolean; // ¿Estoy bloqueado?
+    requiresCompletion?: boolean; // ¿Debo completarme?
+  };
 
-  // UI
+  // === SIDEBAR DERECHO ===
+  // ¿Activo el sidebar derecho? (solo nivel 2)
   rightSidebar?: {
-    enabled: boolean;
-    component?: string;
-    props?: Record<string, any>;
+    enabled: boolean; // ¿Mostrar?
+    title?: string; // Título del sidebar
+    items: FlowItem[]; // Items nivel 3-4
   };
 
-  // Validación
+  // === VALIDACIÓN ===
+  // ¿Necesito validación antes de avanzar?
   validation?: {
-    required: boolean;
-    customRules?: string[];
+    required?: boolean; // ¿Es obligatoria?
+    validator?: () => Promise<boolean>; // Función custom
   };
+
+  // === METADATA ===
+  // Cualquier data extra que necesites
+  metadata?: Record<string, any>;
 }
 ```
 
 ---
 
-## 📋 1. Registro Sociedades (10 items)
+## 📋 1. Registro Sociedades (10 items secuenciales)
 
 ```typescript
 const registroSociedadesFlow: FlowItem[] = [
   {
-    id: "tipo-sociedad",
-    label: "Tipo de Sociedad",
-    description: "Selecciona el tipo de sociedad a registrar",
-    icon: "building-2",
-    level: 1,
-    order: 1,
-    path: "/registro-societario/tipo-sociedad",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "TipoSociedadHelper",
+    identity: {
+      id: "datos-sociedad",
+      label: "Datos principales",
+      description: "Completa todos los datos de la Sociedad",
+      icon: "building",
+    },
+    hierarchy: {
+      level: 1,
+      order: 1,
+    },
+    navigation: {
+      path: "/registro-societario/sociedades/crear/datos-sociedad",
+    },
+    behavior: {
+      requiresCompletion: true,
+    },
+    validation: {
+      required: true,
     },
   },
 
   {
-    id: "denominacion-social",
-    label: "Denominación Social",
-    description: "Define el nombre de tu empresa",
-    icon: "text-cursor",
-    level: 1,
-    order: 2,
-    path: "/registro-societario/denominacion-social",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "DenominacionHelper",
+    identity: {
+      id: "accionistas",
+      label: "Accionistas",
+      description: "Agrega los accionistas de la Sociedad",
+      icon: "users",
+    },
+    hierarchy: {
+      level: 1,
+      order: 2,
+    },
+    navigation: {
+      path: "/registro-societario/sociedades/crear/accionistas",
+    },
+    behavior: {
+      requiresCompletion: true,
+      isLocked: true, // Bloqueado hasta completar datos-sociedad
+    },
+    validation: {
+      required: true,
     },
   },
 
   {
-    id: "capital-social",
-    label: "Capital Social",
-    description: "Establece el capital social inicial",
-    icon: "dollar-sign",
-    level: 1,
-    order: 3,
-    path: "/registro-societario/capital-social",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "CapitalSocialHelper",
+    identity: {
+      id: "capital-acciones",
+      label: "Capital Social y Acciones",
+      description: "Completa información sobre las acciones",
+      icon: "coins",
+    },
+    hierarchy: {
+      level: 1,
+      order: 3,
+    },
+    navigation: {
+      path: "/registro-societario/sociedades/crear/acciones",
+    },
+    behavior: {
+      requiresCompletion: true,
+      isLocked: true,
+    },
+    validation: {
+      required: true,
     },
   },
 
   {
-    id: "socios-accionistas",
-    label: "Socios/Accionistas",
-    description: "Registra los socios fundadores",
-    icon: "users",
-    level: 1,
-    order: 4,
-    path: "/registro-societario/socios-accionistas",
-    requiresCompletion: true,
-    validation: { required: true },
-    childrenIds: ["socio-1", "socio-2", "socio-3"],
-  },
-
-  {
-    id: "socio-1",
-    label: "Socio Principal",
-    description: "Datos del socio principal",
-    icon: "user",
-    level: 2,
-    order: 1,
-    parentId: "socios-accionistas",
-    path: "/registro-societario/socios-accionistas/socio-principal",
-    requiresCompletion: true,
-    validation: { required: true },
-  },
-
-  {
-    id: "socio-2",
-    label: "Socio Secundario",
-    description: "Datos del socio secundario (opcional)",
-    icon: "user-plus",
-    level: 2,
-    order: 2,
-    parentId: "socios-accionistas",
-    path: "/registro-societario/socios-accionistas/socio-secundario",
-    isOptional: true,
-  },
-
-  {
-    id: "socio-3",
-    label: "Socios Adicionales",
-    description: "Más socios (opcional)",
-    icon: "users-plus",
-    level: 2,
-    order: 3,
-    parentId: "socios-accionistas",
-    path: "/registro-societario/socios-accionistas/adicionales",
-    isOptional: true,
-  },
-
-  {
-    id: "administracion",
-    label: "Administración",
-    description: "Define la estructura administrativa",
-    icon: "crown",
-    level: 1,
-    order: 5,
-    path: "/registro-societario/administracion",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "AdministracionHelper",
+    identity: {
+      id: "asignacion-acciones",
+      label: "Asignación de Acciones",
+      description: "Distribuye Tipos de Acciones entre los Accionistas",
+      icon: "percent",
+    },
+    hierarchy: {
+      level: 1,
+      order: 4,
+    },
+    navigation: {
+      path: "/registro-societario/sociedades/crear/asignacion-acciones",
+    },
+    behavior: {
+      requiresCompletion: true,
+      isLocked: true,
+    },
+    validation: {
+      required: true,
     },
   },
 
   {
-    id: "estatutos",
-    label: "Estatutos Sociales",
-    description: "Redacta los estatutos de la empresa",
-    icon: "file-text",
-    level: 1,
-    order: 6,
-    path: "/registro-societario/estatutos",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "EstatutosGenerator",
+    identity: {
+      id: "directorio",
+      label: "Directorio",
+      description: "Configura el directorio y designa directores",
+      icon: "briefcase",
+    },
+    hierarchy: {
+      level: 1,
+      order: 5,
+    },
+    navigation: {
+      path: "/registro-societario/sociedades/crear/directorio",
+    },
+    behavior: {
+      requiresCompletion: true,
+      isLocked: true,
+    },
+    validation: {
+      required: true,
     },
   },
 
   {
-    id: "documentacion",
-    label: "Documentación",
-    description: "Subir documentos requeridos",
-    icon: "upload",
-    level: 1,
-    order: 7,
-    path: "/registro-societario/documentacion",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "DocumentosChecklist",
+    identity: {
+      id: "registro-apoderados",
+      label: "Registro de Apoderados",
+      description: "Define quiénes serán los apoderados",
+      icon: "user-check",
+    },
+    hierarchy: {
+      level: 1,
+      order: 6,
+    },
+    navigation: {
+      path: "/registro-societario/sociedades/crear/registro-apoderados",
+    },
+    behavior: {
+      requiresCompletion: true,
+      isLocked: true,
+    },
+    validation: {
+      required: true,
     },
   },
 
   {
-    id: "revision-final",
-    label: "Revisión Final",
-    description: "Revisa toda la información antes del envío",
-    icon: "check-circle",
-    level: 1,
-    order: 8,
-    path: "/registro-societario/revision-final",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "RevisionResumen",
+    identity: {
+      id: "regimen-poderes",
+      label: "Régimen General de Poderes",
+      description: "Configura reglas para el ejercicio de poderes",
+      icon: "shield",
+    },
+    hierarchy: {
+      level: 1,
+      order: 7,
+    },
+    navigation: {
+      path: "/registro-societario/sociedades/crear/regimen-poderes",
+    },
+    behavior: {
+      requiresCompletion: true,
+      isLocked: true,
+    },
+    validation: {
+      required: true,
     },
   },
 
   {
-    id: "pago-tasas",
-    label: "Pago de Tasas",
-    description: "Realiza el pago de las tasas registrales",
-    icon: "credit-card",
-    level: 1,
-    order: 9,
-    path: "/registro-societario/pago-tasas",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "CalculadoraTasas",
+    identity: {
+      id: "quorums-mayorias",
+      label: "Quorums y Mayorías",
+      description: "Asigna porcentajes para ambos casos según corresponda",
+      icon: "percent-circle",
+    },
+    hierarchy: {
+      level: 1,
+      order: 8,
+    },
+    navigation: {
+      path: "/registro-societario/sociedades/crear/quorums-mayorias",
+    },
+    behavior: {
+      requiresCompletion: true,
+      isLocked: true,
+    },
+    validation: {
+      required: true,
     },
   },
 
   {
-    id: "envio-solicitud",
-    label: "Envío de Solicitud",
-    description: "Envía la solicitud al Registro Mercantil",
-    icon: "send",
-    level: 1,
-    order: 10,
-    path: "/registro-societario/envio-solicitud",
-    requiresCompletion: true,
-    validation: { required: true },
+    identity: {
+      id: "acuerdos-societarios",
+      label: "Acuerdos Societarios Especiales",
+      description: "Completa la información según corresponda",
+      icon: "file-text",
+    },
+    hierarchy: {
+      level: 1,
+      order: 9,
+    },
+    navigation: {
+      path: "/registro-societario/sociedades/crear/acuerdos-societarios",
+    },
+    behavior: {
+      requiresCompletion: true,
+      isLocked: true,
+    },
+    validation: {
+      required: true,
+    },
+  },
+
+  {
+    identity: {
+      id: "resumen",
+      label: "Resumen",
+      description: "Visualiza un resumen de los datos",
+      icon: "file-check",
+    },
+    hierarchy: {
+      level: 1,
+      order: 10,
+    },
+    navigation: {
+      path: "/registro-societario/sociedades/crear/resumen",
+    },
+    behavior: {
+      requiresCompletion: true,
+      isLocked: true,
+    },
+    validation: {
+      required: true,
+    },
   },
 ];
 ```
 
 ---
 
-## 🏢 2. Sucursales (5 items)
+## 🏢 2. Sucursales (5 items simples)
 
 ```typescript
 const sucursalesFlow: FlowItem[] = [
   {
-    id: "datos-sucursal",
-    label: "Datos de la Sucursal",
-    description: "Información básica de la nueva sucursal",
-    icon: "map-pin",
-    level: 1,
-    order: 1,
-    path: "/operaciones/sucursales/datos-sucursal",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "SucursalFormHelper",
+    identity: {
+      id: "datos-sucursal",
+      label: "Datos de la Sucursal",
+      description: "Información básica de la nueva sucursal",
+      icon: "map-pin",
+    },
+    hierarchy: {
+      level: 1,
+      order: 1,
+    },
+    navigation: {
+      path: "/operaciones/sucursales/datos-sucursal",
+    },
+    behavior: {
+      requiresCompletion: true,
+    },
+    validation: {
+      required: true,
     },
   },
 
   {
-    id: "ubicacion-direccion",
-    label: "Ubicación y Dirección",
-    description: "Dirección completa y geolocalización",
-    icon: "navigation",
-    level: 1,
-    order: 2,
-    path: "/operaciones/sucursales/ubicacion-direccion",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "MapaUbicacion",
+    identity: {
+      id: "ubicacion-direccion",
+      label: "Ubicación y Dirección",
+      description: "Dirección completa y geolocalización",
+      icon: "navigation",
+    },
+    hierarchy: {
+      level: 1,
+      order: 2,
+    },
+    navigation: {
+      path: "/operaciones/sucursales/ubicacion-direccion",
+    },
+    behavior: {
+      requiresCompletion: true,
+    },
+    validation: {
+      required: true,
     },
   },
 
   {
-    id: "representante-legal",
-    label: "Representante Legal",
-    description: "Designa el representante de la sucursal",
-    icon: "user-check",
-    level: 1,
-    order: 3,
-    path: "/operaciones/sucursales/representante-legal",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "RepresentanteHelper",
+    identity: {
+      id: "representante-legal",
+      label: "Representante Legal",
+      description: "Designa el representante de la sucursal",
+      icon: "user-check",
+    },
+    hierarchy: {
+      level: 1,
+      order: 3,
+    },
+    navigation: {
+      path: "/operaciones/sucursales/representante-legal",
+    },
+    behavior: {
+      requiresCompletion: true,
+    },
+    validation: {
+      required: true,
     },
   },
 
   {
-    id: "actividad-economica",
-    label: "Actividad Económica",
-    description: "Define las actividades de la sucursal",
-    icon: "briefcase",
-    level: 1,
-    order: 4,
-    path: "/operaciones/sucursales/actividad-economica",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "ActividadEconomicaSelector",
+    identity: {
+      id: "actividad-economica",
+      label: "Actividad Económica",
+      description: "Define las actividades de la sucursal",
+      icon: "briefcase",
+    },
+    hierarchy: {
+      level: 1,
+      order: 4,
+    },
+    navigation: {
+      path: "/operaciones/sucursales/actividad-economica",
+    },
+    behavior: {
+      requiresCompletion: true,
+    },
+    validation: {
+      required: true,
     },
   },
 
   {
-    id: "documentos-sucursal",
-    label: "Documentos y Registro",
-    description: "Documentación final y registro oficial",
-    icon: "file-check",
-    level: 1,
-    order: 5,
-    path: "/operaciones/sucursales/documentos-sucursal",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "DocumentosSucursalChecklist",
+    identity: {
+      id: "documentos-sucursal",
+      label: "Documentos y Registro",
+      description: "Documentación final y registro oficial",
+      icon: "file-check",
+    },
+    hierarchy: {
+      level: 1,
+      order: 5,
+    },
+    navigation: {
+      path: "/operaciones/sucursales/documentos-sucursal",
+    },
+    behavior: {
+      requiresCompletion: true,
+    },
+    validation: {
+      required: true,
     },
   },
 ];
@@ -342,151 +426,330 @@ const sucursalesFlow: FlowItem[] = [
 
 ---
 
-## 🤝 3. Junta de Accionistas (8 items)
+## 🤝 3. Junta de Accionistas (jerárquico con sidebar derecho)
 
 ```typescript
 const juntaAccionistasFlow: FlowItem[] = [
   {
-    id: "convocatoria",
-    label: "Convocatoria",
-    description: "Crear y enviar convocatoria a accionistas",
-    icon: "calendar",
-    level: 1,
-    order: 1,
-    path: "/junta-accionistas/convocatoria",
-    requiresCompletion: true,
-    validation: { required: true },
-    childrenIds: ["datos-convocatoria", "lista-accionistas", "orden-dia"],
-  },
-
-  {
-    id: "datos-convocatoria",
-    label: "Datos de Convocatoria",
-    description: "Fecha, hora y lugar de la junta",
-    icon: "clock",
-    level: 2,
-    order: 1,
-    parentId: "convocatoria",
-    path: "/junta-accionistas/convocatoria/datos",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "ConvocatoriaCalendar",
+    identity: {
+      id: "seleccion-puntos",
+      label: "Selección de Puntos de Agenda",
+      description: "Selecciona los puntos que se tratarán en la junta",
+      icon: "list-checks",
+    },
+    hierarchy: {
+      level: 1,
+      order: 1,
+    },
+    navigation: {
+      path: "/juntas/seleccion-puntos",
+    },
+    behavior: {
+      requiresCompletion: true,
+    },
+    validation: {
+      required: true,
     },
   },
 
   {
-    id: "lista-accionistas",
-    label: "Lista de Accionistas",
-    description: "Gestionar lista de accionistas convocados",
-    icon: "users",
-    level: 2,
-    order: 2,
-    parentId: "convocatoria",
-    path: "/junta-accionistas/convocatoria/accionistas",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "AccionistasList",
+    identity: {
+      id: "detalles-junta",
+      label: "Detalles de la Junta",
+      description: "Configura fecha, hora y lugar de la junta",
+      icon: "calendar",
+    },
+    hierarchy: {
+      level: 1,
+      order: 2,
+    },
+    navigation: {
+      path: "/juntas/detalles-junta",
+    },
+    behavior: {
+      requiresCompletion: true,
+    },
+    validation: {
+      required: true,
     },
   },
 
   {
-    id: "orden-dia",
-    label: "Orden del Día",
-    description: "Definir temas a tratar en la junta",
-    icon: "list",
-    level: 2,
-    order: 3,
-    parentId: "convocatoria",
-    path: "/junta-accionistas/convocatoria/orden-dia",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "OrdenDiaBuilder",
+    identity: {
+      id: "instalacion-junta",
+      label: "Instalación de la Junta",
+      description: "Verifica quórum y abre la junta",
+      icon: "users",
+    },
+    hierarchy: {
+      level: 1,
+      order: 3,
+    },
+    navigation: {
+      path: "/juntas/instalacion-junta",
+    },
+    behavior: {
+      requiresCompletion: true,
+    },
+    validation: {
+      required: true,
     },
   },
 
   {
-    id: "documentos-preparatorios",
-    label: "Documentos Preparatorios",
-    description: "Preparar documentación para la junta",
-    icon: "folder",
-    level: 1,
-    order: 2,
-    path: "/junta-accionistas/documentos-preparatorios",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "DocumentosPreparatorios",
+    identity: {
+      id: "puntos-acuerdo",
+      label: "Puntos de Acuerdo",
+      description: "Gestiona los puntos de la agenda",
+      icon: "folder",
+    },
+    hierarchy: {
+      level: 1,
+      order: 4,
+    },
+    // Sin navigation - es un contenedor
+    children: [
+      {
+        identity: {
+          id: "aumento-capital",
+          label: "Aumento de Capital",
+          description: "Aumentos de capital por diferentes métodos",
+          icon: "trending-up",
+        },
+        hierarchy: {
+          level: 2,
+          order: 1,
+          parentId: "puntos-acuerdo",
+        },
+        // Sin navigation - es un contenedor nivel 2
+        children: [
+          {
+            identity: {
+              id: "aporte-dinerario",
+              label: "Aporte Dinerario",
+              description: "Aumento por aporte en efectivo",
+              icon: "dollar-sign",
+            },
+            hierarchy: {
+              level: 3,
+              order: 1,
+              parentId: "aumento-capital",
+            },
+            navigation: {
+              path: "/juntas/puntos-acuerdo/aumento-capital/aporte-dinerario/aportantes",
+            },
+            rightSidebar: {
+              enabled: true,
+              title: "Pasos del Aporte Dinerario",
+              items: [
+                {
+                  identity: {
+                    id: "aportantes",
+                    label: "Aportantes",
+                    description: "Selecciona quiénes aportarán",
+                    icon: "users",
+                  },
+                  hierarchy: {
+                    level: 4,
+                    order: 1,
+                  },
+                  navigation: {
+                    path: "/juntas/puntos-acuerdo/aumento-capital/aporte-dinerario/aportantes",
+                  },
+                },
+                {
+                  identity: {
+                    id: "aportes",
+                    label: "Aportes",
+                    description: "Define montos y participaciones",
+                    icon: "coins",
+                  },
+                  hierarchy: {
+                    level: 4,
+                    order: 2,
+                  },
+                  navigation: {
+                    path: "/juntas/puntos-acuerdo/aumento-capital/aporte-dinerario/aportes",
+                  },
+                },
+                {
+                  identity: {
+                    id: "votacion-aporte",
+                    label: "Votación",
+                    description: "Vota sobre el aumento de capital",
+                    icon: "vote",
+                  },
+                  hierarchy: {
+                    level: 4,
+                    order: 3,
+                  },
+                  navigation: {
+                    path: "/juntas/puntos-acuerdo/aumento-capital/aporte-dinerario/votacion",
+                  },
+                },
+              ],
+            },
+          },
+          {
+            identity: {
+              id: "capitalizacion-creditos",
+              label: "Capitalización de Créditos",
+              description: "Aumento por capitalización de deudas",
+              icon: "file-badge",
+            },
+            hierarchy: {
+              level: 3,
+              order: 2,
+              parentId: "aumento-capital",
+            },
+            navigation: {
+              path: "/juntas/puntos-acuerdo/aumento-capital/capitalizacion-creditos/acreedores",
+            },
+            rightSidebar: {
+              enabled: true,
+              title: "Pasos de Capitalización",
+              items: [
+                {
+                  identity: {
+                    id: "acreedores",
+                    label: "Acreedores",
+                    description: "Define quiénes son los acreedores",
+                    icon: "user-dollar",
+                  },
+                  hierarchy: {
+                    level: 4,
+                    order: 1,
+                  },
+                  navigation: {
+                    path: "/juntas/puntos-acuerdo/aumento-capital/capitalizacion-creditos/acreedores",
+                  },
+                },
+                {
+                  identity: {
+                    id: "creditos",
+                    label: "Créditos",
+                    description: "Especifica créditos a capitalizar",
+                    icon: "receipt",
+                  },
+                  hierarchy: {
+                    level: 4,
+                    order: 2,
+                  },
+                  navigation: {
+                    path: "/juntas/puntos-acuerdo/aumento-capital/capitalizacion-creditos/creditos",
+                  },
+                },
+                {
+                  identity: {
+                    id: "votacion-capitalizacion",
+                    label: "Votación",
+                    description: "Vota sobre la capitalización",
+                    icon: "vote",
+                  },
+                  hierarchy: {
+                    level: 4,
+                    order: 3,
+                  },
+                  navigation: {
+                    path: "/juntas/puntos-acuerdo/aumento-capital/capitalizacion-creditos/votacion",
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+      {
+        identity: {
+          id: "nombramiento",
+          label: "Nombramiento",
+          description: "Nombrar directores, gerentes y apoderados",
+          icon: "user-plus",
+        },
+        hierarchy: {
+          level: 2,
+          order: 2,
+          parentId: "puntos-acuerdo",
+        },
+        children: [
+          {
+            identity: {
+              id: "nombramiento-apoderados",
+              label: "Nombramiento de Apoderados",
+              description: "Nombrar nuevos apoderados",
+              icon: "user-check",
+            },
+            hierarchy: {
+              level: 3,
+              order: 1,
+              parentId: "nombramiento",
+            },
+            navigation: {
+              path: "/juntas/puntos-acuerdo/nombramiento/apoderados",
+            },
+          },
+          {
+            identity: {
+              id: "nombramiento-gerente",
+              label: "Nombramiento de Gerente General",
+              description: "Nombrar gerente general",
+              icon: "crown",
+            },
+            hierarchy: {
+              level: 3,
+              order: 2,
+              parentId: "nombramiento",
+            },
+            navigation: {
+              path: "/juntas/puntos-acuerdo/nombramiento/gerente-general",
+            },
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    identity: {
+      id: "resumen",
+      label: "Resumen",
+      description: "Revisa los acuerdos tomados",
+      icon: "file-text",
+    },
+    hierarchy: {
+      level: 1,
+      order: 5,
+    },
+    navigation: {
+      path: "/juntas/resumen",
+    },
+    behavior: {
+      requiresCompletion: true,
+    },
+    validation: {
+      required: true,
     },
   },
 
   {
-    id: "quorum-asistencia",
-    label: "Quórum y Asistencia",
-    description: "Verificar quórum y registrar asistencia",
-    icon: "check-square",
-    level: 1,
-    order: 3,
-    path: "/junta-accionistas/quorum-asistencia",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "QuorumCalculator",
+    identity: {
+      id: "descargar",
+      label: "Descargar",
+      description: "Descarga el acta de la junta",
+      icon: "download",
     },
-  },
-
-  {
-    id: "desarrollo-junta",
-    label: "Desarrollo de la Junta",
-    description: "Gestionar el desarrollo de la reunión",
-    icon: "play-circle",
-    level: 1,
-    order: 4,
-    path: "/junta-accionistas/desarrollo-junta",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "JuntaTimer",
+    hierarchy: {
+      level: 1,
+      order: 6,
     },
-  },
-
-  {
-    id: "votaciones",
-    label: "Votaciones",
-    description: "Gestionar votaciones y acuerdos",
-    icon: "vote",
-    level: 1,
-    order: 5,
-    path: "/junta-accionistas/votaciones",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "VotacionManager",
+    navigation: {
+      path: "/juntas/descargar",
     },
-  },
-
-  {
-    id: "acta-junta",
-    label: "Acta de la Junta",
-    description: "Redactar y firmar el acta",
-    icon: "file-signature",
-    level: 1,
-    order: 6,
-    path: "/junta-accionistas/acta-junta",
-    requiresCompletion: true,
-    validation: { required: true },
-    rightSidebar: {
-      enabled: true,
-      component: "ActaGenerator",
+    behavior: {
+      requiresCompletion: true,
+    },
+    validation: {
+      required: true,
     },
   },
 ];
@@ -498,92 +761,247 @@ const juntaAccionistasFlow: FlowItem[] = [
 
 ```typescript
 interface FlowConfig {
-  id: string;
-  name: string;
-  description: string;
-  type: "sequential" | "hierarchical" | "free";
-  items: FlowItem[];
+  // === IDENTIDAD DEL FLUJO ===
+  identity: {
+    id: string; // "registro-sociedades"
+    name: string; // "Registro de Sociedades"
+    description?: string; // Descripción larga
+  };
 
-  // Configuración UI
+  // === TIPO Y ESTRUCTURA ===
+  structure: {
+    type: "sequential" | "hierarchical" | "mixed";
+    maxLevels: number; // 1, 2, 3, 4
+    navigation: FlowItem[]; // ← AQUÍ ESTÁN TODOS LOS ITEMS
+  };
+
+  // === REGLAS DE NAVEGACIÓN ===
+  navigationRules?: {
+    allowJumpAhead?: boolean; // ¿Puedo saltar pasos?
+    requireSequential?: boolean; // ¿Debo ir en orden?
+    autoUnlock?: boolean; // ¿Desbloquear automático?
+  };
+
+  // === UI - SIDEBARS ===
   ui: {
-    sidebar: {
-      position: "left" | "right";
-      width: string;
+    leftSidebar: {
+      width: string; // "280px"
+      position: "left";
       collapsible: boolean;
+      defaultCollapsed?: boolean;
+      levels: number[]; // [1, 2] ← Qué niveles mostrar
     };
-    rightSidebar: {
-      enabled: boolean;
-      width: string;
-      collapsible: boolean;
+
+    rightSidebar?: {
+      width: string; // "240px"
+      position: "right";
+      showByDefault: boolean;
+      levels: number[]; // [3, 4] ← Qué niveles mostrar
     };
-    navigation: {
-      showPrevNext: boolean;
+
+    header?: {
+      show: boolean;
       showProgress: boolean;
-      allowSkip: boolean;
+      showBreadcrumbs: boolean;
+      title?: string;
+    };
+
+    footer?: {
+      show: boolean;
+      showNavigation: boolean; // Botones Anterior/Siguiente
+      showSave: boolean; // Botón Guardar
+      actions?: Array<{
+        // Acciones custom
+        id: string;
+        label: string;
+        icon?: string;
+        onClick: () => void;
+      }>;
     };
   };
 
-  // Configuración de validación
-  validation: {
-    strictOrder: boolean;
-    allowIncomplete: boolean;
-    customRules?: string[];
+  // === PERSISTENCIA ===
+  persistence?: {
+    enabled: boolean; // localStorage?
+    key?: string; // Clave custom
+    autosave?: boolean; // ¿Auto-guardar?
+  };
+
+  // === EVENTOS ===
+  events?: {
+    onProgressUpdate?: (progress: number) => void;
+    onFlowComplete?: () => void;
+    onNavigate?: (itemId: string) => void;
+    onValidationError?: (itemId: string, error: string) => void;
   };
 }
 
-// Ejemplo de uso
+// Ejemplo de uso - Registro Sociedades
 const registroSociedadesConfig: FlowConfig = {
-  id: "registro-sociedades",
-  name: "Registro de Sociedades",
-  description: "Proceso completo para registrar una nueva sociedad",
-  type: "sequential",
-  items: registroSociedadesFlow,
+  identity: {
+    id: "registro-sociedades",
+    name: "Registro de Sociedades",
+    description: "Proceso completo para registrar una nueva sociedad",
+  },
+
+  structure: {
+    type: "sequential",
+    maxLevels: 1,
+    navigation: registroSociedadesFlow,
+  },
 
   ui: {
-    sidebar: {
-      position: "left",
+    leftSidebar: {
       width: "300px",
+      position: "left",
       collapsible: true,
+      levels: [1],
     },
-    rightSidebar: {
-      enabled: true,
-      width: "350px",
-      collapsible: true,
-    },
-    navigation: {
-      showPrevNext: true,
+    header: {
+      show: true,
       showProgress: true,
-      allowSkip: false,
+      showBreadcrumbs: false,
+    },
+    footer: {
+      show: true,
+      showNavigation: true,
+      showSave: true,
     },
   },
 
-  validation: {
-    strictOrder: true,
-    allowIncomplete: false,
+  navigationRules: {
+    allowJumpAhead: false,
+    requireSequential: true,
+    autoUnlock: true,
+  },
+
+  persistence: {
+    enabled: true,
+    autosave: true,
+  },
+};
+
+// Ejemplo de uso - Juntas Accionistas
+const juntasAccionistasConfig: FlowConfig = {
+  identity: {
+    id: "juntas-accionistas",
+    name: "Junta de Accionistas",
+    description: "Gestión completa de juntas de accionistas",
+  },
+
+  structure: {
+    type: "hierarchical",
+    maxLevels: 4,
+    navigation: juntaAccionistasFlow,
+  },
+
+  ui: {
+    leftSidebar: {
+      width: "280px",
+      position: "left",
+      collapsible: true,
+      levels: [1, 2, 3],
+    },
+    rightSidebar: {
+      width: "240px",
+      position: "right",
+      showByDefault: false,
+      levels: [4],
+    },
+    header: {
+      show: false,
+    },
+    footer: {
+      show: false,
+    },
+  },
+
+  navigationRules: {
+    allowJumpAhead: true,
+    requireSequential: false,
+    autoUnlock: false,
+  },
+
+  persistence: {
+    enabled: true,
+    autosave: true,
   },
 };
 ```
 
 ---
 
-## 📊 Resumen de Objetos
+## 📊 Resumen de Objetos (Estructura Agrupada)
 
-| Flujo                   | Items | Nivel Max | Tipo         | Estimado  |
-| ----------------------- | ----- | --------- | ------------ | --------- |
-| **Registro Sociedades** | 12    | 2         | Sequential   | 45-60 min |
-| **Sucursales**          | 5     | 1         | Sequential   | 15-20 min |
-| **Junta Accionistas**   | 8     | 2         | Hierarchical | 30-40 min |
+| Flujo                   | Items        | Niveles | Tipo         | Sidebar Derecho | Estimado  |
+| ----------------------- | ------------ | ------- | ------------ | --------------- | --------- |
+| **Registro Sociedades** | 10           | 1       | Sequential   | No              | 45-60 min |
+| **Sucursales**          | 5            | 1       | Sequential   | No              | 15-20 min |
+| **Junta Accionistas**   | 6 + anidados | 1-4     | Hierarchical | Sí (nivel 4)    | 30-40 min |
+
+---
+
+## 🎯 Ventajas de la Estructura Agrupada
+
+### ✅ **Mental Model Claro**
+
+```typescript
+// Fácil de entender qué hace cada grupo
+item.identity.label; // ¿Cómo se llama?
+item.hierarchy.level; // ¿En qué nivel está?
+item.navigation.path; // ¿A dónde va?
+item.behavior.isLocked; // ¿Está bloqueado?
+```
+
+### ✅ **Autocompletado Inteligente**
+
+```typescript
+// IDE te ayuda con autocompletado semántico
+item.identity.   // → id, label, description, icon, badge
+item.hierarchy.  // → level, order, parentId, children
+item.navigation. // → path, href
+```
+
+### ✅ **Validación en Constructor**
+
+```typescript
+// Cada grupo puede tener su propia validación
+class FlowIdentity {
+  constructor(id: string, label: string) {
+    if (!id) throw new Error("ID requerido");
+    if (!/^[a-z0-9-]+$/.test(id)) throw new Error("ID debe ser kebab-case");
+    this.id = id;
+    this.label = label;
+  }
+}
+```
+
+### ✅ **Extensibilidad**
+
+```typescript
+// Fácil agregar nuevos grupos sin romper existentes
+interface FlowItem {
+  identity: FlowIdentity;
+  hierarchy: FlowHierarchy;
+  navigation: FlowNavigation;
+  behavior: FlowBehavior;
+  rightSidebar: FlowRightSidebar;
+  validation: FlowValidation;
+  // 🆕 Nuevo grupo
+  analytics?: FlowAnalytics;
+}
+```
 
 ---
 
 ## 🎯 Próximos Pasos
 
-Con estos objetos definidos, podemos:
+Con estos objetos reformulados usando estructura agrupada:
 
-1. ✅ **Validar la estructura** con el usuario
-2. ✅ **Crear los issues** específicos para implementación
-3. ✅ **Documentar cada issue** en `todo-0/`
-4. ✅ **Implementar el código** paso a paso
+1. ✅ **Estructura semánticamente correcta** ✅
+2. ✅ **3 flujos completos definidos** ✅
+3. ✅ **FlowConfig con ejemplos** ✅
+4. ✅ **Listo para definir issues** ⏳
 
-**Estado:** ✅ Objetos base definidos  
-**Próximo:** Definir lista completa de issues
+**Estado:** ✅ Objetos base reformulados con estructura agrupada  
+**Próximo:** Definir lista completa de issues para implementación

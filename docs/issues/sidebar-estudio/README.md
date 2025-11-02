@@ -1,609 +1,287 @@
-# 🚀 Sidebar Studio: Metodología de Trabajo# 📚 Documentación Completa - Sistema Universal de Sidebars
+# 🚀 Flow System: Metodología de Trabajo Modular
 
-## 📋 Estado Actual**Proyecto**: ProBO v3 - Sistema Universal de Flujos
+## 📋 Información del Proyecto
 
-**Rama:** `feat/crear-config-para-navegacion-sidebar` **Fecha Inicio**: 31 de Octubre, 2025
-
-**Fecha:** 2 de Noviembre, 2025 **Estado**: ✅ Documentación Completa - Listo para Implementación
-
-**Objetivo:** Implementar Flow System con DDD Hexagonal
-
----
+**Proyecto:** Sistema Universal de Sidebars para ProBO v3  
+**Rama:** `feat/crear-config-para-navegacion-sidebar`  
+**Fecha Inicio:** 31 de Octubre, 2025  
+**Última Actualización:** 2 de Noviembre, 2025  
+**Estado:** ✅ Metodología Definida - Listo para Desarrollo
 
 ---
-
-## 🎯 ¿Qué Logramos?
 
 ## 🎯 Objetivo Principal
 
-Completamos el análisis y diseño completo de un **Sistema Universal de Sidebars** que revolucionará la forma en que creamos flujos en ProBO v3.
-
 Crear un **sistema de sidebar universal** que:
 
----
-
-1. ✅ **Recibe un array de objetos** (FlowItems)
-
-2. ✅ **Se monta automáticamente** (sin configuración manual)## 📂 Documentos Creados
-
-3. ✅ **Funciona la navegación** (Anterior/Siguiente)
-
-4. ✅ **Basado en DDD Hexagonal** (separación de capas)| # | Documento | Contenido | Páginas | Estado |
-
-5. ✅ **Type-safe** (TypeScript completo)| --- | ----------------------------------------------------- | ---------------------------------------------------- | ------- | ------ |
-
-6. ✅ **Reutilizable** (cualquier flujo: registro, sucursales, juntas)| 00 | [INDEX.md](./00-INDEX.md) | Índice general y progreso | 1 | ✅ |
-
-| 01 | [ANALISIS-ACTUAL.md](./01-ANALISIS-ACTUAL.md) | Estado de Juntas y Registro, problemas identificados | 8 | ✅ |
-
----| 02 | [REQUISITOS.md](./02-REQUISITOS.md) | 8 requisitos funcionales + casos de uso detallados | 12 | ✅ |
-
-| 03 | [ARQUITECTURA.md](./03-ARQUITECTURA.md) | Diseño técnico completo con diagramas | 15 | ✅ |
-
-## 🔄 Metodología de Trabajo| 04 | [ESTRUCTURA-DATOS.md](./04-ESTRUCTURA-DATOS.md) | Tipos TypeScript + ejemplos de Juntas y Registro | 18 | ✅ |
-
-| 05 | [PLAN-IMPLEMENTACION.md](./05-PLAN-IMPLEMENTACION.md) | Roadmap detallado de 3 días (24 horas) | 20 | ✅ |
-
-### Flujo de Issues| 06 | [COMPARATIVA.md](./06-COMPARATIVA.md) | Análisis de 3 soluciones con ROI | 10 | ✅ |
-
-| 07 | [EJEMPLOS-USO.md](./07-EJEMPLOS-USO.md) | Código real y ejemplos visuales | 16 | ✅ |
-
-````| -   | [RESUMEN-EJECUTIVO.md](./RESUMEN-EJECUTIVO.md)        | Resumen de 2 minutos para decisión                   | 5       | ✅     |
-
-1. ISSUES (Identificación)
-
-   ↓**TOTAL: 9 documentos, 105+ páginas de documentación exhaustiva** 📚
-
-2. todo-0/ (Documentación inicial)
-
-   ↓---
-
-3. ANÁLISIS (Refinamiento)
-
-   ↓## 🎓 Resumen de Hallazgos
-
-4. todo/ (Plan final)
-
-   ↓### **Situación Actual**
-
-5. IMPLEMENTACIÓN (Código)
-
-```#### **✅ Juntas de Accionistas**
-
-
-
-### Descripción de Cada Fase- **Estado**: Funcional (recién migrado)
-
-- **Arquitectura**: Componente específico (168 líneas)
-
-#### **1. ISSUES (Brainstorming)**- **Problema**: No reutilizable, hardcodeado
-
-- 🧠 **Qué:** Identificar todos los issues necesarios
-
-- 📝 **Cómo:** Lista numerada con descripción breve#### **⚠️ Registro de Sociedades**
-
-- ⏱️ **Tiempo:** 30 minutos
-
-- 📍 **Output:** Lista de 6-10 issues- **Estado**: Problemático
-
-- **Arquitectura**: Layout que oculta ProboSidebar
-
-#### **2. todo-0/ (Documentación Inicial)**- **Problema**: Mismo error que Juntas v1
-
-- 🧠 **Qué:** Documentar cada issue en detalle
-
-- 📝 **Cómo:** Un archivo .md por issue### **Análisis Comparativo**
-
-- ⏱️ **Tiempo:** 2-3 horas
-
-- 📍 **Output:** `todo-0/issue-01.md`, `todo-0/issue-02.md`, etc.| Característica      | Juntas                 | Registro          | Necesidad Universal |
-
-| ------------------- | ---------------------- | ----------------- | ------------------- |
-
-#### **3. ANÁLISIS (Refinamiento)**| Tipo navegación     | Jerárquica (3 niveles) | Lineal (10 pasos) | Ambos + Mixto       |
-
-- 🧠 **Qué:** Revisar, ajustar, priorizar| Sidebar derecho     | Condicional            | No                | Configurable        |
-
-- 📝 **Cómo:** Conversación y feedback| Header especial     | No                     | Sí                | Configurable        |
-
-- ⏱️ **Tiempo:** 1 hora| Footer especial     | No                     | Sí                | Configurable        |
-
-- 📍 **Output:** Issues refinados y priorizados| Estados de progreso | No                     | Limitado          | Completo            |
-
-| Validación          | No                     | No                | Sí                  |
-
-#### **4. todo/ (Plan Final)**
-
-- 🧠 **Qué:** Convertir issues en plan ejecutable---
-
-- 📝 **Cómo:** Mover de `todo-0/` a `todo/` con ajustes
-
-- ⏱️ **Tiempo:** 30 minutos## 💡 Solución Propuesta
-
-- 📍 **Output:** Plan final listo para implementar
-
-### **Sistema Universal con Renderizado Dinámico**
-
-#### **5. IMPLEMENTACIÓN (Código)**
-
-- 🧠 **Qué:** Ejecutar el plan paso a paso#### **Concepto**:
-
-- 📝 **Cómo:** Seguir cada issue documentado
-
-- ⏱️ **Tiempo:** 6-8 horas (estimado)Un solo componente (`UniversalFlowLayout`) que renderiza dinámicamente basado en configuración TypeScript.
-
-- 📍 **Output:** Código funcionando
-
-#### **Arquitectura**:
+1. ✅ Recibe un array de objetos (FlowItems)
+2. ✅ Se monta automáticamente (sin configuración manual)
+3. ✅ Funciona la navegación (Anterior/Siguiente)
+4. ✅ Basado en DDD Hexagonal (separación de capas)
+5. ✅ Type-safe (TypeScript completo)
+6. ✅ Reutilizable (cualquier flujo: registro, sucursales, juntas)
 
 ---
 
-````
+## 🔄 Metodología: Sistema Modular de TODOs
 
-## 🗂️ Estructura de CarpetasComponente Base (300 líneas)
+### **Flujo de Trabajo**
 
-    ↓
+\`\`\`mermaid
+graph TD
+    A[ROADMAP.md General] --> B[Identificar TODO]
+    B --> C[Crear en todos-inicial/]
+    C --> D[.roadmap.md]
+    C --> E[.documentation.md]
+    C --> F[.variables.md opcional]
+    C --> G[.functions.md opcional]
+    D --> H{Revisar}
+    E --> H
+    F --> H
+    G --> H
+    H -->|Iterar| C
+    H -->|Aprobar| I[Mover a todos-pulidos/]
+    I --> J[Implementar Código]
+    J --> K[Marcar como ✅ Completo]
+\`\`\`
 
-````Renderiza dinámicamente según config
+---
 
-sidebar-estudio/    ↓
+## 📁 Estructura de Carpetas
 
-├── README.md                 ← 🏠 Este archivo (metodología)Soporta: Hierarchical | Sequential | Mixed
-
-│    ↓
-
-├── config/                   ← ✅ Documentación teórica (ya existe)Cada flujo = Archivo de config (~100 líneas)
-
-│   ├── 1_FLOW_SYSTEM_EXPLICACION.md```
-
+\`\`\`
+sidebar-estudio/
+│
+├── 📄 README.md ────────────────► Este archivo (Metodología)
+├── 📄 ROADMAP.md ───────────────► Roadmap General (Tabla Maestra)
+│
+├── 📂 config/ ──────────────────► Documentación teórica (referencias)
+│   ├── 1_FLOW_SYSTEM_EXPLICACION.md
 │   ├── 2_FLOW_SYSTEM_CONSTRUCCION_PASO_A_PASO.md
-
-│   └── ...#### **Beneficios Cuantificados**:
-
+│   └── ...
 │
-
-├── variables/                ← 🎯 Objetos TypeScript base| Métrica                      | Antes      | Después    | Mejora         |
-
-│   ├── registro-sociedades.md| ---------------------------- | ---------- | ---------- | -------------- |
-
-│   ├── sucursales.md| **Tiempo nuevo flujo**       | 4-6 horas  | 1-2 horas  | 50-66% ahorro  |
-
-│   ├── junta-accionistas.md| **Código por flujo**         | 200 líneas | 100 líneas | 50% reducción  |
-
-│   └── flow-types.md| **Duplicación**              | Alta       | Cero       | 100% eliminada |
-
-│| **Tiempo cambio estructura** | 2-4 horas  | 30 min     | 75-87% ahorro  |
-
-├── todo-0/                   ← 📝 Issues documentados (borrador)| **Mantenibilidad**           | Difícil    | Fácil      | ⭐⭐⭐⭐⭐     |
-
-│   ├── issue-01-tipados.md
-
-│   ├── issue-02-objetos.md---
-
-│   ├── issue-03-ddd.md
-
-│   └── ...## 📊 ROI Comprobado
-
+├── 📂 variables/ ───────────────► Objetos base del sistema
+│   ├── flow-objects.md
+│   └── ...
 │
-
-└── todo/                     ← ✅ Plan final (ejecutable)### **Inversión**
-
-    ├── 01-tipados.md
-
-    ├── 02-objetos.md```
-
-    ├── 03-ddd.mdDesarrollo inicial: 24 horas (3 días)
-
-    └── ...```
-
-````
-
-### **Retorno** (Escenario: 5 Flujos Nuevos en 2 Años)
+├── 📂 todos-inicial/ ───────────► 🚧 Trabajo en Progreso (Borradores)
+│   ├── todo-001-estructura-datos.roadmap.md
+│   ├── todo-001-estructura-datos.documentation.md
+│   ├── todo-001-estructura-datos.variables-flowItem.md
+│   ├── todo-001-estructura-datos.variables-flowConfig.md
+│   ├── todo-002-arquitectura-capas.roadmap.md
+│   └── ...
+│
+└── 📂 todos-pulidos/ ───────────► ✅ Versiones Finales (Aprobadas)
+    ├── todo-001-estructura-datos.roadmap.md
+    ├── todo-001-estructura-datos.documentation.md
+    └── ...
+\`\`\`
 
 ---
 
-````
+## 📝 Sistema de Archivos por TODO
 
-## 💬 Comunicación Entre NosotrosSistema Actual: 140 horas
+### **1. Archivos Obligatorios** (Siempre se crean)
 
-Sistema Universal: 57.5 horas
+\`\`\`
+todo-{número}-{nombre}.roadmap.md       ← Decisiones + Arquitectura + Issues
+todo-{número}-{nombre}.documentation.md ← Explicación técnica completa
+\`\`\`
 
-### **Tu Rol (Usuario)**─────────────────────────────
-
-- 🎯 **Definir objetivos** ("quiero que el sidebar haga X")AHORRO: 82.5 horas (59%)
-
-- 🔍 **Revisar propuestas** ("este issue está bien, pero cambia Y")```
-
-- ✅ **Aprobar avances** ("perfecto, siguiente paso")
-
-- 🚀 **Decidir prioridades** ("primero tipados, luego objetos")### **Break-Even Point**
-
-
-
-### **Mi Rol (AI)**```
-
-- 📝 **Documentar todo** (issues, planes, código)✅ Después del 2do flujo nuevo
-
-- 🏗️ **Proponer arquitectura** (DDD, carpetas, tipos)```
-
-- 💻 **Implementar código** (siguiendo los issues aprobados)
-
-- 🔧 **Ajustar según feedback** (cambios, mejoras, fixes)---
-
-
-
-### **Proceso de Validación**## 🏗️ Componentes del Sistema
-
-1. **Yo propongo** → **Tú revisas** → **Apruebas/Cambias**
-
-2. **Iteramos** hasta que esté **exactamente como quieres**### **1. Fundamentos (Tipos + Store + Composables)**
-
-3. **Solo entonces** pasamos al siguiente paso
-
-4. **Nunca avanzo** sin tu aprobación explícita```
-
-app/types/flow-system/        → TypeScript types
-
----app/stores/useFlowNavigationStore.ts → Estado global
-
-app/composables/flows/        → API conveniente
-
-## 🎯 Issues Identificados (Borrador)app/utils/flow-system/        → Helpers
-
-````
-
-### **Issue #1: Tipados Iniciales**
-
-- Crear tipos base para FlowItem### **2. UI Components**
-
-- Definir interfaces para sidebar
-
-- TypeScript config para validación```
-
-app/components/flow-system/
-
-### **Issue #2: Crear Objetos (Input)**├─ UniversalFlowLayout.vue → Componente principal
-
-- Registro sociedades (10+ items)├─ FlowSidebar.vue → Sidebar adaptable
-
-- Sucursales (4-5 items)└─ renderers/
-
-- Junta accionistas (8+ items) ├─ HierarchicalRenderer.vue
-
-  ├─ SequentialRenderer.vue
-
-### **Issue #3: Arquitectura DDD Hexagonal** └─ MixedRenderer.vue
-
-- Estructura de carpetas```
-
-- Domain layer (entities, value objects)
-
-- Application layer (composables)### **3. Configuraciones de Flujos**
-
-### **Issue #4: Funcionalidades de Navegación**```
-
-- Lógica Previous/Nextapp/config/flows/
-
-- Validación de pasos├─ juntas.flow.ts → Config de Juntas
-
-- Estado de progreso├─ registro.flow.ts → Config de Registro
-
-└─ [nuevo-flujo].flow.ts → Nuevos flujos
-
-### **Issue #5: Sidebar Universal UI**```
-
-- Componente que recibe array
-
-- Renderizado dinámico---
-
-- Estado visual (active, completed, disabled)
-
-## 🎯 Casos de Uso Resueltos
-
-### **Issue #6: Navegación del Sidebar**
-
-- Click en items### **CU-001: Jefe cambia estructura**
-
-- Validaciones
-
-- Integración con router```
-
-ANTES: Modificar componente → 3-4 horas
-
-*Nota: Esta lista se refinará en la fase de análisis*DESPUÉS: Modificar config → 30 minutos
-
-```
+#### **Ejemplo:**
+\`\`\`
+todo-001-estructura-datos.roadmap.md
+todo-001-estructura-datos.documentation.md
+\`\`\`
 
 ---
 
-### **CU-002: Agregar nuevo flujo**
+### **2. Archivos Opcionales** (Según necesidad del TODO)
 
-## 🏃‍♂️ Próximos Pasos Inmediatos
-
-```
-
-### **AHORA (siguiente mensaje)**ANTES: Crear componente nuevo → 4-6 horas
-
-1. ✅ Crear objetos TypeScript en `variables/`DESPUÉS: Crear config → 1-2 horas
-
-2. ✅ Definir lista completa de issues```
-
-3. ✅ Documentar primer issue en `todo-0/`
-
-### **CU-003: Actualizar diseño global**
-
-### **DESPUÉS (cuando apruebes)**
-
-4. Documentar todos los issues restantes```
-
-5. Análisis y refinamientoANTES: Modificar 10 componentes → 5-7 horas
-
-6. Plan final ejecutableDESPUÉS: Modificar 1 componente → 2-3 horas
-
-7. Implementación paso a paso```
+\`\`\`
+todo-{número}-{nombre}.variables.md              ← Objetos/Constantes
+todo-{número}-{nombre}.functions.md              ← Funciones/Métodos
+todo-{número}-{nombre}.types.md                  ← Tipos TypeScript
+todo-{número}-{nombre}.examples.md               ← Ejemplos de código
+todo-{número}-{nombre}.tests.md                  ← Casos de prueba
+todo-{número}-{nombre}.api.md                    ← Especificación de API
+\`\`\`
 
 ---
 
-## 🤝 Reglas de Oro## 📋 Plan de Implementación
+### **3. Archivos Específicos** (Cuando un archivo es muy grande)
 
-1. **NO CÓDIGO** hasta que todos los issues estén documentados y aprobados### **Fase 1: Fundamentos** (8 horas)
+\`\`\`
+todo-{número}-{nombre}.{tipo}-{subtipo}.md
 
-2. **FEEDBACK CONSTANTE** - no avanzo sin tu OK
-
-3. **DOCUMENTAR TODO** - cada decisión queda registrada- ✅ Tipos TypeScript completos
-
-4. **ITERACIÓN RÁPIDA** - proponer → revisar → ajustar- ✅ Store de Pinia con estado global
-
-5. **FOCO EN EL OBJETIVO** - sidebar universal funcional- ✅ Composable useFlowNavigation
-
-- ✅ Helpers utilitarios
+Ejemplos:
+todo-001-estructura-datos.variables-flowItem.md
+todo-001-estructura-datos.variables-flowConfig.md
+todo-001-estructura-datos.types-identity.md
+todo-001-estructura-datos.types-hierarchy.md
+\`\`\`
 
 ---
 
-### **Fase 2: UI Components** (6 horas)
+### **4. Roadmaps Específicos** (Para secciones complejas)
 
-## 📊 Estado del Proyecto
+\`\`\`
+todo-{número}-{nombre}.{tipo}.roadmap.md
 
-- ✅ UniversalFlowLayout component
-
-| Fase | Estado | Tiempo Estimado | Completado |- ✅ FlowSidebar adaptable
-
-|------|--------|-----------------|------------|- ✅ 3 Renderers (Hierarchical, Sequential, Mixed)
-
-| 1. Issues | 🟡 En progreso | 30 min | 0% |- ✅ Componentes auxiliares
-
-| 2. todo-0/ | ⚪ Pendiente | 2-3 horas | 0% |
-
-| 3. Análisis | ⚪ Pendiente | 1 hora | 0% |### **Fase 3: Migración Juntas** (4 horas)
-
-| 4. todo/ | ⚪ Pendiente | 30 min | 0% |
-
-| 5. Implementación | ⚪ Pendiente | 6-8 horas | 0% |- ✅ Crear juntas.flow.ts config
-
-- ✅ Actualizar 18 páginas
-
-**Total estimado:** 10-13 horas - ✅ Testing completo
-
-**Estado actual:** Definiendo metodología ✅
-
-### **Fase 4: Migración Registro** (4 horas)
+Ejemplos:
+todo-001-estructura-datos.variables.roadmap.md
+todo-001-estructura-datos.functions.roadmap.md
+\`\`\`
 
 ---
 
-- ✅ Crear registro.flow.ts config
+## 📋 Contenido de Cada Archivo
 
-## 💡 Filosofía de Trabajo- ✅ Actualizar 10 páginas
+### **A. \`todo-XXX-nombre.roadmap.md\`**
 
-- ✅ Testing completo
-
-> \*\*"Primero planificamos todo perfectamente,
-
-> luego ejecutamos sin sorpresas"**### **Fase 5: Testing y Docs\*\* (2 horas)
-
-- 🎯 **Claridad antes que velocidad**- ✅ Tests unitarios e integración
-
-- 📝 **Documentación antes que código**- ✅ Polish de UI
-
-- 🤝 **Consenso antes que avance**- ✅ Documentación de uso
-
-- 🔄 **Iteración antes que perfección**
-
-**TOTAL: 24 horas (3 días)** ⏱️
+Estructura:
+1. 🎯 DECISIONES (¿Qué debemos decidir?)
+2. 🏗️ ARQUITECTURA (¿Cómo se integra?)
+3. 📋 ISSUES (¿Qué tareas hay?)
+4. ⏱️ ESTIMACIÓN (Tiempo, complejidad, prioridad)
+5. 🔗 DEPENDENCIAS (Requiere/Bloquea otros TODOs)
 
 ---
 
----
+### **B. \`todo-XXX-nombre.documentation.md\`**
 
-**🚀 ¿Listo para empezar con los issues?**
-
-## ✅ Criterios de Éxito
-
-### **Técnicos**
-
-- [x] TypeScript 100% estricto (documentado)
-- [ ] Tests con cobertura >80% (pendiente implementación)
-- [x] Performance <50ms renderizado (diseñado)
-- [x] Soporta 3+ tipos de flujos (diseñado)
-
-### **Negocio**
-
-- [x] Reduce tiempo desarrollo 50%+ (comprobado en análisis)
-- [x] Reduce código duplicado 80%+ (comprobado)
-- [x] Mejora consistencia visual (garantizado por diseño)
-- [x] Facilita mantenimiento (comprobado en comparativa)
-
-### **Usuario**
-
-- [x] ProboSidebar siempre visible (garantizado)
-- [x] Navegación fluida (diseñado)
-- [x] Estados de progreso claros (diseñado)
-- [x] Validación antes de avanzar (diseñado)
+Estructura:
+1. 🎯 Objetivo
+2. 📚 Contexto
+3. 💡 Solución Propuesta
+4. 💻 Implementación
+5. ✅ Criterios de Aceptación
+6. 🧪 Testing
+7. 📖 Referencias
 
 ---
 
-## 🚦 Estado Actual del Proyecto
+### **C. \`todo-XXX-nombre.variables.md\`**
 
-### **✅ Completado**
-
-- [x] Análisis exhaustivo de situación actual
-- [x] Identificación de problemas y oportunidades
-- [x] Definición de requisitos funcionales
-- [x] Diseño de arquitectura completa
-- [x] Definición de tipos TypeScript
-- [x] Diseño de componentes UI
-- [x] Plan de implementación detallado
-- [x] Análisis de ROI y comparativas
-- [x] Ejemplos de código y uso
-- [x] Documentación completa
-
-### **⏳ Pendiente**
-
-- [ ] Implementación (24 horas)
-- [ ] Testing
-- [ ] Deploy a producción
+Contiene objetos/constantes TypeScript completos con descripción y uso.
 
 ---
 
-## 💡 Decisión Requerida
+### **D. \`todo-XXX-nombre.functions.md\`**
 
-### **¿Proceder con la Implementación?**
-
-#### **Recomendación**: ✅ **SÍ, PROCEDER**
-
-#### **Justificación**:
-
-1. ✅ ROI positivo desde el 2do flujo
-2. ✅ Soluciona problemas actuales (Registro)
-3. ✅ Escalable para 10+ flujos futuros
-4. ✅ Alineado con best practices
-5. ✅ Inversión única de 3 días
-
-#### **Alternativas Descartadas**:
-
-- ❌ Mantener status quo → No escala
-- ❌ Componentes específicos → Duplicación
-- ❌ Layouts específicos → Ocultan ProboSidebar
+Contiene funciones/métodos con firma, descripción, parámetros, retorno y ejemplos.
 
 ---
 
-## 📚 Cómo Usar Esta Documentación
+## 🔄 Proceso de Trabajo
 
-### **Si eres Developer:**
+### **Paso 1: Crear TODO en \`todos-inicial/\`**
 
-1. Lee [02-REQUISITOS.md](./02-REQUISITOS.md) → Entender QUÉ necesitamos
-2. Lee [03-ARQUITECTURA.md](./03-ARQUITECTURA.md) → Entender CÓMO funciona
-3. Lee [04-ESTRUCTURA-DATOS.md](./04-ESTRUCTURA-DATOS.md) → Ver tipos TypeScript
-4. Sigue [05-PLAN-IMPLEMENTACION.md](./05-PLAN-IMPLEMENTACION.md) → Implementar
-5. Usa [07-EJEMPLOS-USO.md](./07-EJEMPLOS-USO.md) → Referencias de código
+1. Archivos base: .roadmap.md + .documentation.md
+2. Archivos opcionales: .variables.md, .functions.md, .types.md, etc.
 
-### **Si eres Tech Lead:**
+### **Paso 2: Desarrollar en \`todos-inicial/\`**
 
-1. Lee [RESUMEN-EJECUTIVO.md](./RESUMEN-EJECUTIVO.md) → Visión general
-2. Lee [06-COMPARATIVA.md](./06-COMPARATIVA.md) → Análisis de alternativas
-3. Revisa [05-PLAN-IMPLEMENTACION.md](./05-PLAN-IMPLEMENTACION.md) → Validar timeline
-4. Decide basado en ROI y criterios técnicos
+- 📝 Escribir contenido
+- 🔄 Iterar con feedback
+- 🤔 Tomar decisiones
 
-### **Si eres Product Owner:**
+### **Paso 3: Pulir y Aprobar**
 
-1. Lee [RESUMEN-EJECUTIVO.md](./RESUMEN-EJECUTIVO.md) → Decisión ejecutiva
-2. Revisa ROI y beneficios de negocio
-3. Aprueba o solicita más información
+- ✅ Revisar completitud
+- ✅ Validar decisiones
+- ✅ Aprobar arquitectura
 
----
+### **Paso 4: Mover a \`todos-pulidos/\`**
 
-## 🎓 Lecciones Aprendidas
+\`\`\`bash
+mv todos-inicial/todo-XXX-* todos-pulidos/
+\`\`\`
 
-### **De Juntas v1 → v2**
+### **Paso 5: Implementar Código**
 
-```
-❌ PROBLEMA: Layout oculta ProboSidebar
-✅ SOLUCIÓN: Usar componente en lugar de layout
-📚 LECCIÓN: Layouts reemplazan, componentes anidan
-```
+Seguir el TODO documentado paso a paso.
 
-### **De Juntas v2 (Actual)**
+### **Paso 6: Marcar como Completo**
 
-```
-⚠️ PROBLEMA: Componente específico no escala
-✅ SOLUCIÓN: Sistema universal con renderizado dinámico
-📚 LECCIÓN: Configuración > Código específico
-```
-
-### **Para el Futuro**
-
-```
-✅ PREPARADO: Sistema soporta 10+ flujos sin refactorización
-✅ PREPARADO: Nuevos requisitos se agregan una vez
-✅ PREPARADO: Cambios de estructura son triviales
-```
+Actualizar ROADMAP.md general con estado ✅
 
 ---
 
-## 🚀 Próximos Pasos Inmediatos
+## 💬 Roles y Responsabilidades
 
-### **1. Validación Stakeholder**
+### **👤 Usuario (Tú)**
+- 🎯 Definir objetivos
+- 🔍 Revisar propuestas
+- ✅ Aprobar decisiones
+- 🚀 Priorizar TODOs
 
-- [ ] Revisar documentación con equipo
-- [ ] Responder preguntas y dudas
-- [ ] Obtener aprobación formal
-
-### **2. Preparación para Implementación**
-
-- [ ] Crear branch `feature/universal-flow-system`
-- [ ] Configurar entorno de desarrollo
-- [ ] Preparar estructura de carpetas
-
-### **3. Kickoff de Desarrollo**
-
-- [ ] Comenzar Fase 1 (Fundamentos)
-- [ ] Daily updates de progreso
-- [ ] Code review incremental
+### **🤖 AI (Yo)**
+- 📝 Documentar TODOs
+- 🏗️ Proponer arquitectura
+- 💻 Implementar código
+- 🔧 Ajustar según feedback
 
 ---
 
-## 📞 Información de Contacto
+## 📊 Convenciones de Nombres
 
-**Documentación preparada por**: GitHub Copilot  
-**Para consultas técnicas**: Revisar documentos específicos  
-**Para dudas de implementación**: Ver [05-PLAN-IMPLEMENTACION.md](./05-PLAN-IMPLEMENTACION.md)  
-**Para ejemplos de código**: Ver [07-EJEMPLOS-USO.md](./07-EJEMPLOS-USO.md)
+### **Formato:**
+\`\`\`
+todo-{número:3dígitos}-{nombre-descriptivo}.{tipo}.md
+\`\`\`
 
----
+### **Ejemplos:**
+\`\`\`
+✅ todo-001-estructura-datos.roadmap.md
+✅ todo-001-estructura-datos.documentation.md
+✅ todo-001-estructura-datos.variables-flowItem.md
+✅ todo-002-store-pinia.functions-actions.md
+\`\`\`
 
-## 🎉 Conclusión
-
-Hemos completado un análisis exhaustivo y diseño completo de un sistema que transformará la forma en que construimos flujos en ProBO v3.
-
-### **Impacto Esperado**:
-
-- ⚡ **50-66% más rápido** crear nuevos flujos
-- 🎨 **100% consistencia** visual entre flujos
-- 🛠️ **Mantenimiento simplificado** dramáticamente
-- 📈 **ROI positivo** desde el 2do flujo
-- 🚀 **Preparado para escalar** a 10+ flujos
-
-### **Estado Final**:
-
-```
-✅ Análisis: COMPLETO
-✅ Diseño: COMPLETO
-✅ Documentación: COMPLETA
-✅ Plan: DEFINIDO
-⏳ Implementación: LISTO PARA EMPEZAR
-```
+### **Tipos:**
+- \`roadmap\` - Decisiones + Arquitectura + Issues
+- \`documentation\` - Explicación técnica
+- \`variables\` - Objetos/Constantes
+- \`functions\` - Funciones/Métodos
+- \`types\` - Tipos TypeScript
+- \`examples\` - Ejemplos de código
+- \`tests\` - Casos de prueba
+- \`api\` - Especificación de API
 
 ---
 
-## 🎯 READY TO BUILD! 🚀
+## 💡 Principios del Sistema
 
-La documentación está completa. El diseño es sólido. El ROI está comprobado.
-
-**¿Listo para transformar ProBO v3?**
-
-Sigue el [Plan de Implementación](./05-PLAN-IMPLEMENTACION.md) y construyamos el futuro juntos. 💪
+1. **MODULARIDAD** - Cada TODO es independiente
+2. **DOCUMENTACIÓN PRIMERO** - No hay código sin docs
+3. **DECISIONES EXPLÍCITAS** - Todo queda registrado
+4. **ITERACIÓN CONSTANTE** - Proponer → Revisar → Refinar
+5. **FLEXIBILIDAD** - Sistema abierto a nuevos tipos
+6. **CLARIDAD** - Nombres descriptivos
 
 ---
 
-**Última actualización**: 31 de Octubre, 2025  
-**Versión**: 1.0  
-**Estado**: ✅ Documentación Completa - Aprobación Pendiente
+## 🎯 Estado Actual
+
+| Fase | Estado | Descripción |
+|------|--------|-------------|
+| 📚 Metodología | ✅ | Sistema modular documentado |
+| 📋 ROADMAP General | 🟡 | En actualización |
+| 📂 Estructura | 🟡 | Carpetas por crear |
+| 📝 TODO-001 | ⏳ | Por iniciar |
+
+---
+
+## 🚀 Próximos Pasos
+
+1. ✅ Actualizar ROADMAP.md como tabla maestra
+2. ✅ Crear carpetas todos-inicial/ y todos-pulidos/
+3. ✅ Crear TODO-001 completo
+4. ⏳ Pulir y aprobar TODO-001
+5. ⏳ Implementar TODO-001
+
+---
+
+**🔥 Sistema 100% modular, extensible y documentado. ¡Listo para crear TODOs!**
