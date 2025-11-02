@@ -1,0 +1,93 @@
+===============================================================================
+                    DOCUMENTACIÓN COMPLETA DEL PROYECTO
+                    v0-double-sidebar-component
+===============================================================================
+
+ÍNDICE DE DOCUMENTACIÓN
+-----------------------
+
+01. RESUMEN-EJECUTIVO.txt
+   - Visión general del proyecto
+   - Stack tecnológico principal
+   - Propósito y funcionalidad
+
+02. ARQUITECTURA-GENERAL.txt
+   - Estructura de carpetas
+   - Patrones de diseño utilizados
+   - Flujo de datos
+   - Convenciones de código
+
+03. ENRUTAMIENTO-NEXTJS.txt
+   - Sistema App Router
+   - Route Groups
+   - Layouts anidados
+   - Redirecciones
+   - Configuración de rutas
+
+04. COMPONENTES-PRINCIPALES.txt
+   - DocsLayout
+   - MainSidebar
+   - TableOfContents
+   - ThemeProvider
+
+05. COMPONENTES-SHADCN-UI.txt
+   - Listado de todos los componentes shadcn/ui
+   - Configuración de shadcn/ui
+   - Componentes instalados vs usados
+
+06. COMPONENTE-BUTTON.txt
+   - Análisis detallado del único componente UI usado
+   - Variantes y props
+   - Uso en el proyecto
+
+07. DEPENDENCIAS-RADIX-UI.txt
+   - Todos los paquetes Radix UI instalados
+   - Propósito de cada uno
+   - Relación con shadcn/ui
+
+08. SISTEMA-ESTILOS.txt
+   - Tailwind CSS v4
+   - Variables CSS personalizadas
+   - Tema claro y oscuro
+   - Tipografías
+
+09. NAVEGACION-CONFIG.txt
+   - Estructura de navigationStructure
+   - Configuración de tocByRoute
+   - Relación entre rutas y contenido
+
+10. UTILITIES-HELPERS.txt
+    - Función cn()
+    - Otras utilidades
+
+11. PAGINAS-CONTENIDO.txt
+    - Estructura de todas las páginas
+    - Patrones de contenido
+    - Secciones y scroll anchors
+
+12. RESPONSIVE-MOBILE.txt
+    - Estrategia mobile-first
+    - Breakpoints
+    - Navegación móvil
+
+13. INTEGRACIONES.txt
+    - Vercel Analytics
+    - Next Themes
+    - Google Fonts (Geist)
+
+14. CONFIGURACIONES.txt
+    - next.config.mjs
+    - tsconfig.json
+    - postcss.config.mjs
+    - components.json
+
+15. MIGRACION-NUXT.txt
+    - Estrategia de migración
+    - Equivalencias Next.js → Nuxt
+    - Puntos críticos
+    - Plan de acción
+
+===============================================================================
+Fecha de documentación: 27 de Octubre, 2025
+Autor: Análisis automatizado del proyecto
+===============================================================================

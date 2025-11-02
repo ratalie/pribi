@@ -1,0 +1,327 @@
+===============================================================================
+                    COMPONENTES SHADCN/UI EN EL PROYECTO
+===============================================================================
+
+¿QUÉ ES SHADCN/UI?
+------------------
+shadcn/ui NO es una biblioteca de componentes tradicional que se instala vía npm.
+Es una colección de componentes reutilizables que se COPIAN directamente a tu
+proyecto. Cada componente es tuyo para modificar.
+
+FILOSOFÍA:
+- Copy-paste, no npm install
+- Componentes en tu código fuente
+- Control total sobre el código
+- Basados en Radix UI + Tailwind CSS
+
+
+CONFIGURACIÓN EN EL PROYECTO
+-----------------------------
+
+ARCHIVO: components.json
+
+CONTENIDO:
+```json
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "app/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "iconLibrary": "lucide"
+}
+```
+
+EXPLICACIÓN:
+
+1. style: "new-york"
+   - Estilo visual de los componentes
+   - Alternativa: "default"
+   - Afecta bordes, sombras, etc.
+
+2. rsc: true
+   - React Server Components habilitado
+   - Compatible con Next.js App Router
+
+3. tsx: true
+   - Usa TypeScript
+   - Genera archivos .tsx
+
+4. tailwind.baseColor: "neutral"
+   - Paleta de colores base
+   - Opciones: slate, gray, zinc, neutral, stone
+
+5. tailwind.cssVariables: true
+   - Usa CSS variables para colores
+   - Permite theming dinámico
+
+6. aliases
+   - Path aliases para imports
+   - @/ apunta a la raíz
+
+7. iconLibrary: "lucide"
+   - Biblioteca de iconos configurada
+   - NO usada en el proyecto (usa SVG inline)
+
+
+COMPONENTES SHADCN/UI INSTALADOS
+---------------------------------
+
+UBICACIÓN: components/ui/
+
+LISTADO:
+1. Button (button.tsx) ← ÚNICO COMPONENTE IMPLEMENTADO
+
+
+DEPENDENCIAS RADIX UI EN package.json
+--------------------------------------
+
+El proyecto tiene instalados TODOS estos paquetes de Radix UI:
+
+ 1. @radix-ui/react-accordion         (v1.2.2)
+ 2. @radix-ui/react-alert-dialog      (v1.1.4)
+ 3. @radix-ui/react-aspect-ratio      (v1.1.1)
+ 4. @radix-ui/react-avatar            (v1.1.2)
+ 5. @radix-ui/react-checkbox          (v1.1.3)
+ 6. @radix-ui/react-collapsible       (v1.1.2)
+ 7. @radix-ui/react-context-menu      (v2.2.4)
+ 8. @radix-ui/react-dialog            (v1.1.4)
+ 9. @radix-ui/react-dropdown-menu     (v2.1.4)
+10. @radix-ui/react-hover-card        (v1.1.4)
+11. @radix-ui/react-label             (v2.1.1)
+12. @radix-ui/react-menubar           (v1.1.4)
+13. @radix-ui/react-navigation-menu   (v1.2.3)
+14. @radix-ui/react-popover           (v1.1.4)
+15. @radix-ui/react-progress          (v1.1.1)
+16. @radix-ui/react-radio-group       (v1.2.2)
+17. @radix-ui/react-scroll-area       (v1.2.2)
+18. @radix-ui/react-select            (v2.1.4)
+19. @radix-ui/react-separator         (v1.1.1)
+20. @radix-ui/react-slider            (v1.2.2)
+21. @radix-ui/react-slot              (vlatest) ← USADO EN BUTTON
+22. @radix-ui/react-switch            (v1.1.2)
+23. @radix-ui/react-tabs              (v1.1.2)
+24. @radix-ui/react-toast             (v1.2.4)
+25. @radix-ui/react-toggle            (v1.1.1)
+26. @radix-ui/react-toggle-group      (v1.1.1)
+27. @radix-ui/react-tooltip           (v1.1.6)
+
+
+COMPONENTES SHADCN/UI POTENCIALES
+----------------------------------
+
+Basándose en las dependencias instaladas, estos componentes shadcn/ui
+PODRÍAN ser agregados al proyecto:
+
+ □ Accordion          (usa @radix-ui/react-accordion)
+ □ Alert Dialog       (usa @radix-ui/react-alert-dialog)
+ □ Aspect Ratio       (usa @radix-ui/react-aspect-ratio)
+ □ Avatar             (usa @radix-ui/react-avatar)
+ □ Checkbox           (usa @radix-ui/react-checkbox)
+ □ Collapsible        (usa @radix-ui/react-collapsible)
+ □ Context Menu       (usa @radix-ui/react-context-menu)
+ □ Dialog             (usa @radix-ui/react-dialog)
+ □ Dropdown Menu      (usa @radix-ui/react-dropdown-menu)
+ □ Hover Card         (usa @radix-ui/react-hover-card)
+ □ Label              (usa @radix-ui/react-label)
+ □ Menubar            (usa @radix-ui/react-menubar)
+ □ Navigation Menu    (usa @radix-ui/react-navigation-menu)
+ □ Popover            (usa @radix-ui/react-popover)
+ □ Progress           (usa @radix-ui/react-progress)
+ □ Radio Group        (usa @radix-ui/react-radio-group)
+ □ Scroll Area        (usa @radix-ui/react-scroll-area)
+ □ Select             (usa @radix-ui/react-select)
+ □ Separator          (usa @radix-ui/react-separator)
+ □ Slider             (usa @radix-ui/react-slider)
+ □ Switch             (usa @radix-ui/react-switch)
+ □ Tabs               (usa @radix-ui/react-tabs)
+ □ Toast              (usa @radix-ui/react-toast)
+ □ Toggle             (usa @radix-ui/react-toggle)
+ □ Toggle Group       (usa @radix-ui/react-toggle-group)
+ □ Tooltip            (usa @radix-ui/react-tooltip)
+
+
+ESTADO ACTUAL
+-------------
+
+COMPONENTES IMPLEMENTADOS: 1
+- Button ✓
+
+COMPONENTES NO IMPLEMENTADOS: 27+
+Todas las dependencias están instaladas pero los componentes no han sido
+agregados a components/ui/
+
+
+OTRAS DEPENDENCIAS SHADCN/UI
+-----------------------------
+
+INSTALADAS:
+
+1. class-variance-authority (CVA)
+   - Usado en Button
+   - Crea variantes de componentes
+   - Sistema de props type-safe
+
+2. clsx
+   - Usado en utils.ts
+   - Construye strings de clases condicionalmente
+
+3. tailwind-merge
+   - Usado en utils.ts
+   - Merge inteligente de clases Tailwind
+   - Evita conflictos
+
+4. lucide-react
+   - Biblioteca de iconos
+   - NO USADA (proyecto usa SVG inline)
+
+5. @hookform/resolvers
+   - Para validación con react-hook-form
+   - NO USADA
+
+6. zod
+   - Validación de schemas
+   - NO USADA
+
+7. react-hook-form
+   - Manejo de formularios
+   - NO USADA
+
+8. sonner
+   - Notificaciones toast
+   - NO USADA
+
+9. date-fns
+   - Manipulación de fechas
+   - NO USADA
+
+10. react-day-picker
+    - Date picker
+    - NO USADO
+
+11. recharts
+    - Gráficos
+    - NO USADO
+
+12. cmdk
+    - Command menu
+    - NO USADO
+
+13. embla-carousel-react
+    - Carousels
+    - NO USADO
+
+14. input-otp
+    - Input OTP
+    - NO USADO
+
+15. react-resizable-panels
+    - Paneles redimensionables
+    - NO USADO
+
+16. vaul
+    - Drawer component
+    - NO USADO
+
+
+CÓMO AGREGAR MÁS COMPONENTES SHADCN/UI
+---------------------------------------
+
+COMANDO:
+```bash
+npx shadcn@latest add [component-name]
+```
+
+EJEMPLOS:
+```bash
+npx shadcn@latest add card
+npx shadcn@latest add input
+npx shadcn@latest add form
+```
+
+PROCESO:
+1. CLI descarga el código del componente
+2. Lo coloca en components/ui/
+3. Verifica dependencias
+4. Instala paquetes Radix UI necesarios (si no existen)
+
+RESULTADO:
+Un nuevo archivo .tsx en components/ui/ que puedes:
+- Usar directamente
+- Modificar según necesites
+- Personalizar completamente
+
+
+VENTAJAS DE ESTE ENFOQUE
+-------------------------
+
+✓ CONTROL TOTAL
+  - Código en tu proyecto
+  - Modificable sin límites
+
+✓ NO HAY LOCK-IN
+  - No dependes de una librería externa
+  - Actualizas cuando quieras
+
+✓ TREE-SHAKING PERFECTO
+  - Solo bundleas lo que usas
+  - No hay peso extra
+
+✓ PERSONALIZACIÓN FÁCIL
+  - Modifica el código directamente
+  - No override de estilos
+
+✓ APRENDIZAJE
+  - Ves cómo están construidos
+  - Aprendes patrones de React
+
+
+DESVENTAJAS
+-----------
+
+✗ ACTUALIZACIONES MANUALES
+  - No hay npm update
+  - Debes re-copiar componentes
+
+✗ CÓDIGO DUPLICADO
+  - Cada proyecto tiene su copia
+  - No se comparte entre proyectos
+
+✗ MANTENIMIENTO
+  - Eres responsable del código
+  - Bugs propios + bugs upstream
+
+
+RESUMEN
+-------
+
+CONFIGURADO:   ✓ Sí (components.json existe)
+COMPONENTES:   1 de 27+ posibles
+DEPENDENCIAS:  Todas instaladas
+USO REAL:      Mínimo (solo Button)
+POTENCIAL:     Alto (listo para agregar más)
+
+RECOMENDACIÓN:
+El proyecto está sobreconfigurado. Tiene todas las dependencias de shadcn/ui
+instaladas pero solo usa 1 componente. 
+
+OPCIONES:
+1. Agregar más componentes shadcn/ui según se necesiten
+2. Remover dependencias no usadas para reducir node_modules
+3. Implementar los componentes que las dependencias sugieren
+
+
+===============================================================================

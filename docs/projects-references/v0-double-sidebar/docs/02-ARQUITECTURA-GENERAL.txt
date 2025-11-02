@@ -1,0 +1,383 @@
+===============================================================================
+                        ARQUITECTURA GENERAL DEL PROYECTO
+===============================================================================
+
+ESTRUCTURA DE CARPETAS COMPLETA
+--------------------------------
+
+v0-double-sidebar-component/
+│
+├── app/                              # Next.js App Router
+│   ├── layout.tsx                    # Root layout (Geist fonts, Analytics)
+│   ├── page.tsx                      # Home page (redirect a /seleccion-junta)
+│   ├── globals.css                   # Estilos globales (Tailwind + variables)
+│   │
+│   └── (docs)/                       # Route Group (no afecta URL)
+│       ├── layout.tsx                # Wrapper para DocsLayout
+│       ├── seleccion-junta/
+│       │   └── page.tsx
+│       ├── datos-junta/
+│       │   └── page.tsx
+│       ├── instalacion-junta/
+│       │   └── page.tsx
+│       ├── puntos-agenda/
+│       │   ├── aumento-capital-aporte/
+│       │   │   ├── page.tsx
+│       │   │   ├── aportantes/page.tsx
+│       │   │   ├── aportes/page.tsx
+│       │   │   └── votacion/page.tsx
+│       │   │
+│       │   ├── aumento-capital-capitalizacion/
+│       │   │   ├── page.tsx
+│       │   │   ├── acreedores/page.tsx
+│       │   │   ├── aportantes/page.tsx
+│       │   │   ├── aportes/page.tsx
+│       │   │   ├── capitalizacion/page.tsx
+│       │   │   └── votacion/page.tsx
+│       │   │
+│       │   ├── nombramiento-gerente/
+│       │   │   ├── page.tsx
+│       │   │   ├── nombramiento/page.tsx
+│       │   │   ├── otorgamiento/page.tsx
+│       │   │   └── votacion/page.tsx
+│       │   │
+│       │   ├── nombramiento-apoderados/
+│       │   │   ├── page.tsx
+│       │   │   ├── nombramiento/page.tsx
+│       │   │   ├── otorgamiento/page.tsx
+│       │   │   └── votacion/page.tsx
+│       │   │
+│       │   ├── remocion-apoderados/
+│       │   │   ├── page.tsx
+│       │   │   ├── remocion/page.tsx
+│       │   │   └── votacion/page.tsx
+│       │   │
+│       │   └── remocion-directores/
+│       │       ├── page.tsx
+│       │       ├── remocion/page.tsx
+│       │       └── votacion/page.tsx
+│       │
+│       ├── resumen/
+│       │   └── page.tsx
+│       └── descargar/
+│           └── page.tsx
+│
+├── components/                       # Componentes React reutilizables
+│   ├── docs-layout.tsx              # Layout principal con doble sidebar
+│   ├── main-sidebar.tsx             # Navegación izquierda
+│   ├── table-of-contents.tsx        # Navegación derecha (ToC)
+│   ├── theme-provider.tsx           # Provider de next-themes
+│   │
+│   └── ui/                          # Componentes shadcn/ui
+│       └── button.tsx               # Único componente UI implementado
+│
+├── lib/                             # Utilidades y configuración
+│   ├── utils.ts                     # Función cn() para merging de clases
+│   └── navigation-config.ts         # Configuración de navegación y ToC
+│
+├── public/                          # Assets estáticos (vacío)
+│
+├── styles/                          # Estilos adicionales (vacío)
+│   └── globals.css
+│
+├── docs/                            # Documentación del proyecto
+│   └── [archivos de documentación]
+│
+├── components.json                  # Configuración de shadcn/ui
+├── next.config.mjs                  # Configuración de Next.js
+├── tsconfig.json                    # Configuración de TypeScript
+├── postcss.config.mjs               # Configuración de PostCSS
+├── package.json                     # Dependencias y scripts
+└── README.md                        # Readme del proyecto
+
+
+PATRONES DE DISEÑO UTILIZADOS
+------------------------------
+
+1. COMPOUND COMPONENT PATTERN
+   - DocsLayout compone MainSidebar + TableOfContents + children
+   - Cada componente maneja su propia lógica
+
+2. LAYOUT PATTERN
+   - Layouts anidados (Root → Docs → Page)
+   - Cada nivel agrega funcionalidad
+   - Preserva estado entre navegaciones
+
+3. CONFIGURATION-DRIVEN PATTERN
+   - navigationStructure define toda la navegación
+   - tocByRoute mapea rutas a contenidos
+   - Centraliza la configuración
+
+4. CONTAINER/PRESENTATIONAL PATTERN
+   - Componentes de layout (containers)
+   - Componentes de UI puros (presentational)
+   - Separación de responsabilidades
+
+5. RENDER PROPS / CHILDREN PATTERN
+   - Todos los layouts reciben {children}
+   - Composición sobre herencia
+   - Flexibilidad en la estructura
+
+
+FLUJO DE DATOS
+--------------
+
+1. NAVEGACIÓN
+   Usuario → Click en link → Next.js Router → Actualiza pathname
+   → usePathname hook → Re-render componentes → Update active states
+
+2. TABLE OF CONTENTS
+   Router actualiza → usePathname detecta → busca en tocByRoute
+   → Renderiza ToC contextual para la ruta actual
+
+3. MOBILE MENU
+   Usuario click → setState(toggle) → CSS transform
+   → Overlay aparece → Click outside → Close menu
+
+4. SCROLL A SECCIONES
+   Click en ToC → preventDefault → getElementById
+   → scrollIntoView({smooth}) → Navegación suave
+
+5. TEMA (DARK/LIGHT)
+   ThemeProvider → next-themes → localStorage
+   → CSS variables → :root / .dark classes
+
+
+CONVENCIONES DE CÓDIGO
+-----------------------
+
+NAMING:
+├── Archivos:      kebab-case (main-sidebar.tsx)
+├── Componentes:   PascalCase (MainSidebar)
+├── Variables:     camelCase (isMobileMenuOpen)
+├── Constantes:    camelCase (navigationStructure)
+└── CSS Classes:   Tailwind utilities
+
+IMPORTS:
+├── Orden:
+│   1. React/Next.js imports
+│   2. Third-party libraries
+│   3. @/ path aliases
+│   4. Relative imports
+│   5. Types/interfaces
+└── Alias: @/ apunta a la raíz del proyecto
+
+EXPORTS:
+├── Páginas:       export default
+├── Componentes:   export function [Nombre]
+└── Utilidades:    export function/const
+
+TIPADO:
+├── Props:         inline types o interfaces
+├── Eventos:       React.MouseEvent, etc.
+├── Children:      React.ReactNode
+└── Strict mode:   true
+
+
+JERARQUÍA DE COMPONENTES
+------------------------
+
+RootLayout
+└── Analytics (Vercel)
+└── Page (redirect)
+
+DocsLayoutWrapper
+└── DocsLayout
+    ├── Mobile Menu Button
+    ├── MainSidebar (fixed left)
+    │   └── Navigation Links
+    │       ├── Simple Links
+    │       └── Collapsible Sections
+    │           └── Sub Links
+    │
+    ├── Main Content (center)
+    │   └── {children} (páginas)
+    │
+    ├── TableOfContents (fixed right)
+    │   └── Context Links
+    │       ├── Route Links
+    │       └── Scroll Anchors
+    │
+    └── Mobile Overlay
+
+
+RESPONSABILIDADES POR CAPA
+---------------------------
+
+APP LAYER (app/):
+- Define rutas y navegación
+- Configura layouts y metadata
+- Implementa páginas de contenido
+- Maneja redirects
+
+COMPONENTS LAYER (components/):
+- Lógica de UI reutilizable
+- Interactividad y estado local
+- Composición de interfaces
+- Accesibilidad
+
+LIB LAYER (lib/):
+- Configuración centralizada
+- Utilidades compartidas
+- Helpers y funciones puras
+- Constantes del proyecto
+
+UI LAYER (components/ui/):
+- Componentes base de shadcn/ui
+- Primitivos de Radix UI
+- Estilos consistentes
+- Props estandarizadas
+
+
+PATRONES DE ESTADO
+------------------
+
+LOCAL STATE (useState):
+- isMobileMenuOpen (DocsLayout)
+- openSections (MainSidebar)
+- expandedItems (TableOfContents)
+
+URL STATE (usePathname):
+- Ruta actual para active states
+- Determina contenido del ToC
+- Sincroniza navegación
+
+NO HAY:
+- Estado global (Redux/Zustand)
+- Context API para estado compartido
+- Formularios controlados complejos
+- Caché de datos
+
+
+ESTRATEGIA DE ESTILOS
+----------------------
+
+TAILWIND FIRST:
+- Todas las páginas usan utility classes
+- No hay CSS modules
+- Inline styles evitados
+
+CSS VARIABLES:
+- Temas definidos en globals.css
+- Variables para colores y espaciado
+- Modo claro/oscuro via variables
+
+VARIANTES (CVA):
+- Componente Button usa CVA
+- Define variantes: default, destructive, outline, etc.
+- Sizes: default, sm, lg, icon
+
+RESPONSIVE:
+- Mobile-first approach
+- Breakpoints: lg:, xl:
+- Transform utilities para mobile menu
+
+
+PATRONES DE PERFORMANCE
+------------------------
+
+SERVER COMPONENTS:
+- Por defecto todos son Server Components
+- Solo 'use client' cuando necesario
+- Reduce JavaScript en cliente
+
+CLIENT COMPONENTS:
+- DocsLayout (necesita useState, eventos)
+- MainSidebar (interactividad)
+- TableOfContents (scroll listeners)
+- ThemeProvider (context)
+
+CODE SPLITTING:
+- Automático por Next.js
+- Por ruta
+- Por componente dinámico
+
+IMAGE OPTIMIZATION:
+- unoptimized: true en next.config
+- No hay imágenes en el proyecto actual
+
+
+ACCESIBILIDAD
+-------------
+
+SEMÁNTICA HTML:
+- nav para navegación
+- main para contenido principal
+- aside para sidebars
+- section para secciones
+- button para botones (no divs)
+
+ARIA:
+- Radix UI proporciona ARIA automático
+- aria-invalid en Button
+- Roles implícitos correctos
+
+KEYBOARD NAVIGATION:
+- Todos los links son tabulables
+- Botones tienen focus-visible
+- Enter/Space activa botones
+
+FOCUS MANAGEMENT:
+- outline-none + focus-visible:ring
+- Estados de foco visibles
+- Orden lógico de tabulación
+
+
+CONVENCIONES DE DOCUMENTACIÓN
+------------------------------
+
+COMENTARIOS:
+- Mínimos en el código
+- Solo donde la lógica no es obvia
+- JSDoc no usado
+
+README:
+- Información básica del proyecto
+- Instrucciones de instalación
+- Scripts disponibles
+
+TIPOS:
+- TypeScript hace de documentación
+- Interfaces explican estructuras
+- Props documentan componentes
+
+
+ESTRATEGIA DE TESTING
+----------------------
+
+ACTUAL:
+- No hay tests implementados
+- No hay configuración de Jest/Vitest
+- No hay Cypress/Playwright
+
+RECOMENDADO:
+- Unit tests para utilidades (lib/)
+- Integration tests para componentes
+- E2E tests para flujos críticos
+
+
+ESTRATEGIA DE BUILD
+--------------------
+
+DESARROLLO:
+- npm run dev (Next.js dev server)
+- Hot reload automático
+- Fast refresh de React
+
+PRODUCCIÓN:
+- npm run build (Next.js build)
+- Optimización automática
+- Static optimization donde posible
+
+LINT:
+- npm run lint (ESLint)
+- ignoreDuringBuilds: true
+- No bloquea builds
+
+DEPLOY:
+- Optimizado para Vercel
+- Compatible con Netlify, Railway
+- Output estático posible
+
+
+===============================================================================
