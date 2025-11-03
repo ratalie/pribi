@@ -207,6 +207,18 @@
             <span>Componentes</span>
           </div>
         </NuxtLink>
+
+        <!-- Ruta a Sidebars -->
+        <NuxtLink
+          to="/indiceSidebarsPruebas"
+          class="w-full flex items-center justify-between px-3 py-2.5 text-white text-sm hover:bg-primary-200 hover:text-white rounded-lg h-auto font-normal"
+          :class="{ 'bg-primary-400': isActive('/indiceSidebarsPruebas') }"
+        >
+          <div class="flex items-center gap-3">
+            <component :is="getIcon('')" v-if="getIcon('')" class="w-5 h-5" />
+            <span>Sidebars</span>
+          </div>
+        </NuxtLink>
       </SidebarContent>
 
       <!-- User Profile Footer -->
