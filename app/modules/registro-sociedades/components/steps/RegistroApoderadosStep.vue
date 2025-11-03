@@ -160,7 +160,6 @@
           title-menu="Acciones"
           :actions="actions"
           :show-actions-for="showActionsFor"
-          icon-type="vertical"
         />
       </SimpleCard>
 
@@ -180,7 +179,6 @@
           :data="registroApoderadosData"
           title-menu="Acciones"
           :actions="actions"
-          icon-type="vertical"
         />
       </SimpleCard>
 
@@ -200,7 +198,6 @@
           :data="otrosApoderadosData"
           title-menu="Acciones"
           :actions="actions"
-          icon-type="vertical"
         />
       </SimpleCard>
     </div>
