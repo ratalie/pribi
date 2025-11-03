@@ -30,6 +30,7 @@ export const buttonVariants = cva(
         lg: "h-[44px] w-[180px] t-t2 gap-2",
         xl: "h-[52px] w-[232px] t-t2 gap-2",
         xxl: "h-[64px] w-[232px] t-t2 gap-2",
+        large: "h-[50px] w-[298px] t-t2 gap-2",
       },
     },
     defaultVariants: {

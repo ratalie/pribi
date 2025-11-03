@@ -22,6 +22,8 @@
       separatorLine?: boolean;
       onClick: (id: string) => void;
     }[];
+    showActionsFor?: (row: TData) => boolean;
+    iconType?: "vertical" | "horizontal";
   }>();
 
   const table = useVueTable({
@@ -51,6 +53,7 @@
               :props="header.getContext()"
             />
           </TableHead>
+          <TableHead v-if="actions" class="w-12" />
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -65,18 +68,22 @@
             </TableCell>
 
             <!-- Celda de acciones -->
-            <TableCell v-if="actions" class="w-12">
+            <TableCell
+              v-if="actions && (showActionsFor ? showActionsFor(row.original) : true)"
+              class="w-12"
+            >
               <DataTableDropDown
                 :item-id="(row.original as any).id"
                 :title-menu="titleMenu"
                 :actions="actions"
+                :icon-type="iconType"
               />
             </TableCell>
           </TableRow>
         </template>
         <template v-else>
           <TableRow>
-            <TableCell :colspan="props.columns.length" class="h-24">
+            <TableCell :colspan="props.columns.length + (actions ? 1 : 0)" class="h-24">
               <EmptyTableMessage />
             </TableCell>
           </TableRow>

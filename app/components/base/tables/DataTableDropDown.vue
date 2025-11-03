@@ -8,9 +8,10 @@
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu";
-  import { MoreHorizontal } from "lucide-vue-next";
+  import { EllipsisVertical, MoreHorizontal } from "lucide-vue-next";
+  import { getIcon } from "~/utils/iconMapper";
 
-  const props = defineProps<{
+  interface Props {
     itemId: string;
     titleMenu?: string;
     actions?: {
@@ -19,10 +20,21 @@
       separatorLine?: boolean;
       onClick: (id: string) => void;
     }[];
-  }>();
+    iconType?: "vertical" | "horizontal";
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    iconType: "horizontal",
+    titleMenu: undefined,
+    actions: () => [],
+  });
 
   const actionsList = computed(() => {
     return props.actions || [];
+  });
+
+  const triggerIcon = computed(() => {
+    return props.iconType === "horizontal" ? MoreHorizontal : EllipsisVertical;
   });
 </script>
 
@@ -31,7 +43,7 @@
     <DropdownMenuTrigger as-child>
       <Button variant="ghost" class="w-8 h-8 p-0">
         <span class="sr-only">Open menu</span>
-        <MoreHorizontal class="w-4 h-4" />
+        <component :is="triggerIcon" class="w-4 h-4" />
       </Button>
     </DropdownMenuTrigger>
 
