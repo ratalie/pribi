@@ -30,4 +30,8 @@
   // RightSidebar: Disabled (estructura plana)
   // Ruta: /registro-societario/sucursales/datos-sociedad
   // Enum: SucursalesRoutes.DATOS_SOCIEDAD
+
+  definePageMeta({
+    layout: "sidebar-general",
+  });
 </script>

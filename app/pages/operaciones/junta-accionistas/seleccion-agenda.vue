@@ -19,4 +19,8 @@
   // Página: Selección de Puntos de Agenda
   // Nivel: 0 (Principal)
   // Ruta: /operaciones/junta-accionistas/seleccion-agenda
+
+  definePageMeta({
+    layout: "sidebar-general",
+  });
 </script>
