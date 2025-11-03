@@ -108,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-  import { juntaAccionistasFlowConfig } from "@/modules/junta-accionistas/flow-configs";
+  import { juntaAccionistasFlowConfig } from "@/config/flows";
 
   const flowConfig = juntaAccionistasFlowConfig;
 

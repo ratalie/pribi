@@ -104,7 +104,7 @@
 </template>
 
 <script setup lang="ts">
-  import { sucursalesFlowConfig } from "@/modules/sucursales/flow-configs";
+  import { sucursalesFlowConfig } from "@/config/flows";
 
   const flowConfig = sucursalesFlowConfig;
 
