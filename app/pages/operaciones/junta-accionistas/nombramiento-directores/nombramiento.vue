@@ -24,6 +24,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "universal-flow-layout",
+});
+
   // Página: Nombramiento de Directores - Detalle (Sub-paso)
   // Nivel: 3 (Sub-página en rightSidebar)
   // Padre: nombramiento-directores/index.vue (Nivel 2)

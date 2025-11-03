@@ -30,6 +30,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "universal-flow-layout",
+});
+
   // Página: Votación - Pronunciamiento sobre Gestión (Sub-paso final)
   // Nivel: 3 (Sub-página en rightSidebar)
   // Padre: pronunciamiento-gestion/index.vue (Nivel 2)

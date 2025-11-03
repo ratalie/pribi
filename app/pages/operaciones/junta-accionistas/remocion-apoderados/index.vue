@@ -28,6 +28,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "universal-flow-layout",
+});
+
   // Página: Remoción de Apoderados (Principal)
   // Nivel: 2 (Categoria dentro de Remociones)
   // Padre: puntos-acuerdo.vue (Nivel 0 - PADRE COMPLEJO)

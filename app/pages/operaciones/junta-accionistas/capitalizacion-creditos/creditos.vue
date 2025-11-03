@@ -24,6 +24,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "universal-flow-layout",
+});
+
   // Página: Créditos (Sub-paso de Capitalización de Créditos)
   // Nivel: 3 (Sub-página en rightSidebar)
   // Padre: capitalizacion-creditos/index.vue (Nivel 2)

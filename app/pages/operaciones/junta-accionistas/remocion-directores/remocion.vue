@@ -24,6 +24,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "universal-flow-layout",
+});
+
   // Página: Remoción de Directores - Detalle (Sub-paso)
   // Nivel: 3 (Sub-página en rightSidebar)
   // Padre: remocion-directores/index.vue (Nivel 2)

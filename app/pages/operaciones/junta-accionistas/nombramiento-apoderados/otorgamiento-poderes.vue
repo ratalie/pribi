@@ -29,6 +29,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "universal-flow-layout",
+});
+
   // Página: Otorgamiento de Poderes (Sub-paso con scroll anchors)
   // Nivel: 3 (Sub-página en rightSidebar, pero con hijos Nivel 4)
   // Padre: nombramiento-apoderados/index.vue (Nivel 2)

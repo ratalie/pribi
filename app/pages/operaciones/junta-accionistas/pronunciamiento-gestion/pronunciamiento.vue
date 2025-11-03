@@ -25,6 +25,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "universal-flow-layout",
+});
+
   // Página: Pronunciamiento sobre Gestión - Detalle (Sub-paso)
   // Nivel: 3 (Sub-página en rightSidebar)
   // Padre: pronunciamiento-gestion/index.vue (Nivel 2)

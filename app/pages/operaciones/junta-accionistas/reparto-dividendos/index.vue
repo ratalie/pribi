@@ -28,6 +28,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "universal-flow-layout",
+});
+
   // Página: Reparto de Dividendos (Principal)
   // Nivel: 2 (Categoria dentro de Gestión Social)
   // Padre: puntos-acuerdo.vue (Nivel 0 - PADRE COMPLEJO)

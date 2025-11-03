@@ -28,6 +28,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "universal-flow-layout",
+});
+
   // Página: Votación - Estados Financieros (Sub-paso final)
   // Nivel: 3 (Sub-página en rightSidebar)
   // Padre: estados-financieros/index.vue (Nivel 2)

@@ -23,4 +23,8 @@
   // Nivel: 0 (Principal)
   // RightSidebar: Habilitado (lista de actas)
   // Ruta: /operaciones/junta-accionistas/descargar
+
+  definePageMeta({
+    layout: "universal-flow-layout",
+  });
 </script>

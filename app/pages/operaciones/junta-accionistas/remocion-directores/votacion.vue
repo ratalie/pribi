@@ -28,6 +28,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "universal-flow-layout",
+});
+
   // Página: Votación - Remoción de Directores (Sub-paso final)
   // Nivel: 3 (Sub-página en rightSidebar)
   // Padre: remocion-directores/index.vue (Nivel 2)

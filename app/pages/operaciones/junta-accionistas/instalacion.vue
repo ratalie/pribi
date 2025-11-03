@@ -23,4 +23,8 @@
   // Nivel: 0 (Principal)
   // RightSidebar: Habilitado (convocatoria, asistencia, mesa)
   // Ruta: /operaciones/junta-accionistas/instalacion
+
+  definePageMeta({
+    layout: "universal-flow-layout",
+  });
 </script>

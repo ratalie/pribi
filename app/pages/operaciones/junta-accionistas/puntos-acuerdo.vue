@@ -23,4 +23,8 @@
   // Nivel: 0 (Principal - PADRE COMPLEJO)
   // Hijos: 4 secciones de Nivel 1 con ~17 items Nivel 2
   // Ruta: /operaciones/junta-accionistas/puntos-acuerdo
+
+  definePageMeta({
+    layout: "universal-flow-layout",
+  });
 </script>

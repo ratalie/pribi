@@ -30,4 +30,8 @@
   // RightSidebar: Aparece como hijo en sidebar del padre
   // Ruta: /operaciones/junta-accionistas/aporte-dinerario/aportantes
   // Enum: JuntaRoutes.APORTE_DINERARIO_APORTANTES
+
+  definePageMeta({
+    layout: "universal-flow-layout",
+  });
 </script>

@@ -36,4 +36,8 @@
   // Hijos en RightSidebar: acreedores.vue, creditos.vue, votacion.vue
   // Ruta: /operaciones/junta-accionistas/capitalizacion-creditos
   // Enum: JuntaRoutes.CAPITALIZACION_CREDITOS
+
+  definePageMeta({
+    layout: "universal-flow-layout",
+  });
 </script>

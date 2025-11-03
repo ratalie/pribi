@@ -35,4 +35,8 @@
   // Hijos en RightSidebar: nombramiento.vue, votacion.vue
   // Ruta: /operaciones/junta-accionistas/nombramiento-auditores
   // Enum: JuntaRoutes.NOMBRAMIENTO_AUDITORES
+
+  definePageMeta({
+    layout: "universal-flow-layout",
+  });
 </script>

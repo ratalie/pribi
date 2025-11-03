@@ -23,4 +23,8 @@
   // Nivel: 0 (Principal)
   // RightSidebar: Habilitado (scroll anchors a resúmenes)
   // Ruta: /operaciones/junta-accionistas/resumen
+
+  definePageMeta({
+    layout: "universal-flow-layout",
+  });
 </script>

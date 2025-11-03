@@ -28,6 +28,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "universal-flow-layout",
+});
+
   // Página: Votación - Nombramiento de Apoderados (Sub-paso final)
   // Nivel: 3 (Sub-página en rightSidebar)
   // Padre: nombramiento-apoderados/index.vue (Nivel 2)

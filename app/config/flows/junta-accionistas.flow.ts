@@ -10,15 +10,19 @@
 import type { FlowConfig } from "@/types/flow-system";
 import { RenderMode, SidebarPosition } from "@/types/flow-system";
 
-// Imports de Nivel 0
+// Imports de todos los niveles
 import * as nivel0 from "@/types/flows/junta-accionistas/nivel-0";
+import * as nivel1 from "@/types/flows/junta-accionistas/nivel-1";
+import * as nivel2 from "@/types/flows/junta-accionistas/nivel-2";
+import * as nivel3 from "@/types/flows/junta-accionistas/nivel-3";
+import * as nivel4 from "@/types/flows/junta-accionistas/nivel-4";
 
 /**
  * FlowConfig principal para Junta de Accionistas
  *
- * Este es un FlowConfig simplificado que exporta los items principales.
- * La jerarquía completa se construye dinámicamente en runtime
- * usando los parentId y children de cada FlowItem.
+ * Incluye TODOS los items de Nivel 0-4.
+ * La jerarquía se construye dinámicamente en runtime
+ * usando los parentId y children de cada FlowItem mediante buildFlowItemTree().
  */
 export const juntaAccionistasFlowConfig: FlowConfig = {
   id: "junta-accionistas-flow",
@@ -26,15 +30,22 @@ export const juntaAccionistasFlowConfig: FlowConfig = {
   description: "Flujo completo para la gestión de juntas de accionistas",
   version: "1.0.0",
 
-  // Items principales (Nivel 0)
-  // La jerarquía se resuelve en runtime usando parentId
+  // TODOS los items (Nivel 0-4) - buildFlowItemTree() construirá la jerarquía
   items: [
-    nivel0.seleccionAgendaItem,
-    nivel0.detallesItem,
-    nivel0.instalacionItem,
-    nivel0.puntosAcuerdoItem,
-    nivel0.resumenItem,
-    nivel0.descargarItem,
+    // Nivel 0 (6 items principales)
+    ...Object.values(nivel0),
+
+    // Nivel 1 (4 sections)
+    ...Object.values(nivel1),
+
+    // Nivel 2 (items con rightSidebar)
+    ...Object.values(nivel2),
+
+    // Nivel 3 (sub-items en rightSidebar)
+    ...Object.values(nivel3),
+
+    // Nivel 4 (scroll anchors)
+    ...Object.values(nivel4),
   ],
 
   renderOptions: {

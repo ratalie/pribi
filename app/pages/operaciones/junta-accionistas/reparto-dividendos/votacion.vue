@@ -28,6 +28,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "universal-flow-layout",
+});
+
   // Página: Votación - Reparto de Dividendos (Sub-paso final)
   // Nivel: 3 (Sub-página en rightSidebar)
   // Padre: reparto-dividendos/index.vue (Nivel 2)

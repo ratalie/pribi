@@ -28,6 +28,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "universal-flow-layout",
+});
+
   // Página: Votación - Aplicación de Resultados (Sub-paso final)
   // Nivel: 3 (Sub-página en rightSidebar)
   // Padre: aplicacion-resultados/index.vue (Nivel 2)

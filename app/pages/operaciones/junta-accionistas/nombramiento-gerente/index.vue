@@ -28,6 +28,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "universal-flow-layout",
+});
+
   // Página: Nombramiento de Gerente (Principal)
   // Nivel: 2 (Categoria dentro de Nombramiento)
   // Padre: puntos-acuerdo.vue (Nivel 0 - PADRE COMPLEJO)

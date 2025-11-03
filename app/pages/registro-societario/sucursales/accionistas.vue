@@ -24,6 +24,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "universal-flow-layout",
+});
+
   // Página: Accionistas (Sucursales)
   // Nivel: 0 (Página - flat structure)
   // Flujo: Sucursales (Registro Societario)

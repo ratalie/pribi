@@ -23,4 +23,8 @@
   // Nivel: 0 (Principal)
   // RightSidebar: Habilitado (tipo, modo, fecha)
   // Ruta: /operaciones/junta-accionistas/detalles
+
+  definePageMeta({
+    layout: "universal-flow-layout",
+  });
 </script>

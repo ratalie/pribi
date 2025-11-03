@@ -35,4 +35,8 @@
   // Hijos en RightSidebar: aportantes.vue, aportes.vue, votacion.vue
   // Ruta: /operaciones/junta-accionistas/aporte-dinerario
   // Enum: JuntaRoutes.APORTE_DINERARIO
+
+  definePageMeta({
+    layout: "universal-flow-layout",
+  });
 </script>

@@ -32,6 +32,6 @@
   // Enum: SucursalesRoutes.DATOS_SOCIEDAD
 
   definePageMeta({
-    layout: "sidebar-general",
+    layout: "universal-flow-layout",
   });
 </script>

@@ -28,6 +28,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "universal-flow-layout",
+});
+
   // Página: Votación - Nombramiento de Auditores (Sub-paso final)
   // Nivel: 3 (Sub-página en rightSidebar)
   // Padre: nombramiento-auditores/index.vue (Nivel 2)
