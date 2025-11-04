@@ -40,7 +40,7 @@
 <template>
   <div class="flex w-full justify-end flex-col relative">
     <div class="flex flex-col gap-5 w-full">
-      <label v-if="label" :for="name" class="t-t2 font-secondary text-gray-900 font-bold">
+      <label v-if="label" :for="name" class="t-t2 font-secondary text-gray-800 font-bold">
         {{ label }}
       </label>
       <div class="relative w-full">

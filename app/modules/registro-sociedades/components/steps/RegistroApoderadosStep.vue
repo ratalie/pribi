@@ -140,66 +140,54 @@
 </script>
 
 <template>
-  <div class="mb-14">
-    <div class="h-full p-14 flex flex-col gap-12">
-      <CardTitle title="Registro de Apoderados" body="Complete todos los campos requeridos." />
-      <SimpleCard>
-        <CardTitle title="Clase de Apoderados" body="">
-          <template #actions>
-            <ActionButton
-              variant="secondary"
-              label="Agregar Clase de Apoderado"
-              size="xl"
-              icon="Plus"
-            />
-          </template>
-        </CardTitle>
-        <SimpleTable
-          :columns="columns"
-          :data="apoderadosData"
-          title-menu="Acciones"
-          :actions="actions"
-          :show-actions-for="showActionsFor"
-        />
-      </SimpleCard>
+  <div class="p-14 flex flex-col gap-12">
+    <CardTitle title="Registro de Apoderados" body="Complete todos los campos requeridos." />
+    <SimpleCard>
+      <CardTitle title="Clase de Apoderados" body="">
+        <template #actions>
+          <ActionButton
+            variant="secondary"
+            label="Agregar Clase de Apoderado"
+            size="xl"
+            icon="Plus"
+          />
+        </template>
+      </CardTitle>
+      <SimpleTable
+        :columns="columns"
+        :data="apoderadosData"
+        title-menu="Acciones"
+        :actions="actions"
+        :show-actions-for="showActionsFor"
+      />
+    </SimpleCard>
 
-      <SimpleCard>
-        <CardTitle title="Registro de Apoderados" body="">
-          <template #actions>
-            <ActionButton
-              variant="secondary"
-              label="Agregar Apoderado"
-              size="xl"
-              icon="Plus"
-            />
-          </template>
-        </CardTitle>
-        <SimpleTable
-          :columns="registroColumns"
-          :data="registroApoderadosData"
-          title-menu="Acciones"
-          :actions="actions"
-        />
-      </SimpleCard>
+    <SimpleCard>
+      <CardTitle title="Registro de Apoderados" body="">
+        <template #actions>
+          <ActionButton variant="secondary" label="Agregar Apoderado" size="xl" icon="Plus" />
+        </template>
+      </CardTitle>
+      <SimpleTable
+        :columns="registroColumns"
+        :data="registroApoderadosData"
+        title-menu="Acciones"
+        :actions="actions"
+      />
+    </SimpleCard>
 
-      <SimpleCard>
-        <CardTitle title="Otros Apoderados" body="">
-          <template #actions>
-            <ActionButton
-              variant="secondary"
-              label="Agregar Apoderado"
-              size="xl"
-              icon="Plus"
-            />
-          </template>
-        </CardTitle>
-        <SimpleTable
-          :columns="otrosApoderadosColumnsDef"
-          :data="otrosApoderadosData"
-          title-menu="Acciones"
-          :actions="actions"
-        />
-      </SimpleCard>
-    </div>
+    <SimpleCard>
+      <CardTitle title="Otros Apoderados" body="">
+        <template #actions>
+          <ActionButton variant="secondary" label="Agregar Apoderado" size="xl" icon="Plus" />
+        </template>
+      </CardTitle>
+      <SimpleTable
+        :columns="otrosApoderadosColumnsDef"
+        :data="otrosApoderadosData"
+        title-menu="Acciones"
+        :actions="actions"
+      />
+    </SimpleCard>
   </div>
 </template>

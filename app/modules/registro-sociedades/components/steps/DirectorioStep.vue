@@ -166,7 +166,7 @@
 
 <template>
   <div :class="tieneDirectorio ? '' : 'h-full'">
-    <div class="h-full p-14 flex flex-col gap-12">
+    <div class="p-14 flex flex-col gap-12">
       <CardTitle title="Directorio" body="Complete todos los campos requeridos.">
         <template #switch>
           <Switch v-model="tieneDirectorio" />
@@ -400,10 +400,7 @@
         />
       </SimpleCard>
 
-      <div
-        v-else
-        class="flex flex-col w-full h-full items-center justify-center self-center "
-      >
+      <div v-else class="flex flex-col w-full h-full items-center justify-center self-center">
         <img
           :src="noDirectorioImage"
           alt="No directorio"
