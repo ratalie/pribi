@@ -8,30 +8,49 @@
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu";
-  import { MoreHorizontal } from "lucide-vue-next";
+  import { EllipsisVertical, MoreHorizontal } from "lucide-vue-next";
+  import { getIcon } from "~/utils/iconMapper";
 
-  const props = defineProps<{
-    itemId: string;
-    titleMenu?: string;
-    actions?: {
-      label: string;
-      icon?: string;
-      separatorLine?: boolean;
-      onClick: (id: string) => void;
-    }[];
-  }>();
+  const props = withDefaults(
+    defineProps<{
+      itemId: string;
+      titleMenu?: string;
+      actions?: {
+        label: string;
+        icon?: string;
+        separatorLine?: boolean;
+        onClick: (id: string) => void;
+      }[];
+      iconType?: "vertical" | "horizontal";
+      actionsLabelText?: string;
+    }>(),
+    {
+      iconType: "horizontal",
+      actionsLabelText: undefined,
+    }
+  );
 
   const actionsList = computed(() => {
     return props.actions || [];
+  });
+
+  const triggerIcon = computed(() => {
+    return props.iconType === "vertical" ? EllipsisVertical : MoreHorizontal;
   });
 </script>
 
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
-      <Button variant="ghost" class="w-8 h-8 p-0">
+      <Button
+        variant="ghost"
+        :class="['flex items-center gap-2 h-8', actionsLabelText ? 'px-2' : 'p-0']"
+      >
         <span class="sr-only">Open menu</span>
-        <MoreHorizontal class="w-4 h-4" />
+        <component :is="triggerIcon" class="w-4 h-4" />
+        <span v-if="actionsLabelText" class="text-gray-700 font-secondary t-t2 font-medium">
+          {{ actionsLabelText }}
+        </span>
       </Button>
     </DropdownMenuTrigger>
 

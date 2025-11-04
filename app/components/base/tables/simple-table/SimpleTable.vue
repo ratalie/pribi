@@ -12,17 +12,25 @@
   import DataTableDropDown from "../DataTableDropDown.vue";
   import EmptyTableMessage from "../EmptyTableMessage.vue";
 
-  const props = defineProps<{
-    columns: ColumnDef<TData, TValue>[];
-    data: TData[];
-    titleMenu?: string;
-    actions?: {
-      label: string;
-      icon?: string;
-      separatorLine?: boolean;
-      onClick: (id: string) => void;
-    }[];
-  }>();
+  const props = withDefaults(
+    defineProps<{
+      columns: ColumnDef<TData, TValue>[];
+      data: TData[];
+      titleMenu?: string;
+      actions?: {
+        label: string;
+        icon?: string;
+        separatorLine?: boolean;
+        onClick: (id: string) => void;
+      }[];
+      iconType?: "vertical" | "horizontal";
+      actionsLabelText?: string;
+    }>(),
+    {
+      iconType: "horizontal",
+      actionsLabelText: undefined,
+    }
+  );
 
   const table = useVueTable({
     get data() {
@@ -65,11 +73,13 @@
             </TableCell>
 
             <!-- Celda de acciones -->
-            <TableCell v-if="actions" class="w-12">
+            <TableCell v-if="actions" class="w-auto">
               <DataTableDropDown
                 :item-id="(row.original as any).id"
                 :title-menu="titleMenu"
                 :actions="actions"
+                :icon-type="iconType"
+                :actions-label-text="actionsLabelText"
               />
             </TableCell>
           </TableRow>
