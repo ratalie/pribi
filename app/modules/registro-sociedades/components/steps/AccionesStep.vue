@@ -4,6 +4,7 @@
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import OutLineCard from "~/components/base/cards/OutLineCard.vue";
+  import ValorNominalModal from "~/components/base/modal/composite/ValorNominalModal.vue";
   import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
@@ -86,6 +87,12 @@
       },
     },
   ];
+
+  const isModalOpen = ref(false);
+
+  const openModal = () => {
+    isModalOpen.value = true;
+  };
 </script>
 
 <template>
@@ -94,7 +101,7 @@
       <template #actions>
         <div class="flex gap-4">
           <!-- valor nominal -->
-          <BaseButton variant="pill" class="h-11">
+          <BaseButton variant="pill" class="h-11" @click="openModal">
             <img :src="IconCoin" alt="Valor Nominal" />
             <p class="font-bold">
               Valor Nominal:
@@ -116,5 +123,7 @@
     </div>
 
     <SimpleTable :columns="columns" :data="data" title-menu="Actions" :actions="actions" />
+
+    <ValorNominalModal v-model="isModalOpen" @close="isModalOpen = false" />
   </div>
 </template>
