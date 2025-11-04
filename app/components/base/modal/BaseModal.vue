@@ -25,14 +25,12 @@
 
 <template>
   <Dialog :open="modelValue" @update:open="onOpenChange">
-    <BaseDialogContent class="flex flex-col min-w-[1042px] min-h-[800px]">
+    <BaseDialogContent class="flex flex-col min-w-[1042px] max-h-[800px]">
       <div class="flex-1 min-h-0 px-14 py-16 overflow-auto">
         <slot />
       </div>
 
-      <div
-        class="flex items-center gap-3 h-[92px] border-t sticky bottom-0 bg-white z-10 shrink-0"
-      >
+      <div class="flex items-center gap-3 h-[92px] min-h-[92px] shrink-0 border-t">
         <slot name="footer" />
       </div>
     </BaseDialogContent>
