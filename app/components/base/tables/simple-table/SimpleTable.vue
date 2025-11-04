@@ -12,19 +12,29 @@
   import DataTableDropDown from "../DataTableDropDown.vue";
   import EmptyTableMessage from "../EmptyTableMessage.vue";
 
-  const props = defineProps<{
-    columns: ColumnDef<TData, TValue>[];
-    data: TData[];
-    titleMenu?: string;
-    actions?: {
-      label: string;
-      icon?: string;
-      separatorLine?: boolean;
-      onClick: (id: string) => void;
-    }[];
-    showActionsFor?: (row: TData) => boolean;
-    iconType?: "vertical" | "horizontal";
-  }>();
+  const props = withDefaults(
+    defineProps<{
+      columns: ColumnDef<TData, TValue>[];
+      data: TData[];
+      titleMenu?: string;
+      actions?: {
+        label: string;
+        icon?: string;
+        separatorLine?: boolean;
+        onClick: (id: string) => void;
+      }[];
+      iconType?: "vertical" | "horizontal";
+      actionsLabelText?: string;
+      showActionsFor?: (row: TData) => boolean;
+    }>(),
+    {
+      titleMenu: undefined,
+      actions: undefined,
+      iconType: "horizontal",
+      actionsLabelText: undefined,
+      showActionsFor: undefined,
+    }
+  );
 
   const table = useVueTable({
     get data() {
@@ -53,7 +63,7 @@
               :props="header.getContext()"
             />
           </TableHead>
-          <TableHead v-if="actions" class="w-12" />
+          <TableHead v-if="props.actions" class="w-12" />
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -69,21 +79,25 @@
 
             <!-- Celda de acciones -->
             <TableCell
-              v-if="actions && (showActionsFor ? showActionsFor(row.original) : true)"
-              class="w-12"
+              v-if="
+                props.actions &&
+                (props.showActionsFor ? props.showActionsFor(row.original) : true)
+              "
+              class="w-auto"
             >
               <DataTableDropDown
                 :item-id="(row.original as any).id"
-                :title-menu="titleMenu"
-                :actions="actions"
-                :icon-type="iconType"
+                :title-menu="props.titleMenu"
+                :actions="props.actions"
+                :icon-type="props.iconType"
+                :actions-label-text="props.actionsLabelText"
               />
             </TableCell>
           </TableRow>
         </template>
         <template v-else>
           <TableRow>
-            <TableCell :colspan="props.columns.length + (actions ? 1 : 0)" class="h-24">
+            <TableCell :colspan="props.columns.length + (props.actions ? 1 : 0)" class="h-24">
               <EmptyTableMessage />
             </TableCell>
           </TableRow>

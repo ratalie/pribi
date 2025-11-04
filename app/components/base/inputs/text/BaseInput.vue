@@ -28,6 +28,7 @@
     clsx(
       // Estilos base
       "!border-gray-500 focus:!border-gray-700 focus:!border-2 focus:!outline-none focus:!ring-2 focus:!ring-[var(--color-outline-ring)] focus:!ring-offset-4",
+      "text-gray-700 font-secondary",
       // Variantes
       props.variant === "error" && "!border-red-500 focus:!border-red-500 focus:!ring-red-500",
       props.variant === "success" &&
