@@ -37,6 +37,7 @@ import {
   User,
   UserCheck,
   UserCog,
+  UserRoundPlus,
   Users,
   Users2,
   X,
@@ -84,6 +85,7 @@ const iconMap = {
   Calendar,
   Check,
   FileCheck,
+  UserRoundPlus,
 };
 
 export const getIcon = (iconName: string) => {

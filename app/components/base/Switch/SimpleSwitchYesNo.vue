@@ -20,7 +20,7 @@
       :class="`text-sm leading-none select-none cursor-pointer transition-colors ${labelNoClass}`"
       @click="isActive = false"
     >
-      No
+      NO
     </label>
 
     <!-- Switch -->
@@ -31,7 +31,7 @@
       :class="`text-sm leading-none select-none cursor-pointer transition-colors ${labelSiClass}`"
       @click="isActive = true"
     >
-      Si
+      SI
     </label>
   </div>
 </template>
