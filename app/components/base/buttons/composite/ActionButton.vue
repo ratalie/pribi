@@ -10,9 +10,12 @@
     iconPosition?: "left" | "right";
     isLoading?: boolean;
     label: string;
+    type?: "button" | "submit";
   }
 
   const props = defineProps<Props>();
+
+  const typeButton = computed(() => props.type || "button");
 
   const getSizeIcon = () => {
     switch (props.size) {
@@ -27,7 +30,7 @@
 </script>
 
 <template>
-  <Button :variant="variant" :size="size" :disabled="isLoading">
+  <Button :type="typeButton" :variant="variant" :size="size" :disabled="isLoading">
     <component
       :is="isLoading ? getIcon('LoaderCircle') : getIcon(icon)"
       v-if="icon"

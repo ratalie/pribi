@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
+  import AccionistasModal from "~/components/base/modal/composite/AccionistasModal.vue";
   import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
@@ -61,16 +62,30 @@
       },
     },
   ];
+
+  const isModalOpen = ref(false);
+
+  const openModal = () => {
+    isModalOpen.value = true;
+  };
 </script>
 
 <template>
   <div class="h-full p-14 flex flex-col gap-12">
     <CardTitle title="Accionistas" body="Complete todos los campos requeridos.">
       <template #actions>
-        <ActionButton variant="secondary" label="Agregar" size="md" icon="Plus" />
+        <ActionButton
+          variant="secondary"
+          label="Agregar"
+          size="md"
+          icon="Plus"
+          @click="openModal"
+        />
       </template>
     </CardTitle>
 
     <SimpleTable :columns="columns" :data="data" title-menu="Actions" :actions="actions" />
+
+    <AccionistasModal v-model="isModalOpen" @close="isModalOpen = false" />
   </div>
 </template>
