@@ -79,17 +79,12 @@
     }
   });
 
-  const inputWidth = computed(() => {
-    return props.size === "large" ? "w-[484px]" : "w-full";
-  });
-
   const inputClasses = computed(() =>
     clsx(
       // Estilos base
       "!border-gray-500 focus:!border-gray-700 focus:!border-2 focus:!outline-none focus:!ring-2 focus:!ring-[var(--color-outline-ring)] focus:!ring-offset-4",
       "rounded-md border bg-transparent pl-3 py-1 text-base shadow-xs",
-      "text-gray-700 font-secondary",
-      inputWidth.value,
+      "text-gray-700 font-secondary w-full",
       paddingRight.value,
       // Variantes
       props.variant === "error" && "!border-red-500 focus:!border-red-500 focus:!ring-red-500",
@@ -112,7 +107,7 @@
 </script>
 
 <template>
-  <div class="relative" :class="props.size === 'large' ? 'w-[484px]' : 'w-full'">
+  <div class="relative" :class="props.size === 'large' ? 'w-full' : 'w-full'">
     <input
       :id="props.id"
       v-model="inputValue"
