@@ -20,18 +20,37 @@
     passive: true,
   });
 
+  const personaNaturalStore = usePersonaNaturalStore();
+
   const handleCancel = () => {
     emits("close");
     modelValue.value = false;
   };
 
   const handleSave = async () => {
-    // emits("close");
+    console.log("Datos de accionista :", {
+      tipoDocumento: personaNaturalStore.tipoDocumento,
+      numeroDocumento: personaNaturalStore.numeroDocumento,
+      nombre: personaNaturalStore.nombre,
+      apellidoPaterno: personaNaturalStore.apellidoPaterno,
+      apellidoMaterno: personaNaturalStore.apellidoMaterno,
+      estadoCivil: personaNaturalStore.estadoCivil,
+    });
+  };
+
+  const handleInvalidSubmit = () => {
+    console.log("Formulario inválido");
   };
 </script>
 
 <template>
-  <BaseModal v-model="modelValue" size="lg" @close="emits('close')">
+  <BaseModal
+    v-model="modelValue"
+    size="lg"
+    @close="emits('close')"
+    @submit="handleSave"
+    @invalid-submit="handleInvalidSubmit"
+  >
     <div class="flex flex-col gap-12">
       <CardTitle title="Tipo de Accionista" />
 
@@ -46,7 +65,8 @@
           size="md"
           @click="handleCancel"
         />
-        <ActionButton variant="primary" label="Guardar" size="md" @click="handleSave" />
+
+        <ActionButton type="submit" variant="primary" label="Guardar" size="md" />
       </div>
     </template>
   </BaseModal>

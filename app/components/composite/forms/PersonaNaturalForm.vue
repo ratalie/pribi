@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { Form } from "vee-validate";
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
@@ -14,35 +13,13 @@
     tipoDocumentoSchema,
   } from "~/modules/registro-sociedades/schemas/modalAccionistas";
 
-  const form = ref({
-    tipo_documento: "",
-    numero_documento: "",
-    nombre: "",
-    apellido_paterno: "",
-    apellido_materno: "",
-    estado_civil: "",
-  });
-
-  const handleSubmit = () => {
-    console.log("Formulario enviado:", form.value);
-  };
-
-  const handleInvalidSubmit = (ctx: any) => {
-    // ctx.errors contiene los errores de validación
-    // Puedes mostrar un toast, alert, o log
-    console.log("Errores en el formulario:", ctx.errors);
-    // O usa tu sistema de notificaciones/toast aquí
-  };
+  const personaNaturalStore = usePersonaNaturalStore();
 </script>
 
 <template>
-  <Form
-    class="grid grid-cols-2 gap-12"
-    @submit="handleSubmit"
-    @invalid-submit="handleInvalidSubmit"
-  >
+  <div class="grid grid-cols-2 gap-12">
     <SelectInputZod
-      v-model="form.tipo_documento"
+      v-model="personaNaturalStore.tipoDocumento"
       name="tipo_documento"
       label="Tipo de documento"
       placeholder="Selecciona el tipo de documento"
@@ -51,7 +28,7 @@
     />
 
     <SearchInputZod
-      v-model="form.numero_documento"
+      v-model="personaNaturalStore.numeroDocumento"
       name="numero_documento"
       label="Número de documento"
       placeholder="Ingrese número de documento"
@@ -59,7 +36,7 @@
     />
 
     <TextInputZod
-      v-model="form.nombre"
+      v-model="personaNaturalStore.nombre"
       name="nombre"
       label="Nombres"
       placeholder="Nombres"
@@ -67,7 +44,7 @@
     />
 
     <TextInputZod
-      v-model="form.apellido_paterno"
+      v-model="personaNaturalStore.apellidoPaterno"
       name="apellido_paterno"
       label="Apellido paterno"
       placeholder="Apellido paterno"
@@ -75,7 +52,7 @@
     />
 
     <TextInputZod
-      v-model="form.apellido_materno"
+      v-model="personaNaturalStore.apellidoMaterno"
       name="apellido_materno"
       label="Apellido materno"
       placeholder="Apellido materno"
@@ -83,14 +60,12 @@
     />
 
     <SelectInputZod
-      v-model="form.estado_civil"
+      v-model="personaNaturalStore.estadoCivil"
       name="estado_civil"
       label="Estado civil"
       placeholder="Selecciona el estado civil"
       :options="civilState"
       :schema="estadoCivilSchema"
     />
-
-    <button type="submit">aceptar</button>
-  </Form>
+  </div>
 </template>
