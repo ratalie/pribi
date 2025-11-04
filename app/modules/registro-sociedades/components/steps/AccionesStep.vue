@@ -4,6 +4,7 @@
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import OutLineCard from "~/components/base/cards/OutLineCard.vue";
+  import AccionesModal from "~/components/base/modal/composite/AccionesModal.vue";
   import ValorNominalModal from "~/components/base/modal/composite/ValorNominalModal.vue";
   import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
@@ -88,10 +89,15 @@
     },
   ];
 
-  const isModalOpen = ref(false);
+  const isValorNominalModalOpen = ref(false);
+  const isAccionesModalOpen = ref(false);
 
-  const openModal = () => {
-    isModalOpen.value = true;
+  const openValorNominalModal = () => {
+    isValorNominalModalOpen.value = true;
+  };
+
+  const openAccionesModal = () => {
+    isAccionesModalOpen.value = true;
   };
 </script>
 
@@ -101,7 +107,7 @@
       <template #actions>
         <div class="flex gap-4">
           <!-- valor nominal -->
-          <BaseButton variant="pill" class="h-11" @click="openModal">
+          <BaseButton variant="pill" class="h-11" @click="openValorNominalModal">
             <img :src="IconCoin" alt="Valor Nominal" />
             <p class="font-bold">
               Valor Nominal:
@@ -110,7 +116,13 @@
           </BaseButton>
 
           <!-- agregar -->
-          <ActionButton variant="secondary" label="Agregar" size="md" icon="Plus" />
+          <ActionButton
+            variant="secondary"
+            label="Agregar"
+            size="md"
+            icon="Plus"
+            @click="openAccionesModal"
+          />
         </div>
       </template>
     </CardTitle>
@@ -124,6 +136,11 @@
 
     <SimpleTable :columns="columns" :data="data" title-menu="Actions" :actions="actions" />
 
-    <ValorNominalModal v-model="isModalOpen" @close="isModalOpen = false" />
+    <ValorNominalModal
+      v-model="isValorNominalModalOpen"
+      @close="isValorNominalModalOpen = false"
+    />
+
+    <AccionesModal v-model="isAccionesModalOpen" @close="isAccionesModalOpen = false" />
   </div>
 </template>

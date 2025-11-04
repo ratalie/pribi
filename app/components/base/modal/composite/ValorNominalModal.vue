@@ -2,6 +2,7 @@
   import Moneda from "@/assets/icons/Moneda.svg";
   import { useVModel } from "@vueuse/core";
   import ActionButton from "../../buttons/composite/ActionButton.vue";
+  import BaseModal from "../BaseModal.vue";
 
   interface Props {
     modelValue?: boolean;
