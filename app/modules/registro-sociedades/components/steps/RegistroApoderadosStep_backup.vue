@@ -122,7 +122,7 @@
             <ActionButton
               variant="secondary"
               label="Agregar tipo de Poder"
-              size="large"
+              size="xxl"
               icon="Plus"
             />
           </template>

@@ -42,6 +42,8 @@
       "w-full !border-gray-500",
       "data-[state=open]:!border-gray-700 data-[state=open]:!border-2",
       "data-[state=open]:!ring-2 data-[state=open]:!ring-[var(--color-outline-ring)] data-[state=open]:!ring-offset-4",
+      // Estilos para el valor seleccionado (cuando NO es placeholder)
+      "*:data-[slot=select-value]:font-secondary *:data-[slot=select-value]:text-gray-700",
 
       // Variantes
       props.variant === "error" &&
