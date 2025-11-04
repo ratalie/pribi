@@ -12,6 +12,7 @@ import {
   ChevronRight,
   Crown,
   Download,
+  EllipsisVertical,
   FileCheck,
   FileSearch,
   FileText,
@@ -26,6 +27,7 @@ import {
   MessageCircle,
   Monitor,
   Moon,
+  MoreHorizontal,
   Package,
   Palette,
   Plus,
@@ -86,6 +88,8 @@ const iconMap = {
   Check,
   FileCheck,
   UserRoundPlus,
+  EllipsisVertical,
+  MoreHorizontal,
 };
 
 export const getIcon = (iconName: string) => {

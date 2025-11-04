@@ -25,10 +25,14 @@
       }[];
       iconType?: "vertical" | "horizontal";
       actionsLabelText?: string;
+      showActionsFor?: (row: TData) => boolean;
     }>(),
     {
+      titleMenu: undefined,
+      actions: undefined,
       iconType: "horizontal",
       actionsLabelText: undefined,
+      showActionsFor: undefined,
     }
   );
 
@@ -59,6 +63,7 @@
               :props="header.getContext()"
             />
           </TableHead>
+          <TableHead v-if="props.actions" class="w-12" />
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -73,20 +78,26 @@
             </TableCell>
 
             <!-- Celda de acciones -->
-            <TableCell v-if="actions" class="w-auto">
+            <TableCell
+              v-if="
+                props.actions &&
+                (props.showActionsFor ? props.showActionsFor(row.original) : true)
+              "
+              class="w-auto"
+            >
               <DataTableDropDown
                 :item-id="(row.original as any).id"
-                :title-menu="titleMenu"
-                :actions="actions"
-                :icon-type="iconType"
-                :actions-label-text="actionsLabelText"
+                :title-menu="props.titleMenu"
+                :actions="props.actions"
+                :icon-type="props.iconType"
+                :actions-label-text="props.actionsLabelText"
               />
             </TableCell>
           </TableRow>
         </template>
         <template v-else>
           <TableRow>
-            <TableCell :colspan="props.columns.length" class="h-24">
+            <TableCell :colspan="props.columns.length + (props.actions ? 1 : 0)" class="h-24">
               <EmptyTableMessage />
             </TableCell>
           </TableRow>
