@@ -25,6 +25,8 @@
   const handleCancel = () => {
     emits("close");
     modelValue.value = false;
+
+    personaNaturalStore.$reset();
   };
 
   const handleSave = async () => {
@@ -39,6 +41,7 @@
   };
 
   const handleInvalidSubmit = () => {
+    //colocar logica de error, mostrar un toast
     console.log("Formulario inválido");
   };
 </script>
@@ -47,7 +50,7 @@
   <BaseModal
     v-model="modelValue"
     size="lg"
-    @close="emits('close')"
+    @close="handleCancel"
     @submit="handleSave"
     @invalid-submit="handleInvalidSubmit"
   >
