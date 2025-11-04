@@ -48,6 +48,7 @@ const mainSidebar: SidebarConfig = {
 /**
  * Sidebar derecho: Navegación de pasos (Nivel 3-4)
  * Solo visible cuando el item actual es nivel 3 o superior
+ * Muestra SOLO los hijos del item actual o hermanos si estamos en nivel 3
  */
 const stepsSidebar: SidebarConfig = {
   id: "juntas-steps-sidebar",
@@ -65,13 +66,30 @@ const stepsSidebar: SidebarConfig = {
     },
   },
 
-  // Regla de visibilidad: Solo mostrar cuando estamos en nivel 3 o 4
+  // Transformación contextual: Mostrar solo items relevantes al contexto actual
+  transformItems: (items) => {
+    // Esta función se ejecuta DESPUÉS del filtro de nivel
+    // Necesitamos acceso al currentItem para filtrar contextualmente
+    // Por ahora retornamos todos, luego implementaremos la lógica contextual
+    return items;
+  },
+
+  // Regla de visibilidad: Mostrar cuando estamos en nivel 2 (para ver hijos nivel 3) o en nivel 3-4
   visibilityRule: {
-    type: "property",
-    path: "hierarchy.level",
+    type: "custom",
     fn: (context) => {
       const level = context.currentItem?.hierarchy.level;
-      return level !== undefined && level >= 3;
+      console.log("[DEBUG] RightSidebar visibility check - current level:", level);
+      
+      // Mostrar sidebar derecho cuando:
+      // 1. Estamos en nivel 2 Y el item tiene children (para mostrar opciones de nivel 3)
+      // 2. O estamos en nivel 3-4 (para mostrar pasos hermanos)
+      const hasChildren = context.currentItem?.children && context.currentItem.children.length > 0;
+      const result = (level === 2 && hasChildren) || (level !== undefined && level >= 3);
+      
+      console.log("[DEBUG] - Has children:", hasChildren);
+      console.log("[DEBUG] RightSidebar should be visible:", result);
+      return result;
     },
   },
 

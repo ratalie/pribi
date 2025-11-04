@@ -13,7 +13,7 @@ import { FlowItemType, NavigationBehavior } from "@/types/flow-system";
 import { defaultBehavior, defaultValidation } from "../../defaults";
 
 /**
- * Padre: apoderados-otorgamiento (Nivel 3)
+ * Padre: nombramiento-apoderados-otorgamiento (Nivel 3)
  * Comportamiento: SCROLL (navegación por hash #)
  * Página: otorgamiento-poderes.vue
  */
@@ -21,7 +21,7 @@ import { defaultBehavior, defaultValidation } from "../../defaults";
 // Anchor 1: Apoderado 1
 export const apoderado1OtorgamientoItem: FlowItem = {
   identity: { id: "otorgamiento-apoderado-1", type: FlowItemType.STEP, label: "Apoderado 1" },
-  hierarchy: { level: 4, order: 1, parentId: "apoderados-otorgamiento", children: [] },
+  hierarchy: { level: 4, order: 1, parentId: "nombramiento-apoderados-otorgamiento", children: [] },
   navigation: {
     route: JuntaRoutes.NOMBRAMIENTO_APODERADOS_OTORGAMIENTO,
     behavior: NavigationBehavior.SCROLL,
@@ -40,7 +40,7 @@ export const apoderado1OtorgamientoItem: FlowItem = {
 // Anchor 2: Apoderado 2
 export const apoderado2OtorgamientoItem: FlowItem = {
   identity: { id: "otorgamiento-apoderado-2", type: FlowItemType.STEP, label: "Apoderado 2" },
-  hierarchy: { level: 4, order: 2, parentId: "apoderados-otorgamiento", children: [] },
+  hierarchy: { level: 4, order: 2, parentId: "nombramiento-apoderados-otorgamiento", children: [] },
   navigation: {
     route: JuntaRoutes.NOMBRAMIENTO_APODERADOS_OTORGAMIENTO,
     behavior: NavigationBehavior.SCROLL,
@@ -59,7 +59,7 @@ export const apoderado2OtorgamientoItem: FlowItem = {
 // Anchor 3: Apoderado 3
 export const apoderado3OtorgamientoItem: FlowItem = {
   identity: { id: "otorgamiento-apoderado-3", type: FlowItemType.STEP, label: "Apoderado 3" },
-  hierarchy: { level: 4, order: 3, parentId: "apoderados-otorgamiento", children: [] },
+  hierarchy: { level: 4, order: 3, parentId: "nombramiento-apoderados-otorgamiento", children: [] },
   navigation: {
     route: JuntaRoutes.NOMBRAMIENTO_APODERADOS_OTORGAMIENTO,
     behavior: NavigationBehavior.SCROLL,
@@ -78,7 +78,7 @@ export const apoderado3OtorgamientoItem: FlowItem = {
 // Anchor 4: Apoderado 4
 export const apoderado4OtorgamientoItem: FlowItem = {
   identity: { id: "otorgamiento-apoderado-4", type: FlowItemType.STEP, label: "Apoderado 4" },
-  hierarchy: { level: 4, order: 4, parentId: "apoderados-otorgamiento", children: [] },
+  hierarchy: { level: 4, order: 4, parentId: "nombramiento-apoderados-otorgamiento", children: [] },
   navigation: {
     route: JuntaRoutes.NOMBRAMIENTO_APODERADOS_OTORGAMIENTO,
     behavior: NavigationBehavior.SCROLL,
@@ -97,7 +97,7 @@ export const apoderado4OtorgamientoItem: FlowItem = {
 // Anchor 5: Apoderado 5
 export const apoderado5OtorgamientoItem: FlowItem = {
   identity: { id: "otorgamiento-apoderado-5", type: FlowItemType.STEP, label: "Apoderado 5" },
-  hierarchy: { level: 4, order: 5, parentId: "apoderados-otorgamiento", children: [] },
+  hierarchy: { level: 4, order: 5, parentId: "nombramiento-apoderados-otorgamiento", children: [] },
   navigation: {
     route: JuntaRoutes.NOMBRAMIENTO_APODERADOS_OTORGAMIENTO,
     behavior: NavigationBehavior.SCROLL,
@@ -120,7 +120,7 @@ export const facultadesGeneralesItem: FlowItem = {
     type: FlowItemType.STEP,
     label: "Facultades Generales",
   },
-  hierarchy: { level: 4, order: 6, parentId: "apoderados-otorgamiento", children: [] },
+  hierarchy: { level: 4, order: 6, parentId: "nombramiento-apoderados-otorgamiento", children: [] },
   navigation: {
     route: JuntaRoutes.NOMBRAMIENTO_APODERADOS_OTORGAMIENTO,
     behavior: NavigationBehavior.SCROLL,
@@ -143,7 +143,7 @@ export const limitacionesItem: FlowItem = {
     type: FlowItemType.STEP,
     label: "Limitaciones",
   },
-  hierarchy: { level: 4, order: 7, parentId: "apoderados-otorgamiento", children: [] },
+  hierarchy: { level: 4, order: 7, parentId: "nombramiento-apoderados-otorgamiento", children: [] },
   navigation: {
     route: JuntaRoutes.NOMBRAMIENTO_APODERADOS_OTORGAMIENTO,
     behavior: NavigationBehavior.SCROLL,
@@ -162,7 +162,7 @@ export const limitacionesItem: FlowItem = {
 // Anchor 8: Vigencia
 export const vigenciaItem: FlowItem = {
   identity: { id: "otorgamiento-vigencia", type: FlowItemType.STEP, label: "Vigencia" },
-  hierarchy: { level: 4, order: 8, parentId: "apoderados-otorgamiento", children: [] },
+  hierarchy: { level: 4, order: 8, parentId: "nombramiento-apoderados-otorgamiento", children: [] },
   navigation: {
     route: JuntaRoutes.NOMBRAMIENTO_APODERADOS_OTORGAMIENTO,
     behavior: NavigationBehavior.SCROLL,

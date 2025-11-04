@@ -17,9 +17,9 @@
 
     <!-- Body: Sidebars + Content -->
     <div class="layout-body">
-      <!-- Sidebars dinámicos -->
+      <!-- Sidebar IZQUIERDO -->
       <FlowSidebar
-        v-for="sidebar in activeSidebars"
+        v-for="sidebar in leftSidebars"
         :key="sidebar.id"
         :config="sidebar"
         :current-path="currentPath"
@@ -28,7 +28,7 @@
         @item-hover="handleItemHover"
       />
 
-      <!-- Área de contenido principal -->
+      <!-- Área de contenido principal (EN EL MEDIO) -->
       <main class="content-area">
         <!-- Indicador de carga -->
         <div v-if="isLoading && layoutConfig.showLoadingSkeleton" class="loading-skeleton">
@@ -54,6 +54,17 @@
           <component :is="layoutConfig.footer.component" v-bind="layoutConfig.footer.props" />
         </footer>
       </main>
+
+      <!-- Sidebar DERECHO (con filtrado contextual) -->
+      <FlowSidebar
+        v-for="sidebar in rightSidebars"
+        :key="sidebar.id"
+        :config="getContextualSidebarConfig(sidebar)"
+        :current-path="currentPath"
+        @navigate="handleNavigate"
+        @toggle-collapse="handleSidebarCollapse(sidebar.id, $event)"
+        @item-hover="handleItemHover"
+      />
     </div>
 
     <!-- Indicador de guardado -->
@@ -78,6 +89,7 @@
   import { useFlowLayoutConfig } from "~/composables/useFlowLayoutConfig";
   import type { SidebarConfig } from "~/types/flow-layout/sidebar-config";
   import type { FlowItemTree } from "~/types/flow-system/flow-item";
+  import { buildFlowItemTree, findItemByRoute } from "~/utils/flowHelpers";
 
   /**
    * Cargar configuración del layout desde la ruta
@@ -118,28 +130,48 @@
   // ============================================
 
   /**
+   * Árbol construido de FlowItems (con children anidados)
+   */
+  const flowTree = computed<FlowItemTree[]>(() => {
+    if (!layoutConfig.value?.flowConfig?.items) {
+      console.log("[DEBUG] No flowConfig.items available");
+      return [];
+    }
+
+    const tree = buildFlowItemTree(layoutConfig.value.flowConfig.items);
+    console.log("[DEBUG] flowTree built, root items:", tree.length);
+    console.log(
+      "[DEBUG] flowTree IDs:",
+      tree.map((t) => t.identity.id)
+    );
+
+    return tree;
+  });
+
+  /**
    * Item actualmente activo
    */
   const currentItem = computed<FlowItemTree | undefined>(() => {
-    if (!layoutConfig.value?.flowConfig) return undefined;
-
-    // Buscar item que coincida con la ruta actual
-    function findItem(items: FlowItemTree[]): FlowItemTree | undefined {
-      for (const item of items) {
-        if (item.navigation.route === currentPath.value) {
-          return item;
-        }
-
-        if (item.children) {
-          const found = findItem(item.children);
-          if (found) return found;
-        }
-      }
-
+    if (!flowTree.value.length) {
+      console.log("[DEBUG] No flowTree available");
       return undefined;
     }
 
-    return findItem(layoutConfig.value.flowConfig.items);
+    console.log("[DEBUG] currentPath:", currentPath.value);
+    console.log("[DEBUG] Searching in flowTree...");
+
+    const found = findItemByRoute(flowTree.value, currentPath.value);
+
+    if (found) {
+      console.log("[DEBUG] ✓ FOUND currentItem:", found.identity.id);
+      console.log("[DEBUG] - Level:", found.hierarchy.level);
+      console.log("[DEBUG] - Route:", found.navigation.route);
+      console.log("[DEBUG] - ParentId:", found.hierarchy.parentId);
+    } else {
+      console.log("[DEBUG] ✗ currentItem NOT FOUND for route:", currentPath.value);
+    }
+
+    return found;
   });
 
   /**
@@ -148,13 +180,46 @@
   const activeSidebars = computed<SidebarConfig[]>(() => {
     if (!layoutConfig.value) return [];
 
-    return layoutConfig.value.sidebars.filter((sidebar) => {
+    console.log("[DEBUG] ====== Evaluating activeSidebars ======");
+    console.log("[DEBUG] Total sidebars configured:", layoutConfig.value.sidebars.length);
+
+    const active = layoutConfig.value.sidebars.filter((sidebar) => {
+      console.log("[DEBUG] Evaluating sidebar:", sidebar.id, "position:", sidebar.position);
+
       // Si no tiene regla de visibilidad, siempre visible
-      if (!sidebar.visibilityRule) return true;
+      if (!sidebar.visibilityRule) {
+        console.log("[DEBUG] ✓ Sidebar", sidebar.id, "has no visibility rule, always visible");
+        return true;
+      }
 
       // Evaluar regla de visibilidad
-      return evaluateVisibilityRule(sidebar.visibilityRule);
+      const result = evaluateVisibilityRule(sidebar.visibilityRule);
+      console.log("[DEBUG]", result ? "✓" : "✗", "Sidebar", sidebar.id, "visibility:", result);
+      return result;
     });
+
+    console.log("[DEBUG] Active sidebars count:", active.length);
+    console.log(
+      "[DEBUG] Active sidebars:",
+      active.map((s) => s.id)
+    );
+    console.log("[DEBUG] ====== End activeSidebars ======");
+
+    return active;
+  });
+
+  /**
+   * Sidebars izquierdos (separados para orden correcto en template)
+   */
+  const leftSidebars = computed<SidebarConfig[]>(() => {
+    return activeSidebars.value.filter((s) => s.position === "left");
+  });
+
+  /**
+   * Sidebars derechos (separados para orden correcto en template)
+   */
+  const rightSidebars = computed<SidebarConfig[]>(() => {
+    return activeSidebars.value.filter((s) => s.position === "right");
   });
 
   /**
@@ -163,21 +228,37 @@
   function evaluateVisibilityRule(rule: SidebarConfig["visibilityRule"]): boolean {
     if (!rule) return true;
 
+    console.log("[DEBUG] Evaluating visibility rule:", rule.type);
+    console.log(
+      "[DEBUG] currentItem for rule:",
+      currentItem.value ? currentItem.value.identity.id : "NONE"
+    );
+
     switch (rule.type) {
       case "property": {
         // Evaluar propiedad del item actual
-        if (!currentItem.value) return false;
+        if (!currentItem.value) {
+          console.log("[DEBUG] ✗ No currentItem, returning false");
+          return false;
+        }
 
         const value = getNestedProperty(currentItem.value, rule.path || "");
+        console.log("[DEBUG] Property value:", rule.path, "=", value);
 
         if (rule.equals !== undefined) {
-          return value === rule.equals;
+          const result = value === rule.equals;
+          console.log("[DEBUG] Equals check:", value, "===", rule.equals, "→", result);
+          return result;
         }
         if (rule.notEquals !== undefined) {
-          return value !== rule.notEquals;
+          const result = value !== rule.notEquals;
+          console.log("[DEBUG] NotEquals check:", value, "!==", rule.notEquals, "→", result);
+          return result;
         }
 
-        return Boolean(value);
+        const result = Boolean(value);
+        console.log("[DEBUG] Boolean check:", value, "→", result);
+        return result;
       }
 
       case "route": {
@@ -187,18 +268,22 @@
         const pattern = rule.pattern.replace(/\*\*/g, ".*").replace(/\*/g, "[^/]*");
         const regex = new RegExp(`^${pattern}$`);
 
-        return regex.test(currentPath.value);
+        const result = regex.test(currentPath.value);
+        console.log("[DEBUG] Route pattern check:", rule.pattern, "→", result);
+        return result;
       }
 
       case "custom": {
         // Función personalizada
         if (typeof rule.fn !== "function") return true;
 
-        return rule.fn({
+        const result = rule.fn({
           currentPath: currentPath.value,
           currentItem: currentItem.value,
           allItems: layoutConfig.value?.flowConfig?.items || [],
         });
+        console.log("[DEBUG] Custom function result:", result);
+        return result;
       }
 
       default:
@@ -246,6 +331,102 @@
   // ============================================
   // HANDLERS
   // ============================================
+
+  /**
+   * Obtener configuración contextual del sidebar (filtrado según currentItem)
+   * Para sidebar derecho: solo mostrar hermanos del currentItem o children si estamos en nivel 2
+   */
+  function getContextualSidebarConfig(sidebar: SidebarConfig): SidebarConfig {
+    console.log("[DEBUG] ==== getContextualSidebarConfig START ====");
+    console.log("[DEBUG] Sidebar ID:", sidebar.id);
+    console.log("[DEBUG] Sidebar position:", sidebar.position);
+    console.log("[DEBUG] currentItem:", currentItem.value?.identity.id);
+
+    // Solo aplicar filtrado contextual al sidebar derecho
+    if (sidebar.position !== "right" || !currentItem.value) {
+      console.log("[DEBUG] Not a right sidebar or no currentItem, returning original");
+      return sidebar;
+    }
+
+    const level = currentItem.value.hierarchy.level;
+    let contextualItems: FlowItemTree[] = [];
+
+    console.log("[DEBUG] Current level:", level);
+    console.log("[DEBUG] Current parentId:", currentItem.value.hierarchy.parentId);
+
+    // Si estamos en nivel 2: mostrar los CHILDREN (nivel 3)
+    if (level === 2 && currentItem.value.children) {
+      contextualItems = currentItem.value.children;
+      console.log("[DEBUG] Level 2 → Showing CHILDREN:", contextualItems.length);
+      console.log(
+        "[DEBUG] Children IDs:",
+        contextualItems.map((c) => c.identity.id)
+      );
+    }
+    // Si estamos en nivel 3: mostrar HERMANOS (otros hijos del mismo padre)
+    else if (level === 3) {
+      // Buscar el padre en el árbol
+      const parentId = currentItem.value.hierarchy.parentId;
+      console.log("[DEBUG] Level 3 → Finding parent:", parentId);
+
+      if (parentId) {
+        const parent = findItemById(flowTree.value, parentId);
+        console.log("[DEBUG] Parent found:", parent?.identity.id);
+        console.log("[DEBUG] Parent has children:", parent?.children?.length);
+
+        if (parent && parent.children) {
+          contextualItems = parent.children;
+          console.log("[DEBUG] Level 3 → Showing SIBLINGS:", contextualItems.length);
+          console.log(
+            "[DEBUG] Siblings IDs:",
+            contextualItems.map((c) => c.identity.id)
+          );
+        }
+      }
+    }
+    // Si estamos en nivel 4: mostrar hermanos (del mismo nivel 4)
+    else if (level === 4) {
+      const parentId = currentItem.value.hierarchy.parentId;
+      console.log("[DEBUG] Level 4 → Finding parent:", parentId);
+
+      if (parentId) {
+        const parent = findItemById(flowTree.value, parentId);
+        if (parent && parent.children) {
+          contextualItems = parent.children;
+          console.log("[DEBUG] Level 4 → Showing SIBLINGS:", contextualItems.length);
+          console.log(
+            "[DEBUG] Siblings IDs:",
+            contextualItems.map((c) => c.identity.id)
+          );
+        }
+      }
+    }
+
+    console.log("[DEBUG] Final contextualItems count:", contextualItems.length);
+    console.log("[DEBUG] ==== getContextualSidebarConfig END ====");
+
+    // Retornar sidebar con items contextuales
+    return {
+      ...sidebar,
+      items: contextualItems,
+    };
+  }
+
+  /**
+   * Buscar item por ID en el árbol (recursivo)
+   */
+  function findItemById(items: FlowItemTree[], id: string): FlowItemTree | undefined {
+    for (const item of items) {
+      if (item.identity.id === id) {
+        return item;
+      }
+      if (item.children) {
+        const found = findItemById(item.children, id);
+        if (found) return found;
+      }
+    }
+    return undefined;
+  }
 
   /**
    * Manejar navegación a un item
