@@ -4,6 +4,7 @@ import {
   ArrowRight,
   BarChart3,
   Briefcase,
+  Building,
   Building2,
   Calendar,
   Check,
@@ -42,11 +43,14 @@ import {
   UserRoundPlus,
   Users,
   Users2,
+  Vault,
   X,
 } from "lucide-vue-next";
 
 const iconMap = {
   Building2,
+  Building,
+  Vault,
   MapPin,
   Users,
   LayoutDashboard,
