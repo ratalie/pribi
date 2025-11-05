@@ -1,8 +1,11 @@
 <script setup lang="ts">
   import { useVModel } from "@vueuse/core";
   import PersonaNaturalForm from "~/components/composite/forms/PersonaNaturalForm.vue";
+  import { accionistaTypes } from "~/constants/inputs/accionista-types";
+  import { tipoAccionistaSchema } from "~/modules/registro-sociedades/schemas/modalAccionistas";
   import ActionButton from "../../buttons/composite/ActionButton.vue";
   import CardTitle from "../../cards/CardTitle.vue";
+  import CascadeSelectInputZod from "../../inputs/text/ui/CascadeSelectInputZod.vue";
   import BaseModal from "../BaseModal.vue";
 
   interface Props {
@@ -21,6 +24,8 @@
   });
 
   const personaNaturalStore = usePersonaNaturalStore();
+
+  const tipoAccionista = ref("");
 
   const handleCancel = () => {
     emits("close");
@@ -55,7 +60,20 @@
     @invalid-submit="handleInvalidSubmit"
   >
     <div class="flex flex-col gap-12">
-      <CardTitle title="Tipo de Accionista" />
+      <CardTitle title="Tipo de Accionista">
+        <template #actions>
+          <div class="w-[440px]">
+            <CascadeSelectInputZod
+              v-model="tipoAccionista"
+              name="tipo_accionista"
+              label="Tipo de Accionista"
+              placeholder="Selecciona un tipo"
+              :options="accionistaTypes"
+              :schema="tipoAccionistaSchema"
+            />
+          </div>
+        </template>
+      </CardTitle>
 
       <PersonaNaturalForm />
     </div>
