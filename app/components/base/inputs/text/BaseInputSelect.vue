@@ -52,9 +52,9 @@
         "!border-green-500 data-[state=open]:!border-green-500 data-[state=open]:!ring-green-500",
 
       // Tamaños
-      props.size === "sm" && "h-8 text-sm",
-      props.size === "md" && "!h-[40px] text-sm",
-      props.size === "lg" && "h-10 text-lg",
+      props.size === "sm" && "h-8 t-b2",
+      props.size === "md" && "!h-[40px] t-t2",
+      props.size === "lg" && "h-10 t-t1",
 
       // Deshabilitado
       props.customClasses,

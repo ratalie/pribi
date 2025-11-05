@@ -13,6 +13,7 @@
     format?: "decimal" | "integer" | "thousands";
     decimals?: number; // 0 = sin decimales, 2 = dos decimales
     decimalFactor?: number; // 100 para 2 decimales
+    currency?: "PEN" | "USD" | null; // PEN = S/, USD = $
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -25,6 +26,7 @@
     decimals: 2,
     format: "thousands",
     decimalFactor: 100,
+    currency: null,
   });
 
   const emits = defineEmits<{
@@ -70,43 +72,72 @@
     emits("blur");
   };
 
+  const currencySymbol = computed(() => {
+    if (!props.currency) return null;
+    return props.currency === "PEN" ? "S/" : "$";
+  });
+
+  const currencySymbolClasses = computed(() =>
+    clsx(
+      "font-secondary font-bold text-gray-700 shrink-0",
+      // Tamaños de texto según el size del input
+      props.size === "sm" && "t-b2",
+      props.size === "md" && "t-t2",
+      props.size === "lg" && "t-t1"
+    )
+  );
+
+  const containerClasses = computed(() =>
+    clsx(
+      "relative flex items-center gap-[5px]",
+      "border border-gray-500 rounded-md bg-background",
+      "focus-within:outline-none focus-within:ring-2 focus-within:ring-[var(--color-outline-ring)] focus-within:ring-offset-4",
+      "transition-colors",
+      // Variantes del borde
+      props.variant === "error" && "!border-red-500 focus-within:!ring-red-500",
+      props.variant === "success" && "!border-green-500 focus-within:!ring-green-500",
+      // Tamaños del contenedor
+      props.size === "sm" && "h-8 px-2",
+      props.size === "md" && "h-10 px-3",
+      props.size === "lg" && "h-12 px-4",
+      // Deshabilitado
+      props.isDisabled && "!bg-gray-200 cursor-not-allowed"
+    )
+  );
+
   const inputClasses = computed(() =>
     clsx(
-      // Estilos base
-      "w-full !border-gray-500 bg-background",
-      "rounded-md border px-3 py-2 text-sm font-secondary",
-      "focus:outline-none focus:ring-2 focus:ring-[var(--color-outline-ring)] focus:ring-offset-4",
-      "transition-colors",
-
-      // Variantes
-      props.variant === "error" && "!border-red-500 focus:!border-red-500 focus:!ring-red-500",
-      props.variant === "success" &&
-        "!border-green-500 focus:!border-green-500 focus:!ring-green-500",
-
-      // Tamaños
-      props.size === "sm" && "h-8 text-xs",
-      props.size === "md" && "!h-[40px] text-sm",
-      props.size === "lg" && "h-12 text-base",
-
+      "w-full border-none bg-transparent outline-none focus:outline-none focus:ring-0",
+      "p-0 font-secondary",
+      // Tamaños de texto
+      props.size === "sm" && "t-b2",
+      props.size === "md" && "t-t2",
+      props.size === "lg" && "t-t1",
       // Deshabilitado
-      props.isDisabled &&
-        "disabled:!bg-gray-200 disabled:!cursor-not-allowed disabled:!opacity-100",
-
+      props.isDisabled && "cursor-not-allowed",
       props.customClasses
     )
   );
 </script>
 
 <template>
-  <input
-    :id="props.id"
-    type="text"
-    :value="valueInput"
-    :placeholder="props.placeholder"
-    :disabled="props.isDisabled"
-    :class="inputClasses"
-    @input="formatValue"
-    @blur="handleBlur"
-    v-on="$attrs"
-  />
+  <div :class="containerClasses">
+    <!-- Símbolo de moneda (condicional) -->
+    <span v-if="props.currency" :class="currencySymbolClasses">
+      {{ currencySymbol }}
+    </span>
+
+    <!-- Input único -->
+    <input
+      :id="props.id"
+      type="text"
+      :value="valueInput"
+      :placeholder="props.placeholder"
+      :disabled="props.isDisabled"
+      :class="inputClasses"
+      @input="formatValue"
+      @blur="handleBlur"
+      v-on="$attrs"
+    />
+  </div>
 </template>

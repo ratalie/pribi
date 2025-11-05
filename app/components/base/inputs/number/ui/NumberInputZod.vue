@@ -14,6 +14,7 @@
     format?: "decimal" | "integer" | "thousands";
     decimals?: number; // 0 = sin decimales, 2 = dos decimales
     decimalFactor?: number; // 100 para 2 decimales
+    currency?: "PEN" | "USD" | null; // PEN = S/, USD = $
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -24,6 +25,7 @@
     format: "thousands",
     decimals: 2,
     decimalFactor: 100,
+    currency: null,
   });
 
   const emit = defineEmits<{ (e: "update:modelValue", v: number): void }>();
@@ -66,6 +68,7 @@
         :format="format"
         :decimals="decimals"
         :decimal-factor="decimalFactor"
+        :currency="currency"
         @update:initial-value="handleModelValue"
         @blur="setTouched(true)"
       />
