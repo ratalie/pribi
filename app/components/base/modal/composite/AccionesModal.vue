@@ -1,5 +1,7 @@
 <script setup lang="ts">
   import { useVModel } from "@vueuse/core";
+  import SwitchTabs from "~/components/base/Switch/SwitchTabs.vue";
+  import AccionesComunesForm from "~/components/composite/forms/AccionesComunesForm.vue";
   import ActionButton from "../../buttons/composite/ActionButton.vue";
   import CardTitle from "../../cards/CardTitle.vue";
   import BaseModal from "../BaseModal.vue";
@@ -19,17 +21,28 @@
     passive: true,
   });
 
+  const accionesComunesStore = useAccionesComunesStore();
+
   const handleCancel = () => {
     emits("close");
     modelValue.value = false;
   };
 
   const handleSave = async () => {
-    console.log("Datos de acciones");
+    // Obtener datos del formulario desde el store
+    const formData = accionesComunesStore.getFormData();
+    console.log("Datos de acciones:", formData);
+
+    // Aquí iría la lógica de guardado (API call, etc.)
+    // await saveAccion(formData);
+
+    // Cerrar modal si se guarda exitosamente
+    modelValue.value = false;
+    emits("close");
   };
 
   const handleInvalidSubmit = () => {
-    //colocar logica de error, mostrar un toast
+    // Colocar lógica de error, mostrar un toast
     console.log("Formulario inválido");
   };
 </script>
@@ -42,10 +55,25 @@
     @submit="handleSave"
     @invalid-submit="handleInvalidSubmit"
   >
-    <div class="flex flex-col items-center gap-12">
-      <CardTitle title="Tipo de Accionista" />
+    <div class="flex flex-col gap-12">
+      <CardTitle title="Agregar Acción" />
 
-      <!-- colocar componentes de formulario -->
+      <!-- Tabs para cambiar entre formularios -->
+      <SwitchTabs opcion-a="Comunes" opcion-b="Clases de Acciones" variant="default">
+        <template #opcion-a>
+          <div class="pt-10">
+            <AccionesComunesForm />
+          </div>
+        </template>
+        <template #opcion-b>
+          <div class="pt-10">
+            <!-- TODO: Crear ClasesAccionesForm.vue -->
+            <p class="text-gray-400 text-center">
+              Formulario de "Clases de Acciones" - Pendiente
+            </p>
+          </div>
+        </template>
+      </SwitchTabs>
     </div>
 
     <template #footer>
