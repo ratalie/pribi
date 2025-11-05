@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-export const useAccionesComunesStore = defineStore("accionesComunes", {
+export const useAccionesComunesStore = defineStore("accionesComunesModal", {
   state: () => ({
     // Campos del formulario
     cantidadAcciones: "",
@@ -16,16 +16,6 @@ export const useAccionesComunesStore = defineStore("accionesComunes", {
   }),
 
   actions: {
-    // Método para resetear el formulario
-    resetForm() {
-      this.cantidadAcciones = "";
-      this.redimibles = false;
-      this.otrosDerechosEspeciales = false;
-      this.obligacionesAdicionales = false;
-      this.archivosDerechosEspeciales = [];
-      this.archivosObligaciones = [];
-    },
-
     // Método para obtener todos los datos del formulario
     getFormData() {
       return {
