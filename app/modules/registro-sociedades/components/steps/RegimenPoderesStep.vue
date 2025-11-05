@@ -1,11 +1,9 @@
 <script setup lang="ts">
-  import { SquarePen, Trash2 } from "lucide-vue-next";
-  import BaseButton from "~/components/base/buttons/BaseButton.vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
-  import SecondaryCard from "~/components/base/cards/SecondaryCard.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
-  import type { TableColumn } from "~/components/base/tables/getColumns";
+  import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
+  import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import PoderesApoderado from "~/modules/registro-sociedades/components/steps/regimen-poderes/PoderesApoderado.vue";
   // import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
@@ -30,7 +28,57 @@
     }[];
   }
 
+  interface TipoPoderRow {
+    id: string;
+    tipo_poderes: string;
+    numero_apoderados: number;
+  }
+
   defineProps<Props>();
+
+  // Tabla de Tipos de Poderes
+  const tipoPoderesColumns: TableColumn<TipoPoderRow>[] = [
+    { key: "id", label: "ID", type: "text" },
+    { key: "tipo_poderes", label: "Tipo de Poderes", type: "text" },
+    { key: "numero_apoderados", label: "Nº de apoderados", type: "text" },
+  ];
+
+  const tipoPoderesColumnsDef = getColumns(tipoPoderesColumns);
+
+  const tipoPoderesData = ref<TipoPoderRow[]>([
+    {
+      id: "1",
+      tipo_poderes: "Gerente General",
+      numero_apoderados: 0,
+    },
+    {
+      id: "2",
+      tipo_poderes: "Otros Apoderados",
+      numero_apoderados: 1,
+    },
+    {
+      id: "3",
+      tipo_poderes: "Apoderado A",
+      numero_apoderados: 2,
+    },
+  ]);
+
+  const tipoPoderesActions = [
+    {
+      label: "Editar",
+      icon: "SquarePen",
+      onClick: (id: string) => {
+        console.log("Editar tipo de poder", id);
+      },
+    },
+    {
+      label: "Eliminar",
+      icon: "Trash2",
+      onClick: (id: string) => {
+        console.log("Eliminar tipo de poder", id);
+      },
+    },
+  ];
 
   // Datos de ejemplo para la tabla de poderes
   const poderesColumns: TableColumn<PoderRow>[] = [
@@ -110,104 +158,61 @@
 </script>
 
 <template>
-  <div class="p-14 flex flex-col gap-12">
-    <CardTitle
-      title="Regimen General de Poderes"
-      body="Complete todos los campos requeridos."
-    />
-    <SimpleCard>
-      <CardTitle title="Tipo de Poderes" body="">
-        <template #actions>
-          <ActionButton
-            variant="secondary"
-            label="Agregar tipo de Poder"
-            size="large"
-            icon="Plus"
+  <div class="mb-14">
+    <div class="h-full p-14 flex flex-col gap-12">
+      <CardTitle
+        title="Regimen General de Poderes"
+        body="Complete todos los campos requeridos."
+      />
+      <SimpleCard>
+        <CardTitle title="Tipo de Poderes" body="">
+          <template #actions>
+            <ActionButton
+              variant="secondary"
+              label="Agregar tipo de Poder"
+              size="large"
+              icon="Plus"
+            />
+          </template>
+        </CardTitle>
+        <SimpleTable
+          :columns="tipoPoderesColumnsDef"
+          :data="tipoPoderesData"
+          title-menu="Acciones"
+          :actions="tipoPoderesActions"
+          icon-type="vertical"
+        />
+      </SimpleCard>
+
+      <!-- Poderes de los Apoderados -->
+      <SimpleCard>
+        <CardTitle title="Poderes de los Apoderados" body="" />
+
+        <div class="flex flex-col gap-6">
+          <PoderesApoderado
+            apoderado-title="Gerente General"
+            :columns="poderesColumns"
+            :data="poderesData"
+            :actions="poderesActions"
+            @add-power="handleAddPower"
           />
-        </template>
-      </CardTitle>
-      <div class="flex flex-col gap-4">
-        <div class="flex gap-2 w-full">
-          <SecondaryCard
-            padding="p-8"
-            border-radius="rounded-lg"
-            border-color="border-gray-200"
-            background-color="bg-white"
-            width="w-full"
-          >
-            <p class="t-t2 font-secondary text-gray-700 font-normal">
-              Facultades Administrativas
-            </p>
-          </SecondaryCard>
-          <BaseButton
-            variant="ghost"
-            class="py-10! px-8! rounded-lg border border-gray-200 bg-white hover:bg-gray-100 transition-colors"
-          >
-            <SquarePen class="w-4 h-4 text-gray-700" />
-          </BaseButton>
-
-          <BaseButton
-            variant="ghost"
-            class="py-10! px-8! rounded-lg border border-gray-200 bg-gray-700 hover:bg-gray-600 transition-colors"
-          >
-            <Trash2 class="w-4 h-4 text-white" />
-          </BaseButton>
         </div>
-        <div class="flex gap-2 w-full">
-          <SecondaryCard
-            padding="p-8"
-            border-radius="rounded-lg"
-            border-color="border-gray-200"
-            background-color="bg-white"
-            width="w-full"
-          >
-            <p class="t-t2 font-secondary text-gray-700 font-normal">Facultades Bancarias</p>
-          </SecondaryCard>
-          <BaseButton
-            variant="ghost"
-            class="py-10! px-8! rounded-lg border border-gray-200 bg-white hover:bg-gray-100 transition-colors"
-          >
-            <SquarePen class="w-4 h-4 text-gray-700" />
-          </BaseButton>
+      </SimpleCard>
 
-          <BaseButton
-            variant="ghost"
-            class="py-10! px-8! rounded-lg border border-gray-200 bg-gray-700 hover:bg-gray-600 transition-colors"
-          >
-            <Trash2 class="w-4 h-4 text-white" />
-          </BaseButton>
+      <!-- Poderes de Otros Apoderados -->
+      <SimpleCard>
+        <CardTitle title="Poderes de los Apoderados" body="" />
+
+        <div class="flex flex-col gap-6">
+          <PoderesApoderado
+            apoderado-title="Maria Fernanda Torres"
+            :columns="poderesColumns"
+            :data="poderesData"
+            :actions="poderesActions"
+            @add-power="handleAddPower"
+          />
         </div>
-      </div>
-    </SimpleCard>
-
-    <!-- Poderes de los Apoderados -->
-    <SimpleCard>
-      <CardTitle title="Poderes de los Apoderados" body="" />
-
-      <div class="flex flex-col gap-6">
-        <PoderesApoderado
-          apoderado-title="Gerente General"
-          :columns="poderesColumns"
-          :data="poderesData"
-          :actions="poderesActions"
-          @add-power="handleAddPower"
-        />
-      </div>
-    </SimpleCard>
-
-    <!-- Poderes de Otros Apoderados -->
-    <SimpleCard>
-      <CardTitle title="Poderes de los Apoderados" body="" />
-
-      <div class="flex flex-col gap-6">
-        <PoderesApoderado
-          apoderado-title="Maria Fernanda Torres"
-          :columns="poderesColumns"
-          :data="poderesData"
-          :actions="poderesActions"
-          @add-power="handleAddPower"
-        />
-      </div>
-    </SimpleCard>
+      </SimpleCard>
+    </div>
   </div>
 </template>
