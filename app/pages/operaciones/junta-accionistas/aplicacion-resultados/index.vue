@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: "universal-flow-layout",
+  layout: "dual-panel-layout",
 });
 
   // Página: Aplicación de Resultados (Principal)

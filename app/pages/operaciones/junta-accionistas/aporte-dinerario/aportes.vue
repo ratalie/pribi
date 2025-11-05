@@ -32,6 +32,6 @@
   // Enum: JuntaRoutes.APORTE_DINERARIO_APORTES
 
   definePageMeta({
-    layout: "universal-flow-layout",
+    layout: "dual-panel-layout",
   });
 </script>

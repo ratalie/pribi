@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: "universal-flow-layout",
+  layout: "dual-panel-layout",
 });
 
   // Página: Remoción de Directores - Detalle (Sub-paso)

@@ -36,6 +36,6 @@
   // Enum: JuntaRoutes.APORTE_DINERARIO_VOTACION
 
   definePageMeta({
-    layout: "universal-flow-layout",
+    layout: "dual-panel-layout",
   });
 </script>

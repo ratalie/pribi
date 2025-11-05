@@ -37,6 +37,6 @@
   // Enum: JuntaRoutes.APORTE_DINERARIO
 
   definePageMeta({
-    layout: "universal-flow-layout",
+    layout: "dual-panel-layout",
   });
 </script>

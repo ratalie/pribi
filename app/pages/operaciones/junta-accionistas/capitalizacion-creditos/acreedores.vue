@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: "universal-flow-layout",
+  layout: "dual-panel-layout",
 });
 
   // Página: Acreedores (Sub-paso de Capitalización de Créditos)

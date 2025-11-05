@@ -25,6 +25,6 @@
   // Ruta: /operaciones/junta-accionistas/puntos-acuerdo
 
   definePageMeta({
-    layout: "universal-flow-layout",
+    layout: "dual-panel-layout",
   });
 </script>

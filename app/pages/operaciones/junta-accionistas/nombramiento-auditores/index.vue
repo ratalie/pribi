@@ -37,6 +37,6 @@
   // Enum: JuntaRoutes.NOMBRAMIENTO_AUDITORES
 
   definePageMeta({
-    layout: "universal-flow-layout",
+    layout: "dual-panel-layout",
   });
 </script>

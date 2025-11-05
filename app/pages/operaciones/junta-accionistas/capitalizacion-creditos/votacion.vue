@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: "universal-flow-layout",
+  layout: "dual-panel-layout",
 });
 
   // Página: Votación - Capitalización de Créditos (Sub-paso final)

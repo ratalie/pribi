@@ -38,6 +38,6 @@
   // Enum: JuntaRoutes.CAPITALIZACION_CREDITOS
 
   definePageMeta({
-    layout: "universal-flow-layout",
+    layout: "dual-panel-layout",
   });
 </script>
