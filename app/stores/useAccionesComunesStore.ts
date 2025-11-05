@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 export const useAccionesComunesStore = defineStore("accionesComunesModal", {
   state: () => ({
     // Campos del formulario
-    cantidadAcciones: "",
+    cantidadAcciones: 0,
     redimibles: false,
     otrosDerechosEspeciales: false,
     obligacionesAdicionales: false,

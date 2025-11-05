@@ -1,11 +1,8 @@
 import { z } from "zod";
 
 export const cantidadAccionesSchema = z
-  .string()
-  .nonempty("La cantidad de acciones es obligatoria")
-  .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
-    message: "Debe ser un número mayor a 0",
-  });
+  .number()
+  .min(1, "La cantidad de acciones debe ser mayor a 0");
 
 export const redimiblesSchema = z.boolean();
 
@@ -20,4 +17,3 @@ export const accionesComunesFormSchema = z.object({
   otros_derechos_especiales: otrosDerechosEspecialesSchema,
   obligaciones_adicionales: obligacionesAdicionalesSchema,
 });
-

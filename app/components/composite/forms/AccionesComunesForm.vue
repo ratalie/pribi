@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
   import FileUploadDragDropMultiple from "~/components/base/inputs/FileUploadDragDropMultiple.vue";
-  import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
+  import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
   import { cantidadAccionesSchema } from "~/modules/registro-sociedades/schemas/accionesComunes";
 
   const accionesComunesStore = useAccionesComunesStore();
@@ -10,7 +10,7 @@
 <template>
   <div class="flex flex-col gap-10">
     <!-- Input: Cantidad de Acciones suscritas -->
-    <TextInputZod
+    <NumberInputZod
       v-model="accionesComunesStore.cantidadAcciones"
       name="cantidad_acciones"
       label="Cantidad de Acciones suscritas"
