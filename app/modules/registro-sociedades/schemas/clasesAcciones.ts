@@ -6,11 +6,8 @@ export const nombreClaseAccionSchema = z
   .min(2, "Debe tener al menos 2 caracteres");
 
 export const cantidadAccionesClaseSchema = z
-  .string()
-  .nonempty("La cantidad de acciones es obligatoria")
-  .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
-    message: "Debe ser un número mayor a 0",
-  });
+  .number()
+  .min(1, "La cantidad de acciones debe ser mayor a 0");
 
 export const conDerechoVotoSchema = z.boolean();
 

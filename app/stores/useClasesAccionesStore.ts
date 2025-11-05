@@ -4,7 +4,7 @@ export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
   state: () => ({
     // Campos del formulario
     nombreClaseAccion: "",
-    cantidadAccionesClase: "",
+    cantidadAccionesClase: 0,
     conDerechoVoto: false,
     redimiblesClase: false,
     otrosDerechosEspecialesClase: false,

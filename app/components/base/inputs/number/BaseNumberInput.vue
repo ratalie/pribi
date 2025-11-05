@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import clsx from "clsx";
+  import { useNumberFormatter } from "~/composables/useNumberFormatter";
 
   interface Props {
     id: string;
@@ -33,34 +34,21 @@
 
   const valueInput = ref(props.initialValue);
 
-  const getNumber = (value: string): string => {
-    const newValue = value.replace(/(?!^)-|[^0-9-]/g, "");
-
-    if (props.format === "decimal") {
-      const numberFormat = (Number(newValue) / props.decimalFactor).toFixed(props.decimals);
-      return numberFormat.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-    if (props.format === "integer") {
-      const parsedInt = parseInt(newValue, 10);
-      return isNaN(parsedInt) ? "" : parsedInt.toString();
-    }
-
-    if (props.format === "thousands") {
-      return newValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-
-    return newValue;
-  };
+  const { formatNumber, unformatNumber, padDecimals } = useNumberFormatter({
+    decimals: props.decimals,
+    decimalFactor: props.decimalFactor,
+    format: props.format,
+  });
 
   const formatValue = (event: Event): void => {
     const target = event.target as HTMLInputElement;
-    target.value = getNumber(target.value);
+    target.value = formatNumber(target.value);
     valueInput.value = target.value;
   };
 
   watch(valueInput, (newValue) => {
-    const valueNumber = newValue.replace(/,/g, "");
-    emits("update:initialValue", valueNumber);
+    const valueNumber = unformatNumber(newValue);
+    emits("update:initialValue", valueNumber.toString());
   });
 
   watch(
@@ -69,33 +57,19 @@
       if (newValue === "" || newValue === null) {
         valueInput.value = "";
       } else if (newValue) {
-        let formattedValue = newValue;
-
-        // Solo agregar ceros faltantes si es formato decimal
-        if (props.format === "decimal" && props.decimals > 0) {
-          if (newValue.includes(".")) {
-            // Ya tiene punto, rellenar decimales faltantes
-            const [intPart, decPart] = newValue.split(".");
-            const paddedDec = (decPart || "").padEnd(props.decimals, "0");
-            formattedValue = `${intPart}.${paddedDec}`;
-          } else {
-            // No tiene punto, agregarlo con ceros
-            formattedValue = newValue + "." + "0".repeat(props.decimals);
-          }
-        }
-
-        valueInput.value = getNumber(formattedValue);
+        // Completar decimales faltantes si es necesario
+        const paddedValue = padDecimals(newValue);
+        // Formatear el valor con comas y decimales
+        valueInput.value = formatNumber(paddedValue);
       }
     },
     { immediate: true }
   );
 
-  // Manejar blur
   const handleBlur = () => {
     emits("blur");
   };
 
-  // Clases del input
   const inputClasses = computed(() =>
     clsx(
       // Estilos base

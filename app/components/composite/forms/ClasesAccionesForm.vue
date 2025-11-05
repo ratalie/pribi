@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
   import FileUploadDragDropMultiple from "~/components/base/inputs/FileUploadDragDropMultiple.vue";
+  import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
   import {
     cantidadAccionesClaseSchema,
@@ -22,7 +23,7 @@
     />
 
     <!-- Input: Cantidad de Acciones suscritas -->
-    <TextInputZod
+    <NumberInputZod
       v-model="clasesAccionesStore.cantidadAccionesClase"
       name="cantidad_acciones_clase"
       label="Cantidad de Acciones suscritas"
