@@ -1,17 +1,24 @@
 <script setup lang="ts">
   import Moneda from "@/assets/icons/Moneda.svg";
   import { useVModel } from "@vueuse/core";
+  import { useField } from "vee-validate";
+  import { z } from "zod";
+  import { useNumberFormatter } from "~/composables/useNumberFormatter";
   import ActionButton from "../../buttons/composite/ActionButton.vue";
   import BaseModal from "../BaseModal.vue";
 
   interface Props {
     modelValue?: boolean;
+    valorNominal?: number;
   }
 
-  const props = defineProps<Props>();
+  const props = withDefaults(defineProps<Props>(), {
+    valorNominal: 0,
+  });
 
   const emits = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
+    (e: "update:valorNominal", value: number): void;
     (e: "close"): void;
   }>();
 
@@ -19,13 +26,103 @@
     passive: true,
   });
 
+  // Valor temporal local (no emite hasta guardar)
+  const valorNominalTemporal = ref(0);
+  const valorNominalInput = ref("");
+
+  // Schema de validación con Zod
+  const valorNominalSchema = z
+    .number()
+    .positive("El valor debe ser mayor a 0")
+    .min(0.01, "El valor mínimo es S/ 0.01");
+
+  // Integración con vee-validate
+  const validateValue = (value: number) => {
+    const result = valorNominalSchema.safeParse(value);
+    return result.success ? true : result.error.issues[0]?.message ?? "Valor inválido";
+  };
+
+  const {
+    value: valorValidado,
+    errorMessage,
+    meta,
+    setTouched,
+  } = useField("valor_nominal", validateValue, {
+    initialValue: props.valorNominal,
+  });
+
+  // Usar el composable de formateo de números
+  const { formatNumber, unformatNumber, padDecimals } = useNumberFormatter({
+    format: "decimal",
+    decimals: 2,
+    decimalFactor: 100,
+  });
+
+  const formatValue = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    target.value = formatNumber(target.value);
+    valorNominalInput.value = target.value;
+
+    // Guardar en variable temporal (NO emite al padre aún)
+    const numeroSinFormato = unformatNumber(valorNominalInput.value);
+    valorNominalTemporal.value = numeroSinFormato;
+
+    // Actualizar validación
+    valorValidado.value = numeroSinFormato;
+  };
+
+  watch(
+    () => valorNominalTemporal.value,
+    (newValue) => {
+      if (newValue === 0) {
+        valorNominalInput.value = "";
+      } else {
+        const paddedValue = padDecimals(newValue.toString());
+        valorNominalInput.value = formatNumber(paddedValue);
+      }
+
+      // Sincronizar con vee-validate
+      valorValidado.value = newValue;
+    },
+    { immediate: true }
+  );
+
+  watch(
+    () => modelValue.value,
+    (isOpen) => {
+      if (isOpen) {
+        valorNominalTemporal.value = props.valorNominal;
+
+        if (props.valorNominal > 0) {
+          const paddedValue = padDecimals(props.valorNominal.toString());
+          valorNominalInput.value = formatNumber(paddedValue);
+          valorValidado.value = props.valorNominal;
+        } else {
+          valorNominalInput.value = "";
+        }
+      }
+    }
+  );
+
+  const handleBlur = () => {
+    setTouched(true);
+  };
+
   const handleCancel = () => {
     emits("close");
     modelValue.value = false;
+    valorNominalTemporal.value = 0;
+    valorNominalInput.value = "";
   };
 
   const handleSave = async () => {
-    console.log("Datos de acciones");
+    setTouched(true);
+
+    emits("update:valorNominal", valorNominalTemporal.value);
+
+    modelValue.value = false;
+    valorNominalTemporal.value = 0;
+    valorNominalInput.value = "";
   };
 
   const handleInvalidSubmit = () => {
@@ -50,13 +147,31 @@
         <p class="t-h6 font-normal text-gray-500">Ingresa el valor nominal de las acciones.</p>
       </div>
 
-      <!-- falta crear un input numerico tranparente -->
-      <div>
-        <input
-          type="text"
-          placeholder="S/ 0.00"
-          class="border-b border-gray-300 focus:outline-none focus:border-blue-500"
-        />
+      <!-- Input numérico con formato decimal -->
+      <div class="flex flex-col items-center justify-center gap-2">
+        <div class="flex items-center justify-center gap-2">
+          <span class="t-t1 font-secondary font-extrabold text-gray-900 shrink-0">S/</span>
+
+          <input
+            type="text"
+            :value="valorNominalInput"
+            placeholder="0.00"
+            :class="[
+              'w-[80px] focus:outline-none t-h6 font-secondary font-extrabold',
+              errorMessage && meta.touched ? 'text-red-600' : 'text-gray-900',
+            ]"
+            @input="formatValue"
+            @blur="handleBlur"
+          />
+        </div>
+
+        <!-- Mensaje de error -->
+        <p
+          v-if="errorMessage && meta.touched"
+          class="t-b2 font-secondary text-red-600 text-center"
+        >
+          {{ errorMessage }}
+        </p>
       </div>
     </div>
 

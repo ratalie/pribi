@@ -144,8 +144,8 @@
     nombraPresidente: "opcion-a",
     ejerceSecretaria: "opcion-a",
     reeleccionDirectores: false,
-    presideJuntas: "opcion-a",
-    votoDirimente: "opcion-a",
+    presideJuntas: false,
+    votoDirimente: false,
     presidenteDirectorio: "",
   });
 
