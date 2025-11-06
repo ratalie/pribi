@@ -84,9 +84,9 @@
         "!border-green-500 focus:!border-green-500 focus:!ring-green-500",
 
       // Tamaños
-      props.size === "sm" && "h-8 text-xs",
-      props.size === "md" && "!h-[40px] text-sm",
-      props.size === "lg" && "h-12 text-base",
+      props.size === "sm" && "h-8 t-b2",
+      props.size === "md" && "!h-[40px] t-t2",
+      props.size === "lg" && "h-12 t-t1",
 
       // Deshabilitado
       props.isDisabled &&

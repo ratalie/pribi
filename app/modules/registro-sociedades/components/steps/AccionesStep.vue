@@ -17,6 +17,8 @@
 
   defineProps<Props>();
 
+  const valorNominalStore = useValorNominalStore();
+
   interface ISharesholderTable {
     id: string;
     tipo_acciones: string;
@@ -111,7 +113,12 @@
             <img :src="IconCoin" alt="Valor Nominal" />
             <p class="font-bold">
               Valor Nominal:
-              <span class="font-bold">S/ 10.00</span>
+              <span class="font-bold">
+                S/
+                {{
+                  valorNominalStore.valor === 0 ? "0.00" : valorNominalStore.valor.toFixed(2)
+                }}
+              </span>
             </p>
           </BaseButton>
 
@@ -138,7 +145,9 @@
 
     <ValorNominalModal
       v-model="isValorNominalModalOpen"
+      v-model:valor-nominal="valorNominalStore.valor"
       @close="isValorNominalModalOpen = false"
+      @update:valor-nominal="valorNominalStore.setValor($event)"
     />
 
     <AccionesModal v-model="isAccionesModalOpen" @close="isAccionesModalOpen = false" />
