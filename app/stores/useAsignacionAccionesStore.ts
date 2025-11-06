@@ -1,23 +1,23 @@
 export const useAsignacionAccionesStore = defineStore("asignacionAccionesForm", {
   state: (): AsignacionAcciones => ({
     tipoAccion: "",
-    cantidadAccionesSuscritas: "",
-    precioAccion: "",
-    capitalSocial: "",
-    prima: "",
+    cantidadAccionesSuscritas: 0,
+    precioAccion: 0,
+    capitalSocial: 0,
+    prima: 0,
     totalmentePagado: false,
-    porcentajePagado: "",
-    dividendoPasivo: "",
+    porcentajePagado: 0,
+    dividendoPasivo: 0,
   }),
 });
 
 interface AsignacionAcciones {
   tipoAccion: string;
-  cantidadAccionesSuscritas: string;
-  precioAccion: string;
-  capitalSocial: string;
-  prima: string;
+  cantidadAccionesSuscritas: number;
+  precioAccion: number;
+  capitalSocial: number;
+  prima: number;
   totalmentePagado: boolean;
-  porcentajePagado: string;
-  dividendoPasivo: string;
+  porcentajePagado: number;
+  dividendoPasivo: number;
 }

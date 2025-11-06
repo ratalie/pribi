@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
-  import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
+  import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
   import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
   import { accionTypes } from "~/constants/inputs/acciones-types";
  import {
@@ -26,7 +26,7 @@
       :options="accionTypes"
       :schema="tipoAccionSchema"
     />
-    <TextInputZod
+    <NumberInputZod
       v-model="asignacionAccionesStore.cantidadAccionesSuscritas"
       name="cantidad_acciones_suscritas"
       label="Cantidad Suscritas de Acciones"
@@ -34,14 +34,14 @@
       :schema="cantidadAccionesSuscritasSchema"
     />
 
-    <TextInputZod
+    <NumberInputZod
       v-model="asignacionAccionesStore.precioAccion"
       name="nombre"
       label="Precio Pagado por Acción"
       placeholder="S/ Escribe el precio aquí"
       :schema="precioAccionSchema"
     />
-    <TextInputZod
+    <NumberInputZod
       v-model="asignacionAccionesStore.capitalSocial"
       name="capital_social"
       label="Capital Social"
@@ -49,7 +49,7 @@
       :schema="capitalSocialSchema"
     />
 
-    <TextInputZod
+    <NumberInputZod
       v-model="asignacionAccionesStore.prima"
       name="prima"
       label="Prima"
@@ -70,14 +70,16 @@
       <SimpleSwitchYesNo v-model="asignacionAccionesStore.totalmentePagado" label=""/>
     </div>
 
-    <TextInputZod
+    <NumberInputZod
+      v-if="asignacionAccionesStore.totalmentePagado"
       v-model="asignacionAccionesStore.porcentajePagado"
       name="porcentaje_pagado_por_accion"
       label="Porcentaje Pagado por Acción"
       placeholder="% Porcentaje pagado por acción"
       :schema="porcentajePagadoSchema"
     />
-    <TextInputZod
+    <NumberInputZod
+      v-if="asignacionAccionesStore.totalmentePagado"
       v-model="asignacionAccionesStore.dividendoPasivo"
       name="dividendo_pasivo"
       label="Dividendo Pasivo Total"

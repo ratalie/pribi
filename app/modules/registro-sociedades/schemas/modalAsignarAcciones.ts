@@ -4,34 +4,33 @@ export const tipoAccionSchema = z
   .string()
   .nonempty("El tipo de acción es obligatorio");
 
-export const cantidadAccionesSuscritasSchema = z.string().nonempty("La cantidad de acciones suscritas es obligatoria");
+export const cantidadAccionesSuscritasSchema = z.number().min(1, "La cantidad de acciones suscritas debe ser mayor a 0");
 
 export const precioAccionSchema = z
-  .string()
-  .nonempty("El precio de la acción es obligatorio");
+  .number()
+  .min(1, "El precio de la acción debe ser mayor a 0");
 
 export const capitalSocialSchema = z
-  .string() 
-  .nonempty("El capital social es obligatorio");
+  .number() 
+  .min(1, "El capital social debe ser mayor a 0");
 
 export const primaSchema = z
-  .string()
-  .nonempty("El apellido paterno es obligatorio")
-  .min(2, "Debe tener al menos 2 caracteres");
+  .number()
+  .min(1, "La prima debe ser mayor a 0");
 
 export const totalmentePagadoSchema = z
   .boolean().default(false);
 
-export const porcentajePagadoSchema = z.string().nonempty("El porcentaje pagado es obligatorio");
+export const porcentajePagadoSchema = z.number().min(1, "El porcentaje pagado debe ser mayor a 0");
 
-export const dividendoPasivoSchema = z.string().nonempty("El dividendo pasivo es obligatorio");
+export const dividendoPasivoSchema = z.number().min(1, "El dividendo pasivo debe ser mayor a 0");
 export const datosAsignacionAccionesSchema = z.object({
-  tipoAccionSchema,
-  cantidadAccionesSuscritasSchema,
-  precioAccionSchema,
-  capitalSocialSchema,
-  primaSchema,
-  totalmentePagadoSchema,
-  porcentajePagadoSchema,
-  dividendoPasivoSchema,
+  tipo_accion: tipoAccionSchema,
+  cantidad_acciones_suscritas: cantidadAccionesSuscritasSchema,
+  precio_accion: precioAccionSchema,
+  capital_social: capitalSocialSchema,
+  prima: primaSchema,
+  totalmente_pagado: totalmentePagadoSchema,
+  porcentaje_pagado: porcentajePagadoSchema,
+  dividendo_pasivo: dividendoPasivoSchema,
 });
