@@ -9,6 +9,7 @@
   import TableRow from "~/components/ui/table/TableRow.vue";
   import BaseButton from "../../buttons/BaseButton.vue";
   import ActionButton from "../../buttons/composite/ActionButton.vue";
+  import AsignarAccionesModal from "../../modal/composite/AsignarAccionesModal.vue";
   import DataTableDropDown from "../DataTableDropDown.vue";
 
   interface Props {
@@ -42,6 +43,8 @@
   };
 
   const expanded = ref<string[]>([]);
+  const isModalOpen = ref(false);
+  const selectedAccionistaId = ref<string | null>(null);
 
   function toggleRow(id: string) {
     if (expanded.value.includes(id)) {
@@ -49,6 +52,16 @@
     } else {
       expanded.value.push(id);
     }
+  }
+
+  function openModal(accionistaId: string) {
+    selectedAccionistaId.value = accionistaId;
+    isModalOpen.value = true;
+  }
+
+  function closeModal() {
+    isModalOpen.value = false;
+    selectedAccionistaId.value = null;
   }
 </script>
 
@@ -113,7 +126,13 @@
             {{ getPercentage(row.acciones) }}%
           </TableCell>
           <TableCell>
-            <ActionButton variant="secondary" size="sm" label="Asignar" icon="Plus" />
+            <ActionButton
+              variant="secondary"
+              size="sm"
+              label="Asignar"
+              icon="Plus"
+              @click="openModal(row.id)"
+            />
           </TableCell>
         </TableRow>
         <!-- Filas hijas (acciones) -->
@@ -149,4 +168,6 @@
       </template>
     </TableBody>
   </Table>
+
+  <AsignarAccionesModal v-model="isModalOpen" @close="closeModal" />
 </template>
