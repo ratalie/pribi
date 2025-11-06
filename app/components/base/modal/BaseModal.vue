@@ -39,7 +39,7 @@
   <Dialog :open="modelValue" @update:open="onOpenChange">
     <BaseDialogContent :class="['flex flex-col max-h-[800px]', getSizeClasses()]">
       <Form @submit="emit('submit')" @invalid-submit="emit('invalidSubmit')">
-        <div class="flex-1 min-h-0 px-14 py-16 overflow-auto">
+        <div class="flex-1 min-h-0 max-h-[718px] px-14 py-16 overflow-auto">
           <slot />
         </div>
 
