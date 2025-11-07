@@ -1,13 +1,13 @@
 <script setup lang="ts">
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
-  import SimpleCardAcuerdos from "~/components/base/cards/SimpleCardAcuerdos.vue";
+  import SimpleCardDropDown from "~/components/base/cards/SimpleCardDropDown.vue";
   import FileUploadDragDrop from "~/components/base/inputs/FileUploadDragDrop.vue";
   import CustomSwitch from "~/components/base/Switch/CustomSwitch.vue";
-  // import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   interface Props {
-    // mode: EntityModeEnum;
+    mode: EntityModeEnum;
     societyId?: string;
   }
   const uploadedFile = ref<File | null>(null);
@@ -27,9 +27,9 @@
     />
     <div class="flex flex-col gap-8">
       <span class="t-h5 text-gray-800 font-medium font-primary">Estatutos Sociales</span>
-      <SimpleCardAcuerdos>
+      <SimpleCardDropDown>
         <template #title>
-          <div class="flex justify-between gap-2">
+          <div class="flex justify-between gap-2 py-12 px-10">
             <span
               :class="[
                 't-t1 text-gray-600 font-medium font-secondary',
@@ -46,20 +46,22 @@
         </template>
         <!-- v-if="showEstatutosSociales" -->
         <template v-if="showEstatutosSociales" #content>
-          <FileUploadDragDrop
-            v-model="uploadedFile"
-            variant="default"
-            click-message="Haz click"
-            drag-message="o arrastra el documento"
-            format-description=".docx, .pdf (max 5 MB)"
-          />
+          <div class="py-12 px-10">
+            <FileUploadDragDrop
+              v-model="uploadedFile"
+              variant="default"
+              click-message="Haz click"
+              drag-message="o arrastra el documento"
+              format-description=".docx, .pdf (max 5 MB)"
+            />
+          </div>
         </template>
-      </SimpleCardAcuerdos>
+      </SimpleCardDropDown>
 
       <span class="t-h5 text-gray-800 font-medium font-primary">Convenio de Accionistas</span>
-      <SimpleCardAcuerdos>
+      <SimpleCardDropDown>
         <template #title>
-          <div class="flex justify-between gap-2">
+          <div class="flex justify-between gap-2 py-12 px-10">
             <span
               :class="[
                 't-t1 text-gray-600 font-medium font-secondary',
@@ -76,20 +78,22 @@
         </template>
 
         <template v-if="showConvenioAccionistas" #content>
-          <FileUploadDragDrop
-            v-model="uploadedFile"
-            variant="default"
-            click-message="Haz click"
-            drag-message="o arrastra el documento"
-            format-description=".docx, .pdf (max 5 MB)"
-          />
+          <div class="py-12 px-10">
+            <FileUploadDragDrop
+              v-model="uploadedFile"
+              variant="default"
+              click-message="Haz click"
+              drag-message="o arrastra el documento"
+              format-description=".docx, .pdf (max 5 MB)"
+            />
+          </div>
         </template>
-      </SimpleCardAcuerdos>
+      </SimpleCardDropDown>
 
       <span class="t-h5 text-gray-800 font-medium font-primary">Acuerdo de Terceros</span>
-      <SimpleCardAcuerdos>
+      <SimpleCardDropDown>
         <template #title>
-          <div class="flex justify-between gap-2">
+          <div class="flex justify-between gap-2 py-12 px-10">
             <span
               :class="[
                 't-t1 text-gray-600 font-medium font-secondary',
@@ -105,15 +109,17 @@
           </div>
         </template>
         <template v-if="showAcuerdoTerceros" #content>
-          <FileUploadDragDrop
-            v-model="uploadedFile"
-            variant="default"
-            click-message="Haz click"
-            drag-message="o arrastra el documento"
-            format-description=".docx, .pdf (max 5 MB)"
-          />
+          <div class="py-12 px-10">
+            <FileUploadDragDrop
+              v-model="uploadedFile"
+              variant="default"
+              click-message="Haz click"
+              drag-message="o arrastra el documento"
+              format-description=".docx, .pdf (max 5 MB)"
+            />
+          </div>
         </template>
-      </SimpleCardAcuerdos>
+      </SimpleCardDropDown>
 
       <span class="t-h5 text-gray-800 font-medium font-primary">Tipo de persona</span>
       <SimpleCard class="flex! flex-row! justify-between!">
