@@ -29,6 +29,17 @@
     }
   };
 
+  const getPaddingSizeClasses = () => {
+    switch (props.size) {
+      case "sm":
+        return "px-10 py-12";
+      case "md":
+        return "px-12 py-14";
+      case "lg":
+        return "px-14 py-16";
+    }
+  };
+
   const onOpenChange = (open: boolean) => {
     emit("update:modelValue", open);
     if (!open) emit("close");
@@ -43,7 +54,7 @@
         @submit="emit('submit')"
         @invalid-submit="emit('invalidSubmit')"
       >
-        <div class="flex-1 min-h-0 px-14 py-16 overflow-auto">
+        <div class="flex-1 min-h-0 overflow-auto" :class="getPaddingSizeClasses()">
           <slot />
         </div>
 

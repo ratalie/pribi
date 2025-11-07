@@ -36,6 +36,7 @@ import {
   Settings,
   SquarePen,
   Sun,
+  TextAlignJustify,
   Trash2,
   User,
   UserCheck,
@@ -94,6 +95,7 @@ const iconMap = {
   UserRoundPlus,
   EllipsisVertical,
   MoreHorizontal,
+  TextAlignJustify,
 };
 
 export const getIcon = (iconName: string) => {

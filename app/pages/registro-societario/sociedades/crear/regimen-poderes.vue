@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import RegimenPoderesStep from "~/modules/registro-sociedades/components/steps/RegimenPoderesStep.vue";
+  import RegimenFacultadesStep from "~/modules/registro-sociedades/components/steps/RegimenFacultadesStep.vue";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   definePageMeta({
@@ -8,5 +8,5 @@
 </script>
 
 <template>
-  <RegimenPoderesStep :mode="EntityModeEnum.CREAR" />
+  <RegimenFacultadesStep :mode="EntityModeEnum.CREAR" />
 </template>

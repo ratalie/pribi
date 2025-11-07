@@ -3,7 +3,7 @@ import { h } from "vue";
 import { ItemStateEnum } from "~/types/enums/ItemStateEnum";
 
 export interface BaseTableRow {
-  id: string;
+  id: number | string;
   estado?: ItemStateEnum | string;
 }
 
