@@ -10,8 +10,8 @@
     societyId?: string;
   }
 
-  const headersQuorum = ["Tipo de Quorum", "Reglas"];
-
+  const headersQuorum1 = ["Convocatoria", "Tipo de Quórum", "Reglas"];
+  const headersQuorum2 = ["Tipo de Quórum", "Reglas"];
   defineProps<Props>();
 
   // TODO: Reemplazar con store real
@@ -30,10 +30,11 @@
     <SimpleCard>
       <div class="flex flex-col gap-12">
         <CardTitle title="Quórum Mínimo Para Instalar la Junta" body="" />
-        <h3 class="font-secondary text-gray-800 font-semibold t-h6">Primera Convocatoria</h3>
-        <QuorumTable :header-list="headersQuorum" columns="grid-cols-3">
+        <!-- <h3 class="font-secondary text-gray-800 font-semibold t-h6">Primera Convocatoria</h3> -->
+        <QuorumTable :header-list="headersQuorum1" columns="grid-cols-3">
           <QuorumRowTable
             :is-preview="isPreview"
+            convocatoria="Primera"
             quorum-type="Simple"
             ruler="Mínimo"
             :initial-value="simpleFirstCall.toFixed(2)"
@@ -44,6 +45,7 @@
           />
           <QuorumRowTable
             :is-preview="isPreview"
+            convocatoria="Primera"
             quorum-type="Calificado"
             ruler="Mínimo"
             :initial-value="qualifiedFirstCall.toFixed(2)"
@@ -52,13 +54,14 @@
             :error-limit="66.66"
             @update:number-value="(value) => (qualifiedFirstCall = value)"
           />
-        </QuorumTable>
-
-        <h3 class="font-secondary text-gray-800 font-semibold t-h6">Segunda Convocatoria</h3>
-        <QuorumTable :header-list="headersQuorum" columns="grid-cols-3">
-          <QuorumRowTable :is-preview="isPreview" quorum-type="Simple" />
           <QuorumRowTable
             :is-preview="isPreview"
+            convocatoria="Segunda"
+            quorum-type="Simple"
+          />
+          <QuorumRowTable
+            :is-preview="isPreview"
+            convocatoria="Segunda"
             quorum-type="Calificado"
             ruler="Mínimo"
             :initial-value="qualifiedFirstCall.toFixed(2)"
@@ -74,7 +77,7 @@
     <SimpleCard>
       <div class="flex flex-col gap-12">
         <CardTitle title="Quórum Mínimo Para Tomar Acuerdos" body="" />
-        <QuorumTable :header-list="headersQuorum" columns="grid-cols-3">
+        <QuorumTable :header-list="headersQuorum2" columns="grid-cols-3">
           <QuorumRowTable
             :is-preview="isPreview"
             quorum-type="Simple"

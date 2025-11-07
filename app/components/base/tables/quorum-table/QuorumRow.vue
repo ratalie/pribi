@@ -12,6 +12,7 @@
     isPreview?: boolean; // También acepta is-preview desde kebab-case
     errorLimit?: number; // También acepta error-limit desde kebab-case
     variant?: string;
+    convocatoria?: string; // Columna de convocatoria (opcional)
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -23,6 +24,7 @@
     initialValue: "0.00",
     showError: false,
     isPreview: false,
+    convocatoria: undefined,
   });
 
   const emits = defineEmits(["update:numberValue"]);
@@ -44,6 +46,12 @@
 </script>
 <template>
   <tr class="border-b border-button-secondary">
+    <td
+      v-if="props.convocatoria !== undefined"
+      class="font-secondary text-gray-700 t-t2 font-medium py-7 px-7"
+    >
+      {{ props.convocatoria || "" }}
+    </td>
     <td class="font-secondary text-gray-700 t-t2 font-medium py-7 px-7">
       {{ quorumType }}
     </td>

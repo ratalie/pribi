@@ -1,6 +1,6 @@
 <template>
   <section>
-    <table class="w-full border-collapse">
+    <table class="w-full border-collapse table-fixed">
       <!-- titulos -->
       <thead>
         <tr class="border-b border-border-primary py-4 px-4">
@@ -8,7 +8,19 @@
             v-for="(el, index) in headerList"
             :key="index"
             class="text-button-primary text-b1 font-semibold font-primary text-start py-4 px-7"
-            :style="index === 0 ? 'width: 33.333%' : index === 1 ? 'width: 66.666%' : ''"
+            :style="
+              headerList.length === 3
+                ? index === 0
+                  ? 'width: 25%'
+                  : index === 1
+                  ? 'width: 25%'
+                  : 'width: 50%'
+                : index === 0
+                ? 'width: 33.333%'
+                : index === 1
+                ? 'width: 66.666%'
+                : ''
+            "
           >
             {{ el }}
           </th>
