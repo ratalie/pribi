@@ -1,16 +1,15 @@
 <script setup lang="ts">
   import { ChevronDown, ChevronRight, X } from "lucide-vue-next";
   import BaseButton from "~/components/base/buttons/BaseButton.vue";
+  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+  import DataTableDropDown from "~/components/base/tables/DataTableDropDown.vue";
   import Table from "~/components/ui/table/Table.vue";
   import TableBody from "~/components/ui/table/TableBody.vue";
+  import TableCell from "~/components/ui/table/TableCell.vue";
   import TableHead from "~/components/ui/table/TableHead.vue";
   import TableHeader from "~/components/ui/table/TableHeader.vue";
   import TableRow from "~/components/ui/table/TableRow.vue";
   import type { ApoderadoFacultadRow } from "../../types/apoderadosFacultades";
-
-  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
-  import DataTableDropDown from "~/components/base/tables/DataTableDropDown.vue";
-  import TableCell from "~/components/ui/table/TableCell.vue";
 
   interface Props {
     apoderadoItem: ApoderadoFacultadRow;
