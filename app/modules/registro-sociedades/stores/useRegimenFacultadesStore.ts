@@ -1,3 +1,4 @@
+import type { BaseSelectOption } from "~/components/base/inputs/text/BaseInputSelect.vue";
 import { EntityCoinEnum } from "~/types/enums/EntityCoinEnum";
 import { TiemposVigenciaEnum } from "~/types/enums/TiemposVigenciaEnum";
 import { TipoFirmasEnum } from "~/types/enums/TipoFirmasEnum";
@@ -233,6 +234,14 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             reglas_y_limites: reglas_y_limites,
           };
         }),
+      }));
+    },
+
+    listaFacultadesOptions(): BaseSelectOption[] {
+      return this.tipoFacultades.map((facultad) => ({
+        id: facultad.id,
+        value: facultad.id,
+        label: facultad.tipoFacultades,
       }));
     },
   },

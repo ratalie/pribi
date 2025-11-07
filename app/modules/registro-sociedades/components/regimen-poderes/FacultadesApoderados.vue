@@ -8,6 +8,7 @@
   import TableRow from "~/components/ui/table/TableRow.vue";
   import type { ApoderadoFacultadRow } from "../../types/apoderadosFacultades";
 
+  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import DataTableDropDown from "~/components/base/tables/DataTableDropDown.vue";
   import TableCell from "~/components/ui/table/TableCell.vue";
 
@@ -21,6 +22,9 @@
   }
 
   const props = defineProps<Props>();
+  const emit = defineEmits<{
+    (e: "openModal", apoderadoId: string): void;
+  }>();
 
   const isApoderadoExpanded = ref(false);
   const expandedFacultades = ref<Set<string>>(new Set());
@@ -63,6 +67,14 @@
           {{ apoderadoItem.nombre }}
         </p>
       </div>
+
+      <ActionButton
+        variant="secondary"
+        label="Agregar Facultad"
+        size="lg"
+        icon="Plus"
+        @click="() => emit('openModal', apoderadoItem.id)"
+      />
     </div>
 
     <div v-if="isApoderadoExpanded" class="overflow-x-auto">

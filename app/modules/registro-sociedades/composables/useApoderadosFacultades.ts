@@ -1,15 +1,11 @@
-import type { TableColumn } from "~/components/base/tables/getColumns";
 import { useRegimenFacultadesStore } from "../stores/useRegimenFacultadesStore";
-import type { FacultadRow } from "../types/apoderadosFacultades";
 
 export const useApoderadosFacultades = () => {
   const _regimenFacultadesStore = useRegimenFacultadesStore();
 
-  const apoderadoFacultadHeaders: TableColumn<FacultadRow>[] = [
-    { key: "facultad", label: "Tipo de Facultad", type: "text" },
-    { key: "vigencia", label: "Vigencia", type: "text" },
-    { key: "reglas_firma", label: "Reglas de Firma", type: "text" },
-  ];
+  const isApoderadoFacultadesModalOpen = ref(false);
+  const idApoderado = ref<string | null>(null);
+  const modeModalApoderadoFacultad = ref<"crear" | "editar">("crear");
 
   const facultadActions = [
     {
@@ -28,8 +24,15 @@ export const useApoderadosFacultades = () => {
     },
   ];
 
+  const openModalFacultadApoderado = (id: string) => {
+    idApoderado.value = id;
+    isApoderadoFacultadesModalOpen.value = true;
+  };
+
   return {
-    apoderadoFacultadHeaders,
     facultadActions,
+    isApoderadoFacultadesModalOpen,
+    modeModalApoderadoFacultad,
+    openModalFacultadApoderado,
   };
 };

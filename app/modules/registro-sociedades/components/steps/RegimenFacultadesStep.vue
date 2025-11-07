@@ -6,6 +6,7 @@
   import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
   import { useApoderadosFacultades } from "../../composables/useApoderadosFacultades";
   import { useTiposFacultades } from "../../composables/useTiposFacultades";
+  import FacultadApoderadoModal from "../modals/FacultadApoderadoModal.vue";
   import TipoFacultadesModal from "../modals/TipoFacultadesModal.vue";
   import FacultadesApoderados from "../regimen-poderes/FacultadesApoderados.vue";
 
@@ -26,9 +27,12 @@
     handleCloseModal,
   } = useTiposFacultades();
 
-  const { apoderadoFacultadHeaders, facultadActions } = useApoderadosFacultades();
-
-  console.log(apoderadoFacultadHeaders);
+  const {
+    facultadActions,
+    isApoderadoFacultadesModalOpen,
+    modeModalApoderadoFacultad,
+    openModalFacultadApoderado,
+  } = useApoderadosFacultades();
 </script>
 
 <template>
@@ -68,6 +72,7 @@
           :key="apoderado.id"
           :apoderado-item="apoderado"
           :actions="facultadActions"
+          @open-modal="openModalFacultadApoderado"
         />
       </div>
     </SimpleCard>
@@ -79,11 +84,21 @@
       <div class="flex flex-col gap-6" />
     </SimpleCard>
 
+    <!-- Modales -->
+
     <TipoFacultadesModal
       v-model="isTipoFacultadesModalOpen"
       :mode="modeModal"
       @close="handleCloseModal"
       @submit="handleSubmitTipoFacultad"
+    />
+
+    <FacultadApoderadoModal
+      v-model="isApoderadoFacultadesModalOpen"
+      :mode="modeModalApoderadoFacultad"
+      :lista-facultades-options="regimenFacultadesStore.listaFacultadesOptions"
+      @close="() => {}"
+      @submit="() => {}"
     />
   </div>
 </template>
