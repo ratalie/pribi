@@ -17,26 +17,29 @@ export const useApoderadoFacultadStore = defineStore("apoderadoFacultad", {
   }),
 
   getters: {
-    monedaOptions: () =>
-      Object.values(EntityCoinEnum).map((moneda) => ({
+    monedaOptions(): BaseSelectOption[] {
+      return Object.values(EntityCoinEnum).map((moneda) => ({
         id: moneda,
         label: moneda,
         value: moneda,
-      })),
+      }));
+    },
 
-    tipoMontoOptions: () =>
-      Object.values(TipoMontoEnum).map((tipoMonto) => ({
+    tipoMontoOptions(): BaseSelectOption[] {
+      return Object.values(TipoMontoEnum).map((tipoMonto) => ({
         id: tipoMonto,
         label: tipoMonto,
         value: tipoMonto,
-      })),
+      }));
+    },
 
-    tipoFirmaOptions: () =>
-      Object.values(TipoFirmasEnum).map((tipoFirma) => ({
+    tipoFirmaOptions(): BaseSelectOption[] {
+      return Object.values(TipoFirmasEnum).map((tipoFirma) => ({
         id: tipoFirma,
         label: tipoFirma,
         value: tipoFirma,
-      })),
+      }));
+    },
 
     cantidadFirmantesOptions(): BaseSelectOption[] {
       //por ahora solo se muestran las cantidades de 1 a 10
@@ -66,10 +69,10 @@ interface State {
   fechaInicio: string;
   fechaFin: string;
   tipoMoneda: EntityCoinEnum;
-  limiteMonetario: LimiteMonetario[];
+  limiteMonetario: LimiteMonetarioModal[];
 }
 
-interface LimiteMonetario {
+export interface LimiteMonetarioModal {
   id: string;
   desde: number;
   tipoMonto: TipoMontoEnum;

@@ -1,7 +1,9 @@
+import { useApoderadoFacultadStore } from "../stores/modal/useApoderadoFacultadStore";
 import { useRegimenFacultadesStore } from "../stores/useRegimenFacultadesStore";
 
 export const useApoderadosFacultades = () => {
   const _regimenFacultadesStore = useRegimenFacultadesStore();
+  const apoderadoFacultadStore = useApoderadoFacultadStore();
 
   const isApoderadoFacultadesModalOpen = ref(false);
   const idApoderado = ref<string | null>(null);
@@ -29,10 +31,25 @@ export const useApoderadosFacultades = () => {
     isApoderadoFacultadesModalOpen.value = true;
   };
 
+  const handleCloseModalApoderadoFacultad = () => {
+    apoderadoFacultadStore.$reset();
+    isApoderadoFacultadesModalOpen.value = false;
+    idApoderado.value = null;
+    modeModalApoderadoFacultad.value = "crear";
+  };
+
+  const handleSubmitApoderadoFacultad = () => {
+    console.log("Submit apoderado facultad");
+
+    handleCloseModalApoderadoFacultad();
+  };
+
   return {
     facultadActions,
     isApoderadoFacultadesModalOpen,
     modeModalApoderadoFacultad,
     openModalFacultadApoderado,
+    handleCloseModalApoderadoFacultad,
+    handleSubmitApoderadoFacultad,
   };
 };

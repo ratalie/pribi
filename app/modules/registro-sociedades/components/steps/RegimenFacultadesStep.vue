@@ -32,6 +32,8 @@
     isApoderadoFacultadesModalOpen,
     modeModalApoderadoFacultad,
     openModalFacultadApoderado,
+    handleCloseModalApoderadoFacultad,
+    handleSubmitApoderadoFacultad,
   } = useApoderadosFacultades();
 </script>
 
@@ -97,8 +99,8 @@
       v-model="isApoderadoFacultadesModalOpen"
       :mode="modeModalApoderadoFacultad"
       :lista-facultades-options="regimenFacultadesStore.listaFacultadesOptions"
-      @close="() => {}"
-      @submit="() => {}"
+      @close="handleCloseModalApoderadoFacultad"
+      @submit="handleSubmitApoderadoFacultad"
     />
   </div>
 </template>
