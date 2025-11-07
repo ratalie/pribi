@@ -1,9 +1,5 @@
 <script setup lang="ts">
   import { useVModel } from "@vueuse/core";
-  // import PersonaNaturalForm from "~/components/composite/forms/PersonaNaturalForm.vue";
-  // import { accionistaTypes } from "~/constants/inputs/accionista-types";
-  // import { tipoAccionistaSchema } from "~/modules/registro-sociedades/schemas/modalAccionistas";
-  // import CascadeSelectInputZod from "../../inputs/text/ui/CascadeSelectInputZod.vue";
   import ActionButton from "../../buttons/composite/ActionButton.vue";
   import CardTitle from "../../cards/CardTitle.vue";
   import BaseModal from "../BaseModal.vue";
@@ -25,9 +21,6 @@
   });
 
   const personaNaturalStore = usePersonaNaturalStore();
-  // const asignacionAccionesStore = useAsignacionAccionesStore();
-
-  // const tipoAccionista = ref("");
 
   const handleCancel = () => {
     emits("close");
@@ -48,7 +41,6 @@
   };
 
   const handleInvalidSubmit = () => {
-    //colocar logica de error, mostrar un toast
     console.log("Formulario inválido");
   };
 </script>
