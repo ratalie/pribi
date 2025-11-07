@@ -5,7 +5,7 @@ import { TipoFirmasEnum } from "~/types/enums/TipoFirmasEnum";
 import { TipoMontoEnum } from "~/types/enums/TipoMontoEnum";
 
 export const useApoderadoFacultadStore = defineStore("apoderadoFacultad", {
-  state: () => ({
+  state: (): State => ({
     tipoFacultad: "",
     reglasYLimites: false,
     esIrrevocable: false,
@@ -13,15 +13,7 @@ export const useApoderadoFacultadStore = defineStore("apoderadoFacultad", {
     fechaInicio: "",
     fechaFin: "",
     tipoMoneda: EntityCoinEnum.SOLES,
-    /** Limites monetarios */
-    desde: 0,
-    tipoMonto: TipoMontoEnum.MONTO,
-    hasta: 0,
-    tipoFirma: TipoFirmasEnum.SOLA_FIRMA,
-
-    /* Firmantes */
-    cantidad: "",
-    grupo: "",
+    limiteMonetario: [],
   }),
 
   getters: {
@@ -65,3 +57,29 @@ export const useApoderadoFacultadStore = defineStore("apoderadoFacultad", {
     },
   },
 });
+
+interface State {
+  tipoFacultad: string;
+  reglasYLimites: boolean;
+  esIrrevocable: boolean;
+  vigencia: TiemposVigenciaEnum;
+  fechaInicio: string;
+  fechaFin: string;
+  tipoMoneda: EntityCoinEnum;
+  limiteMonetario: LimiteMonetario[];
+}
+
+interface LimiteMonetario {
+  id: string;
+  desde: number;
+  tipoMonto: TipoMontoEnum;
+  hasta: number;
+  tipoFirma: TipoFirmasEnum;
+  firmantes: Firmante[];
+}
+
+interface Firmante {
+  id: string;
+  cantidad: string;
+  grupo: string;
+}

@@ -13,6 +13,7 @@
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
   import { TiemposVigenciaEnum } from "~/types/enums/TiemposVigenciaEnum";
+  import { TipoFirmasEnum } from "~/types/enums/TipoFirmasEnum";
   import { TipoMontoEnum } from "~/types/enums/TipoMontoEnum";
   import {
     fechaFinSchema,
@@ -109,7 +110,7 @@
           <div class="p-5 flex flex-col gap-10">
             <div class="grid grid-cols-2 gap-10">
               <SelectInputZod
-                v-model="apoderadoFacultadStore.tipoFacultad"
+                v-model="apoderadoFacultadStore.tipoMoneda"
                 name="moneda"
                 label="Tipo de Moneda"
                 placeholder="Selecciona una moneda"
@@ -118,11 +119,15 @@
               />
             </div>
 
-            <div class="flex flex-col gap-4 border p-4 rounded-md bg-gray-25">
+            <div
+              v-for="limite in apoderadoFacultadStore.limiteMonetario"
+              :key="limite.id"
+              class="flex flex-col gap-4 border p-4 rounded-md bg-gray-25"
+            >
               <div class="flex justify-center items-center gap-2">
                 <span class="t-t2 font-secondary text-gray-700 font-medium">De</span>
                 <NumberInputZod
-                  v-model="apoderadoFacultadStore.desde"
+                  v-model="limite.desde"
                   name="desde"
                   placeholder="Ingrese el monto desde"
                   currency="PEN"
@@ -132,16 +137,16 @@
                 <span class="t-t2 font-secondary text-gray-700 font-medium">Hasta</span>
 
                 <!-- Si el tipo de monto es monto, mostrar el select y el input -->
-                <template v-if="apoderadoFacultadStore.tipoMonto === TipoMontoEnum.MONTO">
+                <template v-if="limite.tipoMonto === TipoMontoEnum.MONTO">
                   <SelectInputZod
-                    v-model="apoderadoFacultadStore.tipoMonto"
+                    v-model="limite.tipoMonto"
                     name="tipo-monto"
                     placeholder="Selecciona un tipo de monto"
                     :options="apoderadoFacultadStore.tipoMontoOptions"
                     :schema="selectTipoMontoSchema"
                   />
                   <NumberInputZod
-                    v-model="apoderadoFacultadStore.hasta"
+                    v-model="limite.hasta"
                     name="hasta"
                     placeholder="Ingrese el monto hasta"
                     currency="PEN"
@@ -161,7 +166,7 @@
                     <button
                       type="button"
                       class="size-[18px] shrink-0 text-primary-500 hover:text-primary-600 transition-colors cursor-pointer"
-                      @click="apoderadoFacultadStore.tipoMonto = TipoMontoEnum.MONTO"
+                      @click="limite.tipoMonto = TipoMontoEnum.MONTO"
                     >
                       <X :size="18" />
                     </button>
@@ -170,7 +175,7 @@
 
                 <span class="t-t2 font-secondary text-gray-700 font-medium">es</span>
                 <SelectInputZod
-                  v-model="apoderadoFacultadStore.tipoFirma"
+                  v-model="limite.tipoFirma"
                   name="tipo-firma"
                   placeholder="Selecciona un tipo de firma"
                   :options="apoderadoFacultadStore.tipoFirmaOptions"
@@ -179,13 +184,20 @@
               </div>
 
               <!-- Firmantes -->
-              <div class="flex flex-col gap-3 px-6">
+              <div
+                v-if="limite.tipoFirma === TipoFirmasEnum.FIRMA_CONJUNTA"
+                class="flex flex-col gap-3 px-6"
+              >
                 <div class="flex items-center gap-4">
-                  <div class="flex justify-center items-center gap-4 border p-4 rounded-md">
+                  <div
+                    v-for="firmante in limite.firmantes"
+                    :key="firmante.id"
+                    class="flex justify-center items-center gap-4 border p-4 rounded-md"
+                  >
                     <span class="t-t2 font-secondary text-gray-700 font-medium">con</span>
                     <div>
                       <SelectInputZod
-                        v-model="apoderadoFacultadStore.cantidad"
+                        v-model="firmante.cantidad"
                         name="cantidad-firmantes"
                         placeholder="0"
                         :options="apoderadoFacultadStore.cantidadFirmantesOptions"
@@ -198,7 +210,7 @@
                     </span>
                     <div>
                       <SelectInputZod
-                        v-model="apoderadoFacultadStore.grupo"
+                        v-model="firmante.grupo"
                         name="grupo-firmantes"
                         placeholder="Selecciona el grupo de firmantes"
                         :options="apoderadoFacultadStore.grupoFirmantesOptions"
