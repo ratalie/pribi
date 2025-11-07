@@ -2,9 +2,10 @@
  * Configuración del layout para el flujo de Juntas de Accionistas
  *
  * Este flujo tiene 3 sidebars:
- * 1. Sidebar izquierdo: Navegación jerárquica (Nivel 0-2)
+ * 1. Sidebar izquierdo: Navegación jerárquica (Nivel 0-3)
+ *    Muestra: Pasos principales → Categorías → Items
  * 2. Content principal: Formularios del nivel actual
- * 3. Sidebar derecho: Navegación secuencial (Nivel 3-4) - Solo visible en Nivel 3-4
+ * 3. Sidebar derecho: Scroll anchors (Nivel 4) - Solo visible en Nivel 3+
  */
 
 import type { FlowLayoutConfig, SidebarConfig } from "~/types/flow-layout";
@@ -16,7 +17,8 @@ import { juntaAccionistasFlowConfig } from "./junta-accionistas.flow";
 const flowTree = buildFlowItemTree(juntaAccionistasFlowConfig.items);
 
 /**
- * Sidebar izquierdo: Navegación principal (Nivel 0-2)
+ * Sidebar izquierdo: Navegación principal (Nivel 0-3)
+ * Muestra pasos principales + categorías + items
  */
 const mainSidebar: SidebarConfig = {
   id: "juntas-main-sidebar",
@@ -25,7 +27,7 @@ const mainSidebar: SidebarConfig = {
   items: flowTree,
   title: "Juntas de Accionistas",
 
-  // Filtro: Solo mostrar niveles 0, 1 y 2
+  // Filtro: Mostrar niveles 0, 1, 2 y 3 (incluye items bajo categorías)
   filter: {
     type: "level",
     criteria: {
@@ -46,22 +48,22 @@ const mainSidebar: SidebarConfig = {
 };
 
 /**
- * Sidebar derecho: Navegación de pasos (Nivel 3-4)
+ * Sidebar derecho: Scroll anchors (Nivel 4)
  * Solo visible cuando el item actual es nivel 3 o superior
- * Muestra SOLO los hijos del item actual o hermanos si estamos en nivel 3
+ * Muestra las sub-secciones (nivel 4) del item actual nivel 3
  */
 const stepsSidebar: SidebarConfig = {
   id: "juntas-steps-sidebar",
   position: "right",
   mode: "sequential",
   items: flowTree,
-  title: "Pasos",
+  title: "Secciones",
 
-  // Filtro: Solo mostrar niveles 3 y 4
+  // Filtro: Solo mostrar nivel 4 (scroll anchors)
   filter: {
     type: "level",
     criteria: {
-      minLevel: 3,
+      minLevel: 4,
       maxLevel: 4,
     },
   },
@@ -82,10 +84,10 @@ const stepsSidebar: SidebarConfig = {
       console.log("[DEBUG] RightSidebar visibility check - current level:", level);
       
       // Mostrar sidebar derecho cuando:
-      // 1. Estamos en nivel 2 Y el item tiene children (para mostrar opciones de nivel 3)
-      // 2. O estamos en nivel 3-4 (para mostrar pasos hermanos)
+      // 1. Estamos en nivel 0-2 y el item tiene children (para mostrar sub-pasos)
+      // 2. O estamos en nivel 3-4 (mostrar pasos hermanos / anchors)
       const hasChildren = context.currentItem?.children && context.currentItem.children.length > 0;
-      const result = (level === 2 && hasChildren) || (level !== undefined && level >= 3);
+      const result = ((level !== undefined && level <= 2) && hasChildren) || (level !== undefined && level >= 3);
       
       console.log("[DEBUG] - Has children:", hasChildren);
       console.log("[DEBUG] RightSidebar should be visible:", result);

@@ -40,5 +40,6 @@ export const nombramientoDirectorioItem: FlowItem = {
     description: "Gestión del proceso de nombramiento de directorio completo",
     tags: ["nivel-2", "nombramiento", "directorio"],
     version: "1.0.0",
+    category: "Nombramiento",
   },
 };

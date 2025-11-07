@@ -1,0 +1,15 @@
+/**
+ * Fuentes del Sistema
+ * 
+ * font-primary: Gabarito (títulos principales)
+ * font-secondary: Manrope (descripciones y texto general)
+ * 
+ * Nota: Las fuentes ya están importadas en app.vue
+ * Este archivo solo define las variables CSS
+ */
+
+:root {
+  --font-primary: 'Gabarito', sans-serif;
+  --font-secondary: 'Manrope', sans-serif;
+}
+

@@ -45,5 +45,6 @@ export const remocionDirectoresItem: FlowItem = {
     description: "Gestión del proceso de remoción de directores",
     tags: ["nivel-2", "remociones", "directores"],
     version: "1.0.0",
+    category: "Remociones",
   },
 };

@@ -45,5 +45,6 @@ export const remocionApoderadosItem: FlowItem = {
     description: "Gestión del proceso de remoción de apoderados",
     tags: ["nivel-2", "remociones", "apoderados"],
     version: "1.0.0",
+    category: "Remociones",
   },
 };

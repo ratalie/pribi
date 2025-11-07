@@ -1,0 +1,42 @@
+/**
+ * Variables del Sistema de Sidebars
+ * Basado en la UI de Registro de Sociedades y referencia v0
+ */
+
+:root {
+  /* Colores Principales (de v0) */
+  --sidebar-primary: #3c28a4;
+  --sidebar-text-primary: #2e293d;
+  --sidebar-text-secondary: #676472;
+  --sidebar-border: #c6c5ca;
+  --sidebar-border-light: #e2e2e4;
+  
+  /* Colores de Estado */
+  --sidebar-completed: #3c28a4;
+  --sidebar-current: #3c28a4;
+  --sidebar-empty: #c6c5ca;
+  --sidebar-locked: #9ca3af;
+  --sidebar-error: #ef4444;
+  
+  /* Fuentes */
+  --font-primary: 'Gabarito', sans-serif;
+  --font-secondary: 'Manrope', sans-serif;
+  
+  /* Tamaños de Círculos */
+  --icon-size-large: 24px;   /* w-6 h-6 - Pasos principales (nivel 0-1) */
+  --icon-size-small: 20px;   /* w-5 h-5 - Items de categorías y subpasos (nivel 2+) */
+  
+  /* Tamaños de Puntos Interiores */
+  --dot-size-large: 8px;     /* w-2 h-2 */
+  --dot-size-small: 6px;     /* w-1.5 h-1.5 */
+  
+  /* Ancho del Sidebar */
+  --sidebar-width: 540px;    /* Como en v0 */
+  --sidebar-width-collapsed: 60px;
+  
+  /* Spacing */
+  --sidebar-padding: 24px;
+  --category-indent: 35px;   /* ml-[35px] como en v0 */
+  --item-gap: 12px;
+}
+

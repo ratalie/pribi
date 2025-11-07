@@ -22,7 +22,11 @@ export default defineNuxtConfig({
   ],
 
   // CSS global - Tailwind 4
-  css: ["~/assets/tailwind.css"],
+  css: [
+    "~/assets/tailwind.css",
+    "~/assets/styles/fonts.css",
+    "~/assets/styles/sidebar-variables.css",
+  ],
 
   // Vite plugins - Tailwind 4 directo
   vite: {

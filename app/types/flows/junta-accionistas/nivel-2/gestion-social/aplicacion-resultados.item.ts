@@ -45,5 +45,6 @@ export const aplicacionResultadosItem: FlowItem = {
     description: "Gestión de la aplicación de resultados del ejercicio",
     tags: ["nivel-2", "gestion-social", "aplicacion-resultados"],
     version: "1.0.0",
+    category: "Gestión Social y Resultados Económicos",
   },
 };

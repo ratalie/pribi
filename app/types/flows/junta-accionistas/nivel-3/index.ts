@@ -8,3 +8,4 @@ export * from "./aumento-capital";
 export * from "./gestion-social";
 export * from "./nombramiento";
 export * from "./remociones";
+export * from "./base";

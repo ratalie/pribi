@@ -115,50 +115,92 @@ const rightSidebars = computed<SidebarConfig[]>(() => {
 /**
  * Aplicar filtrado contextual al sidebar derecho
  */
-function getContextualSidebarConfig(sidebar: SidebarConfig): SidebarConfig {
-  // Si no es sidebar derecho o no hay filtrado contextual, retornar como está
+function getContextualSidebarConfig(sidebar: SidebarConfig): SidebarConfig & { panelMode?: string } {
+  const config: SidebarConfig & { panelMode?: string } = {
+    ...sidebar,
+  };
+
+  // Si no es sidebar derecho o no hay item actual, no se aplica contextualización
   if (sidebar.position !== "right" || !currentItem.value) {
-    return sidebar;
+    config.panelMode = sidebar.mode === "sequential" ? "wizard" : sidebar.mode;
+    return config;
   }
 
-  const level = currentItem.value.hierarchy.level;
-  let contextualItems: FlowItemTree[] = [];
+  const level = currentItem.value.hierarchy.level ?? 0;
 
-  // Nivel 2: mostrar hijos (nivel 3)
-  if (level === 2) {
-    contextualItems = currentItem.value.children || [];
-  }
-  // Nivel 3: mostrar hermanos (otros hijos del mismo padre)
-  else if (level === 3) {
-    const parentId = currentItem.value.hierarchy.parentId;
-    if (parentId) {
-      const parent = findItemById(flowTree.value, parentId);
-      if (parent && parent.children) {
-        contextualItems = parent.children;
-      }
-    }
-  }
-  // Nivel 4: mostrar hermanos del nivel 4
-  else if (level === 4) {
-    const parentId = currentItem.value.hierarchy.parentId;
-    if (parentId) {
-      const parent = findItemById(flowTree.value, parentId);
-      if (parent && parent.children) {
-        contextualItems = parent.children;
-      }
-    }
-  }
-
-  // Si hay items contextuales, reemplazar los items del sidebar
-  if (contextualItems.length > 0) {
-    return {
-      ...sidebar,
-      items: contextualItems,
+  // Nivel 0-1: mostrar sub-pasos predefinidos (nivel 3)
+  if (level === 0 || level === 1) {
+    config.items = currentItem.value.children || [];
+    config.filter = {
+      type: "level",
+      criteria: {
+        minLevel: 3,
+        maxLevel: 3,
+      },
     };
+    config.panelMode = "wizard";
+  }
+  // Nivel 2: mostrar hijos de nivel 3 (pasos del acuerdo)
+  else if (level === 2) {
+    config.items = currentItem.value.children || [];
+    config.filter = {
+      type: "level",
+      criteria: {
+        minLevel: 3,
+        maxLevel: 3,
+      },
+    };
+    config.panelMode = "wizard";
+  }
+  // Nivel 3: mostrar hijos de nivel 4 (scroll anchors)
+  else if (level === 3) {
+    config.items = currentItem.value.children || [];
+    config.filter = {
+      type: "level",
+      criteria: {
+        minLevel: 4,
+        maxLevel: 4,
+      },
+    };
+    config.panelMode = "scroll-anchor";
+  }
+  // Nivel 4: mostrar hermanos (otros anchors del mismo padre)
+  else if (level >= 4) {
+    const parentId = currentItem.value.hierarchy.parentId;
+    if (parentId) {
+      const parent = findItemById(flowTree.value, parentId);
+      if (parent?.children) {
+        config.items = parent.children;
+        config.filter = {
+          type: "level",
+          criteria: {
+            minLevel: 4,
+            maxLevel: 4,
+          },
+        };
+        config.panelMode = "scroll-anchor";
+      }
+    }
   }
 
-  return sidebar;
+  // Si no se asignó un modo específico, usar wizard por defecto para secuenciales
+  if (!config.panelMode) {
+    config.panelMode = sidebar.mode === "sequential" ? "wizard" : sidebar.mode;
+  }
+
+  return config;
 }
+
+const contextualRightSidebars = computed(() => {
+  return rightSidebars.value.map((sidebar) => {
+    const config = getContextualSidebarConfig(sidebar);
+    return {
+      id: sidebar.id,
+      config,
+      mode: config.panelMode || "wizard",
+    };
+  });
+});
 
 /**
  * Buscar item por ID
@@ -206,10 +248,10 @@ function findItemById(
 
       <!-- Sidebar derecho (contextual) -->
       <DualPanelSidebar
-        v-for="sidebar in rightSidebars"
+        v-for="sidebar in contextualRightSidebars"
         :key="sidebar.id"
-        :config="getContextualSidebarConfig(sidebar)"
-        mode="wizard"
+        :config="sidebar.config"
+        :mode="sidebar.mode"
         :current-path="currentPath"
       />
     </div>
@@ -243,4 +285,5 @@ function findItemById(
   }
 }
 </style>
+
 

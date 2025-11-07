@@ -7,7 +7,8 @@ import { defaultBehavior, defaultValidation } from "../../defaults";
  * FlowItem: Aporte Dinerario
  *
  * Nivel 2 - Item con RightSidebar
- * Parent: Aumento de Capital Section
+ * Parent: Puntos de Acuerdo
+ * Category: Aumento de Capital (separador visual)
  *
  * Hijos (Nivel 3 - en rightSidebar):
  * - Aportantes
@@ -24,7 +25,7 @@ export const aporteDinerarioItem: FlowItem = {
   hierarchy: {
     level: 2,
     order: 1,
-    parentId: "aumento-capital-section",
+    parentId: "aumento-capital-section",  // Cambiado de "aumento-capital-section"
     children: [
       "aporte-dinerario-aportantes",
       "aporte-dinerario-aportes",
@@ -47,5 +48,6 @@ export const aporteDinerarioItem: FlowItem = {
     description: "Gestión del proceso de aumento de capital por aporte dinerario",
     tags: ["nivel-2", "aumento-capital", "aporte-dinerario"],
     version: "1.0.0",
+    category: "Aumento de Capital",
   },
 };

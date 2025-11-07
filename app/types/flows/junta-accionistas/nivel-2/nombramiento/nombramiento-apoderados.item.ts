@@ -45,5 +45,6 @@ export const nombramientoApoderadosItem: FlowItem = {
     description: "Gestión del proceso de nombramiento de apoderados",
     tags: ["nivel-2", "nombramiento", "apoderados"],
     version: "1.0.0",
+    category: "Nombramiento",
   },
 };

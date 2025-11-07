@@ -45,5 +45,6 @@ export const estadosFinancierosItem: FlowItem = {
     description: "Gestión de la aprobación de estados financieros",
     tags: ["nivel-2", "gestion-social", "estados-financieros"],
     version: "1.0.0",
+    category: "Gestión Social y Resultados Económicos",
   },
 };

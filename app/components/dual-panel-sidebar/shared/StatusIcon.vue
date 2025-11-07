@@ -12,28 +12,70 @@ interface Props {
   status?: Status;
   isFinalItem?: boolean;
   showLine?: boolean;
+  size?: "large" | "small";  // large: 24px (nivel 0-2), small: 20px (nivel 3-4)
+  level?: number;  // Nivel del item (para auto-determinar tamaño)
 }
 
 const props = withDefaults(defineProps<Props>(), {
   status: "empty",
   isFinalItem: false,
   showLine: true,
+  size: "large",
 });
 
-// Clase para la línea conectora según estado
-const lineClass = computed(() => {
+// Auto-determinar tamaño según nivel si no se especifica
+const iconSize = computed(() => {
+  // Si se especificó size explícitamente, usar ese
+  if (props.size === "small") return "small";
+  
+  // Si hay level, determinar automáticamente
+  if (props.level !== undefined) {
+    // Nivel 0-1: círculos grandes (24px)
+    if (props.level <= 1) return "large";
+    // Nivel 2+: círculos pequeños (20px) como en referencia v0
+    return "small";
+  }
+  
+  // Default: large
+  return "large";
+});
+
+// Clases para el círculo según tamaño
+const circleClasses = computed(() => {
+  return iconSize.value === "large" ? "w-6 h-6" : "w-5 h-5";
+});
+
+// Tamaño del punto interior
+const dotClasses = computed(() => {
+  return iconSize.value === "large" ? "w-2 h-2" : "w-1.5 h-1.5";
+});
+
+// Tamaño del icono (check, lock, X)
+const iconWidth = computed(() => {
+  return iconSize.value === "large" ? "20" : "16";
+});
+
+const iconHeight = computed(() => {
+  return iconSize.value === "large" ? "20" : "16";
+});
+
+// Estilo inline para la línea conectora según estado
+const lineStyle = computed(() => {
+  let bgColor = "var(--sidebar-empty)";
+  
   switch (props.status) {
     case "completed":
     case "current":
-      return "bg-primary-800";
-    case "empty":
-    case "locked":
-      return "bg-gray-300";
+      bgColor = "var(--sidebar-primary)";
+      break;
     case "error":
-      return "bg-red-500";
+      bgColor = "var(--sidebar-error)";
+      break;
     default:
-      return "bg-gray-300";
+      bgColor = "var(--sidebar-border)";
   }
+  
+  return { backgroundColor: bgColor };
 });
 </script>
 
@@ -42,15 +84,16 @@ const lineClass = computed(() => {
     <!-- Completado: círculo azul con check blanco -->
     <div
       v-if="status === 'completed'"
-      class="w-7 h-7 flex items-center justify-center border-2 bg-primary-800 border-primary-800 rounded-full"
+      :class="[circleClasses, 'flex items-center justify-center border-2 rounded-full']"
+      style="background-color: var(--sidebar-completed); border-color: var(--sidebar-completed);"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
         role="img"
         class="text-white"
-        width="20"
-        height="20"
+        :width="iconWidth"
+        :height="iconHeight"
         viewBox="0 0 20 20"
       >
         <path
@@ -62,26 +105,28 @@ const lineClass = computed(() => {
       </svg>
     </div>
 
-    <!-- Actual: círculo azul con punto blanco -->
+    <!-- Actual: círculo azul con punto -->
     <div
       v-else-if="status === 'current'"
-      class="w-7 h-7 flex items-center justify-center border-2 border-primary-800 rounded-full"
+      :class="[circleClasses, 'flex items-center justify-center border-2 rounded-full bg-white']"
+      style="border-color: var(--sidebar-current);"
     >
-      <span class="w-2.5 h-2.5 rounded-full bg-primary-800" />
+      <span :class="[dotClasses, 'rounded-full']" style="background-color: var(--sidebar-current);" />
     </div>
 
     <!-- Bloqueado: círculo gris con candado -->
     <div
       v-else-if="status === 'locked'"
-      class="w-7 h-7 flex items-center justify-center border-2 border-gray-300 rounded-full"
+      :class="[circleClasses, 'flex items-center justify-center border-2 rounded-full bg-white']"
+      style="border-color: var(--sidebar-locked);"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
         role="img"
         class="text-gray-400"
-        width="16"
-        height="16"
+        :width="iconSize === 'large' ? '16' : '14'"
+        :height="iconSize === 'large' ? '16' : '14'"
         viewBox="0 0 20 20"
       >
         <path
@@ -94,15 +139,16 @@ const lineClass = computed(() => {
     <!-- Error: círculo rojo con X blanca -->
     <div
       v-else-if="status === 'error'"
-      class="w-7 h-7 flex items-center justify-center border-2 bg-red-500 border-red-500 rounded-full"
+      :class="[circleClasses, 'flex items-center justify-center border-2 rounded-full']"
+      style="background-color: var(--sidebar-error); border-color: var(--sidebar-error);"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
         role="img"
         class="text-white"
-        width="20"
-        height="20"
+        :width="iconWidth"
+        :height="iconHeight"
         viewBox="0 0 20 20"
       >
         <path
@@ -117,13 +163,15 @@ const lineClass = computed(() => {
     <!-- Vacío: círculo gris vacío -->
     <div
       v-else
-      class="w-7 h-7 flex items-center justify-center border-2 border-gray-300 rounded-full"
+      :class="[circleClasses, 'flex items-center justify-center border-2 rounded-full bg-white']"
+      style="border-color: var(--sidebar-empty);"
     />
 
     <!-- Línea conectora vertical -->
     <div
       v-if="!isFinalItem && showLine"
-      :class="['w-0.5 h-8 relative transition-colors duration-300', lineClass]"
+      class="w-0.5 h-8 relative transition-colors duration-300"
+      :style="lineStyle"
     />
   </div>
 </template>

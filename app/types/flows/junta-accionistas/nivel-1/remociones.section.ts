@@ -18,6 +18,7 @@ export const remocionesSection: FlowItem = {
     id: "remociones-section",
     type: FlowItemType.SECTION,
     label: "Remociones",
+    isCategory: true,  // Renderizar como separador visual (sin círculo)
   },
   hierarchy: {
     level: 1,

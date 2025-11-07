@@ -19,6 +19,7 @@ export const aumentoCapitalSection: FlowItem = {
     id: "aumento-capital-section",
     type: FlowItemType.SECTION,
     label: "Aumento de Capital",
+    isCategory: true,  // Renderizar como separador visual (sin círculo)
   },
   hierarchy: {
     level: 1,

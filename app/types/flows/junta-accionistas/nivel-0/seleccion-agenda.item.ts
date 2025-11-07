@@ -19,7 +19,12 @@ export const seleccionAgendaItem: FlowItem = {
     level: 0,
     order: 1,
     parentId: null,
-    children: [],
+    children: [
+      "seleccion-agenda-paso-1",
+      "seleccion-agenda-paso-2",
+      "seleccion-agenda-votacion",
+      "seleccion-agenda-resumen",
+    ],
   },
   navigation: {
     route: JuntaRoutes.SELECCION_AGENDA,
@@ -27,7 +32,9 @@ export const seleccionAgendaItem: FlowItem = {
   },
   behavior: defaultBehavior,
   rightSidebar: {
-    enabled: false,
+    enabled: true,
+    title: "Flujo de Selección",
+    contentType: "info",
   },
   validation: defaultValidation,
   metadata: {

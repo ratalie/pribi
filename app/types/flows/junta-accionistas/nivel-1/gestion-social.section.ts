@@ -18,7 +18,8 @@ export const gestionSocialSection: FlowItem = {
   identity: {
     id: "gestion-social-section",
     type: FlowItemType.SECTION,
-    label: "Gestión Social",
+    label: "Gestión Social y Resultados Económicos",
+    isCategory: true,  // Renderizar como separador visual (sin círculo)
   },
   hierarchy: {
     level: 1,

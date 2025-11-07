@@ -23,7 +23,12 @@ export const resumenItem: FlowItem = {
     level: 0,
     order: 5,
     parentId: null,
-    children: [], // Los scroll anchors se agregan aquí cuando se creen
+    children: [
+      "resumen-general",
+      "resumen-puntos-acuerdo",
+      "resumen-votaciones",
+      "resumen-documentos",
+    ],
   },
   navigation: {
     route: JuntaRoutes.RESUMEN,

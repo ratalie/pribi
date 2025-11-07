@@ -21,7 +21,12 @@ export const detallesItem: FlowItem = {
     level: 0,
     order: 2,
     parentId: null,
-    children: [],
+    children: [
+      "detalles-junta-paso-1",
+      "detalles-junta-paso-2",
+      "detalles-junta-votacion",
+      "detalles-junta-resumen",
+    ],
   },
   navigation: {
     route: JuntaRoutes.DETALLES,

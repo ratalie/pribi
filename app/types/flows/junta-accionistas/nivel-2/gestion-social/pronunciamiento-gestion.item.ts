@@ -45,5 +45,6 @@ export const pronunciamientoGestionItem: FlowItem = {
     description: "Gestión del pronunciamiento sobre la gestión social",
     tags: ["nivel-2", "gestion-social", "pronunciamiento"],
     version: "1.0.0",
+    category: "Gestión Social y Resultados Económicos",
   },
 };

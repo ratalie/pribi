@@ -40,5 +40,6 @@ export const nombramientoDirectoresItem: FlowItem = {
     description: "Gestión del proceso de nombramiento de directores",
     tags: ["nivel-2", "nombramiento", "directores"],
     version: "1.0.0",
+    category: "Nombramiento",
   },
 };

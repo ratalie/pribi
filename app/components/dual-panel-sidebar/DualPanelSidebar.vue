@@ -14,8 +14,9 @@ import type { SidebarConfig } from "~/types/flow-layout/sidebar-config";
 import { flowConfigToSteps, childrenToSteps, siblingsToSteps } from "./adapters/flowConfigToSteps";
 import StepWizardPanel from "./panels/StepWizardPanel.vue";
 import HierarchicalPanel from "./panels/HierarchicalPanel.vue";
+import ScrollAnchorPanel from "./panels/ScrollAnchorPanel.vue";
 
-type PanelMode = "wizard" | "hierarchical" | "admin";
+type PanelMode = "wizard" | "hierarchical" | "admin" | "scroll-anchor";
 
 interface Props {
   config: SidebarConfig;
@@ -74,6 +75,8 @@ const panelComponent = computed(() => {
       return StepWizardPanel;
     case "hierarchical":
       return HierarchicalPanel;
+    case "scroll-anchor":
+      return ScrollAnchorPanel;
     // case "admin":
     //   return AdminNavPanel; // Futuro
     default:
@@ -95,6 +98,14 @@ const panelProps = computed(() => {
       title: props.config.title,
       showTitle: false,
       showLevelBadges: false,
+    };
+  }
+  
+  if (props.mode === "scroll-anchor") {
+    // ScrollAnchorPanel recibe FlowItemTree[] y currentPath
+    return {
+      items,
+      currentPath: props.currentPath,
     };
   }
   
@@ -196,12 +207,19 @@ const sidebarStyles = computed(() => {
 
 /* Padding interno como Registro de Sociedades */
 .dual-panel-sidebar :deep(.step-wizard-panel) {
-  padding: 56px 24px;
+  padding: 24px;
 }
 
-/* Ancho por defecto (401px como Sociedades) */
+/* Ancho por defecto (540px como en v0) */
 .dual-panel-sidebar {
-  width: 401px;
+  width: var(--sidebar-width, 540px);
+  background: white;
+  min-height: 100vh;
+}
+
+/* Borde derecho para sidebar izquierdo (border-r border-[#e2e2e4]) */
+.sidebar-left {
+  border-right: 1px solid #e2e2e4;
 }
 
 /* Responsive: en pantallas pequeñas, ancho completo */

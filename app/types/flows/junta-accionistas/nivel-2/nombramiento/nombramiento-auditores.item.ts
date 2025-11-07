@@ -40,5 +40,6 @@ export const nombramientoAuditoresItem: FlowItem = {
     description: "Gestión del proceso de nombramiento de auditores externos",
     tags: ["nivel-2", "nombramiento", "auditores"],
     version: "1.0.0",
+    category: "Nombramiento",
   },
 };

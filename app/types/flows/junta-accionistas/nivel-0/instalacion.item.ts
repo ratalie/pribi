@@ -21,7 +21,12 @@ export const instalacionItem: FlowItem = {
     level: 0,
     order: 3,
     parentId: null,
-    children: [],
+    children: [
+      "instalacion-paso-1",
+      "instalacion-paso-2",
+      "instalacion-votacion",
+      "instalacion-resumen",
+    ],
   },
   navigation: {
     route: JuntaRoutes.INSTALACION,

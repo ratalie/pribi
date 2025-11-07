@@ -47,5 +47,6 @@ export const capitalizacionCreditosItem: FlowItem = {
     description: "Gestión del proceso de capitalización de créditos",
     tags: ["nivel-2", "aumento-capital", "capitalizacion"],
     version: "1.0.0",
+    category: "Aumento de Capital",
   },
 };

@@ -13,6 +13,7 @@
 import { ref } from "vue";
 import type { FlowItemTree } from "~/types/flow-system";
 import StatusIcon from "./StatusIcon.vue";
+import CategorySeparator from "./CategorySeparator.vue";
 
 interface Props {
   item: FlowItemTree;
@@ -33,6 +34,9 @@ const isExpanded = ref(true);
 
 // Tiene hijos
 const hasChildren = computed(() => props.item.children && props.item.children.length > 0);
+
+// Es categoría (separador visual)
+const isCategory = computed(() => props.item.identity.isCategory === true);
 
 // Toggle expand/collapse
 const toggleExpand = () => {
@@ -57,6 +61,28 @@ const itemStatus = computed(() => {
   return "empty";
 });
 
+// Clases dinámicas por nivel/estado (para título)
+const titleClasses = computed(() => {
+  const classes = ["item-title"];
+  const level = props.item.hierarchy.level ?? 0;
+
+  if (level <= 0) {
+    classes.push("item-title-root");
+  } else if (level === 2) {
+    classes.push("item-title-level2");
+  } else if (level >= 3) {
+    classes.push("item-title-level3");
+  }
+
+  if (itemStatus.value === "current") {
+    classes.push("item-title-current");
+  } else if (itemStatus.value === "completed") {
+    classes.push("item-title-completed");
+  }
+
+  return classes;
+});
+
 // Indent según nivel (16px por nivel)
 const indentStyle = computed(() => ({
   paddingLeft: `${props.level * 16}px`,
@@ -77,13 +103,17 @@ const levelBadgeClass = computed(() => {
 
 <template>
   <div class="hierarchical-item">
-    <!-- Item principal -->
-    <div class="item-row" :style="indentStyle">
+    <!-- Si es categoría, mostrar separador -->
+    <CategorySeparator v-if="isCategory" :label="item.identity.label" />
+
+    <!-- Si NO es categoría, mostrar item normal -->
+    <div v-else class="item-row" :style="indentStyle">
       <!-- StatusIcon -->
       <StatusIcon
         :status="itemStatus"
         :is-final-item="isLast && !hasChildren"
         :show-line="!isLast || hasChildren"
+        :level="item.hierarchy.level"
       />
 
       <!-- Contenido -->
@@ -124,13 +154,16 @@ const levelBadgeClass = computed(() => {
             </span>
 
             <!-- Título -->
-            <p class="item-title">
+            <p :class="titleClasses">
               {{ item.identity.label }}
             </p>
           </div>
 
-          <!-- Descripción (si existe) -->
-          <span v-if="item.behavior.description" class="item-description">
+          <!-- Descripción solo en niveles 0-1 -->
+          <span
+            v-if="item.behavior.description && (item.hierarchy.level ?? 0) <= 1"
+            class="item-description"
+          >
             {{ item.behavior.description }}
           </span>
         </NuxtLink>
@@ -138,7 +171,7 @@ const levelBadgeClass = computed(() => {
     </div>
 
     <!-- Hijos (recursivo) -->
-    <div v-if="hasChildren && isExpanded" class="children-container">
+    <div v-if="hasChildren && isExpanded && !isCategory" class="children-container">
       <HierarchicalItem
         v-for="(child, index) in item.children"
         :key="child.identity.id"
@@ -209,14 +242,40 @@ const levelBadgeClass = computed(() => {
 /* Título del item */
 .item-title {
   font-family: var(--font-primary);
+  font-size: 14px;
+  line-height: 1.3;
   font-weight: 500;
-  font-size: 15px;
-  color: #4b5563;
+  color: var(--sidebar-text-secondary);
   transition: color 0.2s ease;
 }
 
+.item-title-root {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--sidebar-text-primary);
+}
+
+.item-title-level2 {
+  font-weight: 500;
+  color: var(--sidebar-text-secondary);
+}
+
+.item-title-level3 {
+  font-size: 13px;
+  color: var(--sidebar-text-secondary);
+}
+
+.item-title-completed {
+  color: var(--sidebar-primary);
+}
+
+.item-title-current {
+  color: var(--sidebar-primary);
+  font-weight: 600;
+}
+
 .item-link:hover .item-title {
-  color: var(--primary-800);
+  color: var(--sidebar-primary);
   text-decoration: underline;
 }
 

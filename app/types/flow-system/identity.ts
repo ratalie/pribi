@@ -65,4 +65,12 @@ export interface FlowItemIdentity {
    * @example ['obligatorio', 'documentos', 'datos-basicos']
    */
   tags?: string[];
+
+  /**
+   * Indica si este item es un separador de categoría
+   * Las categorías se renderizan sin círculo, solo como texto header
+   * 
+   * @example true para "Aumento de Capital", "Remociones", etc.
+   */
+  isCategory?: boolean;
 }

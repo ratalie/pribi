@@ -45,5 +45,6 @@ export const repartoDividendosItem: FlowItem = {
     description: "Gestión del reparto de dividendos a accionistas",
     tags: ["nivel-2", "gestion-social", "dividendos"],
     version: "1.0.0",
+    category: "Gestión Social y Resultados Económicos",
   },
 };

@@ -40,5 +40,6 @@ export const nombramientoGerenteItem: FlowItem = {
     description: "Gestión del proceso de nombramiento de gerente",
     tags: ["nivel-2", "nombramiento", "gerente"],
     version: "1.0.0",
+    category: "Nombramiento",
   },
 };

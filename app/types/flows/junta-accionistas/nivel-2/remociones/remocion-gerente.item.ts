@@ -45,5 +45,6 @@ export const remocionGerenteItem: FlowItem = {
     description: "Gestión del proceso de remoción de gerente",
     tags: ["nivel-2", "remociones", "gerente"],
     version: "1.0.0",
+    category: "Remociones",
   },
 };

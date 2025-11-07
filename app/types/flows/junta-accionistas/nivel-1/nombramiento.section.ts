@@ -20,6 +20,7 @@ export const nombramientoSection: FlowItem = {
     id: "nombramiento-section",
     type: FlowItemType.SECTION,
     label: "Nombramiento",
+    isCategory: true,  // Renderizar como separador visual (sin círculo)
   },
   hierarchy: {
     level: 1,
