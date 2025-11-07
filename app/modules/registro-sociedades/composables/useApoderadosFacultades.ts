@@ -20,13 +20,6 @@ export const useApoderadosFacultades = () => {
       },
     },
     {
-      label: "Ver",
-      icon: "SquarePen",
-      onClick: (id: string) => {
-        console.log("Ver poder", id);
-      },
-    },
-    {
       label: "Eliminar",
       icon: "Trash2",
       onClick: (id: string) => {

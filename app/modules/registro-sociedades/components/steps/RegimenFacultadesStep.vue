@@ -29,7 +29,6 @@
   const { apoderadoFacultadHeaders, facultadActions } = useApoderadosFacultades();
 
   console.log(apoderadoFacultadHeaders);
-  console.log(facultadActions);
 </script>
 
 <template>
@@ -68,6 +67,7 @@
           v-for="apoderado in regimenFacultadesStore.tablaApoderadosFacultades"
           :key="apoderado.id"
           :apoderado-item="apoderado"
+          :actions="facultadActions"
         />
       </div>
     </SimpleCard>
