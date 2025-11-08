@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { computed, ref } from "vue";
   import noDirectorioImage from "~/assets/img/no-directorio.jpeg";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
@@ -14,12 +15,17 @@
   import Switch from "~/components/ui/switch/Switch.vue";
   import VDropdownComponent from "~/components/VDropdownComponent.vue";
   import {
+    useDirectoresComputed,
+    type DirectorTableRow,
+  } from "~/modules/registro-sociedades/composables/useDirectoresComputed";
+  import {
     duracionDirectorioSchema,
     fechaFinDirectorioSchema,
     fechaInicioDirectorioSchema,
     presidenteDirectorioSchema,
   } from "~/modules/registro-sociedades/schemas/directorio";
   import type { TypeOption } from "~/types/TypeOptions";
+  import AgregarDirectorModal from "../modals/AgregarDirectorModal.vue";
 
   // import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
@@ -55,36 +61,8 @@
     },
   ];
 
-  // Opciones para presidente del directorio (directores)
-  const presidenteOptions: TypeOption[] = [
-    {
-      id: 1,
-      label: "Diego Alonso Santoro Velez",
-      name: "Diego Alonso Santoro Velez",
-      value: "Diego Alonso Santoro Velez",
-      acronimo: "DASV",
-    },
-    {
-      id: 2,
-      label: "Nayla Lucía Cornejo Bastidas",
-      name: "Nayla Lucía Cornejo Bastidas",
-      value: "Nayla Lucía Cornejo Bastidas",
-      acronimo: "NLCB",
-    },
-  ];
-
-  // Interfaz para los directores
-  interface DirectorRow {
-    id: string;
-    nombres_apellidos: string;
-    tipo_documento: string;
-    numero_documento: string;
-    tipo_director: string;
-    reemplazo_asignado: string;
-  }
-
   // Columnas de la tabla de directores
-  const directoresColumns: TableColumn<DirectorRow>[] = [
+  const directoresColumns: TableColumn<DirectorTableRow>[] = [
     { key: "nombres_apellidos", label: "Nombres y Apellidos", type: "text" },
     { key: "tipo_documento", label: "Tipo de Documento", type: "text" },
     { key: "numero_documento", label: "Nº de Documento", type: "text" },
@@ -93,26 +71,6 @@
   ];
 
   const directoresColumnsDef = getColumns(directoresColumns);
-
-  // Datos de los directores
-  const directoresData = ref<DirectorRow[]>([
-    {
-      id: "1",
-      nombres_apellidos: "Diego Alonso Santoro Velez",
-      tipo_documento: "DNI",
-      numero_documento: "70124567",
-      tipo_director: "Titular",
-      reemplazo_asignado: "Ninguno",
-    },
-    {
-      id: "2",
-      nombres_apellidos: "Nayla Lucía Cornejo Bastidas",
-      tipo_documento: "Pasaporte",
-      numero_documento: "EB12-934",
-      tipo_director: "Titular",
-      reemplazo_asignado: "Ninguno",
-    },
-  ]);
 
   // Acciones para el menú de opciones
   const directoresActions = [
@@ -149,8 +107,26 @@
     presidenteDirectorio: "",
   });
 
+  const presidenteDirectorioRef = computed({
+    get: () => form.value.presidenteDirectorio,
+    set: (value: string) => {
+      form.value.presidenteDirectorio = value;
+    },
+  });
+
+  const { directoresData, presidenteOptions } = useDirectoresComputed(presidenteDirectorioRef);
+
   const tieneDirectorio = ref(true);
 
+  const isModalOpen = ref(false);
+
+  const openModal = () => {
+    isModalOpen.value = true;
+  };
+
+  const closeModal = () => {
+    isModalOpen.value = false;
+  };
   // Manejador de envío
   const handleSubmit = () => {
     console.log("Formulario enviado:", form.value);
@@ -389,6 +365,7 @@
               label="Agregar Director"
               size="xl"
               icon="UserRoundPlus"
+              @click="openModal"
             />
           </template>
         </CardTitle>
@@ -413,6 +390,8 @@
           Si decides incluir un Directorio, puedes activarlo en la parte superior.
         </p>
       </div>
+
+      <AgregarDirectorModal v-model="isModalOpen" @close="closeModal" />
     </div>
   </div>
 </template>

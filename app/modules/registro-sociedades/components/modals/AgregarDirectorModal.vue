@@ -1,0 +1,149 @@
+<script setup lang="ts">
+  import { useVModel } from "@vueuse/core";
+  import { computed, ref, watch } from "vue";
+  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+  import CardTitle from "~/components/base/cards/CardTitle.vue";
+  import BaseModal from "~/components/base/modal/BaseModal.vue";
+  import DirectorForm from "~/components/composite/forms/DirectorForm.vue";
+  import { useDirectorioStore } from "~/modules/registro-sociedades/composables/useDirectores";
+  import { useDirectoresComputed } from "~/modules/registro-sociedades/composables/useDirectoresComputed";
+  import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
+  import type { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
+  import { TiposDirectoresEnum } from "~/types/enums/TiposDirectoresEnum";
+
+  interface Props {
+    modelValue?: boolean;
+  }
+
+  const props = defineProps<Props>();
+
+  const emits = defineEmits<{
+    (e: "update:modelValue", value: boolean): void;
+    (e: "close"): void;
+  }>();
+
+  const modelValue = useVModel(props, "modelValue", emits, {
+    passive: true,
+  });
+
+  const personaNaturalStore = usePersonaNaturalStore();
+  const directorioStore = useDirectorioStore();
+  const { presidenteOptions } = useDirectoresComputed();
+  const tipoDirector = ref<TiposDirectoresEnum | "">("");
+  const reemplazoAsignado = ref("");
+
+  const isSubmitDisabled = computed(() => {
+    if (!tipoDirector.value) {
+      return true;
+    }
+
+    if (tipoDirector.value === TiposDirectoresEnum.ALTERNO) {
+      return !presidenteOptions.value.length || !reemplazoAsignado.value;
+    }
+
+    return false;
+  });
+
+  watch(
+    [tipoDirector, presidenteOptions],
+    ([tipo, options]) => {
+      if (tipo === TiposDirectoresEnum.ALTERNO) {
+        if (!options.length) {
+          reemplazoAsignado.value = "";
+          return;
+        }
+
+        const exists = options.some((option) => option.value === reemplazoAsignado.value);
+
+        if (!exists) {
+          const firstOption = options[0];
+
+          if (!firstOption) {
+            reemplazoAsignado.value = "";
+            return;
+          }
+
+          reemplazoAsignado.value = String(firstOption.value);
+        }
+
+        return;
+      }
+
+      reemplazoAsignado.value = "";
+    },
+    { immediate: true }
+  );
+
+  const handleCancel = () => {
+    emits("close");
+    modelValue.value = false;
+
+    personaNaturalStore.$reset();
+    tipoDirector.value = "";
+    reemplazoAsignado.value = "";
+  };
+
+  const handleSave = async () => {
+    if (isSubmitDisabled.value) {
+      return;
+    }
+
+    const director = directorioStore.addDirector({
+      nombres: personaNaturalStore.nombre,
+      apellidoPaterno: personaNaturalStore.apellidoPaterno,
+      apellidoMaterno: personaNaturalStore.apellidoMaterno,
+      numeroDocumento: personaNaturalStore.numeroDocumento,
+      tipoDocumento: personaNaturalStore.tipoDocumento as TipoDocumentosEnum,
+      tipoDirector: tipoDirector.value as TiposDirectoresEnum,
+      reemplazoAsignado:
+        tipoDirector.value === TiposDirectoresEnum.ALTERNO ? reemplazoAsignado.value : null,
+    });
+
+    console.log("Director guardado:", director);
+
+    handleCancel();
+  };
+
+  const handleInvalidSubmit = () => {
+    //colocar logica de error, mostrar un toast
+    console.log("Formulario inválido");
+  };
+</script>
+
+<template>
+  <BaseModal
+    v-model="modelValue"
+    size="lg"
+    @close="handleCancel"
+    @submit="handleSave"
+    @invalid-submit="handleInvalidSubmit"
+  >
+    <div class="flex flex-col gap-12">
+      <CardTitle title="Agregar Director" body="Completa los campos requeridos" />
+
+      <DirectorForm
+        v-model:tipo-director="tipoDirector"
+        v-model:reemplazo-asignado="reemplazoAsignado"
+      />
+    </div>
+
+    <template #footer>
+      <div class="flex items-center justify-center gap-3 w-full px-14">
+        <ActionButton
+          variant="primary_outline"
+          label="Cancelar"
+          size="md"
+          @click="handleCancel"
+        />
+
+        <ActionButton
+          type="submit"
+          variant="primary"
+          label="Guardar"
+          size="md"
+          :is-disabled="isSubmitDisabled"
+        />
+      </div>
+    </template>
+  </BaseModal>
+</template>
