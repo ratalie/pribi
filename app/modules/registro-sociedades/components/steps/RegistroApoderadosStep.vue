@@ -4,6 +4,9 @@
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
+  import ClaseApoderadoModal from "../modals/ClaseApoderadoModal.vue";
+  import RegistroApoderadoModal from "../modals/RegistroApoderadoModal.vue";
+  import RegistroOtroApoderadoModal from "../modals/RegistroOtroApoderadoModal.vue";
 
   interface Props {
     societyId?: string;
@@ -137,6 +140,43 @@
   const showActionsFor = (row: ApoderadoRow) => {
     return row.numero_apoderados > 0;
   };
+  const isModalOpenClaseApoderado = ref(false);
+  const isModalOpenRegistroApoderado = ref(false);
+  const isModalOpenRegistroOtroApoderado = ref(false);
+
+  const openModalClaseApoderado = () => {
+    isModalOpenClaseApoderado.value = true;
+  };
+
+  const closeModalClaseApoderado = () => {
+    isModalOpenClaseApoderado.value = false;
+  };
+
+  const openModalRegistroApoderado = () => {
+    isModalOpenRegistroApoderado.value = true;
+  };
+
+  const closeModalRegistroApoderado = () => {
+    isModalOpenRegistroApoderado.value = false;
+  };
+
+  const openModalRegistroOtroApoderado = () => {
+    isModalOpenRegistroOtroApoderado.value = true;
+  };
+
+  const closeModalRegistroOtroApoderado = () => {
+    isModalOpenRegistroOtroApoderado.value = false;
+  };
+
+  const handleSubmitClaseApoderado = (data: any) => {
+    console.log("data", data);
+  };
+  const handleSubmitRegistroApoderado = (data: any) => {
+    console.log("data", data);
+  };
+  const handleSubmitRegistroOtroApoderado = (data: any) => {
+    console.log("data", data);
+  };
 </script>
 
 <template>
@@ -150,6 +190,7 @@
             label="Agregar Clase de Apoderado"
             size="xl"
             icon="Plus"
+            @click="openModalClaseApoderado"
           />
         </template>
       </CardTitle>
@@ -165,7 +206,13 @@
     <SimpleCard>
       <CardTitle title="Registro de Apoderados" body="">
         <template #actions>
-          <ActionButton variant="secondary" label="Agregar Apoderado" size="xl" icon="Plus" />
+          <ActionButton
+            variant="secondary"
+            label="Agregar Apoderado"
+            size="xl"
+            icon="Plus"
+            @click="openModalRegistroApoderado"
+          />
         </template>
       </CardTitle>
       <SimpleTable
@@ -179,7 +226,13 @@
     <SimpleCard>
       <CardTitle title="Otros Apoderados" body="">
         <template #actions>
-          <ActionButton variant="secondary" label="Agregar Apoderado" size="xl" icon="Plus" />
+          <ActionButton
+            variant="secondary"
+            label="Agregar Otro Apoderado"
+            size="xl"
+            icon="Plus"
+            @click="openModalRegistroOtroApoderado"
+          />
         </template>
       </CardTitle>
       <SimpleTable
@@ -189,5 +242,27 @@
         :actions="actions"
       />
     </SimpleCard>
+
+    <ClaseApoderadoModal
+      v-if="isModalOpenClaseApoderado"
+      v-model="isModalOpenClaseApoderado"
+      mode="crear"
+      @close="closeModalClaseApoderado"
+      @submit="handleSubmitClaseApoderado($event)"
+    />
+    <RegistroApoderadoModal
+      v-if="isModalOpenRegistroApoderado"
+      v-model="isModalOpenRegistroApoderado"
+      mode="crear"
+      @close="closeModalRegistroApoderado"
+      @submit="handleSubmitRegistroApoderado($event)"
+    />
+    <RegistroOtroApoderadoModal
+      v-if="isModalOpenRegistroOtroApoderado"
+      v-model="isModalOpenRegistroOtroApoderado"
+      mode="crear"
+      @close="closeModalRegistroOtroApoderado"
+      @submit="handleSubmitRegistroOtroApoderado($event)"
+    />
   </div>
 </template>
