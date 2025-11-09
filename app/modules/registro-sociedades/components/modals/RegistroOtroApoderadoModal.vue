@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { useVModel } from "@vueuse/core";
-  import { ref } from "vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
@@ -15,7 +14,7 @@
 
   const emits = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
-    (e: "close"): void;
+    (e: "close" | "submit"): void;
   }>();
 
   const modelValue = useVModel(props, "modelValue", emits, {
@@ -24,29 +23,16 @@
 
   const personaNaturalStore = usePersonaNaturalStore();
 
-
-  const tipoPersona = ref<"natural" | "juridica" | "">("");
- 
-
   const handleCancel = () => {
     emits("close");
     modelValue.value = false;
 
     personaNaturalStore.$reset();
-    tipoPersona.value = "";
   };
 
   const handleSave = async () => {
-    console.log("Datos de accionista :", {
-      tipoDocumento: personaNaturalStore.tipoDocumento,
-      numeroDocumento: personaNaturalStore.numeroDocumento,
-      nombre: personaNaturalStore.nombre,
-      apellidoPaterno: personaNaturalStore.apellidoPaterno,
-      apellidoMaterno: personaNaturalStore.apellidoMaterno,
-      estadoCivil: personaNaturalStore.estadoCivil,
-    });
+    emits("submit");
   };
-
 
   const handleInvalidSubmit = () => {
     //colocar logica de error, mostrar un toast
@@ -64,9 +50,8 @@
   >
     <div class="flex flex-col gap-12">
       <CardTitle title="Registrar Otro Apoderado Especial" />
-    
+
       <PersonaNaturalForm :show-estado-civil="false" />
-    
     </div>
 
     <template #footer>
