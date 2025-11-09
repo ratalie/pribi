@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { computed, watch } from "vue";
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
@@ -13,7 +14,33 @@
     tipoDocumentoSchema,
   } from "~/modules/registro-sociedades/schemas/modalAccionistas";
 
+  const props = withDefaults(
+    defineProps<{
+      showEstadoCivil?: boolean;
+    }>(),
+    {
+      showEstadoCivil: true,
+    }
+  );
+
   const personaNaturalStore = usePersonaNaturalStore();
+
+  const estadoCivil = computed({
+    get: () => personaNaturalStore.estadoCivil ?? "",
+    set: (value: string) => {
+      personaNaturalStore.estadoCivil = value || null;
+    },
+  });
+
+  watch(
+    () => props.showEstadoCivil,
+    (value) => {
+      if (!value) {
+        personaNaturalStore.estadoCivil = null;
+      }
+    },
+    { immediate: true }
+  );
 </script>
 
 <template>
@@ -60,7 +87,8 @@
     />
 
     <SelectInputZod
-      v-model="personaNaturalStore.estadoCivil"
+      v-if="showEstadoCivil"
+      v-model="estadoCivil"
       name="estado_civil"
       label="Estado civil"
       placeholder="Selecciona el estado civil"

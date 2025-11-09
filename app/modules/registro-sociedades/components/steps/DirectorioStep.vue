@@ -127,6 +127,7 @@
   const closeModal = () => {
     isModalOpen.value = false;
   };
+  
   // Manejador de envío
   const handleSubmit = () => {
     console.log("Formulario enviado:", form.value);
