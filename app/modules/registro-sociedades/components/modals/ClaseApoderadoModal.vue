@@ -5,7 +5,7 @@
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
   import { claseApoderadoSchema } from "../../schemas/modalRegistroApoderados";
-  import { useTiposFacultadStore } from "../../stores/modal/useTiposFacultadStore";
+  import { useClaseApoderadoModalStore } from "../../stores/modal/useClaseApoderadoModalStore";
 
   interface Props {
     modelValue: boolean;
@@ -23,7 +23,7 @@
     passive: true,
   });
 
-  const tiposFacultadStore = useTiposFacultadStore();
+  const claseApoderadoModalStore = useClaseApoderadoModalStore();
 
   const handleSubmit = () => {
     emits("submit");
@@ -49,10 +49,13 @@
     @invalid-submit="handleInvalidSubmit"
   >
     <div class="flex flex-col gap-10">
-      <CardTitle title="Agregar Clase de Apoderado" body="Ingresa el nombre de la nueva clase de Apoderados." />
+      <CardTitle
+        title="Agregar Clase de Apoderado"
+        body="Ingresa el nombre de la nueva clase de Apoderados."
+      />
 
       <TextInputZod
-        v-model="tiposFacultadStore.nombreFacultad"
+        v-model="claseApoderadoModalStore.nombreClase"
         name="clase_apoderado"
         label="Clase de Apoderado"
         placeholder="ej. Apoderado Contable"
@@ -69,12 +72,7 @@
           @click="handleCancel"
         />
 
-        <ActionButton
-          type="submit"
-          variant="primary"
-          label="Crear"
-          size="md"
-        />
+        <ActionButton type="submit" variant="primary" label="Crear" size="md" />
       </div>
     </template>
   </BaseModal>
