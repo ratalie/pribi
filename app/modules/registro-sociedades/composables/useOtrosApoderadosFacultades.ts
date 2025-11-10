@@ -5,7 +5,7 @@ import {
   transformarModalAFacultad,
 } from "../utils/transformFacultadModal";
 
-export const useApoderadosFacultades = () => {
+export const useOtrosApoderadosFacultades = () => {
   const regimenFacultadesStore = useRegimenFacultadesStore();
   const apoderadoFacultadStore = useApoderadoFacultadStore();
 
@@ -15,10 +15,10 @@ export const useApoderadosFacultades = () => {
   const modeModalApoderadoFacultad = ref<"crear" | "editar">("crear");
 
   const cargarFacultadParaEditar = (idApod: string, idFac: string) => {
-    const apoderado = regimenFacultadesStore.apoderadosFacultades.find((a) => a.id === idApod);
+    const apoderado = regimenFacultadesStore.otrosApoderados.find((a) => a.id === idApod);
 
     if (!apoderado) {
-      console.error(`No se encontró el apoderado con id: ${idApod}`);
+      console.error(`No se encontró el otro apoderado con id: ${idApod}`);
       return;
     }
 
@@ -45,7 +45,7 @@ export const useApoderadosFacultades = () => {
   };
 
   const eliminarFacultad = (idFacultad: string, idApoderado: string) => {
-    regimenFacultadesStore.eliminarFacultadApoderado(idApoderado, idFacultad);
+    regimenFacultadesStore.eliminarFacultadOtroApoderado(idApoderado, idFacultad);
   };
 
   const facultadActions = [
@@ -81,7 +81,7 @@ export const useApoderadosFacultades = () => {
 
   const handleSubmitApoderadoFacultad = () => {
     if (!idApoderado.value) {
-      console.error("No se encontró el id del apoderado");
+      console.error("No se encontró el id del otro apoderado");
       return;
     }
 
@@ -97,7 +97,7 @@ export const useApoderadosFacultades = () => {
         return;
       }
 
-      regimenFacultadesStore.editarFacultadApoderado(
+      regimenFacultadesStore.editarFacultadOtroApoderado(
         idApoderado.value,
         idFacultad.value,
         facultadActualizada
@@ -113,7 +113,7 @@ export const useApoderadosFacultades = () => {
         return;
       }
 
-      regimenFacultadesStore.agregarFacultadApoderado(idApoderado.value, nuevaFacultad);
+      regimenFacultadesStore.agregarFacultadOtroApoderado(idApoderado.value, nuevaFacultad);
     }
 
     handleCloseModalApoderadoFacultad();
@@ -128,3 +128,4 @@ export const useApoderadosFacultades = () => {
     handleSubmitApoderadoFacultad,
   };
 };
+
