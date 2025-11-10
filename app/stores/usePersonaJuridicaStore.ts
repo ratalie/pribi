@@ -28,8 +28,8 @@ interface PersonaJuridica {
   razonSocial: string;
   pais: string;
   direccion: string;
-  provincia?: string;
-  distrito?: string;
-  departamento?: string;
-  representadoPor?: PersonaNatural;
+  provincia: string;
+  distrito: string;
+  departamento: string;
+  representadoPor: PersonaNatural;
 }
