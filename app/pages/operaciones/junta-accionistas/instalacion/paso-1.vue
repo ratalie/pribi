@@ -1,0 +1,20 @@
+<template>
+  <div class="page-container p-6 space-y-4">
+    <header>
+      <h1 class="text-2xl font-semibold">Instalación de la Junta · Paso 1</h1>
+      <p class="text-sm text-muted-foreground">Gestionar convocatoria y apertura de la sesión.</p>
+    </header>
+
+    <section class="card p-4 border rounded-md bg-white shadow-sm">
+      <p class="text-gray-600">
+        Aquí se registrará la convocatoria, verificación de quórum y acreditaciones iniciales.
+      </p>
+    </section>
+  </div>
+</template>
+
+<script setup lang="ts">
+definePageMeta({
+  layout: "dual-panel-layout",
+});
+</script>

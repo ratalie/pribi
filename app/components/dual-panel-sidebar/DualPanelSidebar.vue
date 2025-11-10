@@ -22,10 +22,12 @@ interface Props {
   config: SidebarConfig;
   mode?: PanelMode;
   currentPath: string;
+  flowId?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   mode: "wizard",
+  flowId: "unknown-flow",
 });
 
 /**
@@ -48,6 +50,7 @@ const steps = computed(() => {
         startLevel: minLevel,
         maxLevel: maxLevel,
         includeChildren: true,
+        flowId: props.flowId,
       });
     }
     
@@ -56,6 +59,7 @@ const steps = computed(() => {
       // Por ahora solo convertimos todos
       return flowConfigToSteps(items, props.currentPath, {
         includeChildren: true,
+        flowId: props.flowId,
       });
     }
   }
@@ -63,6 +67,7 @@ const steps = computed(() => {
   // Sin filtro: convertir todos los items
   return flowConfigToSteps(filteredItems, props.currentPath, {
     includeChildren: true,
+    flowId: props.flowId,
   });
 });
 
@@ -114,6 +119,7 @@ const panelProps = computed(() => {
     steps: steps.value,
     title: props.config.title,
     showTitle: false,
+    variant: props.config.position === "right" ? "sections" : "default",
   };
 });
 

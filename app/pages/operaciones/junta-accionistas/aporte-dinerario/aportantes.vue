@@ -1,29 +1,21 @@
 <template>
-  <div class="page-container p-6">
-    <div class="space-y-2 mb-6">
-      <h1 class="text-3xl font-bold tracking-tight">Aportantes</h1>
-      <p class="text-sm text-muted-foreground font-mono">
-        {{ $route.path }}
-      </p>
+  <SlotWrapper>
+    <TitleH2
+      title="Selección de Aportantes"
+      subtitle="Selecciona los aportantes que participarán en la junta de accionistas."
+    />
+    <div class="flex flex-col gap-10">
+      <div class="flex flex-col gap-5">
+        <TitleH4 title="Aportantes" :variant="Titles.WITH_SUBTITLE_SPACING" />
+        <BlankContainer />
+      </div>
     </div>
-
-    <div class="placeholder mt-4">
-      <p class="text-gray-600 dark:text-gray-300">
-        En esta sub-página se gestionan los
-        <strong>aportantes del capital dinerario</strong>
-        . Se define quiénes realizarán los aportes en dinero.
-      </p>
-      <p class="text-xs text-green-500 mt-2">
-        🔹
-        <strong>Nivel 3:</strong>
-        Sub-página visible en rightSidebar de "Aporte Dinerario"
-      </p>
-      <p class="text-xs text-gray-400 mt-1">📂 Padre: aporte-dinerario/index.vue</p>
-    </div>
-  </div>
+  </SlotWrapper>
 </template>
 
 <script setup lang="ts">
+  import Titles from "~/types/enums/Titles.enum";
+
   // Página: Aportantes (Sub-paso de Aporte Dinerario)
   // Nivel: 3 (Sub-página en rightSidebar)
   // Padre: aporte-dinerario/index.vue (Nivel 2)

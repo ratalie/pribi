@@ -14,14 +14,18 @@
 import type { NavigationStep } from "~/types/navigationSteps";
 import StepItem from "../shared/StepItem.vue";
 
+type PanelVariant = "default" | "sections";
+
 interface Props {
   steps: NavigationStep[];
   title?: string;
   showTitle?: boolean;
+  variant?: PanelVariant;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   showTitle: false,
+  variant: "default",
 });
 </script>
 
@@ -38,6 +42,7 @@ const props = withDefaults(defineProps<Props>(), {
         :step="step"
         :index="index"
         :total-steps="steps.length"
+        :variant="variant"
       />
     </div>
 

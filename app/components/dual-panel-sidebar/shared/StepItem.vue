@@ -11,41 +11,42 @@ import type { NavigationStep } from "~/types/navigationSteps";
 import StatusIcon from "./StatusIcon.vue";
 import CategorySeparator from "./CategorySeparator.vue";
 
+type StepItemVariant = "default" | "sections";
+
 interface Props {
   step: NavigationStep;
   index: number;
   totalSteps: number;
   showLine?: boolean;
+  variant?: StepItemVariant;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   showLine: true,
+  variant: "default",
 });
 
 const isFinalItem = computed(() => props.index === props.totalSteps - 1);
-
-// Detectar si es categoría (separador visual)
 const isCategory = computed(() => props.step.isCategory === true);
+const isSectionsVariant = computed(() => props.variant === "sections");
 
-// Determinar si debe mostrar descripción (solo nivel 0-2, NO en nivel 3+)
 const shouldShowDescription = computed(() => {
+  if (isSectionsVariant.value) return false;
   const level = props.step.level;
-  // Solo mostrar descripción en niveles 0-1 (nivel 2 se muestra sin descripción)
   return level === undefined || level <= 1;
 });
 
-// Clase por nivel (define jerarquía visual)
 const levelClass = computed(() => {
   const level = props.step.level ?? 0;
-
+  if (isSectionsVariant.value) return "step-title-sections";
   if (level <= 0) return "step-title-root";
   if (level === 1) return "step-title-level1";
   if (level === 2) return "step-title-level2";
   return "step-title-level3";
 });
 
-// Clase por estado (completed/current/pending)
 const statusClass = computed(() => {
+  if (isSectionsVariant.value) return "";
   switch (props.step.status) {
     case "current":
       return "step-title-current";
@@ -58,20 +59,21 @@ const statusClass = computed(() => {
   }
 });
 
-// Clases dinámicas combinadas
-const titleClasses = computed(() => [
-  "step-title",
-  "group-hover:underline",
-  levelClass.value,
-  statusClass.value,
-]);
+const titleClasses = computed(() => {
+  const classes = ["step-title", levelClass.value];
+  if (!isSectionsVariant.value) {
+    classes.push("group-hover:underline", statusClass.value);
+  }
+  return classes.join(" ");
+});
 
-// Wrapper classes según nivel
 const wrapperClasses = computed(() => {
   const level = props.step.level ?? 0;
   const classes = ["flex", "items-start"];
 
-  if (level >= 2) {
+  if (isSectionsVariant.value) {
+    classes.push("gap-3", "sections-wrapper");
+  } else if (level >= 2) {
     classes.push("gap-3");
   } else {
     classes.push("gap-4");
@@ -80,9 +82,8 @@ const wrapperClasses = computed(() => {
   return classes.join(" ");
 });
 
-// Estilo de indentación según nivel (aplica a wrapper)
 const wrapperStyle = computed(() => {
-  if (isCategory.value) return {};
+  if (isCategory.value || isSectionsVariant.value) return {};
 
   const level = props.step.level ?? 0;
 
@@ -101,10 +102,49 @@ const wrapperStyle = computed(() => {
   return {};
 });
 
-// Mostrar línea conectora solo para niveles 0-1
 const showConnector = computed(() => {
+  if (isSectionsVariant.value) return false;
   const level = props.step.level ?? 0;
   return level <= 1;
+});
+
+const statusLabel = computed(() => {
+  const map: Record<string, string> = {
+    completed: "Completado",
+    current: "En progreso",
+    "in-progress": "En progreso",
+    empty: "Pendiente",
+    optional: "Opcional",
+    locked: "Bloqueado",
+    error: "Error",
+  };
+  return map[props.step.status] ?? "Pendiente";
+});
+
+const statusBadgeClasses = computed(() => {
+  const base = ["status-badge"];
+  switch (props.step.status) {
+    case "completed":
+      base.push("status-badge-completed");
+      break;
+    case "current":
+    case "in-progress":
+      base.push("status-badge-in-progress");
+      break;
+    case "optional":
+      base.push("status-badge-optional");
+      break;
+    case "error":
+      base.push("status-badge-error");
+      break;
+    case "locked":
+      base.push("status-badge-locked");
+      break;
+    default:
+      base.push("status-badge-pending");
+      break;
+  }
+  return base.join(" ");
 });
 </script>
 
@@ -116,6 +156,7 @@ const showConnector = computed(() => {
   <div v-else :class="wrapperClasses" :style="wrapperStyle">
     <!-- Status Icon con línea conectora -->
     <StatusIcon
+      v-if="!isSectionsVariant"
       :status="step.status"
       :is-final-item="isFinalItem"
       :show-line="showConnector"
@@ -123,11 +164,20 @@ const showConnector = computed(() => {
     />
 
     <!-- Contenido del paso -->
-    <NuxtLink :to="step.route" class="flex flex-col gap-1 cursor-pointer group flex-1">
+    <NuxtLink
+      :to="step.route"
+      class="flex flex-col gap-1 cursor-pointer group flex-1"
+      :class="{ 'sections-link': isSectionsVariant }"
+    >
       <!-- Título -->
-      <p :class="titleClasses">
-        {{ step.title }}
-      </p>
+      <div class="flex items-start gap-2" :class="{ 'justify-between': isSectionsVariant }">
+        <p :class="titleClasses">
+          {{ step.title }}
+        </p>
+        <span v-if="isSectionsVariant" :class="statusBadgeClasses">
+          {{ statusLabel }}
+        </span>
+      </div>
 
       <!-- Descripción (solo para niveles 0-2) -->
       <span v-if="shouldShowDescription" class="step-description group-hover:underline">
@@ -139,6 +189,64 @@ const showConnector = computed(() => {
 
 <style scoped>
 /* Estilos EXACTOS del código React/Next.js */
+
+.sections-wrapper {
+  padding: 8px 0;
+}
+
+.sections-link {
+  gap: 4px;
+}
+
+.step-title-sections {
+  font-family: var(--font-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 500;
+  color: #2e293d;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 4px 10px;
+  font-family: var(--font-secondary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.status-badge-completed {
+  background-color: rgba(60, 40, 164, 0.12);
+  color: #3c28a4;
+}
+
+.status-badge-in-progress {
+  background-color: rgba(240, 156, 0, 0.12);
+  color: #f09c00;
+}
+
+.status-badge-optional {
+  background-color: rgba(103, 100, 114, 0.12);
+  color: #676472;
+}
+
+.status-badge-error {
+  background-color: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+}
+
+.status-badge-locked {
+  background-color: rgba(107, 114, 128, 0.12);
+  color: #6b7280;
+}
+
+.status-badge-pending {
+  background-color: rgba(209, 213, 219, 0.4);
+  color: #4b5563;
+}
 
 /* Estilo base para todos los títulos */
 .step-title {

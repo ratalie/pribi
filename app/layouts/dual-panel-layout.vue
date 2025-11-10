@@ -11,12 +11,14 @@
  * - ProboSidebar global
  */
 
+import { computed, ref, watch } from "vue";
 import ProboSidebar from "~/components/ProboSidebar.vue";
 import DualPanelSidebar from "~/components/dual-panel-sidebar/DualPanelSidebar.vue";
 import { useFlowLayoutConfig } from "~/composables/useFlowLayoutConfig";
 import { buildFlowItemTree, findItemByRoute } from "~/utils/flowHelpers";
 import type { SidebarConfig } from "~/types/flow-layout/sidebar-config";
 import type { FlowItemTree } from "~/types/flow-system";
+import { useFlowProgressStore } from "~/stores/flowProgress.store";
 
 /**
  * Cargar configuración del layout
@@ -46,6 +48,30 @@ const flowTree = computed<FlowItemTree[]>(() => {
   if (!flowConfig.value) return [];
   return buildFlowItemTree(flowConfig.value.items);
 });
+
+const flowId = computed(() => layoutConfig.value?.id ?? "unknown-flow");
+
+const progressStore = useFlowProgressStore();
+
+function collectStepIds(items: FlowItemTree[], accumulator: string[] = []): string[] {
+  for (const item of items) {
+    accumulator.push(item.identity.id);
+    if (item.children && item.children.length > 0) {
+      collectStepIds(item.children, accumulator);
+    }
+  }
+  return accumulator;
+}
+
+watch(
+  flowTree,
+  (items) => {
+    if (!items || items.length === 0) return;
+    const stepIds = collectStepIds(items);
+    progressStore.initializeFlow(flowId.value, stepIds);
+  },
+  { immediate: true }
+);
 
 /**
  * Item actual basado en la ruta
@@ -152,17 +178,23 @@ function getContextualSidebarConfig(sidebar: SidebarConfig): SidebarConfig & { p
     };
     config.panelMode = "wizard";
   }
-  // Nivel 3: mostrar hijos de nivel 4 (scroll anchors)
+  // Nivel 3: mantener listado de pasos hermanos (nivel 3) en modo wizard
   else if (level === 3) {
-    config.items = currentItem.value.children || [];
-    config.filter = {
-      type: "level",
-      criteria: {
-        minLevel: 4,
-        maxLevel: 4,
-      },
-    };
-    config.panelMode = "scroll-anchor";
+    const parentId = currentItem.value.hierarchy.parentId;
+    if (parentId) {
+      const parent = findItemById(flowTree.value, parentId);
+      if (parent?.children) {
+        config.items = parent.children;
+        config.filter = {
+          type: "level",
+          criteria: {
+            minLevel: 3,
+            maxLevel: 3,
+          },
+        };
+        config.panelMode = "wizard";
+      }
+    }
   }
   // Nivel 4: mostrar hermanos (otros anchors del mismo padre)
   else if (level >= 4) {
@@ -237,7 +269,6 @@ function findItemById(
         v-for="sidebar in leftSidebars"
         :key="sidebar.id"
         :config="sidebar"
-        mode="wizard"
         :current-path="currentPath"
       />
 
@@ -253,6 +284,7 @@ function findItemById(
         :config="sidebar.config"
         :mode="sidebar.mode"
         :current-path="currentPath"
+        :flow-id="flowId"
       />
     </div>
   </div>

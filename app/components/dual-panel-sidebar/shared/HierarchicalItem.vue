@@ -88,6 +88,12 @@ const indentStyle = computed(() => ({
   paddingLeft: `${props.level * 16}px`,
 }));
 
+// Mostrar línea conectora solo para niveles 0 y 1
+const shouldShowLine = computed(() => {
+  const level = props.item.hierarchy.level ?? 0;
+  return level <= 1;
+});
+
 // Color del badge según nivel
 const levelBadgeClass = computed(() => {
   switch (props.item.hierarchy.level) {
@@ -112,7 +118,7 @@ const levelBadgeClass = computed(() => {
       <StatusIcon
         :status="itemStatus"
         :is-final-item="isLast && !hasChildren"
-        :show-line="!isLast || hasChildren"
+        :show-line="shouldShowLine && (!isLast || hasChildren)"
         :level="item.hierarchy.level"
       />
 

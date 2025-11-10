@@ -6,7 +6,7 @@
  * Soporta 5 estados: completed, current, empty, locked, error
  */
 
-type Status = "completed" | "current" | "empty" | "locked" | "error";
+type Status = "completed" | "current" | "empty" | "locked" | "error" | "optional" | "in-progress";
 
 interface Props {
   status?: Status;
@@ -66,7 +66,11 @@ const lineStyle = computed(() => {
   switch (props.status) {
     case "completed":
     case "current":
+    case "in-progress":
       bgColor = "var(--sidebar-primary)";
+      break;
+    case "optional":
+      bgColor = "var(--sidebar-optional)";
       break;
     case "error":
       bgColor = "var(--sidebar-error)";
@@ -107,7 +111,7 @@ const lineStyle = computed(() => {
 
     <!-- Actual: círculo azul con punto -->
     <div
-      v-else-if="status === 'current'"
+      v-else-if="status === 'current' || status === 'in-progress'"
       :class="[circleClasses, 'flex items-center justify-center border-2 rounded-full bg-white']"
       style="border-color: var(--sidebar-current);"
     >
@@ -135,6 +139,13 @@ const lineStyle = computed(() => {
         />
       </svg>
     </div>
+
+    <!-- Opcional: círculo con borde punteado -->
+    <div
+      v-else-if="status === 'optional'"
+      :class="[circleClasses, 'flex items-center justify-center border-2 rounded-full bg-white']"
+      style="border-color: var(--sidebar-optional); border-style: dashed;"
+    />
 
     <!-- Error: círculo rojo con X blanca -->
     <div

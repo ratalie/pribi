@@ -23,11 +23,11 @@ const flowTree = buildFlowItemTree(juntaAccionistasFlowConfig.items);
 const mainSidebar: SidebarConfig = {
   id: "juntas-main-sidebar",
   position: "left",
-  mode: "hierarchical",
+  mode: "sequential",
   items: flowTree,
   title: "Juntas de Accionistas",
 
-  // Filtro: Mostrar niveles 0, 1, 2 y 3 (incluye items bajo categorías)
+  // Filtro: Mostrar niveles 0, 1 y 2 (pasos principales, categorías e items)
   filter: {
     type: "level",
     criteria: {
@@ -37,9 +37,9 @@ const mainSidebar: SidebarConfig = {
   },
 
   // Opciones de visualización
-  collapsible: true,
+  collapsible: false,
   collapsed: false,
-  persistCollapseState: true,
+  persistCollapseState: false,
 
   // Estilos
   width: "280px",

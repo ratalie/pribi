@@ -7,6 +7,7 @@
 
 import type { NavigationStep } from "~/types/navigationSteps";
 import type { FlowItemTree } from "~/types/flow-system";
+import { useFlowProgressStore } from "~/stores/flowProgress.store";
 
 /**
  * Convierte un FlowItemTree (con jerarquía) a lista flat de NavigationStep[]
@@ -23,12 +24,15 @@ export function flowConfigToSteps(
     includeChildren?: boolean; // Si true, incluye hijos en la lista flat
     maxLevel?: number; // Nivel máximo a incluir (ej: 2 para solo nivel 0-2)
     startLevel?: number; // Nivel mínimo a incluir (ej: 3 para solo nivel 3+)
+    flowId?: string; // Identificador del flujo para leer estados desde el store
   }
 ): NavigationStep[] {
   const steps: NavigationStep[] = [];
   const includeChildren = options?.includeChildren ?? false;
   const maxLevel = options?.maxLevel ?? Infinity;
   const startLevel = options?.startLevel ?? 0;
+  const flowId = options?.flowId;
+  const progressStore = useFlowProgressStore();
 
   // Función recursiva para aplanar el árbol
   function flattenTree(items: FlowItemTree[], parentCompleted: boolean = false) {
@@ -45,7 +49,8 @@ export function flowConfigToSteps(
       }
 
       // Determinar el status del item
-      const status = determineStatus(item, currentPath, parentCompleted);
+      const storeStatus = flowId ? progressStore.getStepStatus(flowId, item.identity.id) : undefined;
+      const status = storeStatus ?? determineStatus(item, currentPath, parentCompleted);
 
       // Crear NavigationStep
       const step: NavigationStep = {
