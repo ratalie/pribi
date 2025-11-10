@@ -1,10 +1,10 @@
 <script setup lang="ts">
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
-  import AccionistasModal from "~/components/base/modal/composite/AccionistasModal.vue";
   import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import AccionistasModal from "../modals/AccionistasModal.vue";
 
   interface Props {
     mode: EntityModeEnum;

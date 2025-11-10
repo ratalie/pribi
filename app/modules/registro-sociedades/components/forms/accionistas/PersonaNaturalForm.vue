@@ -2,7 +2,6 @@
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
-  import { civilState } from "~/constants/civil-state";
   import { documentTypes } from "~/constants/inputs/document-type";
   import {
     apellidoMaternoSchema,
@@ -12,8 +11,16 @@
     numeroDocumentoSchema,
     tipoDocumentoSchema,
   } from "~/modules/registro-sociedades/schemas/modalAccionistas";
+  import { EstadoCivilEnum } from "~/types/enums/EstadoCivilEnum";
+  import { usePersonaNaturalStore } from "../../../stores/modal/accionistas/usePersonaNaturalStore";
 
   const personaNaturalStore = usePersonaNaturalStore();
+
+  const estadoCivilOptions = Object.values(EstadoCivilEnum).map((estado, index) => ({
+    id: index + 1,
+    value: estado,
+    label: estado,
+  }));
 </script>
 
 <template>
@@ -64,7 +71,7 @@
       name="estado_civil"
       label="Estado civil"
       placeholder="Selecciona el estado civil"
-      :options="civilState"
+      :options="estadoCivilOptions"
       :schema="estadoCivilSchema"
     />
   </div>

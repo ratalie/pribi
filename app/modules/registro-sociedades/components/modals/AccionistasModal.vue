@@ -1,12 +1,13 @@
 <script setup lang="ts">
   import { useVModel } from "@vueuse/core";
-  import PersonaNaturalForm from "~/components/composite/forms/PersonaNaturalForm.vue";
+  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+  import CardTitle from "~/components/base/cards/CardTitle.vue";
+  import CascadeSelectInputZod from "~/components/base/inputs/text/ui/CascadeSelectInputZod.vue";
+  import BaseModal from "~/components/base/modal/BaseModal.vue";
   import { accionistaTypes } from "~/constants/inputs/accionista-types";
-  import { tipoAccionistaSchema } from "~/modules/registro-sociedades/schemas/modalAccionistas";
-  import ActionButton from "../../buttons/composite/ActionButton.vue";
-  import CardTitle from "../../cards/CardTitle.vue";
-  import CascadeSelectInputZod from "../../inputs/text/ui/CascadeSelectInputZod.vue";
-  import BaseModal from "../BaseModal.vue";
+  import { tipoAccionistaSchema } from "../../schemas/modalAccionistas";
+  import { usePersonaNaturalStore } from "../../stores/modal/accionistas/usePersonaNaturalStore";
+  import PersonaNaturalForm from "../forms/accionistas/PersonaNaturalForm.vue";
 
   interface Props {
     modelValue?: boolean;
