@@ -16,7 +16,7 @@
     actions: {
       label: string;
       icon?: string;
-      onClick: (id: string) => void;
+      onClick: (idFacultad: string, idApoderado: string) => void;
     }[];
   }
 
@@ -40,7 +40,7 @@
     }
   };
 
-  const optionsActions = [
+  const optionsActions = computed(() => [
     {
       label: "Ver",
       icon: "TextAlignJustify",
@@ -48,8 +48,13 @@
         toggleFacultad(id);
       },
     },
-    ...props.actions,
-  ];
+    ...props.actions.map((action) => ({
+      ...action,
+      onClick: (idFacultad: string) => {
+        action.onClick(idFacultad, props.apoderadoItem.id);
+      },
+    })),
+  ]);
 </script>
 
 <template>

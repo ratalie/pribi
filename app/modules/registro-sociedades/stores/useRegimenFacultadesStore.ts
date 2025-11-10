@@ -3,7 +3,11 @@ import { EntityCoinEnum } from "~/types/enums/EntityCoinEnum";
 import { TiemposVigenciaEnum } from "~/types/enums/TiemposVigenciaEnum";
 import { TipoFirmasEnum } from "~/types/enums/TipoFirmasEnum";
 import { TipoMontoEnum } from "~/types/enums/TipoMontoEnum";
-import type { ApoderadoFacultad, ApoderadoFacultadRow } from "../types/apoderadosFacultades";
+import type {
+  ApoderadoFacultad,
+  ApoderadoFacultadRow,
+  Facultad,
+} from "../types/apoderadosFacultades";
 import type { TipoFacultad, TipoFacultadRow } from "../types/facultades";
 
 export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
@@ -17,19 +21,19 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
         id: "1",
         nombre: "Gerente General",
         facultades: [
-          // Irrevocable + Sin reglas
+          // Indefinido + Sin reglas
           {
             id: "f1",
             nombre: "Facultades Administrativas",
-            esIrrevocable: true,
+            esIrrevocable: false,
             vigencia: TiemposVigenciaEnum.INDEFINIDO,
             reglasYLimites: false,
           },
-          // Irrevocable + Con reglas (Sola firma)
+          // Indefinido + Con reglas (Sola firma)
           {
             id: "f2",
             nombre: "Facultades Bancarias",
-            esIrrevocable: true,
+            esIrrevocable: false,
             vigencia: TiemposVigenciaEnum.INDEFINIDO,
             reglasYLimites: true,
             tipoMoneda: EntityCoinEnum.SOLES,
@@ -49,11 +53,11 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
         id: "2",
         nombre: "Apoderado de Grupo A",
         facultades: [
-          // Revocable + Con reglas (Firma conjunta)
+          // Determinado + Con reglas (Firma conjunta)
           {
             id: "f3",
             nombre: "Facultades Comerciales",
-            esIrrevocable: false,
+            esIrrevocable: true,
             vigencia: TiemposVigenciaEnum.DETERMIADO,
             fecha_inicio: "2024-01-01",
             fecha_fin: "2024-12-31",
@@ -90,21 +94,21 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
         id: "3",
         nombre: "Apoderado de Grupo B",
         facultades: [
-          // Revocable + Sin reglas
+          // Determinado + Sin reglas
           {
             id: "f4",
             nombre: "Facultades Industriales",
-            esIrrevocable: false,
+            esIrrevocable: true,
             vigencia: TiemposVigenciaEnum.DETERMIADO,
             fecha_inicio: "2024-06-01",
             fecha_fin: "2025-06-01",
             reglasYLimites: false,
           },
-          // Irrevocable + Con reglas complejas
+          // Indefinido + Con reglas complejas
           {
             id: "f5",
             nombre: "Facultades Mineras",
-            esIrrevocable: true,
+            esIrrevocable: false,
             vigencia: TiemposVigenciaEnum.INDEFINIDO,
             reglasYLimites: true,
             tipoMoneda: EntityCoinEnum.SOLES,
@@ -132,11 +136,11 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
         id: "4",
         nombre: "Apoderado de Grupo C",
         facultades: [
-          // Revocable + Con reglas (múltiples escalas)
+          // Determinado + Con reglas (múltiples escalas)
           {
             id: "f6",
             nombre: "Facultades Forestales",
-            esIrrevocable: false,
+            esIrrevocable: true,
             vigencia: TiemposVigenciaEnum.DETERMIADO,
             fecha_inicio: "2024-03-15",
             fecha_fin: "2026-03-15",
@@ -173,11 +177,11 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
               },
             ],
           },
-          // Irrevocable + Sin reglas
+          // Indefinido + Sin reglas
           {
             id: "f7",
             nombre: "Facultades Agrícolas",
-            esIrrevocable: true,
+            esIrrevocable: false,
             vigencia: TiemposVigenciaEnum.INDEFINIDO,
             reglasYLimites: false,
           },
@@ -247,6 +251,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
   },
 
   actions: {
+    //tipo facultad
     agregarTipoFacultad(tipoFacultad: TipoFacultad) {
       this.tipoFacultades.push(tipoFacultad);
     },
@@ -263,6 +268,51 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
 
     eliminarTipoFacultad(id: string) {
       this.tipoFacultades = this.tipoFacultades.filter((facultad) => facultad.id !== id);
+    },
+
+    //apoderado facultad
+    agregarFacultadApoderado(idApoderado: string, nuevaFacultad: Facultad) {
+      const apoderado = this.apoderadosFacultades.find((a) => a.id === idApoderado);
+
+      if (!apoderado) {
+        console.error(`No se encontró el apoderado con id: ${idApoderado}`);
+        return;
+      }
+
+      apoderado.facultades.push(nuevaFacultad);
+    },
+
+    editarFacultadApoderado(
+      idApoderado: string,
+      idFacultad: string,
+      facultadActualizada: Facultad
+    ) {
+      const apoderado = this.apoderadosFacultades.find((a) => a.id === idApoderado);
+
+      if (!apoderado) {
+        console.error(`No se encontró el apoderado con id: ${idApoderado}`);
+        return;
+      }
+
+      const index = apoderado.facultades.findIndex((f) => f.id === idFacultad);
+
+      if (index === -1) {
+        console.error(`No se encontró la facultad con id: ${idFacultad}`);
+        return;
+      }
+
+      apoderado.facultades[index] = facultadActualizada;
+    },
+
+    eliminarFacultadApoderado(idApoderado: string, idFacultad: string) {
+      const apoderado = this.apoderadosFacultades.find((a) => a.id === idApoderado);
+
+      if (!apoderado) {
+        console.error(`No se encontró el apoderado con id: ${idApoderado}`);
+        return;
+      }
+
+      apoderado.facultades = apoderado.facultades.filter((f) => f.id !== idFacultad);
     },
   },
 });
