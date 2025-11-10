@@ -3,30 +3,32 @@ import type { FlowItem } from "@/types/flow-system";
 import { FlowItemType, NavigationBehavior } from "@/types/flow-system";
 import { defaultBehavior, defaultValidation } from "../../../defaults";
 
-export const capitalizacionAcreedoresItem: FlowItem = {
+export const capitalizacionCreditosContenidoItem: FlowItem = {
   identity: {
-    id: "capitalizacion-creditos-acreedores",
+    id: "capitalizacion-creditos-contenido",
     type: FlowItemType.STEP,
-    label: "Acreedores",
+    label: "Capitalización de Créditos",
   },
   hierarchy: {
     level: 3,
     order: 1,
     parentId: "capitalizacion-creditos",
-    children: [],
+    children: [
+      "capitalizacion-creditos-acreedores",
+      "capitalizacion-creditos-creditos",
+      "capitalizacion-creditos-votacion",
+    ],
   },
   navigation: {
-    route: JuntaRoutes.CAPITALIZACION_ACREEDORES,
+    route: JuntaRoutes.CAPITALIZACION_CREDITOS,
     behavior: NavigationBehavior.PUSH,
   },
   behavior: defaultBehavior,
-  rightSidebar: {
-    enabled: false,
-  },
+  rightSidebar: { enabled: true },
   validation: defaultValidation,
   metadata: {
-    description: "Gestión de acreedores en capitalización de créditos",
-    tags: ["nivel-3", "aumento-capital", "acreedores"],
+    description: "Introducción y configuración general de la capitalización de créditos",
+    tags: ["nivel-3", "aumento-capital", "capitalizacion"],
     version: "1.0.0",
   },
 };

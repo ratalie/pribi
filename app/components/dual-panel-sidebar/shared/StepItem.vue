@@ -19,14 +19,22 @@
     totalSteps: number;
     showLine?: boolean;
     variant?: StepItemVariant;
+    nextSameLevelIndex?: number | null; // Índice del próximo item del mismo nivel
   }
 
   const props = withDefaults(defineProps<Props>(), {
     showLine: true,
     variant: "default",
+    nextSameLevelIndex: null,
   });
 
-  const isFinalItem = computed(() => props.index === props.totalSteps - 1);
+  const isFinalItem = computed(() => {
+    const result = props.index === props.totalSteps - 1;
+    if (props.step.title === "Descargar") {
+      console.log(`[isFinalItem] Descargar: index=${props.index}, totalSteps=${props.totalSteps}, isFinal=${result}`);
+    }
+    return result;
+  });
   const isCategory = computed(() => props.step.isCategory === true);
   const isSectionsVariant = computed(() => props.variant === "sections");
 
@@ -38,11 +46,15 @@
 
   const levelClass = computed(() => {
     const level = props.step.level ?? 0;
-    if (isSectionsVariant.value) return "step-title-sections";
+    if (isSectionsVariant.value) {
+      if (level >= 4) return "step-title-sections-child";
+      return "step-title-sections";
+    }
     if (level <= 0) return "step-title-root";
     if (level === 1) return "step-title-level1";
     if (level === 2) return "step-title-level2";
-    return "step-title-level3";
+    if (level === 3) return "step-title-level3";
+    return "step-title-level4";
   });
 
   const statusClass = computed(() => {
@@ -61,7 +73,12 @@
 
   const titleClasses = computed(() => {
     const classes = ["step-title", levelClass.value];
-    if (!isSectionsVariant.value) {
+    const level = props.step.level ?? 0;
+    if (isSectionsVariant.value) {
+      if (level >= 4) {
+        classes.push("sections-title-child");
+      }
+    } else {
       classes.push("group-hover:underline", statusClass.value);
     }
     return classes.join(" ");
@@ -69,10 +86,16 @@
 
   const wrapperClasses = computed(() => {
     const level = props.step.level ?? 0;
-    const classes = ["flex", "items-start"];
+    const classes = ["flex", "items-stretch"];
 
     if (isSectionsVariant.value) {
       classes.push("gap-3", "sections-wrapper");
+      const level = props.step.level ?? 0;
+      if (level >= 4) {
+        classes.push("sections-wrapper-child");
+      } else {
+        classes.push("sections-wrapper-parent");
+      }
     } else if (level >= 2) {
       classes.push("gap-3");
     } else {
@@ -83,11 +106,22 @@
   });
 
   const wrapperStyle = computed(() => {
-    if (isCategory.value || isSectionsVariant.value) return {};
+    if (isCategory.value) return {};
 
     const level = props.step.level ?? 0;
 
-    if (level >= 3) {
+    if (isSectionsVariant.value) {
+      if (level >= 4) {
+        return { paddingLeft: "24px" };
+      }
+      return {};
+    }
+
+    if (level >= 4) {
+      return { marginLeft: "55px" };
+    }
+
+    if (level === 3) {
       return { marginLeft: "45px" };
     }
 
@@ -105,7 +139,32 @@
   const showConnector = computed(() => {
     if (isSectionsVariant.value) return false;
     const level = props.step.level ?? 0;
+    // SOLO nivel 0 y nivel 1 tienen conector vertical
+    // Nivel 2+ (como "Aporte Dinerario") NO tienen línea
     return level <= 1;
+  });
+
+  const containerSpacing = computed(() => {
+    if (isFinalItem.value) return 0;
+    if (isSectionsVariant.value) {
+      const level = props.step.level ?? 0;
+      return level >= 4 ? 12 : 18;
+    }
+    if (isCategory.value) return 22;
+
+    const level = props.step.level ?? 0;
+
+    // Nivel 0 (pasos principales): GAP GRANDE
+    if (level <= 0) return 28;
+
+    // Nivel 1: GAP MEDIANO
+    if (level === 1) return 18;
+
+    // Nivel 2-3 (items bajo categorías): GAP PEQUEÑO
+    if (level === 2) return 12;
+
+    // Nivel 3+
+    return level >= 4 ? 10 : 14;
   });
 
   const containerClasses = computed(() => {
@@ -113,26 +172,35 @@
 
     if (isSectionsVariant.value) {
       classes.push("spacing-sections");
-      return classes.join(" ");
-    }
-
-    if (isCategory.value) {
+    } else if (isCategory.value) {
       classes.push("spacing-category");
-      return classes.join(" ");
+    } else {
+      const level = props.step.level ?? 0;
+
+      if (level <= 0) {
+        classes.push("spacing-root");
+      } else if (level === 1) {
+        classes.push("spacing-level1");
+      } else {
+        classes.push("spacing-level2");
+      }
     }
 
-    const level = props.step.level ?? 0;
-
-    if (level <= 0) {
-      classes.push("spacing-root");
-    } else if (level === 1) {
-      classes.push("spacing-level1");
-    } else {
-      classes.push("spacing-level2");
+    if (
+      !isSectionsVariant.value &&
+      !isCategory.value &&
+      !isFinalItem.value &&
+      showConnector.value
+    ) {
+      classes.push("has-connector");
     }
 
     return classes.join(" ");
   });
+
+  const containerStyle = computed(() => ({
+    "--step-spacing": `${containerSpacing.value}px`,
+  }));
 
   const statusLabel = computed(() => {
     const map: Record<string, string> = {
@@ -173,6 +241,62 @@
     return base.join(" ");
   });
 
+  const connectorGap = computed(() => {
+    if (!showConnector.value || isSectionsVariant.value) return 0;
+    if (isCategory.value || isFinalItem.value) return 0;
+
+    const level = props.step.level ?? 0;
+
+    // Para nivel 0: calcular altura total hasta el próximo nivel 0
+    if (level === 0) {
+      return calculateGapUntilNextSameLevel();
+    }
+
+    // Para otros niveles: altura fija estándar (como Registro Sociedades)
+    return 32; // h-8 en Tailwind = 32px
+  });
+
+  // Calcula la ALTURA TOTAL de la línea conectora hasta el próximo elemento del mismo nivel
+  const calculateGapUntilNextSameLevel = () => {
+    const currentIndex = props.index;
+    const nextIndex = props.nextSameLevelIndex;
+
+    // Si no hay próximo item del mismo nivel, usar altura estándar
+    if (nextIndex === null || nextIndex === undefined) {
+      return 32; // Altura estándar como Registro Sociedades
+    }
+
+    // Calcular cuántos items hay entre el actual y el próximo del mismo nivel
+    const itemsBetween = nextIndex - currentIndex - 1;
+
+    if (itemsBetween === 0) {
+      // Items consecutivos del mismo nivel (ej: Instalación → Puntos de Acuerdo)
+      // La línea debe cubrir solo el padding-bottom del item actual
+      const gap = containerSpacing.value;
+      console.log(`[calculateGap] "${props.step.title}" → consecutivo: ${gap}px`);
+      return gap;
+    }
+
+    // ALTURA TOTAL cuando hay items intermedios
+    // MEDIDAS REALES más precisas observando el DOM:
+    // - Categoría (nivel 1): ~22px texto + 8px padding = ~30px total (SIN círculo)
+    // - Item nivel 2: ~36px (círculo + texto compacto) + 12px padding = ~48px total
+    
+    const baseGap = containerSpacing.value; // 28px para nivel 0
+    
+    // Estimación ULTRA AJUSTADA - Valor conservador
+    // Promedio entre categorías (30px) y items nivel 2 (48px) = ~39px
+    const estimatedHeightPerItem = 40; // Reducido a 40px
+    const itemsHeight = itemsBetween * estimatedHeightPerItem;
+    
+    // La altura total debe llegar justo al círculo siguiente
+    const totalHeight = baseGap + itemsHeight;
+    
+    console.log(`[calculateGap] "${props.step.title}": base=${baseGap}px + (${itemsBetween} × ${estimatedHeightPerItem}px) = ${totalHeight}px`);
+    
+    return totalHeight;
+  };
+
   const stepLink = computed(() => {
     const route = props.step.route;
     const hash = props.step.hash;
@@ -186,9 +310,15 @@
 </script>
 
 <template>
-  <div :class="containerClasses">
+  <div
+    :class="containerClasses"
+    :style="containerStyle"
+    :data-level="step.level"
+    :data-spacing="containerSpacing"
+    :data-is-category="isCategory"
+  >
     <!-- Si es categoría, mostrar separador sin círculo -->
-    <CategorySeparator v-if="isCategory" :label="step.title" />
+    <CategorySeparator v-if="isCategory" :label="step.title" :margin-bottom="12" />
 
     <!-- Si NO es categoría, mostrar item normal con círculo -->
     <div v-else :class="wrapperClasses" :style="wrapperStyle">
@@ -199,6 +329,7 @@
         :is-final-item="isFinalItem"
         :show-line="showConnector"
         :level="step.level"
+        :connector-gap="connectorGap"
       />
 
       <!-- Contenido del paso -->
@@ -232,47 +363,82 @@
   .step-item-container {
     display: flex;
     flex-direction: column;
-    margin-bottom: 12px;
+    position: relative;
+    padding-bottom: var(--step-spacing, 0px);
   }
 
   .step-item-container:last-of-type {
-    margin-bottom: 0;
+    padding-bottom: 0;
   }
 
-  .step-item-container.spacing-root {
-    margin-bottom: 20px;
+  /* 🐛 DEBUG MODE: Descomentar para ver bordes de debug */
+  /*
+  .step-item-container {
+    border: 2px dashed rgba(255, 0, 0, 0.3);
   }
-
-  .step-item-container.spacing-level1 {
-    margin-bottom: 14px;
+  
+  .step-item-container[data-level="0"] {
+    background: rgba(255, 0, 0, 0.05);
   }
-
-  .step-item-container.spacing-level2 {
-    margin-bottom: 10px;
+  
+  .step-item-container[data-level="1"] {
+    background: rgba(0, 255, 0, 0.05);
   }
-
-  .step-item-container.spacing-category {
-    margin-bottom: 18px;
+  
+  .step-item-container[data-level="2"] {
+    background: rgba(0, 0, 255, 0.05);
   }
-
-  .step-item-container.spacing-sections {
-    margin-bottom: 16px;
+  
+  .step-item-container::after {
+    content: "Nivel: " attr(data-level) " | Spacing: " attr(data-spacing) "px";
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 10px;
+    background: yellow;
+    padding: 2px 4px;
+    z-index: 999;
   }
+  */
 
   .sections-wrapper {
     padding: 8px 0;
+  }
+
+  .sections-wrapper-parent {
+    padding-left: 0;
+  }
+
+  .sections-wrapper-child {
+    padding-left: 0;
   }
 
   .sections-link {
     gap: 4px;
   }
 
-  .step-title-sections {
+  .step-title-sections,
+  .step-title-sections-child {
     font-family: var(--font-secondary);
     font-size: 13px;
     line-height: 1.5;
     font-weight: 500;
     color: #2e293d;
+  }
+
+  .sections-title-child {
+    position: relative;
+    padding-left: 18px;
+  }
+
+  .sections-title-child::before {
+    content: "--";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #676472;
+    font-family: var(--font-secondary);
+    letter-spacing: -1px;
   }
 
   .status-badge {
@@ -347,9 +513,16 @@
     color: var(--sidebar-text-secondary);
   }
 
-  /* Nivel 3+ (scroll anchors, etc.) */
+  /* Nivel 3 (scroll anchors, etc.) */
   .step-title-level3 {
     font-size: 13px;
+    line-height: 1.4;
+    font-weight: 500;
+    color: var(--sidebar-text-secondary);
+  }
+
+  .step-title-level4 {
+    font-size: 12px;
     line-height: 1.4;
     font-weight: 500;
     color: var(--sidebar-text-secondary);

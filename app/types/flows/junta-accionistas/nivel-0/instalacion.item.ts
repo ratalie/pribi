@@ -22,9 +22,7 @@ export const instalacionItem: FlowItem = {
     order: 3,
     parentId: null,
     children: [
-      "instalacion-paso-1",
-      "instalacion-paso-2",
-      "instalacion-votacion",
+      "instalacion-proceso",
       "instalacion-resumen",
     ],
   },

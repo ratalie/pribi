@@ -23,11 +23,48 @@
     variant?: PanelVariant;
   }
 
-  withDefaults(defineProps<Props>(), {
+  const props = withDefaults(defineProps<Props>(), {
     title: "",
     showTitle: false,
     variant: "default",
   });
+
+  // 🐛 DEBUG: Log del árbol de pasos al montar
+  onMounted(() => {
+    console.log("=".repeat(80));
+    console.log("🔍 [StepWizardPanel] Árbol de Pasos:");
+    console.log("=".repeat(80));
+
+    props.steps.forEach((step, index) => {
+      const indent = "  ".repeat(step.level ?? 0);
+      const prefix = step.isCategory ? "📁" : "📄";
+      const status = `[${step.status}]`;
+
+      console.log(
+        `${indent}${prefix} ${index}. ${step.title} ${status} (nivel: ${step.level ?? 0})`
+      );
+    });
+
+    console.log("=".repeat(80));
+  });
+  // Calcular el índice del próximo item del mismo o menor nivel
+  const getNextSameLevelIndex = (
+    currentIndex: number,
+    currentLevel: number
+  ): number | null => {
+    for (let i = currentIndex + 1; i < props.steps.length; i++) {
+      const step = props.steps[i];
+      if (!step) continue;
+
+      const stepLevel = step.level ?? 0;
+
+      // Si encontramos un item del mismo nivel o menor (más importante)
+      if (stepLevel <= currentLevel) {
+        return i;
+      }
+    }
+    return null; // No hay próximo item del mismo nivel
+  };
 </script>
 
 <template>
@@ -44,6 +81,7 @@
         :index="index"
         :total-steps="steps.length"
         :variant="variant"
+        :next-same-level-index="getNextSameLevelIndex(index, step.level ?? 0)"
       />
     </div>
 

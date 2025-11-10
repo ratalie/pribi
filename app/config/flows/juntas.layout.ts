@@ -59,11 +59,11 @@ const stepsSidebar: SidebarConfig = {
   items: flowTree,
   title: "Secciones",
 
-  // Filtro: Solo mostrar nivel 4 (scroll anchors)
+  // Filtro: Mostrar niveles 3 y 4 (agrupadores + secciones)
   filter: {
     type: "level",
     criteria: {
-      minLevel: 4,
+      minLevel: 3,
       maxLevel: 4,
     },
   },

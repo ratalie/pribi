@@ -3,30 +3,34 @@ import type { FlowItem } from "@/types/flow-system";
 import { FlowItemType, NavigationBehavior } from "@/types/flow-system";
 import { defaultBehavior, defaultValidation } from "../../../defaults";
 
-export const aporteDinerarioVotacionItem: FlowItem = {
+export const aporteDinerarioContenidoItem: FlowItem = {
   identity: {
-    id: "aporte-dinerario-votacion",
+    id: "aporte-dinerario-contenido",
     type: FlowItemType.STEP,
-    label: "Votación",
+    label: "Aporte Dinerario",
   },
   hierarchy: {
     level: 3,
-    order: 3,
+    order: 1,
     parentId: "aporte-dinerario",
-    children: [],
+    children: [
+      "aporte-dinerario-aportantes",
+      "aporte-dinerario-aportes",
+      "aporte-dinerario-votacion",
+    ],
   },
   navigation: {
-    route: JuntaRoutes.APORTE_DINERARIO_VOTACION,
+    route: JuntaRoutes.APORTE_DINERARIO,
     behavior: NavigationBehavior.PUSH,
   },
   behavior: defaultBehavior,
   rightSidebar: {
-    enabled: false,
+    enabled: true,
   },
   validation: defaultValidation,
   metadata: {
-    description: "Proceso de votación para el aporte dinerario",
-    tags: ["nivel-3", "aumento-capital", "votacion"],
+    description: "Introducción al acuerdo de aporte dinerario y pasos requeridos",
+    tags: ["nivel-3", "aumento-capital", "aporte-dinerario"],
     version: "1.0.0",
   },
 };

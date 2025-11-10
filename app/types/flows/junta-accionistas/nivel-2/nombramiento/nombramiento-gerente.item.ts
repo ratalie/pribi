@@ -23,7 +23,10 @@ export const nombramientoGerenteItem: FlowItem = {
     level: 2,
     order: 2,
     parentId: "nombramiento-section",
-    children: ["nombramiento-gerente-designacion", "nombramiento-gerente-votacion"],
+    children: [
+      "nombramiento-gerente-contenido",
+      "nombramiento-gerente-resumen",
+    ],
   },
   navigation: {
     route: JuntaRoutes.NOMBRAMIENTO_GERENTE,

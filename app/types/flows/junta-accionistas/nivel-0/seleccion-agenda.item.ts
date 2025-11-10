@@ -19,12 +19,7 @@ export const seleccionAgendaItem: FlowItem = {
     level: 0,
     order: 1,
     parentId: null,
-    children: [
-      "seleccion-agenda-paso-1",
-      "seleccion-agenda-paso-2",
-      "seleccion-agenda-votacion",
-      "seleccion-agenda-resumen",
-    ],
+    children: [],
   },
   navigation: {
     route: JuntaRoutes.SELECCION_AGENDA,
@@ -32,14 +27,14 @@ export const seleccionAgendaItem: FlowItem = {
   },
   behavior: defaultBehavior,
   rightSidebar: {
-    enabled: true,
-    title: "Flujo de Selección",
+    enabled: false,
+    title: "Selección de Agenda",
     contentType: "info",
   },
   validation: defaultValidation,
   metadata: {
-    description: "Seleccionar los puntos de agenda que se tratarán en la junta de accionistas",
-    tags: ["nivel-0", "inicio", "agenda"],
+    description: "Selecciona los puntos de agenda que se tratarán en la junta de accionistas",
+    tags: ["nivel-0", "seleccion-agenda", "configuracion"],
     version: "1.0.0",
   },
 };

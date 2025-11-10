@@ -23,7 +23,10 @@ export const nombramientoDirectorioItem: FlowItem = {
     level: 2,
     order: 4,
     parentId: "nombramiento-section",
-    children: ["nombramiento-directorio-designacion", "nombramiento-directorio-votacion"],
+    children: [
+      "nombramiento-directorio-contenido",
+      "nombramiento-directorio-resumen",
+    ],
   },
   navigation: {
     route: JuntaRoutes.NOMBRAMIENTO_DIRECTORIO,

@@ -1,95 +1,127 @@
 <script setup lang="ts">
-/**
- * StatusIcon - Icono de estado con línea conectora
- * Basado en CheckIcon de Registro de Sociedades pero mejorado
- * 
- * Soporta 5 estados: completed, current, empty, locked, error
- */
+  /**
+   * StatusIcon - Icono de estado con línea conectora
+   * Basado en CheckIcon de Registro de Sociedades pero mejorado
+   *
+   * Soporta 5 estados: completed, current, empty, locked, error
+   */
 
-type Status = "completed" | "current" | "empty" | "locked" | "error" | "optional" | "in-progress";
+  type Status =
+    | "completed"
+    | "current"
+    | "empty"
+    | "locked"
+    | "error"
+    | "optional"
+    | "in-progress";
 
-interface Props {
-  status?: Status;
-  isFinalItem?: boolean;
-  showLine?: boolean;
-  size?: "large" | "small";  // large: 24px (nivel 0-2), small: 20px (nivel 3-4)
-  level?: number;  // Nivel del item (para auto-determinar tamaño)
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  status: "empty",
-  isFinalItem: false,
-  showLine: true,
-  size: "large",
-});
-
-// Auto-determinar tamaño según nivel si no se especifica
-const iconSize = computed(() => {
-  // Si se especificó size explícitamente, usar ese
-  if (props.size === "small") return "small";
-  
-  // Si hay level, determinar automáticamente
-  if (props.level !== undefined) {
-    // Nivel 0-1: círculos grandes (24px)
-    if (props.level <= 1) return "large";
-    // Nivel 2+: círculos pequeños (20px) como en referencia v0
-    return "small";
+  interface Props {
+    status?: Status;
+    isFinalItem?: boolean;
+    showLine?: boolean;
+    size?: "large" | "small"; // large: 24px (nivel 0-2), small: 20px (nivel 3-4)
+    level?: number; // Nivel del item (para auto-determinar tamaño)
+    connectorGap?: number; // Espacio extra para extender la línea
   }
-  
-  // Default: large
-  return "large";
-});
 
-// Clases para el círculo según tamaño
-const circleClasses = computed(() => {
-  return iconSize.value === "large" ? "w-6 h-6" : "w-5 h-5";
-});
+  const props = withDefaults(defineProps<Props>(), {
+    status: "empty",
+    isFinalItem: false,
+    showLine: true,
+    size: "large",
+    level: 0,
+    connectorGap: 0,
+  });
 
-// Tamaño del punto interior
-const dotClasses = computed(() => {
-  return iconSize.value === "large" ? "w-2 h-2" : "w-1.5 h-1.5";
-});
+  // Auto-determinar tamaño según nivel si no se especifica
+  const iconSize = computed(() => {
+    // Si se especificó size explícitamente, usar ese
+    if (props.size === "small") return "small";
 
-// Tamaño del icono (check, lock, X)
-const iconWidth = computed(() => {
-  return iconSize.value === "large" ? "20" : "16";
-});
+    // Si hay level, determinar automáticamente
+    if (props.level !== undefined) {
+      // Nivel 0-1: círculos grandes (24px)
+      if (props.level <= 1) return "large";
+      // Nivel 2+: círculos pequeños (20px) como en referencia v0
+      return "small";
+    }
 
-const iconHeight = computed(() => {
-  return iconSize.value === "large" ? "20" : "16";
-});
+    // Default: large
+    return "large";
+  });
 
-// Estilo inline para la línea conectora según estado
-const lineStyle = computed(() => {
-  let bgColor = "var(--sidebar-empty)";
-  
-  switch (props.status) {
-    case "completed":
-    case "current":
-    case "in-progress":
-      bgColor = "var(--sidebar-primary)";
-      break;
-    case "optional":
-      bgColor = "var(--sidebar-optional)";
-      break;
-    case "error":
-      bgColor = "var(--sidebar-error)";
-      break;
-    default:
-      bgColor = "var(--sidebar-border)";
-  }
-  
-  return { backgroundColor: bgColor };
-});
+  // Clases para el círculo según tamaño
+  const circleClasses = computed(() => {
+    return iconSize.value === "large" ? "w-6 h-6" : "w-5 h-5";
+  });
+
+  // Tamaño del punto interior
+  const dotClasses = computed(() => {
+    return iconSize.value === "large" ? "w-2 h-2" : "w-1.5 h-1.5";
+  });
+
+  // Tamaño del icono (check, lock, X)
+  const iconWidth = computed(() => {
+    return iconSize.value === "large" ? "20" : "16";
+  });
+
+  const iconHeight = computed(() => {
+    return iconSize.value === "large" ? "20" : "16";
+  });
+
+  // Estilo inline para la línea conectora según estado
+  const lineStyle = computed(() => {
+    let bgColor = "var(--sidebar-empty)";
+
+    switch (props.status) {
+      case "completed":
+      case "current":
+      case "in-progress":
+        bgColor = "var(--sidebar-primary)";
+        break;
+      case "optional":
+        bgColor = "var(--sidebar-optional)";
+        break;
+      case "error":
+        bgColor = "var(--sidebar-error)";
+        break;
+      default:
+        bgColor = "var(--sidebar-border)";
+    }
+
+    return { backgroundColor: bgColor };
+  });
+
+  const connectorGapValue = computed(() => Math.max(props.connectorGap ?? 0, 0));
+  const connectorColor = computed(
+    () => lineStyle.value.backgroundColor ?? "var(--sidebar-border)"
+  );
+
+  // 🐛 DEBUG: Deshabilitado para reducir ruido en consola
+  // watchEffect(() => {
+  //   if (props.connectorGap > 0) {
+  //     console.log(`[StatusIcon] Connector:`, {
+  //       level: props.level,
+  //       connectorGap: props.connectorGap,
+  //       connectorGapValue: connectorGapValue.value,
+  //       isFinalItem: props.isFinalItem,
+  //       showLine: props.showLine,
+  //       calculatedHeight: `calc(100% + ${connectorGapValue.value}px)`,
+  //     });
+  //   }
+  // });
 </script>
 
 <template>
-  <div class="flex flex-col justify-center items-center">
+  <div class="flex flex-col items-center relative">
     <!-- Completado: círculo azul con check blanco -->
     <div
       v-if="status === 'completed'"
       :class="[circleClasses, 'flex items-center justify-center border-2 rounded-full']"
-      style="background-color: var(--sidebar-completed); border-color: var(--sidebar-completed);"
+      style="
+        background-color: var(--sidebar-completed);
+        border-color: var(--sidebar-completed);
+      "
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -112,17 +144,26 @@ const lineStyle = computed(() => {
     <!-- Actual: círculo azul con punto -->
     <div
       v-else-if="status === 'current' || status === 'in-progress'"
-      :class="[circleClasses, 'flex items-center justify-center border-2 rounded-full bg-white']"
-      style="border-color: var(--sidebar-current);"
+      :class="[
+        circleClasses,
+        'flex items-center justify-center border-2 rounded-full bg-white',
+      ]"
+      style="border-color: var(--sidebar-current)"
     >
-      <span :class="[dotClasses, 'rounded-full']" style="background-color: var(--sidebar-current);" />
+      <span
+        :class="[dotClasses, 'rounded-full']"
+        style="background-color: var(--sidebar-current)"
+      />
     </div>
 
     <!-- Bloqueado: círculo gris con candado -->
     <div
       v-else-if="status === 'locked'"
-      :class="[circleClasses, 'flex items-center justify-center border-2 rounded-full bg-white']"
-      style="border-color: var(--sidebar-locked);"
+      :class="[
+        circleClasses,
+        'flex items-center justify-center border-2 rounded-full bg-white',
+      ]"
+      style="border-color: var(--sidebar-locked)"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -143,15 +184,18 @@ const lineStyle = computed(() => {
     <!-- Opcional: círculo con borde punteado -->
     <div
       v-else-if="status === 'optional'"
-      :class="[circleClasses, 'flex items-center justify-center border-2 rounded-full bg-white']"
-      style="border-color: var(--sidebar-optional); border-style: dashed;"
+      :class="[
+        circleClasses,
+        'flex items-center justify-center border-2 rounded-full bg-white',
+      ]"
+      style="border-color: var(--sidebar-optional); border-style: dashed"
     />
 
     <!-- Error: círculo rojo con X blanca -->
     <div
       v-else-if="status === 'error'"
       :class="[circleClasses, 'flex items-center justify-center border-2 rounded-full']"
-      style="background-color: var(--sidebar-error); border-color: var(--sidebar-error);"
+      style="background-color: var(--sidebar-error); border-color: var(--sidebar-error)"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -174,16 +218,27 @@ const lineStyle = computed(() => {
     <!-- Vacío: círculo gris vacío -->
     <div
       v-else
-      :class="[circleClasses, 'flex items-center justify-center border-2 rounded-full bg-white']"
-      style="border-color: var(--sidebar-empty);"
+      :class="[
+        circleClasses,
+        'flex items-center justify-center border-2 rounded-full bg-white',
+      ]"
+      style="border-color: var(--sidebar-empty)"
     />
 
-    <!-- Línea conectora vertical -->
+    <!-- Línea conectora vertical - POSICIÓN ABSOLUTA para no empujar elementos -->
     <div
       v-if="!isFinalItem && showLine"
-      class="w-0.5 h-8 relative transition-colors duration-300"
-      :style="lineStyle"
+      class="absolute transition-colors duration-300"
+      :style="{
+        backgroundColor: connectorColor,
+        width: '2px',
+        height: connectorGapValue > 0 ? `${connectorGapValue}px` : '32px',
+        top: iconSize === 'large' ? '30px' : '26px', // Círculo (24px o 20px) + gap (6px)
+        left: '50%',
+        marginLeft: '-1px', // Centra exactamente (2px / 2)
+      }"
+      :data-connector-gap="connectorGapValue"
+      :data-level="level"
     />
   </div>
 </template>
-

@@ -4,40 +4,42 @@ import { FlowItemType, NavigationBehavior } from "@/types/flow-system";
 import { defaultBehavior, defaultValidation } from "../../defaults";
 
 const baseParentId = "detalles";
-const baseRoute = JuntaRoutes.DETALLES;
 
-export const detallesJuntaPasoUnoItem: FlowItem = {
+export const detallesJuntaGeneralItem: FlowItem = {
   identity: {
-    id: "detalles-junta-paso-1",
+    id: "detalles-junta-general",
     type: FlowItemType.STEP,
-    label: "Paso 1 · Datos Generales",
+    label: "Detalles de la Junta",
   },
   hierarchy: {
     level: 3,
     order: 1,
     parentId: baseParentId,
-    children: [],
+    children: [
+      "detalles-junta-tipo",
+      "detalles-junta-modalidad",
+      "detalles-junta-convocatoria",
+    ],
   },
   navigation: {
-    route: baseRoute,
+    route: JuntaRoutes.DETALLES,
     behavior: NavigationBehavior.PUSH,
-    hash: "#paso-1",
   },
   behavior: defaultBehavior,
-  rightSidebar: { enabled: false },
+  rightSidebar: { enabled: true },
   validation: defaultValidation,
   metadata: {
-    description: "Completar los datos generales de la junta",
-    tags: ["nivel-3", "detalles", "paso-1"],
+    description: "Configuración general de tipo, modalidad y convocatoria de la junta",
+    tags: ["nivel-3", "detalles", "general"],
     version: "1.0.0",
   },
 };
 
-export const detallesJuntaPasoDosItem: FlowItem = {
+export const detallesJuntaResumenItem: FlowItem = {
   identity: {
-    id: "detalles-junta-paso-2",
+    id: "detalles-junta-resumen",
     type: FlowItemType.STEP,
-    label: "Paso 2 · Participantes",
+    label: "Resumen",
   },
   hierarchy: {
     level: 3,
@@ -46,69 +48,14 @@ export const detallesJuntaPasoDosItem: FlowItem = {
     children: [],
   },
   navigation: {
-    route: baseRoute,
+    route: JuntaRoutes.DETALLES_RESUMEN,
     behavior: NavigationBehavior.PUSH,
-    hash: "#paso-2",
   },
   behavior: defaultBehavior,
   rightSidebar: { enabled: false },
   validation: defaultValidation,
   metadata: {
-    description: "Registrar participantes y representación",
-    tags: ["nivel-3", "detalles", "paso-2"],
-    version: "1.0.0",
-  },
-};
-
-export const detallesJuntaPasoVotacionItem: FlowItem = {
-  identity: {
-    id: "detalles-junta-votacion",
-    type: FlowItemType.STEP,
-    label: "Votación",
-  },
-  hierarchy: {
-    level: 3,
-    order: 3,
-    parentId: baseParentId,
-    children: [],
-  },
-  navigation: {
-    route: baseRoute,
-    behavior: NavigationBehavior.PUSH,
-    hash: "#votacion",
-  },
-  behavior: defaultBehavior,
-  rightSidebar: { enabled: false },
-  validation: defaultValidation,
-  metadata: {
-    description: "Registrar acuerdos sobre los detalles de la junta",
-    tags: ["nivel-3", "detalles", "votacion"],
-    version: "1.0.0",
-  },
-};
-
-export const detallesJuntaPasoResumenItem: FlowItem = {
-  identity: {
-    id: "detalles-junta-resumen",
-    type: FlowItemType.STEP,
-    label: "Resumen",
-  },
-  hierarchy: {
-    level: 3,
-    order: 4,
-    parentId: baseParentId,
-    children: [],
-  },
-  navigation: {
-    route: baseRoute,
-    behavior: NavigationBehavior.PUSH,
-    hash: "#resumen",
-  },
-  behavior: defaultBehavior,
-  rightSidebar: { enabled: false },
-  validation: defaultValidation,
-  metadata: {
-    description: "Resumen del registro de detalles de la junta",
+    description: "Resumen de la configuración registrada en los detalles de la junta",
     tags: ["nivel-3", "detalles", "resumen"],
     version: "1.0.0",
   },

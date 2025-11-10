@@ -23,7 +23,10 @@ export const nombramientoAuditoresItem: FlowItem = {
     level: 2,
     order: 5,
     parentId: "nombramiento-section",
-    children: ["nombramiento-auditores-designacion", "nombramiento-auditores-votacion"],
+    children: [
+      "nombramiento-auditores-contenido",
+      "nombramiento-auditores-resumen",
+    ],
   },
   navigation: {
     route: JuntaRoutes.NOMBRAMIENTO_AUDITORES,

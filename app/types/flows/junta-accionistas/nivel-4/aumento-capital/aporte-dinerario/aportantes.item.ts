@@ -3,20 +3,24 @@ import type { FlowItem } from "@/types/flow-system";
 import { FlowItemType, NavigationBehavior } from "@/types/flow-system";
 import { defaultBehavior, defaultValidation } from "../../../defaults";
 
-export const capitalizacionCreditosDetalleItem: FlowItem = {
+/**
+ * FlowItem Nivel 4: Aportantes (Aporte Dinerario)
+ * Sub-item que aparece en rightSidebar agrupado bajo "Aporte Dinerario"
+ */
+export const aporteDinerarioAportantesItem: FlowItem = {
   identity: {
-    id: "capitalizacion-creditos-creditos",
+    id: "aporte-dinerario-aportantes",
     type: FlowItemType.STEP,
-    label: "Créditos",
+    label: "Aportantes",
   },
   hierarchy: {
-    level: 3,
-    order: 2,
-    parentId: "capitalizacion-creditos",
+    level: 4,
+    order: 1,
+    parentId: "aporte-dinerario-contenido",
     children: [],
   },
   navigation: {
-    route: JuntaRoutes.CAPITALIZACION_CREDITOS_DETALLE,
+    route: JuntaRoutes.APORTE_DINERARIO_APORTANTES,
     behavior: NavigationBehavior.PUSH,
   },
   behavior: defaultBehavior,
@@ -25,8 +29,8 @@ export const capitalizacionCreditosDetalleItem: FlowItem = {
   },
   validation: defaultValidation,
   metadata: {
-    description: "Detalle de los créditos a capitalizar",
-    tags: ["nivel-3", "aumento-capital", "creditos"],
+    description: "Gestión de aportantes en el aumento de capital por aporte dinerario",
+    tags: ["nivel-4", "aumento-capital", "aportantes"],
     version: "1.0.0",
   },
 };

@@ -5,4 +5,6 @@
  * (scroll anchors dentro de páginas).
  */
 
+export * from "./base";
+export * from "./aumento-capital";
 export * from "./nombramiento";

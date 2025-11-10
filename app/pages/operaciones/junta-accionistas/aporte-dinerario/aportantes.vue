@@ -1,21 +1,16 @@
 <template>
   <SlotWrapper>
     <TitleH2
-      title="Selección de Aportantes"
+      title="Aportantes"
       subtitle="Selecciona los aportantes que participarán en la junta de accionistas."
     />
     <div class="flex flex-col gap-10">
-      <div class="flex flex-col gap-5">
-        <TitleH4 title="Aportantes" :variant="Titles.WITH_SUBTITLE_SPACING" />
-        <BlankContainer />
-      </div>
+      <BlankContainer />
     </div>
   </SlotWrapper>
 </template>
 
 <script setup lang="ts">
-  import Titles from "~/types/enums/Titles.enum";
-
   // Página: Aportantes (Sub-paso de Aporte Dinerario)
   // Nivel: 3 (Sub-página en rightSidebar)
   // Padre: aporte-dinerario/index.vue (Nivel 2)

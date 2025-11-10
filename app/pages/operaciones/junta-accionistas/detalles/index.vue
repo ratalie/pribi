@@ -2,34 +2,28 @@
   <SlotWrapper>
     <TitleH2
       title="Detalles de la Junta"
-      subtitle="Configuración de los detalles de la junta: tipo, modo, fecha."
+      subtitle="Configura los datos esenciales de la junta antes de iniciar el flujo."
     />
+
     <div class="flex flex-col gap-10">
-      <div class="flex flex-col gap-5">
-        <TitleH4 title="Tipo de Junta" :variant="Titles.WITH_SUBTITLE_SPACING" />
-        <BlankContainer />
-      </div>
-      <div class="flex flex-col gap-5">
-        <TitleH4 title="Modalidad de la Junta" :variant="Titles.WITH_SUBTITLE_SPACING" />
-        <BlankContainer />
-      </div>
-      <div class="flex flex-col gap-5">
-        <TitleH4 title="Convocatoria" :variant="Titles.WITH_SUBTITLE_SPACING" />
-        <BlankContainer />
-      </div>
+      <TipoJuntaSection />
+      <ModalidadJuntaSection />
+      <ConvocatoriaJuntaSection />
     </div>
   </SlotWrapper>
 </template>
 
 <script setup lang="ts">
-  import Titles from "~/types/enums/Titles.enum";
+import TipoJuntaSection from "~/components/juntas/detalles/TipoJuntaSection.vue";
+import ModalidadJuntaSection from "~/components/juntas/detalles/ModalidadJuntaSection.vue";
+import ConvocatoriaJuntaSection from "~/components/juntas/detalles/ConvocatoriaJuntaSection.vue";
 
-  // Página: Detalles de la Junta
-  // Nivel: 0 (Principal)
-  // RightSidebar: Habilitado (tipo, modo, fecha)
-  // Ruta: /operaciones/junta-accionistas/detalles
+// Página: Detalles de la Junta
+// Nivel: 0 (Principal)
+// RightSidebar: Anclas a las secciones internas
+// Ruta: /operaciones/junta-accionistas/detalles
 
-  definePageMeta({
-    layout: "dual-panel-layout",
-  });
+definePageMeta({
+  layout: "dual-panel-layout",
+});
 </script>

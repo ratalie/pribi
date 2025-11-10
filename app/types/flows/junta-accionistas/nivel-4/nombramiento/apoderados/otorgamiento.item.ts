@@ -3,30 +3,28 @@ import type { FlowItem } from "@/types/flow-system";
 import { FlowItemType, NavigationBehavior } from "@/types/flow-system";
 import { defaultBehavior, defaultValidation } from "../../../defaults";
 
-export const capitalizacionVotacionItem: FlowItem = {
+export const nombramientoApoderadosOtorgamientoItem: FlowItem = {
   identity: {
-    id: "capitalizacion-creditos-votacion",
+    id: "nombramiento-apoderados-otorgamiento",
     type: FlowItemType.STEP,
-    label: "Votación",
+    label: "Otorgamiento",
   },
   hierarchy: {
-    level: 3,
-    order: 3,
-    parentId: "capitalizacion-creditos",
+    level: 4,
+    order: 2,
+    parentId: "nombramiento-apoderados-contenido",
     children: [],
   },
   navigation: {
-    route: JuntaRoutes.CAPITALIZACION_VOTACION,
+    route: JuntaRoutes.NOMBRAMIENTO_APODERADOS_OTORGAMIENTO,
     behavior: NavigationBehavior.PUSH,
   },
   behavior: defaultBehavior,
-  rightSidebar: {
-    enabled: false,
-  },
+  rightSidebar: { enabled: false },
   validation: defaultValidation,
   metadata: {
-    description: "Proceso de votación para capitalización de créditos",
-    tags: ["nivel-3", "aumento-capital", "votacion"],
+    description: "Registro del otorgamiento de poderes y facultades delegadas",
+    tags: ["nivel-4", "nombramiento", "apoderados"],
     version: "1.0.0",
   },
 };

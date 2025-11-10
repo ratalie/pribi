@@ -1,4 +1,2 @@
-export { aporteDinerarioActaItem } from "./acta.item";
-export { aporteDinerarioAportantesItem } from "./aportantes.item";
-export { aporteDinerarioAportesItem } from "./aportes.item";
-export { aporteDinerarioVotacionItem } from "./votacion.item";
+export { aporteDinerarioContenidoItem } from "./contenido.item";
+export { aporteDinerarioResumenItem } from "./resumen.item";

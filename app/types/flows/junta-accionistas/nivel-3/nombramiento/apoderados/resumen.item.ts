@@ -3,31 +3,28 @@ import type { FlowItem } from "@/types/flow-system";
 import { FlowItemType, NavigationBehavior } from "@/types/flow-system";
 import { defaultBehavior, defaultValidation } from "../../../defaults";
 
-export const aporteDinerarioActaItem: FlowItem = {
+export const nombramientoApoderadosResumenItem: FlowItem = {
   identity: {
-    id: "aporte-dinerario-acta",
+    id: "nombramiento-apoderados-resumen",
     type: FlowItemType.STEP,
-    label: "Acta",
+    label: "Resumen",
   },
   hierarchy: {
     level: 3,
-    order: 4,
-    parentId: "aporte-dinerario",
+    order: 2,
+    parentId: "nombramiento-apoderados",
     children: [],
   },
   navigation: {
-    route: JuntaRoutes.APORTE_DINERARIO,
+    route: JuntaRoutes.NOMBRAMIENTO_APODERADOS_RESUMEN,
     behavior: NavigationBehavior.PUSH,
-    hash: "#acta",
   },
   behavior: defaultBehavior,
-  rightSidebar: {
-    enabled: false,
-  },
+  rightSidebar: { enabled: false },
   validation: defaultValidation,
   metadata: {
-    description: "Acta del acuerdo de aporte dinerario",
-    tags: ["nivel-3", "aumento-capital", "acta"],
+    description: "Resumen del nombramiento de apoderados y acuerdos asociados",
+    tags: ["nivel-3", "nombramiento", "apoderados", "resumen"],
     version: "1.0.0",
   },
 };

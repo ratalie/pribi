@@ -3,34 +3,28 @@ import type { FlowItem } from "@/types/flow-system";
 import { FlowItemType, NavigationBehavior } from "@/types/flow-system";
 import { defaultBehavior, defaultValidation } from "../../../defaults";
 
-/**
- * FlowItem Nivel 3: Aportantes (Aporte Dinerario)
- * Sub-item que aparece en rightSidebar
- */
-export const aporteDinerarioAportantesItem: FlowItem = {
+export const nombramientoDirectorioDesignacionItem: FlowItem = {
   identity: {
-    id: "aporte-dinerario-aportantes",
+    id: "nombramiento-directorio-designacion",
     type: FlowItemType.STEP,
-    label: "Aportantes",
+    label: "Designación",
   },
   hierarchy: {
-    level: 3,
+    level: 4,
     order: 1,
-    parentId: "aporte-dinerario",
+    parentId: "nombramiento-directorio-contenido",
     children: [],
   },
   navigation: {
-    route: JuntaRoutes.APORTE_DINERARIO_APORTANTES,
+    route: JuntaRoutes.NOMBRAMIENTO_DIRECTORIO_DETALLE,
     behavior: NavigationBehavior.PUSH,
   },
   behavior: defaultBehavior,
-  rightSidebar: {
-    enabled: false,
-  },
+  rightSidebar: { enabled: false },
   validation: defaultValidation,
   metadata: {
-    description: "Gestión de aportantes en el aumento de capital por aporte dinerario",
-    tags: ["nivel-3", "aumento-capital", "aportantes"],
+    description: "Designación de los integrantes del directorio",
+    tags: ["nivel-4", "nombramiento", "directorio"],
     version: "1.0.0",
   },
 };

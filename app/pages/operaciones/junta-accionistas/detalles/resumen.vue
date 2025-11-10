@@ -3,7 +3,7 @@
     <SummarySectionRenderer
       section-id="detalles"
       title-override="Detalles de la Junta · Resumen"
-      description="Consolidado de información operativa: modalidad, horarios, participantes confirmados y documentación soporte."
+      description="Consolidado de las decisiones registradas sobre tipo, modalidad y convocatoria de la junta."
     />
   </div>
 </template>

@@ -1,18 +1,16 @@
 <template>
-  <div class="page-container p-6 space-y-4">
-    <header>
-      <h1 class="text-2xl font-semibold">Capitalización de Créditos · Resumen</h1>
-      <p class="text-sm text-muted-foreground">Resumen del proceso de capitalización.</p>
-    </header>
-
-    <section class="card p-4 border rounded-md bg-white shadow-sm">
-      <p class="text-gray-600">
-        Aquí se consolidarán los acreedores, créditos capitalizados, resultados de la votación y acta asociada.</p>
-    </section>
+  <div class="page-container p-8">
+    <SummarySectionRenderer
+      section-id="capitalizacion-creditos"
+      title-override="Capitalización de Créditos · Resumen"
+      description="Panorama general de los acreedores, créditos y resultado de la votación registrados."
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import SummarySectionRenderer from "@/components/juntas/SummarySectionRenderer.vue";
+
 definePageMeta({
   layout: "dual-panel-layout",
 });

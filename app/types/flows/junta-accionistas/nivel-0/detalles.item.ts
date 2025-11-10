@@ -22,9 +22,7 @@ export const detallesItem: FlowItem = {
     order: 2,
     parentId: null,
     children: [
-      "detalles-junta-paso-1",
-      "detalles-junta-paso-2",
-      "detalles-junta-votacion",
+      "detalles-junta-general",
       "detalles-junta-resumen",
     ],
   },

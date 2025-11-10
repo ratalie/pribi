@@ -1,42 +1,21 @@
 <template>
-  <div class="page-container p-6">
-    <div class="space-y-2 mb-6">
-      <h1 class="text-3xl font-bold tracking-tight">Nombramiento de Directorio</h1>
-      <p class="text-sm text-muted-foreground font-mono">
-        {{ $route.path }}
-      </p>
-    </div>
+  <SlotWrapper>
+    <TitleH2
+      title="Nombramiento de Directorio"
+      subtitle="Gestiona la conformación y aprobación del directorio completo."
+    />
 
-    <div class="placeholder mt-4">
-      <p class="text-gray-600 dark:text-gray-300">
-        Esta es la página principal del flujo de
-        <strong>Nombramiento de Directorio Completo</strong>
-        . Aquí se configura el nombramiento del directorio en su totalidad.
+    <div class="flex flex-col gap-8">
+      <p class="text-sm text-muted-foreground">
+        Consulta esta introducción y sigue los pasos detallados desde el panel derecho para completar el proceso.
       </p>
-      <p class="text-xs text-blue-500 mt-2">
-        📌
-        <strong>RightSidebar:</strong>
-        Habilitado (muestra sub-pasos: Nombramiento → Votación)
-      </p>
-      <p class="text-xs text-purple-500 mt-1">
-        🔹
-        <strong>Nivel 2:</strong>
-        Página padre de 2 sub-páginas en rightSidebar
-      </p>
+      <BlankContainer />
     </div>
-  </div>
+  </SlotWrapper>
 </template>
 
 <script setup lang="ts">
-definePageMeta({
-  layout: "dual-panel-layout",
-});
-
-  // Página: Nombramiento de Directorio (Principal)
-  // Nivel: 2 (Categoria dentro de Nombramiento)
-  // Padre: puntos-acuerdo.vue (Nivel 0 - PADRE COMPLEJO)
-  // RightSidebar: Enabled (showChildrenInSidebar: true)
-  // Hijos en RightSidebar: nombramiento.vue, votacion.vue
-  // Ruta: /operaciones/junta-accionistas/nombramiento-directorio
-  // Enum: JuntaRoutes.NOMBRAMIENTO_DIRECTORIO
+  definePageMeta({
+    layout: "dual-panel-layout",
+  });
 </script>

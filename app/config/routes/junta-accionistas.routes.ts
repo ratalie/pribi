@@ -17,9 +17,13 @@ export enum JuntaRoutes {
 
   /** Detalles de la junta (tipo, modo, fecha) */
   DETALLES = "/operaciones/junta-accionistas/detalles",
+  /** Resumen de detalles de la junta */
+  DETALLES_RESUMEN = "/operaciones/junta-accionistas/detalles/resumen",
 
   /** Instalación de la junta (convocatoria, asistencia, mesa) */
   INSTALACION = "/operaciones/junta-accionistas/instalacion",
+  /** Resumen de instalación de la junta */
+  INSTALACION_RESUMEN = "/operaciones/junta-accionistas/instalacion/resumen",
 
   /** Puntos de acuerdo (padre complejo) */
   PUNTOS_ACUERDO = "/operaciones/junta-accionistas/puntos-acuerdo",
@@ -47,6 +51,8 @@ export enum JuntaRoutes {
 
   /** Sub-página: Votación */
   APORTE_DINERARIO_VOTACION = "/operaciones/junta-accionistas/aporte-dinerario/votacion",
+  /** Sub-página: Resumen */
+  APORTE_DINERARIO_RESUMEN = "/operaciones/junta-accionistas/aporte-dinerario/resumen",
 
   // -- Capitalización de Créditos --
 
@@ -61,6 +67,8 @@ export enum JuntaRoutes {
 
   /** Sub-página: Votación */
   CAPITALIZACION_VOTACION = "/operaciones/junta-accionistas/capitalizacion-creditos/votacion",
+  /** Sub-página: Resumen */
+  CAPITALIZACION_CREDITOS_RESUMEN = "/operaciones/junta-accionistas/capitalizacion-creditos/resumen",
 
   // ============================================
   // NIVEL 2: Nombramiento (15 rutas)
@@ -218,7 +226,9 @@ export function getJuntaRouteName(route: JuntaRoutes): string {
     // Nivel 0
     [JuntaRoutes.SELECCION_AGENDA]: "Selección de Agenda",
     [JuntaRoutes.DETALLES]: "Detalles de la Junta",
+    [JuntaRoutes.DETALLES_RESUMEN]: "Detalles · Resumen",
     [JuntaRoutes.INSTALACION]: "Instalación",
+    [JuntaRoutes.INSTALACION_RESUMEN]: "Instalación · Resumen",
     [JuntaRoutes.PUNTOS_ACUERDO]: "Puntos de Acuerdo",
     [JuntaRoutes.RESUMEN]: "Resumen",
     [JuntaRoutes.DESCARGAR]: "Descargar",
@@ -228,12 +238,14 @@ export function getJuntaRouteName(route: JuntaRoutes): string {
     [JuntaRoutes.APORTE_DINERARIO_APORTANTES]: "Aportantes",
     [JuntaRoutes.APORTE_DINERARIO_APORTES]: "Aportes",
     [JuntaRoutes.APORTE_DINERARIO_VOTACION]: "Votación",
+    [JuntaRoutes.APORTE_DINERARIO_RESUMEN]: "Resumen",
 
     // Capitalización
     [JuntaRoutes.CAPITALIZACION_CREDITOS]: "Capitalización de Créditos",
     [JuntaRoutes.CAPITALIZACION_ACREEDORES]: "Acreedores",
     [JuntaRoutes.CAPITALIZACION_CREDITOS_DETALLE]: "Créditos",
     [JuntaRoutes.CAPITALIZACION_VOTACION]: "Votación",
+    [JuntaRoutes.CAPITALIZACION_CREDITOS_RESUMEN]: "Resumen",
 
     // Nombramiento Apoderados
     [JuntaRoutes.NOMBRAMIENTO_APODERADOS]: "Nombramiento de Apoderados",

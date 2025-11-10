@@ -3,80 +3,86 @@ import type { FlowItem } from "@/types/flow-system";
 import { FlowItemType, NavigationBehavior } from "@/types/flow-system";
 import { defaultBehavior, defaultValidation } from "../../defaults";
 
-export const nombramientoApoderadosDesignacionItem: FlowItem = {
+const parentId = "detalles-junta-general";
+const baseRoute = JuntaRoutes.DETALLES;
+
+export const detallesJuntaTipoItem: FlowItem = {
   identity: {
-    id: "nombramiento-apoderados-designacion",
+    id: "detalles-junta-tipo",
     type: FlowItemType.STEP,
-    label: "Designación",
+    label: "Tipo de Junta",
   },
   hierarchy: {
-    level: 3,
+    level: 4,
     order: 1,
-    parentId: "nombramiento-apoderados",
+    parentId,
     children: [],
   },
   navigation: {
-    route: JuntaRoutes.NOMBRAMIENTO_APODERADOS_DETALLE,
+    route: baseRoute,
     behavior: NavigationBehavior.PUSH,
+    hash: "#tipo-junta",
   },
   behavior: defaultBehavior,
   rightSidebar: { enabled: false },
   validation: defaultValidation,
   metadata: {
-    description: "Designación de apoderados",
-    tags: ["nivel-3", "nombramiento", "apoderados"],
+    description: "Define si la junta es ordinaria, extraordinaria u otra modalidad estatutaria",
+    tags: ["nivel-4", "detalles", "tipo-junta"],
     version: "1.0.0",
   },
 };
 
-export const nombramientoApoderadosOtorgamientoItem: FlowItem = {
+export const detallesJuntaModalidadItem: FlowItem = {
   identity: {
-    id: "nombramiento-apoderados-otorgamiento",
+    id: "detalles-junta-modalidad",
     type: FlowItemType.STEP,
-    label: "Otorgamiento",
+    label: "Modalidad de la Junta",
   },
   hierarchy: {
-    level: 3,
+    level: 4,
     order: 2,
-    parentId: "nombramiento-apoderados",
+    parentId,
     children: [],
   },
   navigation: {
-    route: JuntaRoutes.NOMBRAMIENTO_APODERADOS_OTORGAMIENTO,
+    route: baseRoute,
     behavior: NavigationBehavior.PUSH,
+    hash: "#modalidad-junta",
   },
   behavior: defaultBehavior,
   rightSidebar: { enabled: false },
   validation: defaultValidation,
   metadata: {
-    description: "Otorgamiento de poderes",
-    tags: ["nivel-3", "nombramiento", "otorgamiento"],
+    description: "Registra si la sesión será presencial, virtual o mixta",
+    tags: ["nivel-4", "detalles", "modalidad"],
     version: "1.0.0",
   },
 };
 
-export const nombramientoApoderadosVotacionItem: FlowItem = {
+export const detallesJuntaConvocatoriaItem: FlowItem = {
   identity: {
-    id: "nombramiento-apoderados-votacion",
+    id: "detalles-junta-convocatoria",
     type: FlowItemType.STEP,
-    label: "Votación",
+    label: "Convocatoria",
   },
   hierarchy: {
-    level: 3,
+    level: 4,
     order: 3,
-    parentId: "nombramiento-apoderados",
+    parentId,
     children: [],
   },
   navigation: {
-    route: JuntaRoutes.NOMBRAMIENTO_APODERADOS_VOTACION,
+    route: baseRoute,
     behavior: NavigationBehavior.PUSH,
+    hash: "#convocatoria",
   },
   behavior: defaultBehavior,
   rightSidebar: { enabled: false },
   validation: defaultValidation,
   metadata: {
-    description: "Votación del nombramiento de apoderados",
-    tags: ["nivel-3", "nombramiento", "votacion"],
+    description: "Gestiona la publicación de la convocatoria y los soportes legales",
+    tags: ["nivel-4", "detalles", "convocatoria"],
     version: "1.0.0",
   },
 };

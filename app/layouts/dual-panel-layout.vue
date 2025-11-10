@@ -153,32 +153,30 @@ function getContextualSidebarConfig(sidebar: SidebarConfig): SidebarConfig & { p
   }
 
   const level = currentItem.value.hierarchy.level ?? 0;
+  const levelFilterCriteria = {
+    minLevel: 3,
+    maxLevel: 4,
+  };
 
-  // Nivel 0-1: mostrar sub-pasos predefinidos (nivel 3)
+  // Nivel 0-1: mostrar sub-pasos agrupados (niveles 3-4)
   if (level === 0 || level === 1) {
     config.items = currentItem.value.children || [];
     config.filter = {
       type: "level",
-      criteria: {
-        minLevel: 3,
-        maxLevel: 3,
-      },
+      criteria: levelFilterCriteria,
     };
     config.panelMode = "wizard";
   }
-  // Nivel 2: mostrar hijos de nivel 3 (pasos del acuerdo)
+  // Nivel 2: mostrar hijos de nivel 3 (pasos del acuerdo) y sus secciones nivel 4
   else if (level === 2) {
     config.items = currentItem.value.children || [];
     config.filter = {
       type: "level",
-      criteria: {
-        minLevel: 3,
-        maxLevel: 3,
-      },
+      criteria: levelFilterCriteria,
     };
     config.panelMode = "wizard";
   }
-  // Nivel 3: mantener listado de pasos hermanos (nivel 3) en modo wizard
+  // Nivel 3: mantener listado de pasos hermanos (nivel 3) + secciones (nivel 4)
   else if (level === 3) {
     const parentId = currentItem.value.hierarchy.parentId;
     if (parentId) {
@@ -187,30 +185,27 @@ function getContextualSidebarConfig(sidebar: SidebarConfig): SidebarConfig & { p
         config.items = parent.children;
         config.filter = {
           type: "level",
-          criteria: {
-            minLevel: 3,
-            maxLevel: 3,
-          },
+          criteria: levelFilterCriteria,
         };
         config.panelMode = "wizard";
       }
     }
   }
-  // Nivel 4: mostrar hermanos (otros anchors del mismo padre)
+  // Nivel 4+: mantener estructura del padre de nivel 3 y mostrar secciones hermanas sin cambiar modo
   else if (level >= 4) {
     const parentId = currentItem.value.hierarchy.parentId;
     if (parentId) {
       const parent = findItemById(flowTree.value, parentId);
-      if (parent?.children) {
-        config.items = parent.children;
+      const grandParentId = parent?.hierarchy.parentId;
+      const source = grandParentId ? findItemById(flowTree.value, grandParentId) : parent;
+
+      if (source?.children) {
+        config.items = source.children;
         config.filter = {
           type: "level",
-          criteria: {
-            minLevel: 4,
-            maxLevel: 4,
-          },
+          criteria: levelFilterCriteria,
         };
-        config.panelMode = "scroll-anchor";
+        config.panelMode = "wizard";
       }
     }
   }

@@ -2,40 +2,28 @@
   <SlotWrapper>
     <TitleH2
       title="Instalación de la Junta"
-      subtitle="Proceso de instalación de la junta: convocatoria, asistencia, presidente y secretario."
+      subtitle="Realiza la convocatoria, registra la asistencia y conforma la mesa directiva."
     />
+
     <div class="flex flex-col gap-10">
-      <div class="flex flex-col gap-5">
-        <TitleH4 title="Convocatoria realizada" :variant="Titles.WITH_SUBTITLE_SPACING" />
-        <BlankContainer />
-      </div>
-      <div class="flex flex-col gap-5">
-        <TitleH4
-          title="Asistencia y representación de los accionistas"
-          :variant="Titles.WITH_SUBTITLE_SPACING"
-        />
-        <BlankContainer />
-      </div>
-      <div class="flex flex-col gap-5">
-        <TitleH4
-          title="Presidente y Secretario de la Junta"
-          :variant="Titles.WITH_SUBTITLE_SPACING"
-        />
-        <BlankContainer />
-      </div>
+      <ConvocatoriaRealizadaSection />
+      <AsistenciaRepresentacionSection />
+      <MesaDirectivaSection />
     </div>
   </SlotWrapper>
 </template>
 
 <script setup lang="ts">
-  import Titles from "~/types/enums/Titles.enum";
+import ConvocatoriaRealizadaSection from "~/components/juntas/instalacion/ConvocatoriaRealizadaSection.vue";
+import AsistenciaRepresentacionSection from "~/components/juntas/instalacion/AsistenciaRepresentacionSection.vue";
+import MesaDirectivaSection from "~/components/juntas/instalacion/MesaDirectivaSection.vue";
 
-  // Página: Instalación de la Junta
-  // Nivel: 0 (Principal)
-  // RightSidebar: Habilitado (convocatoria, asistencia, mesa)
-  // Ruta: /operaciones/junta-accionistas/instalacion
+// Página: Instalación de la Junta
+// Nivel: 0 (Principal)
+// RightSidebar: Anclas a las secciones internas
+// Ruta: /operaciones/junta-accionistas/instalacion
 
-  definePageMeta({
-    layout: "dual-panel-layout",
-  });
+definePageMeta({
+  layout: "dual-panel-layout",
+});
 </script>

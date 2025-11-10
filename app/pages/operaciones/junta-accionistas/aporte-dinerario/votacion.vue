@@ -1,30 +1,13 @@
 <template>
-  <div class="page-container p-6">
-    <div class="space-y-2 mb-6">
-      <h1 class="text-3xl font-bold tracking-tight">Votación - Aporte Dinerario</h1>
-      <p class="text-sm text-muted-foreground font-mono">
-        {{ $route.path }}
-      </p>
+  <SlotWrapper>
+    <TitleH2
+      title="Votación"
+      subtitle="Registra la votación del acuerdo de aumento de capital vía aporte dinerario."
+    />
+    <div class="flex flex-col gap-10">
+      <BlankContainer />
     </div>
-
-    <div class="placeholder mt-4">
-      <p class="text-gray-600 dark:text-gray-300">
-        En esta sub-página se registra la
-        <strong>votación del acuerdo de aporte dinerario</strong>
-        . Se captura el resultado de la votación de los accionistas sobre este punto.
-      </p>
-      <p class="text-xs text-green-500 mt-2">
-        🔹
-        <strong>Nivel 3:</strong>
-        Sub-página visible en rightSidebar de "Aporte Dinerario"
-      </p>
-      <p class="text-xs text-gray-400 mt-1">📂 Padre: aporte-dinerario/index.vue</p>
-      <p class="text-xs text-orange-500 mt-2">
-        ⚡
-        <strong>Última sub-página del flujo de Aporte Dinerario</strong>
-      </p>
-    </div>
-  </div>
+  </SlotWrapper>
 </template>
 
 <script setup lang="ts">

@@ -25,12 +25,10 @@ export const aporteDinerarioItem: FlowItem = {
   hierarchy: {
     level: 2,
     order: 1,
-    parentId: "aumento-capital-section",  // Cambiado de "aumento-capital-section"
+    parentId: "aumento-capital-section",
     children: [
-      "aporte-dinerario-aportantes",
-      "aporte-dinerario-aportes",
-      "aporte-dinerario-votacion",
-      "aporte-dinerario-acta",
+      "aporte-dinerario-contenido",
+      "aporte-dinerario-resumen",
     ],
   },
   navigation: {

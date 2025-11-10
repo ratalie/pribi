@@ -3,22 +3,21 @@ import type { FlowItem } from "@/types/flow-system";
 import { FlowItemType, NavigationBehavior } from "@/types/flow-system";
 import { defaultBehavior, defaultValidation } from "../../../defaults";
 
-export const capitalizacionActaItem: FlowItem = {
+export const capitalizacionAcreedoresItem: FlowItem = {
   identity: {
-    id: "capitalizacion-creditos-acta",
+    id: "capitalizacion-creditos-acreedores",
     type: FlowItemType.STEP,
-    label: "Acta",
+    label: "Acreedores",
   },
   hierarchy: {
-    level: 3,
-    order: 4,
-    parentId: "capitalizacion-creditos",
+    level: 4,
+    order: 1,
+    parentId: "capitalizacion-creditos-contenido",
     children: [],
   },
   navigation: {
-    route: JuntaRoutes.CAPITALIZACION_CREDITOS,
+    route: JuntaRoutes.CAPITALIZACION_ACREEDORES,
     behavior: NavigationBehavior.PUSH,
-    hash: "#acta",
   },
   behavior: defaultBehavior,
   rightSidebar: {
@@ -26,8 +25,8 @@ export const capitalizacionActaItem: FlowItem = {
   },
   validation: defaultValidation,
   metadata: {
-    description: "Acta del acuerdo de capitalización de créditos",
-    tags: ["nivel-3", "aumento-capital", "acta"],
+    description: "Gestión de acreedores cuyos créditos serán capitalizados",
+    tags: ["nivel-4", "aumento-capital", "acreedores"],
     version: "1.0.0",
   },
 };

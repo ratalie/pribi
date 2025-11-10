@@ -26,10 +26,8 @@ export const capitalizacionCreditosItem: FlowItem = {
     order: 2,
     parentId: "aumento-capital-section",
     children: [
-      "capitalizacion-creditos-acreedores",
-      "capitalizacion-creditos-creditos",
-      "capitalizacion-creditos-votacion",
-      "capitalizacion-creditos-acta",
+      "capitalizacion-creditos-contenido",
+      "capitalizacion-creditos-resumen",
     ],
   },
   navigation: {

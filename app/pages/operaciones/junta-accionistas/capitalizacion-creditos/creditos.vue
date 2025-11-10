@@ -1,37 +1,17 @@
 <template>
-  <div class="page-container p-6">
-    <div class="space-y-2 mb-6">
-      <h1 class="text-3xl font-bold tracking-tight">Créditos a Capitalizar</h1>
-      <p class="text-sm text-muted-foreground font-mono">
-        {{ $route.path }}
-      </p>
+  <SlotWrapper>
+    <TitleH2
+      title="Créditos"
+      subtitle="Detalla los créditos, montos y condiciones que serán aportados como capital."
+    />
+    <div class="flex flex-col gap-10">
+      <BlankContainer />
     </div>
-
-    <div class="placeholder mt-4">
-      <p class="text-gray-600 dark:text-gray-300">
-        En esta sub-página se detallan los
-        <strong>créditos que serán capitalizados</strong>
-        . Se especifican montos, tipos de crédito, fechas de origen, tasas de interés, etc.
-      </p>
-      <p class="text-xs text-green-500 mt-2">
-        🔹
-        <strong>Nivel 3:</strong>
-        Sub-página visible en rightSidebar de "Capitalización de Créditos"
-      </p>
-      <p class="text-xs text-gray-400 mt-1">📂 Padre: capitalizacion-creditos/index.vue</p>
-    </div>
-  </div>
+  </SlotWrapper>
 </template>
 
 <script setup lang="ts">
-definePageMeta({
-  layout: "dual-panel-layout",
-});
-
-  // Página: Créditos (Sub-paso de Capitalización de Créditos)
-  // Nivel: 3 (Sub-página en rightSidebar)
-  // Padre: capitalizacion-creditos/index.vue (Nivel 2)
-  // RightSidebar: Aparece como hijo en sidebar del padre
-  // Ruta: /operaciones/junta-accionistas/capitalizacion-creditos/creditos
-  // Enum: JuntaRoutes.CAPITALIZACION_CREDITOS_DETALLE
+  definePageMeta({
+    layout: "dual-panel-layout",
+  });
 </script>
