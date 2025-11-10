@@ -5,6 +5,7 @@
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
   import { useApoderadosFacultades } from "../../composables/useApoderadosFacultades";
+  import { useOtrosApoderadosFacultades } from "../../composables/useOtrosApoderadosFacultades";
   import { useTiposFacultades } from "../../composables/useTiposFacultades";
   import FacultadApoderadoModal from "../modals/FacultadApoderadoModal.vue";
   import TipoFacultadesModal from "../modals/TipoFacultadesModal.vue";
@@ -35,6 +36,15 @@
     handleCloseModalApoderadoFacultad,
     handleSubmitApoderadoFacultad,
   } = useApoderadosFacultades();
+
+  const {
+    facultadActions: facultadActionsOtros,
+    isApoderadoFacultadesModalOpen: isOtrosApoderadosFacultadesModalOpen,
+    modeModalApoderadoFacultad: modeModalOtroApoderadoFacultad,
+    openModalFacultadApoderado: openModalFacultadOtroApoderado,
+    handleCloseModalApoderadoFacultad: handleCloseModalOtroApoderadoFacultad,
+    handleSubmitApoderadoFacultad: handleSubmitOtroApoderadoFacultad,
+  } = useOtrosApoderadosFacultades();
 </script>
 
 <template>
@@ -79,11 +89,19 @@
       </div>
     </SimpleCard>
 
-    <!-- Poderes de Otros Apoderados -->
+    <!-- Facultades de Otros Apoderados -->
     <SimpleCard>
-      <CardTitle title="Poderes de los Apoderados" body="" />
+      <CardTitle title="Facultades de Otros Apoderados" body="" />
 
-      <div class="flex flex-col gap-6" />
+      <div class="flex flex-col gap-6">
+        <FacultadesApoderados
+          v-for="apoderado in regimenFacultadesStore.tablaOtrosApoderadosFacultades"
+          :key="apoderado.id"
+          :apoderado-item="apoderado"
+          :actions="facultadActionsOtros"
+          @open-modal="openModalFacultadOtroApoderado"
+        />
+      </div>
     </SimpleCard>
 
     <!-- Modales -->
@@ -101,6 +119,14 @@
       :lista-facultades-options="regimenFacultadesStore.listaFacultadesOptions"
       @close="handleCloseModalApoderadoFacultad"
       @submit="handleSubmitApoderadoFacultad"
+    />
+
+    <FacultadApoderadoModal
+      v-model="isOtrosApoderadosFacultadesModalOpen"
+      :mode="modeModalOtroApoderadoFacultad"
+      :lista-facultades-options="regimenFacultadesStore.listaFacultadesOptions"
+      @close="handleCloseModalOtroApoderadoFacultad"
+      @submit="handleSubmitOtroApoderadoFacultad"
     />
   </div>
 </template>

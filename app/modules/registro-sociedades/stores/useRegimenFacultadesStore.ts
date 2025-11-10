@@ -188,6 +188,86 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
         ],
       },
     ],
+    otrosApoderados: [
+      {
+        id: "o1",
+        nombre: "María Elena Rodríguez López",
+        facultades: [
+          {
+            id: "fo1",
+            nombre: "Facultades Administrativas",
+            esIrrevocable: false,
+            vigencia: TiemposVigenciaEnum.INDEFINIDO,
+            reglasYLimites: false,
+          },
+        ],
+      },
+      {
+        id: "o2",
+        nombre: "Carlos Alberto Mendoza Quispe",
+        facultades: [
+          {
+            id: "fo2",
+            nombre: "Facultades Bancarias",
+            esIrrevocable: true,
+            vigencia: TiemposVigenciaEnum.DETERMIADO,
+            fecha_inicio: "2024-01-15",
+            fecha_fin: "2025-01-15",
+            reglasYLimites: true,
+            tipoMoneda: EntityCoinEnum.SOLES,
+            limiteMonetario: [
+              {
+                id: "lo1",
+                desde: 0,
+                tipoMonto: TipoMontoEnum.MONTO,
+                hasta: 30000,
+                tipoFirma: TipoFirmasEnum.SOLA_FIRMA,
+              },
+              {
+                id: "lo2",
+                desde: 30000,
+                tipoMonto: TipoMontoEnum.SIN_LIMITE,
+                hasta: 0,
+                tipoFirma: TipoFirmasEnum.FIRMA_CONJUNTA,
+                firmantes: [{ id: "fo1", cantidad: 1, grupo: "Gerente General" }],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "o3",
+        nombre: "Ana Patricia Flores Vargas",
+        facultades: [
+          {
+            id: "fo3",
+            nombre: "Facultades Comerciales",
+            esIrrevocable: true,
+            vigencia: TiemposVigenciaEnum.DETERMIADO,
+            fecha_inicio: "2024-06-01",
+            fecha_fin: "2024-12-31",
+            reglasYLimites: true,
+            tipoMoneda: EntityCoinEnum.DOLARES,
+            limiteMonetario: [
+              {
+                id: "lo3",
+                desde: 0,
+                tipoMonto: TipoMontoEnum.MONTO,
+                hasta: 10000,
+                tipoFirma: TipoFirmasEnum.SOLA_FIRMA,
+              },
+            ],
+          },
+          {
+            id: "fo4",
+            nombre: "Facultades Administrativas",
+            esIrrevocable: false,
+            vigencia: TiemposVigenciaEnum.INDEFINIDO,
+            reglasYLimites: false,
+          },
+        ],
+      },
+    ],
   }),
 
   getters: {
@@ -215,6 +295,44 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
           const reglas_firma = facultad.reglasYLimites ? facultad.limiteMonetario.length : 0;
 
           // Reglas y Límites
+          const reglas_y_limites = facultad.reglasYLimites
+            ? facultad.limiteMonetario.map((limite, index) => ({
+                id: limite.id,
+                table_id: index + 1,
+                desde: String(limite.desde),
+                hasta:
+                  limite.tipoMonto === TipoMontoEnum.SIN_LIMITE
+                    ? "Sin límite"
+                    : String(limite.hasta),
+                tipo_firma: limite.tipoFirma,
+                firmantes:
+                  limite.tipoFirma === TipoFirmasEnum.FIRMA_CONJUNTA ? limite.firmantes : [],
+              }))
+            : [];
+
+          return {
+            id: facultad.id,
+            facultad: facultad.nombre,
+            vigencia: vigencia,
+            reglas_firma: reglas_firma,
+            reglas_y_limites: reglas_y_limites,
+          };
+        }),
+      }));
+    },
+
+    tablaOtrosApoderadosFacultades(): ApoderadoFacultadRow[] {
+      return this.otrosApoderados.map((apoderado) => ({
+        id: apoderado.id,
+        nombre: apoderado.nombre,
+        facultades: apoderado.facultades.map((facultad) => {
+          const vigencia =
+            facultad.vigencia === TiemposVigenciaEnum.INDEFINIDO
+              ? "Indefinido"
+              : `${facultad.fecha_inicio} - ${facultad.fecha_fin}`;
+
+          const reglas_firma = facultad.reglasYLimites ? facultad.limiteMonetario.length : 0;
+
           const reglas_y_limites = facultad.reglasYLimites
             ? facultad.limiteMonetario.map((limite, index) => ({
                 id: limite.id,
@@ -314,10 +432,56 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
 
       apoderado.facultades = apoderado.facultades.filter((f) => f.id !== idFacultad);
     },
+
+    //otros apoderados facultad
+    agregarFacultadOtroApoderado(idApoderado: string, nuevaFacultad: Facultad) {
+      const apoderado = this.otrosApoderados.find((a) => a.id === idApoderado);
+
+      if (!apoderado) {
+        console.error(`No se encontró el otro apoderado con id: ${idApoderado}`);
+        return;
+      }
+
+      apoderado.facultades.push(nuevaFacultad);
+    },
+
+    editarFacultadOtroApoderado(
+      idApoderado: string,
+      idFacultad: string,
+      facultadActualizada: Facultad
+    ) {
+      const apoderado = this.otrosApoderados.find((a) => a.id === idApoderado);
+
+      if (!apoderado) {
+        console.error(`No se encontró el otro apoderado con id: ${idApoderado}`);
+        return;
+      }
+
+      const index = apoderado.facultades.findIndex((f) => f.id === idFacultad);
+
+      if (index === -1) {
+        console.error(`No se encontró la facultad con id: ${idFacultad}`);
+        return;
+      }
+
+      apoderado.facultades[index] = facultadActualizada;
+    },
+
+    eliminarFacultadOtroApoderado(idApoderado: string, idFacultad: string) {
+      const apoderado = this.otrosApoderados.find((a) => a.id === idApoderado);
+
+      if (!apoderado) {
+        console.error(`No se encontró el otro apoderado con id: ${idApoderado}`);
+        return;
+      }
+
+      apoderado.facultades = apoderado.facultades.filter((f) => f.id !== idFacultad);
+    },
   },
 });
 
 interface State {
   tipoFacultades: TipoFacultad[];
   apoderadosFacultades: ApoderadoFacultad[];
+  otrosApoderados: ApoderadoFacultad[];
 }
