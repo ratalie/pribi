@@ -1,32 +1,33 @@
 <script setup lang="ts">
-/**
- * StepWizardPanel - Panel de pasos estilo wizard
- * UI basada en ProgressNavBar de Registro de Sociedades
- * 
- * Características:
- * - Lista secuencial de pasos
- * - Checkmarks para completados
- * - Líneas conectoras verticales
- * - Hover effects profesionales
- * - Soporta jerarquías (a diferencia de Registro de Sociedades)
- */
+  /**
+   * StepWizardPanel - Panel de pasos estilo wizard
+   * UI basada en ProgressNavBar de Registro de Sociedades
+   *
+   * Características:
+   * - Lista secuencial de pasos
+   * - Checkmarks para completados
+   * - Líneas conectoras verticales
+   * - Hover effects profesionales
+   * - Soporta jerarquías (a diferencia de Registro de Sociedades)
+   */
 
-import type { NavigationStep } from "~/types/navigationSteps";
-import StepItem from "../shared/StepItem.vue";
+  import type { NavigationStep } from "~/types/navigationSteps";
+  import StepItem from "../shared/StepItem.vue";
 
-type PanelVariant = "default" | "sections";
+  type PanelVariant = "default" | "sections";
 
-interface Props {
-  steps: NavigationStep[];
-  title?: string;
-  showTitle?: boolean;
-  variant?: PanelVariant;
-}
+  interface Props {
+    steps: NavigationStep[];
+    title?: string;
+    showTitle?: boolean;
+    variant?: PanelVariant;
+  }
 
-const props = withDefaults(defineProps<Props>(), {
-  showTitle: false,
-  variant: "default",
-});
+  withDefaults(defineProps<Props>(), {
+    title: "",
+    showTitle: false,
+    variant: "default",
+  });
 </script>
 
 <template>
@@ -54,33 +55,31 @@ const props = withDefaults(defineProps<Props>(), {
 </template>
 
 <style scoped>
-/* Estilos basados en ProgressNavBar de Registro de Sociedades */
+  /* Estilos basados en ProgressNavBar de Registro de Sociedades */
 
-.step-wizard-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 0; /* Los gaps están en los StepItems */
-}
+  .step-wizard-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0; /* Los gaps están en los StepItems */
+  }
 
-.panel-title {
-  font-family: var(--font-primary);
-  font-weight: 600;
-  font-size: 18px;
-  color: #1f2937;
-  margin-bottom: 24px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #e5e7eb;
-}
+  .panel-title {
+    font-family: var(--font-primary);
+    font-weight: 600;
+    font-size: 18px;
+    color: #1f2937;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
+  }
 
-.steps-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0; /* Las líneas conectoras manejan el spacing */
-}
+  .steps-list {
+    display: flex;
+    flex-direction: column;
+  }
 
-.empty-state {
-  padding: 24px;
-  text-align: center;
-}
+  .empty-state {
+    padding: 24px;
+    text-align: center;
+  }
 </style>
-

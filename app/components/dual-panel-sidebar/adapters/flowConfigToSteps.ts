@@ -58,6 +58,7 @@ export function flowConfigToSteps(
         description: item.behavior.description || `Completa ${item.identity.label}`,
         status,
         route: item.navigation.route,
+        hash: item.navigation.hash,
         isCategory: item.identity.isCategory || false,  // Para separadores visuales
         level: item.hierarchy.level,  // Para determinar tamaño de círculo
       };

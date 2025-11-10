@@ -1,19 +1,44 @@
 <template>
-  <div class="page-container p-6 space-y-4">
-    <header>
-      <h1 class="text-2xl font-semibold">Resumen · Puntos de Acuerdo</h1>
-      <p class="text-sm text-muted-foreground">Detalle de cada acuerdo tratado durante la junta.</p>
-    </header>
+  <SlotWrapper>
+    <TitleH2
+      title="Puntos de Acuerdo"
+      subtitle="Detalle de cada acuerdo aprobado, observaciones registradas y responsables asignados."
+    />
 
-    <section class="card p-4 border rounded-md bg-white shadow-sm">
-      <p class="text-gray-600">
-        Esta sección listará los acuerdos por categoría junto a su estado y observaciones.
-      </p>
-    </section>
-  </div>
+    <div class="flex flex-col gap-10">
+      <div
+        v-for="agreement in acuerdos"
+        :key="agreement.id"
+        class="flex flex-col gap-5"
+      >
+        <TitleH4
+          :title="agreement.title"
+          :subtitle="agreement.subtitle"
+          :variant="Titles.WITH_SUBTITLE_SPACING"
+        />
+        <BlankContainer />
+      </div>
+    </div>
+  </SlotWrapper>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
+import Titles from "~/types/enums/Titles.enum";
+import { usePuntosAcuerdoSummary } from "@/modules/junta-accionistas/summaries";
+
+const puntosSummary = usePuntosAcuerdoSummary();
+
+const acuerdos = computed(() =>
+  puntosSummary.value.map((section) => ({
+    id: section.id,
+    title: section.title,
+    subtitle:
+      section.blocks?.[0]?.description ||
+      "Resumen del acuerdo y sus pasos claves para ejecución.",
+  }))
+);
+
 definePageMeta({
   layout: "dual-panel-layout",
 });

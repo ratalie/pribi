@@ -1,104 +1,87 @@
 <template>
-  <div class="page-container p-8 space-y-10">
-    <header class="space-y-3">
-      <div class="flex items-center justify-between gap-4">
-        <div>
-          <p class="kicker">Junta de Accionistas</p>
-          <h1 class="page-title">Resumen Ejecutivo</h1>
-        </div>
-        <span class="route-chip">{{ $route.path }}</span>
-      </div>
-      <p class="intro">
-        Consolidado de los acuerdos, avances y pendientes registrados en cada etapa del flujo. Cada
-        tarjeta enlaza a la sección correspondiente para profundizar o actualizar información.
-      </p>
-    </header>
+  <SlotWrapper>
+    <TitleH2
+      title="Resumen de la Junta"
+      subtitle="Consolidado general de los acuerdos, votaciones y documentación generada durante el flujo."
+    />
 
-    <section class="summary-grid">
-      <article
-        v-for="section in sectionsWithStatus"
+    <div class="flex flex-col gap-12">
+      <section
+        v-for="section in baseSections"
         :key="section.id"
-        class="summary-card"
+        :id="section.id"
+        class="flex flex-col gap-5"
       >
-        <header class="summary-card__header">
-          <NuxtLink :to="section.route" class="summary-card__title">
-            {{ section.title }}
-          </NuxtLink>
-          <span class="summary-card__status" :class="`is-${section.status}`">
-            {{ statusLabels[section.status] }}
-          </span>
-        </header>
-        <div class="summary-card__body">
+        <TitleH4
+          :title="section.title"
+          :subtitle="section.subtitle"
+          :variant="Titles.WITH_SUBTITLE_SPACING"
+        />
+        <BlankContainer />
+      </section>
+
+      <section id="puntos-acuerdo" class="flex flex-col gap-6">
+        <TitleH4
+          title="Puntos de Acuerdo"
+          subtitle="Síntesis de cada punto tratado y su estado actual dentro de la junta."
+          :variant="Titles.WITH_SUBTITLE_SPACING"
+        />
+        <div class="flex flex-col gap-8">
           <div
-            v-for="block in section.blocks"
-            :key="block.id"
-            class="summary-block"
+            v-for="agreement in acuerdosResumen"
+            :key="agreement.id"
+            class="flex flex-col gap-5"
           >
-            <h3 class="summary-block__title">{{ block.title }}</h3>
-            <p v-if="block.description" class="summary-block__description">
-              {{ block.description }}
-            </p>
-
-            <ul v-if="block.highlights?.length" class="summary-highlights">
-              <li v-for="highlight in block.highlights" :key="highlight.id">
-                <div class="summary-highlight">
-                  <div>
-                    <p class="summary-highlight__label">{{ highlight.label }}</p>
-                    <p v-if="highlight.description" class="summary-highlight__description">
-                      {{ highlight.description }}
-                    </p>
-                  </div>
-                  <span class="summary-highlight__value">{{ highlight.value }}</span>
-                </div>
-              </li>
-            </ul>
-
-            <ul v-if="block.notes?.length" class="summary-notes">
-              <li v-for="note in block.notes" :key="note">
-                • {{ note }}
-              </li>
-            </ul>
+            <TitleH4
+              :title="agreement.title"
+              :subtitle="agreement.subtitle"
+              :variant="Titles.WITH_SUBTITLE_SPACING"
+            />
+            <BlankContainer />
           </div>
         </div>
-      </article>
-    </section>
-  </div>
+      </section>
+    </div>
+  </SlotWrapper>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useJuntasSummarySections } from "@/modules/junta-accionistas/summaries";
-import { useFlowProgressStore } from "@/stores/flowProgress.store";
+import Titles from "~/types/enums/Titles.enum";
+import { usePuntosAcuerdoSummary } from "@/modules/junta-accionistas/summaries";
+
+const baseSections = [
+  {
+    id: "general",
+    title: "Resumen General",
+    subtitle: "Visión global del proceso: participación, acuerdos y pendientes críticos.",
+  },
+  {
+    id: "votaciones",
+    title: "Votaciones",
+    subtitle: "Seguimiento de cada votación realizada y su resultado consolidado.",
+  },
+  {
+    id: "documentos",
+    title: "Documentos",
+    subtitle: "Repositorio de actas, certificados y documentos generados en la junta.",
+  },
+];
+
+const puntosAcuerdoSummary = usePuntosAcuerdoSummary();
+
+const acuerdosResumen = computed(() =>
+  puntosAcuerdoSummary.value.map((section) => ({
+    id: section.id,
+    title: section.title,
+    subtitle:
+      section.blocks?.[0]?.description ||
+      "Resumen del acuerdo y acciones necesarias para su implementación.",
+  }))
+);
 
 definePageMeta({
   layout: "dual-panel-layout",
-});
-
-const SUMMARY_FLOW_ID = "juntas-accionistas-layout";
-
-const rawSections = useJuntasSummarySections();
-const progressStore = useFlowProgressStore();
-
-const statusLabels: Record<string, string> = {
-  completed: "Completado",
-  current: "En progreso",
-  "in-progress": "En progreso",
-  empty: "Pendiente",
-  pending: "Pendiente",
-  optional: "Opcional",
-  locked: "Bloqueado",
-  error: "Con observaciones",
-};
-
-const sectionsWithStatus = computed(() => {
-  const flowSteps = progressStore.getFlowSteps(SUMMARY_FLOW_ID) || {};
-  return rawSections.value.map((section) => {
-    const status = flowSteps[section.id]?.status ?? "empty";
-    return {
-      ...section,
-      status,
-    };
-  });
 });
 </script>
 
