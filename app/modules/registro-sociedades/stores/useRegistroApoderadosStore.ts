@@ -1,11 +1,11 @@
 import type { BaseSelectOption } from "~/components/base/inputs/text/BaseInputSelect.vue";
-import {
-  type ClaseApoderado,
-  type ClaseApoderadoRow,
-  type OtroApoderado,
-  type OtroApoderadoRow,
-  type RegistroApoderado,
-  type RegistroApoderadoRow,
+import type {
+  ClaseApoderado,
+  ClaseApoderadoRow,
+  OtroApoderado,
+  OtroApoderadoRow,
+  RegistroApoderado,
+  RegistroApoderadoRow,
 } from "../types/registroApoderados";
 
 export const useRegistroApoderadosStore = defineStore("registroApoderados", {
@@ -19,23 +19,55 @@ export const useRegistroApoderadosStore = defineStore("registroApoderados", {
       {
         id: "1",
         claseApoderadoId: "1",
+        tipoPersona: "natural",
         nombreRazonSocial: "Juan Perez Lopez",
         tipoDocumento: "DNI",
         numeroDocumento: "71641140",
+        personaNatural: {
+          tipoDocumento: "DNI",
+          numeroDocumento: "71641140",
+          nombre: "Juan",
+          apellidoPaterno: "Perez",
+          apellidoMaterno: "Lopez",
+          estadoCivil: null,
+        },
       },
       {
         id: "2",
         claseApoderadoId: "3",
+        tipoPersona: "natural",
         nombreRazonSocial: "Ana Gomez Fernandez",
         tipoDocumento: "DNI",
         numeroDocumento: "71641150",
+        personaNatural: {
+          tipoDocumento: "DNI",
+          numeroDocumento: "71641150",
+          nombre: "Ana",
+          apellidoPaterno: "Gomez",
+          apellidoMaterno: "Fernandez",
+          estadoCivil: null,
+        },
       },
       {
         id: "3",
         claseApoderadoId: "3",
-        nombreRazonSocial: "Cristian Quispe Perez",
-        tipoDocumento: "DNI",
-        numeroDocumento: "71641160",
+        tipoPersona: "juridica",
+        nombreRazonSocial: "Servicios Integrales SAC",
+        tipoDocumento: "RUC",
+        numeroDocumento: "20546789012",
+        personaJuridica: {
+          jurisdiccion: "peruana",
+          tipoDocumento: "RUC",
+          numeroDocumento: "20546789012",
+          nombreComercial: "Servicios Integrales",
+          razonSocial: "Servicios Integrales SAC",
+          pais: "PER",
+          direccion: "Av. Principal 123",
+          provincia: "Lima",
+          distrito: "Miraflores",
+          departamento: "Lima",
+          representadoPor: null,
+        },
       },
     ],
     otrosApoderados: [
@@ -44,20 +76,37 @@ export const useRegistroApoderadosStore = defineStore("registroApoderados", {
         nombreRazonSocial: "Maria Fernanda Torres",
         tipoDocumento: "DNI",
         numeroDocumento: "71641141",
+        personaNatural: {
+          tipoDocumento: "DNI",
+          numeroDocumento: "71641141",
+          nombre: "Maria",
+          apellidoPaterno: "Fernanda",
+          apellidoMaterno: "Torres",
+          estadoCivil: null,
+        },
       },
       {
         id: "2",
         nombreRazonSocial: "Carlos Alberto Rojas",
         tipoDocumento: "Carnet de Extranjería",
         numeroDocumento: "CE-456789",
+        personaNatural: {
+          tipoDocumento: "Carnet de Extranjería",
+          numeroDocumento: "CE-456789",
+          nombre: "Carlos",
+          apellidoPaterno: "Alberto",
+          apellidoMaterno: "Rojas",
+          estadoCivil: null,
+        },
       },
     ],
   }),
 
   getters: {
     tablaClasesApoderado(): ClaseApoderadoRow[] {
-      return this.clasesApoderado.map((clase) => ({
+      return this.clasesApoderado.map((clase, index) => ({
         id: clase.id,
+        table_id: index + 1,
         clase_apoderado: clase.nombre,
         numero_apoderados: this.apoderados.filter(
           (apoderado) => apoderado.claseApoderadoId === clase.id
@@ -155,4 +204,3 @@ interface State {
   apoderados: RegistroApoderado[];
   otrosApoderados: OtroApoderado[];
 }
-

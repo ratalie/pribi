@@ -12,6 +12,12 @@
   } from "~/modules/registro-sociedades/schemas/modalPersonaJuridica";
   import { usePersonaJuridicaStore } from "~/stores/usePersonaJuridicaStore";
   const personaJuridicaStore = usePersonaJuridicaStore();
+
+  onMounted(() => {
+    if (personaJuridicaStore.jurisdiccion !== "peruana") {
+      personaJuridicaStore.setJurisdiccion("peruana");
+    }
+  });
 </script>
 
 <template>
@@ -40,7 +46,7 @@
     />
 
     <TextInputZod
-      v-model="personaJuridicaStore.provincia ?? ''"
+      v-model="personaJuridicaStore.provincia"
       name="provincia"
       label="Provincia"
       placeholder="Provincia"
@@ -48,7 +54,7 @@
     />
 
     <TextInputZod
-      v-model="personaJuridicaStore.departamento ?? ''"
+      v-model="personaJuridicaStore.departamento"
       name="departamento"
       label="Departamento"
       placeholder="Departamento"
@@ -56,7 +62,7 @@
     />
 
     <TextInputZod
-      v-model="personaJuridicaStore.distrito ?? ''"
+      v-model="personaJuridicaStore.distrito"
       name="distrito"
       label="Distrito"
       placeholder="Distrito"

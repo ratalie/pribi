@@ -1,8 +1,8 @@
 export const useRegistroApoderadoModalStore = defineStore("registroApoderadoModal", {
   state: (): State => ({
     tipoApoderado: "",
-    tipoPersona: "",
-    esEmpresaConstituidaEnPeru: false,
+    tipoPersona: "natural",
+    esEmpresaConstituidaEnPeru: true,
     tieneRepresentante: false,
   }),
 
@@ -11,7 +11,7 @@ export const useRegistroApoderadoModalStore = defineStore("registroApoderadoModa
       this.tipoApoderado = value;
     },
 
-    setTipoPersona(value: string) {
+    setTipoPersona(value: "natural" | "juridica") {
       this.tipoPersona = value;
     },
   },
@@ -19,8 +19,7 @@ export const useRegistroApoderadoModalStore = defineStore("registroApoderadoModa
 
 interface State {
   tipoApoderado: string;
-  tipoPersona: string;
+  tipoPersona: "natural" | "juridica";
   esEmpresaConstituidaEnPeru: boolean;
   tieneRepresentante: boolean;
 }
-

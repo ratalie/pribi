@@ -3,7 +3,7 @@ import { computed, ref } from "vue";
 import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
 import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
 import { useRegistroApoderadosStore } from "../stores/useRegistroApoderadosStore";
-import type { OtroApoderadoRow } from "../types/registroApoderados";
+import type { OtroApoderado, OtroApoderadoRow } from "../types/registroApoderados";
 
 export const useOtrosApoderados = () => {
   const registroApoderadosStore = useRegistroApoderadosStore();
@@ -22,12 +22,7 @@ export const useOtrosApoderados = () => {
   const otrosHeaders = getColumns(otrosColumns);
 
   const resetPersonaData = () => {
-    personaNaturalStore.tipoDocumento = "";
-    personaNaturalStore.numeroDocumento = "";
-    personaNaturalStore.nombre = "";
-    personaNaturalStore.apellidoPaterno = "";
-    personaNaturalStore.apellidoMaterno = "";
-    personaNaturalStore.estadoCivil = null;
+    personaNaturalStore.$reset();
   };
 
   const openModalRegistroOtroApoderado = () => {
@@ -48,9 +43,13 @@ export const useOtrosApoderados = () => {
     modeModalOtroApoderado.value = "editar";
     otroApoderadoId.value = id;
     resetPersonaData();
-    personaNaturalStore.tipoDocumento = apoderado.tipoDocumento;
-    personaNaturalStore.numeroDocumento = apoderado.numeroDocumento;
-    personaNaturalStore.nombre = apoderado.nombreRazonSocial;
+    if (apoderado.personaNatural) {
+      personaNaturalStore.$patch({ ...apoderado.personaNatural });
+    } else {
+      personaNaturalStore.tipoDocumento = apoderado.tipoDocumento;
+      personaNaturalStore.numeroDocumento = apoderado.numeroDocumento;
+      personaNaturalStore.nombre = apoderado.nombreRazonSocial;
+    }
 
     isOtroApoderadoModalOpen.value = true;
   };
@@ -74,11 +73,19 @@ export const useOtrosApoderados = () => {
   const handleSubmitRegistroOtroApoderado = () => {
     const nombreCompleto = buildNombreCompleto() || "Sin nombre";
 
-    const payload = {
+    const payload: OtroApoderado = {
       id: otroApoderadoId.value ?? uuidv4(),
       nombreRazonSocial: nombreCompleto,
       tipoDocumento: personaNaturalStore.tipoDocumento,
       numeroDocumento: personaNaturalStore.numeroDocumento,
+      personaNatural: {
+        tipoDocumento: personaNaturalStore.tipoDocumento,
+        numeroDocumento: personaNaturalStore.numeroDocumento,
+        nombre: personaNaturalStore.nombre,
+        apellidoPaterno: personaNaturalStore.apellidoPaterno,
+        apellidoMaterno: personaNaturalStore.apellidoMaterno,
+        estadoCivil: personaNaturalStore.estadoCivil,
+      },
     };
 
     if (modeModalOtroApoderado.value === "editar" && otroApoderadoId.value) {

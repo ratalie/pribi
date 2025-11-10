@@ -14,7 +14,7 @@ export const useClasesApoderado = () => {
   const claseApoderadoId = ref<string | null>(null);
 
   const claseColumns: TableColumn<ClaseApoderadoRow>[] = [
-    { key: "id", label: "ID", type: "text" },
+    { key: "table_id", label: "N°", type: "text" },
     { key: "clase_apoderado", label: "Clase de Apoderado", type: "text" },
     { key: "numero_apoderados", label: "No. de apoderados", type: "text" },
   ];
@@ -86,7 +86,10 @@ export const useClasesApoderado = () => {
     },
   ];
 
-  const showActionsFor = (row: ClaseApoderadoRow) => row.numero_apoderados > 0;
+  const ES_CLASE_PROTEGIDA = "Gerente General";
+
+  const showActionsFor = (row: ClaseApoderadoRow) =>
+    row.clase_apoderado !== ES_CLASE_PROTEGIDA;
 
   const tablaClases = computed(() => registroApoderadosStore.tablaClasesApoderado);
 

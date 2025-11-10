@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useVModel } from "@vueuse/core";
-  import { computed } from "vue";
+  import { computed, watch } from "vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCardDropDown from "~/components/base/cards/SimpleCardDropDown.vue";
@@ -13,6 +13,7 @@
   import PersonaJuridicaForm from "~/components/composite/forms/PersonaJuridicaForm.vue";
   import PersonaNaturalForm from "~/components/composite/forms/PersonaNaturalForm.vue";
   import { tipoAccionistaSchema } from "~/modules/registro-sociedades/schemas/modalAccionistas";
+  import { usePersonaJuridicaStore } from "~/stores/usePersonaJuridicaStore";
   import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
   import { useRegistroApoderadoModalStore } from "../../stores/modal/useRegistroApoderadoModalStore";
   import { useRegistroApoderadosStore } from "../../stores/useRegistroApoderadosStore";
@@ -33,8 +34,25 @@
   });
 
   const personaNaturalStore = usePersonaNaturalStore();
+  const personaJuridicaStore = usePersonaJuridicaStore();
   const registroApoderadosStore = useRegistroApoderadosStore();
   const registroApoderadoModalStore = useRegistroApoderadoModalStore();
+
+  if (
+    registroApoderadoModalStore.esEmpresaConstituidaEnPeru !==
+    (personaJuridicaStore.jurisdiccion === "peruana")
+  ) {
+    registroApoderadoModalStore.esEmpresaConstituidaEnPeru =
+      personaJuridicaStore.jurisdiccion === "peruana";
+  }
+
+  watch(
+    () => registroApoderadoModalStore.esEmpresaConstituidaEnPeru,
+    (isPeruana) => {
+      personaJuridicaStore.setJurisdiccion(isPeruana ? "peruana" : "extranjera");
+    },
+    { immediate: true }
+  );
 
   const claseApoderadoOptions = computed(() => registroApoderadosStore.clasesApoderadoOptions);
   const personaOptions = [
@@ -55,6 +73,7 @@
     modelValue.value = false;
 
     personaNaturalStore.$reset();
+    personaJuridicaStore.$reset();
     registroApoderadoModalStore.$reset();
   };
 
@@ -124,7 +143,10 @@
         </template>
       </SimpleCardDropDown>
 
-      <div v-if="registroApoderadoModalStore.tipoPersona === 'juridica'" class="flex flex-col gap-4">
+      <div
+        v-if="registroApoderadoModalStore.tipoPersona === 'juridica'"
+        class="flex flex-col gap-4"
+      >
         <span class="t-h5 text-gray-800 font-bold font-secondary">
           Registrar representante
         </span>
