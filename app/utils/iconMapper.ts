@@ -4,6 +4,7 @@ import {
   ArrowRight,
   BarChart3,
   Briefcase,
+  Building,
   Building2,
   Calendar,
   Check,
@@ -12,6 +13,7 @@ import {
   ChevronRight,
   Crown,
   Download,
+  EllipsisVertical,
   FileCheck,
   FileSearch,
   FileText,
@@ -26,6 +28,7 @@ import {
   MessageCircle,
   Monitor,
   Moon,
+  MoreHorizontal,
   Package,
   Palette,
   Plus,
@@ -33,17 +36,22 @@ import {
   Settings,
   SquarePen,
   Sun,
+  TextAlignJustify,
   Trash2,
   User,
   UserCheck,
   UserCog,
+  UserRoundPlus,
   Users,
   Users2,
+  Vault,
   X,
 } from "lucide-vue-next";
 
 const iconMap = {
   Building2,
+  Building,
+  Vault,
   MapPin,
   Users,
   LayoutDashboard,
@@ -84,6 +92,10 @@ const iconMap = {
   Calendar,
   Check,
   FileCheck,
+  UserRoundPlus,
+  EllipsisVertical,
+  MoreHorizontal,
+  TextAlignJustify,
 };
 
 export const getIcon = (iconName: string) => {

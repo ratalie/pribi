@@ -42,6 +42,8 @@
       "w-full !border-gray-500",
       "data-[state=open]:!border-gray-700 data-[state=open]:!border-2",
       "data-[state=open]:!ring-2 data-[state=open]:!ring-[var(--color-outline-ring)] data-[state=open]:!ring-offset-4",
+      // Estilos para el valor seleccionado (cuando NO es placeholder)
+      "*:data-[slot=select-value]:font-secondary *:data-[slot=select-value]:text-gray-700",
 
       // Variantes
       props.variant === "error" &&
@@ -50,9 +52,9 @@
         "!border-green-500 data-[state=open]:!border-green-500 data-[state=open]:!ring-green-500",
 
       // Tamaños
-      props.size === "sm" && "h-8 text-sm",
-      props.size === "md" && "!h-[40px] text-sm",
-      props.size === "lg" && "h-10 text-lg",
+      props.size === "sm" && "h-8 t-b2",
+      props.size === "md" && "!h-[40px] t-t2",
+      props.size === "lg" && "h-10 t-t1",
 
       // Deshabilitado
       props.customClasses,

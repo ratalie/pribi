@@ -1,7 +1,20 @@
 <script setup lang="ts">
+  import { useVModel } from "@vueuse/core";
   import CustomSwitch from "./CustomSwitch.vue";
 
-  const isActive = ref(false);
+  interface Props {
+    modelValue?: boolean;
+  }
+
+  const props = defineProps<Props>();
+  const emit = defineEmits<{
+    (e: "update:modelValue", value: boolean): void;
+  }>();
+
+  const isActive = useVModel(props, "modelValue", emit, {
+    passive: true,
+    defaultValue: false,
+  });
 
   // Clases computadas para asegurar reactividad
   const labelNoClass = computed(() => {
@@ -20,7 +33,7 @@
       :class="`text-sm leading-none select-none cursor-pointer transition-colors ${labelNoClass}`"
       @click="isActive = false"
     >
-      No
+      NO
     </label>
 
     <!-- Switch -->
@@ -31,7 +44,7 @@
       :class="`text-sm leading-none select-none cursor-pointer transition-colors ${labelSiClass}`"
       @click="isActive = true"
     >
-      Si
+      SI
     </label>
   </div>
 </template>

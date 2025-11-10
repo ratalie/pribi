@@ -28,14 +28,15 @@
     clsx(
       // Estilos base
       "!border-gray-500 focus:!border-gray-700 focus:!border-2 focus:!outline-none focus:!ring-2 focus:!ring-[var(--color-outline-ring)] focus:!ring-offset-4",
+      "text-gray-700 font-secondary font-medium",
       // Variantes
       props.variant === "error" && "!border-red-500 focus:!border-red-500 focus:!ring-red-500",
       props.variant === "success" &&
         "!border-green-500 focus:!border-green-500 focus:!ring-green-500",
       // Tamaños
-      props.size === "sm" && "h-8 px-2 text-sm",
-      props.size === "md" && "h-10 px-3 text-base",
-      props.size === "lg" && "h-12 px-4 text-lg",
+      props.size === "sm" && "h-8 px-2 t-b2",
+      props.size === "md" && "h-10 px-3 t-t2",
+      props.size === "lg" && "h-12 px-4 t-t1",
 
       // Deshabilitado
       props.isDisabled &&

@@ -27,6 +27,6 @@
 <script lang="ts" setup>
   defineProps({
     title: { type: String, default: "Title" },
-    body: { type: String, default: "Body" },
+    body: { type: String, default: "" },
   });
 </script>
