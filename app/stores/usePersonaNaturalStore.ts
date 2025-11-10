@@ -5,15 +5,15 @@ export const usePersonaNaturalStore = defineStore("personaNaturalForm", {
     nombre: "",
     apellidoPaterno: "",
     apellidoMaterno: "",
-    estadoCivil: "",
+    estadoCivil: null,
   }),
 });
 
-interface PersonaNatural {
+export interface PersonaNatural {
   tipoDocumento: string;
   numeroDocumento: string;
   nombre: string;
   apellidoPaterno: string;
   apellidoMaterno: string;
-  estadoCivil: string;
+  estadoCivil: string | null;
 }

@@ -1,46 +1,48 @@
 <script setup lang="ts">
-  import { computed, watch } from "vue";
+  import { computed } from "vue";
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
-  import { civilState } from "~/constants/civil-state";
   import { documentTypes } from "~/constants/inputs/document-type";
+  import { tipoDirectorOptions } from "~/constants/tipo-director";
+  import { useDirectoresComputed } from "~/modules/registro-sociedades/composables/useDirectoresComputed";
   import {
     apellidoMaternoSchema,
     apellidoPaternoSchema,
-    estadoCivilSchema,
     nombreAccionistaSchema,
     numeroDocumentoSchema,
     tipoDocumentoSchema,
   } from "~/modules/registro-sociedades/schemas/modalAccionistas";
-
-  const props = withDefaults(
-    defineProps<{
-      showEstadoCivil?: boolean;
-    }>(),
-    {
-      showEstadoCivil: true,
-    }
-  );
+  import {
+    reemplazoAsignadoSchema,
+    tipoDirectorSchema,
+  } from "~/modules/registro-sociedades/schemas/modalDirector";
+  import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
+  import { TiposDirectoresEnum } from "~/types/enums/TiposDirectoresEnum";
 
   const personaNaturalStore = usePersonaNaturalStore();
 
-  const estadoCivil = computed({
-    get: () => personaNaturalStore.estadoCivil ?? "",
-    set: (value: string) => {
-      personaNaturalStore.estadoCivil = value || null;
-    },
+  const props = defineProps<{
+    tipoDirector: TiposDirectoresEnum | "";
+    reemplazoAsignado: string;
+  }>();
+
+  const emits = defineEmits<{
+    (e: "update:tipoDirector", value: TiposDirectoresEnum | ""): void;
+    (e: "update:reemplazoAsignado", value: string): void;
+  }>();
+
+  const tipoDirector = computed({
+    get: () => props.tipoDirector,
+    set: (value: TiposDirectoresEnum | "") => emits("update:tipoDirector", value),
   });
 
-  watch(
-    () => props.showEstadoCivil,
-    (value) => {
-      if (!value) {
-        personaNaturalStore.estadoCivil = null;
-      }
-    },
-    { immediate: true }
-  );
+  const reemplazoAsignado = computed({
+    get: () => props.reemplazoAsignado,
+    set: (value: string) => emits("update:reemplazoAsignado", value),
+  });
+
+  const { presidenteOptions } = useDirectoresComputed();
 </script>
 
 <template>
@@ -87,13 +89,22 @@
     />
 
     <SelectInputZod
-      v-if="showEstadoCivil"
-      v-model="estadoCivil"
-      name="estado_civil"
-      label="Estado civil"
-      placeholder="Selecciona el estado civil"
-      :options="civilState"
-      :schema="estadoCivilSchema"
+      v-model="tipoDirector"
+      name="tipo_director"
+      label="Tipo de director"
+      placeholder="Selecciona el tipo de director"
+      :options="tipoDirectorOptions"
+      :schema="tipoDirectorSchema"
+    />
+
+    <SelectInputZod
+      v-if="tipoDirector === TiposDirectoresEnum.ALTERNO"
+      v-model="reemplazoAsignado"
+      name="reemplazo_asignado"
+      label="Director titular de reemplazo"
+      placeholder="Selecciona el director titular"
+      :options="presidenteOptions"
+      :schema="reemplazoAsignadoSchema"
     />
   </div>
 </template>

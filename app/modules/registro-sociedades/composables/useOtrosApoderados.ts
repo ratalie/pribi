@@ -1,0 +1,125 @@
+import { v4 as uuidv4 } from "uuid";
+import { computed, ref } from "vue";
+import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
+import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
+import { useRegistroApoderadosStore } from "../stores/useRegistroApoderadosStore";
+import type { OtroApoderadoRow } from "../types/registroApoderados";
+
+export const useOtrosApoderados = () => {
+  const registroApoderadosStore = useRegistroApoderadosStore();
+  const personaNaturalStore = usePersonaNaturalStore();
+
+  const modeModalOtroApoderado = ref<"crear" | "editar">("crear");
+  const isOtroApoderadoModalOpen = ref(false);
+  const otroApoderadoId = ref<string | null>(null);
+
+  const otrosColumns: TableColumn<OtroApoderadoRow>[] = [
+    { key: "nombre_razon_social", label: "Nombre/Razón social", type: "text" },
+    { key: "tipo_documento", label: "Tipo de Documento", type: "text" },
+    { key: "numero_documento", label: "No. de Documento", type: "text" },
+  ];
+
+  const otrosHeaders = getColumns(otrosColumns);
+
+  const resetPersonaData = () => {
+    personaNaturalStore.tipoDocumento = "";
+    personaNaturalStore.numeroDocumento = "";
+    personaNaturalStore.nombre = "";
+    personaNaturalStore.apellidoPaterno = "";
+    personaNaturalStore.apellidoMaterno = "";
+    personaNaturalStore.estadoCivil = null;
+  };
+
+  const openModalRegistroOtroApoderado = () => {
+    modeModalOtroApoderado.value = "crear";
+    otroApoderadoId.value = null;
+    resetPersonaData();
+    isOtroApoderadoModalOpen.value = true;
+  };
+
+  const handleEditOtroApoderado = (id: string) => {
+    const apoderado = registroApoderadosStore.otrosApoderados.find((item) => item.id === id);
+
+    if (!apoderado) {
+      console.warn("[useOtrosApoderados] Apoderado no encontrado para edición", id);
+      return;
+    }
+
+    modeModalOtroApoderado.value = "editar";
+    otroApoderadoId.value = id;
+    resetPersonaData();
+    personaNaturalStore.tipoDocumento = apoderado.tipoDocumento;
+    personaNaturalStore.numeroDocumento = apoderado.numeroDocumento;
+    personaNaturalStore.nombre = apoderado.nombreRazonSocial;
+
+    isOtroApoderadoModalOpen.value = true;
+  };
+
+  const handleDeleteOtroApoderado = (id: string) => {
+    registroApoderadosStore.eliminarOtroApoderado(id);
+  };
+
+  const buildNombreCompleto = () => {
+    const parts = [
+      personaNaturalStore.nombre,
+      personaNaturalStore.apellidoPaterno,
+      personaNaturalStore.apellidoMaterno,
+    ]
+      .map((part) => part?.trim())
+      .filter((part) => !!part);
+
+    return parts.join(" ").trim();
+  };
+
+  const handleSubmitRegistroOtroApoderado = () => {
+    const nombreCompleto = buildNombreCompleto() || "Sin nombre";
+
+    const payload = {
+      id: otroApoderadoId.value ?? uuidv4(),
+      nombreRazonSocial: nombreCompleto,
+      tipoDocumento: personaNaturalStore.tipoDocumento,
+      numeroDocumento: personaNaturalStore.numeroDocumento,
+    };
+
+    if (modeModalOtroApoderado.value === "editar" && otroApoderadoId.value) {
+      registroApoderadosStore.editarOtroApoderado(payload);
+    } else {
+      registroApoderadosStore.agregarOtroApoderado(payload);
+    }
+
+    handleCloseOtroApoderadoModal();
+  };
+
+  const handleCloseOtroApoderadoModal = () => {
+    resetPersonaData();
+    isOtroApoderadoModalOpen.value = false;
+    modeModalOtroApoderado.value = "crear";
+    otroApoderadoId.value = null;
+  };
+
+  const otrosApoderadosActions = [
+    {
+      label: "Editar",
+      icon: "SquarePen",
+      onClick: handleEditOtroApoderado,
+    },
+    {
+      label: "Eliminar",
+      icon: "Trash2",
+      onClick: handleDeleteOtroApoderado,
+    },
+  ];
+
+  const otrosApoderadosData = computed(() => registroApoderadosStore.tablaOtrosApoderados);
+
+  return {
+    otrosApoderadosData,
+    otrosHeaders,
+    otrosApoderadosActions,
+    isOtroApoderadoModalOpen,
+    modeModalOtroApoderado,
+    openModalRegistroOtroApoderado,
+    handleSubmitRegistroOtroApoderado,
+    handleCloseOtroApoderadoModal,
+  };
+};
