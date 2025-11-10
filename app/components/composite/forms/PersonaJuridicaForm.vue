@@ -10,20 +10,21 @@
     provinciaSchema,
     razonSocialSchema,
   } from "~/modules/registro-sociedades/schemas/modalPersonaJuridica";
-  const personaNaturalStore = usePersonaNaturalStore();
+  import { usePersonaJuridicaStore } from "~/stores/usePersonaJuridicaStore";
+  const personaJuridicaStore = usePersonaJuridicaStore();
 </script>
 
 <template>
   <div class="grid grid-cols-2 gap-12">
     <SearchInputZod
-      v-model="personaNaturalStore.numeroDocumento"
+      v-model="personaJuridicaStore.numeroDocumento"
       name="numero_documento"
       label="Número de RUC"
       placeholder="Ingrese el número"
       :schema="numeroRucSchema"
     />
     <TextInputZod
-      v-model="personaNaturalStore.numeroDocumento"
+      v-model="personaJuridicaStore.razonSocial"
       name="razon_social"
       label="Razón Social"
       placeholder="Razón social"
@@ -31,7 +32,7 @@
     />
 
     <TextInputZod
-      v-model="personaNaturalStore.numeroDocumento"
+      v-model="personaJuridicaStore.nombreComercial"
       name="nombre_comercial"
       label="Nombre Comercial"
       placeholder="Nombre comercial"
@@ -39,7 +40,7 @@
     />
 
     <TextInputZod
-      v-model="personaNaturalStore.numeroDocumento"
+      v-model="personaJuridicaStore.provincia ?? ''"
       name="provincia"
       label="Provincia"
       placeholder="Provincia"
@@ -47,7 +48,7 @@
     />
 
     <TextInputZod
-      v-model="personaNaturalStore.numeroDocumento"
+      v-model="personaJuridicaStore.departamento ?? ''"
       name="departamento"
       label="Departamento"
       placeholder="Departamento"
@@ -55,14 +56,14 @@
     />
 
     <TextInputZod
-      v-model="personaNaturalStore.numeroDocumento"
+      v-model="personaJuridicaStore.distrito ?? ''"
       name="distrito"
       label="Distrito"
       placeholder="Distrito"
       :schema="distritoSchema"
     />
     <TextInputZod
-      v-model="personaNaturalStore.numeroDocumento"
+      v-model="personaJuridicaStore.direccion"
       name="Dirección"
       label="Dirección"
       placeholder="Dirección"

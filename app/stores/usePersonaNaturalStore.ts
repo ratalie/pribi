@@ -9,7 +9,7 @@ export const usePersonaNaturalStore = defineStore("personaNaturalForm", {
   }),
 });
 
-interface PersonaNatural {
+export interface PersonaNatural {
   tipoDocumento: string;
   numeroDocumento: string;
   nombre: string;

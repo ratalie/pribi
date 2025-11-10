@@ -124,7 +124,7 @@
         </template>
       </SimpleCardDropDown>
 
-      <div class="flex flex-col gap-4">
+      <div v-if="registroApoderadoModalStore.tipoPersona === 'juridica'" class="flex flex-col gap-4">
         <span class="t-h5 text-gray-800 font-bold font-secondary">
           Registrar representante
         </span>

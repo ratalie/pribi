@@ -5,7 +5,10 @@
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
   import DirectorForm from "~/components/composite/forms/DirectorForm.vue";
-  import { useDirectorioStore } from "~/modules/registro-sociedades/composables/useDirectores";
+  import {
+    useDirectorioStore,
+    type Director,
+  } from "~/modules/registro-sociedades/composables/useDirectores";
   import { useDirectoresComputed } from "~/modules/registro-sociedades/composables/useDirectoresComputed";
   import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
   import type { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
@@ -13,9 +16,14 @@
 
   interface Props {
     modelValue?: boolean;
+    mode?: "create" | "edit";
+    directorToEdit?: Director | null;
   }
 
-  const props = defineProps<Props>();
+  const props = withDefaults(defineProps<Props>(), {
+    mode: "create",
+    directorToEdit: null,
+  });
 
   const emits = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
@@ -31,6 +39,7 @@
   const { presidenteOptions } = useDirectoresComputed();
   const tipoDirector = ref<TiposDirectoresEnum | "">("");
   const reemplazoAsignado = ref("");
+  const isEditMode = computed(() => props.mode === "edit" && !!props.directorToEdit);
 
   const isSubmitDisabled = computed(() => {
     if (!tipoDirector.value) {
@@ -43,6 +52,37 @@
 
     return false;
   });
+
+  watch(
+    () => ({
+      isOpen: modelValue.value,
+      mode: props.mode,
+      director: props.directorToEdit,
+    }),
+    ({ isOpen, mode, director }) => {
+      if (!isOpen) {
+        return;
+      }
+
+      if (mode === "edit" && director) {
+        personaNaturalStore.$patch({
+          tipoDocumento: director.tipoDocumento,
+          numeroDocumento: director.numeroDocumento,
+          nombre: director.nombres,
+          apellidoPaterno: director.apellidoPaterno,
+          apellidoMaterno: director.apellidoMaterno,
+        });
+        tipoDirector.value = director.tipoDirector;
+        reemplazoAsignado.value = director.reemplazoAsignado ?? "";
+        return;
+      }
+
+      personaNaturalStore.$reset();
+      tipoDirector.value = "";
+      reemplazoAsignado.value = "";
+    },
+    { immediate: true }
+  );
 
   watch(
     [tipoDirector, presidenteOptions],
@@ -88,18 +128,26 @@
       return;
     }
 
-    const director = directorioStore.addDirector({
+    const selectedTipoDirector = tipoDirector.value as TiposDirectoresEnum;
+    const directorPayload = {
       nombres: personaNaturalStore.nombre,
       apellidoPaterno: personaNaturalStore.apellidoPaterno,
       apellidoMaterno: personaNaturalStore.apellidoMaterno,
       numeroDocumento: personaNaturalStore.numeroDocumento,
       tipoDocumento: personaNaturalStore.tipoDocumento as TipoDocumentosEnum,
-      tipoDirector: tipoDirector.value as TiposDirectoresEnum,
+      tipoDirector: selectedTipoDirector,
       reemplazoAsignado:
-        tipoDirector.value === TiposDirectoresEnum.ALTERNO ? reemplazoAsignado.value : null,
-    });
+        selectedTipoDirector === TiposDirectoresEnum.ALTERNO ? reemplazoAsignado.value : null,
+    };
 
-    console.log("Director guardado:", director);
+    if (isEditMode.value && props.directorToEdit) {
+      directorioStore.updateDirector({
+        id: props.directorToEdit.id,
+        ...directorPayload,
+      });
+    } else {
+      directorioStore.addDirector(directorPayload);
+    }
 
     handleCancel();
   };

@@ -15,6 +15,10 @@
   import Switch from "~/components/ui/switch/Switch.vue";
   import VDropdownComponent from "~/components/VDropdownComponent.vue";
   import {
+    useDirectorioStore,
+    type Director,
+  } from "~/modules/registro-sociedades/composables/useDirectores";
+  import {
     useDirectoresComputed,
     type DirectorTableRow,
   } from "~/modules/registro-sociedades/composables/useDirectoresComputed";
@@ -24,6 +28,7 @@
     fechaInicioDirectorioSchema,
     presidenteDirectorioSchema,
   } from "~/modules/registro-sociedades/schemas/directorio";
+  import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
   import type { TypeOption } from "~/types/TypeOptions";
   import AgregarDirectorModal from "../modals/AgregarDirectorModal.vue";
 
@@ -73,19 +78,57 @@
   const directoresColumnsDef = getColumns(directoresColumns);
 
   // Acciones para el menú de opciones
+
+  const directorioStore = useDirectorioStore();
+  const personaNaturalStore = usePersonaNaturalStore();
+
+  const modalMode = ref<"create" | "edit">("create");
+  const directorToEdit = ref<Director | null>(null);
+
+  const openCreateModal = () => {
+    modalMode.value = "create";
+    directorToEdit.value = null;
+    personaNaturalStore.$reset();
+    isModalOpen.value = true;
+  };
+
+  const openEditModal = (id: string) => {
+    const director = directorioStore.directores.find((item) => item.id === id);
+
+    if (!director) {
+      return;
+    }
+
+    modalMode.value = "edit";
+    directorToEdit.value = { ...director };
+    personaNaturalStore.$patch({
+      tipoDocumento: director.tipoDocumento,
+      numeroDocumento: director.numeroDocumento,
+      nombre: director.nombres,
+      apellidoPaterno: director.apellidoPaterno,
+      apellidoMaterno: director.apellidoMaterno,
+    });
+    isModalOpen.value = true;
+  };
+
+  const handleDeleteDirector = (id: string) => {
+    directorioStore.removeDirector(id);
+  };
+
+  // Acciones para el menú de opciones
   const directoresActions = [
     {
       label: "Editar",
       icon: "SquarePen",
       onClick: (id: string) => {
-        console.log("Editar", id);
+        openEditModal(id);
       },
     },
     {
       label: "Eliminar",
       icon: "Trash2",
       onClick: (id: string) => {
-        console.log("Eliminar", id);
+        handleDeleteDirector(id);
       },
     },
   ];
@@ -120,14 +163,13 @@
 
   const isModalOpen = ref(false);
 
-  const openModal = () => {
-    isModalOpen.value = true;
-  };
-
   const closeModal = () => {
     isModalOpen.value = false;
+    modalMode.value = "create";
+    directorToEdit.value = null;
+    personaNaturalStore.$reset();
   };
-  
+
   // Manejador de envío
   const handleSubmit = () => {
     console.log("Formulario enviado:", form.value);
@@ -366,7 +408,7 @@
               label="Agregar Director"
               size="xl"
               icon="UserRoundPlus"
-              @click="openModal"
+              @click="openCreateModal"
             />
           </template>
         </CardTitle>
@@ -392,7 +434,12 @@
         </p>
       </div>
 
-      <AgregarDirectorModal v-model="isModalOpen" @close="closeModal" />
+      <AgregarDirectorModal
+        v-model="isModalOpen"
+        :mode="modalMode"
+        :director-to-edit="directorToEdit"
+        @close="closeModal"
+      />
     </div>
   </div>
 </template>

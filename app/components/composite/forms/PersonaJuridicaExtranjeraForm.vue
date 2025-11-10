@@ -9,14 +9,15 @@
     paisSchema,
   } from "~/modules/registro-sociedades/schemas/modalPersonaJuridica";
   import { countriesOptions } from "~/constants/inputs/countries-options";
+  import { usePersonaJuridicaStore } from "~/stores/usePersonaJuridicaStore";
 
-  const personaNaturalStore = usePersonaNaturalStore();
+  const personaJuridicaStore = usePersonaJuridicaStore();
 </script>
 
 <template>
   <div class="grid grid-cols-2 gap-12">
     <SelectInputZod
-      v-model="personaNaturalStore.numeroDocumento"
+      v-model="personaJuridicaStore.pais"
       name="pais"
       label="País"
       :schema="paisSchema"
@@ -25,7 +26,7 @@
     />
 
     <TextInputZod
-      v-model="personaNaturalStore.numeroDocumento"
+      v-model="personaJuridicaStore.razonSocial"
       name="razon_social"
       label="Razón Social"
       placeholder="Razón social"
@@ -33,7 +34,7 @@
     />
 
     <TextInputZod
-      v-model="personaNaturalStore.numeroDocumento"
+      v-model="personaJuridicaStore.tipoDocumento"
       name="tipo_documento"
       label="Tipo de Documento"
       placeholder="Escribe el tipo de documento aquí"
@@ -41,7 +42,7 @@
     />
 
     <TextInputZod
-      v-model="personaNaturalStore.numeroDocumento"
+      v-model="personaJuridicaStore.numeroDocumento"
       name="numero_documento"
       label="Número de Documento"
       placeholder="Ingrese el número"
@@ -49,7 +50,7 @@
     />
 
     <TextInputZod
-      v-model="personaNaturalStore.numeroDocumento"
+      v-model="personaJuridicaStore.direccion"
       name="Dirección"
       label="Dirección"
       placeholder="Dirección"
