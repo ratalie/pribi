@@ -15,8 +15,6 @@ export interface BaseAccionista {
 
 // ============================================
 // ACCIONISTA: PERSONA NATURAL
-// ============================================
-
 export interface PersonaNaturalAccionista extends BaseAccionista, PersonaNatural {
   tipoAccionista: "natural";
   estadoCivil: EstadoCivilEnum;
@@ -28,8 +26,6 @@ export interface PersonaNaturalAccionista extends BaseAccionista, PersonaNatural
 
 // ============================================
 // ACCIONISTA: PERSONA JURÍDICA
-// ============================================
-
 export type PersonaJuridicaAccionista = BaseAccionista &
   PersonaJuridica & {
     tipoAccionista: "juridica";
@@ -37,8 +33,6 @@ export type PersonaJuridicaAccionista = BaseAccionista &
 
 // ============================================
 // ACCIONISTA: SUCURSAL
-// ============================================
-
 export interface SucursalAccionista extends BaseAccionista {
   tipoAccionista: "sucursal";
   tipoDocumento: string;
@@ -53,8 +47,6 @@ export interface SucursalAccionista extends BaseAccionista {
 
 // ============================================
 // ACCIONISTA: SUCESIONES INDIVISAS
-// ============================================
-
 export interface SucesionesIndivisasAccionista
   extends BaseAccionista,
     EntidadLegalPeruanaBase {
@@ -63,8 +55,6 @@ export interface SucesionesIndivisasAccionista
 
 // ============================================
 // ACCIONISTA: FIDEICOMISOS
-// ============================================
-
 interface FideicomisosBase {
   identificacionFideicomiso: string;
   partidaRegistral: string;
@@ -92,11 +82,18 @@ export type FideicomisosAccionista = BaseAccionista &
 
 // ============================================
 // ACCIONISTA: FONDOS DE INVERSIÓN
-// ============================================
-
 export interface FondosInversionAccionista extends BaseAccionista {
   tipoAccionista: "fondos_inversion";
-  // Completa según tus necesidades
+  tipoDocumento: string;
+  numeroDocumento: string;
+  razonSocial: string;
+  direccion: string;
+  tipoFondo: string;
+  numeroDocumentoSociedadAdministradora: string;
+  tipoDocumentoSociedadAdministradora: string;
+  razonSocialSociedadAdministradora: string;
+  tieneRepresentante: boolean;
+  representanteLegal?: PersonaNatural;
 }
 
 export type Accionista =
@@ -109,8 +106,8 @@ export type Accionista =
 
 export interface AccionistaRow {
   id: string;
-  name: string;
-  person_type: string;
-  document_type: string;
-  document_number: string;
+  nombre: string;
+  tipoAccionista: string;
+  tipoDocumento: string;
+  numeroDocumento: string;
 }

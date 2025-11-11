@@ -7,14 +7,14 @@
     apellidoMaternoSchema,
     apellidoPaternoSchema,
     estadoCivilSchema,
-    nombreAccionistaSchema,
+    nombreSchema,
     numeroDocumentoSchema,
     tipoDocumentoSchema,
-  } from "~/modules/registro-sociedades/schemas/modalAccionistas";
+  } from "~/modules/registro-sociedades/schemas/accionistas/personaNaturalSchemas";
   import { EstadoCivilEnum } from "~/types/enums/EstadoCivilEnum";
-  import { usePersonaNaturalStore } from "../../../stores/modal/accionistas/usePersonaNaturalStore";
+  import { useAccionistaNaturalStore } from "../../../stores/modal/accionistas/useAccionistaNaturalStore";
 
-  const personaNaturalStore = usePersonaNaturalStore();
+  const accionistaNaturalStore = useAccionistaNaturalStore();
 
   const estadoCivilOptions = Object.values(EstadoCivilEnum).map((estado, index) => ({
     id: index + 1,
@@ -26,7 +26,7 @@
 <template>
   <div class="grid grid-cols-2 gap-12">
     <SelectInputZod
-      v-model="personaNaturalStore.tipoDocumento"
+      v-model="accionistaNaturalStore.tipoDocumento"
       name="tipo_documento"
       label="Tipo de documento"
       placeholder="Selecciona el tipo de documento"
@@ -35,7 +35,7 @@
     />
 
     <SearchInputZod
-      v-model="personaNaturalStore.numeroDocumento"
+      v-model="accionistaNaturalStore.numeroDocumento"
       name="numero_documento"
       label="Número de documento"
       placeholder="Ingrese número de documento"
@@ -43,15 +43,15 @@
     />
 
     <TextInputZod
-      v-model="personaNaturalStore.nombre"
+      v-model="accionistaNaturalStore.nombre"
       name="nombre"
       label="Nombres"
       placeholder="Nombres"
-      :schema="nombreAccionistaSchema"
+      :schema="nombreSchema"
     />
 
     <TextInputZod
-      v-model="personaNaturalStore.apellidoPaterno"
+      v-model="accionistaNaturalStore.apellidoPaterno"
       name="apellido_paterno"
       label="Apellido paterno"
       placeholder="Apellido paterno"
@@ -59,7 +59,7 @@
     />
 
     <TextInputZod
-      v-model="personaNaturalStore.apellidoMaterno"
+      v-model="accionistaNaturalStore.apellidoMaterno"
       name="apellido_materno"
       label="Apellido materno"
       placeholder="Apellido materno"
@@ -67,7 +67,7 @@
     />
 
     <SelectInputZod
-      v-model="personaNaturalStore.estadoCivil"
+      v-model="accionistaNaturalStore.estadoCivil"
       name="estado_civil"
       label="Estado civil"
       placeholder="Selecciona el estado civil"

@@ -6,44 +6,37 @@
   import BaseModal from "~/components/base/modal/BaseModal.vue";
   import { accionistaTypes } from "~/constants/inputs/accionista-types";
   import { tipoAccionistaSchema } from "../../schemas/modalAccionistas";
-  import { usePersonaNaturalStore } from "../../stores/modal/accionistas/usePersonaNaturalStore";
-  import PersonaNaturalForm from "../forms/accionistas/PersonaNaturalForm.vue";
+  import AccionistaNaturalForm from "../forms/accionistas/AccionistaNaturalForm.vue";
 
   interface Props {
     modelValue?: boolean;
+    tipoAccionista: string;
+    mode: "crear" | "editar";
   }
 
   const props = defineProps<Props>();
 
   const emits = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
-    (e: "close"): void;
+    (e: "update:tipoAccionista", value: string): void;
+    (e: "close" | "submit"): void;
   }>();
 
   const modelValue = useVModel(props, "modelValue", emits, {
     passive: true,
   });
 
-  const personaNaturalStore = usePersonaNaturalStore();
+  const tipoAccionista = useVModel(props, "tipoAccionista", emits, {
+    passive: true,
+  });
 
-  const tipoAccionista = ref("");
+  const handleSubmit = () => {
+    emits("submit");
+  };
 
   const handleCancel = () => {
     emits("close");
     modelValue.value = false;
-
-    personaNaturalStore.$reset();
-  };
-
-  const handleSave = async () => {
-    console.log("Datos de accionista :", {
-      tipoDocumento: personaNaturalStore.tipoDocumento,
-      numeroDocumento: personaNaturalStore.numeroDocumento,
-      nombre: personaNaturalStore.nombre,
-      apellidoPaterno: personaNaturalStore.apellidoPaterno,
-      apellidoMaterno: personaNaturalStore.apellidoMaterno,
-      estadoCivil: personaNaturalStore.estadoCivil,
-    });
   };
 
   const handleInvalidSubmit = () => {
@@ -57,7 +50,7 @@
     v-model="modelValue"
     size="lg"
     @close="handleCancel"
-    @submit="handleSave"
+    @submit="handleSubmit"
     @invalid-submit="handleInvalidSubmit"
   >
     <div class="flex flex-col gap-12">
@@ -76,7 +69,7 @@
         </template>
       </CardTitle>
 
-      <PersonaNaturalForm />
+      <AccionistaNaturalForm />
     </div>
 
     <template #footer>
@@ -88,7 +81,12 @@
           @click="handleCancel"
         />
 
-        <ActionButton type="submit" variant="primary" label="Guardar" size="md" />
+        <ActionButton
+          type="submit"
+          variant="primary"
+          :label="mode === 'crear' ? 'Guardar' : 'Editar'"
+          size="md"
+        />
       </div>
     </template>
   </BaseModal>

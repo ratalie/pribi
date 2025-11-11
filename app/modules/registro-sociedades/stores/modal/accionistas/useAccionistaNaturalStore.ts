@@ -1,13 +1,14 @@
 import type { EstadoCivilEnum } from "~/types/enums/EstadoCivilEnum";
 import type { RegimenPatrimonialEnum } from "~/types/enums/RegimenPatrimonialEnum";
 
-export const usePersonaNaturalStore = defineStore("personaNaturalForm", {
-  state: (): PersonaNaturalState => ({
+export const useAccionistaNaturalStore = defineStore("accionistas-natural-form", {
+  state: (): AccionistaNaturalState => ({
     tipoDocumento: "",
     numeroDocumento: "",
     nombre: "",
     apellidoPaterno: "",
     apellidoMaterno: "",
+    paisPasaporte: "",
     estadoCivil: "" as EstadoCivilEnum | "",
     regimenPatrimonial: "" as RegimenPatrimonialEnum | "",
     conyuge: {
@@ -16,19 +17,20 @@ export const usePersonaNaturalStore = defineStore("personaNaturalForm", {
       nombre: "",
       apellidoPaterno: "",
       apellidoMaterno: "",
+      paisPasaporte: "",
     },
     partidaRegistral: "",
     sedeRegistral: "",
   }),
 });
 
-export interface PersonaNaturalState {
+export interface AccionistaNaturalState {
   tipoDocumento: string;
   numeroDocumento: string;
   nombre: string;
   apellidoPaterno: string;
   apellidoMaterno: string;
-  paisPasaporte?: string;
+  paisPasaporte: string;
   estadoCivil: EstadoCivilEnum | "";
   regimenPatrimonial: RegimenPatrimonialEnum | "";
   conyuge: {
@@ -37,6 +39,7 @@ export interface PersonaNaturalState {
     nombre: string;
     apellidoPaterno: string;
     apellidoMaterno: string;
+    paisPasaporte: string;
   };
   partidaRegistral: string;
   sedeRegistral: string;
