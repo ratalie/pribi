@@ -1,19 +1,19 @@
 <script setup lang="ts">
   import { computed, ref } from "vue";
   import noDirectorioImage from "~/assets/img/no-directorio.jpeg";
+  import VDropdownComponent from "~/components/VDropdownComponent.vue";
+  import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
+  import SwitchTabs from "~/components/base/Switch/SwitchTabs.vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import NumberInputStepper from "~/components/base/inputs/number/NumberInputStepper.vue";
   import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
-  import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
-  import SwitchTabs from "~/components/base/Switch/SwitchTabs.vue";
   import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import Checkbox from "~/components/ui/checkbox/Checkbox.vue";
   import Switch from "~/components/ui/switch/Switch.vue";
-  import VDropdownComponent from "~/components/VDropdownComponent.vue";
   import {
     useDirectorioStore,
     type Director,

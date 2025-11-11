@@ -4,12 +4,14 @@
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
   import { tipoDocumentoOptions } from "~/constants/inputs/document-type";
   import {
-    apellidoMaternoSchema,
-    apellidoPaternoSchema,
-    nombreAccionistaSchema,
-    numeroDocumentoSchema,
-    tipoDocumentoSchema,
-  } from "~/modules/registro-sociedades/schemas/modalAccionistas";
+    apellidoMaternoNaturalSchema,
+    apellidoPaternoNaturalSchema,
+    nombreNaturalSchema,
+    numeroDocumentoNaturalSchema,
+    paisPasaporteNaturalSchema,
+    tipoDocumentoNaturalSchema,
+  } from "~/schemas/PersonaNatural";
+  import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
 
   const personaNaturalStore = usePersonaNaturalStore();
 </script>
@@ -22,15 +24,35 @@
       label="Tipo de documento"
       placeholder="Selecciona el tipo de documento"
       :options="tipoDocumentoOptions"
-      :schema="tipoDocumentoSchema"
+      :schema="tipoDocumentoNaturalSchema"
     />
 
     <SearchInputZod
+      v-if="personaNaturalStore.tipoDocumento === TipoDocumentosEnum.DNI"
       v-model="personaNaturalStore.numeroDocumento"
       name="numero_documento"
       label="Número de documento"
       placeholder="Ingrese número de documento"
-      :schema="numeroDocumentoSchema"
+      :schema="numeroDocumentoNaturalSchema"
+    />
+
+    <TextInputZod
+      v-else
+      v-model="personaNaturalStore.numeroDocumento"
+      name="numero_documento"
+      label="Número de documento"
+      placeholder="Ingrese número de documento"
+      :schema="numeroDocumentoNaturalSchema"
+    />
+
+    <SelectInputZod
+      v-if="personaNaturalStore.tipoDocumento === TipoDocumentosEnum.PASAPORTE"
+      v-model="personaNaturalStore.paisPasaporte"
+      name="pais_pasaporte"
+      label="País de pasaporte"
+      placeholder="Selecciona el país de pasaporte"
+      :options="[{ id: 1, value: 'Peru', label: 'Peru' }]"
+      :schema="paisPasaporteNaturalSchema"
     />
 
     <TextInputZod
@@ -38,7 +60,7 @@
       name="nombre"
       label="Nombres"
       placeholder="Nombres"
-      :schema="nombreAccionistaSchema"
+      :schema="nombreNaturalSchema"
     />
 
     <TextInputZod
@@ -46,7 +68,7 @@
       name="apellido_paterno"
       label="Apellido paterno"
       placeholder="Apellido paterno"
-      :schema="apellidoPaternoSchema"
+      :schema="apellidoPaternoNaturalSchema"
     />
 
     <TextInputZod
@@ -54,7 +76,7 @@
       name="apellido_materno"
       label="Apellido materno"
       placeholder="Apellido materno"
-      :schema="apellidoMaternoSchema"
+      :schema="apellidoMaternoNaturalSchema"
     />
   </div>
 </template>

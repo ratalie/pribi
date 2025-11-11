@@ -48,27 +48,6 @@ export const useRegistroApoderadosStore = defineStore("registroApoderados", {
           estadoCivil: null,
         },
       },
-      {
-        id: "3",
-        claseApoderadoId: "3",
-        tipoPersona: "juridica",
-        nombreRazonSocial: "Servicios Integrales SAC",
-        tipoDocumento: "RUC",
-        numeroDocumento: "20546789012",
-        personaJuridica: {
-          jurisdiccion: "peruana",
-          tipoDocumento: "RUC",
-          numeroDocumento: "20546789012",
-          nombreComercial: "Servicios Integrales",
-          razonSocial: "Servicios Integrales SAC",
-          pais: "PER",
-          direccion: "Av. Principal 123",
-          provincia: "Lima",
-          distrito: "Miraflores",
-          departamento: "Lima",
-          representadoPor: null,
-        },
-      },
     ],
     otrosApoderados: [
       {

@@ -3,8 +3,8 @@
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
-  import { documentTypes } from "~/constants/inputs/document-type";
-  import { tipoDirectorOptions } from "~/constants/tipo-director";
+  import { tipoDocumentoOptions } from "~/constants/inputs/document-type";
+  import { tipoDirectoresOptions } from "~/constants/tipo-director";
   import { useDirectoresComputed } from "~/modules/registro-sociedades/composables/useDirectoresComputed";
   import {
     apellidoMaternoSchema,
@@ -52,7 +52,7 @@
       name="tipo_documento"
       label="Tipo de documento"
       placeholder="Selecciona el tipo de documento"
-      :options="documentTypes"
+      :options="tipoDocumentoOptions"
       :schema="tipoDocumentoSchema"
     />
 
@@ -93,7 +93,7 @@
       name="tipo_director"
       label="Tipo de director"
       placeholder="Selecciona el tipo de director"
-      :options="tipoDirectorOptions"
+      :options="tipoDirectoresOptions"
       :schema="tipoDirectorSchema"
     />
 

@@ -1,7 +1,7 @@
 import { storeToRefs } from "pinia";
 import { computed, watch, type Ref } from "vue";
-import { TiposDirectoresEnum } from "~/types/enums/TiposDirectoresEnum";
 import type { TypeOption } from "~/types/TypeOptions";
+import { TiposDirectoresEnum } from "~/types/enums/TiposDirectoresEnum";
 import { useDirectorioStore, type Director } from "./useDirectores";
 
 export interface DirectorTableRow {

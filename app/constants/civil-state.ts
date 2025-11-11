@@ -1,12 +1,7 @@
-export const civilState = [
-  {
-    id: 1,
-    value: "Soltero",
-    label: "Soltero",
-  },
-  {
-    id: 2,
-    value: "Casado",
-    label: "Casado",
-  },
-];
+import { EstadoCivilEnum } from "~/types/enums/EstadoCivilEnum";
+
+export const estadoCivilOptions = Object.values(EstadoCivilEnum).map((estado, index) => ({
+  id: index + 1,
+  value: estado,
+  label: estado,
+}));

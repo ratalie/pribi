@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { ref } from "vue";
   import BaseButton from "~/components/base/buttons/BaseButton.vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
@@ -8,7 +7,6 @@
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
-  import LabeledCardSwitch from "~/components/base/Switch/LabeledCardSwitch.vue";
   import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
   import SwitchTabs from "~/components/base/Switch/SwitchTabs.vue";
   import CheckboxTable from "~/components/base/tables/checkbox-table/CheckboxTable.vue";
@@ -23,19 +21,6 @@
 
   const uploadedFile = ref<File | null>(null);
   const uploadedFiles = ref<File[]>([]);
-  const personaType = ref<"natural" | "juridica">("natural");
-  const personaOptions = [
-    {
-      value: "natural",
-      label: "Persona Natural",
-      description: "Selecciona esta opción si actúas como persona natural.",
-    },
-    {
-      value: "juridica",
-      label: "Persona Jurídica",
-      description: "Selecciona esta opción si representas a una empresa.",
-    },
-  ];
 
   //tabla simple
   export interface ISocietyTable {
@@ -213,23 +198,6 @@
       </div>
       <div>
         <BaseButton variant="secondary">Botón Compuesto</BaseButton>
-      </div>
-    </div>
-
-    <div class="flex flex-col gap-4">
-      <p class="text-primary font-bold t-h6">Switch con etiqueta</p>
-      <LabeledCardSwitch
-        v-model="personaType"
-        label="Tipo de persona"
-        sub-label="Selecciona una de las dos opciones."
-        :options="personaOptions"
-        :columns="2"
-      />
-      <div class="t-b2 text-gray-600">
-        Seleccionado:
-        <span class="font-semibold text-primary-700">
-          {{ personaType === "natural" ? "Persona Natural" : "Persona Jurídica" }}
-        </span>
       </div>
     </div>
 

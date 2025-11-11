@@ -13,4 +13,3 @@ export const useClaseApoderadoModalStore = defineStore("claseApoderadoModal", {
 interface State {
   nombreClase: string;
 }
-

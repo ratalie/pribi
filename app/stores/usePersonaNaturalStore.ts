@@ -1,19 +1,21 @@
-export const usePersonaNaturalStore = defineStore("personaNaturalForm", {
-  state: (): PersonaNatural => ({
+import type { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
+
+export const usePersonaNaturalStore = defineStore("personaNatural", {
+  state: (): State => ({
     tipoDocumento: "",
     numeroDocumento: "",
     nombre: "",
     apellidoPaterno: "",
     apellidoMaterno: "",
-    estadoCivil: null,
+    paisPasaporte: "",
   }),
 });
 
-export interface PersonaNatural {
-  tipoDocumento: string;
+interface State {
+  tipoDocumento: TipoDocumentosEnum | "";
   numeroDocumento: string;
   nombre: string;
   apellidoPaterno: string;
   apellidoMaterno: string;
-  estadoCivil: string | null;
+  paisPasaporte: string;
 }

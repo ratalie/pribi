@@ -11,33 +11,21 @@ export const numeroRucSchema = z
   .nonempty("El número de RUC es obligatorio")
   .min(11, "Debe tener al menos 11 caracteres");
 
-  export const numeroDocumentoSchema = z
+export const numeroDocumentoSchema = z
   .string()
   .nonempty("El número de documento es obligatorio");
 
-export const razonSocialSchema = z
-  .string()
-  .nonempty("La razón social es obligatoria")
+export const razonSocialSchema = z.string().nonempty("La razón social es obligatoria");
 
-export const nombreComercialSchema = z
-  .string()
+export const nombreComercialSchema = z.string();
 
-export const provinciaSchema = z
-  .string()
-  .nonempty("La provincia es obligatoria");
+export const provinciaSchema = z.string().nonempty("La provincia es obligatoria");
 
-export const departamentoSchema = z
-  .string()
-  .nonempty("El departamento es obligatorio");
+export const departamentoSchema = z.string().nonempty("El departamento es obligatorio");
 
-export const distritoSchema = z
-  .string()
-  .nonempty("El distrito es obligatorio");
+export const distritoSchema = z.string().nonempty("El distrito es obligatorio");
 
-export const direccionSchema = z
-  .string()
-  .nonempty("La dirección es obligatoria");
-
+export const direccionSchema = z.string().nonempty("La dirección es obligatoria");
 
 export const nombreAccionistaSchema = z
   .string()

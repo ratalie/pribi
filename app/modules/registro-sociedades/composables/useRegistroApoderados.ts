@@ -6,6 +6,7 @@ import {
   type PersonaJuridicaState,
 } from "~/stores/usePersonaJuridicaStore";
 import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
+import type { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
 import { useRegistroApoderadoModalStore } from "../stores/modal/useRegistroApoderadoModalStore";
 import { useRegistroApoderadosStore } from "../stores/useRegistroApoderadosStore";
 import type { RegistroApoderado, RegistroApoderadoRow } from "../types/registroApoderados";
@@ -77,7 +78,7 @@ export const useRegistroApoderados = () => {
       if (apoderado.personaNatural) {
         personaNaturalStore.$patch({ ...apoderado.personaNatural });
       } else {
-        personaNaturalStore.tipoDocumento = apoderado.tipoDocumento;
+        personaNaturalStore.tipoDocumento = apoderado.tipoDocumento as TipoDocumentosEnum;
         personaNaturalStore.numeroDocumento = apoderado.numeroDocumento;
         personaNaturalStore.nombre = apoderado.nombreRazonSocial;
       }
@@ -153,7 +154,6 @@ export const useRegistroApoderados = () => {
         nombre: personaNaturalStore.nombre,
         apellidoPaterno: personaNaturalStore.apellidoPaterno,
         apellidoMaterno: personaNaturalStore.apellidoMaterno,
-        estadoCivil: personaNaturalStore.estadoCivil,
       };
 
       payload.nombreRazonSocial = buildNombreCompleto() || "Sin nombre";
