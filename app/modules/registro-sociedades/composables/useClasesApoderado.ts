@@ -1,6 +1,8 @@
+import type { CellContext, ColumnDef } from "@tanstack/vue-table";
 import { v4 as uuidv4 } from "uuid";
-import { computed, ref } from "vue";
+import { computed, h, ref } from "vue";
 import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
+import VDropdownComponent from "~/components/VDropdownComponent.vue";
 import { useClaseApoderadoModalStore } from "../stores/modal/useClaseApoderadoModalStore";
 import { useRegistroApoderadosStore } from "../stores/useRegistroApoderadosStore";
 import type { ClaseApoderadoRow } from "../types/registroApoderados";
@@ -19,7 +21,40 @@ export const useClasesApoderado = () => {
     { key: "numero_apoderados", label: "No. de apoderados", type: "text" },
   ];
 
-  const claseHeaders = getColumns(claseColumns);
+  const ES_CLASE_PROTEGIDA = "Gerente General";
+
+  const claseHeaders: ColumnDef<ClaseApoderadoRow>[] = getColumns<ClaseApoderadoRow>(
+    claseColumns
+  ).map((column) => {
+    if ("accessorKey" in column && column.accessorKey === "clase_apoderado") {
+      return {
+        ...column,
+        cell: ({ row }: CellContext<ClaseApoderadoRow, unknown>) => {
+          const value = row.getValue("clase_apoderado") as string;
+          const esClaseProtegida = value === ES_CLASE_PROTEGIDA;
+
+          if (!esClaseProtegida) {
+            return h("div", {}, value);
+          }
+
+          return h("div", { class: "flex items-center gap-2" }, [
+            h("span", { class: "text-gray-800 font-medium" }, value),
+            h(VDropdownComponent, {
+              titleDropdown: "A tener en cuenta",
+              messageDropdown: "No se encuentra registrado un gerente general.",
+              containerClass: "bg-gray-25",
+              titleClass: "font-primary font-bold text-gray-800",
+              messageClass: "text-gray-500",
+              buttonAddVisible: false,
+              tooltipClass: "w-[260px]",
+            }),
+          ]);
+        },
+      } as ColumnDef<ClaseApoderadoRow>;
+    }
+
+    return column;
+  });
 
   const handleCreateClase = () => {
     modeModalClase.value = "crear";
@@ -85,8 +120,6 @@ export const useClasesApoderado = () => {
       onClick: handleDeleteClase,
     },
   ];
-
-  const ES_CLASE_PROTEGIDA = "Gerente General";
 
   const showActionsFor = (row: ClaseApoderadoRow) =>
     row.clase_apoderado !== ES_CLASE_PROTEGIDA;

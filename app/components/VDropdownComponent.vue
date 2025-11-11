@@ -3,18 +3,26 @@
 
   interface Props {
     messageDropdown: string;
+    titleDropdown?: string;
     isPreview?: boolean;
     buttonAddVisible?: boolean;
     tooltipClass?: string;
     isDisabled?: boolean;
     position?: string;
+    containerClass?: string;
+    titleClass?: string;
+    messageClass?: string;
   }
 
   const props = withDefaults(defineProps<Props>(), {
+    titleDropdown: undefined,
     isPreview: false,
     buttonAddVisible: true,
     tooltipClass: undefined,
     position: "right",
+    containerClass: undefined,
+    titleClass: undefined,
+    messageClass: undefined,
   });
   defineOptions({
     inheritAttrs: false,
@@ -35,9 +43,7 @@
       <Info
         :size="14"
         :class="[
-          props.isDisabled
-            ? ' opacity-50 text-gray-800'
-            : 'cursor-pointer text-primary-700',
+          props.isDisabled ? ' opacity-50 text-gray-800' : 'cursor-pointer text-primary-700',
         ]"
       />
     </button>
@@ -46,14 +52,19 @@
     <template #popper="{ hide }">
       <div
         :class="[
-          'bg-white rounded-[4px] p-4 flex flex-col justify-between shadow-tooltip gap-4',
+          'rounded-[4px] p-4 flex flex-col justify-between shadow-tooltip gap-4',
           props.tooltipClass ?? 'w-[215px]',
+          props.containerClass ?? 'bg-white',
         ]"
         @click.stop
       >
         <p
-          class="t-t2 text-gray-500 font-secondary leading-snug text-pretty text-justify hyphens-auto"
+          v-if="props.titleDropdown"
+          :class="['t-t2 font-primary font-bold text-gray-500 leading-snug', props.titleClass]"
         >
+          {{ props.titleDropdown }}
+        </p>
+        <p :class="['t-t2 text-gray-500 font-secondary leading-snug', props.messageClass]">
           {{ props.messageDropdown }}
         </p>
 
