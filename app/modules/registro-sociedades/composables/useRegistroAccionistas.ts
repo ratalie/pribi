@@ -6,7 +6,7 @@ export const useRegistroAccionistas = () => {
   const registroAccionistasStore = useRegistroAccionistasStore();
 
   const isModalOpen = ref(false);
-  const tipoAccionista = ref("");
+  const tipoAccionista = ref("natural");
   const modalMode = ref<"crear" | "editar">("crear");
 
   const societyHeaders: TableColumn<AccionistaRow>[] = [

@@ -1,30 +1,32 @@
 import { z } from "zod";
 
-export const seConstituyoEnPeruSchema = z.boolean();
+export const seConstituyoEnPeruJuridicaSchema = z.boolean();
 
-export const tipoDocumentoSchema = z.string().nonempty("El tipo de documento es obligatorio");
+export const tipoDocumentoJuridicaSchema = z
+  .string()
+  .nonempty("El tipo de documento es obligatorio");
 
-export const numeroDocumentoSchema = z
+export const numeroDocumentoJuridicaSchema = z
   .string()
   .nonempty("El número de documento es obligatorio")
   .min(11, "Debe tener al menos 11 caracteres");
 
-export const razonSocialSchema = z
+export const razonSocialJuridicaSchema = z
   .string()
   .nonempty("La razón social es obligatoria")
   .min(2, "La razón social debe tener al menos 2 caracteres");
 
-export const nombreComercialSchema = z.string().optional();
+export const nombreComercialJuridicaSchema = z.string().optional();
 
-export const direccionSchema = z
+export const direccionJuridicaSchema = z
   .string()
   .nonempty("La dirección es obligatoria")
   .min(5, "La dirección debe tener al menos 5 caracteres");
 
-export const distritoSchema = z.string().optional();
+export const distritoJuridicaSchema = z.string().optional();
 
-export const provinciaSchema = z.string().optional();
+export const provinciaJuridicaSchema = z.string().optional();
 
-export const departamentoSchema = z.string().optional();
+export const departamentoJuridicaSchema = z.string().optional();
 
-export const paisOrigenSchema = z.string().optional();
+export const paisOrigenJuridicaSchema = z.string().optional();

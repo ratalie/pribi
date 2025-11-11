@@ -1,5 +1,3 @@
-import type { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
-
 export const useAccionistaJuridicoStore = defineStore("accionistaJuridicoForm", {
   state: (): AccionistaJuridicoState => ({
     seConstituyoEnPeru: true,
@@ -13,14 +11,6 @@ export const useAccionistaJuridicoStore = defineStore("accionistaJuridicoForm", 
     departamento: "",
     paisOrigen: "",
     tieneRepresentante: false,
-    representanteLegal: {
-      tipoDocumento: "" as TipoDocumentosEnum | "",
-      numeroDocumento: "",
-      nombre: "",
-      apellidoPaterno: "",
-      apellidoMaterno: "",
-      paisPasaporte: "",
-    },
   }),
 });
 
@@ -36,12 +26,4 @@ export interface AccionistaJuridicoState {
   departamento: string;
   paisOrigen: string;
   tieneRepresentante: boolean;
-  representanteLegal: {
-    tipoDocumento: TipoDocumentosEnum | "";
-    numeroDocumento: string;
-    nombre: string;
-    apellidoPaterno: string;
-    apellidoMaterno: string;
-    paisPasaporte: string;
-  };
 }

@@ -6,6 +6,7 @@
   import BaseModal from "~/components/base/modal/BaseModal.vue";
   import { accionistaTypes } from "~/constants/inputs/accionista-types";
   import { tipoAccionistaSchema } from "../../schemas/modalAccionistas";
+  import AccionistaJuridicoForm from "../forms/accionistas/AccionistaJuridicoForm.vue";
   import AccionistaNaturalForm from "../forms/accionistas/AccionistaNaturalForm.vue";
 
   interface Props {
@@ -54,7 +55,7 @@
     @invalid-submit="handleInvalidSubmit"
   >
     <div class="flex flex-col gap-12">
-      <CardTitle title="Tipo de Accionista">
+      <CardTitle title="Tipo de Accionista" body="Selecciona una opción">
         <template #actions>
           <div class="w-[440px]">
             <CascadeSelectInputZod
@@ -69,7 +70,8 @@
         </template>
       </CardTitle>
 
-      <AccionistaNaturalForm />
+      <AccionistaNaturalForm v-if="tipoAccionista === 'natural'" />
+      <AccionistaJuridicoForm v-if="tipoAccionista === 'juridica'" />
     </div>
 
     <template #footer>
