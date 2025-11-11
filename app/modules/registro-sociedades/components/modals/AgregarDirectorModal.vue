@@ -40,6 +40,7 @@
   const tipoDirector = ref<TiposDirectoresEnum | "">("");
   const reemplazoAsignado = ref("");
   const isEditMode = computed(() => props.mode === "edit" && !!props.directorToEdit);
+  const submitLabel = computed(() => (isEditMode.value ? "Editar" : "Guardar"));
 
   const isSubmitDisabled = computed(() => {
     if (!tipoDirector.value) {
@@ -187,7 +188,7 @@
         <ActionButton
           type="submit"
           variant="primary"
-          label="Guardar"
+          :label="submitLabel"
           size="md"
           :is-disabled="isSubmitDisabled"
         />
