@@ -20,9 +20,12 @@
 
   interface Props {
     modelValue?: boolean;
+    mode?: "crear" | "editar";
   }
 
-  const props = defineProps<Props>();
+  const props = withDefaults(defineProps<Props>(), {
+    mode: "crear",
+  });
 
   const emits = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
@@ -37,6 +40,7 @@
   const personaJuridicaStore = usePersonaJuridicaStore();
   const registroApoderadosStore = useRegistroApoderadosStore();
   const registroApoderadoModalStore = useRegistroApoderadoModalStore();
+  const submitLabel = computed(() => (props.mode === "editar" ? "Editar" : "Guardar"));
 
   if (
     registroApoderadoModalStore.esEmpresaConstituidaEnPeru !==
@@ -55,6 +59,29 @@
   );
 
   const claseApoderadoOptions = computed(() => registroApoderadosStore.clasesApoderadoOptions);
+  const isGerenteGeneral = computed(() => {
+    const selectedId = registroApoderadoModalStore.tipoApoderado;
+
+    if (!selectedId) {
+      return false;
+    }
+
+    const clase = registroApoderadosStore.clasesApoderado.find(
+      (item) => item.id === selectedId
+    );
+
+    return clase?.nombre?.toLowerCase() === "gerente general";
+  });
+
+  watch(
+    isGerenteGeneral,
+    (value) => {
+      if (!value) {
+        registroApoderadoModalStore.setTipoPersona("natural");
+      }
+    },
+    { immediate: true }
+  );
   const personaOptions = [
     {
       value: "natural",
@@ -110,6 +137,7 @@
         </template>
       </CardTitle>
       <LabeledCardSwitch
+        v-if="isGerenteGeneral"
         v-model="registroApoderadoModalStore.tipoPersona"
         label="Tipo de persona"
         sub-label="Selecciona una de las dos opciones."
@@ -118,10 +146,12 @@
         default-value="natural"
       />
       <PersonaNaturalForm
-        v-if="registroApoderadoModalStore.tipoPersona === 'natural'"
+        v-if="!isGerenteGeneral || registroApoderadoModalStore.tipoPersona === 'natural'"
         :show-estado-civil="false"
       />
-      <SimpleCardDropDown v-if="registroApoderadoModalStore.tipoPersona === 'juridica'">
+      <SimpleCardDropDown
+        v-if="isGerenteGeneral && registroApoderadoModalStore.tipoPersona === 'juridica'"
+      >
         <template #title>
           <div class="flex justify-between gap-2 py-4 px-8">
             <span class="t-t2 text-gray-800 font-bold font-secondary">
@@ -182,7 +212,7 @@
           @click="handleCancel"
         />
 
-        <ActionButton type="submit" variant="primary" label="Guardar" size="md" />
+        <ActionButton type="submit" variant="primary" :label="submitLabel" size="md" />
       </div>
     </template>
   </BaseModal>

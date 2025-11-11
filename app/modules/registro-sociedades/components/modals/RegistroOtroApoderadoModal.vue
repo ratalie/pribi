@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { useVModel } from "@vueuse/core";
+  import { computed } from "vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
@@ -8,9 +9,12 @@
 
   interface Props {
     modelValue?: boolean;
+    mode?: "crear" | "editar";
   }
 
-  const props = defineProps<Props>();
+  const props = withDefaults(defineProps<Props>(), {
+    mode: "crear",
+  });
 
   const emits = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
@@ -22,6 +26,7 @@
   });
 
   const personaNaturalStore = usePersonaNaturalStore();
+  const submitLabel = computed(() => (props.mode === "editar" ? "Editar" : "Guardar"));
 
   const handleCancel = () => {
     emits("close");
@@ -63,7 +68,7 @@
           @click="handleCancel"
         />
 
-        <ActionButton type="submit" variant="primary" label="Guardar" size="md" />
+        <ActionButton type="submit" variant="primary" :label="submitLabel" size="md" />
       </div>
     </template>
   </BaseModal>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { useVModel } from "@vueuse/core";
+  import { computed } from "vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
@@ -24,6 +25,7 @@
   });
 
   const claseApoderadoModalStore = useClaseApoderadoModalStore();
+  const submitLabel = computed(() => (props.mode === "editar" ? "Editar" : "Crear"));
 
   const handleSubmit = () => {
     emits("submit");
@@ -72,7 +74,7 @@
           @click="handleCancel"
         />
 
-        <ActionButton type="submit" variant="primary" label="Crear" size="md" />
+        <ActionButton type="submit" variant="primary" :label="submitLabel" size="md" />
       </div>
     </template>
   </BaseModal>

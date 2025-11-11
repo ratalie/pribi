@@ -33,6 +33,7 @@
     registroHeaders,
     registroActions,
     isRegistroModalOpen,
+    modeModalApoderado,
     openModalRegistroApoderado,
     handleSubmitRegistroApoderado,
     handleCloseRegistroModal,
@@ -43,6 +44,7 @@
     otrosHeaders,
     otrosApoderadosActions,
     isOtroApoderadoModalOpen,
+    modeModalOtroApoderado,
     openModalRegistroOtroApoderado,
     handleSubmitRegistroOtroApoderado,
     handleCloseOtroApoderadoModal,
@@ -123,12 +125,14 @@
     <RegistroApoderadoModal
       v-if="isRegistroModalOpen"
       v-model="isRegistroModalOpen"
+      :mode="modeModalApoderado"
       @close="handleCloseRegistroModal"
       @submit="handleSubmitRegistroApoderado"
     />
     <RegistroOtroApoderadoModal
       v-if="isOtroApoderadoModalOpen"
       v-model="isOtroApoderadoModalOpen"
+      :mode="modeModalOtroApoderado"
       @close="handleCloseOtroApoderadoModal"
       @submit="handleSubmitRegistroOtroApoderado"
     />
