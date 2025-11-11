@@ -8,6 +8,7 @@
   import { tipoAccionistaSchema } from "../../schemas/modalAccionistas";
   import AccionistaJuridicoForm from "../forms/accionistas/AccionistaJuridicoForm.vue";
   import AccionistaNaturalForm from "../forms/accionistas/AccionistaNaturalForm.vue";
+  import AccionistaSucursalForm from "../forms/accionistas/AccionistaSucursalForm.vue";
 
   interface Props {
     modelValue?: boolean;
@@ -72,6 +73,7 @@
 
       <AccionistaNaturalForm v-if="tipoAccionista === 'natural'" />
       <AccionistaJuridicoForm v-if="tipoAccionista === 'juridica'" />
+      <AccionistaSucursalForm v-if="tipoAccionista === 'sucursal'" />
     </div>
 
     <template #footer>

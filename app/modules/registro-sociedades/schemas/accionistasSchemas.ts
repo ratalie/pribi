@@ -29,6 +29,11 @@ export const direccionAccSchema = z
 
 export const sedeRegistralAccSchema = z.string().nonempty("La sede registral es obligatoria");
 
+export const domicilioFiscalAccSchema = z
+  .string()
+  .nonempty("El domicilio fiscal es obligatorio")
+  .min(5, "El domicilio fiscal debe tener al menos 5 caracteres");
+
 // ============================================================================
 // PERSONA NATURAL - Schemas específicos para accionistas personas naturales
 // ============================================================================
@@ -81,6 +86,15 @@ export const departamentoAccSchema = z.string().optional();
 export const paisOrigenAccSchema = z.string().optional();
 
 // ============================================================================
+// SUCURSAL - Schemas específicos para accionistas sucursales
+// ============================================================================
+
+export const nombreSucursalAccSchema = z
+  .string()
+  .nonempty("El nombre de la sucursal es obligatorio")
+  .min(2, "El nombre de la sucursal debe tener al menos 2 caracteres");
+
+// ============================================================================
 // FIDEICOMISOS - Schemas específicos para accionistas fideicomisos
 // ============================================================================
 
@@ -90,11 +104,6 @@ export const identificacionFideicomisosAccSchema = z
   .string()
   .nonempty("La identificación del fideicomiso es obligatoria")
   .min(2, "Debe tener al menos 2 caracteres");
-
-export const domicilioFiscalAccSchema = z
-  .string()
-  .nonempty("El domicilio fiscal es obligatorio")
-  .min(5, "El domicilio fiscal debe tener al menos 5 caracteres");
 
 // ============================================================================
 // FONDOS DE INVERSIÓN - Schemas específicos para accionistas fondos de inversión
