@@ -12,6 +12,12 @@
   } from "~/modules/registro-sociedades/schemas/modalPersonaJuridica";
   import { usePersonaJuridicaStore } from "~/stores/usePersonaJuridicaStore";
   const personaJuridicaStore = usePersonaJuridicaStore();
+
+  onMounted(() => {
+    if (personaJuridicaStore.jurisdiccion !== "peruana") {
+      personaJuridicaStore.setJurisdiccion("peruana");
+    }
+  });
 </script>
 
 <template>

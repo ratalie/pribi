@@ -1,3 +1,6 @@
+import type { PersonaJuridicaState } from "~/stores/usePersonaJuridicaStore";
+import type { PersonaNatural } from "~/stores/usePersonaNaturalStore";
+
 export interface ClaseApoderado {
   id: string;
   nombre: string;
@@ -5,6 +8,7 @@ export interface ClaseApoderado {
 
 export interface ClaseApoderadoRow {
   id: string;
+  table_id: number;
   clase_apoderado: string;
   numero_apoderados: number;
 }
@@ -12,9 +16,12 @@ export interface ClaseApoderadoRow {
 export interface RegistroApoderado {
   id: string;
   claseApoderadoId: string;
+  tipoPersona: "natural" | "juridica";
   nombreRazonSocial: string;
   tipoDocumento: string;
   numeroDocumento: string;
+  personaNatural?: PersonaNatural | null;
+  personaJuridica?: PersonaJuridicaState | null;
 }
 
 export interface RegistroApoderadoRow {
@@ -30,6 +37,7 @@ export interface OtroApoderado {
   nombreRazonSocial: string;
   tipoDocumento: string;
   numeroDocumento: string;
+  personaNatural: PersonaNatural | null;
 }
 
 export interface OtroApoderadoRow {
@@ -38,4 +46,3 @@ export interface OtroApoderadoRow {
   tipo_documento: string;
   numero_documento: string;
 }
-

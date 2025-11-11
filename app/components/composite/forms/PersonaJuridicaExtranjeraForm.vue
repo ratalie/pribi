@@ -1,14 +1,14 @@
 <script setup lang="ts">
-  import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
+  import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
+  import { countriesOptions } from "~/constants/inputs/countries-options";
   import {
     direccionSchema,
-    razonSocialSchema,
-    tipoDocumentoSchema,
     numeroDocumentoSchema,
     paisSchema,
+    razonSocialSchema,
+    tipoDocumentoSchema,
   } from "~/modules/registro-sociedades/schemas/modalPersonaJuridica";
-  import { countriesOptions } from "~/constants/inputs/countries-options";
   import { usePersonaJuridicaStore } from "~/stores/usePersonaJuridicaStore";
 
   const personaJuridicaStore = usePersonaJuridicaStore();
