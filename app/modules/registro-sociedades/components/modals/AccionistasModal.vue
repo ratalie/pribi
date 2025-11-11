@@ -9,6 +9,9 @@
   import AccionistaJuridicoForm from "../forms/accionistas/AccionistaJuridicoForm.vue";
   import AccionistaNaturalForm from "../forms/accionistas/AccionistaNaturalForm.vue";
   import AccionistaSucursalForm from "../forms/accionistas/AccionistaSucursalForm.vue";
+  import FideicomisosForm from "../forms/accionistas/FideicomisosForm.vue";
+  import FondosInversionForm from "../forms/accionistas/FondosInversionForm.vue";
+  import SucesionesIndivisasForm from "../forms/accionistas/SucesionesIndivisasForm.vue";
 
   interface Props {
     modelValue?: boolean;
@@ -74,6 +77,9 @@
       <AccionistaNaturalForm v-if="tipoAccionista === 'natural'" />
       <AccionistaJuridicoForm v-if="tipoAccionista === 'juridica'" />
       <AccionistaSucursalForm v-if="tipoAccionista === 'sucursal'" />
+      <SucesionesIndivisasForm v-if="tipoAccionista === 'sucesiones_indivisas'" />
+      <FideicomisosForm v-if="tipoAccionista === 'fideicomisos'" />
+      <FondosInversionForm v-if="tipoAccionista === 'fondos_inversion'" />
     </div>
 
     <template #footer>
