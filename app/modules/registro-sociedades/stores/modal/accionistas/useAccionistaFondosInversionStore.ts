@@ -1,27 +1,26 @@
-export const useAccionistaFondosInversionStore = defineStore(
-  "accionistaFondosInversionForm",
-  {
-    state: (): AccionistaFondosInversionState => ({
-      tipoDocumento: "",
+import type { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
+
+export const useAccionistaFondosInversionStore = defineStore("accionistaFondosInversionForm", {
+  state: (): AccionistaFondosInversionState => ({
+    tipoDocumento: "",
+    numeroDocumento: "",
+    razonSocial: "",
+    direccion: "",
+    tipoFondo: "",
+    numeroDocumentoSociedadAdministradora: "",
+    tipoDocumentoSociedadAdministradora: "",
+    razonSocialSociedadAdministradora: "",
+    tieneRepresentante: false,
+    representanteLegal: {
+      tipoDocumento: "" as TipoDocumentosEnum | "",
       numeroDocumento: "",
-      razonSocial: "",
-      direccion: "",
-      tipoFondo: "",
-      numeroDocumentoSociedadAdministradora: "",
-      tipoDocumentoSociedadAdministradora: "",
-      razonSocialSociedadAdministradora: "",
-      tieneRepresentante: false,
-      representanteLegal: {
-        tipoDocumento: "",
-        numeroDocumento: "",
-        nombre: "",
-        apellidoPaterno: "",
-        apellidoMaterno: "",
-        paisPasaporte: "",
-      },
-    }),
-  }
-);
+      nombre: "",
+      apellidoPaterno: "",
+      apellidoMaterno: "",
+      paisPasaporte: "",
+    },
+  }),
+});
 
 export interface AccionistaFondosInversionState {
   tipoDocumento: string;
@@ -34,7 +33,7 @@ export interface AccionistaFondosInversionState {
   razonSocialSociedadAdministradora: string;
   tieneRepresentante: boolean;
   representanteLegal: {
-    tipoDocumento: string;
+    tipoDocumento: TipoDocumentosEnum | "";
     numeroDocumento: string;
     nombre: string;
     apellidoPaterno: string;
@@ -42,4 +41,3 @@ export interface AccionistaFondosInversionState {
     paisPasaporte: string;
   };
 }
-

@@ -1,3 +1,5 @@
+import type { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
+
 export const useAccionistaSucursalStore = defineStore("accionistaSucursalForm", {
   state: (): AccionistaSucursalState => ({
     tipoDocumento: "",
@@ -8,7 +10,7 @@ export const useAccionistaSucursalStore = defineStore("accionistaSucursalForm", 
     domicilioFiscal: "",
     tieneRepresentante: false,
     representanteLegal: {
-      tipoDocumento: "",
+      tipoDocumento: "" as TipoDocumentosEnum | "",
       numeroDocumento: "",
       nombre: "",
       apellidoPaterno: "",
@@ -27,7 +29,7 @@ export interface AccionistaSucursalState {
   domicilioFiscal: string;
   tieneRepresentante: boolean;
   representanteLegal: {
-    tipoDocumento: string;
+    tipoDocumento: TipoDocumentosEnum | "";
     numeroDocumento: string;
     nombre: string;
     apellidoPaterno: string;
@@ -35,4 +37,3 @@ export interface AccionistaSucursalState {
     paisPasaporte: string;
   };
 }
-

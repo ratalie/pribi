@@ -1,5 +1,7 @@
+import type { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
+
 export interface PersonaNatural {
-  tipoDocumento: string;
+  tipoDocumento: TipoDocumentosEnum;
   numeroDocumento: string;
   nombre: string;
   apellidoPaterno: string;
