@@ -60,6 +60,9 @@ interface FideicomisosBase {
   partidaRegistral: string;
   sedeRegistral: string;
   domicilioFiscal: string;
+  numeroDocumentoFiduciaria: string;
+  tipoDocumentoFiduciaria: string;
+  razonSocialFiduciaria: string;
   tieneRepresentante: boolean;
   representanteLegal?: PersonaNatural;
 }
