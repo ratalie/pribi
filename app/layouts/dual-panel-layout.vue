@@ -13,7 +13,7 @@
 
 import { computed, ref, watch } from "vue";
 import ProboSidebar from "~/components/ProboSidebar.vue";
-import DualPanelSidebar from "~/components/dual-panel-sidebar/DualPanelSidebar.vue";
+import DualPanelSidebar from "~/presentation/dual-panel/sidebar/DualPanelSidebar.vue";
 import { useFlowLayoutConfig } from "~/composables/useFlowLayoutConfig";
 import { buildFlowItemTree, findItemByRoute } from "~/utils/flowHelpers";
 import type { SidebarConfig } from "~/types/flow-layout/sidebar-config";
@@ -141,14 +141,17 @@ const rightSidebars = computed<SidebarConfig[]>(() => {
 /**
  * Aplicar filtrado contextual al sidebar derecho
  */
-function getContextualSidebarConfig(sidebar: SidebarConfig): SidebarConfig & { panelMode?: string } {
-  const config: SidebarConfig & { panelMode?: string } = {
+type PanelMode = "wizard" | "hierarchical" | "scroll-anchor";
+
+function getContextualSidebarConfig(sidebar: SidebarConfig): SidebarConfig & { panelMode?: PanelMode } {
+  const config: SidebarConfig & { panelMode?: PanelMode } = {
     ...sidebar,
   };
 
   // Si no es sidebar derecho o no hay item actual, no se aplica contextualización
   if (sidebar.position !== "right" || !currentItem.value) {
-    config.panelMode = sidebar.mode === "sequential" ? "wizard" : sidebar.mode;
+    const fallback = sidebar.mode === "sequential" ? "wizard" : sidebar.mode;
+    config.panelMode = (fallback as PanelMode) ?? "wizard";
     return config;
   }
 
@@ -212,7 +215,8 @@ function getContextualSidebarConfig(sidebar: SidebarConfig): SidebarConfig & { p
 
   // Si no se asignó un modo específico, usar wizard por defecto para secuenciales
   if (!config.panelMode) {
-    config.panelMode = sidebar.mode === "sequential" ? "wizard" : sidebar.mode;
+    const fallback = sidebar.mode === "sequential" ? "wizard" : sidebar.mode;
+    config.panelMode = (fallback as PanelMode) ?? "wizard";
   }
 
   return config;
@@ -224,7 +228,7 @@ const contextualRightSidebars = computed(() => {
     return {
       id: sidebar.id,
       config,
-      mode: config.panelMode || "wizard",
+      mode: config.panelMode ?? "wizard",
     };
   });
 });

@@ -3,8 +3,11 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "typecheck": "nuxi typecheck",
     "type-check": "vue-tsc --noEmit",
-    "build": "npm run type-check && nuxt build",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx,.vue",
+    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx,.vue --fix",
+    "build": "npm run typecheck && npm run lint && nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
