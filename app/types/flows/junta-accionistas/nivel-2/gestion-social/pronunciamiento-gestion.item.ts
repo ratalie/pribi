@@ -25,9 +25,8 @@ export const pronunciamientoGestionItem: FlowItem = {
     order: 1,
     parentId: "gestion-social-section",
     children: [
-      "pronunciamiento-gestion-informe",
-      "pronunciamiento-gestion-votacion",
-      "pronunciamiento-gestion-acta",
+      "pronunciamiento-gestion-contenido",
+      "pronunciamiento-gestion-resumen",
     ],
   },
   navigation: {

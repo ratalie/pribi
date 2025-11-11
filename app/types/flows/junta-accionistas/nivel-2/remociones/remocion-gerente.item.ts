@@ -22,12 +22,11 @@ export const remocionGerenteItem: FlowItem = {
   },
   hierarchy: {
     level: 2,
-    order: 2,
+    order: 3,
     parentId: "remociones-section",
     children: [
-      "remocion-gerente-seleccion",
-      "remocion-gerente-revocatoria",
-      "remocion-gerente-votacion",
+      "remocion-gerente-contenido",
+      "remocion-gerente-resumen",
     ],
   },
   navigation: {

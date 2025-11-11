@@ -15,6 +15,7 @@ export const nombramientoDirectorioContenidoItem: FlowItem = {
     parentId: "nombramiento-directorio",
     children: [
       "nombramiento-directorio-designacion",
+      "nombramiento-directorio-cantidad",
       "nombramiento-directorio-votacion",
     ],
   },

@@ -1,42 +1,21 @@
 <template>
-  <div class="page-container p-6">
-    <div class="space-y-2 mb-6">
-      <h1 class="text-3xl font-bold tracking-tight">Reparto de Dividendos</h1>
-      <p class="text-sm text-muted-foreground font-mono">
-        {{ $route.path }}
-      </p>
-    </div>
+  <SlotWrapper>
+    <TitleH2
+      title="Reparto de Dividendos"
+      subtitle="Coordina el cálculo y la distribución de dividendos aprobados por la junta."
+    />
 
-    <div class="placeholder mt-4">
-      <p class="text-gray-600 dark:text-gray-300">
-        Esta es la página principal del flujo de
-        <strong>Reparto de Dividendos</strong>
-        . Aquí se configura la distribución de dividendos a los accionistas.
+    <div class="flex flex-col gap-8">
+      <p class="text-sm text-muted-foreground">
+        Usa esta introducción para contextualizar el tema y luego completa las secciones de cálculo, distribución y votación desde el panel derecho.
       </p>
-      <p class="text-xs text-blue-500 mt-2">
-        📌
-        <strong>RightSidebar:</strong>
-        Habilitado (muestra sub-pasos: Reparto → Votación)
-      </p>
-      <p class="text-xs text-purple-500 mt-1">
-        🔹
-        <strong>Nivel 2:</strong>
-        Página padre de 2 sub-páginas en rightSidebar
-      </p>
+      <BlankContainer />
     </div>
-  </div>
+  </SlotWrapper>
 </template>
 
 <script setup lang="ts">
-definePageMeta({
-  layout: "dual-panel-layout",
-});
-
-  // Página: Reparto de Dividendos (Principal)
-  // Nivel: 2 (Categoria dentro de Gestión Social)
-  // Padre: puntos-acuerdo.vue (Nivel 0 - PADRE COMPLEJO)
-  // RightSidebar: Enabled (showChildrenInSidebar: true)
-  // Hijos en RightSidebar: reparto.vue, votacion.vue
-  // Ruta: /operaciones/junta-accionistas/reparto-dividendos
-  // Enum: JuntaRoutes.REPARTO_DIVIDENDOS
+  definePageMeta({
+    layout: "dual-panel-layout",
+  });
 </script>

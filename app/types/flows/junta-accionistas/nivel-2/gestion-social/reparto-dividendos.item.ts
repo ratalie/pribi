@@ -25,9 +25,8 @@ export const repartoDividendosItem: FlowItem = {
     order: 4,
     parentId: "gestion-social-section",
     children: [
-      "reparto-dividendos-calculo",
-      "reparto-dividendos-distribucion",
-      "reparto-dividendos-votacion",
+      "reparto-dividendos-contenido",
+      "reparto-dividendos-resumen",
     ],
   },
   navigation: {

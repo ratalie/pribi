@@ -25,9 +25,8 @@ export const aplicacionResultadosItem: FlowItem = {
     order: 2,
     parentId: "gestion-social-section",
     children: [
-      "aplicacion-resultados-resultados",
-      "aplicacion-resultados-aplicacion",
-      "aplicacion-resultados-votacion",
+      "aplicacion-resultados-contenido",
+      "aplicacion-resultados-resumen",
     ],
   },
   navigation: {

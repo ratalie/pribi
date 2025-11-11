@@ -25,9 +25,8 @@ export const estadosFinancierosItem: FlowItem = {
     order: 3,
     parentId: "gestion-social-section",
     children: [
-      "estados-financieros-presentacion",
-      "estados-financieros-aprobacion",
-      "estados-financieros-votacion",
+      "estados-financieros-contenido",
+      "estados-financieros-resumen",
     ],
   },
   navigation: {
