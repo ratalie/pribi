@@ -6,16 +6,16 @@
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
   import PersonaNatural from "~/components/composite/forms/PersonaNatural.vue";
   import {
-    departamentoJuridicaSchema,
-    direccionJuridicaSchema,
-    distritoJuridicaSchema,
-    nombreComercialJuridicaSchema,
-    numeroDocumentoJuridicaSchema,
-    paisOrigenJuridicaSchema,
-    provinciaJuridicaSchema,
-    razonSocialJuridicaSchema,
-    tipoDocumentoJuridicaSchema,
-  } from "~/modules/registro-sociedades/schemas/accionistas/personaJuridicaSchemas";
+    departamentoAccSchema,
+    direccionAccSchema,
+    distritoAccSchema,
+    nombreComercialAccSchema,
+    numeroDocumentoJurAccSchema,
+    paisOrigenAccSchema,
+    provinciaAccSchema,
+    razonSocialAccSchema,
+    tipoDocumentoAccSchema,
+  } from "~/modules/registro-sociedades/schemas/accionistasSchemas";
   import { useAccionistaJuridicoStore } from "~/modules/registro-sociedades/stores/modal/accionistas/useAccionistaJuridicoStore";
 
   const accionistaJuridicoStore = useAccionistaJuridicoStore();
@@ -48,7 +48,7 @@
               name="numero_ruc"
               label="Número de RUC"
               placeholder="Ingresa el número de RUC"
-              :schema="numeroDocumentoJuridicaSchema"
+              :schema="numeroDocumentoJurAccSchema"
             />
 
             <TextInputZod
@@ -56,7 +56,7 @@
               name="razon_social"
               label="Razón Social"
               placeholder="Razón Social"
-              :schema="razonSocialJuridicaSchema"
+              :schema="razonSocialAccSchema"
             />
 
             <TextInputZod
@@ -64,7 +64,7 @@
               name="nombre_comercial"
               label="Nombre Comercial"
               placeholder="Nombre Comercial"
-              :schema="nombreComercialJuridicaSchema"
+              :schema="nombreComercialAccSchema"
             />
 
             <TextInputZod
@@ -72,7 +72,7 @@
               name="direccion"
               label="Dirección"
               placeholder="Dirección"
-              :schema="direccionJuridicaSchema"
+              :schema="direccionAccSchema"
             />
 
             <TextInputZod
@@ -80,7 +80,7 @@
               name="distrito"
               label="Distrito"
               placeholder="Distrito"
-              :schema="distritoJuridicaSchema"
+              :schema="distritoAccSchema"
             />
 
             <TextInputZod
@@ -88,7 +88,7 @@
               name="provincia"
               label="Provincia"
               placeholder="Provincia"
-              :schema="provinciaJuridicaSchema"
+              :schema="provinciaAccSchema"
             />
 
             <TextInputZod
@@ -96,7 +96,7 @@
               name="departamento"
               label="Departamento"
               placeholder="Departamento"
-              :schema="departamentoJuridicaSchema"
+              :schema="departamentoAccSchema"
             />
           </div>
 
@@ -106,7 +106,7 @@
               name="tipo_documento"
               label="Tipo de Documento"
               placeholder="Escribe el tipo de documento aquí"
-              :schema="tipoDocumentoJuridicaSchema"
+              :schema="tipoDocumentoAccSchema"
             />
 
             <TextInputZod
@@ -114,7 +114,7 @@
               name="numero_documento"
               label="Número de Documento"
               placeholder="Ingresa el número de documento"
-              :schema="numeroDocumentoJuridicaSchema"
+              :schema="numeroDocumentoJurAccSchema"
             />
 
             <TextInputZod
@@ -122,7 +122,7 @@
               name="razon_social"
               label="Razón Social"
               placeholder="Escribe la razón social aquí"
-              :schema="razonSocialJuridicaSchema"
+              :schema="razonSocialAccSchema"
             />
 
             <SelectInputZod
@@ -131,7 +131,7 @@
               label="País"
               placeholder="Selecciona el país"
               :options="[{ id: 1, value: 'Peru', label: 'Peru' }]"
-              :schema="paisOrigenJuridicaSchema"
+              :schema="paisOrigenAccSchema"
             />
           </div>
         </template>
