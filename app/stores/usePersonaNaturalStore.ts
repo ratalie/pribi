@@ -11,7 +11,7 @@ export const usePersonaNaturalStore = defineStore("personaNatural", {
   }),
 });
 
-interface State {
+export interface PersonaNaturalState {
   tipoDocumento: TipoDocumentosEnum | "";
   numeroDocumento: string;
   nombre: string;
@@ -19,3 +19,5 @@ interface State {
   apellidoMaterno: string;
   paisPasaporte: string;
 }
+
+type State = PersonaNaturalState;
