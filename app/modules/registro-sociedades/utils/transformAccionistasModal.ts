@@ -224,7 +224,7 @@ function transformarSucursalAAccionista(
   return {
     id,
     tipoAccionista: "sucursal",
-    tipoDocumento: state.tipoDocumento,
+    tipoDocumento: "RUC", // Siempre es RUC para sucursales en Perú
     numeroDocumento: state.numeroDocumento,
     nombreSucursal: state.nombreSucursal,
     partidaRegistral: state.partidaRegistral,
@@ -246,7 +246,7 @@ function transformarSucesionesIndivisasAAccionista(
   return {
     id,
     tipoAccionista: "sucesiones_indivisas",
-    tipoDocumento: state.tipoDocumento,
+    tipoDocumento: "RUC", // Siempre es RUC para sucesiones indivisas en Perú
     numeroDocumento: state.numeroDocumento,
     razonSocial: state.razonSocial,
     direccion: state.direccion,
@@ -274,7 +274,7 @@ function transformarFideicomisosAAccionista(
     sedeRegistral: state.sedeRegistral,
     domicilioFiscal: state.domicilioFiscal,
     numeroDocumentoFiduciaria: state.numeroDocumentoFiduciaria,
-    tipoDocumentoFiduciaria: state.tipoDocumentoFiduciaria,
+    tipoDocumentoFiduciaria: "RUC", // Siempre es RUC (la fiduciaria es una empresa peruana)
     razonSocialFiduciaria: state.razonSocialFiduciaria,
     tieneRepresentante: state.tieneRepresentante,
     representanteLegal:
@@ -283,20 +283,22 @@ function transformarFideicomisosAAccionista(
         : undefined,
   };
 
+  // Si tiene RUC, incluir datos fiscales
   if (state.tieneRuc) {
     return {
       ...baseData,
       tieneRuc: true,
       numeroDocumento: state.numeroDocumento,
-      tipoDocumento: state.tipoDocumento,
+      tipoDocumento: "RUC", // Siempre es RUC cuando el fideicomiso tiene registro fiscal
       razonSocial: state.razonSocial,
     } as FideicomisosAccionista;
-  } else {
-    return {
-      ...baseData,
-      tieneRuc: false,
-    } as FideicomisosAccionista;
   }
+
+  // Si NO tiene RUC, no incluir datos fiscales
+  return {
+    ...baseData,
+    tieneRuc: false,
+  } as FideicomisosAccionista;
 }
 
 function transformarFondosInversionAAccionista(
@@ -307,13 +309,13 @@ function transformarFondosInversionAAccionista(
   return {
     id,
     tipoAccionista: "fondos_inversion",
-    tipoDocumento: state.tipoDocumento,
+    tipoDocumento: "RUC", // Siempre es RUC para fondos de inversión en Perú
     numeroDocumento: state.numeroDocumento,
     razonSocial: state.razonSocial,
     direccion: state.direccion,
     tipoFondo: state.tipoFondo,
     numeroDocumentoSociedadAdministradora: state.numeroDocumentoSociedadAdministradora,
-    tipoDocumentoSociedadAdministradora: state.tipoDocumentoSociedadAdministradora,
+    tipoDocumentoSociedadAdministradora: "RUC", // Siempre es RUC (la administradora es empresa peruana)
     razonSocialSociedadAdministradora: state.razonSocialSociedadAdministradora,
     tieneRepresentante: state.tieneRepresentante,
     representanteLegal:

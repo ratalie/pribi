@@ -23,9 +23,9 @@
     <div class="grid grid-cols-2 gap-12">
       <SearchInputZod
         v-model="accionistaFondosInversionStore.numeroDocumento"
-        name="numero_documento"
-        label="Número de documento"
-        placeholder="Ingresa el número de documento"
+        name="numero_ruc"
+        label="Número de RUC"
+        placeholder="Ingresa el número de RUC"
         :schema="numeroDocumentoJurAccSchema"
       />
 
