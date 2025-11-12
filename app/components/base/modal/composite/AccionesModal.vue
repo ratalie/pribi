@@ -5,10 +5,8 @@
   import SwitchTabs from "~/components/base/Switch/SwitchTabs.vue";
   import AccionesComunesForm from "~/components/composite/forms/AccionesComunesForm.vue";
   import ClasesAccionesForm from "~/components/composite/forms/ClasesAccionesForm.vue";
-  import {
-    useRegistroAccionesStore,
-    type AccionRegistro,
-  } from "~/modules/registro-sociedades/stores/useRegistroAccionesStore";
+  import { useRegistroAccionesStore } from "~/modules/registro-sociedades/stores/useRegistroAccionesStore";
+  import type { AccionRegistro } from "~/modules/registro-sociedades/types/acciones";
   import { useAccionesComunesStore } from "~/stores/useAccionesComunesStore";
   import { useClasesAccionesStore } from "~/stores/useClasesAccionesStore";
   import { useValorNominalStore } from "~/stores/useValorNominalStore";
