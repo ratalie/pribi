@@ -130,7 +130,14 @@
       <template #actions>
         <div class="flex gap-4">
           <!-- valor nominal -->
-          <BaseButton variant="pill" class="h-11" @click="openValorNominalModal">
+          <BaseButton
+            variant="pill"
+            :class="[
+              'h-11 border border-transparent transition-colors',
+              valorNominalStore.valor <= 0 ? 'animate-pulse border-primary-400/60' : '',
+            ]"
+            @click="openValorNominalModal"
+          >
             <img :src="IconCoin" alt="Valor Nominal" />
             <p class="font-bold">
               Valor Nominal:
