@@ -67,6 +67,48 @@ export const useRegistroAccionistasStore = defineStore("registroAccionistas", {
       });
     },
   },
+
+  actions: {
+    /**
+     * Agrega un nuevo accionista a la lista
+     */
+    agregarAccionista(accionista: Accionista) {
+      this.accionistas.push(accionista);
+    },
+
+    /**
+     * Actualiza un accionista existente
+     */
+    editarAccionista(idAccionista: string, accionistaActualizado: Accionista) {
+      const indiceAccionista = this.accionistas.findIndex(
+        (accionista) => accionista.id === idAccionista
+      );
+
+      if (indiceAccionista !== -1) {
+        this.accionistas[indiceAccionista] = accionistaActualizado;
+      } else {
+        console.error(`No se encontró accionista con id: ${idAccionista}`);
+      }
+    },
+
+    /**
+     * Elimina un accionista de la lista
+     */
+    eliminarAccionista(idAccionista: string) {
+      const accionistasFiltrados = this.accionistas.filter(
+        (accionista) => accionista.id !== idAccionista
+      );
+
+      this.accionistas = accionistasFiltrados;
+    },
+
+    /**
+     * Obtiene un accionista por su ID
+     */
+    obtenerAccionista(idAccionista: string): Accionista | undefined {
+      return this.accionistas.find((accionista) => accionista.id === idAccionista);
+    },
+  },
 });
 
 interface State {

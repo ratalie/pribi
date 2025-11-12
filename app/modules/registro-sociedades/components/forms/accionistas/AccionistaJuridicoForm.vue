@@ -103,7 +103,7 @@
           <div v-else class="grid grid-cols-2 gap-12 px-12 py-10">
             <TextInputZod
               v-model="accionistaJuridicoStore.tipoDocumento"
-              name="tipo_documento"
+              name="tipo_documento_extranjero"
               label="Tipo de Documento"
               placeholder="Escribe el tipo de documento aquí"
               :schema="tipoDocumentoAccSchema"
@@ -111,7 +111,7 @@
 
             <TextInputZod
               v-model="accionistaJuridicoStore.numeroDocumento"
-              name="numero_documento"
+              name="numero_documento_extranjero"
               label="Número de Documento"
               placeholder="Ingresa el número de documento"
               :schema="numeroDocumentoJurAccSchema"
@@ -119,7 +119,7 @@
 
             <TextInputZod
               v-model="accionistaJuridicoStore.razonSocial"
-              name="razon_social"
+              name="razon_social_extranjero"
               label="Razón Social"
               placeholder="Escribe la razón social aquí"
               :schema="razonSocialAccSchema"
@@ -127,7 +127,7 @@
 
             <SelectInputZod
               v-model="accionistaJuridicoStore.paisOrigen"
-              name="pais_origen"
+              name="pais_origen_extranjero"
               label="País"
               placeholder="Selecciona el país"
               :options="[{ id: 1, value: 'Peru', label: 'Peru' }]"
