@@ -1,9 +1,17 @@
 <script setup lang="ts">
   import { useVModel } from "@vueuse/core";
+  import { computed, ref, watch } from "vue";
   import IconCoin from "~/assets/icons/icon-coin.svg";
   import SwitchTabs from "~/components/base/Switch/SwitchTabs.vue";
   import AccionesComunesForm from "~/components/composite/forms/AccionesComunesForm.vue";
   import ClasesAccionesForm from "~/components/composite/forms/ClasesAccionesForm.vue";
+  import {
+    useRegistroAccionesStore,
+    type AccionRegistro,
+  } from "~/modules/registro-sociedades/stores/useRegistroAccionesStore";
+  import { useAccionesComunesStore } from "~/stores/useAccionesComunesStore";
+  import { useClasesAccionesStore } from "~/stores/useClasesAccionesStore";
+  import { useValorNominalStore } from "~/stores/useValorNominalStore";
   import BaseButton from "../../buttons/BaseButton.vue";
   import ActionButton from "../../buttons/composite/ActionButton.vue";
   import CardTitle from "../../cards/CardTitle.vue";
@@ -11,13 +19,18 @@
 
   interface Props {
     modelValue?: boolean;
+    mode?: "crear" | "editar";
+    accionId?: string | null;
   }
 
-  const props = defineProps<Props>();
+  const props = withDefaults(defineProps<Props>(), {
+    mode: "crear",
+    accionId: null,
+  });
 
   const emits = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
-    (e: "close"): void;
+    (e: "close" | "submit"): void;
   }>();
 
   const modelValue = useVModel(props, "modelValue", emits, {
@@ -26,34 +39,159 @@
 
   const accionesComunesStore = useAccionesComunesStore();
   const clasesAccionesStore = useClasesAccionesStore();
+  const registroAccionesStore = useRegistroAccionesStore();
+  const valorNominalStore = useValorNominalStore();
 
-  const handleCancel = () => {
-    // Resetear ambos stores usando $reset() nativo de Pinia
+  const activeTab = ref<"opcion-a" | "opcion-b">("opcion-a");
+  const submitLabel = computed(() => (props.mode === "editar" ? "Editar" : "Guardar"));
+  const currencyFormatter = new Intl.NumberFormat("es-PE", {
+    style: "currency",
+    currency: "PEN",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  const valorNominalDisplay = computed(() =>
+    currencyFormatter.format(valorNominalStore.valor || 0)
+  );
+
+  const isSubmitDisabled = computed(() => {
+    if (activeTab.value === "opcion-b") {
+      return (
+        !clasesAccionesStore.nombreClaseAccion.trim() ||
+        clasesAccionesStore.cantidadAccionesClase <= 0 ||
+        valorNominalStore.valor <= 0
+      );
+    }
+
+    return accionesComunesStore.cantidadAcciones <= 0 || valorNominalStore.valor <= 0;
+  });
+
+  const resetForms = () => {
     accionesComunesStore.$reset();
     clasesAccionesStore.$reset();
+    activeTab.value = "opcion-a";
+  };
 
+  const populateFromAccion = (accion: AccionRegistro) => {
+    if (accion.tipo === "clase") {
+      activeTab.value = "opcion-b";
+      clasesAccionesStore.$patch({
+        nombreClaseAccion: accion.descripcion,
+        cantidadAccionesClase: accion.accionesSuscritas,
+        conDerechoVoto: accion.derechoVoto,
+        redimiblesClase: accion.redimibles,
+        otrosDerechosEspecialesClase: accion.derechosEspeciales,
+        obligacionesAdicionalesClase: accion.obligacionesAdicionales,
+        archivosDerechosEspecialesClase: [...accion.archivosDerechosEspeciales],
+        archivosObligacionesClase: [...accion.archivosObligaciones],
+      });
+      return;
+    }
+
+    activeTab.value = "opcion-a";
+    accionesComunesStore.$patch({
+      cantidadAcciones: accion.accionesSuscritas,
+      redimibles: accion.redimibles,
+      otrosDerechosEspeciales: accion.derechosEspeciales,
+      obligacionesAdicionales: accion.obligacionesAdicionales,
+      archivosDerechosEspeciales: [...accion.archivosDerechosEspeciales],
+      archivosObligaciones: [...accion.archivosObligaciones],
+    });
+  };
+
+  watch(
+    () => ({
+      isOpen: modelValue.value,
+      mode: props.mode,
+      accionId: props.accionId,
+    }),
+    ({ isOpen, mode, accionId }) => {
+      if (!isOpen) {
+        resetForms();
+        return;
+      }
+
+      resetForms();
+
+      if (mode === "editar" && accionId) {
+        const accion = registroAccionesStore.getAccionById(accionId);
+
+        if (accion) {
+          populateFromAccion(accion);
+        }
+      }
+    },
+    { immediate: true }
+  );
+
+  const handleCancel = () => {
+    resetForms();
     emits("close");
     modelValue.value = false;
+  };
+
+  const buildPayload = () => {
+    if (activeTab.value === "opcion-b") {
+      const formData = clasesAccionesStore.getFormData();
+
+      return {
+        tipo: "clase" as const,
+        descripcion: formData.nombreClaseAccion.trim() || "Clase sin nombre",
+        accionesSuscritas: formData.cantidadAccionesClase,
+        derechoVoto: formData.conDerechoVoto,
+        redimibles: formData.redimiblesClase,
+        derechosEspeciales: formData.otrosDerechosEspecialesClase,
+        obligacionesAdicionales: formData.obligacionesAdicionalesClase,
+        archivosDerechosEspeciales: [...formData.archivosDerechosEspecialesClase],
+        archivosObligaciones: [...formData.archivosObligacionesClase],
+      };
+    }
+
+    const formData = accionesComunesStore.getFormData();
+
+    return {
+      tipo: "comun" as const,
+      descripcion: "Acciones comunes",
+      accionesSuscritas: formData.cantidadAcciones,
+      derechoVoto: true,
+      redimibles: formData.redimibles,
+      derechosEspeciales: formData.otrosDerechosEspeciales,
+      obligacionesAdicionales: formData.obligacionesAdicionales,
+      archivosDerechosEspeciales: [...formData.archivosDerechosEspeciales],
+      archivosObligaciones: [...formData.archivosObligaciones],
+    };
   };
 
   const handleSave = async () => {
-    // Obtener datos de ambos formularios desde los stores
-    const formDataComunes = accionesComunesStore.getFormData();
-    const formDataClases = clasesAccionesStore.getFormData();
+    if (isSubmitDisabled.value) {
+      return;
+    }
 
-    console.log("Datos de acciones comunes:", formDataComunes);
-    console.log("Datos de clases de acciones:", formDataClases);
+    const payload = buildPayload();
 
-    // Aquí iría la lógica de guardado (API call, etc.)
-    // await saveAccion({ comunes: formDataComunes, clases: formDataClases });
+    if (props.mode === "editar" && props.accionId) {
+      const existente = registroAccionesStore.getAccionById(props.accionId);
 
-    // Cerrar modal si se guarda exitosamente
-    modelValue.value = false;
+      if (!existente) {
+        return;
+      }
+
+      registroAccionesStore.updateAccion({
+        ...existente,
+        ...payload,
+        id: props.accionId,
+      });
+    } else {
+      registroAccionesStore.addAccion(payload);
+    }
+
+    resetForms();
+    emits("submit");
     emits("close");
+    modelValue.value = false;
   };
 
   const handleInvalidSubmit = () => {
-    // Colocar lógica de error, mostrar un toast
     console.log("Formulario inválido");
   };
 </script>
@@ -67,21 +205,26 @@
     @invalid-submit="handleInvalidSubmit"
   >
     <div class="flex flex-col gap-12">
-      <CardTitle title="Agregar Acción">
+      <CardTitle :title="props.mode === 'editar' ? 'Editar Acción' : 'Agregar Acción'">
         <template #actions>
           <!-- valor nominal -->
           <BaseButton type="button" variant="pill" class="h-11">
             <img :src="IconCoin" alt="Valor Nominal" />
             <p class="font-bold">
               Valor Nominal:
-              <span class="font-bold">S/ 10.00</span>
+              <span class="font-bold">{{ valorNominalDisplay }}</span>
             </p>
           </BaseButton>
         </template>
       </CardTitle>
 
       <!-- Tabs para cambiar entre formularios -->
-      <SwitchTabs opcion-a="Comunes" opcion-b="Clases de Acciones" variant="default">
+      <SwitchTabs
+        v-model="activeTab"
+        opcion-a="Comunes"
+        opcion-b="Clases de Acciones"
+        variant="default"
+      >
         <template #opcion-a>
           <div class="pt-10">
             <AccionesComunesForm />
@@ -104,7 +247,13 @@
           @click="handleCancel"
         />
 
-        <ActionButton type="submit" variant="primary" label="Guardar" size="md" />
+        <ActionButton
+          type="submit"
+          variant="primary"
+          :label="submitLabel"
+          size="md"
+          :is-disabled="isSubmitDisabled"
+        />
       </div>
     </template>
   </BaseModal>
