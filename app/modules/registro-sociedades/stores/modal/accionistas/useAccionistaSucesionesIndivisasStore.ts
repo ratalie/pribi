@@ -1,5 +1,3 @@
-import type { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
-
 export const useAccionistaSucesionesIndivisasStore = defineStore(
   "accionistaSucesionesIndivisasForm",
   {
@@ -12,14 +10,6 @@ export const useAccionistaSucesionesIndivisasStore = defineStore(
       provincia: "",
       departamento: "",
       tieneRepresentante: false,
-      representanteLegal: {
-        tipoDocumento: "" as TipoDocumentosEnum | "",
-        numeroDocumento: "",
-        nombre: "",
-        apellidoPaterno: "",
-        apellidoMaterno: "",
-        paisPasaporte: "",
-      },
     }),
   }
 );
@@ -33,12 +23,4 @@ export interface AccionistaSucesionesIndivisasState {
   provincia: string;
   departamento: string;
   tieneRepresentante: boolean;
-  representanteLegal: {
-    tipoDocumento: TipoDocumentosEnum | "";
-    numeroDocumento: string;
-    nombre: string;
-    apellidoPaterno: string;
-    apellidoMaterno: string;
-    paisPasaporte: string;
-  };
 }

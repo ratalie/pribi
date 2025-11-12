@@ -21,6 +21,8 @@
     tipoAccionista,
     modalMode,
     openModal,
+    handleCloseModal,
+    handleSubmitAccionista,
   } = useRegistroAccionistas();
 </script>
 
@@ -49,7 +51,8 @@
       v-model="isModalOpen"
       v-model:tipo-accionista="tipoAccionista"
       :mode="modalMode"
-      @close="isModalOpen = false"
+      @close="handleCloseModal"
+      @submit="handleSubmitAccionista"
     />
   </div>
 </template>

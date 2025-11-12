@@ -23,6 +23,42 @@
   import { useAccionistaNaturalStore } from "../../../stores/modal/accionistas/useAccionistaNaturalStore";
 
   const accionistaNaturalStore = useAccionistaNaturalStore();
+
+  watch(
+    () => accionistaNaturalStore.estadoCivil,
+    (newVal) => {
+      if (newVal !== EstadoCivilEnum.CASADO) {
+        accionistaNaturalStore.regimenPatrimonial = "";
+        // Limpiar datos de separación de patrimonios
+        accionistaNaturalStore.partidaRegistral = "";
+        accionistaNaturalStore.sedeRegistral = "";
+        // Limpiar datos del cónyuge
+        accionistaNaturalStore.conyuge.numeroDocumento = "";
+        accionistaNaturalStore.conyuge.tipoDocumento = "";
+        accionistaNaturalStore.conyuge.nombre = "";
+        accionistaNaturalStore.conyuge.apellidoPaterno = "";
+        accionistaNaturalStore.conyuge.apellidoMaterno = "";
+      }
+    }
+  );
+
+  watch(
+    () => accionistaNaturalStore.regimenPatrimonial,
+    (newVal) => {
+      if (newVal === RegimenPatrimonialEnum.SOCIEDAD_GANANCIALES) {
+        accionistaNaturalStore.partidaRegistral = "";
+        accionistaNaturalStore.sedeRegistral = "";
+      }
+
+      if (newVal === RegimenPatrimonialEnum.SEPARACION_PATRIMONIOS) {
+        accionistaNaturalStore.conyuge.numeroDocumento = "";
+        accionistaNaturalStore.conyuge.tipoDocumento = "";
+        accionistaNaturalStore.conyuge.nombre = "";
+        accionistaNaturalStore.conyuge.apellidoPaterno = "";
+        accionistaNaturalStore.conyuge.apellidoMaterno = "";
+      }
+    }
+  );
 </script>
 
 <template>
@@ -167,7 +203,7 @@
       <div class="grid grid-cols-2 gap-12 border border-gray-200 rounded-md p-8">
         <TextInputZod
           v-model="accionistaNaturalStore.partidaRegistral"
-          name="sede_registral"
+          name="partida_registral"
           label="Partida Registral"
           placeholder="Ingresa la partida registral"
           :schema="partidaRegistralAccSchema"
