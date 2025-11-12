@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { computed } from "vue";
   import type { ButtonVariants } from "~/components/ui/button";
   import Button from "~/components/ui/button/Button.vue";
   import { getIcon } from "~/utils/iconMapper";
@@ -9,6 +10,7 @@
     icon?: string;
     iconPosition?: "left" | "right";
     isLoading?: boolean;
+    isDisabled?: boolean;
     label: string;
     type?: "button" | "submit";
   }
@@ -30,7 +32,12 @@
 </script>
 
 <template>
-  <Button :type="typeButton" :variant="variant" :size="size" :disabled="isLoading">
+  <Button
+    :type="typeButton"
+    :variant="variant"
+    :size="size"
+    :disabled="isLoading || isDisabled"
+  >
     <component
       :is="isLoading ? getIcon('LoaderCircle') : getIcon(icon)"
       v-if="icon"

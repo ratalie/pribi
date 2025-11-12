@@ -7,40 +7,51 @@
     variant?: "default" | "primary";
   }
 
-  withDefaults(defineProps<Props>(), {
+  const props = withDefaults(defineProps<Props>(), {
     variant: "default",
   });
+
+  const modelValue = defineModel<string>({ default: "opcion-a" });
+
+  const handleUpdate = (value: string | number) => {
+    modelValue.value = String(value);
+  };
 </script>
 
 <template>
-  <Tabs default-value="opcion-a" class="w-full! rounded-full!">
+  <Tabs
+    class="w-full! rounded-full!"
+    :model-value="modelValue"
+    default-value="opcion-a"
+    @update:model-value="handleUpdate"
+  >
     <TabsList
       :class="[
         'w-full rounded-full h-[48px] p-[6px]',
-        variant === 'primary' ? 'bg-primary-700' : 'bg-gray-100',
+        props.variant === 'primary' ? 'bg-primary-700' : 'bg-gray-100',
       ]"
     >
       <TabsTrigger
         value="opcion-a"
         :class="[
           'rounded-full',
-          variant === 'primary'
+          props.variant === 'primary'
             ? 'data-[state=active]:bg-primary-500 data-[state=active]:text-white text-gray-300'
             : 'data-[state=active]:bg-primary-75 data-[state=active]:text-primary-700 text-gray-600',
         ]"
       >
-        {{ opcionA }}
+        {{ props.opcionA }}
       </TabsTrigger>
       <TabsTrigger
         value="opcion-b"
         :class="[
           'rounded-full',
-          variant === 'primary'
+          props.variant === 'primary'
             ? 'data-[state=active]:bg-primary-500 data-[state=active]:text-white text-gray-300'
             : 'data-[state=active]:bg-primary-75 data-[state=active]:text-primary-700 text-gray-600',
         ]"
       >
-        {{ opcionB }}
+        {{ props.opcionB }}
       </TabsTrigger>
     </TabsList>
     <TabsContent value="opcion-a">
