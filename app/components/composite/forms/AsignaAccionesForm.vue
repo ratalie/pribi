@@ -1,19 +1,43 @@
 <script setup lang="ts">
-  import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
+  import { computed } from "vue";
   import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
+  import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
-  import { accionTypes } from "~/constants/inputs/acciones-types";
- import {
-    tipoAccionSchema,
+  import {
     cantidadAccionesSuscritasSchema,
     capitalSocialSchema,
     dividendoPasivoSchema,
     porcentajePagadoSchema,
     precioAccionSchema,
     primaSchema,
+    tipoAccionSchema,
   } from "~/modules/registro-sociedades/schemas/modalAsignarAcciones";
+  import { useRegistroAccionesStore } from "~/modules/registro-sociedades/stores/useRegistroAccionesStore";
+  import { useAsignacionAccionesStore } from "~/stores/useAsignacionAccionesStore";
 
   const asignacionAccionesStore = useAsignacionAccionesStore();
+  const registroAccionesStore = useRegistroAccionesStore();
+
+  // Obtener opciones de acciones disponibles desde el store
+  const accionesOptions = computed(() => {
+    const acciones = registroAccionesStore.acciones;
+
+    // Si no hay acciones registradas, usar opciones hardcodeadas
+    if (acciones.length === 0) {
+      return [
+        { id: "1", value: "Comunes", label: "Comunes" },
+        { id: "2", value: "Preferentes", label: "Preferentes" },
+        { id: "3", value: "Clase A", label: "Clase A" },
+        { id: "4", value: "Clase B", label: "Clase B" },
+      ];
+    }
+
+    return acciones.map((accion) => ({
+      id: accion.id,
+      value: accion.descripcion,
+      label: accion.descripcion,
+    }));
+  });
 </script>
 
 <template>
@@ -23,7 +47,7 @@
       name="tipo_accion"
       label="Tipo de Acción"
       placeholder="Seleccionar"
-      :options="accionTypes"
+      :options="accionesOptions"
       :schema="tipoAccionSchema"
     />
     <NumberInputZod
@@ -36,9 +60,10 @@
 
     <NumberInputZod
       v-model="asignacionAccionesStore.precioAccion"
-      name="nombre"
+      name="precio_accion"
       label="Precio Pagado por Acción"
       placeholder="S/ Escribe el precio aquí"
+      currency="PEN"
       :schema="precioAccionSchema"
     />
     <NumberInputZod
@@ -46,6 +71,7 @@
       name="capital_social"
       label="Capital Social"
       placeholder="S/ Capital Social"
+      currency="PEN"
       :schema="capitalSocialSchema"
     />
 
@@ -54,6 +80,7 @@
       name="prima"
       label="Prima"
       placeholder="S/ Prima"
+      currency="PEN"
       :schema="primaSchema"
     />
     <div />
@@ -67,7 +94,7 @@
           Selecciona una de las dos opciones.
         </span>
       </div>
-      <SimpleSwitchYesNo v-model="asignacionAccionesStore.totalmentePagado" label=""/>
+      <SimpleSwitchYesNo v-model="asignacionAccionesStore.totalmentePagado" label="" />
     </div>
 
     <NumberInputZod
