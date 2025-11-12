@@ -2,12 +2,10 @@
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
-  import { civilState } from "~/constants/civil-state";
-  import { documentTypes } from "~/constants/inputs/document-type";
+  import { tipoDocumentoOptions } from "~/constants/inputs/document-type";
   import {
     apellidoMaternoSchema,
     apellidoPaternoSchema,
-    estadoCivilSchema,
     nombreAccionistaSchema,
     numeroDocumentoSchema,
     tipoDocumentoSchema,
@@ -23,7 +21,7 @@
       name="tipo_documento"
       label="Tipo de documento"
       placeholder="Selecciona el tipo de documento"
-      :options="documentTypes"
+      :options="tipoDocumentoOptions"
       :schema="tipoDocumentoSchema"
     />
 
@@ -57,15 +55,6 @@
       label="Apellido materno"
       placeholder="Apellido materno"
       :schema="apellidoMaternoSchema"
-    />
-
-    <SelectInputZod
-      v-model="personaNaturalStore.estadoCivil"
-      name="estado_civil"
-      label="Estado civil"
-      placeholder="Selecciona el estado civil"
-      :options="civilState"
-      :schema="estadoCivilSchema"
     />
   </div>
 </template>

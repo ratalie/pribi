@@ -4,6 +4,8 @@ export const tipoAccionistaSchema = z
   .string()
   .nonempty("El tipo de accionista es obligatorio");
 
+/*TODO: modal PersonNaturalForm. luego unificar schemas */
+
 export const tipoDocumentoSchema = z.string().nonempty("El tipo de documento es obligatorio");
 
 export const numeroDocumentoSchema = z

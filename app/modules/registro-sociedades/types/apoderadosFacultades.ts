@@ -19,12 +19,12 @@ interface BaseFacultad {
 type TipoVigencia = VigenciaIndefinida | VigenciaDeterminada;
 
 interface VigenciaIndefinida {
-  esIrrevocable: true;
+  esIrrevocable: false;
   vigencia: TiemposVigenciaEnum.INDEFINIDO;
 }
 
 interface VigenciaDeterminada {
-  esIrrevocable: false;
+  esIrrevocable: true;
   vigencia: TiemposVigenciaEnum.DETERMIADO;
   fecha_inicio: string;
   fecha_fin: string;

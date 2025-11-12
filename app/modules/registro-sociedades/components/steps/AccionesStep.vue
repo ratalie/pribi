@@ -1,14 +1,14 @@
 <script setup lang="ts">
   import IconCoin from "~/assets/icons/icon-coin.svg";
-  import BaseButton from "~/components/base/buttons/BaseButton.vue";
-  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
-  import CardTitle from "~/components/base/cards/CardTitle.vue";
-  import OutLineCard from "~/components/base/cards/OutLineCard.vue";
-  import AccionesModal from "~/components/base/modal/composite/AccionesModal.vue";
-  import ValorNominalModal from "~/components/base/modal/composite/ValorNominalModal.vue";
-  import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
-  import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
-  import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+import BaseButton from "~/components/base/buttons/BaseButton.vue";
+import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+import CardTitle from "~/components/base/cards/CardTitle.vue";
+import OutLineCard from "~/components/base/cards/OutLineCard.vue";
+import AccionesModal from "~/components/base/modal/composite/AccionesModal.vue";
+import ValorNominalModal from "~/components/base/modal/composite/ValorNominalModal.vue";
+import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
+import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+import { useAccionesComputed } from "../../composables/useAccionesComputed";
 
   interface Props {
     mode: EntityModeEnum;
@@ -17,90 +17,24 @@
 
   defineProps<Props>();
 
-  const valorNominalStore = useValorNominalStore();
-
-  interface ISharesholderTable {
-    id: string;
-    tipo_acciones: string;
-    acciones_suscritas: number;
-    participacion: string;
-    derecho_voto: boolean;
-    redimibles: boolean;
-    derechos_especiales: boolean;
-    obligaciones_adicionales: boolean;
-  }
-
-  const societyHeaders: TableColumn<ISharesholderTable>[] = [
-    { key: "tipo_acciones", label: "Tipo de Acciones", type: "text" },
-    { key: "acciones_suscritas", label: "Acciones Suscritas", type: "text" },
-    { key: "participacion", label: "Participación", type: "text" },
-    { key: "derecho_voto", label: "Derecho a Voto", type: "icons", icons: ["Check", "X"] },
-    { key: "redimibles", label: "Redimibles", type: "icons", icons: ["Check", "X"] },
-    {
-      key: "derechos_especiales",
-      label: "Derechos Especiales",
-      type: "icons",
-      icons: ["FileCheck", "X"],
-    },
-    {
-      key: "obligaciones_adicionales",
-      label: "Obligaciones Adicionales",
-      type: "icons",
-      icons: ["FileCheck", "X"],
-    },
-  ];
-
-  const columns = getColumns(societyHeaders);
-  const data = ref<ISharesholderTable[]>([
-    {
-      id: "1",
-      tipo_acciones: "Comunes",
-      acciones_suscritas: 1000,
-      participacion: "50%",
-      derecho_voto: true,
-      redimibles: false,
-      derechos_especiales: false,
-      obligaciones_adicionales: false,
-    },
-    {
-      id: "2",
-      tipo_acciones: "Preferentes",
-      acciones_suscritas: 1000,
-      participacion: "50%",
-      derecho_voto: false,
-      redimibles: true,
-      derechos_especiales: true,
-      obligaciones_adicionales: true,
-    },
-  ]);
-
-  const actions = [
-    {
-      label: "Editar",
-      icon: "SquarePen",
-      onClick: (itemId: string) => {
-        console.log("Editar", itemId);
-      },
-    },
-    {
-      label: "Eliminar",
-      icon: "Trash2",
-      onClick: (itemId: string) => {
-        console.log("Eliminar para:", itemId);
-      },
-    },
-  ];
-
-  const isValorNominalModalOpen = ref(false);
-  const isAccionesModalOpen = ref(false);
-
-  const openValorNominalModal = () => {
-    isValorNominalModalOpen.value = true;
-  };
-
-  const openAccionesModal = () => {
-    isAccionesModalOpen.value = true;
-  };
+  const {
+    columns,
+    accionesData,
+    totalAccionesDisplay,
+    totalTiposDisplay,
+    capitalSocialDisplay,
+    valorNominalDisplay,
+    isValorNominalModalOpen,
+    isAccionesModalOpen,
+    accionesModalMode,
+    accionSeleccionadaId,
+    openValorNominalModal,
+    openAccionesModal,
+    closeValorNominalModal,
+    closeAccionesModal,
+    accionesActions,
+    valorNominalStore,
+  } = useAccionesComputed();
 </script>
 
 <template>
@@ -110,15 +44,10 @@
         <div class="flex gap-4">
           <!-- valor nominal -->
           <BaseButton variant="pill" class="h-11" @click="openValorNominalModal">
-            <img :src="IconCoin" alt="Valor Nominal" />
+            <img :src="IconCoin" alt="Valor Nominal" >
             <p class="font-bold">
               Valor Nominal:
-              <span class="font-bold">
-                S/
-                {{
-                  valorNominalStore.valor === 0 ? "0.00" : valorNominalStore.valor.toFixed(2)
-                }}
-              </span>
+              <span class="font-bold">{{ valorNominalDisplay }}</span>
             </p>
           </BaseButton>
 
@@ -128,6 +57,7 @@
             label="Agregar"
             size="md"
             icon="Plus"
+            :is-disabled="valorNominalStore.valor <= 0"
             @click="openAccionesModal"
           />
         </div>
@@ -136,20 +66,30 @@
 
     <!-- cards de resumen -->
     <div class="grid grid-cols-3 gap-6">
-      <OutLineCard title="Total de acciones de la sociedad" value="1000" />
-      <OutLineCard title="Cantidad de Tipo de Acciones" value="1000" />
-      <OutLineCard title="Capital Social" value="S/ 1000" />
+      <OutLineCard title="Total de acciones de la sociedad" :value="totalAccionesDisplay" />
+      <OutLineCard title="Cantidad de Tipo de Acciones" :value="totalTiposDisplay" />
+      <OutLineCard title="Capital Social" :value="capitalSocialDisplay" />
     </div>
 
-    <SimpleTable :columns="columns" :data="data" title-menu="Actions" :actions="actions" />
+    <SimpleTable
+      :columns="columns"
+      :data="accionesData"
+      title-menu="Acciones"
+      :actions="accionesActions"
+    />
 
     <ValorNominalModal
       v-model="isValorNominalModalOpen"
       v-model:valor-nominal="valorNominalStore.valor"
-      @close="isValorNominalModalOpen = false"
+      @close="closeValorNominalModal"
       @update:valor-nominal="valorNominalStore.setValor($event)"
     />
 
-    <AccionesModal v-model="isAccionesModalOpen" @close="isAccionesModalOpen = false" />
+    <AccionesModal
+      v-model="isAccionesModalOpen"
+      :mode="accionesModalMode"
+      :accion-id="accionSeleccionadaId"
+      @close="closeAccionesModal"
+    />
   </div>
 </template>

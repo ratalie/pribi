@@ -1,21 +1,22 @@
 import type { CascadeSelectOption } from "~/components/base/inputs/text/BaseCascadeSelect.vue";
+import { TipoAccionistaEnum } from "~/modules/registro-sociedades/types/enums/TipoAccionistaEnum";
 
 export const accionistaTypes: CascadeSelectOption[] = [
   {
-    id: "natural",
-    value: "natural",
+    id: TipoAccionistaEnum.NATURAL,
+    value: TipoAccionistaEnum.NATURAL,
     label: "Persona Natural",
     icon: "User",
   },
   {
-    id: "juridica",
-    value: "juridica",
+    id: TipoAccionistaEnum.JURIDICA,
+    value: TipoAccionistaEnum.JURIDICA,
     label: "Persona Jurídica",
     icon: "Building",
   },
   {
-    id: "sucursal",
-    value: "sucursal",
+    id: TipoAccionistaEnum.SUCURSAL,
+    value: TipoAccionistaEnum.SUCURSAL,
     label: "Sucursal",
     icon: "Building2",
   },
@@ -27,18 +28,18 @@ export const accionistaTypes: CascadeSelectOption[] = [
     disabled: false,
     children: [
       {
-        id: "sucesiones",
-        value: "sucesiones_indivisas",
+        id: TipoAccionistaEnum.SUCESIONES_INDIVISAS,
+        value: TipoAccionistaEnum.SUCESIONES_INDIVISAS,
         label: "Sucesiones Indivisas",
       },
       {
-        id: "fideicomisos",
-        value: "fideicomisos",
+        id: TipoAccionistaEnum.FIDEICOMISOS,
+        value: TipoAccionistaEnum.FIDEICOMISOS,
         label: "Fideicomisos",
       },
       {
-        id: "fondos",
-        value: "fondos_inversion",
+        id: TipoAccionistaEnum.FONDOS_INVERSION,
+        value: TipoAccionistaEnum.FONDOS_INVERSION,
         label: "Fondos de Inversión",
       },
     ],

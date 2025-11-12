@@ -2,6 +2,7 @@
   import Moneda from "@/assets/icons/Moneda.svg";
   import { useVModel } from "@vueuse/core";
   import { useField } from "vee-validate";
+  import { computed, ref } from "vue";
   import { z } from "zod";
   import { useNumberFormatter } from "~/composables/useNumberFormatter";
   import ActionButton from "../../buttons/composite/ActionButton.vue";
@@ -108,6 +109,11 @@
     setTouched(true);
   };
 
+  const isValorIngresado = computed(() => valorValidado.value > 0);
+  const inputAnimationClasses = computed(() =>
+    isValorIngresado.value ? "" : "animate-pulse ring-2 ring-primary-200 rounded-lg"
+  );
+
   const handleCancel = () => {
     emits("close");
     modelValue.value = false;
@@ -149,7 +155,12 @@
 
       <!-- Input numérico con formato decimal -->
       <div class="flex flex-col items-center justify-center gap-2">
-        <div class="flex items-center justify-center gap-2">
+        <div
+          :class="[
+            'flex items-center justify-center gap-2 transition-all duration-300',
+            inputAnimationClasses,
+          ]"
+        >
           <span class="t-t1 font-secondary font-extrabold text-gray-900 shrink-0">S/</span>
 
           <input
@@ -177,7 +188,13 @@
 
     <template #footer>
       <div class="flex items-center justify-center gap-3 w-full px-14">
-        <ActionButton type="submit" variant="primary" label="Guardar" class="w-96 h-11" />
+        <ActionButton
+          type="submit"
+          variant="primary"
+          label="Guardar"
+          class="w-96 h-11"
+          :is-disabled="!isValorIngresado"
+        />
       </div>
     </template>
   </BaseModal>
