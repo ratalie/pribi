@@ -1,4 +1,5 @@
 import type { Accionista, AccionistaRow } from "../types/accionistas";
+import { TipoAccionistaEnum } from "../types/enums/TipoAccionistaEnum";
 
 export const useRegistroAccionistasStore = defineStore("registroAccionistas", {
   state: (): State => ({
@@ -14,42 +15,42 @@ export const useRegistroAccionistasStore = defineStore("registroAccionistas", {
         let numeroDocumento = "";
 
         switch (accionista.tipoAccionista) {
-          case "natural":
+          case TipoAccionistaEnum.NATURAL:
             nombre = `${accionista.nombre} ${accionista.apellidoPaterno} ${accionista.apellidoMaterno}`;
             tipoAccionista = "Persona Natural";
             tipoDocumento = accionista.tipoDocumento;
             numeroDocumento = accionista.numeroDocumento;
             break;
 
-          case "juridica":
+          case TipoAccionistaEnum.JURIDICA:
             nombre = accionista.razonSocial;
             tipoAccionista = "Persona Jurídica";
             tipoDocumento = accionista.tipoDocumento;
             numeroDocumento = accionista.numeroDocumento;
             break;
 
-          case "sucursal":
+          case TipoAccionistaEnum.SUCURSAL:
             nombre = accionista.nombreSucursal;
             tipoAccionista = "Sucursal";
             tipoDocumento = accionista.tipoDocumento;
             numeroDocumento = accionista.numeroDocumento;
             break;
 
-          case "sucesiones_indivisas":
+          case TipoAccionistaEnum.SUCESIONES_INDIVISAS:
             nombre = accionista.razonSocial;
             tipoAccionista = "Sucesiones Indivisas";
             tipoDocumento = accionista.tipoDocumento;
             numeroDocumento = accionista.numeroDocumento;
             break;
 
-          case "fideicomisos":
+          case TipoAccionistaEnum.FIDEICOMISOS:
             nombre = accionista.identificacionFideicomiso;
             tipoAccionista = "Fideicomisos";
             tipoDocumento = accionista.tieneRuc ? accionista.tipoDocumento : "-";
             numeroDocumento = accionista.tieneRuc ? accionista.numeroDocumento : "-";
             break;
 
-          case "fondos_inversion":
+          case TipoAccionistaEnum.FONDOS_INVERSION:
             nombre = accionista.razonSocial;
             tipoAccionista = "Fondos de Inversión";
             tipoDocumento = accionista.tipoDocumento;
@@ -69,16 +70,10 @@ export const useRegistroAccionistasStore = defineStore("registroAccionistas", {
   },
 
   actions: {
-    /**
-     * Agrega un nuevo accionista a la lista
-     */
     agregarAccionista(accionista: Accionista) {
       this.accionistas.push(accionista);
     },
 
-    /**
-     * Actualiza un accionista existente
-     */
     editarAccionista(idAccionista: string, accionistaActualizado: Accionista) {
       const indiceAccionista = this.accionistas.findIndex(
         (accionista) => accionista.id === idAccionista
@@ -91,9 +86,6 @@ export const useRegistroAccionistasStore = defineStore("registroAccionistas", {
       }
     },
 
-    /**
-     * Elimina un accionista de la lista
-     */
     eliminarAccionista(idAccionista: string) {
       const accionistasFiltrados = this.accionistas.filter(
         (accionista) => accionista.id !== idAccionista
@@ -102,9 +94,6 @@ export const useRegistroAccionistasStore = defineStore("registroAccionistas", {
       this.accionistas = accionistasFiltrados;
     },
 
-    /**
-     * Obtiene un accionista por su ID
-     */
     obtenerAccionista(idAccionista: string): Accionista | undefined {
       return this.accionistas.find((accionista) => accionista.id === idAccionista);
     },

@@ -6,6 +6,7 @@
   import BaseModal from "~/components/base/modal/BaseModal.vue";
   import { accionistaTypes } from "~/constants/inputs/accionista-types";
   import { tipoAccionistaSchema } from "../../schemas/modalAccionistas";
+  import { TipoAccionistaEnum } from "../../types/enums/TipoAccionistaEnum";
   import AccionistaJuridicoForm from "../forms/accionistas/AccionistaJuridicoForm.vue";
   import AccionistaNaturalForm from "../forms/accionistas/AccionistaNaturalForm.vue";
   import AccionistaSucursalForm from "../forms/accionistas/AccionistaSucursalForm.vue";
@@ -15,7 +16,7 @@
 
   interface Props {
     modelValue?: boolean;
-    tipoAccionista: string;
+    tipoAccionista: TipoAccionistaEnum;
     mode: "crear" | "editar";
   }
 
@@ -23,7 +24,7 @@
 
   const emits = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
-    (e: "update:tipoAccionista", value: string): void;
+    (e: "update:tipoAccionista", value: TipoAccionistaEnum): void;
     (e: "close" | "submit"): void;
   }>();
 
@@ -74,12 +75,14 @@
         </template>
       </CardTitle>
 
-      <AccionistaNaturalForm v-if="tipoAccionista === 'natural'" />
-      <AccionistaJuridicoForm v-if="tipoAccionista === 'juridica'" />
-      <AccionistaSucursalForm v-if="tipoAccionista === 'sucursal'" />
-      <SucesionesIndivisasForm v-if="tipoAccionista === 'sucesiones_indivisas'" />
-      <FideicomisosForm v-if="tipoAccionista === 'fideicomisos'" />
-      <FondosInversionForm v-if="tipoAccionista === 'fondos_inversion'" />
+      <AccionistaNaturalForm v-if="tipoAccionista === TipoAccionistaEnum.NATURAL" />
+      <AccionistaJuridicoForm v-if="tipoAccionista === TipoAccionistaEnum.JURIDICA" />
+      <AccionistaSucursalForm v-if="tipoAccionista === TipoAccionistaEnum.SUCURSAL" />
+      <SucesionesIndivisasForm
+        v-if="tipoAccionista === TipoAccionistaEnum.SUCESIONES_INDIVISAS"
+      />
+      <FideicomisosForm v-if="tipoAccionista === TipoAccionistaEnum.FIDEICOMISOS" />
+      <FondosInversionForm v-if="tipoAccionista === TipoAccionistaEnum.FONDOS_INVERSION" />
     </div>
 
     <template #footer>

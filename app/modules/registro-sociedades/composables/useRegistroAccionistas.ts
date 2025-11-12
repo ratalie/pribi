@@ -8,6 +8,7 @@ import { useAccionistaSucesionesIndivisasStore } from "../stores/modal/accionist
 import { useAccionistaSucursalStore } from "../stores/modal/accionistas/useAccionistaSucursalStore";
 import { useRegistroAccionistasStore } from "../stores/useRegistroAccionistasStore";
 import type { AccionistaRow } from "../types/accionistas";
+import { TipoAccionistaEnum } from "../types/enums/TipoAccionistaEnum";
 import {
   transformarAccionistaAModal,
   transformarModalAAccionista,
@@ -17,13 +18,22 @@ export const useRegistroAccionistas = () => {
   const registroAccionistasStore = useRegistroAccionistasStore();
 
   const isModalOpen = ref(false);
-  const tipoAccionista = ref("natural");
+  const tipoAccionista = ref<TipoAccionistaEnum>(TipoAccionistaEnum.NATURAL);
   const modalMode = ref<"crear" | "editar">("crear");
   const idAccionistaEditando = ref<string | null>(null);
 
+  const STORE_MAP: Record<TipoAccionistaEnum, () => any> = {
+    [TipoAccionistaEnum.NATURAL]: () => useAccionistaNaturalStore(),
+    [TipoAccionistaEnum.JURIDICA]: () => useAccionistaJuridicoStore(),
+    [TipoAccionistaEnum.SUCURSAL]: () => useAccionistaSucursalStore(),
+    [TipoAccionistaEnum.SUCESIONES_INDIVISAS]: () => useAccionistaSucesionesIndivisasStore(),
+    [TipoAccionistaEnum.FIDEICOMISOS]: () => useAccionistaFideicomisosStore(),
+    [TipoAccionistaEnum.FONDOS_INVERSION]: () => useAccionistaFondosInversionStore(),
+  };
+
   const openModal = () => {
     modalMode.value = "crear";
-    tipoAccionista.value = "natural";
+    tipoAccionista.value = TipoAccionistaEnum.NATURAL;
     idAccionistaEditando.value = null;
     isModalOpen.value = true;
   };
@@ -36,53 +46,18 @@ export const useRegistroAccionistas = () => {
       return;
     }
 
-    // Transformar accionista a formato modal (obtiene los states para hacer patch)
     const { stateModal, stateRepresentante } = transformarAccionistaAModal(accionista);
 
     // Cargar datos en el store correspondiente según el tipo
-    switch (accionista.tipoAccionista) {
-      case "natural":
-        useAccionistaNaturalStore().$patch(stateModal);
-        break;
+    const storeModal: any = STORE_MAP[accionista.tipoAccionista as TipoAccionistaEnum]();
 
-      case "juridica":
-        useAccionistaJuridicoStore().$patch(stateModal);
-        if (stateRepresentante) {
-          usePersonaNaturalStore().$patch(stateRepresentante);
-        }
-        break;
+    storeModal.$patch(stateModal);
 
-      case "sucursal":
-        useAccionistaSucursalStore().$patch(stateModal);
-        if (stateRepresentante) {
-          usePersonaNaturalStore().$patch(stateRepresentante);
-        }
-        break;
-
-      case "sucesiones_indivisas":
-        useAccionistaSucesionesIndivisasStore().$patch(stateModal);
-        if (stateRepresentante) {
-          usePersonaNaturalStore().$patch(stateRepresentante);
-        }
-        break;
-
-      case "fideicomisos":
-        useAccionistaFideicomisosStore().$patch(stateModal);
-        if (stateRepresentante) {
-          usePersonaNaturalStore().$patch(stateRepresentante);
-        }
-        break;
-
-      case "fondos_inversion":
-        useAccionistaFondosInversionStore().$patch(stateModal);
-        if (stateRepresentante) {
-          usePersonaNaturalStore().$patch(stateRepresentante);
-        }
-        break;
+    if (stateRepresentante) {
+      usePersonaNaturalStore().$patch(stateRepresentante);
     }
 
-    // Configurar el modal para edición
-    tipoAccionista.value = accionista.tipoAccionista;
+    tipoAccionista.value = accionista.tipoAccionista as TipoAccionistaEnum;
     idAccionistaEditando.value = idAccionista;
     modalMode.value = "editar";
     isModalOpen.value = true;
@@ -99,54 +74,17 @@ export const useRegistroAccionistas = () => {
     isModalOpen.value = false;
     idAccionistaEditando.value = null;
     modalMode.value = "crear";
-    tipoAccionista.value = "natural";
+    tipoAccionista.value = TipoAccionistaEnum.NATURAL;
   };
 
   const handleSubmitAccionista = () => {
     // Obtener el state del store del tipo de accionista actual
-    let stateModal: any;
-    let stateRepresentante: any | null = null;
+    const storeModal = STORE_MAP[tipoAccionista.value]();
 
-    switch (tipoAccionista.value) {
-      case "natural":
-        stateModal = useAccionistaNaturalStore().$state;
-        break;
-
-      case "juridica":
-        stateModal = useAccionistaJuridicoStore().$state;
-        if (stateModal.tieneRepresentante) {
-          stateRepresentante = usePersonaNaturalStore().$state;
-        }
-        break;
-
-      case "sucursal":
-        stateModal = useAccionistaSucursalStore().$state;
-        if (stateModal.tieneRepresentante) {
-          stateRepresentante = usePersonaNaturalStore().$state;
-        }
-        break;
-
-      case "sucesiones_indivisas":
-        stateModal = useAccionistaSucesionesIndivisasStore().$state;
-        if (stateModal.tieneRepresentante) {
-          stateRepresentante = usePersonaNaturalStore().$state;
-        }
-        break;
-
-      case "fideicomisos":
-        stateModal = useAccionistaFideicomisosStore().$state;
-        if (stateModal.tieneRepresentante) {
-          stateRepresentante = usePersonaNaturalStore().$state;
-        }
-        break;
-
-      case "fondos_inversion":
-        stateModal = useAccionistaFondosInversionStore().$state;
-        if (stateModal.tieneRepresentante) {
-          stateRepresentante = usePersonaNaturalStore().$state;
-        }
-        break;
-    }
+    const stateModal = storeModal.$state;
+    const stateRepresentante = stateModal.tieneRepresentante
+      ? usePersonaNaturalStore().$state
+      : null;
 
     // Transformar datos del modal al formato Accionista
     const accionista = transformarModalAAccionista(

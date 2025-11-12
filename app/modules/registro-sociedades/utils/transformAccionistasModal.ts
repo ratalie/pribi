@@ -18,11 +18,8 @@ import type {
   SucesionesIndivisasAccionista,
   SucursalAccionista,
 } from "../types/accionistas";
+import { TipoAccionistaEnum } from "../types/accionistas";
 import type { PersonaNatural } from "../types/personas";
-
-// ============================================================================
-// FUNCIONES HELPER
-// ============================================================================
 
 /**
  * Convierte PersonaNaturalState a PersonaNatural haciendo el casting necesario
@@ -61,22 +58,22 @@ export function transformarModalAAccionista(
   const id = idAccionista || uuidv4();
 
   switch (tipoAccionista) {
-    case "natural":
+    case TipoAccionistaEnum.NATURAL:
       return transformarNaturalAAccionista(stateModal, id);
 
-    case "juridica":
+    case TipoAccionistaEnum.JURIDICA:
       return transformarJuridicaAAccionista(stateModal, stateRepresentante, id);
 
-    case "sucursal":
+    case TipoAccionistaEnum.SUCURSAL:
       return transformarSucursalAAccionista(stateModal, stateRepresentante, id);
 
-    case "sucesiones_indivisas":
+    case TipoAccionistaEnum.SUCESIONES_INDIVISAS:
       return transformarSucesionesIndivisasAAccionista(stateModal, stateRepresentante, id);
 
-    case "fideicomisos":
+    case TipoAccionistaEnum.FIDEICOMISOS:
       return transformarFideicomisosAAccionista(stateModal, stateRepresentante, id);
 
-    case "fondos_inversion":
+    case TipoAccionistaEnum.FONDOS_INVERSION:
       return transformarFondosInversionAAccionista(stateModal, stateRepresentante, id);
 
     default:
@@ -98,27 +95,27 @@ export function transformarAccionistaAModal(accionista: Accionista): {
   stateRepresentante: PersonaNaturalState | null;
 } {
   switch (accionista.tipoAccionista) {
-    case "natural":
+    case TipoAccionistaEnum.NATURAL:
       return {
         stateModal: transformarAccionistaANatural(accionista as PersonaNaturalAccionista),
         stateRepresentante: null,
       };
 
-    case "juridica":
+    case TipoAccionistaEnum.JURIDICA:
       return transformarAccionistaAJuridica(accionista as PersonaJuridicaAccionista);
 
-    case "sucursal":
+    case TipoAccionistaEnum.SUCURSAL:
       return transformarAccionistaASucursal(accionista as SucursalAccionista);
 
-    case "sucesiones_indivisas":
+    case TipoAccionistaEnum.SUCESIONES_INDIVISAS:
       return transformarAccionistaASucesionesIndivisas(
         accionista as SucesionesIndivisasAccionista
       );
 
-    case "fideicomisos":
+    case TipoAccionistaEnum.FIDEICOMISOS:
       return transformarAccionistaAFideicomisos(accionista as FideicomisosAccionista);
 
-    case "fondos_inversion":
+    case TipoAccionistaEnum.FONDOS_INVERSION:
       return transformarAccionistaAFondosInversion(accionista as FondosInversionAccionista);
 
     default:
@@ -143,7 +140,7 @@ function transformarNaturalAAccionista(
 
   return {
     id,
-    tipoAccionista: "natural",
+    tipoAccionista: TipoAccionistaEnum.NATURAL,
     tipoDocumento: state.tipoDocumento as TipoDocumentosEnum,
     numeroDocumento: state.numeroDocumento,
     nombre: state.nombre,
@@ -186,7 +183,7 @@ function transformarJuridicaAAccionista(
   if (state.seConstituyoEnPeru) {
     return {
       id,
-      tipoAccionista: "juridica",
+      tipoAccionista: TipoAccionistaEnum.JURIDICA,
       seConstituyoEnPeru: true,
       tipoDocumento: "RUC", // Siempre es RUC en Perú
       numeroDocumento: state.numeroDocumento,
@@ -204,7 +201,7 @@ function transformarJuridicaAAccionista(
   // Si es extranjera, retornar tipo Extranjera
   return {
     id,
-    tipoAccionista: "juridica",
+    tipoAccionista: TipoAccionistaEnum.JURIDICA,
     seConstituyoEnPeru: false,
     tipoDocumento: state.tipoDocumento, // El usuario lo ingresa
     numeroDocumento: state.numeroDocumento,
@@ -223,7 +220,7 @@ function transformarSucursalAAccionista(
 ): SucursalAccionista {
   return {
     id,
-    tipoAccionista: "sucursal",
+    tipoAccionista: TipoAccionistaEnum.SUCURSAL,
     tipoDocumento: "RUC", // Siempre es RUC para sucursales en Perú
     numeroDocumento: state.numeroDocumento,
     nombreSucursal: state.nombreSucursal,
@@ -245,7 +242,7 @@ function transformarSucesionesIndivisasAAccionista(
 ): SucesionesIndivisasAccionista {
   return {
     id,
-    tipoAccionista: "sucesiones_indivisas",
+    tipoAccionista: TipoAccionistaEnum.SUCESIONES_INDIVISAS,
     tipoDocumento: "RUC", // Siempre es RUC para sucesiones indivisas en Perú
     numeroDocumento: state.numeroDocumento,
     razonSocial: state.razonSocial,
@@ -268,7 +265,7 @@ function transformarFideicomisosAAccionista(
 ): FideicomisosAccionista {
   const baseData = {
     id,
-    tipoAccionista: "fideicomisos" as const,
+    tipoAccionista: TipoAccionistaEnum.FIDEICOMISOS,
     identificacionFideicomiso: state.identificacionFideicomiso,
     partidaRegistral: state.partidaRegistral,
     sedeRegistral: state.sedeRegistral,
@@ -308,7 +305,7 @@ function transformarFondosInversionAAccionista(
 ): FondosInversionAccionista {
   return {
     id,
-    tipoAccionista: "fondos_inversion",
+    tipoAccionista: TipoAccionistaEnum.FONDOS_INVERSION,
     tipoDocumento: "RUC", // Siempre es RUC para fondos de inversión en Perú
     numeroDocumento: state.numeroDocumento,
     razonSocial: state.razonSocial,

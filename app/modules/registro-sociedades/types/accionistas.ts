@@ -1,22 +1,21 @@
+// Importamos el enum sin 'type' porque usamos sus valores como tipos literales
 import type { EstadoCivilEnum } from "~/types/enums/EstadoCivilEnum";
 import type { RegimenPatrimonialEnum } from "~/types/enums/RegimenPatrimonialEnum";
+import { TipoAccionistaEnum } from "./enums/TipoAccionistaEnum";
 import type { EntidadLegalPeruanaBase, PersonaJuridica, PersonaNatural } from "./personas";
 
 export interface BaseAccionista {
   id: string;
-  tipoAccionista:
-    | "natural"
-    | "juridica"
-    | "sucursal"
-    | "sucesiones_indivisas"
-    | "fideicomisos"
-    | "fondos_inversion";
+  tipoAccionista: TipoAccionistaEnum;
 }
+
+// Re-exportamos el enum para que esté disponible donde se usen los tipos
+export { TipoAccionistaEnum };
 
 // ============================================
 // ACCIONISTA: PERSONA NATURAL
 export interface PersonaNaturalAccionista extends BaseAccionista, PersonaNatural {
-  tipoAccionista: "natural";
+  tipoAccionista: TipoAccionistaEnum.NATURAL;
   estadoCivil: EstadoCivilEnum;
   regimenPatrimonial?: RegimenPatrimonialEnum;
   conyuge?: PersonaNatural;
@@ -28,13 +27,13 @@ export interface PersonaNaturalAccionista extends BaseAccionista, PersonaNatural
 // ACCIONISTA: PERSONA JURÍDICA
 export type PersonaJuridicaAccionista = BaseAccionista &
   PersonaJuridica & {
-    tipoAccionista: "juridica";
+    tipoAccionista: TipoAccionistaEnum.JURIDICA;
   };
 
 // ============================================
 // ACCIONISTA: SUCURSAL
 export interface SucursalAccionista extends BaseAccionista {
-  tipoAccionista: "sucursal";
+  tipoAccionista: TipoAccionistaEnum.SUCURSAL;
   tipoDocumento: string;
   numeroDocumento: string;
   nombreSucursal: string;
@@ -50,7 +49,7 @@ export interface SucursalAccionista extends BaseAccionista {
 export interface SucesionesIndivisasAccionista
   extends BaseAccionista,
     EntidadLegalPeruanaBase {
-  tipoAccionista: "sucesiones_indivisas";
+  tipoAccionista: TipoAccionistaEnum.SUCESIONES_INDIVISAS;
 }
 
 // ============================================
@@ -80,13 +79,13 @@ interface FideicomisosSinRuc extends FideicomisosBase {
 
 export type FideicomisosAccionista = BaseAccionista &
   (FideicomisosConRuc | FideicomisosSinRuc) & {
-    tipoAccionista: "fideicomisos";
+    tipoAccionista: TipoAccionistaEnum.FIDEICOMISOS;
   };
 
 // ============================================
 // ACCIONISTA: FONDOS DE INVERSIÓN
 export interface FondosInversionAccionista extends BaseAccionista {
-  tipoAccionista: "fondos_inversion";
+  tipoAccionista: TipoAccionistaEnum.FONDOS_INVERSION;
   tipoDocumento: string;
   numeroDocumento: string;
   razonSocial: string;
