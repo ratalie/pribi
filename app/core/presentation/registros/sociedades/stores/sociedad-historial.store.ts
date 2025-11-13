@@ -66,5 +66,7 @@ export const useSociedadHistorialStore = defineStore("registros-sociedad-histori
     crearSociedad,
     eliminarSociedad,
   };
+}, {
+  persist: true,
 });
 

@@ -85,5 +85,7 @@ export const useDatosSociedadStore = defineStore("registros-datos-sociedad", () 
     create,
     update,
   };
+}, {
+  persist: true,
 });
 

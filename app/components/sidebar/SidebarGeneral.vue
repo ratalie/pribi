@@ -73,14 +73,21 @@
 </script>
 
 <template>
-  <div class="sidebar-container flex">
+  <div
+    class="sidebar-container fixed inset-y-0 left-0 z-50 flex pointer-events-none"
+    :class="{
+      'pointer-events-auto': !isCollapsed,
+    }"
+  >
     <!-- Sidebar Principal (navegación app) -->
-    <SidebarProvider class="w-auto">
+    <SidebarProvider class="h-full w-[280px]">
       <Sidebar
         :class="
           cn(
-            'h-screen flex flex-col overflow-hidden border-r border-neutral-white-12 bg-primary-800 text-neutral-white-88 transition-[opacity,width]',
-            isCollapsed ? 'pointer-events-none w-0 opacity-0' : 'w-[280px] opacity-100'
+            'pointer-events-auto relative flex h-full w-[280px] flex-col overflow-hidden rounded-r-2xl border border-primary-400/70 bg-primary-900/95 text-neutral-white-88 shadow-[0_24px_60px_rgba(60,40,164,0.45)] backdrop-blur-xl transition-all duration-300 ease-out',
+            isCollapsed
+              ? '-translate-x-full opacity-0 pointer-events-none'
+              : 'translate-x-0 opacity-100'
           )
         "
       >
@@ -107,7 +114,7 @@
 
         <!-- Navigation Content -->
         <SidebarContent
-          class="custom-scrollbar flex-1 overflow-y-auto overflow-x-hidden px-4 pb-6"
+          class="sidebar-scroll flex-1 overflow-y-auto overflow-x-hidden px-4 pb-6"
         >
           <div v-for="(section, index) in navigationSections" :key="section.id" class="mb-6">
             <template v-if="canViewModule(section.id)">
@@ -248,7 +255,7 @@
         </SidebarContent>
 
         <!-- User Profile Footer -->
-        <SidebarFooter class="border-t border-neutral-white-12 px-4 py-5">
+        <SidebarFooter class="border-t border-primary-400/50 px-4 py-5">
           <UserDropdownMenu />
         </SidebarFooter>
       </Sidebar>
@@ -266,7 +273,35 @@
 
 <style scoped>
   .sidebar-container {
-    position: relative;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
     height: 100vh;
+    z-index: 50;
+  }
+
+  .sidebar-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(124, 90, 255, 0.75) rgba(60, 40, 164, 0.15);
+  }
+
+  .sidebar-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .sidebar-scroll::-webkit-scrollbar-track {
+    background: rgba(60, 40, 164, 0.1);
+    border-radius: 999px;
+  }
+
+  .sidebar-scroll::-webkit-scrollbar-thumb {
+    background: rgba(124, 90, 255, 0.8);
+    border-radius: 999px;
+  }
+
+  .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(124, 90, 255, 0.95);
   }
 </style>

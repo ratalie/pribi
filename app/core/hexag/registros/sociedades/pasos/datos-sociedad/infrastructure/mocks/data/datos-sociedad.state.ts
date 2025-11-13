@@ -1,9 +1,6 @@
+import { getRecord, putRecord } from "../../../../../../shared/mock-database";
 import type { DatosSociedadDTO } from "../../../application/dtos/datos-sociedad.dto";
 import type { SociedadDatosGenerales } from "../../../domain";
-
-type DatosSociedadStorage = Record<string, SociedadDatosGenerales>;
-
-const datosSociedadState: DatosSociedadStorage = {};
 
 const defaultPayload: DatosSociedadDTO = {
   numeroRuc: "",
@@ -22,7 +19,11 @@ const defaultPayload: DatosSociedadDTO = {
   oficinaRegistral: "",
 };
 
-function buildEntity(idSociety: string, payload: DatosSociedadDTO): SociedadDatosGenerales {
+function buildEntity(
+  idSociety: string,
+  payload: DatosSociedadDTO,
+  previous?: SociedadDatosGenerales | null
+): SociedadDatosGenerales {
   const now = new Date().toISOString();
   return {
     idSociety,
@@ -40,34 +41,44 @@ function buildEntity(idSociety: string, payload: DatosSociedadDTO): SociedadDato
     fechaRegistrosPublicos: payload.fechaRegistrosPublicos,
     partidaRegistral: payload.partidaRegistral,
     oficinaRegistral: payload.oficinaRegistral,
-    createdAt: datosSociedadState[idSociety]?.createdAt ?? now,
+    createdAt: previous?.createdAt ?? now,
     updatedAt: now,
   };
 }
 
-export function getDatosSociedadMock(idSociety: string): SociedadDatosGenerales | null {
-  return datosSociedadState[idSociety] ?? null;
+const STORE_NAME = "datosSociedad";
+
+export async function getDatosSociedadMock(
+  idSociety: string
+): Promise<SociedadDatosGenerales | null> {
+  return (await getRecord<SociedadDatosGenerales>(STORE_NAME, idSociety)) ?? null;
 }
 
-export function createDatosSociedadMock(
+export async function createDatosSociedadMock(
   idSociety: string,
   payload: DatosSociedadDTO = defaultPayload
-): SociedadDatosGenerales {
+): Promise<SociedadDatosGenerales> {
   const entity = buildEntity(idSociety, payload);
-  datosSociedadState[idSociety] = entity;
+  await putRecord(STORE_NAME, entity);
   return entity;
 }
 
-export function updateDatosSociedadMock(
+export async function updateDatosSociedadMock(
   idSociety: string,
   payload: DatosSociedadDTO
-): SociedadDatosGenerales {
-  const current = datosSociedadState[idSociety] ?? createDatosSociedadMock(idSociety, payload);
-  const entity = buildEntity(idSociety, {
-    ...defaultPayload,
-    ...current,
-    ...payload,
-  });
-  datosSociedadState[idSociety] = entity;
+): Promise<SociedadDatosGenerales> {
+  const current =
+    (await getDatosSociedadMock(idSociety)) ??
+    (await createDatosSociedadMock(idSociety, payload));
+  const entity = buildEntity(
+    idSociety,
+    {
+      ...defaultPayload,
+      ...current,
+      ...payload,
+    },
+    current
+  );
+  await putRecord(STORE_NAME, entity);
   return entity;
 }

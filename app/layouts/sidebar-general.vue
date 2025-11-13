@@ -49,7 +49,7 @@
 </script>
 
 <template>
-  <div class="layout-with-sidebar-general flex min-h-screen">
+  <div class="layout-with-sidebar-general relative min-h-screen">
     <!-- Sidebar General (con sidebar de flujo opcional) -->
     <SidebarGeneral
       :is-collapsed="isCollapsed"
@@ -59,7 +59,7 @@
     />
 
     <!-- Main Content -->
-    <main class="flex-1 overflow-x-hidden">
+    <main class="relative z-0 min-h-screen overflow-x-hidden">
       <slot />
     </main>
   </div>

@@ -10,14 +10,14 @@ import {
 const baseUrl = "/api/registros/sociedades/:id/datos-sociedad";
 
 export const datosSociedadHandlers = [
-  http.get(baseUrl, ({ params }) => {
+  http.get(baseUrl, async ({ params }) => {
     const { id } = params;
     if (!id || Array.isArray(id)) {
       return HttpResponse.json({ error: "Invalid society id" }, { status: 400 });
     }
 
     const societyId = id as string;
-    const datos = getDatosSociedadMock(societyId);
+    const datos = await getDatosSociedadMock(societyId);
     if (!datos) {
       return HttpResponse.json({ error: "Datos de sociedad no encontrados" }, { status: 404 });
     }
@@ -33,7 +33,7 @@ export const datosSociedadHandlers = [
 
     const societyId = id as string;
     const body = (await request.json()) as DatosSociedadDTO | undefined;
-    const datos = createDatosSociedadMock(societyId, {
+    const datos = await createDatosSociedadMock(societyId, {
       numeroRuc: body?.numeroRuc ?? "",
       tipoSocietario: body?.tipoSocietario ?? "S.A.C.",
       razonSocial: body?.razonSocial ?? "Sociedad sin nombre",
@@ -61,7 +61,7 @@ export const datosSociedadHandlers = [
 
     const societyId = id as string;
     const body = (await request.json()) as DatosSociedadDTO;
-    const datos = updateDatosSociedadMock(societyId, body);
+    const datos = await updateDatosSociedadMock(societyId, body);
     return HttpResponse.json({ data: datos }, { status: 200 });
   }),
 ];

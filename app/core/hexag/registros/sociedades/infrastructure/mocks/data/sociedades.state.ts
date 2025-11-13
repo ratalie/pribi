@@ -1,3 +1,5 @@
+import { deleteRecord, getAllRecords, getRecord, putRecord } from "../../../../shared/mock-database";
+
 export interface SociedadResumenMock {
   idSociety: string;
   razonSocial: string;
@@ -7,9 +9,9 @@ export interface SociedadResumenMock {
   updatedAt: string;
 }
 
-const sociedadesState: SociedadResumenMock[] = [];
+const STORE_NAME = "sociedades";
 
-export function createSociedadMock(): SociedadResumenMock {
+export async function createSociedadMock(): Promise<SociedadResumenMock> {
   const now = new Date().toISOString();
   const nueva: SociedadResumenMock = {
     idSociety: crypto.randomUUID(),
@@ -20,21 +22,22 @@ export function createSociedadMock(): SociedadResumenMock {
     updatedAt: now,
   };
 
-  sociedadesState.unshift(nueva);
+  await putRecord(STORE_NAME, nueva);
   return nueva;
 }
 
-export function listSociedadesMock(): SociedadResumenMock[] {
-  return [...sociedadesState];
+export async function listSociedadesMock(): Promise<SociedadResumenMock[]> {
+  const data = await getAllRecords<SociedadResumenMock>(STORE_NAME);
+  return data.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 }
 
-export function deleteSociedadMock(id: string): boolean {
-  const index = sociedadesState.findIndex((sociedad) => sociedad.idSociety === id);
-  if (index === -1) {
+export async function deleteSociedadMock(id: string): Promise<boolean> {
+  const existing = await getRecord<SociedadResumenMock>(STORE_NAME, id);
+  if (!existing) {
     return false;
   }
 
-  sociedadesState.splice(index, 1);
+  await deleteRecord(STORE_NAME, id);
   return true;
 }
 

@@ -8,7 +8,7 @@ import {
 
 export const sociedadesHandlers = [
   http.post("/api/registros/sociedades", async () => {
-    const sociedad = createSociedadMock();
+    const sociedad = await createSociedadMock();
     return HttpResponse.json(
       {
         data: {
@@ -19,13 +19,12 @@ export const sociedadesHandlers = [
     );
   }),
 
-  http.get("/api/registros/sociedades", () => {
-    return HttpResponse.json({
-      data: listSociedadesMock(),
-    });
+  http.get("/api/registros/sociedades", async () => {
+    const data = await listSociedadesMock();
+    return HttpResponse.json({ data });
   }),
 
-  http.delete("/api/registros/sociedades/:id", ({ params }) => {
+  http.delete("/api/registros/sociedades/:id", async ({ params }) => {
     const idParam = params.id;
     const id =
       typeof idParam === "string"
@@ -38,7 +37,7 @@ export const sociedadesHandlers = [
       return HttpResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
 
-    const deleted = deleteSociedadMock(id);
+    const deleted = await deleteSociedadMock(id);
     if (!deleted) {
       return HttpResponse.json({ error: "Society not found" }, { status: 404 });
     }
