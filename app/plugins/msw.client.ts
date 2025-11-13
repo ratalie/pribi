@@ -1,16 +1,17 @@
 export default defineNuxtPlugin(async () => {
   if (!import.meta.dev) return;
   if (typeof window === "undefined") return;
-  if ((window as any).__MSW_REGISTROS_STARTED__) return;
+  if ((window as any).__MSW_WORKER_STARTED__) return;
 
-  const { registrosWorker } = await import(
-    "~/core/hexag/registros/sociedades/infrastructure/mocks/browser"
-  );
+  const config = useRuntimeConfig();
+  if (config.public?.mswDisabled) return;
 
-  await registrosWorker.start({
+  const { mswWorker } = await import("~/core/hexag/mocks/browser");
+
+  await mswWorker.start({
     onUnhandledRequest: "bypass",
   });
 
-  (window as any).__MSW_REGISTROS_STARTED__ = true;
+  (window as any).__MSW_WORKER_STARTED__ = true;
 });
 

@@ -66,7 +66,11 @@ export const useDatosSociedadStore = defineStore("registros-datos-sociedad", () 
     errorMessage.value = null;
 
     try {
-      datos.value = await updateUseCase.execute(idSociety, payload);
+      const payloadWithId: DatosSociedadDTO = {
+        ...payload,
+        idSociety: datos.value?.idSociety ?? payload.idSociety,
+      };
+      datos.value = await updateUseCase.execute(idSociety, payloadWithId);
       status.value = "idle";
     } catch (error) {
       console.error("[DatosSociedadStore] update error", error);

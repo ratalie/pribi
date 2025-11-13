@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
+import process from "node:process";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
@@ -7,6 +8,15 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   ssr: false,
+
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || "",
+      authEndpoint: process.env.NUXT_PUBLIC_AUTH_ENDPOINT || "",
+      mswDisabled: process.env.MSW_DISABLED === "true",
+      defaultRedirectAfterLogin: "/registros/sociedades/dashboard",
+    },
+  },
 
   modules: [
     "@nuxt/eslint",

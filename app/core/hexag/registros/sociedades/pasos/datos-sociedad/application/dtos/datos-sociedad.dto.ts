@@ -1,4 +1,5 @@
 export interface DatosSociedadDTO {
+  idSociety?: string;
   numeroRuc: string;
   tipoSocietario: string;
   razonSocial: string;
