@@ -4,6 +4,7 @@ export const frPages = {
   sociedadesDashboard: "Tableau de bord des sociétés",
   sociedadesAgregar: "Ajouter une société",
   sociedadesHistorial: "Historique des enregistrements",
+  sociedadesPreview: "Aperçu de la société",
   sucursales: "Succursales",
   sucursalesDashboard: "Tableau de bord des succursales",
   sucursalesAgregar: "Ajouter une succursale",

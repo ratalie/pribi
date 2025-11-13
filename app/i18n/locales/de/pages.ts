@@ -4,6 +4,7 @@ export const dePages = {
   sociedadesDashboard: "Unternehmens-Dashboard",
   sociedadesAgregar: "Unternehmen hinzufügen",
   sociedadesHistorial: "Registerhistorie",
+  sociedadesPreview: "Gesellschaftsvorschau",
   sucursales: "Niederlassungen",
   sucursalesDashboard: "Niederlassungs-Dashboard",
   sucursalesAgregar: "Niederlassung hinzufügen",

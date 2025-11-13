@@ -4,6 +4,7 @@ export default {
   sociedadesDashboard: "कंपनी डैशबोर्ड",
   sociedadesAgregar: "कंपनी जोड़ें",
   sociedadesHistorial: "पंजीकरण इतिहास",
+  sociedadesPreview: "सोसाइटी पूर्वावलोकन",
   sucursales: "शाखाएं",
   sucursalesDashboard: "शाखा डैशबोर्ड",
   sucursalesAgregar: "शाखा जोड़ें",

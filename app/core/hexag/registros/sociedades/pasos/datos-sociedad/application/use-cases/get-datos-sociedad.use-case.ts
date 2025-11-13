@@ -7,4 +7,4 @@ export class GetDatosSociedadUseCase {
   execute(idSociety: string): Promise<SociedadDatosGenerales | null> {
     return this.repository.get(idSociety);
   }
-
+}

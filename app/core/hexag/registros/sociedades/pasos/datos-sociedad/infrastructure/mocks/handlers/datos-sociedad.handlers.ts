@@ -1,11 +1,11 @@
 import { http, HttpResponse } from "msw";
 
+import type { DatosSociedadDTO } from "../../../application/dtos/datos-sociedad.dto";
 import {
   createDatosSociedadMock,
   getDatosSociedadMock,
   updateDatosSociedadMock,
 } from "../data/datos-sociedad.state";
-import type { DatosSociedadDTO } from "../../../application/dtos/datos-sociedad.dto";
 
 const baseUrl = "/api/registros/sociedades/:id/datos-sociedad";
 
@@ -16,7 +16,8 @@ export const datosSociedadHandlers = [
       return HttpResponse.json({ error: "Invalid society id" }, { status: 400 });
     }
 
-    const datos = getDatosSociedadMock(id);
+    const societyId = id as string;
+    const datos = getDatosSociedadMock(societyId);
     if (!datos) {
       return HttpResponse.json({ error: "Datos de sociedad no encontrados" }, { status: 404 });
     }
@@ -30,15 +31,23 @@ export const datosSociedadHandlers = [
       return HttpResponse.json({ error: "Invalid society id" }, { status: 400 });
     }
 
+    const societyId = id as string;
     const body = (await request.json()) as DatosSociedadDTO | undefined;
-    const datos = createDatosSociedadMock(id, {
-      razonSocial: body?.razonSocial ?? "Sociedad sin nombre",
+    const datos = createDatosSociedadMock(societyId, {
+      numeroRuc: body?.numeroRuc ?? "",
       tipoSocietario: body?.tipoSocietario ?? "S.A.C.",
-      nombreComercial: body?.nombreComercial,
-      fechaConstitucion: body?.fechaConstitucion,
-      objetoSocial: body?.objetoSocial,
-      domicilioLegal: body?.domicilioLegal,
-      capitalSocial: body?.capitalSocial,
+      razonSocial: body?.razonSocial ?? "Sociedad sin nombre",
+      nombreComercial: body?.nombreComercial ?? "",
+      direccion: body?.direccion ?? "",
+      distrito: body?.distrito ?? "",
+      provincia: body?.provincia ?? "",
+      departamento: body?.departamento ?? "",
+      fechaInscripcionRuc: body?.fechaInscripcionRuc ?? "",
+      actividadExterior: body?.actividadExterior ?? "",
+      fechaEscrituraPublica: body?.fechaEscrituraPublica ?? "",
+      fechaRegistrosPublicos: body?.fechaRegistrosPublicos ?? "",
+      partidaRegistral: body?.partidaRegistral ?? "",
+      oficinaRegistral: body?.oficinaRegistral ?? "",
     });
 
     return HttpResponse.json({ data: datos }, { status: 201 });
@@ -50,9 +59,9 @@ export const datosSociedadHandlers = [
       return HttpResponse.json({ error: "Invalid society id" }, { status: 400 });
     }
 
+    const societyId = id as string;
     const body = (await request.json()) as DatosSociedadDTO;
-    const datos = updateDatosSociedadMock(id, body);
+    const datos = updateDatosSociedadMock(societyId, body);
     return HttpResponse.json({ data: datos }, { status: 200 });
   }),
 ];
-

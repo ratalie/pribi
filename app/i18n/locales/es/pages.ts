@@ -5,6 +5,7 @@ export default {
   sociedadesDashboard: "Dashboard de Sociedades",
   sociedadesAgregar: "Agregar Sociedad",
   sociedadesHistorial: "Historial de Registros",
+  sociedadesPreview: "Vista previa de Sociedad",
   sucursalesDashboard: "Dashboard de Sucursales",
   sucursalesAgregar: "Agregar Sucursal",
   sucursalesHistorial: "Historial de Sucursales",

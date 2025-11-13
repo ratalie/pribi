@@ -1,0 +1,327 @@
+<script setup lang="ts">
+import { computed, onMounted, toRef, watch } from "vue";
+import { Form } from "vee-validate";
+import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+import CardTitle from "~/components/base/cards/CardTitle.vue";
+import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
+import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
+import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
+import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
+import { Button } from "@/components/ui/button";
+import {
+  actividadExteriorSchema,
+  departamentoSchema,
+  direccionSchema,
+  distritoSchema,
+  fechaEscrituraPublicaSchema,
+  fechaInscripcionRucSchema,
+  fechaRegistrosPublicosSchema,
+  nombreComercialSchema,
+  oficinaRegistralSchema,
+  partidaRegistralSchema,
+  provinciaSchema,
+  razonSocialSchema,
+  rucSchema,
+  tipoSociedadSchema,
+} from "~/modules/registro-sociedades/schemas/datosSociedad";
+import { officeOptions } from "~/constants/inputs/office-options";
+import { societyTypeOptions } from "~/constants/inputs/society-types";
+import { useDatosSociedadForm } from "../composables/useDatosSociedadForm";
+
+interface Props {
+  societyId: string;
+  mode?: EntityModeEnum;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  mode: EntityModeEnum.CREAR,
+});
+
+const societyIdRef = toRef(props, "societyId");
+const modeRef = toRef(props, "mode");
+
+const {
+  form,
+  isLoading,
+  isSaving,
+  isReadonly,
+  errorMessage,
+  load,
+  submit,
+  reset,
+  datos,
+} = useDatosSociedadForm({
+  societyId: societyIdRef,
+  mode: modeRef,
+});
+
+const societyOptions = societyTypeOptions;
+const officeSelectOptions = officeOptions;
+async function handleSubmit() {
+  await submit();
+}
+
+function handleInvalidSubmit(ctx: any) {
+  console.warn("[DatosSociedadForm] invalid submit", ctx?.errors);
+}
+
+function handleSearchRuc(ruc: string) {
+  console.info("[DatosSociedadForm] buscar RUC", ruc);
+}
+
+onMounted(() => {
+  load();
+});
+
+watch(
+  societyIdRef,
+  () => {
+    load();
+  },
+  { immediate: false }
+);
+
+const createdAt = computed(() => {
+  if (!isReadonly.value || !datos.value?.createdAt) return "";
+  return new Intl.DateTimeFormat("es-PE", { dateStyle: "long", timeStyle: "short" }).format(
+    new Date(datos.value.createdAt)
+  );
+});
+
+const updatedAt = computed(() => {
+  if (!isReadonly.value || !datos.value?.updatedAt) return "";
+  return new Intl.DateTimeFormat("es-PE", { dateStyle: "long", timeStyle: "short" }).format(
+    new Date(datos.value.updatedAt)
+  );
+});
+</script>
+
+<template>
+  <div class="rounded-2xl border border-primary-300/40 bg-white shadow-sm">
+    <div class="border-b border-primary-200/40 p-6">
+      <CardTitle
+        title="Datos principales"
+        body="Completa o revisa los datos generales de la sociedad."
+      />
+      <p v-if="errorMessage" class="mt-3 text-sm text-red-500">
+        {{ errorMessage }}
+      </p>
+    </div>
+
+    <div v-if="isLoading" class="p-10">
+      <div class="animate-pulse space-y-6">
+        <div class="h-4 w-1/2 rounded bg-gray-200" />
+        <div class="grid grid-cols-2 gap-6">
+          <div v-for="i in 10" :key="i" class="h-16 rounded bg-gray-100" />
+        </div>
+      </div>
+    </div>
+
+    <div v-else-if="isReadonly" class="space-y-6 p-10">
+      <dl class="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2">
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Número de RUC</dt>
+          <dd class="mt-1 text-base text-gray-900">{{ form.numeroRuc || "—" }}</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Tipo de sociedad</dt>
+          <dd class="mt-1 text-base text-gray-900">{{ form.tipoSocietario || "—" }}</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Razón social</dt>
+          <dd class="mt-1 text-base text-gray-900">{{ form.razonSocial || "—" }}</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Nombre comercial</dt>
+          <dd class="mt-1 text-base text-gray-900">{{ form.nombreComercial || "—" }}</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Dirección</dt>
+          <dd class="mt-1 text-base text-gray-900">{{ form.direccion || "—" }}</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Distrito</dt>
+          <dd class="mt-1 text-base text-gray-900">{{ form.distrito || "—" }}</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Provincia</dt>
+          <dd class="mt-1 text-base text-gray-900">{{ form.provincia || "—" }}</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Departamento</dt>
+          <dd class="mt-1 text-base text-gray-900">{{ form.departamento || "—" }}</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Fecha inscripción RUC</dt>
+          <dd class="mt-1 text-base text-gray-900">{{ form.fechaInscripcionRuc || "—" }}</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Actividad exterior</dt>
+          <dd class="mt-1 text-base text-gray-900">{{ form.actividadExterior || "—" }}</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Fecha escritura pública</dt>
+          <dd class="mt-1 text-base text-gray-900">{{ form.fechaEscrituraPublica || "—" }}</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Fecha registros públicos</dt>
+          <dd class="mt-1 text-base text-gray-900">{{ form.fechaRegistrosPublicos || "—" }}</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Partida registral</dt>
+          <dd class="mt-1 text-base text-gray-900">{{ form.partidaRegistral || "—" }}</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Oficina registral</dt>
+          <dd class="mt-1 text-base text-gray-900">{{ form.oficinaRegistral || "—" }}</dd>
+        </div>
+      </dl>
+
+      <div class="mt-6 text-sm text-gray-500">
+        <p v-if="createdAt">Creado: {{ createdAt }}</p>
+        <p v-if="updatedAt">Última actualización: {{ updatedAt }}</p>
+      </div>
+    </div>
+
+    <div v-else class="p-10">
+      <Form class="grid grid-cols-2 gap-8" @submit="handleSubmit" @invalid-submit="handleInvalidSubmit">
+        <SearchInputZod
+          v-model="form.numeroRuc"
+          name="numero-ruc"
+          label="Número de RUC"
+          placeholder="Ingrese el número de RUC"
+          :schema="rucSchema"
+          :is-loading="false"
+          @search="handleSearchRuc"
+        />
+
+        <SelectInputZod
+          v-model="form.tipoSocietario"
+          :options="societyOptions"
+          name="tipo-sociedad"
+          label="Tipo de sociedad"
+          placeholder="Tipo de sociedad"
+          :schema="tipoSociedadSchema"
+        />
+
+        <TextInputZod
+          v-model="form.razonSocial"
+          name="razon-social"
+          label="Razón social"
+          placeholder="Razón social"
+          :schema="razonSocialSchema"
+        />
+
+        <TextInputZod
+          v-model="form.nombreComercial"
+          name="nombre-comercial"
+          label="Nombre comercial"
+          placeholder="Nombre comercial"
+          :schema="nombreComercialSchema"
+        />
+
+        <TextInputZod
+          v-model="form.direccion"
+          name="direccion"
+          label="Dirección"
+          placeholder="Dirección"
+          :schema="direccionSchema"
+        />
+
+        <TextInputZod
+          v-model="form.distrito"
+          name="distrito"
+          label="Distrito"
+          placeholder="Distrito"
+          :schema="distritoSchema"
+        />
+
+        <TextInputZod
+          v-model="form.provincia"
+          name="provincia"
+          label="Provincia"
+          placeholder="Provincia"
+          :schema="provinciaSchema"
+        />
+
+        <TextInputZod
+          v-model="form.departamento"
+          name="departamento"
+          label="Departamento"
+          placeholder="Departamento"
+          :schema="departamentoSchema"
+        />
+
+        <DateInputZod
+          v-model="form.fechaInscripcionRuc"
+          name="fecha-inscripcion-ruc"
+          label="Fecha de inscripción de RUC"
+          placeholder="Selecciona la fecha"
+          :schema="fechaInscripcionRucSchema"
+        />
+
+        <TextInputZod
+          v-model="form.actividadExterior"
+          name="actividad-exterior"
+          label="Actividad exterior"
+          placeholder="Actividad exterior"
+          :schema="actividadExteriorSchema"
+        />
+
+        <DateInputZod
+          v-model="form.fechaEscrituraPublica"
+          name="fecha-escritura-publica"
+          label="Fecha de escritura pública"
+          placeholder="Selecciona la fecha"
+          :schema="fechaEscrituraPublicaSchema"
+        />
+
+        <DateInputZod
+          v-model="form.fechaRegistrosPublicos"
+          name="fecha-registros-publicos"
+          label="Fecha de registros públicos"
+          placeholder="Selecciona la fecha"
+          :schema="fechaRegistrosPublicosSchema"
+        />
+
+        <TextInputZod
+          v-model="form.partidaRegistral"
+          name="partida-registral"
+          label="Partida registral"
+          placeholder="Partida registral"
+          :schema="partidaRegistralSchema"
+        />
+
+        <SelectInputZod
+          v-model="form.oficinaRegistral"
+          :options="officeSelectOptions"
+          name="oficina-registral"
+          label="Oficina registral"
+          placeholder="Oficina registral"
+          :schema="oficinaRegistralSchema"
+        />
+
+        <div class="col-span-2 flex items-center justify-end gap-3 pt-4">
+          <Button variant="ghost" type="button" @click="reset">
+            Restablecer
+          </Button>
+          <Button type="submit" :disabled="isSaving">
+            <span v-if="isSaving" class="mr-2 inline-flex items-center gap-2">
+              <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+              Guardando...
+            </span>
+            <span v-else>Guardar cambios</span>
+          </Button>
+        </div>
+      </Form>
+    </div>
+  </div>
+</template>
+

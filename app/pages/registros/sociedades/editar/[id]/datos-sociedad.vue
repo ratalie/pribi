@@ -1,6 +1,8 @@
 <script setup lang="ts">
-  import DatosSociedadStep from "~/modules/registro-sociedades/components/steps/DatosSociedadStep.vue";
+  import { computed } from "vue";
+  import { useRoute } from "vue-router";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import DatosSociedadForm from "~/core/presentation/registros/sociedades/components/DatosSociedadForm.vue";
 
   definePageMeta({
     layout: "registros",
@@ -8,9 +10,9 @@
   });
 
   const route = useRoute();
-  const societyId = route.params.id as string;
+  const societyId = computed(() => route.params.id as string);
 </script>
 
 <template>
-  <DatosSociedadStep :mode="EntityModeEnum.EDITAR" :society-id="societyId" />
+  <DatosSociedadForm :society-id="societyId" :mode="EntityModeEnum.EDITAR" />
 </template>

@@ -6,26 +6,40 @@ type DatosSociedadStorage = Record<string, SociedadDatosGenerales>;
 const datosSociedadState: DatosSociedadStorage = {};
 
 const defaultPayload: DatosSociedadDTO = {
-  razonSocial: "Sociedad sin nombre",
+  numeroRuc: "",
   tipoSocietario: "S.A.C.",
+  razonSocial: "Sociedad sin nombre",
   nombreComercial: "",
-  fechaConstitucion: "",
-  objetoSocial: "",
-  domicilioLegal: "",
-  capitalSocial: 0,
+  direccion: "",
+  distrito: "",
+  provincia: "",
+  departamento: "",
+  fechaInscripcionRuc: "",
+  actividadExterior: "",
+  fechaEscrituraPublica: "",
+  fechaRegistrosPublicos: "",
+  partidaRegistral: "",
+  oficinaRegistral: "",
 };
 
 function buildEntity(idSociety: string, payload: DatosSociedadDTO): SociedadDatosGenerales {
   const now = new Date().toISOString();
   return {
     idSociety,
+    numeroRuc: payload.numeroRuc,
+    tipoSocietario: payload.tipoSocietario,
     razonSocial: payload.razonSocial,
     nombreComercial: payload.nombreComercial,
-    tipoSocietario: payload.tipoSocietario,
-    fechaConstitucion: payload.fechaConstitucion,
-    objetoSocial: payload.objetoSocial,
-    domicilioLegal: payload.domicilioLegal,
-    capitalSocial: payload.capitalSocial,
+    direccion: payload.direccion,
+    distrito: payload.distrito,
+    provincia: payload.provincia,
+    departamento: payload.departamento,
+    fechaInscripcionRuc: payload.fechaInscripcionRuc,
+    actividadExterior: payload.actividadExterior,
+    fechaEscrituraPublica: payload.fechaEscrituraPublica,
+    fechaRegistrosPublicos: payload.fechaRegistrosPublicos,
+    partidaRegistral: payload.partidaRegistral,
+    oficinaRegistral: payload.oficinaRegistral,
     createdAt: datosSociedadState[idSociety]?.createdAt ?? now,
     updatedAt: now,
   };
@@ -57,4 +71,3 @@ export function updateDatosSociedadMock(
   datosSociedadState[idSociety] = entity;
   return entity;
 }
-

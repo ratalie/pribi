@@ -4,6 +4,7 @@ export default {
   sociedadesDashboard: "公司仪表板",
   sociedadesAgregar: "添加公司",
   sociedadesHistorial: "注册历史",
+  sociedadesPreview: "公司预览",
   sucursales: "分支机构",
   sucursalesDashboard: "分支仪表板",
   sucursalesAgregar: "添加分支",

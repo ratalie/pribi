@@ -32,7 +32,7 @@
 5. **Integración UI**
    - [x] Store `sociedadHistorial` consume casos de uso.
    - [x] `agregar.vue` dispara `CreateSociedad` y redirige al flujo con ID.
-   - [ ] `datos-sociedad.vue` se hidrata vía caso de uso y persiste cambios (pendiente conectar store al componente).
+   - [x] `datos-sociedad.vue` se hidrata vía caso de uso y persiste cambios.
 6. **Testing & Docs**
    - [ ] Documentar endpoints MSW en `docs/architecture/registro-sociedades.md`.
    - [ ] Agregar pruebas unitarias para casos de uso (opcional inicial).
