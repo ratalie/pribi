@@ -36,7 +36,6 @@
       nombre: personaNaturalStore.nombre,
       apellidoPaterno: personaNaturalStore.apellidoPaterno,
       apellidoMaterno: personaNaturalStore.apellidoMaterno,
-      estadoCivil: personaNaturalStore.estadoCivil,
     });
   };
 

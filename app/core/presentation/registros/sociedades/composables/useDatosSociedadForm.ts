@@ -22,6 +22,17 @@ const createEmptyForm = (): DatosSociedadDTO => ({
   oficinaRegistral: "",
 });
 
+const REQUIRED_FIELDS: Array<keyof DatosSociedadDTO> = [
+  "numeroRuc",
+  "tipoSocietario",
+  "razonSocial",
+  "nombreComercial",
+  "direccion",
+  "distrito",
+  "provincia",
+  "departamento",
+];
+
 interface UseDatosSociedadFormOptions {
   societyId: MaybeRef<string>;
   mode?: MaybeRef<EntityModeEnum>;
@@ -39,6 +50,18 @@ export function useDatosSociedadForm(options: UseDatosSociedadFormOptions) {
   const isSaving = computed(() => store.status === "saving");
   const isReadonly = computed(() => mode.value === EntityModeEnum.PREVISUALIZAR);
   const hasData = computed(() => store.datos !== null);
+
+  const missingRequiredFields = computed(() =>
+    REQUIRED_FIELDS.filter((field) => {
+      const currentValue = form[field];
+      if (typeof currentValue !== "string") {
+        return true;
+      }
+      return currentValue.trim().length === 0;
+    })
+  );
+
+  const isComplete = computed(() => missingRequiredFields.value.length === 0);
 
   const errorMessage = computed(() => store.errorMessage);
 
@@ -75,18 +98,22 @@ export function useDatosSociedadForm(options: UseDatosSociedadFormOptions) {
     await store.load(societyId.value, source);
   }
 
-  async function submit() {
+  type SubmitResult = "created" | "updated" | "skipped";
+
+  async function submit(): Promise<SubmitResult> {
     if (isReadonly.value) {
-      return;
+      return "skipped";
     }
 
     const payload: DatosSociedadDTO = { ...form };
 
     if (!hasData.value) {
       await store.create(societyId.value, payload);
-    } else {
-      await store.update(societyId.value, payload);
+      return "created";
     }
+
+    await store.update(societyId.value, payload);
+    return "updated";
   }
 
   function reset() {
@@ -125,6 +152,8 @@ export function useDatosSociedadForm(options: UseDatosSociedadFormOptions) {
     errorMessage,
     mode,
     datos,
+    isComplete,
+    missingRequiredFields,
   };
 }
 

@@ -38,12 +38,19 @@ export function flowConfigToSteps(
         ? metadataDescription
         : `Completa ${item.identity.label}`;
 
+      const navigationRoute = item.navigation?.route ?? "";
+      const navigationHash = item.navigation?.hash ?? "";
+
+      if (!navigationRoute) {
+        continue;
+      }
+
       const step: NavigationStep = {
         title: item.identity.label,
         description: stepDescription,
         status,
-        route: item.navigation.route,
-        hash: item.navigation.hash,
+        route: navigationRoute,
+        hash: navigationHash,
         isCategory: item.identity.isCategory || false,
         level: item.hierarchy.level,
       };

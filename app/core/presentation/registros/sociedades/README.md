@@ -63,3 +63,4 @@ Para añadir el resto de pasos, crea wrappers equivalentes (Accionistas, Accione
 > **Ubicación**: toda la lógica de presentación de sociedades debe vivir bajo `app/core/presentation/registros/sociedades/`.  
 > Evita modificar los componentes legacy en `app/modules/registro-sociedades`; en lugar de eso, crea wrappers aquí.
 
+

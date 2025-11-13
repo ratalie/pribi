@@ -10,7 +10,7 @@
       :show-descriptions="showDescriptions"
       :allow-navigation="allowNavigation"
       @navigate="$emit('navigate', $event)"
-      @toggle="$emit('toggle', $event, $event.expanded)"
+      @toggle="$emit('toggle', $event)"
     />
   </nav>
 </template>
@@ -44,7 +44,7 @@
    */
   interface Emits {
     (e: "navigate", item: FlowItemTree): void;
-    (e: "toggle", item: FlowItemTree, expanded: boolean): void;
+    (e: "toggle", item: FlowItemTree): void;
   }
 
   defineEmits<Emits>();

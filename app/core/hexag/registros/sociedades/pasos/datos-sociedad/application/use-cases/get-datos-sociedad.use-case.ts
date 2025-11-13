@@ -8,3 +8,4 @@ export class GetDatosSociedadUseCase {
     return this.repository.get(idSociety);
   }
 }
+

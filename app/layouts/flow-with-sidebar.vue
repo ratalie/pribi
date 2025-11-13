@@ -1,7 +1,7 @@
 <template>
   <div class="flex min-h-screen">
     <!-- Flow Sidebar -->
-    <FlowSidebar v-if="currentFlowConfigWithTree" :config="currentFlowConfigWithTree" />
+    <FlowSidebar v-if="currentSidebarConfig" :config="currentSidebarConfig" />
 
     <!-- Main Content -->
     <main class="flex-1 overflow-x-hidden">
@@ -12,7 +12,9 @@
 
 <script setup lang="ts">
   import { juntaAccionistasFlowConfig, sucursalesFlowConfig } from "@/config/flows";
-  import type { FlowConfig, FlowItemTree } from "@/types/flow-system";
+  import type { FlowConfig } from "@/types/flow-system";
+  import { SidebarPosition as FlowSidebarPosition } from "@/types/flow-system";
+  import type { SidebarConfig } from "@/types/flow-layout";
   import { computed } from "vue";
   import { useRoute } from "vue-router";
   import { buildFlowItemTree } from "~/utils/flowHelpers";
@@ -38,12 +40,41 @@
   });
 
   // Convertir FlowConfig con FlowItem[] a FlowConfig con FlowItemTree[]
-  const currentFlowConfigWithTree = computed(() => {
-    if (!currentFlowConfig.value) return null;
+  const mapRenderMode = (config: FlowConfig): SidebarConfig["mode"] => {
+    const mode = config.renderOptions?.mode;
+    if (mode === "hierarchical" || mode === "sequential") {
+      return mode;
+    }
+    return "custom";
+  };
+
+  const mapSidebarPosition = (position: FlowSidebarPosition): SidebarConfig["position"] => {
+    if (position === FlowSidebarPosition.RIGHT) {
+      return "right";
+    }
+    return "left";
+  };
+
+  const currentSidebarConfig = computed<SidebarConfig | null>(() => {
+    const config = currentFlowConfig.value;
+    if (!config) return null;
+
+    const sidebarOptions = config.sidebarOptions;
+    if (!sidebarOptions) return null;
+
+    const itemsTree = buildFlowItemTree(config.items);
 
     return {
-      ...currentFlowConfig.value,
-      items: buildFlowItemTree(currentFlowConfig.value.items),
-    } as FlowConfig & { items: FlowItemTree[] };
+      id: `${config.id}-sidebar`,
+      position: mapSidebarPosition(sidebarOptions.position),
+      mode: mapRenderMode(config),
+      title: sidebarOptions.headerTitle ?? config.name,
+      items: itemsTree,
+      collapsible: sidebarOptions.collapsible ?? true,
+      collapsed: sidebarOptions.startCollapsed ?? false,
+      width: sidebarOptions.width ? `${sidebarOptions.width}px` : undefined,
+      collapsedWidth: sidebarOptions.minWidth ? `${sidebarOptions.minWidth}px` : undefined,
+      class: sidebarOptions.customClasses,
+    };
   });
 </script>

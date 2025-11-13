@@ -27,6 +27,8 @@ import {
 import { officeOptions } from "~/constants/inputs/office-options";
 import { societyTypeOptions } from "~/constants/inputs/society-types";
 import { useDatosSociedadForm } from "../composables/useDatosSociedadForm";
+import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
+import type { DatosSociedadDTO } from "~/core/hexag/registros/sociedades/pasos/datos-sociedad/application/dtos/datos-sociedad.dto";
 
 interface Props {
   societyId: string;
@@ -40,6 +42,13 @@ const props = withDefaults(defineProps<Props>(), {
 const societyIdRef = toRef(props, "societyId");
 const modeRef = toRef(props, "mode");
 
+const emit = defineEmits<{
+  (
+    e: "completion-change",
+    payload: { isComplete: boolean; missingFields: Array<keyof DatosSociedadDTO> }
+  ): void;
+}>();
+
 const {
   form,
   isLoading,
@@ -50,6 +59,8 @@ const {
   submit,
   reset,
   datos,
+  isComplete,
+  missingRequiredFields,
 } = useDatosSociedadForm({
   societyId: societyIdRef,
   mode: modeRef,
@@ -57,8 +68,36 @@ const {
 
 const societyOptions = societyTypeOptions;
 const officeSelectOptions = officeOptions;
+const { withAsyncToast } = useToastFeedback();
+
 async function handleSubmit() {
-  await submit();
+  if (isReadonly.value) {
+    return;
+  }
+
+  await withAsyncToast(
+    async () => submit(),
+    {
+      loading: {
+        title: "Guardando datos principales…",
+        description: "Estamos sincronizando la información con el registro.",
+      },
+      success: (result) => {
+        if (result === "skipped") {
+          return null;
+        }
+
+        return {
+          title: result === "created" ? "Datos registrados" : "Datos actualizados",
+          description: "Los datos principales se guardaron correctamente.",
+        };
+      },
+      error: () => ({
+        title: "No se pudo guardar",
+        description: "Revisa la información ingresada e inténtalo nuevamente.",
+      }),
+    }
+  );
 }
 
 function handleInvalidSubmit(ctx: any) {
@@ -81,6 +120,16 @@ watch(
   { immediate: false }
 );
 
+watch(
+  [isComplete, missingRequiredFields],
+  ([complete, missing]) => {
+    emit("completion-change", {
+      isComplete: complete,
+      missingFields: missing,
+    });
+  },
+  { immediate: true }
+);
 const createdAt = computed(() => {
   if (!isReadonly.value || !datos.value?.createdAt) return "";
   return new Intl.DateTimeFormat("es-PE", { dateStyle: "long", timeStyle: "short" }).format(

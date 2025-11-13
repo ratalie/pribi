@@ -66,10 +66,12 @@
   <div class="space-y-8 px-6 py-6">
     <PageTitle title-key="pages.sociedadesAgregar" />
 
-    <Card class="border border-primary-400/40 bg-primary-900/30 text-white">
+    <Card class="border border-primary-400/40 bg-primary-75/20 text-gray-600">
       <CardHeader>
-        <CardTitle class="text-lg">Configura una nueva sociedad</CardTitle>
-        <CardDescription class="max-w-2xl text-primary-100">
+        <CardTitle class="text-lg font-semibold text-primary-800">
+          Configura una nueva sociedad
+        </CardTitle>
+        <CardDescription class="max-w-2xl text-gray-500">
           Antes de iniciar el formulario guiado, revisa estos pasos para asegurar que toda la
           información crítica esté disponible y alineada con el equipo legal y tributario.
         </CardDescription>
@@ -79,10 +81,10 @@
           <div
             v-for="step in onboardingSteps"
             :key="step.title"
-            class="rounded-xl border border-primary-500/40 bg-primary-950/60 p-4"
+            class="rounded-xl border border-primary-400/40 bg-white/60 p-4 shadow-sm"
           >
-            <h3 class="text-base font-semibold text-white">{{ step.title }}</h3>
-            <p class="mt-2 text-sm text-primary-100 leading-relaxed">
+            <h3 class="text-base font-semibold text-primary-800">{{ step.title }}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-600">
               {{ step.description }}
             </p>
           </div>
@@ -91,12 +93,12 @@
       <CardFooter
         class="flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between"
       >
-        <div class="text-sm text-primary-100">
+        <div class="text-sm text-gray-600">
           Puedes reanudar un borrador guardado desde el módulo de historial cuando esté
           disponible.
         </div>
         <div class="flex flex-col items-start gap-2 md:items-end">
-          <p v-if="errorMessage" class="text-sm text-red-300">
+          <p v-if="errorMessage" class="text-sm text-red-500">
             {{ errorMessage }}
           </p>
           <Button

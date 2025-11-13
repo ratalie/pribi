@@ -26,8 +26,15 @@ export const sociedadesHandlers = [
   }),
 
   http.delete("/api/registros/sociedades/:id", ({ params }) => {
-    const { id } = params;
-    if (!id || Array.isArray(id)) {
+    const idParam = params.id;
+    const id =
+      typeof idParam === "string"
+        ? idParam
+        : Array.isArray(idParam)
+        ? idParam[0]
+        : idParam?.toString();
+
+    if (!id) {
       return HttpResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
 

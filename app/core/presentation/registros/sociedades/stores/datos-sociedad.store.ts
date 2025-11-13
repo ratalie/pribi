@@ -32,6 +32,14 @@ export const useDatosSociedadStore = defineStore("registros-datos-sociedad", () 
       datos.value = await getUseCase.execute(idSociety);
       status.value = "idle";
     } catch (error) {
+      const statusCode = (error as any)?.statusCode ?? (error as any)?.response?.status;
+      if (statusCode === 404) {
+        datos.value = null;
+        status.value = "idle";
+        errorMessage.value = null;
+        return;
+      }
+
       console.error("[DatosSociedadStore] load error", error);
       status.value = "error";
       errorMessage.value = "No pudimos cargar los datos generales de la sociedad.";
