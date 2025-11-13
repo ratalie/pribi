@@ -7,7 +7,9 @@
 - Layout `registros` replica el comportamiento del layout legacy.
 - Navegación principal expone Sociedades y Sucursales.
 - Páginas base (dashboard, agregar, historial) creadas para sociedades y sucursales.
-- Arquitectura hexagonal planificada (ver `README.md`).
+- Arquitectura hexagonal planificada (ver `README.md`) y carpetas iniciales creadas para:
+  - Sociedades (`shared`, `domain`, `application`, `infrastructure`).
+  - Pasos: `datos-sociedad`, `accionistas`, `acciones`, `asignacion-acciones`.
 - MSW pendiente de implementar con persistencia in-memory.
 
 ## Próximos Hit Steps

@@ -19,7 +19,10 @@ app/core/hexag/registros/
 │       └── adapters/          # Utilidades comunes (transformers, factories, etc.)
 ├── sociedades/
 │   ├── pasos/
-│   │   └── datos-generales/
+│   │   ├── datos-sociedad/
+│   │   ├── accionistas/
+│   │   ├── acciones/
+│   │   └── asignacion-acciones/
 │   │       ├── domain/
 │   │       ├── application/
 │   │       └── infrastructure/
