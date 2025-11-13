@@ -24,9 +24,10 @@
   } from "@/components/ui/table";
   import { Eye, MoreVertical, Pencil, Trash2 } from "lucide-vue-next";
   import { storeToRefs } from "pinia";
-  import { computed, onMounted } from "vue";
+import { computed, onMounted } from "vue";
   import { useRouter } from "vue-router";
   import { useSociedadHistorialStore } from "~/core/presentation/registros/sociedades/stores/sociedad-historial.store";
+import { SocietyRegisterStep } from "~/core/hexag/registros/sociedades/domain/enums/society-register-step.enum";
 
   definePageMeta({
     layout: "registros",
@@ -46,10 +47,32 @@
 
   const isLoading = computed(() => status.value === "loading");
 
-  const formatDate = (isoString: string) => {
-    const date = new Date(isoString);
-    return new Intl.DateTimeFormat("es-PE").format(date);
-  };
+const formatDate = (isoString: string | null | undefined) => {
+  if (!isoString) return "—";
+  const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) return "—";
+  return new Intl.DateTimeFormat("es-PE", { dateStyle: "medium" }).format(date);
+};
+
+const pasoLabels: Record<SocietyRegisterStep, string> = {
+  [SocietyRegisterStep.DATOS_SOCIEDAD]: "Datos principales",
+  [SocietyRegisterStep.ACCIONISTAS]: "Accionistas",
+  [SocietyRegisterStep.ACCIONES]: "Acciones",
+  [SocietyRegisterStep.ASIGNACION_ACCIONES]: "Asignación de acciones",
+  [SocietyRegisterStep.DIRECTORIO]: "Directorio",
+  [SocietyRegisterStep.REGISTRO_APODERADOS]: "Registro apoderados",
+  [SocietyRegisterStep.REGIMEN_PODERES]: "Régimen de poderes",
+  [SocietyRegisterStep.QUORUMS_MAYORIAS]: "Quórums y mayorías",
+  [SocietyRegisterStep.ACUERDOS_SOCIETARIOS]: "Acuerdos societarios",
+  [SocietyRegisterStep.RESUMEN]: "Resumen",
+  [SocietyRegisterStep.FINALIZAR]: "Finalizado",
+};
+
+const formatPasoActual = (paso: SocietyRegisterStep | string | undefined) => {
+  if (!paso) return "—";
+  const normalized = paso as SocietyRegisterStep;
+  return pasoLabels[normalized] ?? paso.replace(/-/g, " ");
+};
 
   const goToPreview = (id: string) => {
     router.push(`/registros/sociedades/${id}/preview`);
@@ -91,29 +114,22 @@
           <Table class="[&_th]:text-left">
             <TableHeader class="text-primary-600">
               <TableRow class="border-primary-300/40 bg-primary-25/40">
-                <TableHead
-                  class="w-[140px] font-medium uppercase tracking-wide text-xs text-primary-700"
-                >
+                <TableHead class="w-[120px] font-medium uppercase tracking-wide text-xs text-primary-700">
                   ID
                 </TableHead>
-                <TableHead
-                  class="font-medium uppercase tracking-wide text-xs text-primary-700"
-                >
+                <TableHead class="font-medium uppercase tracking-wide text-xs text-primary-700">
                   Razón social
                 </TableHead>
-                <TableHead
-                  class="font-medium uppercase tracking-wide text-xs text-primary-700"
-                >
+                <TableHead class="w-[150px] font-medium uppercase tracking-wide text-xs text-primary-700">
+                  RUC
+                </TableHead>
+                <TableHead class="w-[160px] font-medium uppercase tracking-wide text-xs text-primary-700">
+                  Paso actual
+                </TableHead>
+                <TableHead class="w-[160px] font-medium uppercase tracking-wide text-xs text-primary-700">
                   Tipo societario
                 </TableHead>
-                <TableHead
-                  class="w-[140px] font-medium uppercase tracking-wide text-xs text-primary-700"
-                >
-                  Estado
-                </TableHead>
-                <TableHead
-                  class="w-[140px] font-medium uppercase tracking-wide text-xs text-primary-700"
-                >
+                <TableHead class="w-[140px] font-medium uppercase tracking-wide text-xs text-primary-700">
                   Creación
                 </TableHead>
                 <TableHead class="w-[60px]" />
@@ -145,13 +161,23 @@
                     {{ sociedad.idSociety }}
                   </TableCell>
                   <TableCell class="py-4">
-                    {{ sociedad.razonSocial }}
+                    <div class="flex flex-col">
+                      <span class="font-medium text-primary-900">{{ sociedad.razonSocial || "Sociedad sin nombre" }}</span>
+                      <span v-if="sociedad.nombreComercial" class="text-xs text-primary-600">
+                        Nombre comercial: {{ sociedad.nombreComercial }}
+                      </span>
+                    </div>
                   </TableCell>
                   <TableCell class="py-4">
-                    {{ sociedad.tipoSocietario }}
+                    {{ sociedad.ruc || "—" }}
                   </TableCell>
-                  <TableCell class="py-4 capitalize">
-                    {{ sociedad.estado }}
+                  <TableCell class="py-4">
+                    <span class="inline-flex items-center rounded-full bg-primary-100 px-2 py-1 text-xs font-semibold text-primary-700">
+                      {{ formatPasoActual(sociedad.pasoActual) }}
+                    </span>
+                  </TableCell>
+                  <TableCell class="py-4">
+                    {{ sociedad.tipoSocietario || "—" }}
                   </TableCell>
                   <TableCell class="py-4">
                     {{ formatDate(sociedad.createdAt) }}

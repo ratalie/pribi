@@ -43,8 +43,7 @@
    * Emits
    */
   interface Emits {
-    (e: "navigate", item: FlowItemTree): void;
-    (e: "toggle", item: FlowItemTree): void;
+    (e: "navigate" | "toggle", item: FlowItemTree): void;
   }
 
   defineEmits<Emits>();

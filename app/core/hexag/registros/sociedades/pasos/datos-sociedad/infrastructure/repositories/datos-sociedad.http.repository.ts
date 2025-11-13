@@ -51,6 +51,7 @@ export class DatosSociedadHttpRepository implements DatosSociedadRepository {
       this.resolveSocietyPath(idSociety),
       withAuthHeaders({ method: "GET" as const })
     );
+    console.debug("[Repository][DatosSociedadHttp] get()", { idSociety, response });
 
     return DatosSociedadMapper.toDomain(response.data ?? null);
   }
@@ -63,6 +64,7 @@ export class DatosSociedadHttpRepository implements DatosSociedadRepository {
       body: DatosSociedadMapper.toPayload(payload),
     })
     );
+    console.debug("[Repository][DatosSociedadHttp] create()", { idSociety, payload });
 
     const fresh = await this.get(idSociety);
     if (!fresh) {
@@ -79,6 +81,7 @@ export class DatosSociedadHttpRepository implements DatosSociedadRepository {
       body: DatosSociedadMapper.toPayload(payload),
     })
     );
+    console.debug("[Repository][DatosSociedadHttp] update()", { idSociety, payload });
 
     const fresh = await this.get(idSociety);
     if (!fresh) {

@@ -21,11 +21,18 @@ import type {
 import { TipoAccionistaEnum } from "../types/accionistas";
 import type { PersonaNatural } from "../types/personas";
 
+type PersonaNaturalStateLike = Pick<
+  PersonaNaturalState,
+  "tipoDocumento" | "numeroDocumento" | "nombre" | "apellidoPaterno" | "apellidoMaterno" | "paisPasaporte"
+> & {
+  estadoCivil?: PersonaNaturalState["estadoCivil"];
+};
+
 /**
- * Convierte PersonaNaturalState a PersonaNatural haciendo el casting necesario
+ * Convierte un estado de persona natural (completo o parcial) a PersonaNatural
  */
 function convertirStateAPersonaNatural(
-  state: PersonaNaturalState | null
+  state: PersonaNaturalStateLike | null
 ): PersonaNatural | undefined {
   if (!state || !state.numeroDocumento) {
     return undefined;
@@ -399,6 +406,7 @@ function transformarAccionistaAJuridica(accionista: PersonaJuridicaAccionista): 
           apellidoPaterno: accionista.representanteLegal.apellidoPaterno,
           apellidoMaterno: accionista.representanteLegal.apellidoMaterno,
           paisPasaporte: accionista.representanteLegal.paisPasaporte || "",
+          estadoCivil: "" as EstadoCivilEnum | "",
         }
       : null,
   };
@@ -426,6 +434,7 @@ function transformarAccionistaASucursal(accionista: SucursalAccionista): {
           apellidoPaterno: accionista.representanteLegal.apellidoPaterno,
           apellidoMaterno: accionista.representanteLegal.apellidoMaterno,
           paisPasaporte: accionista.representanteLegal.paisPasaporte || "",
+          estadoCivil: "" as EstadoCivilEnum | "",
         }
       : null,
   };
@@ -456,6 +465,7 @@ function transformarAccionistaASucesionesIndivisas(
           apellidoPaterno: accionista.representanteLegal.apellidoPaterno,
           apellidoMaterno: accionista.representanteLegal.apellidoMaterno,
           paisPasaporte: accionista.representanteLegal.paisPasaporte || "",
+          estadoCivil: "" as EstadoCivilEnum | "",
         }
       : null,
   };
@@ -496,6 +506,7 @@ function transformarAccionistaAFideicomisos(accionista: FideicomisosAccionista):
           apellidoPaterno: accionista.representanteLegal.apellidoPaterno,
           apellidoMaterno: accionista.representanteLegal.apellidoMaterno,
           paisPasaporte: accionista.representanteLegal.paisPasaporte || "",
+          estadoCivil: "" as EstadoCivilEnum | "",
         }
       : null,
   };
@@ -525,6 +536,7 @@ function transformarAccionistaAFondosInversion(accionista: FondosInversionAccion
           apellidoPaterno: accionista.representanteLegal.apellidoPaterno,
           apellidoMaterno: accionista.representanteLegal.apellidoMaterno,
           paisPasaporte: accionista.representanteLegal.paisPasaporte || "",
+          estadoCivil: "" as EstadoCivilEnum | "",
         }
       : null,
   };

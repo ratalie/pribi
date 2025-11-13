@@ -24,16 +24,24 @@ export const useFlowProgressStore = defineStore("flowProgress", {
   }),
 
   getters: {
-    getStepStatus: (state) => (flowId: string, stepId: string): StepStatus | undefined => {
-      return state.flows[flowId]?.steps[stepId]?.status;
-    },
-    getFlowSteps: (state) => (flowId: string): Record<string, StepState> | undefined => {
-      return state.flows[flowId]?.steps;
-    },
+    getStepStatus:
+      (state) =>
+      (flowId: string, stepId: string): StepStatus | undefined => {
+        return state.flows[flowId]?.steps[stepId]?.status;
+      },
+    getFlowSteps:
+      (state) =>
+      (flowId: string): Record<string, StepState> | undefined => {
+        return state.flows[flowId]?.steps;
+      },
   },
 
   actions: {
-    initializeFlow(flowId: string, stepIds: string[] = [], defaultStatus: StepStatus = "empty") {
+    initializeFlow(
+      flowId: string,
+      stepIds: string[] = [],
+      defaultStatus: StepStatus = "empty"
+    ) {
       if (!flowId) return;
 
       const existing = this.flows[flowId];
@@ -67,25 +75,30 @@ export const useFlowProgressStore = defineStore("flowProgress", {
       };
     },
 
-    setStepStatus(flowId: string, stepId: string, status: StepStatus, metadata?: Record<string, any>) {
+    setStepStatus(
+      flowId: string,
+      stepId: string,
+      status: StepStatus,
+      metadata?: Record<string, any>
+    ) {
       if (!flowId || !stepId) return;
 
       const now = new Date().toISOString();
 
-      if (!this.flows[flowId]) {
-        this.flows[flowId] = {
+      const flow =
+        this.flows[flowId] ??
+        (this.flows[flowId] = {
           steps: {},
           updatedAt: now,
-        };
-      }
+        });
 
-      this.flows[flowId].steps[stepId] = {
+      flow.steps[stepId] = {
         status,
         updatedAt: now,
         metadata,
       };
 
-      this.flows[flowId].updatedAt = now;
+      flow.updatedAt = now;
     },
 
     bulkUpdateFlow(flowId: string, payload: Record<string, StepState>) {
@@ -93,25 +106,25 @@ export const useFlowProgressStore = defineStore("flowProgress", {
 
       const now = new Date().toISOString();
 
-      if (!this.flows[flowId]) {
-        this.flows[flowId] = {
+      const flow =
+        this.flows[flowId] ??
+        (this.flows[flowId] = {
           steps: {},
           updatedAt: now,
-        };
-      }
+        });
 
-      this.flows[flowId].steps = {
-        ...this.flows[flowId].steps,
+      flow.steps = {
+        ...flow.steps,
         ...payload,
       };
 
-      this.flows[flowId].updatedAt = now;
+      flow.updatedAt = now;
     },
 
     resetFlow(flowId: string) {
       if (!flowId) return;
-      delete this.flows[flowId];
+      const { [flowId]: _removed, ...restFlows } = this.flows;
+      this.flows = restFlows;
     },
   },
 });
-

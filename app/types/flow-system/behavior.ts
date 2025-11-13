@@ -78,6 +78,11 @@ export interface FlowItemBehavior {
   confirmationMessage?: string;
 
   /**
+   * Descripción breve del comportamiento o contenido del item
+   */
+  description?: string;
+
+  /**
    * Se puede saltar (navegar sin completar)
    *
    * @default false

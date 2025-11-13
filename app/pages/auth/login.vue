@@ -48,9 +48,12 @@ const onSubmit = handleSubmit(async (values) => {
           title: "¡Bienvenido!",
           description: "Sesión iniciada correctamente.",
         },
-        error: (error) => ({
+        error: (error: unknown) => ({
           title: "Error al iniciar sesión",
-          description: error?.message ?? "Verifica tus credenciales e inténtalo nuevamente.",
+          description:
+            error instanceof Error
+              ? error.message
+              : "Verifica tus credenciales e inténtalo nuevamente.",
         }),
       }
     );

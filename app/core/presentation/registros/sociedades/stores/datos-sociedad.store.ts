@@ -29,7 +29,10 @@ export const useDatosSociedadStore = defineStore("registros-datos-sociedad", () 
     origin.value = source;
 
     try {
-      datos.value = await getUseCase.execute(idSociety);
+      console.debug("[DatosSociedadStore] load:start", { idSociety, source });
+      const result = await getUseCase.execute(idSociety);
+      console.debug("[DatosSociedadStore] load:success", { idSociety, result });
+      datos.value = result;
       status.value = "idle";
     } catch (error) {
       const statusCode = (error as any)?.statusCode ?? (error as any)?.response?.status;
@@ -37,6 +40,7 @@ export const useDatosSociedadStore = defineStore("registros-datos-sociedad", () 
         datos.value = null;
         status.value = "idle";
         errorMessage.value = null;
+        console.warn("[DatosSociedadStore] load:not-found", { idSociety });
         return;
       }
 
@@ -51,7 +55,10 @@ export const useDatosSociedadStore = defineStore("registros-datos-sociedad", () 
     errorMessage.value = null;
 
     try {
-      datos.value = await createUseCase.execute(idSociety, payload);
+      console.debug("[DatosSociedadStore] create:start", { idSociety, payload });
+      const result = await createUseCase.execute(idSociety, payload);
+      console.debug("[DatosSociedadStore] create:success", { idSociety, result });
+      datos.value = result;
       status.value = "idle";
     } catch (error) {
       console.error("[DatosSociedadStore] create error", error);
@@ -70,7 +77,10 @@ export const useDatosSociedadStore = defineStore("registros-datos-sociedad", () 
         ...payload,
         idSociety: datos.value?.idSociety ?? payload.idSociety,
       };
-      datos.value = await updateUseCase.execute(idSociety, payloadWithId);
+      console.debug("[DatosSociedadStore] update:start", { idSociety, payloadWithId });
+      const result = await updateUseCase.execute(idSociety, payloadWithId);
+      console.debug("[DatosSociedadStore] update:success", { idSociety, result });
+      datos.value = result;
       status.value = "idle";
     } catch (error) {
       console.error("[DatosSociedadStore] update error", error);

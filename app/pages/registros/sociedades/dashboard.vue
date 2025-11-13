@@ -6,6 +6,11 @@
     CardHeader,
     CardTitle,
   } from "@/components/ui/card";
+  import { computed, onMounted } from "vue";
+  import { storeToRefs } from "pinia";
+
+  import { useSociedadHistorialStore } from "~/core/presentation/registros/sociedades/stores/sociedad-historial.store";
+  import { SocietyRegisterStep } from "~/core/hexag/registros/sociedades/domain/enums/society-register-step.enum";
 
   definePageMeta({
     layout: "registros",
@@ -15,28 +20,55 @@
     title: "Dashboard Sociedades - PROBO",
   });
 
-  const overviewCards = [
+  const historialStore = useSociedadHistorialStore();
+  const { totalSociedades, sociedadesEnProgreso, sociedadesFinalizadas, sociedadesPorPaso } =
+    storeToRefs(historialStore);
+
+  onMounted(() => {
+    if (!historialStore.sociedades.length) {
+      historialStore.cargarHistorial();
+    }
+  });
+
+  const overviewCards = computed(() => [
     {
-      title: "Sociedades activas",
-      value: "12",
-      description: "Entidades con obligaciones vigentes al día.",
+      title: "Perfiles creados",
+      value: totalSociedades.value.toString(),
+      description: "Sociedades registradas por tu equipo.",
     },
     {
       title: "Constituciones en curso",
-      value: "4",
-      description: "Procesos que requieren seguimiento esta semana.",
+      value: sociedadesEnProgreso.value.length.toString(),
+      description: "Flujos que aún requieren completar pasos.",
     },
     {
-      title: "Operaciones recientes",
-      value: "8",
-      description: "Registros actualizados en los últimos 7 días.",
+      title: "Registros finalizados",
+      value: sociedadesFinalizadas.value.length.toString(),
+      description: "Perfiles que alcanzaron la etapa Finalizar.",
     },
-  ];
-  const nextSteps = [
-    "Revisar constituciones pendientes y asignar responsables.",
-    "Validar documentación cargada por los usuarios externos.",
-    "Programar recordatorios para renovaciones próximas.",
-  ];
+  ]);
+
+  const nextSteps = computed(() => {
+    const pendientesDatos =
+      sociedadesPorPaso.value[SocietyRegisterStep.DATOS_SOCIEDAD]?.length ?? 0;
+    const pendientesAccionistas =
+      sociedadesPorPaso.value[SocietyRegisterStep.ACCIONISTAS]?.length ?? 0;
+    const pendientesResumen = sociedadesEnProgreso.value.filter(
+      (sociedad) => sociedad.pasoActual === SocietyRegisterStep.RESUMEN
+    ).length;
+
+    return [
+      pendientesDatos > 0
+        ? `Tienes ${pendientesDatos} sociedades sin completar los datos principales.`
+        : "No hay datos principales pendientes actualmente.",
+      pendientesAccionistas > 0
+        ? `Revisa los accionistas en ${pendientesAccionistas} constituciones.`
+        : "Todos los registros avanzaron el paso de accionistas.",
+      pendientesResumen > 0
+        ? `Hay ${pendientesResumen} registros listos para revisar el resumen final.`
+        : "No hay resúmenes pendientes de revisión.",
+    ];
+  });
 </script>
 
 <template>

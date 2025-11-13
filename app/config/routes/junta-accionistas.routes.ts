@@ -87,6 +87,8 @@ export enum JuntaRoutes {
 
   /** Sub-página: Votación */
   NOMBRAMIENTO_APODERADOS_VOTACION = "/operaciones/junta-accionistas/nombramiento-apoderados/votacion",
+  /** Sub-página: Resumen */
+  NOMBRAMIENTO_APODERADOS_RESUMEN = "/operaciones/junta-accionistas/nombramiento-apoderados/resumen",
 
   // -- Nombramiento de Gerente --
 
@@ -99,6 +101,8 @@ export enum JuntaRoutes {
   NOMBRAMIENTO_GERENTE_OTORGAMIENTO = "/operaciones/junta-accionistas/nombramiento-gerente/otorgamiento",
   /** Sub-página: Votación */
   NOMBRAMIENTO_GERENTE_VOTACION = "/operaciones/junta-accionistas/nombramiento-gerente/votacion",
+  /** Sub-página: Resumen */
+  NOMBRAMIENTO_GERENTE_RESUMEN = "/operaciones/junta-accionistas/nombramiento-gerente/resumen",
 
   // -- Nombramiento de Directores --
 
@@ -111,6 +115,8 @@ export enum JuntaRoutes {
   NOMBRAMIENTO_DIRECTORES_CANTIDAD = "/operaciones/junta-accionistas/nombramiento-directores/cantidad",
   /** Sub-página: Votación */
   NOMBRAMIENTO_DIRECTORES_VOTACION = "/operaciones/junta-accionistas/nombramiento-directores/votacion",
+  /** Sub-página: Resumen */
+  NOMBRAMIENTO_DIRECTORES_RESUMEN = "/operaciones/junta-accionistas/nombramiento-directores/resumen",
 
   // -- Nombramiento de Directorio --
 
@@ -123,6 +129,8 @@ export enum JuntaRoutes {
   NOMBRAMIENTO_DIRECTORIO_CANTIDAD = "/operaciones/junta-accionistas/nombramiento-directorio/cantidad",
   /** Sub-página: Votación */
   NOMBRAMIENTO_DIRECTORIO_VOTACION = "/operaciones/junta-accionistas/nombramiento-directorio/votacion",
+  /** Sub-página: Resumen */
+  NOMBRAMIENTO_DIRECTORIO_RESUMEN = "/operaciones/junta-accionistas/nombramiento-directorio/resumen",
 
   // -- Nombramiento de Auditores --
 
@@ -134,6 +142,8 @@ export enum JuntaRoutes {
 
   /** Sub-página: Votación */
   NOMBRAMIENTO_AUDITORES_VOTACION = "/operaciones/junta-accionistas/nombramiento-auditores/votacion",
+  /** Sub-página: Resumen */
+  NOMBRAMIENTO_AUDITORES_RESUMEN = "/operaciones/junta-accionistas/nombramiento-auditores/resumen",
 
   // ============================================
   // NIVEL 2: Remociones (9 rutas)
@@ -269,29 +279,34 @@ export function getJuntaRouteName(route: JuntaRoutes): string {
     [JuntaRoutes.NOMBRAMIENTO_APODERADOS_DETALLE]: "Nombramiento",
     [JuntaRoutes.NOMBRAMIENTO_APODERADOS_OTORGAMIENTO]: "Otorgamiento de Poderes",
     [JuntaRoutes.NOMBRAMIENTO_APODERADOS_VOTACION]: "Votación",
+    [JuntaRoutes.NOMBRAMIENTO_APODERADOS_RESUMEN]: "Resumen",
 
     // Nombramiento Gerente
     [JuntaRoutes.NOMBRAMIENTO_GERENTE]: "Nombramiento de Gerente",
     [JuntaRoutes.NOMBRAMIENTO_GERENTE_DETALLE]: "Nombramiento",
     [JuntaRoutes.NOMBRAMIENTO_GERENTE_OTORGAMIENTO]: "Otorgamiento de Poderes",
     [JuntaRoutes.NOMBRAMIENTO_GERENTE_VOTACION]: "Votación",
+    [JuntaRoutes.NOMBRAMIENTO_GERENTE_RESUMEN]: "Resumen",
 
     // Nombramiento Directores
     [JuntaRoutes.NOMBRAMIENTO_DIRECTORES]: "Nombramiento de Directores",
     [JuntaRoutes.NOMBRAMIENTO_DIRECTORES_DETALLE]: "Nombramiento",
     [JuntaRoutes.NOMBRAMIENTO_DIRECTORES_CANTIDAD]: "Cantidad de Directores",
     [JuntaRoutes.NOMBRAMIENTO_DIRECTORES_VOTACION]: "Votación",
+    [JuntaRoutes.NOMBRAMIENTO_DIRECTORES_RESUMEN]: "Resumen",
 
     // Nombramiento Directorio
     [JuntaRoutes.NOMBRAMIENTO_DIRECTORIO]: "Nombramiento de Directorio",
     [JuntaRoutes.NOMBRAMIENTO_DIRECTORIO_DETALLE]: "Nombramiento",
     [JuntaRoutes.NOMBRAMIENTO_DIRECTORIO_CANTIDAD]: "Cantidad de Directores",
     [JuntaRoutes.NOMBRAMIENTO_DIRECTORIO_VOTACION]: "Votación",
+    [JuntaRoutes.NOMBRAMIENTO_DIRECTORIO_RESUMEN]: "Resumen",
 
     // Nombramiento Auditores
     [JuntaRoutes.NOMBRAMIENTO_AUDITORES]: "Nombramiento de Auditores",
     [JuntaRoutes.NOMBRAMIENTO_AUDITORES_DETALLE]: "Nombramiento",
     [JuntaRoutes.NOMBRAMIENTO_AUDITORES_VOTACION]: "Votación",
+    [JuntaRoutes.NOMBRAMIENTO_AUDITORES_RESUMEN]: "Resumen",
 
     // Remoción Apoderados
     [JuntaRoutes.REMOCION_APODERADOS]: "Remoción de Apoderados",

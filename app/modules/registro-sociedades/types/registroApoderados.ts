@@ -1,5 +1,5 @@
 import type { PersonaJuridicaState } from "~/stores/usePersonaJuridicaStore";
-import type { PersonaNatural } from "~/stores/usePersonaNaturalStore";
+import type { PersonaNaturalState } from "~/stores/usePersonaNaturalStore";
 
 export interface ClaseApoderado {
   id: string;
@@ -20,7 +20,7 @@ export interface RegistroApoderado {
   nombreRazonSocial: string;
   tipoDocumento: string;
   numeroDocumento: string;
-  personaNatural?: PersonaNatural | null;
+  personaNatural?: PersonaNaturalState | null;
   personaJuridica?: PersonaJuridicaState | null;
 }
 
@@ -37,7 +37,7 @@ export interface OtroApoderado {
   nombreRazonSocial: string;
   tipoDocumento: string;
   numeroDocumento: string;
-  personaNatural: PersonaNatural | null;
+  personaNatural: PersonaNaturalState | null;
 }
 
 export interface OtroApoderadoRow {

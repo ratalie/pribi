@@ -1,7 +1,7 @@
 import { computed } from "vue";
 import type { SummaryRegistry, SummarySection } from "./types";
 import { baseSummarySections } from "./base";
-import { puntosAcuerdoSummarySections } from "./puntos-acuerdo";
+import { puntosAcuerdoSummarySections, usePuntosAcuerdoSummary } from "./puntos-acuerdo";
 
 const FLOW_ID = "juntas-accionistas-layout";
 
@@ -26,4 +26,6 @@ export const getSummarySectionById = (id: string) => {
 export const useSummarySection = (id: string) => {
   return computed(() => getSummarySectionById(id));
 };
+
+export { usePuntosAcuerdoSummary, puntosAcuerdoSummarySections };
 

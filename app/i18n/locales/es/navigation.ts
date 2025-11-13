@@ -54,4 +54,7 @@ export default {
   configuracion: "Configuración",
   ayuda: "Ayuda",
   calculadoraLegal: "Calculadora Legal",
+  nav: {
+    ayuda: "Ayuda",
+  },
 } as const;

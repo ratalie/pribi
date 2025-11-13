@@ -16,7 +16,7 @@ export const repartoDividendosVotacionItem: FlowItem = {
     children: [],
   },
   navigation: {
-    route: JuntaRoutes.REPARTO_DIVIDENDOS_VOTACION,
+    route: JuntaRoutes.REPARTO_VOTACION,
     behavior: NavigationBehavior.PUSH,
   },
   behavior: defaultBehavior,

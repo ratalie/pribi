@@ -68,8 +68,10 @@ export function useDatosSociedadForm(options: UseDatosSociedadFormOptions) {
   watch(
     () => store.datos,
     (value) => {
+      console.debug("[useDatosSociedadForm] watch:store.datos", { value });
       if (!value) {
         Object.assign(form, createEmptyForm());
+        console.debug("[useDatosSociedadForm] form reset to empty");
         return;
       }
 
@@ -89,30 +91,45 @@ export function useDatosSociedadForm(options: UseDatosSociedadFormOptions) {
         partidaRegistral: value.partidaRegistral ?? "",
         oficinaRegistral: value.oficinaRegistral ?? "",
       });
+      console.debug("[useDatosSociedadForm] form populated from store", { form: { ...form } });
     },
     { immediate: true }
 
   );
 
   async function load(source: "internal" | "external" = "internal") {
+    console.debug("[useDatosSociedadForm] load:start", { source, societyId: societyId.value });
     await store.load(societyId.value, source);
+    console.debug("[useDatosSociedadForm] load:done", {
+      source,
+      societyId: societyId.value,
+      storeDatos: store.datos,
+    });
   }
 
   type SubmitResult = "created" | "updated" | "skipped";
 
   async function submit(): Promise<SubmitResult> {
     if (isReadonly.value) {
+      console.debug("[useDatosSociedadForm] submit:skipped-readonly");
       return "skipped";
     }
 
     const payload: DatosSociedadDTO = { ...form };
+    console.debug("[useDatosSociedadForm] submit:start", {
+      hasData: hasData.value,
+      payload,
+      societyId: societyId.value,
+    });
 
     if (!hasData.value) {
       await store.create(societyId.value, payload);
+      console.debug("[useDatosSociedadForm] submit:created", { result: store.datos });
       return "created";
     }
 
     await store.update(societyId.value, payload);
+    console.debug("[useDatosSociedadForm] submit:updated", { result: store.datos });
     return "updated";
   }
 
@@ -134,8 +151,10 @@ export function useDatosSociedadForm(options: UseDatosSociedadFormOptions) {
         partidaRegistral: store.datos.partidaRegistral ?? "",
         oficinaRegistral: store.datos.oficinaRegistral ?? "",
       });
+      console.debug("[useDatosSociedadForm] reset:from-store", { form: { ...form } });
     } else {
       Object.assign(form, createEmptyForm());
+      console.debug("[useDatosSociedadForm] reset:empty");
     }
   }
 

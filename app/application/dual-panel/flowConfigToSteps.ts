@@ -19,19 +19,19 @@ export function flowConfigToSteps(
   const flowId = options?.flowId;
   const progressStore = useFlowProgressStore();
 
-  function flattenTree(items: FlowItemTree[], parentCompleted: boolean = false) {
+  function flattenTree(items: FlowItemTree[], _parentCompleted: boolean = false) {
     for (const item of items) {
       const level = item.hierarchy.level;
 
       if (level < startLevel || level > maxLevel) {
         if (includeChildren && item.children && item.children.length > 0) {
-          flattenTree(item.children, parentCompleted || isItemCompleted(item));
+          flattenTree(item.children, _parentCompleted || isItemCompleted(item));
         }
         continue;
       }
 
       const storeStatus = flowId ? progressStore.getStepStatus(flowId, item.identity.id) : undefined;
-      const status = storeStatus ?? determineStatus(item, currentPath, parentCompleted);
+      const status = storeStatus ?? determineStatus(item, currentPath, _parentCompleted);
 
       const metadataDescription = item.metadata?.description;
       const stepDescription = typeof metadataDescription === "string"
@@ -70,7 +70,7 @@ export function flowConfigToSteps(
 function determineStatus(
   item: FlowItemTree,
   currentPath: string,
-  parentCompleted: boolean = false
+  _parentCompleted: boolean = false
 ): NavigationStep["status"] {
   if (item.behavior.isCompleted) {
     return "completed";

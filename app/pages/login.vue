@@ -3,7 +3,7 @@ definePageMeta({
   layout: false,
 });
 
-if (process.client) {
+if (import.meta.client) {
   navigateTo("/auth/login", { replace: true });
 }
 </script>

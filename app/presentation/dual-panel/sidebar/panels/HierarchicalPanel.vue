@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { toRefs } from "vue";
 import type { FlowItemTree } from "~/types/flow-system";
 import HierarchicalItem from "../shared/HierarchicalItem.vue";
 
@@ -11,9 +12,12 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  title: "",
   showTitle: false,
   showLevelBadges: false,
 });
+
+const { items, currentPath, title, showTitle, showLevelBadges } = toRefs(props);
 </script>
 
 <template>

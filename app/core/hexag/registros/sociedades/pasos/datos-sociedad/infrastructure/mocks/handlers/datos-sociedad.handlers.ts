@@ -7,7 +7,25 @@ import {
   updateDatosSociedadMock,
 } from "../data/datos-sociedad.state";
 
-const baseUrl = "/api/registros/sociedades/:id/datos-sociedad";
+const baseUrl = "*/api/v2/society-profile/:id/society";
+
+const mapBackendBodyToDto = (body?: Record<string, any>): DatosSociedadDTO => ({
+  numeroRuc: body?.numeroRuc ?? body?.ruc ?? "",
+  tipoSocietario: body?.tipoSocietario ?? body?.typeSocietyId ?? "S.A.C.",
+  razonSocial: body?.razonSocial ?? body?.reasonSocial ?? "Sociedad sin nombre",
+  nombreComercial: body?.nombreComercial ?? body?.commercialName ?? "",
+  direccion: body?.direccion ?? body?.address ?? "",
+  distrito: body?.distrito ?? body?.district ?? "",
+  provincia: body?.provincia ?? body?.province ?? "",
+  departamento: body?.departamento ?? body?.department ?? "",
+  fechaInscripcionRuc: body?.fechaInscripcionRuc ?? body?.registrationDate ?? "",
+  actividadExterior: body?.actividadExterior ?? body?.foreignActivity ?? "",
+  fechaEscrituraPublica: body?.fechaEscrituraPublica ?? body?.publicDeedDate ?? "",
+  fechaRegistrosPublicos:
+    body?.fechaRegistrosPublicos ?? body?.registrationRecordDate ?? body?.registrationDate ?? "",
+  partidaRegistral: body?.partidaRegistral ?? body?.registrationRecord ?? "",
+  oficinaRegistral: body?.oficinaRegistral ?? body?.registryOffice ?? "",
+});
 
 export const datosSociedadHandlers = [
   http.get(baseUrl, async ({ params }) => {
@@ -22,7 +40,19 @@ export const datosSociedadHandlers = [
       return HttpResponse.json({ error: "Datos de sociedad no encontrados" }, { status: 404 });
     }
 
-    return HttpResponse.json({ data: datos });
+    const responsePayload = {
+      success: true,
+      message: "Datos principales de la sociedad (mock).",
+      code: 200,
+      data: datos,
+    };
+
+    console.debug("[MSW][DatosSociedad] Response GET", {
+      societyProfileId: societyId,
+      payload: responsePayload,
+    });
+
+    return HttpResponse.json(responsePayload);
   }),
 
   http.post(baseUrl, async ({ params, request }) => {
@@ -32,25 +62,29 @@ export const datosSociedadHandlers = [
     }
 
     const societyId = id as string;
-    const body = (await request.json()) as DatosSociedadDTO | undefined;
-    const datos = await createDatosSociedadMock(societyId, {
-      numeroRuc: body?.numeroRuc ?? "",
-      tipoSocietario: body?.tipoSocietario ?? "S.A.C.",
-      razonSocial: body?.razonSocial ?? "Sociedad sin nombre",
-      nombreComercial: body?.nombreComercial ?? "",
-      direccion: body?.direccion ?? "",
-      distrito: body?.distrito ?? "",
-      provincia: body?.provincia ?? "",
-      departamento: body?.departamento ?? "",
-      fechaInscripcionRuc: body?.fechaInscripcionRuc ?? "",
-      actividadExterior: body?.actividadExterior ?? "",
-      fechaEscrituraPublica: body?.fechaEscrituraPublica ?? "",
-      fechaRegistrosPublicos: body?.fechaRegistrosPublicos ?? "",
-      partidaRegistral: body?.partidaRegistral ?? "",
-      oficinaRegistral: body?.oficinaRegistral ?? "",
+    const raw = (await request.json()) as Record<string, any> | undefined;
+    const payload = mapBackendBodyToDto(raw);
+
+    console.debug("[MSW][DatosSociedad] Request POST", {
+      societyProfileId: societyId,
+      raw,
+      payload,
     });
 
-    return HttpResponse.json({ data: datos }, { status: 201 });
+    const datos = await createDatosSociedadMock(societyId, payload);
+    const responsePayload = {
+      success: true,
+      message: "Datos principales guardados (mock).",
+      code: 201,
+      data: datos,
+    };
+
+    console.debug("[MSW][DatosSociedad] Response POST", {
+      societyProfileId: societyId,
+      payload: responsePayload,
+    });
+
+    return HttpResponse.json(responsePayload, { status: 201 });
   }),
 
   http.put(baseUrl, async ({ params, request }) => {
@@ -60,8 +94,28 @@ export const datosSociedadHandlers = [
     }
 
     const societyId = id as string;
-    const body = (await request.json()) as DatosSociedadDTO;
-    const datos = await updateDatosSociedadMock(societyId, body);
-    return HttpResponse.json({ data: datos }, { status: 200 });
+    const raw = (await request.json()) as Record<string, any> | undefined;
+    const payload = mapBackendBodyToDto(raw);
+
+    console.debug("[MSW][DatosSociedad] Request PUT", {
+      societyProfileId: societyId,
+      raw,
+      payload,
+    });
+
+    const datos = await updateDatosSociedadMock(societyId, payload);
+    const responsePayload = {
+      success: true,
+      message: "Datos principales actualizados (mock).",
+      code: 200,
+      data: datos,
+    };
+
+    console.debug("[MSW][DatosSociedad] Response PUT", {
+      societyProfileId: societyId,
+      payload: responsePayload,
+    });
+
+    return HttpResponse.json(responsePayload);
   }),
 ];

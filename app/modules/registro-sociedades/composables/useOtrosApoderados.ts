@@ -2,10 +2,16 @@ import { v4 as uuidv4 } from "uuid";
 import { computed, ref } from "vue";
 import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
 import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
+import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
 import { useRegistroApoderadosStore } from "../stores/useRegistroApoderadosStore";
 import type { OtroApoderado, OtroApoderadoRow } from "../types/registroApoderados";
 
 export const useOtrosApoderados = () => {
+  const tipoDocumentoValues = new Set(Object.values(TipoDocumentosEnum));
+
+  const ensureTipoDocumento = (value: string): TipoDocumentosEnum | "" => {
+    return tipoDocumentoValues.has(value as TipoDocumentosEnum) ? (value as TipoDocumentosEnum) : "";
+  };
   const registroApoderadosStore = useRegistroApoderadosStore();
   const personaNaturalStore = usePersonaNaturalStore();
 
@@ -46,7 +52,7 @@ export const useOtrosApoderados = () => {
     if (apoderado.personaNatural) {
       personaNaturalStore.$patch({ ...apoderado.personaNatural });
     } else {
-      personaNaturalStore.tipoDocumento = apoderado.tipoDocumento;
+      personaNaturalStore.tipoDocumento = ensureTipoDocumento(apoderado.tipoDocumento);
       personaNaturalStore.numeroDocumento = apoderado.numeroDocumento;
       personaNaturalStore.nombre = apoderado.nombreRazonSocial;
     }
@@ -84,6 +90,7 @@ export const useOtrosApoderados = () => {
         nombre: personaNaturalStore.nombre,
         apellidoPaterno: personaNaturalStore.apellidoPaterno,
         apellidoMaterno: personaNaturalStore.apellidoMaterno,
+        paisPasaporte: personaNaturalStore.paisPasaporte,
         estadoCivil: personaNaturalStore.estadoCivil,
       },
     };

@@ -10,32 +10,37 @@
 - Arquitectura hexagonal planificada (ver `README.md`) y carpetas iniciales creadas para:
   - Sociedades (`shared`, `domain`, `application`, `infrastructure`).
   - Pasos: `datos-sociedad`, `accionistas`, `acciones`, `asignacion-acciones`.
-- MSW pendiente de implementar con persistencia in-memory.
+- MSW operativo con persistencia `IndexedDB` (mock-database) y endpoints alineados a `/api/v2/society-profile`.
+- Repositorios HTTP (`SociedadHttpRepository`, `DatosSociedadHttpRepository`) consumen los endpoints v2 y adjuntan token automáticamente.
+- Stores de presentación (`sociedad-historial`, `datos-sociedad`) integrados con casos de uso y UI (historial, dashboard, preview).
 
 ## Próximos Hit Steps
 
 1. **Skeleton Hexagonal**
-   - [ ] Crear estructura de carpetas `shared`, `sociedades`, `sucursales` según README.
-   - [ ] Definir entidades (`Sociedad`, `Paso`, value objects) y puertos compartidos.
+   - [x] Crear estructura de carpetas `shared`, `sociedades`, `sucursales` según README.
+   - [ ] Definir entidades (`Sociedad`, `Paso`, value objects) transversales.
 2. **Casos de Uso Sociedades**
-   - [ ] `CreateSociedadUseCase`
-   - [ ] `ListSociedadesUseCase`
-   - [ ] `GetDatosGeneralesUseCase` / `SaveDatosGeneralesUseCase`
+   - [x] `CreateSociedadUseCase`
+   - [x] `ListSociedadesUseCase`
+   - [x] `GetDatosGeneralesUseCase` / `SaveDatosGeneralesUseCase`
+   - [ ] Implementar `GetSociedadPerfilUseCase` para `/api/v2/society-profile/{id}` (steps metadata).
 3. **Infraestructura MSW**
    - [x] Estado in-memory en `.../mocks/data/sociedades.state.ts`.
-   - [x] Handlers `POST/GET/DELETE` descritos en el plan.
-   - [x] Estado in-memory y handlers (`GET/POST/PUT`) para `datos-sociedad`.
+   - [x] Handlers `POST/GET/DELETE` alineados a `/api/v2/society-profile`.
+   - [x] Estado in-memory y handlers (`GET/POST/PUT`) para `datos-sociedad` en `/api/v2/society-profile/:id/society`.
    - [x] Exportar handlers y registrarlos en workers (cliente + servidor).
 4. **Repositorios HTTP**
-   - [ ] Implementar `SociedadHttpRepository` (fetch/axios) que implementa el puerto.
-   - [ ] Añadir mappers request/response.
+   - [x] Implementar `SociedadHttpRepository` (Nuxt `$fetch` + withAuthHeaders).
+   - [x] Añadir mappers request/response y normalizar `pasoActual`.
 5. **Integración UI**
    - [x] Store `sociedadHistorial` consume casos de uso.
    - [x] `agregar.vue` dispara `CreateSociedad` y redirige al flujo con ID.
    - [x] `datos-sociedad.vue` se hidrata vía caso de uso y persiste cambios.
+   - [x] Dashboard muestra métricas en vivo (total, en curso, finalizados).
 6. **Testing & Docs**
-   - [ ] Documentar endpoints MSW en `docs/architecture/registro-sociedades.md`.
+   - [ ] Documentar endpoints MSW y contratos v2 en `docs/architecture/registro-sociedades.md`.
    - [ ] Agregar pruebas unitarias para casos de uso (opcional inicial).
+   - [ ] Alinear documentación con estructura `SocietyMainData` y enum `SocietyRegisterStep`.
 
 ## Consideraciones
 
@@ -47,4 +52,5 @@
 ## Historial de Cambios
 
 - **13/11/2025**: Se crean README y Roadmap iniciales; se define plan de estructura hexagonal y MSW.
+- **13/11/2025 (tarde)**: Se actualizan repositorios, MSW y UI para consumir endpoints `/api/v2/society-profile` y exponer `pasoActual` en historial/dashboard.
 

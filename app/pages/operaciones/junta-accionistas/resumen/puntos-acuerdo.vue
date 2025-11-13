@@ -26,11 +26,12 @@
 import { computed } from "vue";
 import Titles from "~/types/enums/Titles.enum";
 import { usePuntosAcuerdoSummary } from "@/modules/junta-accionistas/summaries";
+import type { SummarySection } from "@/modules/junta-accionistas/summaries/types";
 
 const puntosSummary = usePuntosAcuerdoSummary();
 
 const acuerdos = computed(() =>
-  puntosSummary.value.map((section) => ({
+  puntosSummary.value.map((section: SummarySection) => ({
     id: section.id,
     title: section.title,
     subtitle:

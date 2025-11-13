@@ -76,8 +76,9 @@ export function useToast() {
     const currentTimer = timers.value[id];
     if (currentTimer) {
       clearTimeout(currentTimer);
-      delete timers.value[id];
     }
+    const { [id]: _removed, ...restTimers } = timers.value;
+    timers.value = restTimers;
     toasts.value = toasts.value.filter((toast) => toast.id !== id);
   };
 

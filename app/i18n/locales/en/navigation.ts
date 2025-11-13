@@ -12,6 +12,7 @@ export default {
   sociedades: "Companies",
   agregarSociedad: "Add Company",
   historialSociedades: "Record History",
+  sucursales: "Branches",
   accionistas: "Shareholders",
   administradores: "Administrators",
   agregarSucursal: "Add Branch",
@@ -52,4 +53,9 @@ export default {
   planServicio: "Service Plan",
   personalizacion: "Customization",
   configuracion: "Settings",
+  ayuda: "Help",
+
+  nav: {
+    ayuda: "Help",
+  },
 } as const;

@@ -1,7 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-import process from "node:process";
 import tailwindcss from "@tailwindcss/vite";
+
+declare const process: { env: Record<string, string | undefined> };
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",

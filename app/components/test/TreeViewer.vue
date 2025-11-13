@@ -22,7 +22,7 @@
     currentPath?: string;
   }
 
-  const props = withDefaults(defineProps<Props>(), {
+  withDefaults(defineProps<Props>(), {
     currentPath: "",
   });
 </script>

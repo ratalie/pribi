@@ -1,3 +1,4 @@
+import type { EstadoCivilEnum } from "~/types/enums/EstadoCivilEnum";
 import type { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
 
 export const usePersonaNaturalStore = defineStore("personaNatural", {
@@ -8,6 +9,7 @@ export const usePersonaNaturalStore = defineStore("personaNatural", {
     apellidoPaterno: "",
     apellidoMaterno: "",
     paisPasaporte: "",
+    estadoCivil: null,
   }),
 });
 
@@ -18,6 +20,9 @@ export interface PersonaNaturalState {
   apellidoPaterno: string;
   apellidoMaterno: string;
   paisPasaporte: string;
+  estadoCivil: EstadoCivilEnum | "" | null;
 }
 
 type State = PersonaNaturalState;
+
+export type PersonaNatural = PersonaNaturalState;

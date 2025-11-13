@@ -51,7 +51,9 @@ const STORE_NAME = "datosSociedad";
 export async function getDatosSociedadMock(
   idSociety: string
 ): Promise<SociedadDatosGenerales | null> {
-  return (await getRecord<SociedadDatosGenerales>(STORE_NAME, idSociety)) ?? null;
+  const record = (await getRecord<SociedadDatosGenerales>(STORE_NAME, idSociety)) ?? null;
+  console.debug("[MSW][DatosSociedadState] get", { idSociety, record });
+  return record;
 }
 
 export async function createDatosSociedadMock(
@@ -59,7 +61,12 @@ export async function createDatosSociedadMock(
   payload: DatosSociedadDTO = defaultPayload
 ): Promise<SociedadDatosGenerales> {
   const entity = buildEntity(idSociety, payload);
+  console.debug("[MSW][DatosSociedadState] create:before", { idSociety, payload, entity });
   await putRecord(STORE_NAME, entity);
+  console.debug("[MSW][DatosSociedadState] create:after", {
+    idSociety,
+    entity,
+  });
   return entity;
 }
 
@@ -79,6 +86,13 @@ export async function updateDatosSociedadMock(
     },
     current
   );
+  console.debug("[MSW][DatosSociedadState] update:before-save", {
+    idSociety,
+    payload,
+    current,
+    entity,
+  });
   await putRecord(STORE_NAME, entity);
+  console.debug("[MSW][DatosSociedadState] update:after-save", { idSociety, entity });
   return entity;
 }

@@ -1,5 +1,5 @@
 - Pasos disponibles:
-  - `datos-sociedad`: CRUD completo `GET/POST/PUT /api/registros/sociedades/:id/datos-sociedad`.
+  - `datos-sociedad`: CRUD completo `GET/POST/PUT /api/v2/society-profile/{id}/society`.
 # Arquitectura Hexagonal – Dominio `@registros`
 
 Este módulo encapsula toda la lógica de negocio asociada a **Registros** (sociedades y sucursales) siguiendo arquitectura **Hexagonal (Ports & Adapters)**. El objetivo es aislar el dominio del framework (Nuxt) y permitir intercambiar fácilmente adaptadores (MSW, API real, etc.).
@@ -54,13 +54,29 @@ app/core/hexag/registros/
 - Estado en memoria (`state`) ubicado en `.../mocks/data`.
 - Export público de handlers en `.../mocks/index.ts` para registrarlos en el Service Worker global.
 - Cada adaptador MSW cumple el mismo puerto que la versión HTTP, permitiendo swap transparente.
+- Shape actual del listado (`SocietyMainData`) expuesto tanto por MSW como por backend real:
+
+```
+{
+  "societyId": number,
+  "razonSocial": string,
+  "ruc": string,
+  "directorio": boolean,
+  "fechaRegistroSociedad": string | null,
+  "nombreComercial": string,
+  "tipoSociedad": string,
+  "pasoActual": "datos-sociedad" | ... | "finalizar"
+}
+```
+
+> Nota: el DTO interno (`SociedadResumenDTO`) normaliza `tipoSociedad` → `tipoSocietario` y valida que `pasoActual` siempre pertenezca al enum `SocietyRegisterStep`.
 - Endpoints disponibles actualmente:
-  - `POST /api/registros/sociedades` → crea sociedad vacía y devuelve `{ data: { idSociety } }`.
-  - `GET /api/registros/sociedades` → devuelve `{ data: SociedadResumen[] }`.
-  - `DELETE /api/registros/sociedades/:id`.
-  - `GET /api/registros/sociedades/:id/datos-sociedad`.
-  - `POST /api/registros/sociedades/:id/datos-sociedad`.
-  - `PUT /api/registros/sociedades/:id/datos-sociedad`.
+  - `POST /api/v2/society-profile` → crea un perfil vacío y devuelve `data: <societyProfileId>`.
+  - `GET /api/v2/society-profile/list` → devuelve `data: SocietyMainData[]` (incluye `pasoActual`).
+  - `DELETE /api/v2/society-profile/:id`.
+  - `GET /api/v2/society-profile/:id/society`.
+  - `POST /api/v2/society-profile/:id/society`.
+  - `PUT /api/v2/society-profile/:id/society`.
 
 > **Nota:** es necesario instalar `msw` (`npm install -D msw`) para que los handlers funcionen.
 

@@ -1,5 +1,4 @@
-import type { DatosSociedadRepository } from "../../domain";
-import type { SociedadDatosGenerales } from "../../domain";
+import type { DatosSociedadRepository, SociedadDatosGenerales } from "../../domain";
 
 export class GetDatosSociedadUseCase {
   constructor(private readonly repository: DatosSociedadRepository) {}
