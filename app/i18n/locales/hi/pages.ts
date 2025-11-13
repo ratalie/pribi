@@ -1,7 +1,13 @@
 export default {
   // कंपनी रजिस्ट्री
   sociedades: "कंपनियाँ",
+  sociedadesDashboard: "कंपनी डैशबोर्ड",
+  sociedadesAgregar: "कंपनी जोड़ें",
+  sociedadesHistorial: "पंजीकरण इतिहास",
   sucursales: "शाखाएं",
+  sucursalesDashboard: "शाखा डैशबोर्ड",
+  sucursalesAgregar: "शाखा जोड़ें",
+  sucursalesHistorial: "शाखा इतिहास",
 
   // संचालन - निदेशक मंडल
   directorioDashboard: "निदेशक मंडल डैशबोर्ड",

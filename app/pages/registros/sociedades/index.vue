@@ -1,6 +1,6 @@
 <script setup lang="ts">
   definePageMeta({
-    redirect: "/registro-societario/sociedades/dashboard",
+    redirect: "/registros/sociedades/dashboard",
   });
 </script>
 

@@ -17,6 +17,9 @@ import type { FlowLayoutConfig } from "~/types/flow-layout";
 const LAYOUT_CONFIG_MAP: Record<string, FlowLayoutConfig> = {
   "/operaciones/junta-accionistas": juntasLayoutConfig,
   "/registro-societario/sucursales": sucursalesLayoutConfig,
+  // Rutas de registros - por ahora sin configuración de flow, se puede agregar después
+  // "/registros/sociedades": registrosSociedadesLayoutConfig,
+  // "/registros/sucursales": registrosSucursalesLayoutConfig,
 };
 
 /**

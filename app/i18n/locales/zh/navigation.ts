@@ -6,9 +6,12 @@ export default {
   gestion: "账簿管理",
   storage: "存储",
   features: "功能",
+  registros: "登记",
 
   // 公司注册子项
   sociedades: "公司",
+  agregarSociedad: "添加公司",
+  historialSociedades: "注册历史",
   accionistas: "股东",
   administradores: "管理员",
   domicilios: "地址",

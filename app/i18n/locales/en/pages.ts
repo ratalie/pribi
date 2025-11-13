@@ -1,7 +1,13 @@
 export default {
   // Corporate Registry
   sociedades: "Companies",
+  sociedadesDashboard: "Companies Dashboard",
+  sociedadesAgregar: "Add Company",
+  sociedadesHistorial: "Record History",
   sucursales: "Branches",
+  sucursalesDashboard: "Branches Dashboard",
+  sucursalesAgregar: "Add Branch",
+  sucursalesHistorial: "Branch History",
 
   // Operations - Board of Directors
   directorioDashboard: "Board Dashboard",

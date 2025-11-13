@@ -6,11 +6,16 @@ export default {
   gestion: "Book Management",
   storage: "Storage",
   features: "Features",
+  registros: "Records",
 
   // Sub-items Corporate Registry
   sociedades: "Companies",
+  agregarSociedad: "Add Company",
+  historialSociedades: "Record History",
   accionistas: "Shareholders",
   administradores: "Administrators",
+  agregarSucursal: "Add Branch",
+  historialSucursales: "Record History",
   domicilios: "Addresses",
   certificados: "Certificates",
 

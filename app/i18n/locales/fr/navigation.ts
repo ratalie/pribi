@@ -3,6 +3,7 @@ export const frNavigation = {
   dashboard: "Tableau de bord",
   registro: "Registre d'entreprise",
   registroSocietario: "Registre d'entreprise",
+  registros: "Registres",
   documentacion: "Génération de procès-verbaux",
   gestion: "Gestion des livres",
   storage: "Stockage",
@@ -10,7 +11,11 @@ export const frNavigation = {
 
   // Sous-sections Registre d'entreprise
   sociedades: "Sociétés",
+  agregarSociedad: "Ajouter une société",
+  historialSociedades: "Historique des enregistrements",
   sucursales: "Succursales",
+  agregarSucursal: "Ajouter une succursale",
+  historialSucursales: "Historique des enregistrements",
   accionistas: "Actionnaires",
   administradores: "Administrateurs",
   domicilios: "Domiciles",

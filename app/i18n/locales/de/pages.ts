@@ -1,7 +1,13 @@
 export const dePages = {
   // Unternehmensregister
   sociedades: "Unternehmen",
+  sociedadesDashboard: "Unternehmens-Dashboard",
+  sociedadesAgregar: "Unternehmen hinzufügen",
+  sociedadesHistorial: "Registerhistorie",
   sucursales: "Niederlassungen",
+  sucursalesDashboard: "Niederlassungs-Dashboard",
+  sucursalesAgregar: "Niederlassung hinzufügen",
+  sucursalesHistorial: "Historie der Niederlassungen",
 
   // Betrieb - Vorstand
   directorioDashboard: "Vorstands-Dashboard",

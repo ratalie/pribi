@@ -35,13 +35,16 @@
 
   // Estados de expansión
   const expandedSections = ref<Record<string, boolean>>({
-    "Registro Societario": true,
+    Registros: true,
     "Operaciones de Órgano de Control": true,
     Storage: true,
     Features: true,
   });
 
-  const expandedItems = ref<Record<string, boolean>>({});
+  const expandedItems = ref<Record<string, boolean>>({
+    "registros-sociedades": true,
+    "registros-sucursales": false,
+  });
 
   // Métodos
   const toggleSection = (section: string, value: boolean) => {
