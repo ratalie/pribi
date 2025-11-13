@@ -1,2 +1,3 @@
-// Adaptadores (HTTP/MSW) para el paso "Datos de la sociedad".
+export type { DatosSociedadResponse } from "./mappers/datos-sociedad.mapper";
+export { DatosSociedadMapper } from "./mappers/datos-sociedad.mapper";
 

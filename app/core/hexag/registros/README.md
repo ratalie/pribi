@@ -1,3 +1,5 @@
+- Pasos disponibles:
+  - `datos-sociedad`: CRUD completo `GET/POST/PUT /api/registros/sociedades/:id/datos-sociedad`.
 # Arquitectura Hexagonal – Dominio `@registros`
 
 Este módulo encapsula toda la lógica de negocio asociada a **Registros** (sociedades y sucursales) siguiendo arquitectura **Hexagonal (Ports & Adapters)**. El objetivo es aislar el dominio del framework (Nuxt) y permitir intercambiar fácilmente adaptadores (MSW, API real, etc.).
@@ -56,6 +58,9 @@ app/core/hexag/registros/
   - `POST /api/registros/sociedades` → crea sociedad vacía y devuelve `{ data: { idSociety } }`.
   - `GET /api/registros/sociedades` → devuelve `{ data: SociedadResumen[] }`.
   - `DELETE /api/registros/sociedades/:id`.
+  - `GET /api/registros/sociedades/:id/datos-sociedad`.
+  - `POST /api/registros/sociedades/:id/datos-sociedad`.
+  - `PUT /api/registros/sociedades/:id/datos-sociedad`.
 
 > **Nota:** es necesario instalar `msw` (`npm install -D msw`) para que los handlers funcionen.
 

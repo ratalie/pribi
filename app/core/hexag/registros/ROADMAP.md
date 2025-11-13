@@ -24,6 +24,7 @@
 3. **Infraestructura MSW**
    - [x] Estado in-memory en `.../mocks/data/sociedades.state.ts`.
    - [x] Handlers `POST/GET/DELETE` descritos en el plan.
+   - [x] Estado in-memory y handlers (`GET/POST/PUT`) para `datos-sociedad`.
    - [x] Exportar handlers y registrarlos en workers (cliente + servidor).
 4. **Repositorios HTTP**
    - [ ] Implementar `SociedadHttpRepository` (fetch/axios) que implementa el puerto.
@@ -31,7 +32,7 @@
 5. **Integración UI**
    - [x] Store `sociedadHistorial` consume casos de uso.
    - [x] `agregar.vue` dispara `CreateSociedad` y redirige al flujo con ID.
-   - [ ] `datos-sociedad.vue` se hidrata vía caso de uso y persiste cambios.
+   - [ ] `datos-sociedad.vue` se hidrata vía caso de uso y persiste cambios (pendiente conectar store al componente).
 6. **Testing & Docs**
    - [ ] Documentar endpoints MSW en `docs/architecture/registro-sociedades.md`.
    - [ ] Agregar pruebas unitarias para casos de uso (opcional inicial).

@@ -1,6 +1,6 @@
 import { setupWorker } from "msw/browser";
 
-import { sociedadesHandlers } from ".";
+import { registrosHandlers } from ".";
 
-export const registrosWorker = setupWorker(...sociedadesHandlers);
+export const registrosWorker = setupWorker(...registrosHandlers);
 

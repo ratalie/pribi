@@ -1,6 +1,6 @@
 import { setupServer } from "msw/node";
 
-import { sociedadesHandlers } from ".";
+import { registrosHandlers } from ".";
 
-export const registrosServer = setupServer(...sociedadesHandlers);
+export const registrosServer = setupServer(...registrosHandlers);
 
