@@ -1,2 +1,2 @@
-// DTOs específicos para los casos de uso de Sociedades.
+export type { SociedadResumenDTO } from "./sociedad-resumen.dto";
 

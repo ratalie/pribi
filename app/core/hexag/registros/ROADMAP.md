@@ -22,15 +22,15 @@
    - [ ] `ListSociedadesUseCase`
    - [ ] `GetDatosGeneralesUseCase` / `SaveDatosGeneralesUseCase`
 3. **Infraestructura MSW**
-   - [ ] Estado in-memory en `.../mocks/data/sociedades.state.ts`.
-   - [ ] Handlers `POST/GET/PATCH` descritos en el plan.
-   - [ ] Exportar handlers y registrarlos en worker global.
+   - [x] Estado in-memory en `.../mocks/data/sociedades.state.ts`.
+   - [x] Handlers `POST/GET/DELETE` descritos en el plan.
+   - [x] Exportar handlers y registrarlos en workers (cliente + servidor).
 4. **Repositorios HTTP**
    - [ ] Implementar `SociedadHttpRepository` (fetch/axios) que implementa el puerto.
    - [ ] Añadir mappers request/response.
 5. **Integración UI**
-   - [ ] Stores/composables apuntan a casos de uso.
-   - [ ] `agregar.vue` dispara `CreateSociedad`.
+   - [x] Store `sociedadHistorial` consume casos de uso.
+   - [x] `agregar.vue` dispara `CreateSociedad` y redirige al flujo con ID.
    - [ ] `datos-sociedad.vue` se hidrata vía caso de uso y persiste cambios.
 6. **Testing & Docs**
    - [ ] Documentar endpoints MSW en `docs/architecture/registro-sociedades.md`.

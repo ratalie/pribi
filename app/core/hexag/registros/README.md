@@ -52,6 +52,12 @@ app/core/hexag/registros/
 - Estado en memoria (`state`) ubicado en `.../mocks/data`.
 - Export público de handlers en `.../mocks/index.ts` para registrarlos en el Service Worker global.
 - Cada adaptador MSW cumple el mismo puerto que la versión HTTP, permitiendo swap transparente.
+- Endpoints disponibles actualmente:
+  - `POST /api/registros/sociedades` → crea sociedad vacía y devuelve `{ data: { idSociety } }`.
+  - `GET /api/registros/sociedades` → devuelve `{ data: SociedadResumen[] }`.
+  - `DELETE /api/registros/sociedades/:id`.
+
+> **Nota:** es necesario instalar `msw` (`npm install -D msw`) para que los handlers funcionen.
 
 ## Convenciones
 

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+  import { ref } from "vue";
+  import { useRouter } from "vue-router";
   import { Button } from "@/components/ui/button";
   import {
     Card,
@@ -8,6 +10,8 @@
     CardHeader,
     CardTitle,
   } from "@/components/ui/card";
+  import { LoaderCircle } from "lucide-vue-next";
+  import { useSociedadHistorialStore } from "~/core/presentation/registros/sociedades/stores/sociedad-historial.store";
 
   definePageMeta({
     layout: "registros",
@@ -34,6 +38,28 @@
         "Carga estatutos, poderes y actas existentes para acelerar los controles de cumplimiento.",
     },
   ];
+
+  const historialStore = useSociedadHistorialStore();
+  const router = useRouter();
+  const isSubmitting = ref(false);
+  const errorMessage = ref<string | null>(null);
+
+  const handleStartFlow = async () => {
+    if (isSubmitting.value) return;
+
+    isSubmitting.value = true;
+    errorMessage.value = null;
+    const id = await historialStore.crearSociedad();
+
+    if (!id) {
+      errorMessage.value = "No fue posible crear una nueva sociedad. Inténtalo nuevamente.";
+      isSubmitting.value = false;
+      return;
+    }
+
+    await router.push(`/registros/sociedades/crear/${id}/datos-sociedad`);
+    isSubmitting.value = false;
+  };
 </script>
 
 <template>
@@ -69,11 +95,21 @@
           Puedes reanudar un borrador guardado desde el módulo de historial cuando esté
           disponible.
         </div>
-        <Button variant="primary" size="md" class="w-full md:w-auto" as-child>
-          <NuxtLink to="/registros/sociedades/crear/datos-sociedad">
+        <div class="flex flex-col items-start gap-2 md:items-end">
+          <p v-if="errorMessage" class="text-sm text-red-300">
+            {{ errorMessage }}
+          </p>
+          <Button
+            variant="primary"
+            size="md"
+            class="w-full md:w-auto"
+            :disabled="isSubmitting"
+            @click="handleStartFlow"
+          >
+            <LoaderCircle v-if="isSubmitting" class="mr-2 h-4 w-4 animate-spin" />
             Comenzar formulario guiado
-          </NuxtLink>
-        </Button>
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   </div>
