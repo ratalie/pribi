@@ -14,11 +14,13 @@
   } from "@/components/ui/sidebar";
   import { cn } from "@/lib/utils";
   import { ChevronDown, ChevronRight, X } from "lucide-vue-next";
+  import { ref } from "vue";
+  import { useRoute } from "vue-router";
   import logoProbo from "~/assets/icons/logo-probo.svg";
   import { useProboI18n } from "~/composables/useProboI18n";
   import { useUser } from "~/composables/useUser";
   import { navigationSections } from "~/config/navigation";
-  import { getIcon } from "~~/docs/utils/iconMapper";
+  import { getIcon } from "~/utils/iconMapper";
   import UserDropdownMenu from "./UserDropdownMenu.vue";
 
   defineProps<{

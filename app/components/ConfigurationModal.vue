@@ -370,7 +370,7 @@
     Users,
   } from "lucide-vue-next";
   import { useProboI18n } from "~/composables/useProboI18n";
-  import { getIcon } from "~~/docs/utils/iconMapper";
+  import { getIcon } from "~/utils/iconMapper";
   import LanguageSelect from "./LanguageSelect.vue";
   import ThemeSelector from "./ThemeSelector.vue";
 

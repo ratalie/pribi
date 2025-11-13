@@ -1,7 +1,7 @@
 import { juntaAccionistasFlowConfig } from "@/config/flows/junta-accionistas.flow";
 import { computed } from "vue";
 import type { FlowItemTree } from "~/types/flow-system";
-import { buildFlowItemTree } from "~~/docs/utils/flowHelpers";
+import { buildFlowItemTree } from "~/utils/flowHelpers";
 import type { SummaryBlock, SummarySection } from "./types";
 
 const flowTree = buildFlowItemTree(juntaAccionistasFlowConfig.items);

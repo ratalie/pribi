@@ -3,7 +3,7 @@
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import { useFileUpload } from "~/composables/useFileUpload";
   import { useFileUploadStyles } from "~/composables/useFileUploadStyles";
-  import { formatFileSize } from "~~/docs/utils/fileHelpers";
+  import { formatFileSize } from "~/utils/fileHelpers";
 
   interface Props {
     modelValue?: File | null;

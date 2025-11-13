@@ -2,7 +2,7 @@
   import { computed } from "vue";
   import type { ButtonVariants } from "~/components/ui/button";
   import Button from "~/components/ui/button/Button.vue";
-  import { getIcon } from "~~/docs/utils/iconMapper";
+  import { getIcon } from "~/utils/iconMapper";
 
   interface Props {
     variant?: ButtonVariants["variant"];

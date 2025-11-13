@@ -216,7 +216,7 @@
   import sucursalesLayoutConfig from "~/config/flows/sucursales.layout";
   import type { FlowLayoutConfig } from "~/types/flow-layout";
   import type { FlowConfig, FlowItemTree } from "~/types/flow-system";
-  import { buildFlowItemTree } from "~~/docs/utils/flowHelpers";
+  import { buildFlowItemTree } from "~/utils/flowHelpers";
 
   const route = useRoute();
 

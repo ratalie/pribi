@@ -2,7 +2,7 @@
   import { Icon } from "@iconify/vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import { useFileUploadMultiple } from "~/composables/useFileUploadMultiple";
-  import { formatFileSize } from "~~/docs/utils/fileHelpers";
+  import { formatFileSize } from "~/utils/fileHelpers";
 
   interface Props {
     modelValue?: File[];

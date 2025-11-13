@@ -15,7 +15,7 @@
   import type { FlowConfig, FlowItemTree } from "@/types/flow-system";
   import { computed } from "vue";
   import { useRoute } from "vue-router";
-  import { buildFlowItemTree } from "~~/docs/utils/flowHelpers";
+  import { buildFlowItemTree } from "~/utils/flowHelpers";
 
   const route = useRoute();
 

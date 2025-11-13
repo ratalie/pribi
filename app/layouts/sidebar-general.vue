@@ -1,9 +1,9 @@
 <script setup lang="ts">
   import SidebarGeneral from "@/components/sidebar/SidebarGeneral.vue";
-import { juntaAccionistasFlowConfig, sucursalesFlowConfig } from "@/config/flows";
-import type { FlowConfig, FlowItemTree } from "@/types/flow-system";
-import { computed, ref } from "vue";
-import { buildFlowItemTree } from "~~/docs/utils/flowHelpers";
+  import { juntaAccionistasFlowConfig, sucursalesFlowConfig } from "@/config/flows";
+  import type { FlowConfig, FlowItemTree } from "@/types/flow-system";
+  import { computed, ref } from "vue";
+  import { buildFlowItemTree } from "~/utils/flowHelpers";
 
   type FlowConfigWithTree = Omit<FlowConfig, "items"> & {
     items: FlowItemTree[];

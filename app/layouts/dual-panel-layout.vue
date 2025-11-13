@@ -18,7 +18,7 @@
   import { useFlowProgressStore } from "~/stores/flowProgress.store";
   import type { SidebarConfig } from "~/types/flow-layout/sidebar-config";
   import type { FlowItemTree } from "~/types/flow-system";
-  import { buildFlowItemTree, findItemByRoute } from "~~/docs/utils/flowHelpers";
+  import { buildFlowItemTree, findItemByRoute } from "~/utils/flowHelpers";
 
   /**
    * Cargar configuración del layout
