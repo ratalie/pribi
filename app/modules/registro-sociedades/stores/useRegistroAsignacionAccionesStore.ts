@@ -154,17 +154,8 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
       const registroAccionesStore = useRegistroAccionesStore();
       const accionesRegistradas = registroAccionesStore.acciones;
 
-      // Si no hay acciones registradas, retornar data hardcodeada
-      if (accionesRegistradas.length === 0) {
-        return [
-          { id: "1", nombre: "Comunes", accionesSuscritas: 1000, accionesAsignadas: 100 },
-          { id: "2", nombre: "Preferentes", accionesSuscritas: 5000, accionesAsignadas: 200 },
-          { id: "3", nombre: "Clase A", accionesSuscritas: 8000, accionesAsignadas: 150 },
-          { id: "4", nombre: "Clase B", accionesSuscritas: 2000, accionesAsignadas: 100 },
-        ];
-      }
-
-      // Calcular acciones asignadas por cada tipo
+      // Calcular acciones asignadas por cada tipo desde state.asignaciones (siempre reactivo)
+      // Esto asegura que las acciones asignadas se actualicen automáticamente cuando cambia state.asignaciones
       const accionesAsignadasPorTipo = new Map<string, number>();
       state.asignaciones.forEach((asignacion) => {
         asignacion.acciones.forEach((accion) => {
@@ -173,12 +164,52 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
         });
       });
 
-      return accionesRegistradas.map((accion) => ({
-        id: accion.id,
-        nombre: accion.descripcion,
-        accionesSuscritas: accion.accionesSuscritas,
-        accionesAsignadas: accionesAsignadasPorTipo.get(accion.descripcion) || 0,
-      }));
+      // Si hay acciones registradas, usar esas y calcular acciones asignadas dinámicamente
+      if (accionesRegistradas.length > 0) {
+        return accionesRegistradas.map((accion) => ({
+          id: accion.id,
+          nombre: accion.descripcion,
+          accionesSuscritas: accion.accionesSuscritas,
+          accionesAsignadas: accionesAsignadasPorTipo.get(accion.descripcion) || 0,
+        }));
+      }
+
+      // Si no hay acciones registradas, usar datos hardcodeados para acciones suscritas
+      // pero calcular acciones asignadas dinámicamente desde state.asignaciones (reactivo)
+      const accionesHardcodeadas = new Map<string, number>([
+        ["Comunes", 1000],
+        ["Preferentes", 5000],
+        ["Clase A", 8000],
+        ["Clase B", 2000],
+      ]);
+
+      // Obtener todos los tipos únicos de las asignaciones y de las acciones hardcodeadas
+      const tiposUnicos = Array.from(
+        new Set<string>([
+          ...accionesHardcodeadas.keys(),
+          ...Array.from(accionesAsignadasPorTipo.keys()),
+        ])
+      );
+
+      // Construir lista de acciones disponibles
+      return tiposUnicos.map((tipo, index) => {
+        const accionesSuscritasHardcodeadas = accionesHardcodeadas.get(tipo);
+        const accionesAsignadas = accionesAsignadasPorTipo.get(tipo) || 0;
+
+        // Si no hay acciones suscritas hardcodeadas para este tipo,
+        // usar las acciones asignadas como acciones suscritas (mínimo para mostrar)
+        const accionesSuscritas =
+          accionesSuscritasHardcodeadas !== undefined
+            ? accionesSuscritasHardcodeadas
+            : accionesAsignadas || 0;
+
+        return {
+          id: (index + 1).toString(),
+          nombre: tipo,
+          accionesSuscritas,
+          accionesAsignadas, // Siempre calculado desde state.asignaciones (reactivo)
+        };
+      });
     },
 
     totalAccionesAsignadas: (state): number => {

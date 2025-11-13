@@ -64,6 +64,7 @@
       label="Precio Pagado por Acción"
       placeholder="S/ Escribe el precio aquí"
       currency="PEN"
+      format="decimal"
       :schema="precioAccionSchema"
     />
     <NumberInputZod
@@ -72,6 +73,7 @@
       label="Capital Social"
       placeholder="S/ Capital Social"
       currency="PEN"
+      format="decimal"
       :schema="capitalSocialSchema"
     />
 
@@ -81,6 +83,7 @@
       label="Prima"
       placeholder="S/ Prima"
       currency="PEN"
+      format="decimal"
       :schema="primaSchema"
     />
     <div />
