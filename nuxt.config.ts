@@ -15,6 +15,10 @@ export default defineNuxtConfig({
       authEndpoint: process.env.NUXT_PUBLIC_AUTH_ENDPOINT || "",
       mswDisabled: process.env.MSW_DISABLED === "true",
       defaultRedirectAfterLogin: "/registros/sociedades/dashboard",
+      societyProfileEndpoint: process.env.NUXT_PUBLIC_SOCIETY_PROFILE_ENDPOINT || "",
+      societyProfileListSuffix: process.env.NUXT_PUBLIC_SOCIETY_PROFILE_LIST_SUFFIX || "",
+      societyProfileDetailsSuffix:
+        process.env.NUXT_PUBLIC_SOCIETY_PROFILE_DETAILS_SUFFIX || "/society",
     },
   },
 

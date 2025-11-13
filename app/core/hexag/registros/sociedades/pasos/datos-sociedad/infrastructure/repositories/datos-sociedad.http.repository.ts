@@ -1,11 +1,23 @@
 import type { DatosSociedadDTO } from "../../application/dtos/datos-sociedad.dto";
 import type { DatosSociedadRepository, SociedadDatosGenerales } from "../../domain";
 import { DatosSociedadMapper } from "../mappers/datos-sociedad.mapper";
-
-const RELATIVE_BASE = "/api/v2/registros/sociedades";
+import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
 
 export class DatosSociedadHttpRepository implements DatosSociedadRepository {
-  private resolveUrl(idSociety: string): string {
+  private readonly basePath = (() => {
+    const config = useRuntimeConfig();
+    const override = config.public?.societyProfileEndpoint as string | undefined;
+    return override && override.length > 0 ? override : "/api/v2/society-profile";
+  })();
+
+  private readonly societyDetailsSuffix = (() => {
+    const config = useRuntimeConfig();
+    const suffix = config.public?.societyProfileDetailsSuffix as string | undefined;
+    const value = suffix && suffix.length > 0 ? suffix : "/society";
+    return value.startsWith("/") ? value : `/${value}`;
+  })();
+
+  private resolveBase(path: string = ""): string {
     const config = useRuntimeConfig();
     const apiBase = (config.public?.apiBase as string | undefined) || "";
     const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -16,28 +28,41 @@ export class DatosSociedadHttpRepository implements DatosSociedadRepository {
       if (!base) continue;
       try {
         const baseUrl = new URL(base, origin || "http://localhost:3000");
-        return new URL(`${RELATIVE_BASE}/${idSociety}/datos-sociedad`, baseUrl.origin).toString();
+        const basePath = this.basePath.startsWith("/")
+          ? this.basePath
+          : `/${this.basePath}`;
+        return new URL(`${basePath}${path}`, baseUrl.origin).toString();
       } catch {
         continue;
       }
     }
 
-    return `${RELATIVE_BASE}/${idSociety}/datos-sociedad`;
+    return `${this.basePath}${path}`;
+  }
+
+  private resolveSocietyPath(idSociety: string): string {
+    const sanitizedId = String(idSociety).replace(/^\//, "");
+    const suffix = this.societyDetailsSuffix;
+    return this.resolveBase(`/${sanitizedId}${suffix}`);
   }
 
   async get(idSociety: string): Promise<SociedadDatosGenerales | null> {
-    const response = await $fetch<{ data: any }>(this.resolveUrl(idSociety), {
-      method: "GET",
-    });
+    const response = await $fetch<{ data: any }>(
+      this.resolveSocietyPath(idSociety),
+      withAuthHeaders({ method: "GET" as const })
+    );
 
     return DatosSociedadMapper.toDomain(response.data ?? null);
   }
 
   async create(idSociety: string, payload: DatosSociedadDTO): Promise<SociedadDatosGenerales> {
-    await $fetch(this.resolveUrl(idSociety), {
-      method: "POST",
+    await $fetch(
+      this.resolveSocietyPath(idSociety),
+      withAuthHeaders({
+        method: "POST" as const,
       body: DatosSociedadMapper.toPayload(payload),
-    });
+    })
+    );
 
     const fresh = await this.get(idSociety);
     if (!fresh) {
@@ -47,10 +72,13 @@ export class DatosSociedadHttpRepository implements DatosSociedadRepository {
   }
 
   async update(idSociety: string, payload: DatosSociedadDTO): Promise<SociedadDatosGenerales> {
-    await $fetch(this.resolveUrl(idSociety), {
-      method: "PUT",
+    await $fetch(
+      this.resolveSocietyPath(idSociety),
+      withAuthHeaders({
+        method: "PUT" as const,
       body: DatosSociedadMapper.toPayload(payload),
-    });
+    })
+    );
 
     const fresh = await this.get(idSociety);
     if (!fresh) {
