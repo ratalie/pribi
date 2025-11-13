@@ -38,10 +38,7 @@
                   "
                   @click="activeSection = item.key"
                 >
-                  <component
-                    :is="getIcon(item.icon)"
-                    class="w-4 h-4 inline mr-2"
-                  />
+                  <component :is="getIcon(item.icon)" class="w-4 h-4 inline mr-2" />
                   {{ t(item.label) }}
                 </div>
               </div>
@@ -68,10 +65,7 @@
                   "
                   @click="activeSection = item.key"
                 >
-                  <component
-                    :is="getIcon(item.icon)"
-                    class="w-4 h-4 inline mr-2"
-                  />
+                  <component :is="getIcon(item.icon)" class="w-4 h-4 inline mr-2" />
                   {{ t(item.label) }}
                 </div>
               </div>
@@ -98,10 +92,7 @@
                   "
                   @click="activeSection = item.key"
                 >
-                  <component
-                    :is="getIcon(item.icon)"
-                    class="w-4 h-4 inline mr-2"
-                  />
+                  <component :is="getIcon(item.icon)" class="w-4 h-4 inline mr-2" />
                   {{ t(item.label) }}
                 </div>
               </div>
@@ -124,9 +115,7 @@
             <Card>
               <CardContent class="pt-6">
                 <div class="text-center py-8">
-                  <LayoutDashboard
-                    class="mx-auto h-12 w-12 text-muted-foreground"
-                  />
+                  <LayoutDashboard class="mx-auto h-12 w-12 text-muted-foreground" />
                   <h4 class="mt-4 text-lg font-semibold">
                     {{ t("config.dashboardSettings") }}
                   </h4>
@@ -221,12 +210,8 @@
             <!-- Tema -->
             <Card>
               <CardHeader>
-                <CardTitle class="text-lg">{{
-                  t("config.appearance")
-                }}</CardTitle>
-                <CardDescription>{{
-                  t("config.appearanceDesc")
-                }}</CardDescription>
+                <CardTitle class="text-lg">{{ t("config.appearance") }}</CardTitle>
+                <CardDescription>{{ t("config.appearanceDesc") }}</CardDescription>
               </CardHeader>
               <CardContent>
                 <ThemeSelector />
@@ -236,12 +221,8 @@
             <!-- Idioma -->
             <Card>
               <CardHeader>
-                <CardTitle class="text-lg">{{
-                  t("config.language")
-                }}</CardTitle>
-                <CardDescription>{{
-                  t("config.languageDesc")
-                }}</CardDescription>
+                <CardTitle class="text-lg">{{ t("config.language") }}</CardTitle>
+                <CardDescription>{{ t("config.languageDesc") }}</CardDescription>
               </CardHeader>
               <CardContent>
                 <LanguageSelect />
@@ -251,24 +232,16 @@
             <!-- Notificaciones -->
             <Card>
               <CardHeader>
-                <CardTitle class="text-lg">{{
-                  t("config.notifications")
-                }}</CardTitle>
-                <CardDescription>{{
-                  t("config.notificationsDesc")
-                }}</CardDescription>
+                <CardTitle class="text-lg">{{ t("config.notifications") }}</CardTitle>
+                <CardDescription>{{ t("config.notificationsDesc") }}</CardDescription>
               </CardHeader>
               <CardContent class="space-y-4">
                 <div class="flex items-center justify-between">
-                  <Label for="email-notifications">{{
-                    t("config.emailNotifications")
-                  }}</Label>
+                  <Label for="email-notifications">{{ t("config.emailNotifications") }}</Label>
                   <Switch id="email-notifications" />
                 </div>
                 <div class="flex items-center justify-between">
-                  <Label for="push-notifications">{{
-                    t("config.pushNotifications")
-                  }}</Label>
+                  <Label for="push-notifications">{{ t("config.pushNotifications") }}</Label>
                   <Switch id="push-notifications" />
                 </div>
               </CardContent>
@@ -368,79 +341,78 @@
 </template>
 
 <script setup lang="ts">
-import { cn } from "@/lib/utils";
-import {
-  LayoutDashboard,
-  CreditCard,
-  Users,
-  Settings,
-  User,
-  Mail,
-  HardDrive,
-} from "lucide-vue-next";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogOverlay,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  // DialogFooter,
-} from "@/components/ui/dialog";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { useProboI18n } from "~/composables/useProboI18n";
-import { getIcon } from "~/utils/iconMapper";
-import ThemeSelector from "./ThemeSelector.vue";
-import LanguageSelect from "./LanguageSelect.vue";
+  import { Button } from "@/components/ui/button";
+  import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+  } from "@/components/ui/card";
+  import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogOverlay,
+    DialogTitle,
+  } from "@/components/ui/dialog";
+  import { Label } from "@/components/ui/label";
+  import { Switch } from "@/components/ui/switch";
+  import { cn } from "@/lib/utils";
+  import {
+    CreditCard,
+    HardDrive,
+    LayoutDashboard,
+    Mail,
+    Settings,
+    User,
+    Users,
+  } from "lucide-vue-next";
+  import { useProboI18n } from "~/composables/useProboI18n";
+  import { getIcon } from "~~/docs/utils/iconMapper";
+  import LanguageSelect from "./LanguageSelect.vue";
+  import ThemeSelector from "./ThemeSelector.vue";
 
-// Props
-interface Props {
-  open: boolean;
-}
+  // Props
+  interface Props {
+    open: boolean;
+  }
 
-const props = defineProps<Props>();
+  const props = defineProps<Props>();
 
-// Emits
-const emit = defineEmits<{
-  "update:open": [value: boolean];
-}>();
+  // Emits
+  const emit = defineEmits<{
+    "update:open": [value: boolean];
+  }>();
 
-// Composables
-const { t } = useProboI18n();
+  // Composables
+  const { t } = useProboI18n();
 
-// Estado reactivo
-const activeSection = ref("preferences");
+  // Estado reactivo
+  const activeSection = ref("preferences");
 
-// Computed para v-model
-const isOpen = computed({
-  get: () => props.open,
-  set: (value) => emit("update:open", value),
-});
+  // Computed para v-model
+  const isOpen = computed({
+    get: () => props.open,
+    set: (value) => emit("update:open", value),
+  });
 
-// Configuración de secciones
-const administrationItems = [
-  { key: "dashboard", label: "config.dashboard", icon: "LayoutDashboard" },
-  { key: "billing", label: "config.billing", icon: "CreditCard" },
-  { key: "users", label: "config.users", icon: "Users" },
-  { key: "general", label: "config.general", icon: "Settings" },
-];
+  // Configuración de secciones
+  const administrationItems = [
+    { key: "dashboard", label: "config.dashboard", icon: "LayoutDashboard" },
+    { key: "billing", label: "config.billing", icon: "CreditCard" },
+    { key: "users", label: "config.users", icon: "Users" },
+    { key: "general", label: "config.general", icon: "Settings" },
+  ];
 
-const personalItems = [
-  { key: "preferences", label: "config.preferences", icon: "Settings" },
-  { key: "profile", label: "config.profile", icon: "User" },
-];
+  const personalItems = [
+    { key: "preferences", label: "config.preferences", icon: "Settings" },
+    { key: "profile", label: "config.profile", icon: "User" },
+  ];
 
-const integrationItems = [
-  { key: "gmail", label: "config.gmail", icon: "Mail" },
-  { key: "googledrive", label: "config.googleDrive", icon: "HardDrive" },
-];
+  const integrationItems = [
+    { key: "gmail", label: "config.gmail", icon: "Mail" },
+    { key: "googledrive", label: "config.googleDrive", icon: "HardDrive" },
+  ];
 </script>

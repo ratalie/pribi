@@ -10,7 +10,7 @@
 
 import type { FlowLayoutConfig, SidebarConfig } from "~/types/flow-layout";
 import { defineFlowLayout } from "~/types/flow-layout/flow-layout-config";
-import { buildFlowItemTree } from "~/utils/flowHelpers";
+import { buildFlowItemTree } from "~~/docs/utils/flowHelpers";
 import { juntaAccionistasFlowConfig } from "./junta-accionistas.flow";
 
 // Construir el árbol de items del flow
@@ -82,13 +82,16 @@ const stepsSidebar: SidebarConfig = {
     fn: (context) => {
       const level = context.currentItem?.hierarchy.level;
       console.log("[DEBUG] RightSidebar visibility check - current level:", level);
-      
+
       // Mostrar sidebar derecho cuando:
       // 1. Estamos en nivel 0-2 y el item tiene children (para mostrar sub-pasos)
       // 2. O estamos en nivel 3-4 (mostrar pasos hermanos / anchors)
-      const hasChildren = context.currentItem?.children && context.currentItem.children.length > 0;
-      const result = ((level !== undefined && level <= 2) && hasChildren) || (level !== undefined && level >= 3);
-      
+      const hasChildren =
+        context.currentItem?.children && context.currentItem.children.length > 0;
+      const result =
+        (level !== undefined && level <= 2 && hasChildren) ||
+        (level !== undefined && level >= 3);
+
       console.log("[DEBUG] - Has children:", hasChildren);
       console.log("[DEBUG] RightSidebar should be visible:", result);
       return result;

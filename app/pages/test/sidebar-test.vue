@@ -13,14 +13,22 @@
       <div class="flex gap-4">
         <button
           class="px-6 py-3 rounded-lg font-medium transition-colors"
-          :class="currentFlow === 'juntas' ? 'bg-primary text-primary-foreground' : 'bg-secondary hover:bg-secondary/80'"
+          :class="
+            currentFlow === 'juntas'
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-secondary hover:bg-secondary/80'
+          "
           @click="selectFlow('juntas')"
         >
           📋 Junta de Accionistas
         </button>
         <button
           class="px-6 py-3 rounded-lg font-medium transition-colors"
-          :class="currentFlow === 'sucursales' ? 'bg-primary text-primary-foreground' : 'bg-secondary hover:bg-secondary/80'"
+          :class="
+            currentFlow === 'sucursales'
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-secondary hover:bg-secondary/80'
+          "
           @click="selectFlow('sucursales')"
         >
           🏢 Sucursales
@@ -76,7 +84,7 @@
           <span class="font-semibold">Sidebars configurados:</span>
           {{ layoutConfig.sidebars.length }}
         </div>
-        
+
         <!-- Lista de sidebars -->
         <div class="sidebars-list mt-6">
           <h3 class="text-lg font-semibold mb-3">Sidebars:</h3>
@@ -92,8 +100,14 @@
               </span>
             </div>
             <div class="text-sm space-y-1">
-              <div><span class="font-medium">Modo:</span> {{ sidebar.mode }}</div>
-              <div><span class="font-medium">Items:</span> {{ sidebar.items.length }}</div>
+              <div>
+                <span class="font-medium">Modo:</span>
+                {{ sidebar.mode }}
+              </div>
+              <div>
+                <span class="font-medium">Items:</span>
+                {{ sidebar.items.length }}
+              </div>
               <div v-if="sidebar.filter">
                 <span class="font-medium">Filtro:</span>
                 {{ sidebar.filter.type }}
@@ -122,11 +136,14 @@
     <!-- Links rápidos de testing -->
     <div class="quick-links mt-8 p-6 border rounded-lg bg-card">
       <h2 class="text-2xl font-semibold mb-4">Links Rápidos de Testing</h2>
-      
+
       <div class="mb-6">
         <h3 class="font-semibold mb-2">Juntas - Nivel 0 (Sin sidebar derecho)</h3>
         <div class="space-y-2">
-          <NuxtLink to="/operaciones/junta-accionistas/seleccion-agenda" class="block text-blue-500 hover:underline">
+          <NuxtLink
+            to="/operaciones/junta-accionistas/seleccion-agenda"
+            class="block text-blue-500 hover:underline"
+          >
             → Selección de Agenda (Nivel 0)
           </NuxtLink>
         </div>
@@ -135,22 +152,36 @@
       <div class="mb-6">
         <h3 class="font-semibold mb-2">Juntas - Nivel 1-2 (Sin sidebar derecho)</h3>
         <div class="space-y-2">
-          <NuxtLink to="/operaciones/junta-accionistas/aporte-dinerario" class="block text-blue-500 hover:underline">
+          <NuxtLink
+            to="/operaciones/junta-accionistas/aporte-dinerario"
+            class="block text-blue-500 hover:underline"
+          >
             → Aporte Dinerario (Nivel 2)
           </NuxtLink>
-          <NuxtLink to="/operaciones/junta-accionistas/nombramiento-apoderados" class="block text-blue-500 hover:underline">
+          <NuxtLink
+            to="/operaciones/junta-accionistas/nombramiento-apoderados"
+            class="block text-blue-500 hover:underline"
+          >
             → Nombramiento Apoderados (Nivel 2)
           </NuxtLink>
         </div>
       </div>
 
       <div class="mb-6">
-        <h3 class="font-semibold mb-2 text-green-600">Juntas - Nivel 3 (CON sidebar derecho ✨)</h3>
+        <h3 class="font-semibold mb-2 text-green-600">
+          Juntas - Nivel 3 (CON sidebar derecho ✨)
+        </h3>
         <div class="space-y-2">
-          <NuxtLink to="/operaciones/junta-accionistas/nombramiento-apoderados/nombramiento" class="block text-green-500 hover:underline font-semibold">
+          <NuxtLink
+            to="/operaciones/junta-accionistas/nombramiento-apoderados/nombramiento"
+            class="block text-green-500 hover:underline font-semibold"
+          >
             → Nombramiento Apoderados - Designación (Nivel 3) ⭐
           </NuxtLink>
-          <NuxtLink to="/operaciones/junta-accionistas/aporte-dinerario/aportantes" class="block text-green-500 hover:underline font-semibold">
+          <NuxtLink
+            to="/operaciones/junta-accionistas/aporte-dinerario/aportantes"
+            class="block text-green-500 hover:underline font-semibold"
+          >
             → Aporte Dinerario - Aportantes (Nivel 3) ⭐
           </NuxtLink>
         </div>
@@ -159,10 +190,16 @@
       <div>
         <h3 class="font-semibold mb-2">Sucursales - Flat (Sin jerarquía)</h3>
         <div class="space-y-2">
-          <NuxtLink to="/registro-societario/sucursales/datos-sociedad" class="block text-purple-500 hover:underline">
+          <NuxtLink
+            to="/registro-societario/sucursales/datos-sociedad"
+            class="block text-purple-500 hover:underline"
+          >
             → Datos Sociedad
           </NuxtLink>
-          <NuxtLink to="/registro-societario/sucursales/capital-social" class="block text-purple-500 hover:underline">
+          <NuxtLink
+            to="/registro-societario/sucursales/capital-social"
+            class="block text-purple-500 hover:underline"
+          >
             → Capital Social
           </NuxtLink>
         </div>
@@ -175,11 +212,11 @@
   import { computed, ref } from "vue";
   import { useRoute } from "vue-router";
   import TreeViewer from "~/components/test/TreeViewer.vue";
-  import { buildFlowItemTree } from "~/utils/flowHelpers";
   import juntasLayoutConfig from "~/config/flows/juntas.layout";
   import sucursalesLayoutConfig from "~/config/flows/sucursales.layout";
-  import type { FlowConfig, FlowItemTree } from "~/types/flow-system";
   import type { FlowLayoutConfig } from "~/types/flow-layout";
+  import type { FlowConfig, FlowItemTree } from "~/types/flow-system";
+  import { buildFlowItemTree } from "~~/docs/utils/flowHelpers";
 
   const route = useRoute();
 
@@ -249,4 +286,3 @@
     overflow-x: auto;
   }
 </style>
-

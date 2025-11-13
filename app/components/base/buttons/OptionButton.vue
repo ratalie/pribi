@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { getIcon } from "~/utils/iconMapper";
+  import { getIcon } from "~~/docs/utils/iconMapper";
 
   interface Props {
     label: string;

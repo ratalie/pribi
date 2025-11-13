@@ -19,7 +19,7 @@
   import { useProboI18n } from "~/composables/useProboI18n";
   import { useUser } from "~/composables/useUser";
   import { navigationSections } from "~/config/navigation";
-  import { getIcon } from "~/utils/iconMapper";
+  import { getIcon } from "~~/docs/utils/iconMapper";
   import UserDropdownMenu from "../UserDropdownMenu.vue";
   import SidebarFlow from "./SidebarFlow.vue";
 

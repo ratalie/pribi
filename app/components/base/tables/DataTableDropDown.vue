@@ -9,7 +9,7 @@
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu";
   import { EllipsisVertical, MoreHorizontal } from "lucide-vue-next";
-  import { getIcon } from "~/utils/iconMapper";
+  import { getIcon } from "~~/docs/utils/iconMapper";
 
   const props = withDefaults(
     defineProps<{

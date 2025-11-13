@@ -1,9 +1,8 @@
-import { computed } from "vue";
-import { buildFlowItemTree } from "~/utils/flowHelpers";
 import { juntaAccionistasFlowConfig } from "@/config/flows/junta-accionistas.flow";
-import { JuntaRoutes } from "@/config/routes";
-import type { SummaryBlock, SummarySection } from "./types";
+import { computed } from "vue";
 import type { FlowItemTree } from "~/types/flow-system";
+import { buildFlowItemTree } from "~~/docs/utils/flowHelpers";
+import type { SummaryBlock, SummarySection } from "./types";
 
 const flowTree = buildFlowItemTree(juntaAccionistasFlowConfig.items);
 
@@ -33,7 +32,8 @@ function createBlockFromChild(child: FlowItemTree): SummaryBlock {
       label: grandChild.identity.label,
       value: "—",
       description:
-        grandChild.behavior.description || `Detalle resumido de "${grandChild.identity.label}".`,
+        grandChild.behavior.description ||
+        `Detalle resumido de "${grandChild.identity.label}".`,
       status: "pending" as const,
     })) || [];
 
@@ -70,7 +70,9 @@ function createSectionFromAgreement(item: FlowItemTree, order: number): SummaryS
 function buildPuntosAcuerdoSections(): SummarySection[] {
   const puntosAcuerdo = findItemById(flowTree, "puntos-acuerdo");
   if (!puntosAcuerdo?.children) return [];
-  return puntosAcuerdo.children.map((child, index) => createSectionFromAgreement(child, index + 10));
+  return puntosAcuerdo.children.map((child, index) =>
+    createSectionFromAgreement(child, index + 10)
+  );
 }
 
 /**
@@ -85,4 +87,3 @@ export const puntosAcuerdoSummarySections: SummarySection[] = buildPuntosAcuerdo
 export const usePuntosAcuerdoSummary = () => {
   return computed(() => puntosAcuerdoSummarySections);
 };
-

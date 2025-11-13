@@ -89,7 +89,7 @@
   import { useFlowLayoutConfig } from "~/composables/useFlowLayoutConfig";
   import type { SidebarConfig } from "~/types/flow-layout/sidebar-config";
   import type { FlowItemTree } from "~/types/flow-system/flow-item";
-  import { buildFlowItemTree, findItemByRoute } from "~/utils/flowHelpers";
+  import { buildFlowItemTree, findItemByRoute } from "~~/docs/utils/flowHelpers";
 
   /**
    * Cargar configuración del layout desde la ruta

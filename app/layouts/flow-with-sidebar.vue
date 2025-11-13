@@ -13,9 +13,9 @@
 <script setup lang="ts">
   import { juntaAccionistasFlowConfig, sucursalesFlowConfig } from "@/config/flows";
   import type { FlowConfig, FlowItemTree } from "@/types/flow-system";
-  import { buildFlowItemTree } from "@/utils/flowHelpers";
   import { computed } from "vue";
   import { useRoute } from "vue-router";
+  import { buildFlowItemTree } from "~~/docs/utils/flowHelpers";
 
   const route = useRoute();
 

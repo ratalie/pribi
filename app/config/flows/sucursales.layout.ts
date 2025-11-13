@@ -8,7 +8,7 @@
 
 import type { FlowLayoutConfig, SidebarConfig } from "~/types/flow-layout";
 import { defineFlowLayout } from "~/types/flow-layout/flow-layout-config";
-import { buildFlowItemTree } from "~/utils/flowHelpers";
+import { buildFlowItemTree } from "~~/docs/utils/flowHelpers";
 import { sucursalesFlowConfig } from "./sucursales.flow";
 
 // Construir el árbol de items del flow
