@@ -266,6 +266,8 @@ Agrega tus aprendizajes a estas guías.
 - [Vistas iniciales (historial, agregar, preview)](./10-SOCIEDADES-VISTAS.md)
 - [Patrón general por pasos](./11-SOCIEDADES-ARQUITECTURA-PASOS.md)
 - [Paso 1 – Datos principales (detalle técnico)](./12-SOCIEDADES-PASO1-DATOS.md)
+- [Paso 2 – Accionistas (plan y roadmap)](./13-SOCIEDADES-PASO2-ACCIONISTAS.md)
+- [Política de UUID (qué pasos usan ids)](./14-SOCIEDADES-UUID-POLICY.md)
 
 ---
 

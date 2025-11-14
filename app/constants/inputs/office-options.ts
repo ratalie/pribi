@@ -226,8 +226,8 @@ export const officeOptions: TypeOption[] = [
     id: 54,
     label: "TARAPOTO",
     name: "TARAPOTO",
-    value: "TAR",
-    acronimo: "TAR",
+    value: "TRP",
+    acronimo: "TRP",
   },
   { id: 55, label: "TARMA", name: "TARMA", value: "TAR", acronimo: "TAR" },
   {

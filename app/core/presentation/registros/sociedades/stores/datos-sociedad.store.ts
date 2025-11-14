@@ -112,12 +112,8 @@ export const useDatosSociedadStore = defineStore("registros-datos-sociedad", {
       this.errorMessage = null;
 
       try {
-        const payloadWithId: DatosSociedadDTO = {
-          ...payload,
-          idSociety: this.datos?.idSociety ?? payload.idSociety,
-        };
-        console.debug("[DatosSociedadStore] update:start", { idSociety, payloadWithId });
-        const result = await updateUseCase.execute(idSociety, payloadWithId);
+        console.debug("[DatosSociedadStore] update:start", { idSociety, payload });
+        const result = await updateUseCase.execute(idSociety, payload);
         console.debug("[DatosSociedadStore] update:success", { idSociety, result });
         this.datos = result;
         this.markFetchMetadata(idSociety, "internal");

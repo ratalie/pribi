@@ -123,25 +123,9 @@ export function useDatosSociedadForm(options: UseDatosSociedadFormOptions) {
       return "skipped";
     }
 
-    const ensureId = (): string => {
-      if (form.idSociety && form.idSociety.trim().length > 0) {
-        return form.idSociety;
-      }
-      if (store.datos?.idSociety && store.datos.idSociety.trim().length > 0) {
-        form.idSociety = store.datos.idSociety;
-        return form.idSociety;
-      }
-      const generated =
-        typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
-          ? crypto.randomUUID()
-          : `soc-${Math.random().toString(36).slice(2, 11)}-${Date.now()}`;
-      form.idSociety = generated;
-      return generated;
-    };
-
     const payload: DatosSociedadDTO = {
       ...form,
-      idSociety: ensureId(),
+      idSociety: form.idSociety ?? store.datos?.idSociety ?? undefined,
       tipoSocietario: normalizeTypeSocietyCode(form.tipoSocietario),
       oficinaRegistral: normalizeRegistryOfficeCode(form.oficinaRegistral),
     };

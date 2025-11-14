@@ -126,9 +126,7 @@ export const DatosSociedadMapper = {
       partidaRegistral: dto.partidaRegistral,
     };
 
-    return dto.idSociety && dto.idSociety.trim().length > 0
-      ? { id: dto.idSociety, ...payload }
-      : payload;
+    return payload;
   },
 };
 
