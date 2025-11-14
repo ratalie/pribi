@@ -1,5 +1,5 @@
-import { computed, ref, unref, watch } from "vue";
 import type { MaybeRef } from "vue";
+import { computed, onActivated, onMounted, ref, unref, watch } from "vue";
 
 import { useDatosSociedadStore } from "../stores/datos-sociedad.store";
 
@@ -27,7 +27,15 @@ export function useDatosSociedadController(options: ControllerOptions) {
   const lastError = ref<string | null>(null);
 
   const runEnsure = async (params: EnsureParams = {}) => {
-    if (!societyId.value) return { fetched: false };
+    if (!societyId.value) {
+      console.warn("[DatosController] ensure skipped: empty societyId", { params });
+      return { fetched: false };
+    }
+    console.log("[DatosController] ensure:start", {
+      societyId: societyId.value,
+      params,
+      ttlMs: options.ttlMs,
+    });
     manualEnsuring.value = true;
     try {
       const result = await store.ensureLoaded(societyId.value, {
@@ -36,6 +44,11 @@ export function useDatosSociedadController(options: ControllerOptions) {
         force: params.force ?? false,
       });
       lastError.value = null;
+      console.log("[DatosController] ensure:done", {
+        societyId: societyId.value,
+        fetched: result.fetched,
+        storeStatus: store.status,
+      });
       return result;
     } catch (error: any) {
       const message =
@@ -47,26 +60,78 @@ export function useDatosSociedadController(options: ControllerOptions) {
     }
   };
 
+  const ensureWithLog = (params: EnsureParams = {}) =>
+    runEnsure(params).catch((error) => {
+      console.error("[useDatosSociedadController] ensure error", error);
+    });
+
+  const needsBootstrap = () => {
+    if (!societyId.value) return false;
+    if (!store.lastSocietyId || store.lastSocietyId !== societyId.value) return true;
+    return !store.lastFetchedAt;
+  };
+
   if (options.auto !== false) {
+    onMounted(() => {
+      if (!societyId.value) {
+        console.warn("[DatosController] onMounted skipped: no societyId");
+        return;
+      }
+      console.log("[DatosController] onMounted -> ensure", {
+        societyId: societyId.value,
+        needsBootstrap: needsBootstrap(),
+        forceInitial: options.forceInitial,
+        storeHasData: store.hasData,
+        lastSocietyId: store.lastSocietyId,
+      });
+      ensureWithLog({ force: options.forceInitial ?? false });
+    });
+
+    onActivated(() => {
+      if (!societyId.value) {
+        console.warn("[DatosController] onActivated skipped: no societyId");
+        return;
+      }
+      const needs = needsBootstrap();
+      console.log("[DatosController] onActivated -> ensure", {
+        societyId: societyId.value,
+        needsBootstrap: needs,
+        storeHasData: store.hasData,
+      });
+      if (needs) {
+        ensureWithLog();
+      }
+    });
+
     watch(
       () => societyId.value,
-      (value) => {
+      (value, previous) => {
         if (!value) return;
-        runEnsure({ force: options.forceInitial ?? false }).catch((error) => {
-          console.error("[useDatosSociedadController] ensure error", error);
+        if (previous && value === previous) return;
+        console.log("[DatosController] societyId changed", { value, previous });
+        ensureWithLog({ force: previous !== undefined });
+      }
+    );
+
+    watch(
+      () => store.datos,
+      (value) => {
+        if (value) return;
+        if (!societyId.value) return;
+        if (store.lastFetchedAt && store.lastSocietyId === societyId.value) return;
+        console.warn("[DatosController] store.datos empty detected, forcing ensure", {
+          societyId: societyId.value,
+          lastFetchedAt: store.lastFetchedAt,
+          lastSocietyId: store.lastSocietyId,
         });
-      },
-      { immediate: true }
+        ensureWithLog({ force: true });
+      }
     );
   }
 
-  const isEnsuring = computed(
-    () => manualEnsuring.value || store.status === "loading"
-  );
+  const isEnsuring = computed(() => manualEnsuring.value || store.status === "loading");
 
-  const isBootstrapping = computed(
-    () => isEnsuring.value && !store.hasData
-  );
+  const isBootstrapping = computed(() => isEnsuring.value && !store.hasData);
 
   return {
     ensure: runEnsure,
@@ -78,4 +143,3 @@ export function useDatosSociedadController(options: ControllerOptions) {
     hasData: computed(() => store.hasData),
   };
 }
-

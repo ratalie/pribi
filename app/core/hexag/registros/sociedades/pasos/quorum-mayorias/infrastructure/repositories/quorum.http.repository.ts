@@ -1,7 +1,7 @@
 import type { QuorumDTO } from "../../application";
 import type { QuorumRepository, QuorumConfig } from "../../domain";
-import { QuorumMapper } from "../mappers/quorum.mapper";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
+import { QuorumMapper } from "../mappers/quorum.mapper";
 
 export class QuorumHttpRepository implements QuorumRepository {
   private readonly basePath = (() => {
@@ -36,22 +36,61 @@ export class QuorumHttpRepository implements QuorumRepository {
     return this.resolveBase(`/${sanitizedId}/quorum`);
   }
 
+  private logRequest(action: string, url: string, config: Record<string, any>) {
+    const headers = config.headers;
+    let authHeader: string | undefined;
+    if (headers instanceof Headers) {
+      authHeader = headers.get("Authorization") ?? undefined;
+    } else if (headers && typeof headers === "object") {
+      authHeader = headers.Authorization ?? headers.authorization;
+    }
+    const tokenPreview =
+      authHeader && authHeader.length > 12
+        ? `${authHeader.replace(/^Bearer\s+/i, "").slice(0, 6)}…${authHeader.slice(-4)}`
+        : authHeader?.replace(/^Bearer\s+/i, "") ?? null;
+
+    console.debug(`[Repository][QuorumHttp] ${action}:request`, {
+      url,
+      hasAuthHeader: Boolean(authHeader),
+      tokenPreview,
+    });
+  }
+
+  private logError(action: string, url: string, error: any) {
+    const statusCode = error?.statusCode ?? error?.response?.status ?? null;
+    console.error(`[Repository][QuorumHttp] ${action}:error`, {
+      url,
+      statusCode,
+      message: error?.data?.message ?? error?.message,
+    });
+  }
+
   async get(societyProfileId: string): Promise<QuorumConfig | null> {
-    const response = await $fetch<{ data: any }>(
-      this.resolveQuorumPath(societyProfileId),
-      withAuthHeaders({ method: "GET" as const })
-    );
-    return QuorumMapper.toDomain(response?.data) ?? null;
+    const url = this.resolveQuorumPath(societyProfileId);
+    const config = withAuthHeaders({ method: "GET" as const });
+    this.logRequest("get", url, config as Record<string, any>);
+    try {
+      const response = await $fetch<{ data: any }>(url, config);
+      return QuorumMapper.toDomain(response?.data) ?? null;
+    } catch (error) {
+      this.logError("get", url, error);
+      throw error;
+    }
   }
 
   async create(societyProfileId: string, payload: QuorumDTO): Promise<QuorumConfig> {
-    await $fetch(
-      this.resolveQuorumPath(societyProfileId),
-      withAuthHeaders({
-        method: "POST" as const,
-        body: QuorumMapper.toPayload(payload),
-      })
-    );
+    const url = this.resolveQuorumPath(societyProfileId);
+    const config = withAuthHeaders({
+      method: "POST" as const,
+      body: QuorumMapper.toPayload(payload),
+    });
+    this.logRequest("create", url, config as Record<string, any>);
+    try {
+      await $fetch(url, config);
+    } catch (error) {
+      this.logError("create", url, error);
+      throw error;
+    }
     const fresh = await this.get(societyProfileId);
     if (!fresh) {
       throw new Error("No pudimos obtener el quórum después de crearlo.");
@@ -60,13 +99,18 @@ export class QuorumHttpRepository implements QuorumRepository {
   }
 
   async update(societyProfileId: string, payload: QuorumDTO): Promise<QuorumConfig> {
-    await $fetch(
-      this.resolveQuorumPath(societyProfileId),
-      withAuthHeaders({
-        method: "PUT" as const,
-        body: QuorumMapper.toPayload(payload),
-      })
-    );
+    const url = this.resolveQuorumPath(societyProfileId);
+    const config = withAuthHeaders({
+      method: "PUT" as const,
+      body: QuorumMapper.toPayload(payload),
+    });
+    this.logRequest("update", url, config as Record<string, any>);
+    try {
+      await $fetch(url, config);
+    } catch (error) {
+      this.logError("update", url, error);
+      throw error;
+    }
     const fresh = await this.get(societyProfileId);
     if (!fresh) {
       throw new Error("No pudimos obtener el quórum después de actualizarlo.");
