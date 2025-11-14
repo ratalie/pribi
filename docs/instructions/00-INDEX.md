@@ -261,4 +261,12 @@ Agrega tus aprendizajes a estas guías.
 
 ---
 
-**Última actualización**: Octubre 30, 2025
+## 🧩 Arquitectura Register Sociedades
+
+- [Vistas iniciales (historial, agregar, preview)](./10-SOCIEDADES-VISTAS.md)
+- [Patrón general por pasos](./11-SOCIEDADES-ARQUITECTURA-PASOS.md)
+- [Paso 1 – Datos principales (detalle técnico)](./12-SOCIEDADES-PASO1-DATOS.md)
+
+---
+
+**Última actualización**: Noviembre 14, 2025
