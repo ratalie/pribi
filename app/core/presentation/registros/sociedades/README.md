@@ -16,19 +16,33 @@ app/core/presentation/registros/sociedades/
     ├── datos-sociedad/
     │   ├── DatosSociedadForm.vue
     │   └── useDatosSociedad.ts
-    └── accionistas/…             # (roadmap)
+    └── accionistas/
+        ├── AccionistasManager.vue
+        ├── components/
+        │   ├── AccionistaForm.vue
+        │   ├── AccionistaModal.vue
+        │   └── AccionistasList.vue
+        ├── types.ts
+        └── useAccionistas.ts
 ```
 
 - **Stores**: encapsulan el estado compartido (Pinia) y sólo hablan con casos de uso/ports.
 - **Composables**: empaquetan la lógica para cada vista o formulario.
 - **Components**: renderizan la UI reutilizable (formularios, vistas de resumen, etc.).
 
-## Flujo de Datos Principales
+## Flujos implementados
 
+### Datos principales
 1. `DatosSociedadForm.vue` se monta con `societyId` y `mode`.
 2. El composable `useDatosSociedad` instancia los casos de uso (`Get/Create/Update`) contra `DatosSociedadHttpRepository`.
 3. El repositorio aplica `withAuthHeaders` y consulta el endpoint configurado en runtime config (MSW intercepta en dev).
 4. El formulario maneja el estado local (loading/saving) y expone eventos (`completion-change`) sin depender de Pinia.
+
+### Accionistas
+1. `AccionistasManager.vue` se monta con `societyId` y `mode`.
+2. El composable `useAccionistas` crea los casos de uso (`List/Create/Update/Delete`) contra `AccionistasHttpRepository`.
+3. `AccionistasList.vue` muestra el estado actual y `AccionistaModal.vue` encapsula la UI para crear/editar.
+4. El modal emite `submit` con los valores normalizados que se transforman a `AccionistaDTO` antes de ejecutar el use case correspondiente.
 
 ## Modos soportados
 

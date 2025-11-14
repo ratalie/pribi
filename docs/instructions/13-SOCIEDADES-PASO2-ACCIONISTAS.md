@@ -25,52 +25,47 @@
 
 ## 2. Arquitectura objetivo
 
-Seguir el mismo patrón que Datos Principales:
+Seguir el mismo patrón que Datos Principales, pero usando un composable (no Pinia store legacy):
 
-1. **Página**
+1. **Páginas**
 
-   - `app/pages/registros/sociedades/{crear|editar}/[id]/accionistas.vue` (nuevo) + versión `/registro-societario/...`.
-   - Calcula `societyId`, invoca `useAccionistasController`, muestra `AccionistasStep` (o el nuevo `AccionistasManager` cuando esté listo).
+   - `app/pages/registros/sociedades/{crear|editar}/[id]/accionistas.vue` + versión `/registros/sociedades/[id]/accionistas.vue`.
+   - Calculan `societyId`, renderizan `AccionistasManager` y le pasan el `mode` (`EntityModeEnum`).
 
-2. **Controller** (`useAccionistasController.ts`)
+2. **Composable (`useAccionistas.ts`)**
 
-   - En `app/core/presentation/registros/sociedades/composables/`.
-   - Exponer `isBootstrapping`, `accionistas`, `ensure`, etc., llamando al store `useAccionistasStore`.
+   - Vive en `app/core/presentation/registros/sociedades/pasos/accionistas`.
+   - Instancia los casos de uso `List/Create/Update/Delete` del hexágono y expone `accionistas`, `isLoading`, `isSaving`, `fetchAll`, `create`, `update`, `remove`.
+   - Maneja errores y resetea el estado después de cada operación.
 
-3. **Store** (`useAccionistasStore.ts`)
+3. **UI / Modal**
 
-   - En `app/core/presentation/registros/sociedades/stores/`.
-   - Sintaxis Pinia options + acciones `ensureLoaded`, `list`, `create`, `update`, `delete`.
-   - Mantener `lastFetchedAt`, `origin`, etc.
+   - `AccionistasManager.vue` orquesta la tabla (`AccionistasList.vue`) y `AccionistaModal.vue`.
+   - `AccionistaForm.vue` usa Zod + vee-validate; por ahora cubre Personas Naturales y Jurídicas (el resto de tipos quedará para una iteración posterior).
+   - El manager convierte los valores del formulario a `AccionistaDTO` antes de llamar a los casos de uso.
 
 4. **DTOs/Repos**
 
-   - Crear `app/core/hexag/registros/sociedades/pasos/accionistas/application/dtos`.
-   - Repositorio HTTP: `accionistas.http.repository.ts` con métodos `list`, `create`, `update`, `delete`.
+   - `app/core/hexag/registros/sociedades/pasos/accionistas/application` contiene los DTOs y use cases.
+   - `AccionistasHttpRepository` implementa `list/create/update/delete` y se apoya en `AccionistasMapper`.
 
 5. **MSW**
 
-   - `app/core/hexag/registros/sociedades/pasos/accionistas/infrastructure/mocks/handlers`.
-   - Base path: `"*/api/v2/society-profile/:id/shareholders"`.
-   - Persistir mock en IndexedDB (`STORE_NAME = "accionistas"`), guardando tanto `accionista` como `persona`.
-   - Seeder con ejemplos de los 6 tipos de persona (usar los payloads del backend como referencia).
-
-6. **UI / Modal**
-   - El modal debe manejar las variantes de `persona.tipo`.
-   - Necesitamos un mapper `AccionistaMapper` que convierta la respuesta del backend al DTO que consume el modal (por ejemplo, dividir en `datosPersonaNatural`, `datosPersonaJuridica`, etc.).
+   - Handlers en `app/core/hexag/registros/sociedades/pasos/accionistas/infrastructure/mocks`.
+   - Base path `"*/api/v2/society-profile/:id/shareholder"`.
+   - Persistencia en IndexedDB (`STORE_NAME = "accionistas"`) para simular el backend mientras se trabaja offline.
 
 ## 3. Roadmap de implementación
 
-| Orden | Tarea                                                                                  | Archivo(s)                                                                                          |
-| ----- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| 1     | Documentar DTOs/persona-type                                                           | `app/core/hexag/registros/sociedades/pasos/accionistas/domain`                                      |
-| 2     | Crear repositorio HTTP + use cases (`List`, `Create`, `Update`, `Delete`)              | `app/core/hexag/registros/sociedades/pasos/accionistas/application` + `infrastructure/repositories` |
-| 3     | Store Pinia (`useAccionistasStore`) con `ensureLoaded`                                 | `app/core/presentation/registros/sociedades/stores/accionistas.store.ts`                            |
-| 4     | Controller (`useAccionistasController`)                                                | `app/core/presentation/registros/sociedades/composables`                                            |
-| 5     | Refactor `AccionistasStep` para usar el store/controller (sin `load` manual)           | `app/core/presentation/.../components/` o mover desde `modules`                                     |
-| 6     | Crear MSW handlers + state (datos ejemplo de los 6 tipos)                              | `app/core/hexag/registros/sociedades/pasos/accionistas/infrastructure/mocks`                        |
-| 7     | Actualizar páginas `/registro-societario` y `/registros` para usar el nuevo controller | `app/pages/.../accionistas.vue`                                                                     |
-| 8     | Documentar pruebas manuales (crear, editar, eliminar)                                  | README del módulo                                                                                   |
+| Orden | Tarea                                                               | Estado | Archivo(s)                                                                                          |
+| ----- | ------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------- |
+| 1     | Documentar DTOs/persona-type y mapper                               | ✅     | `app/core/hexag/registros/sociedades/pasos/accionistas/domain` + `infrastructure/mappers`           |
+| 2     | Repositorio HTTP + use cases (`List`, `Create`, `Update`, `Delete`) | ✅     | `app/core/hexag/registros/sociedades/pasos/accionistas/application` + `infrastructure/repositories` |
+| 3     | Composable `useAccionistas` (reemplaza store/controller legacy)     | ✅     | `app/core/presentation/registros/sociedades/pasos/accionistas/useAccionistas.ts`                    |
+| 4     | UI (Manager + Modal + Form)                                         | ✅     | `app/core/presentation/registros/sociedades/pasos/accionistas/components/*`                         |
+| 5     | MSW handlers + estado mock                                          | ✅     | `app/core/hexag/registros/sociedades/pasos/accionistas/infrastructure/mocks`                        |
+| 6     | Actualizar páginas `/registros` para usar la nueva capa             | ✅     | `app/pages/registros/sociedades/.../accionistas.vue`                                                |
+| 7     | Documentar pruebas manuales (crear, editar, eliminar)               | ⏳     | README de presentación                                                                              |
 
 ## 4. Documentación y README
 

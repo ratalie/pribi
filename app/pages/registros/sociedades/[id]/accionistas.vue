@@ -15,5 +15,8 @@
 </script>
 
 <template>
-  <AccionistasManager :mode="EntityModeEnum.EDITAR" :society-id="societyId" />
+  <section>
+    <AccionistasManager :society-id="societyId" :mode="EntityModeEnum.EDITAR" />
+  </section>
 </template>
+
