@@ -79,7 +79,7 @@ const formatPasoActual = (paso: SocietyRegisterStep | string | undefined) => {
   };
 
   const goToEdit = (id: string) => {
-    router.push(`/registros/sociedades/editar/${id}/datos-sociedad`);
+    router.push(`/registros/sociedades/${id}/datos-sociedad`);
   };
 
   const handleDelete = async (id: string) => {

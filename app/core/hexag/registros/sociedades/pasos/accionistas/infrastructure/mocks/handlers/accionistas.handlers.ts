@@ -8,10 +8,13 @@ import {
 
 const baseUrl = "*/api/v2/society-profile/:id/shareholder";
 
+const ensureParam = (value: string | readonly string[] | undefined) =>
+  Array.isArray(value) ? value[0] : value;
+
 export const accionistasHandlers = [
   http.get(baseUrl, async ({ params }) => {
-    const id = params.id;
-    if (!id || Array.isArray(id)) {
+    const id = ensureParam(params.id);
+    if (!id) {
       return HttpResponse.json({ error: "Invalid society profile id" }, { status: 400 });
     }
     const data = await listAccionistasMock(id);
@@ -25,8 +28,8 @@ export const accionistasHandlers = [
   }),
 
   http.post(baseUrl, async ({ params, request }) => {
-    const id = params.id;
-    if (!id || Array.isArray(id)) {
+    const id = ensureParam(params.id);
+    if (!id) {
       return HttpResponse.json({ error: "Invalid society profile id" }, { status: 400 });
     }
     const body = (await request.json()) as any;
@@ -44,8 +47,8 @@ export const accionistasHandlers = [
   }),
 
   http.put(baseUrl, async ({ params, request }) => {
-    const id = params.id;
-    if (!id || Array.isArray(id)) {
+    const id = ensureParam(params.id);
+    if (!id) {
       return HttpResponse.json({ error: "Invalid society profile id" }, { status: 400 });
     }
     const body = (await request.json()) as any;
@@ -60,9 +63,9 @@ export const accionistasHandlers = [
   }),
 
   http.delete(`${baseUrl}/:shareholderId`, async ({ params }) => {
-    const id = params.id;
-    const accionistaId = params.shareholderId;
-    if (!id || Array.isArray(id) || !accionistaId || Array.isArray(accionistaId)) {
+    const id = ensureParam(params.id);
+    const accionistaId = ensureParam(params.shareholderId);
+    if (!id || !accionistaId) {
       return HttpResponse.json({ error: "Invalid identifiers" }, { status: 400 });
     }
     const deleted = await deleteAccionistaMock(id, accionistaId);

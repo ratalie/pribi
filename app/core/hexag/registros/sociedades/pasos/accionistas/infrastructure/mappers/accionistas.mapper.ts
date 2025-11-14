@@ -1,5 +1,15 @@
 import { cloneDeep } from "lodash-es";
-import type { Accionista, Persona, PersonaFideicomiso, PersonaFondoInversion, PersonaJuridica, PersonaNatural, PersonaSucursal, PersonaSucesionIndivisa } from "../../domain";
+import type {
+  Accionista,
+  Persona,
+  PersonaFideicomiso,
+  PersonaFondoInversion,
+  PersonaJuridica,
+  PersonaNatural,
+  PersonaSucursal,
+  PersonaSucesionIndivisa,
+  Representante,
+} from "../../domain";
 import type { AccionistaDTO } from "../../application/dtos/accionista.dto";
 
 type BackendPersona = Record<string, any> & { tipo?: string };
@@ -16,10 +26,13 @@ const normalizeRepresentante = (value: any) => {
   };
 };
 
+const hasRepresentante = (value: Persona | undefined): value is Persona & {
+  representante?: Representante;
+} => Boolean(value && "representante" in value);
+
 const mapPersona = (data: BackendPersona | undefined): Persona => {
   const tipo = (data?.tipo ?? "NATURAL").toUpperCase() as Persona["tipo"];
-
-  const base = { ...data, tipo };
+  const base = { ...(data ?? {}), tipo } as Record<string, any>;
 
   switch (tipo) {
     case "JURIDICA":
@@ -128,7 +141,7 @@ export const AccionistasMapper = {
 
   toPayload(dto: AccionistaDTO) {
     const clone = cloneDeep(dto);
-    if (clone.persona?.representante && !clone.persona.representante.apellidoMaterno) {
+    if (hasRepresentante(clone.persona) && clone.persona.representante && !clone.persona.representante.apellidoMaterno) {
       delete clone.persona.representante.apellidoMaterno;
     }
     return clone;

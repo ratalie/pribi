@@ -1,0 +1,15 @@
+export { actividadExteriorSchema } from "./actividad-exterior.schema";
+export { datosSociedadSchema } from "./datos-sociedad.schema";
+export { departamentoSchema } from "./departamento.schema";
+export { direccionSchema } from "./direccion.schema";
+export { distritoSchema } from "./distrito.schema";
+export { fechaEscrituraPublicaSchema } from "./fecha-escritura-publica.schema";
+export { fechaInscripcionRucSchema } from "./fecha-inscripcion-ruc.schema";
+export { fechaRegistrosPublicosSchema } from "./fecha-registros-publicos.schema";
+export { nombreComercialSchema } from "./nombre-comercial.schema";
+export { oficinaRegistralSchema } from "./oficina-registral.schema";
+export { partidaRegistralSchema } from "./partida-registral.schema";
+export { provinciaSchema } from "./provincia.schema";
+export { razonSocialSchema } from "./razon-social.schema";
+export { rucSchema } from "./ruc.schema";
+export { tipoSociedadSchema } from "./tipo-sociedad.schema";

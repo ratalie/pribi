@@ -10,6 +10,9 @@ import {
 
 const baseUrl = "*/api/v2/society-profile/:id/quorum";
 
+const ensureParam = (value: string | readonly string[] | undefined) =>
+  Array.isArray(value) ? value[0] : value;
+
 const toQuorumDTO = (body?: Record<string, any>): QuorumDTO => ({
   id: body?.id ?? undefined,
   primeraConvocatoriaSimple: Number(body?.primeraConvocatoriaSimple ?? body?.primera_simple ?? 51),
@@ -42,8 +45,8 @@ const toBackend = (entity: QuorumConfig) => ({
 
 export const quorumHandlers = [
   http.get(baseUrl, async ({ params }) => {
-    const { id } = params;
-    if (!id || Array.isArray(id)) {
+    const id = ensureParam(params.id);
+    if (!id) {
       return HttpResponse.json({ error: "Invalid society profile id" }, { status: 400 });
     }
 
@@ -64,8 +67,8 @@ export const quorumHandlers = [
   }),
 
   http.post(baseUrl, async ({ params, request }) => {
-    const { id } = params;
-    if (!id || Array.isArray(id)) {
+    const id = ensureParam(params.id);
+    if (!id) {
       return HttpResponse.json({ error: "Invalid society profile id" }, { status: 400 });
     }
 
@@ -86,8 +89,8 @@ export const quorumHandlers = [
   }),
 
   http.put(baseUrl, async ({ params, request }) => {
-    const { id } = params;
-    if (!id || Array.isArray(id)) {
+    const id = ensureParam(params.id);
+    if (!id) {
       return HttpResponse.json({ error: "Invalid society profile id" }, { status: 400 });
     }
 

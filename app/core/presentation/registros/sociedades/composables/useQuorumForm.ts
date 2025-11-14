@@ -10,6 +10,9 @@ const clampPercent = (value: number): number => {
   return Math.min(100, Math.max(0, Number(value)));
 };
 
+const normalizePercent = (input: unknown) =>
+  clampPercent(typeof input === "number" ? input : Number(input ?? 0));
+
 const createEmptyForm = (): QuorumDTO => ({
   primeraConvocatoriaSimple: 51,
   primeraConvocatoriaCalificada: 67,
@@ -25,6 +28,15 @@ interface UseQuorumFormOptions {
 }
 
 type SubmitResult = "created" | "updated" | "skipped";
+type QuorumNumericField = Exclude<keyof QuorumDTO, "id">;
+const NUMERIC_FIELDS: QuorumNumericField[] = [
+  "primeraConvocatoriaSimple",
+  "primeraConvocatoriaCalificada",
+  "segundaConvocatoriaSimple",
+  "segundaConvocatoriaCalificada",
+  "quorumMinimoSimple",
+  "quorumMinimoCalificado",
+] as const;
 
 export function useQuorumForm(options: UseQuorumFormOptions) {
   const store = useQuorumStore();
@@ -39,8 +51,8 @@ export function useQuorumForm(options: UseQuorumFormOptions) {
   const hasData = computed(() => store.config !== null);
   const errorMessage = computed(() => store.errorMessage);
 
-  const setValue = (field: keyof QuorumDTO, value: number) => {
-    form[field] = clampPercent(value);
+  const setValue = (field: QuorumNumericField, value: number) => {
+    form[field] = normalizePercent(value);
   };
 
   const assignFromConfig = (value: QuorumDTO | null | undefined) => {
@@ -49,10 +61,11 @@ export function useQuorumForm(options: UseQuorumFormOptions) {
       return;
     }
 
-    (Object.keys(form) as Array<keyof QuorumDTO>).forEach((key) => {
+    NUMERIC_FIELDS.forEach((key) => {
       const nextValue = value[key];
-      form[key] = clampPercent(typeof nextValue === "number" ? nextValue : Number(nextValue));
+      form[key] = normalizePercent(nextValue);
     });
+    form.id = value.id;
   };
 
   watch(
@@ -154,4 +167,6 @@ export function useQuorumForm(options: UseQuorumFormOptions) {
     hasValidationErrors,
   };
 }
+
+export type { QuorumNumericField };
 

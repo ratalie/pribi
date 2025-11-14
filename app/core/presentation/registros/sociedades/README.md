@@ -7,13 +7,16 @@ La intención es que el equipo de UI pueda seguir extendiendo vistas sin tocar e
 
 ```
 app/core/presentation/registros/sociedades/
-├── components/
-│   └── DatosSociedadForm.vue    # Wrapper UI para crear/editar/preview
-├── composables/
-│   └── useDatosSociedadForm.ts  # Orquesta stores + modo (crear/editar/preview)
+├── components/                    # Componentes legacy a migrar
+├── composables/                   # Controladores de otros pasos
 ├── stores/
 │   ├── sociedad-historial.store.ts
-│   └── datos-sociedad.store.ts
+│   └── accionistas.store.ts
+└── pasos/
+    ├── datos-sociedad/
+    │   ├── DatosSociedadForm.vue
+    │   └── useDatosSociedad.ts
+    └── accionistas/…             # (roadmap)
 ```
 
 - **Stores**: encapsulan el estado compartido (Pinia) y sólo hablan con casos de uso/ports.
@@ -23,9 +26,9 @@ app/core/presentation/registros/sociedades/
 ## Flujo de Datos Principales
 
 1. `DatosSociedadForm.vue` se monta con `societyId` y `mode`.
-2. El composable `useDatosSociedadForm` llama al store `useDatosSociedadStore`.
-3. El store ejecuta los casos de uso (`Get/Create/Update`) que dependen del puerto `DatosSociedadRepository`.
-4. Por defecto el repositorio apunta al adaptador HTTP, que en dev es interceptado por MSW.
+2. El composable `useDatosSociedad` instancia los casos de uso (`Get/Create/Update`) contra `DatosSociedadHttpRepository`.
+3. El repositorio aplica `withAuthHeaders` y consulta el endpoint configurado en runtime config (MSW intercepta en dev).
+4. El formulario maneja el estado local (loading/saving) y expone eventos (`completion-change`) sin depender de Pinia.
 
 ## Modos soportados
 
@@ -38,7 +41,7 @@ app/core/presentation/registros/sociedades/
 ```vue
 <script setup lang="ts">
 import { EntityModeEnum } from '~/types/enums/EntityModeEnum';
-import DatosSociedadForm from '~/core/presentation/registros/sociedades/components/DatosSociedadForm.vue';
+import DatosSociedadForm from '~/core/presentation/registros/sociedades/pasos/datos-sociedad/DatosSociedadForm.vue';
 
 const route = useRoute();
 const societyId = computed(() => route.params.id as string);
@@ -53,6 +56,14 @@ const societyId = computed(() => route.params.id as string);
 
 `pages/registros/sociedades/[id]/preview.vue` utiliza los mismos componentes en modo `PREVISUALIZAR`, por lo que no se duplica lógica.  
 Para añadir el resto de pasos, crea wrappers equivalentes (Accionistas, Acciones, etc.) y márcalos en el `ROADMAP`.
+
+## Accionistas (Paso 2)
+
+- Store Pinia: `useAccionistasStore` (estado, ensureLoaded, CRUD contra los casos de uso).
+- Controller: `useAccionistasController` (se encarga del `ensure` y expone `isBootstrapping`).
+- Repositorio/DTOs/mocks: ver `docs/instructions/13-SOCIEDADES-PASO2-ACCIONISTAS.md`.
+- Política de UUID: sigue `docs/instructions/14-SOCIEDADES-UUID-POLICY.md` (colecciones usan UUID, pasos únicos no).
+- Para probar en mock, habilita `MSW_DISABLED=false`; los handlers ya incluyen datos de ejemplo para los seis tipos de persona.
 
 ## Próximos pasos sugeridos
 

@@ -1,5 +1,17 @@
 {
   // https://nuxt.com/docs/guide/concepts/typescript
+  "compilerOptions": {
+    "baseUrl": ".",
+    "types": ["node"],
+    "paths": {
+      "~/*": ["app/*"],
+      "@/*": ["app/*"],
+      "@hexag/*": ["app/core/hexag/*"],
+      "@presentation/*": ["app/core/presentation/*"],
+      "@shared/*": ["app/core/shared/*"],
+      "@components/*": ["app/components/*"]
+    }
+  },
   "files": [],
   "references": [
     {

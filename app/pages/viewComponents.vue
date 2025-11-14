@@ -16,7 +16,7 @@
     razonSocialSchema,
     rucSchema,
     tipoSociedadSchema,
-  } from "~/modules/registro-sociedades/schemas/datosSociedad";
+  } from "@hexag/registros/sociedades/pasos/datos-sociedad/domain/schemas";
   import { ItemStateEnum } from "~/types/enums/ItemStateEnum";
 
   const uploadedFile = ref<File | null>(null);

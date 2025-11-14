@@ -57,7 +57,7 @@
       return;
     }
 
-    await router.push(`/registros/sociedades/crear/${id}/datos-sociedad`);
+    await router.push(`/registros/sociedades/${id}/datos-sociedad`);
     isSubmitting.value = false;
   };
 </script>

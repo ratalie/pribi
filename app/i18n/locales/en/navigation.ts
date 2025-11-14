@@ -53,7 +53,6 @@ export default {
   planServicio: "Service Plan",
   personalizacion: "Customization",
   configuracion: "Settings",
-  ayuda: "Help",
 
   nav: {
     ayuda: "Help",

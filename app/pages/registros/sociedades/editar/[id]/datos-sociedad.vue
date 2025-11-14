@@ -2,8 +2,7 @@
   import { computed } from "vue";
   import { useRoute } from "vue-router";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
-  import DatosSociedadForm from "~/core/presentation/registros/sociedades/components/DatosSociedadForm.vue";
-  import { useDatosSociedadController } from "~/core/presentation/registros/sociedades/composables/useDatosSociedadController";
+  import DatosSociedadForm from "~/core/presentation/registros/sociedades/pasos/datos-sociedad/DatosSociedadForm.vue";
 
   definePageMeta({
     layout: "registros",
@@ -13,14 +12,10 @@
   const route = useRoute();
   const societyId = computed(() => route.params.id as string);
 
-  const { isBootstrapping } = useDatosSociedadController({
-    societyId,
-    source: "internal",
-  });
 </script>
 
 <template>
-  <section :data-loading="isBootstrapping">
+  <section>
     <DatosSociedadForm :society-id="societyId" :mode="EntityModeEnum.EDITAR" />
   </section>
 </template>

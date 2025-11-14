@@ -1,4 +1,4 @@
-import { getRecord, putRecord } from "../../../../../../shared/mock-database";
+import { getRecord, putRecord } from "@hexag/registros/shared/mock-database";
 import type { QuorumDTO } from "../../../application";
 import type { QuorumConfig } from "../../../domain";
 

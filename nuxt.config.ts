@@ -1,5 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
+import { fileURLToPath } from "node:url";
+
 import tailwindcss from "@tailwindcss/vite";
 
 declare const process: { env: Record<string, string | undefined> };
@@ -9,6 +11,13 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   ssr: false,
+
+  alias: {
+    "@hexag": fileURLToPath(new URL("./app/core/hexag", import.meta.url)),
+    "@presentation": fileURLToPath(new URL("./app/core/presentation", import.meta.url)),
+    "@shared": fileURLToPath(new URL("./app/core/shared", import.meta.url)),
+    "@components": fileURLToPath(new URL("./app/components", import.meta.url)),
+  },
 
   runtimeConfig: {
     public: {
@@ -80,8 +89,8 @@ export default defineNuxtConfig({
      * Directory that the component lives in.
      * @default "./components/ui"
      */
-    componentDir: "./components/ui",
+    componentDir: "./app/components/ui",
   },
 
-  components: [{ path: "~/components", pathPrefix: false }],
+  components: [{ path: "~/components", pathPrefix: false, extensions: ["vue"] }],
 });

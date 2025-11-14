@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
-import { getAllRecords, getRecord, putRecord, deleteRecord } from "../../../../../shared/mock-database";
+
+import { getAllRecords, getRecord, putRecord, deleteRecord } from "@hexag/registros/shared/mock-database";
 import type { Accionista } from "../../../domain";
 import type { AccionistaDTO } from "../../../application/dtos/accionista.dto";
 
@@ -15,15 +16,17 @@ function ensureId(value?: string) {
   return nanoid();
 }
 
+type StoredAccionista = Accionista & { societyProfileId?: string };
+
 export async function listAccionistasMock(profileId: string): Promise<Accionista[]> {
-  const records = (await getAllRecords<Accionista>(STORE_NAME)) ?? [];
-  return records.filter((item) => (item as any).societyProfileId === profileId);
+  const records = (await getAllRecords<StoredAccionista>(STORE_NAME)) ?? [];
+  return records.filter((item) => item.societyProfileId === profileId);
 }
 
 export async function getAccionistaMock(profileId: string, accionistaId: string): Promise<Accionista | null> {
-  const record = await getRecord<Accionista>(STORE_NAME, accionistaId);
+  const record = await getRecord<StoredAccionista>(STORE_NAME, accionistaId);
   if (!record) return null;
-  return (record as any).societyProfileId === profileId ? record : null;
+  return record.societyProfileId === profileId ? record : null;
 }
 
 export async function createAccionistaMock(profileId: string, payload: AccionistaDTO): Promise<Accionista> {
@@ -43,7 +46,7 @@ export async function createAccionistaMock(profileId: string, payload: Accionist
   await putRecord(STORE_NAME, {
     ...entity,
     societyProfileId: profileId,
-  } as any);
+  } as StoredAccionista);
 
   return entity;
 }
@@ -70,7 +73,7 @@ export async function updateAccionistaMock(profileId: string, payload: Accionist
   await putRecord(STORE_NAME, {
     ...entity,
     societyProfileId: profileId,
-  } as any);
+  } as StoredAccionista);
 
   return entity;
 }

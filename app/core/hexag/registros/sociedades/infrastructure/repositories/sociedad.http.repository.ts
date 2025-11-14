@@ -1,3 +1,5 @@
+import type { FetchOptions } from "ofetch";
+
 import { getTypeSocietyLabel, normalizeTypeSocietyCode } from "~/constants/inputs/enum-helpers";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
 import type { SociedadResumenDTO } from "../../application/dtos";
@@ -187,12 +189,14 @@ export class SociedadHttpRepository implements SociedadRepository {
   async list(): Promise<SociedadResumenDTO[]> {
     const listPath = this.listSuffix ?? "";
     const url = this.resolveUrl(listPath);
-    const requestConfig = withAuthHeaders({ method: "GET" as const });
-    const authHeader =
-      (requestConfig.headers as Record<string, string> | undefined)?.Authorization ??
-      (requestConfig.headers instanceof Headers
-        ? requestConfig.headers.get("Authorization") ?? undefined
-        : undefined);
+    const authConfig = withAuthHeaders() as FetchOptions & {
+      headers?: Record<string, string>;
+    };
+    const requestConfig = {
+      ...authConfig,
+      method: "GET" as const,
+    };
+    const authHeader = authConfig.headers?.Authorization ?? undefined;
     const tokenPreview = authHeader
       ? authHeader.replace(/^Bearer\s+/i, "")
       : undefined;

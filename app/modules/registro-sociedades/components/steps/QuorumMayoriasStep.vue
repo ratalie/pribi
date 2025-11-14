@@ -1,14 +1,16 @@
 <script setup lang="ts">
+  import { Button } from "@/components/ui/button";
   import { computed, onMounted, watch } from "vue";
   import { useRoute, useRouter } from "vue-router";
-  import { Button } from "@/components/ui/button";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import QuorumRowTable from "~/components/base/tables/quorum-table/QuorumRow.vue";
   import QuorumTable from "~/components/base/tables/quorum-table/QuorumTable.vue";
+  import {
+    useQuorumForm,
+    type QuorumNumericField,
+  } from "~/core/presentation/registros/sociedades/composables/useQuorumForm";
   import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
-  import { useQuorumForm } from "~/core/presentation/registros/sociedades/composables/useQuorumForm";
-  import type { QuorumDTO } from "~/core/hexag/registros/sociedades/pasos/quorum-mayorias/application";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   interface Props {
@@ -62,11 +64,9 @@
     return segments.join("/");
   });
 
-  const handlePercentUpdate =
-    (field: keyof QuorumDTO) =>
-    (value: number) => {
-      setValue(field, value);
-    };
+  const handlePercentUpdate = (field: QuorumNumericField) => (value: number) => {
+    setValue(field, value);
+  };
 
   const handleReset = () => {
     if (isSaving.value) return;
@@ -79,24 +79,23 @@
       return;
     }
 
-    await withAsyncToast(
-      () => submit(),
-      {
-        loading: {
-          title: "Guardando quórum…",
-          description: "Estamos registrando la configuración en el sistema.",
-        },
-        success: () => ({
-          title: "Quórum guardado",
-          description: "La configuración se registró correctamente.",
-        }),
-        error: (error) => ({
-          title: "No pudimos guardar",
-          description:
-            error instanceof Error ? error.message : "Revisa los valores e inténtalo nuevamente.",
-        }),
-      }
-    );
+    await withAsyncToast(() => submit(), {
+      loading: {
+        title: "Guardando quórum…",
+        description: "Estamos registrando la configuración en el sistema.",
+      },
+      success: () => ({
+        title: "Quórum guardado",
+        description: "La configuración se registró correctamente.",
+      }),
+      error: (error) => ({
+        title: "No pudimos guardar",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Revisa los valores e inténtalo nuevamente.",
+      }),
+    });
 
     await router.push(nextRoute.value);
   };
@@ -129,11 +128,17 @@
       body="Ingrese los porcentajes mínimos requeridos para la instalación de juntas y toma de acuerdos."
     />
 
-    <p v-if="errorMessage" class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+    <p
+      v-if="errorMessage"
+      class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+    >
       {{ errorMessage }}
     </p>
 
-    <div v-if="isLoading" class="space-y-4 rounded-2xl border border-primary-100 bg-white p-10">
+    <div
+      v-if="isLoading"
+      class="space-y-4 rounded-2xl border border-primary-100 bg-white p-10"
+    >
       <div class="h-6 w-1/2 animate-pulse rounded bg-gray-200" />
       <div class="h-32 w-full animate-pulse rounded bg-gray-100" />
       <div class="h-32 w-full animate-pulse rounded bg-gray-100" />

@@ -4,6 +4,8 @@ const DB_VERSION = 1;
 const STORE_SCHEMAS = {
   sociedades: { keyPath: "idSociety" },
   datosSociedad: { keyPath: "idSociety" },
+  quorumConfig: { keyPath: "id" },
+  accionistas: { keyPath: "id" },
 } as const;
 
 type StoreName = keyof typeof STORE_SCHEMAS;

@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { Button } from "@/components/ui/button";
   import { Form } from "vee-validate";
-  import { computed, toRef, watch } from "vue";
+  import { computed, reactive, ref, toRef, watch } from "vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
@@ -10,11 +10,13 @@
   import {
     getRegistryOfficeLabel,
     getTypeSocietyLabel,
+    normalizeRegistryOfficeCode,
+    normalizeTypeSocietyCode,
   } from "~/constants/inputs/enum-helpers";
   import { officeOptions } from "~/constants/inputs/office-options";
   import { societyTypeOptions } from "~/constants/inputs/society-types";
-  import type { DatosSociedadDTO } from "~/core/hexag/registros/sociedades/pasos/datos-sociedad/application/dtos/datos-sociedad.dto";
-  import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
+  import type { DatosSociedadDTO } from "@hexag/registros/sociedades/pasos/datos-sociedad/application";
+  import type { SociedadDatosGenerales } from "@hexag/registros/sociedades/pasos/datos-sociedad/domain";
   import {
     actividadExteriorSchema,
     departamentoSchema,
@@ -30,9 +32,39 @@
     razonSocialSchema,
     rucSchema,
     tipoSociedadSchema,
-  } from "~/modules/registro-sociedades/schemas/datosSociedad";
+  } from "@hexag/registros/sociedades/pasos/datos-sociedad/domain/schemas";
+  import { useDatosSociedad } from "@presentation/registros/sociedades/pasos/datos-sociedad/useDatosSociedad";
+  import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
-  import { useDatosSociedadForm } from "../composables/useDatosSociedadForm";
+
+  const REQUIRED_FIELDS: Array<keyof DatosSociedadDTO> = [
+    "numeroRuc",
+    "tipoSocietario",
+    "razonSocial",
+    "nombreComercial",
+    "direccion",
+    "distrito",
+    "provincia",
+    "departamento",
+  ];
+
+  const createEmptyForm = (): DatosSociedadDTO => ({
+    idSociety: undefined,
+    numeroRuc: "",
+    tipoSocietario: "",
+    razonSocial: "",
+    nombreComercial: "",
+    direccion: "",
+    distrito: "",
+    provincia: "",
+    departamento: "",
+    fechaInscripcionRuc: "",
+    actividadExterior: "",
+    fechaEscrituraPublica: "",
+    fechaRegistrosPublicos: "",
+    partidaRegistral: "",
+    oficinaRegistral: "",
+  });
 
   interface Props {
     societyId: string;
@@ -53,21 +85,11 @@
     ): void;
   }>();
 
-  const {
-    form,
-    isLoading,
-    isSaving,
-    isReadonly,
-    errorMessage,
-    submit,
-    reset,
-    datos,
-    isComplete,
-    missingRequiredFields,
-  } = useDatosSociedadForm({
-    societyId: societyIdRef,
-    mode: modeRef,
-  });
+  const form = reactive<DatosSociedadDTO>(createEmptyForm());
+
+  const { datos, isLoading, isSaving, error, fetch, save } = useDatosSociedad(societyIdRef);
+
+  const isReadonly = computed(() => modeRef.value === EntityModeEnum.PREVISUALIZAR);
 
   const societyOptions = societyTypeOptions;
   const officeSelectOptions = officeOptions;
@@ -76,31 +98,109 @@
   const tipoSocietarioLabel = computed(() => getTypeSocietyLabel(form.tipoSocietario));
   const oficinaRegistralLabel = computed(() => getRegistryOfficeLabel(form.oficinaRegistral));
 
-  async function handleSubmit() {
-    if (isReadonly.value) {
+  const missingRequiredFields = computed(() =>
+    REQUIRED_FIELDS.filter((field) => {
+      const value = form[field];
+      return typeof value !== "string" || value.trim().length === 0;
+    })
+  );
+
+  const isComplete = computed(() => missingRequiredFields.value.length === 0);
+
+  const errorMessage = computed(() => error.value?.message ?? null);
+
+  function populateForm(value: SociedadDatosGenerales | null) {
+    if (!value) {
+      Object.assign(form, createEmptyForm());
       return;
     }
 
-    await withAsyncToast(async () => submit(), {
+    Object.assign(form, {
+      idSociety: value.idSociety ?? form.idSociety ?? undefined,
+      numeroRuc: value.numeroRuc ?? "",
+      tipoSocietario: normalizeTypeSocietyCode(value.tipoSocietario ?? ""),
+      razonSocial: value.razonSocial ?? "",
+      nombreComercial: value.nombreComercial ?? "",
+      direccion: value.direccion ?? "",
+      distrito: value.distrito ?? "",
+      provincia: value.provincia ?? "",
+      departamento: value.departamento ?? "",
+      fechaInscripcionRuc: value.fechaInscripcionRuc ?? "",
+      actividadExterior: value.actividadExterior ?? "",
+      fechaEscrituraPublica: value.fechaEscrituraPublica ?? "",
+      fechaRegistrosPublicos: value.fechaRegistrosPublicos ?? "",
+      partidaRegistral: value.partidaRegistral ?? "",
+      oficinaRegistral: normalizeRegistryOfficeCode(value.oficinaRegistral ?? ""),
+    });
+  }
+
+  watch(
+    () => datos.value,
+    (value) => {
+      populateForm(value);
+    },
+    { immediate: true }
+  );
+
+  const lastFetchedSocietyId = ref<string | null>(null);
+
+  const fetchDatos = async () => {
+    const id = societyIdRef.value;
+    if (!id) return;
+
+    try {
+      await fetch();
+      lastFetchedSocietyId.value = id;
+    } catch (err: any) {
+      const statusCode = err?.statusCode ?? err?.response?.status;
+      if (statusCode !== 404) {
+        console.error("[DatosSociedadForm] fetch error", err);
+      }
+    }
+  };
+
+  watch(
+    () => societyIdRef.value,
+    (value, previous) => {
+      if (!value) return;
+      if (value === previous && lastFetchedSocietyId.value === value) return;
+      fetchDatos();
+    },
+    { immediate: true }
+  );
+
+  const buildPayload = (): DatosSociedadDTO => ({
+    ...form,
+    idSociety: form.idSociety ?? datos.value?.idSociety ?? undefined,
+    tipoSocietario: normalizeTypeSocietyCode(form.tipoSocietario),
+    oficinaRegistral: normalizeRegistryOfficeCode(form.oficinaRegistral),
+  });
+
+  async function handleSubmit() {
+    if (isReadonly.value) return;
+
+    await withAsyncToast(() => save(buildPayload()), {
       loading: {
         title: "Guardando datos principales…",
         description: "Estamos sincronizando la información con el registro.",
       },
-      success: (result) => {
-        if (result === "skipped") {
-          return null;
-        }
-
-        return {
-          title: result === "created" ? "Datos registrados" : "Datos actualizados",
-          description: "Los datos principales se guardaron correctamente.",
-        };
-      },
+      success: (result) => ({
+        title: result === "created" ? "Datos registrados" : "Datos actualizados",
+        description: "Los datos principales se guardaron correctamente.",
+      }),
       error: () => ({
         title: "No se pudo guardar",
         description: "Revisa la información ingresada e inténtalo nuevamente.",
       }),
     });
+  }
+
+  function reset() {
+    if (datos.value) {
+      populateForm(datos.value);
+      return;
+    }
+    Object.assign(form, createEmptyForm());
   }
 
   function handleInvalidSubmit(ctx: any) {
@@ -121,6 +221,7 @@
     },
     { immediate: true }
   );
+
   const createdAt = computed(() => {
     if (!isReadonly.value || !datos.value?.createdAt) return "";
     return new Intl.DateTimeFormat("es-PE", { dateStyle: "long", timeStyle: "short" }).format(
