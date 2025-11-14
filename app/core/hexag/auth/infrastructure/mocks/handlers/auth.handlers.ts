@@ -8,7 +8,7 @@ interface LoginRequestBody {
 }
 
 export const authHandlers = [
-  http.post("/api/v1/auth", async ({ request }) => {
+  http.post("/api/v2/auth", async ({ request }) => {
     const body = (await request.json()) as LoginRequestBody;
 
     if (!body?.email || !body?.password) {
@@ -47,4 +47,3 @@ export const authHandlers = [
     });
   }),
 ];
-

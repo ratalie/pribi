@@ -16,10 +16,8 @@ export const sociedadesHandlers = [
       success: true,
       message: "Sociedad creada correctamente (mock).",
       code: 201,
-      data: sociedad.profileNumber,
-      meta: {
-        idSociety: sociedad.idSociety,
-        pasoActual: sociedad.pasoActual,
+      data: {
+        structureId: sociedad.profileNumber,
       },
     };
 

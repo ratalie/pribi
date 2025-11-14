@@ -79,7 +79,10 @@ async function resolveNextProfileNumber(): Promise<number> {
 
 export async function createSociedadMock(): Promise<SocietyMainDataMock> {
   const profileNumber = await resolveNextProfileNumber();
-  const uuid = crypto.randomUUID();
+  const uuid =
+    typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : `soc-${Math.random().toString(36).slice(2, 10)}-${Date.now()}`;
   const record = buildDefaultSociety(profileNumber, uuid);
 
   console.debug("[MSW][Sociedades] Creando sociedad mock", record);
@@ -88,25 +91,39 @@ export async function createSociedadMock(): Promise<SocietyMainDataMock> {
   return structuredClone(record);
 }
 
-export async function listSociedadesMock(): Promise<SocietyMainDataMock[]> {
+export interface SocietyListItemMock {
+  id: number;
+  razonSocial: string;
+  ruc: string;
+  directorio: boolean;
+  fechaRegistroSociedad: string | null;
+  nombreComercial: string;
+  tipoSociedad: string;
+  pasoActual: SocietyRegisterStep;
+  createdAt: string;
+  updatedAt: string;
+  societyId: string;
+}
+
+export async function listSociedadesMock(): Promise<SocietyListItemMock[]> {
   const data = await getAllRecords<SocietyMainDataMock>(STORE_NAME);
   const ordered = data.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 
   console.debug("[MSW][Sociedades] Listando sociedades mock", ordered);
 
   return ordered.map((item) => ({
-    ...item,
-    society: {
-      ...item.society,
-      razonSocial: item.society.razonSocial ?? item.society.reasonSocial,
-      reasonSocial: item.society.reasonSocial ?? item.society.razonSocial,
-      tipoSocietario: item.society.tipoSocietario ?? item.society.typeSocietyId,
-      typeSocietyId: item.society.typeSocietyId ?? item.society.tipoSocietario,
-      nombreComercial: item.society.nombreComercial ?? item.society.commercialName,
-      commercialName: item.society.commercialName ?? item.society.nombreComercial,
-      numeroRuc: item.society.numeroRuc ?? item.society.ruc,
-      ruc: item.society.ruc ?? item.society.numeroRuc,
-    },
+    id: item.profileNumber,
+    razonSocial: item.society.razonSocial ?? item.society.reasonSocial ?? "Sociedad sin nombre",
+    ruc: item.society.ruc ?? item.society.numeroRuc ?? "",
+    directorio: Boolean(item.society.directorio ?? item.society.hasBoard ?? false),
+    fechaRegistroSociedad:
+      item.society.fechaRegistroSociedad ?? item.society.registrationDate ?? null,
+    nombreComercial: item.society.nombreComercial ?? item.society.commercialName ?? "",
+    tipoSociedad: item.society.tipoSocietario ?? item.society.typeSocietyId ?? "",
+    pasoActual: item.pasoActual,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+    societyId: item.society.id ?? item.society.societyId ?? item.idSociety,
   }));
 }
 

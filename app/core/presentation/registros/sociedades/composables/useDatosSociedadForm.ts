@@ -1,11 +1,13 @@
 import { computed, reactive, toRefs, unref, watch } from "vue";
 import type { MaybeRef } from "vue";
 
+import { normalizeRegistryOfficeCode, normalizeTypeSocietyCode } from "~/constants/inputs/enum-helpers";
 import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 import type { DatosSociedadDTO } from "~/core/hexag/registros/sociedades/pasos/datos-sociedad/application";
 import { useDatosSociedadStore } from "../stores/datos-sociedad.store";
 
 const createEmptyForm = (): DatosSociedadDTO => ({
+  idSociety: undefined,
   numeroRuc: "",
   tipoSocietario: "",
   razonSocial: "",
@@ -41,6 +43,10 @@ interface UseDatosSociedadFormOptions {
 export function useDatosSociedadForm(options: UseDatosSociedadFormOptions) {
   const store = useDatosSociedadStore();
   const form = reactive<DatosSociedadDTO>(createEmptyForm());
+  const normalizeFormEnums = () => {
+    form.tipoSocietario = normalizeTypeSocietyCode(form.tipoSocietario);
+    form.oficinaRegistral = normalizeRegistryOfficeCode(form.oficinaRegistral);
+  };
 
   const mode = computed(() => unref(options.mode) ?? EntityModeEnum.CREAR);
   const societyId = computed(() => unref(options.societyId));
@@ -76,6 +82,7 @@ export function useDatosSociedadForm(options: UseDatosSociedadFormOptions) {
       }
 
       Object.assign(form, {
+        idSociety: value.idSociety ?? undefined,
         numeroRuc: value.numeroRuc ?? "",
         tipoSocietario: value.tipoSocietario ?? "",
         razonSocial: value.razonSocial ?? "",
@@ -91,6 +98,7 @@ export function useDatosSociedadForm(options: UseDatosSociedadFormOptions) {
         partidaRegistral: value.partidaRegistral ?? "",
         oficinaRegistral: value.oficinaRegistral ?? "",
       });
+      normalizeFormEnums();
       console.debug("[useDatosSociedadForm] form populated from store", { form: { ...form } });
     },
     { immediate: true }
@@ -115,7 +123,28 @@ export function useDatosSociedadForm(options: UseDatosSociedadFormOptions) {
       return "skipped";
     }
 
-    const payload: DatosSociedadDTO = { ...form };
+    const ensureId = (): string => {
+      if (form.idSociety && form.idSociety.trim().length > 0) {
+        return form.idSociety;
+      }
+      if (store.datos?.idSociety && store.datos.idSociety.trim().length > 0) {
+        form.idSociety = store.datos.idSociety;
+        return form.idSociety;
+      }
+      const generated =
+        typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+          ? crypto.randomUUID()
+          : `soc-${Math.random().toString(36).slice(2, 11)}-${Date.now()}`;
+      form.idSociety = generated;
+      return generated;
+    };
+
+    const payload: DatosSociedadDTO = {
+      ...form,
+      idSociety: ensureId(),
+      tipoSocietario: normalizeTypeSocietyCode(form.tipoSocietario),
+      oficinaRegistral: normalizeRegistryOfficeCode(form.oficinaRegistral),
+    };
     console.debug("[useDatosSociedadForm] submit:start", {
       hasData: hasData.value,
       payload,
@@ -136,6 +165,7 @@ export function useDatosSociedadForm(options: UseDatosSociedadFormOptions) {
   function reset() {
     if (store.datos) {
       Object.assign(form, {
+        idSociety: store.datos.idSociety ?? form.idSociety ?? undefined,
         numeroRuc: store.datos.numeroRuc ?? "",
         tipoSocietario: store.datos.tipoSocietario ?? "",
         razonSocial: store.datos.razonSocial ?? "",
@@ -151,6 +181,7 @@ export function useDatosSociedadForm(options: UseDatosSociedadFormOptions) {
         partidaRegistral: store.datos.partidaRegistral ?? "",
         oficinaRegistral: store.datos.oficinaRegistral ?? "",
       });
+      normalizeFormEnums();
       console.debug("[useDatosSociedadForm] reset:from-store", { form: { ...form } });
     } else {
       Object.assign(form, createEmptyForm());

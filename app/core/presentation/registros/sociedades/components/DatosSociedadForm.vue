@@ -8,6 +8,7 @@ import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue"
 import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
 import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
 import { Button } from "@/components/ui/button";
+import { getRegistryOfficeLabel, getTypeSocietyLabel } from "~/constants/inputs/enum-helpers";
 import {
   actividadExteriorSchema,
   departamentoSchema,
@@ -69,6 +70,9 @@ const {
 const societyOptions = societyTypeOptions;
 const officeSelectOptions = officeOptions;
 const { withAsyncToast } = useToastFeedback();
+
+const tipoSocietarioLabel = computed(() => getTypeSocietyLabel(form.tipoSocietario));
+const oficinaRegistralLabel = computed(() => getRegistryOfficeLabel(form.oficinaRegistral));
 
 async function handleSubmit() {
   if (isReadonly.value) {
@@ -174,7 +178,7 @@ const updatedAt = computed(() => {
         </div>
         <div>
           <dt class="text-sm font-medium text-gray-500">Tipo de sociedad</dt>
-          <dd class="mt-1 text-base text-gray-900">{{ form.tipoSocietario || "—" }}</dd>
+          <dd class="mt-1 text-base text-gray-900">{{ tipoSocietarioLabel || "—" }}</dd>
         </div>
         <div>
           <dt class="text-sm font-medium text-gray-500">Razón social</dt>
@@ -222,7 +226,7 @@ const updatedAt = computed(() => {
         </div>
         <div>
           <dt class="text-sm font-medium text-gray-500">Oficina registral</dt>
-          <dd class="mt-1 text-base text-gray-900">{{ form.oficinaRegistral || "—" }}</dd>
+          <dd class="mt-1 text-base text-gray-900">{{ oficinaRegistralLabel || "—" }}</dd>
         </div>
       </dl>
 

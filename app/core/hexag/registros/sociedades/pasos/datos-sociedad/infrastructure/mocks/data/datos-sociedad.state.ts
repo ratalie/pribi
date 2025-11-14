@@ -1,8 +1,13 @@
+import {
+  normalizeRegistryOfficeCode,
+  normalizeTypeSocietyCode,
+} from "~/constants/inputs/enum-helpers";
 import { getRecord, putRecord } from "../../../../../../shared/mock-database";
 import type { DatosSociedadDTO } from "../../../application/dtos/datos-sociedad.dto";
 import type { SociedadDatosGenerales } from "../../../domain";
 
 const defaultPayload: DatosSociedadDTO = {
+  idSociety: undefined,
   numeroRuc: "",
   tipoSocietario: "S.A.C.",
   razonSocial: "Sociedad sin nombre",
@@ -28,7 +33,7 @@ function buildEntity(
   return {
     idSociety,
     numeroRuc: payload.numeroRuc,
-    tipoSocietario: payload.tipoSocietario,
+    tipoSocietario: normalizeTypeSocietyCode(payload.tipoSocietario),
     razonSocial: payload.razonSocial,
     nombreComercial: payload.nombreComercial,
     direccion: payload.direccion,
@@ -40,7 +45,7 @@ function buildEntity(
     fechaEscrituraPublica: payload.fechaEscrituraPublica,
     fechaRegistrosPublicos: payload.fechaRegistrosPublicos,
     partidaRegistral: payload.partidaRegistral,
-    oficinaRegistral: payload.oficinaRegistral,
+    oficinaRegistral: normalizeRegistryOfficeCode(payload.oficinaRegistral),
     createdAt: previous?.createdAt ?? now,
     updatedAt: now,
   };
@@ -60,7 +65,11 @@ export async function createDatosSociedadMock(
   idSociety: string,
   payload: DatosSociedadDTO = defaultPayload
 ): Promise<SociedadDatosGenerales> {
-  const entity = buildEntity(idSociety, payload);
+  const entity = buildEntity(idSociety, {
+    ...defaultPayload,
+    ...payload,
+    idSociety: payload.idSociety ?? idSociety,
+  });
   console.debug("[MSW][DatosSociedadState] create:before", { idSociety, payload, entity });
   await putRecord(STORE_NAME, entity);
   console.debug("[MSW][DatosSociedadState] create:after", {
@@ -83,6 +92,7 @@ export async function updateDatosSociedadMock(
       ...defaultPayload,
       ...current,
       ...payload,
+      idSociety: payload.idSociety ?? current.idSociety ?? idSociety,
     },
     current
   );

@@ -1,3 +1,4 @@
+import { getTypeSocietyLabel, normalizeTypeSocietyCode } from "~/constants/inputs/enum-helpers";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
 import type { SociedadResumenDTO } from "../../application/dtos";
 import type { SociedadRepository } from "../../domain/ports";
@@ -90,11 +91,12 @@ export class SociedadHttpRepository implements SociedadRepository {
       society?.socialReason ??
       "Sociedad sin nombre";
 
-    const tipoSocietario =
+    const rawTipoSociedad =
       society?.tipoSociedad ??
       society?.tipoSocietario ??
       society?.typeSocietyId ??
       "";
+    const tipoSocietario = getTypeSocietyLabel(normalizeTypeSocietyCode(rawTipoSociedad));
 
     const ruc =
       society?.ruc ??
@@ -161,7 +163,7 @@ export class SociedadHttpRepository implements SociedadRepository {
   }
 
   async create(): Promise<string> {
-    const response = await $fetch<{ data: number }>(
+    const response = await $fetch<{ data: { structureId?: number } | number }>(
       this.resolveUrl(),
       withAuthHeaders({
         method: "POST" as const,
@@ -170,19 +172,58 @@ export class SociedadHttpRepository implements SociedadRepository {
 
     console.debug("[Repository][SociedadHttp] create() response", response);
 
-    return String(response.data);
+    const structureId =
+      typeof response?.data === "number"
+        ? response.data
+        : response?.data?.structureId ?? null;
+
+    if (structureId === null) {
+      throw new Error("La respuesta del backend no incluye el structureId generado.");
+    }
+
+    return String(structureId);
   }
 
   async list(): Promise<SociedadResumenDTO[]> {
     const listPath = this.listSuffix ?? "";
-    const response = await $fetch<{ data: any }>(
-      this.resolveUrl(listPath),
-      withAuthHeaders({ method: "GET" as const })
-    );
-    const raw = response?.data;
-    const entries = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
-    console.debug("[Repository][SociedadHttp] list() response", entries);
-    return entries.map((item: any) => this.mapProfileToResumen(item));
+    const url = this.resolveUrl(listPath);
+    const requestConfig = withAuthHeaders({ method: "GET" as const });
+    const authHeader =
+      (requestConfig.headers as Record<string, string> | undefined)?.Authorization ??
+      (requestConfig.headers instanceof Headers
+        ? requestConfig.headers.get("Authorization") ?? undefined
+        : undefined);
+    const tokenPreview = authHeader
+      ? authHeader.replace(/^Bearer\s+/i, "")
+      : undefined;
+
+    console.debug("[Repository][SociedadHttp] list():request", {
+      url,
+      hasAuthHeader: Boolean(authHeader),
+      tokenPreview: tokenPreview
+        ? tokenPreview.length > 12
+          ? `${tokenPreview.slice(0, 6)}…${tokenPreview.slice(-4)}`
+          : tokenPreview
+        : null,
+    });
+
+    try {
+      const response = await $fetch<{ data: any }>(url, requestConfig);
+      const raw = response?.data;
+      const entries = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
+      console.debug("[Repository][SociedadHttp] list():response", {
+        count: entries.length,
+      });
+      return entries.map((item: any) => this.mapProfileToResumen(item));
+    } catch (error: any) {
+      const statusCode = error?.statusCode ?? error?.response?.status ?? null;
+      console.error("[Repository][SociedadHttp] list():error", {
+        url,
+        statusCode,
+        message: error?.data?.message ?? error?.message,
+      });
+      throw error;
+    }
   }
 
   async delete(id: string): Promise<void> {

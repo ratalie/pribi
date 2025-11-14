@@ -1,3 +1,4 @@
+import { normalizeRegistryOfficeCode, normalizeTypeSocietyCode } from "~/constants/inputs/enum-helpers";
 import type { DatosSociedadDTO } from "../../application/dtos/datos-sociedad.dto";
 import type { SociedadDatosGenerales } from "../../domain";
 
@@ -56,50 +57,78 @@ export const DatosSociedadMapper = {
       return fallback;
     };
 
+    const toDateValue = (value: unknown): string => {
+      if (typeof value !== "string") return "";
+      if (value.length === 0) return "";
+      const isoMatch = value.match(/^\d{4}-\d{2}-\d{2}/);
+      return isoMatch ? isoMatch[0] : value;
+    };
+
     return {
       idSociety: pick<string>(["id", "idSociety"], ""),
       numeroRuc: pick<string>(["ruc", "numeroRuc"], ""),
       razonSocial: pick<string>(["reasonSocial", "razonSocial"], ""),
       nombreComercial: pick<string>(["commercialName", "nombreComercial"], ""),
-      tipoSocietario: pick<string>(["typeSocietyId", "tipoSocietario"], ""),
+      tipoSocietario: normalizeTypeSocietyCode(
+        pick<string>(["typeSociety", "typeSocietyId", "tipoSociedad", "tipoSocietario"], "")
+      ),
       direccion: pick<string>(["address", "direccion"], ""),
       distrito: pick<string>(["district", "distrito"], ""),
       provincia: pick<string>(["province", "provincia"], ""),
       departamento: pick<string>(["department", "departamento"], ""),
-      fechaInscripcionRuc: pick<string>(["registrationDate", "fechaInscripcionRuc"], ""),
-      actividadExterior: pick<string>(["foreignActivity", "actividadExterior"], ""),
-      fechaEscrituraPublica: pick<string | null>(
-        ["publicDeedDate", "fechaEscrituraPublica"],
+      fechaInscripcionRuc: toDateValue(
+        pick<string>(["registrationDate", "fechaRegistro", "fechaInscripcionRuc"], "")
+      ),
+      actividadExterior: pick<string>(
+        ["foreignActivity", "actividadExtranjera", "actividadExterior"],
         ""
-      ) || "",
-      fechaRegistrosPublicos: pick<string | null>(
-        ["registrationRecordDate", "fechaRegistrosPublicos"],
-        ""
-      ) || "",
+      ),
+      fechaEscrituraPublica: toDateValue(
+        pick<string | null>(
+          ["publicDeedDate", "fechaEscritura", "fechaEscrituraPublica"],
+          ""
+        ) || ""
+      ),
+      fechaRegistrosPublicos: toDateValue(
+        pick<string | null>(
+          [
+            "registrationRecordDate",
+            "fechaRegistrosPublicos",
+            "fechaRegistroPublico",
+            "fechaRegistros",
+          ],
+          ""
+        ) || ""
+      ),
       partidaRegistral: pick<string>(["registrationRecord", "partidaRegistral"], ""),
-      oficinaRegistral: pick<string>(["registryOffice", "oficinaRegistral"], ""),
+      oficinaRegistral: normalizeRegistryOfficeCode(
+        pick<string>(["registryOffice", "oficinaRegistral"], "")
+      ),
       createdAt: pick<string>(["createdAt"], ""),
       updatedAt: pick<string>(["updatedAt"], ""),
     };
   },
 
   toPayload(dto: DatosSociedadDTO) {
-    return {
-      ...(dto.idSociety ? { id: dto.idSociety } : {}),
+    const payload = {
       ruc: dto.numeroRuc,
-      reasonSocial: dto.razonSocial,
-      typeSocietyId: dto.tipoSocietario,
-      commercialName: dto.nombreComercial,
-      address: dto.direccion,
-      district: dto.distrito,
-      province: dto.provincia,
-      department: dto.departamento,
-      registrationDate: dto.fechaInscripcionRuc || null,
-      foreignActivity: dto.actividadExterior,
-      publicDeedDate: dto.fechaEscrituraPublica || null,
-      registryOffice: dto.oficinaRegistral,
-      registrationRecord: dto.partidaRegistral,
+      razonSocial: dto.razonSocial,
+      tipoSociedad: normalizeTypeSocietyCode(dto.tipoSocietario),
+      nombreComercial: dto.nombreComercial,
+      direccion: dto.direccion,
+      distrito: dto.distrito,
+      provincia: dto.provincia,
+      departamento: dto.departamento,
+      fechaRegistro: dto.fechaInscripcionRuc || null,
+      actividadExtranjera: dto.actividadExterior,
+      fechaEscritura: dto.fechaEscrituraPublica || null,
+      oficinaRegistral: normalizeRegistryOfficeCode(dto.oficinaRegistral),
+      partidaRegistral: dto.partidaRegistral,
     };
+
+    return dto.idSociety && dto.idSociety.trim().length > 0
+      ? { id: dto.idSociety, ...payload }
+      : payload;
   },
 };
 

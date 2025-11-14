@@ -20,6 +20,7 @@ export default defineNuxtConfig({
       societyProfileListSuffix: process.env.NUXT_PUBLIC_SOCIETY_PROFILE_LIST_SUFFIX || "",
       societyProfileDetailsSuffix:
         process.env.NUXT_PUBLIC_SOCIETY_PROFILE_DETAILS_SUFFIX || "/society",
+      defaultAuthToken: process.env.NUXT_PUBLIC_DEFAULT_AUTH_TOKEN || "",
     },
   },
 

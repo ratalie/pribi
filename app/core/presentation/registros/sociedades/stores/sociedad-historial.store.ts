@@ -71,9 +71,22 @@ export const useSociedadHistorialStore = defineStore(
         sociedades.value = result;
         status.value = "idle";
       } catch (error) {
-        console.error("[SociedadHistorialStore] Error al cargar sociedades:", error);
+        const statusCode =
+          (error as any)?.statusCode ?? (error as any)?.response?.status ?? null;
+        const message =
+          (error as any)?.data?.message ??
+          (error as any)?.response?._data?.message ??
+          (error as any)?.message ??
+          "Error desconocido";
+        console.error("[SociedadHistorialStore] Error al cargar sociedades:", {
+          statusCode,
+          message,
+        });
         status.value = "error";
-        errorMessage.value = "No pudimos obtener el historial de sociedades.";
+        errorMessage.value =
+          statusCode === 401
+            ? "Tu sesión expiró o el token no es válido. Inicia sesión nuevamente."
+            : "No pudimos obtener el historial de sociedades.";
       }
     }
 

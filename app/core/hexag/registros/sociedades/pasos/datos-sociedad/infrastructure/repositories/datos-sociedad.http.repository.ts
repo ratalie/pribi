@@ -46,6 +46,24 @@ export class DatosSociedadHttpRepository implements DatosSociedadRepository {
     return this.resolveBase(`/${sanitizedId}${suffix}`);
   }
 
+  private ensurePayloadId(payload: DatosSociedadDTO): DatosSociedadDTO {
+    if (payload.idSociety && payload.idSociety.trim().length > 0) {
+      return payload;
+    }
+
+    let generatedId = "";
+    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+      generatedId = crypto.randomUUID();
+    } else {
+      generatedId = `soc-${Math.random().toString(36).slice(2, 10)}-${Date.now()}`;
+    }
+
+    return {
+      ...payload,
+      idSociety: generatedId,
+    };
+  }
+
   async get(idSociety: string): Promise<SociedadDatosGenerales | null> {
     const response = await $fetch<{ data: any }>(
       this.resolveSocietyPath(idSociety),
@@ -57,14 +75,18 @@ export class DatosSociedadHttpRepository implements DatosSociedadRepository {
   }
 
   async create(idSociety: string, payload: DatosSociedadDTO): Promise<SociedadDatosGenerales> {
+    const payloadWithId = this.ensurePayloadId(payload);
     await $fetch(
       this.resolveSocietyPath(idSociety),
       withAuthHeaders({
         method: "POST" as const,
-      body: DatosSociedadMapper.toPayload(payload),
+        body: DatosSociedadMapper.toPayload(payloadWithId),
     })
     );
-    console.debug("[Repository][DatosSociedadHttp] create()", { idSociety, payload });
+    console.debug("[Repository][DatosSociedadHttp] create()", {
+      idSociety,
+      payload: payloadWithId,
+    });
 
     const fresh = await this.get(idSociety);
     if (!fresh) {
@@ -74,14 +96,18 @@ export class DatosSociedadHttpRepository implements DatosSociedadRepository {
   }
 
   async update(idSociety: string, payload: DatosSociedadDTO): Promise<SociedadDatosGenerales> {
+    const payloadWithId = this.ensurePayloadId(payload);
     await $fetch(
       this.resolveSocietyPath(idSociety),
       withAuthHeaders({
         method: "PUT" as const,
-      body: DatosSociedadMapper.toPayload(payload),
+        body: DatosSociedadMapper.toPayload(payloadWithId),
     })
     );
-    console.debug("[Repository][DatosSociedadHttp] update()", { idSociety, payload });
+    console.debug("[Repository][DatosSociedadHttp] update()", {
+      idSociety,
+      payload: payloadWithId,
+    });
 
     const fresh = await this.get(idSociety);
     if (!fresh) {

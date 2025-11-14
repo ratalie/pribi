@@ -1,6 +1,6 @@
-import type { AuthRepository } from "../../domain/ports/auth.repository";
-import type { LoginCredentialsDTO } from "../../application/dtos/login-credentials.dto";
 import type { AuthSessionDTO } from "../../application/dtos/auth-session.dto";
+import type { LoginCredentialsDTO } from "../../application/dtos/login-credentials.dto";
+import type { AuthRepository } from "../../domain/ports/auth.repository";
 
 interface AuthApiResponse {
   success: boolean;
@@ -16,7 +16,7 @@ interface AuthApiResponse {
 export class AuthHttpRepository implements AuthRepository {
   private resolveEndpoint(): string {
     const config = useRuntimeConfig();
-    const authEndpoint = (config.public?.authEndpoint as string | undefined) || "/api/v1/auth";
+    const authEndpoint = (config.public?.authEndpoint as string | undefined) || "/api/v2/auth";
     const apiBase = (config.public?.apiBase as string | undefined) || "";
     const appBase = (config.app?.baseURL as string | undefined) || "";
     const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -70,4 +70,3 @@ export class AuthHttpRepository implements AuthRepository {
     }
   }
 }
-
