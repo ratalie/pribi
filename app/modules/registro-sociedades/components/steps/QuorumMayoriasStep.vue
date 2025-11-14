@@ -1,105 +1,234 @@
 <script setup lang="ts">
-  // import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import { computed, onMounted, watch } from "vue";
+  import { useRoute, useRouter } from "vue-router";
+  import { Button } from "@/components/ui/button";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import QuorumRowTable from "~/components/base/tables/quorum-table/QuorumRow.vue";
   import QuorumTable from "~/components/base/tables/quorum-table/QuorumTable.vue";
+  import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
+  import { useQuorumForm } from "~/core/presentation/registros/sociedades/composables/useQuorumForm";
+  import type { QuorumDTO } from "~/core/hexag/registros/sociedades/pasos/quorum-mayorias/application";
+  import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   interface Props {
-    // mode: EntityModeEnum;
+    mode?: EntityModeEnum;
     societyId?: string;
   }
 
+  const props = withDefaults(defineProps<Props>(), {
+    mode: EntityModeEnum.CREAR,
+    societyId: "",
+  });
+
   const headersQuorum1 = ["Convocatoria", "Tipo de Quórum", "Reglas"];
   const headersQuorum2 = ["Tipo de Quórum", "Reglas"];
-  defineProps<Props>();
 
-  // TODO: Reemplazar con store real
-  const isPreview = ref(false);
-  const simpleFirstCall = ref(50.01);
-  const qualifiedFirstCall = ref(66.66);
+  const route = useRoute();
+  const router = useRouter();
+  const { withAsyncToast } = useToastFeedback();
+
+  const societyId = computed(
+    () => props.societyId || (route.params.id as string | undefined) || ""
+  );
+
+  const {
+    form,
+    load,
+    submit,
+    reset,
+    setValue,
+    isLoading,
+    isSaving,
+    isReadonly,
+    errorMessage,
+    relationshipErrors,
+    hasValidationErrors,
+  } = useQuorumForm({
+    societyId,
+    mode: computed(() => props.mode),
+  });
+
+  const formatPercent = (value: number) => clampString(value);
+
+  function clampString(value: number) {
+    if (!Number.isFinite(value)) return "0.00";
+    return value.toFixed(2);
+  }
+
+  const nextRoute = computed(() => {
+    const segments = route.path.split("/");
+    segments[segments.length - 1] = "acuerdos-societarios";
+    return segments.join("/");
+  });
+
+  const handlePercentUpdate =
+    (field: keyof QuorumDTO) =>
+    (value: number) => {
+      setValue(field, value);
+    };
+
+  const handleReset = () => {
+    if (isSaving.value) return;
+    reset();
+  };
+
+  const handleNext = async () => {
+    if (isReadonly.value) {
+      await router.push(nextRoute.value);
+      return;
+    }
+
+    await withAsyncToast(
+      () => submit(),
+      {
+        loading: {
+          title: "Guardando quórum…",
+          description: "Estamos registrando la configuración en el sistema.",
+        },
+        success: () => ({
+          title: "Quórum guardado",
+          description: "La configuración se registró correctamente.",
+        }),
+        error: (error) => ({
+          title: "No pudimos guardar",
+          description:
+            error instanceof Error ? error.message : "Revisa los valores e inténtalo nuevamente.",
+        }),
+      }
+    );
+
+    await router.push(nextRoute.value);
+  };
+
+  watch(
+    societyId,
+    (value) => {
+      if (!value) return;
+      load();
+    },
+    { immediate: true }
+  );
+
+  onMounted(() => {
+    if (societyId.value) {
+      load();
+    }
+  });
+
+  const isPreview = computed(() => isReadonly.value);
+  const disableNext = computed(
+    () => isSaving.value || (!isReadonly.value && hasValidationErrors.value)
+  );
 </script>
 
 <template>
-  <div class="p-14 flex flex-col gap-12">
+  <div class="flex flex-col gap-8 p-6 md:p-10">
     <CardTitle
-      title="Quorums y Mayorías para Adopción de Acuerdos"
+      title="Quórums y Mayorías para Adopción de Acuerdos"
       body="Ingrese los porcentajes mínimos requeridos para la instalación de juntas y toma de acuerdos."
     />
 
-    <SimpleCard>
-      <div class="flex flex-col gap-12">
-        <CardTitle title="Quórum Mínimo Para Instalar la Junta" body="" />
-        <!-- <h3 class="font-secondary text-gray-800 font-semibold t-h6">Primera Convocatoria</h3> -->
-        <QuorumTable :header-list="headersQuorum1" columns="grid-cols-3">
-          <QuorumRowTable
-            :is-preview="isPreview"
-            convocatoria="Primera"
-            quorum-type="Simple"
-            ruler="Mínimo"
-            :initial-value="simpleFirstCall.toFixed(2)"
-            text-body="de acciones con derecho a voto."
-            :show-error="simpleFirstCall < 50.01"
-            :error-limit="50.01"
-            @update:number-value="(value) => (simpleFirstCall = value)"
-          />
-          <QuorumRowTable
-            :is-preview="isPreview"
-            convocatoria="Primera"
-            quorum-type="Calificado"
-            ruler="Mínimo"
-            :initial-value="qualifiedFirstCall.toFixed(2)"
-            text-body="de acciones con derecho a voto."
-            :show-error="qualifiedFirstCall < 66.6"
-            :error-limit="66.66"
-            @update:number-value="(value) => (qualifiedFirstCall = value)"
-          />
-          <QuorumRowTable
-            :is-preview="isPreview"
-            convocatoria="Segunda"
-            quorum-type="Simple"
-          />
-          <QuorumRowTable
-            :is-preview="isPreview"
-            convocatoria="Segunda"
-            quorum-type="Calificado"
-            ruler="Mínimo"
-            :initial-value="qualifiedFirstCall.toFixed(2)"
-            text-body="de acciones con derecho a voto existentes."
-            :show-error="qualifiedFirstCall < 66.6"
-            :error-limit="66.66"
-            @update:number-value="(value) => (qualifiedFirstCall = value)"
-          />
-        </QuorumTable>
-      </div>
-    </SimpleCard>
+    <p v-if="errorMessage" class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      {{ errorMessage }}
+    </p>
 
-    <SimpleCard>
-      <div class="flex flex-col gap-12">
-        <CardTitle title="Quórum Mínimo Para Tomar Acuerdos" body="" />
-        <QuorumTable :header-list="headersQuorum2" columns="grid-cols-3">
-          <QuorumRowTable
-            :is-preview="isPreview"
-            quorum-type="Simple"
-            ruler="Más del"
-            :initial-value="simpleFirstCall.toFixed(2)"
-            text-body="de acciones con derecho a voto presentes."
-            :show-error="simpleFirstCall < 50.01"
-            :error-limit="50.01"
-            @update:number-value="(value) => (simpleFirstCall = value)"
-          />
-          <QuorumRowTable
-            :is-preview="isPreview"
-            quorum-type="Calificado"
-            ruler="Más del"
-            :initial-value="qualifiedFirstCall.toFixed(2)"
-            text-body="de acciones con derecho a voto presentes."
-            :show-error="qualifiedFirstCall < 66.6"
-            :error-limit="66.66"
-            @update:number-value="(value) => (qualifiedFirstCall = value)"
-          />
-        </QuorumTable>
+    <div v-if="isLoading" class="space-y-4 rounded-2xl border border-primary-100 bg-white p-10">
+      <div class="h-6 w-1/2 animate-pulse rounded bg-gray-200" />
+      <div class="h-32 w-full animate-pulse rounded bg-gray-100" />
+      <div class="h-32 w-full animate-pulse rounded bg-gray-100" />
+    </div>
+
+    <template v-else>
+      <SimpleCard>
+        <div class="flex flex-col gap-8">
+          <CardTitle title="Quórum mínimo para instalar la junta" body="" />
+          <QuorumTable :header-list="headersQuorum1" columns="grid-cols-3">
+            <QuorumRowTable
+              :is-preview="isPreview"
+              convocatoria="Primera"
+              quorum-type="Simple"
+              ruler="Mínimo"
+              :initial-value="formatPercent(form.primeraConvocatoriaSimple)"
+              text-body="de acciones con derecho a voto."
+              :show-error="relationshipErrors.primeraConvocatoriaSimple"
+              :error-limit="form.quorumMinimoSimple"
+              @update:number-value="handlePercentUpdate('primeraConvocatoriaSimple')"
+            />
+            <QuorumRowTable
+              :is-preview="isPreview"
+              convocatoria="Primera"
+              quorum-type="Calificado"
+              ruler="Mínimo"
+              :initial-value="formatPercent(form.primeraConvocatoriaCalificada)"
+              text-body="de acciones con derecho a voto."
+              :show-error="relationshipErrors.primeraConvocatoriaCalificada"
+              :error-limit="form.quorumMinimoCalificado"
+              @update:number-value="handlePercentUpdate('primeraConvocatoriaCalificada')"
+            />
+            <QuorumRowTable
+              :is-preview="isPreview"
+              convocatoria="Segunda"
+              quorum-type="Simple"
+              ruler="Mínimo"
+              :initial-value="formatPercent(form.segundaConvocatoriaSimple)"
+              text-body="de acciones con derecho a voto."
+              :show-error="relationshipErrors.segundaConvocatoriaSimple"
+              :error-limit="form.quorumMinimoSimple"
+              @update:number-value="handlePercentUpdate('segundaConvocatoriaSimple')"
+            />
+            <QuorumRowTable
+              :is-preview="isPreview"
+              convocatoria="Segunda"
+              quorum-type="Calificado"
+              ruler="Mínimo"
+              :initial-value="formatPercent(form.segundaConvocatoriaCalificada)"
+              text-body="de acciones con derecho a voto existentes."
+              :show-error="relationshipErrors.segundaConvocatoriaCalificada"
+              :error-limit="form.quorumMinimoCalificado"
+              @update:number-value="handlePercentUpdate('segundaConvocatoriaCalificada')"
+            />
+          </QuorumTable>
+        </div>
+      </SimpleCard>
+
+      <SimpleCard>
+        <div class="flex flex-col gap-8">
+          <CardTitle title="Quórum mínimo para tomar acuerdos" body="" />
+          <QuorumTable :header-list="headersQuorum2" columns="grid-cols-3">
+            <QuorumRowTable
+              :is-preview="isPreview"
+              quorum-type="Simple"
+              ruler="Más del"
+              :initial-value="formatPercent(form.quorumMinimoSimple)"
+              text-body="de acciones con derecho a voto presentes."
+              @update:number-value="handlePercentUpdate('quorumMinimoSimple')"
+            />
+            <QuorumRowTable
+              :is-preview="isPreview"
+              quorum-type="Calificado"
+              ruler="Más del"
+              :initial-value="formatPercent(form.quorumMinimoCalificado)"
+              text-body="de acciones con derecho a voto presentes."
+              @update:number-value="handlePercentUpdate('quorumMinimoCalificado')"
+            />
+          </QuorumTable>
+        </div>
+      </SimpleCard>
+
+      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <p v-if="hasValidationErrors && !isReadonly" class="text-sm text-red-600">
+          Ajusta los porcentajes para que cada convocatoria sea mayor o igual al quórum mínimo.
+        </p>
+        <div class="flex justify-end gap-3">
+          <Button variant="ghost" type="button" :disabled="isSaving" @click="handleReset">
+            Restablecer
+          </Button>
+          <Button type="button" :disabled="disableNext" @click="handleNext">
+            {{ isReadonly ? "Ir al siguiente paso" : "Siguiente" }}
+          </Button>
+        </div>
       </div>
-    </SimpleCard>
+    </template>
   </div>
 </template>

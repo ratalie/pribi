@@ -1,87 +1,87 @@
 <script setup lang="ts">
-import { computed, onMounted, toRef, watch } from "vue";
-import { Form } from "vee-validate";
-import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
-import CardTitle from "~/components/base/cards/CardTitle.vue";
-import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
-import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
-import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
-import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
-import { Button } from "@/components/ui/button";
-import { getRegistryOfficeLabel, getTypeSocietyLabel } from "~/constants/inputs/enum-helpers";
-import {
-  actividadExteriorSchema,
-  departamentoSchema,
-  direccionSchema,
-  distritoSchema,
-  fechaEscrituraPublicaSchema,
-  fechaInscripcionRucSchema,
-  fechaRegistrosPublicosSchema,
-  nombreComercialSchema,
-  oficinaRegistralSchema,
-  partidaRegistralSchema,
-  provinciaSchema,
-  razonSocialSchema,
-  rucSchema,
-  tipoSociedadSchema,
-} from "~/modules/registro-sociedades/schemas/datosSociedad";
-import { officeOptions } from "~/constants/inputs/office-options";
-import { societyTypeOptions } from "~/constants/inputs/society-types";
-import { useDatosSociedadForm } from "../composables/useDatosSociedadForm";
-import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
-import type { DatosSociedadDTO } from "~/core/hexag/registros/sociedades/pasos/datos-sociedad/application/dtos/datos-sociedad.dto";
+  import { Button } from "@/components/ui/button";
+  import { Form } from "vee-validate";
+  import { computed, toRef, watch } from "vue";
+  import CardTitle from "~/components/base/cards/CardTitle.vue";
+  import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
+  import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
+  import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
+  import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
+  import {
+    getRegistryOfficeLabel,
+    getTypeSocietyLabel,
+  } from "~/constants/inputs/enum-helpers";
+  import { officeOptions } from "~/constants/inputs/office-options";
+  import { societyTypeOptions } from "~/constants/inputs/society-types";
+  import type { DatosSociedadDTO } from "~/core/hexag/registros/sociedades/pasos/datos-sociedad/application/dtos/datos-sociedad.dto";
+  import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
+  import {
+    actividadExteriorSchema,
+    departamentoSchema,
+    direccionSchema,
+    distritoSchema,
+    fechaEscrituraPublicaSchema,
+    fechaInscripcionRucSchema,
+    fechaRegistrosPublicosSchema,
+    nombreComercialSchema,
+    oficinaRegistralSchema,
+    partidaRegistralSchema,
+    provinciaSchema,
+    razonSocialSchema,
+    rucSchema,
+    tipoSociedadSchema,
+  } from "~/modules/registro-sociedades/schemas/datosSociedad";
+  import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import { useDatosSociedadForm } from "../composables/useDatosSociedadForm";
 
-interface Props {
-  societyId: string;
-  mode?: EntityModeEnum;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  mode: EntityModeEnum.CREAR,
-});
-
-const societyIdRef = toRef(props, "societyId");
-const modeRef = toRef(props, "mode");
-
-const emit = defineEmits<{
-  (
-    e: "completion-change",
-    payload: { isComplete: boolean; missingFields: Array<keyof DatosSociedadDTO> }
-  ): void;
-}>();
-
-const {
-  form,
-  isLoading,
-  isSaving,
-  isReadonly,
-  errorMessage,
-  load,
-  submit,
-  reset,
-  datos,
-  isComplete,
-  missingRequiredFields,
-} = useDatosSociedadForm({
-  societyId: societyIdRef,
-  mode: modeRef,
-});
-
-const societyOptions = societyTypeOptions;
-const officeSelectOptions = officeOptions;
-const { withAsyncToast } = useToastFeedback();
-
-const tipoSocietarioLabel = computed(() => getTypeSocietyLabel(form.tipoSocietario));
-const oficinaRegistralLabel = computed(() => getRegistryOfficeLabel(form.oficinaRegistral));
-
-async function handleSubmit() {
-  if (isReadonly.value) {
-    return;
+  interface Props {
+    societyId: string;
+    mode?: EntityModeEnum;
   }
 
-  await withAsyncToast(
-    async () => submit(),
-    {
+  const props = withDefaults(defineProps<Props>(), {
+    mode: EntityModeEnum.CREAR,
+  });
+
+  const societyIdRef = toRef(props, "societyId");
+  const modeRef = toRef(props, "mode");
+
+  const emit = defineEmits<{
+    (
+      e: "completion-change",
+      payload: { isComplete: boolean; missingFields: Array<keyof DatosSociedadDTO> }
+    ): void;
+  }>();
+
+  const {
+    form,
+    isLoading,
+    isSaving,
+    isReadonly,
+    errorMessage,
+    submit,
+    reset,
+    datos,
+    isComplete,
+    missingRequiredFields,
+  } = useDatosSociedadForm({
+    societyId: societyIdRef,
+    mode: modeRef,
+  });
+
+  const societyOptions = societyTypeOptions;
+  const officeSelectOptions = officeOptions;
+  const { withAsyncToast } = useToastFeedback();
+
+  const tipoSocietarioLabel = computed(() => getTypeSocietyLabel(form.tipoSocietario));
+  const oficinaRegistralLabel = computed(() => getRegistryOfficeLabel(form.oficinaRegistral));
+
+  async function handleSubmit() {
+    if (isReadonly.value) {
+      return;
+    }
+
+    await withAsyncToast(async () => submit(), {
       loading: {
         title: "Guardando datos principales…",
         description: "Estamos sincronizando la información con el registro.",
@@ -100,53 +100,40 @@ async function handleSubmit() {
         title: "No se pudo guardar",
         description: "Revisa la información ingresada e inténtalo nuevamente.",
       }),
-    }
-  );
-}
-
-function handleInvalidSubmit(ctx: any) {
-  console.warn("[DatosSociedadForm] invalid submit", ctx?.errors);
-}
-
-function handleSearchRuc(ruc: string) {
-  console.info("[DatosSociedadForm] buscar RUC", ruc);
-}
-
-onMounted(() => {
-  load();
-});
-
-watch(
-  societyIdRef,
-  () => {
-    load();
-  },
-  { immediate: false }
-);
-
-watch(
-  [isComplete, missingRequiredFields],
-  ([complete, missing]) => {
-    emit("completion-change", {
-      isComplete: complete,
-      missingFields: missing,
     });
-  },
-  { immediate: true }
-);
-const createdAt = computed(() => {
-  if (!isReadonly.value || !datos.value?.createdAt) return "";
-  return new Intl.DateTimeFormat("es-PE", { dateStyle: "long", timeStyle: "short" }).format(
-    new Date(datos.value.createdAt)
-  );
-});
+  }
 
-const updatedAt = computed(() => {
-  if (!isReadonly.value || !datos.value?.updatedAt) return "";
-  return new Intl.DateTimeFormat("es-PE", { dateStyle: "long", timeStyle: "short" }).format(
-    new Date(datos.value.updatedAt)
+  function handleInvalidSubmit(ctx: any) {
+    console.warn("[DatosSociedadForm] invalid submit", ctx?.errors);
+  }
+
+  function handleSearchRuc(ruc: string) {
+    console.info("[DatosSociedadForm] buscar RUC", ruc);
+  }
+
+  watch(
+    [isComplete, missingRequiredFields],
+    ([complete, missing]) => {
+      emit("completion-change", {
+        isComplete: complete,
+        missingFields: missing,
+      });
+    },
+    { immediate: true }
   );
-});
+  const createdAt = computed(() => {
+    if (!isReadonly.value || !datos.value?.createdAt) return "";
+    return new Intl.DateTimeFormat("es-PE", { dateStyle: "long", timeStyle: "short" }).format(
+      new Date(datos.value.createdAt)
+    );
+  });
+
+  const updatedAt = computed(() => {
+    if (!isReadonly.value || !datos.value?.updatedAt) return "";
+    return new Intl.DateTimeFormat("es-PE", { dateStyle: "long", timeStyle: "short" }).format(
+      new Date(datos.value.updatedAt)
+    );
+  });
 </script>
 
 <template>
@@ -218,7 +205,9 @@ const updatedAt = computed(() => {
         </div>
         <div>
           <dt class="text-sm font-medium text-gray-500">Fecha registros públicos</dt>
-          <dd class="mt-1 text-base text-gray-900">{{ form.fechaRegistrosPublicos || "—" }}</dd>
+          <dd class="mt-1 text-base text-gray-900">
+            {{ form.fechaRegistrosPublicos || "—" }}
+          </dd>
         </div>
         <div>
           <dt class="text-sm font-medium text-gray-500">Partida registral</dt>
@@ -237,7 +226,11 @@ const updatedAt = computed(() => {
     </div>
 
     <div v-else class="p-10">
-      <Form class="grid grid-cols-2 gap-8" @submit="handleSubmit" @invalid-submit="handleInvalidSubmit">
+      <Form
+        class="grid grid-cols-2 gap-8"
+        @submit="handleSubmit"
+        @invalid-submit="handleInvalidSubmit"
+      >
         <SearchInputZod
           v-model="form.numeroRuc"
           name="numero-ruc"
@@ -355,13 +348,18 @@ const updatedAt = computed(() => {
         />
 
         <div class="col-span-2 flex items-center justify-end gap-3 pt-4">
-          <Button variant="ghost" type="button" @click="reset">
-            Restablecer
-          </Button>
+          <Button variant="ghost" type="button" @click="reset">Restablecer</Button>
           <Button type="submit" :disabled="isSaving">
             <span v-if="isSaving" class="mr-2 inline-flex items-center gap-2">
               <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                />
                 <path
                   class="opacity-75"
                   fill="currentColor"
@@ -377,4 +375,3 @@ const updatedAt = computed(() => {
     </div>
   </div>
 </template>
-
