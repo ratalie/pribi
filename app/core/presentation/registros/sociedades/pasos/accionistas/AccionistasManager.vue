@@ -1,24 +1,18 @@
 <script setup lang="ts">
-  import { computed, onMounted, ref, toRef, watch } from "vue";
+  import { storeToRefs } from "pinia";
+  import { computed, ref, toRef } from "vue";
 
+  import type { AccionistaDTO } from "@hexag/registros/sociedades/pasos/accionistas/application";
+  import type { Accionista } from "@hexag/registros/sociedades/pasos/accionistas/domain";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
-  import type {
-    Accionista,
-    Persona,
-  } from "@hexag/registros/sociedades/pasos/accionistas/domain";
-  import type { AccionistaDTO } from "@hexag/registros/sociedades/pasos/accionistas/application";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import { useAccionistasController } from "../../composables/useAccionistasController";
+  import { useAccionistasStore } from "../../stores/accionistas.store";
   import AccionistaModal from "./components/AccionistaModal.vue";
   import AccionistasList from "./components/AccionistasList.vue";
-  import {
-    personaTypeLabels,
-    personaToFormValues,
-    type AccionistaFormValues,
-    type AccionistaRow,
-  } from "./types";
-  import { useAccionistas } from "./useAccionistas";
+  import { personaTypeLabels, type AccionistaRow } from "./types";
 
   interface Props {
     societyId: string;
@@ -32,22 +26,30 @@
   const societyId = toRef(props, "societyId");
   const isReadonly = computed(() => props.mode === EntityModeEnum.PREVISUALIZAR);
 
-  const {
-    accionistas,
-    isLoading,
-    isSaving,
-    error,
-    fetchAll,
-    create,
-    update,
-    remove,
-  } = useAccionistas(societyId);
-
   const { withAsyncToast } = useToastFeedback();
+  const store = useAccionistasStore();
+  const controller = useAccionistasController({
+    societyId,
+    ttlMs: 60_000,
+  });
+
+  const { accionistas, status, errorMessage: storeError } = storeToRefs(store);
+
+  const isLoading = computed(
+    () => controller.isBootstrapping.value || status.value === "loading"
+  );
+  const isSaving = computed(() => status.value === "saving");
+  const errorMessage = computed(() => controller.error.value ?? storeError.value);
 
   const isModalOpen = ref(false);
-  const editingId = ref<string | null>(null);
-  const initialValues = ref<AccionistaFormValues | undefined>();
+  const editingAccionista = ref<Accionista | null>(null);
+
+  const ensureSocietyId = () => {
+    if (!societyId.value) {
+      throw new Error("No encontramos el identificador de la sociedad.");
+    }
+    return societyId.value;
+  };
 
   const rows = computed<AccionistaRow[]>(() =>
     accionistas.value.map((item) => ({
@@ -61,50 +63,24 @@
     }))
   );
 
-  const errorMessage = computed(() => error.value?.message ?? null);
-
-  const loadData = async () => {
-    if (!societyId.value) return;
-    await fetchAll();
-  };
-
-  watch(
-    () => societyId.value,
-    (value, previous) => {
-      if (!value || value === previous) return;
-      loadData();
-    },
-    { immediate: true }
-  );
-
-  onMounted(() => {
-    if (societyId.value) {
-      loadData();
-    }
-  });
-
   const openCreateModal = () => {
-    editingId.value = null;
-    initialValues.value = undefined;
+    editingAccionista.value = null;
     isModalOpen.value = true;
   };
 
   const handleEdit = (accionistaId: string) => {
     const current = accionistas.value.find((item) => item.id === accionistaId);
     if (!current) return;
-    editingId.value = accionistaId;
-    initialValues.value = personaToFormValues(current.persona, {
-      id: current.id,
-      participacionPorcentual: current.participacionPorcentual ?? null,
-    });
+    editingAccionista.value = current;
     isModalOpen.value = true;
   };
 
   const handleRemove = async (accionistaId: string) => {
     const confirmed = window.confirm("¿Deseas eliminar este accionista?");
     if (!confirmed) return;
+    const profileId = ensureSocietyId();
 
-    await withAsyncToast(() => remove(accionistaId), {
+    await withAsyncToast(() => store.remove(profileId, accionistaId), {
       loading: {
         title: "Eliminando accionista…",
       },
@@ -119,22 +95,20 @@
     });
   };
 
-  const handleModalSubmit = async (values: AccionistaFormValues) => {
-    const dto = buildDto(values);
-    if (!dto) return;
-
+  const handleModalSubmit = async (payload: AccionistaDTO) => {
+    const profileId = ensureSocietyId();
     const action =
-      editingId.value !== null
-        ? () => update(editingId.value as string, dto)
-        : () => create(dto);
+      editingAccionista.value !== null
+        ? () => store.update(profileId, payload)
+        : () => store.create(profileId, payload);
 
     await withAsyncToast(action, {
       loading: {
-        title: editingId.value ? "Actualizando…" : "Guardando…",
+        title: editingAccionista.value ? "Actualizando…" : "Guardando…",
       },
       success: {
         title: "Accionistas",
-        description: editingId.value
+        description: editingAccionista.value
           ? "Accionista actualizado correctamente."
           : "Accionista creado correctamente.",
       },
@@ -147,93 +121,76 @@
     closeModal();
   };
 
-  const buildDto = (values: AccionistaFormValues): AccionistaDTO | null => {
-    const persona = mapFormToPersona(values);
-    if (!persona) return null;
-
-    return {
-      id: editingId.value ?? undefined,
-      persona,
-      participacionPorcentual: values.participacionPorcentual ?? undefined,
-    };
+  const getPersonaLabel = (persona: Accionista["persona"]) => {
+    switch (persona.tipo) {
+      case "NATURAL":
+        return `${persona.nombre} ${persona.apellidoPaterno} ${
+          persona.apellidoMaterno ?? ""
+        }`.trim();
+      case "JURIDICA":
+        return persona.razonSocial;
+      case "SUCURSAL":
+        return persona.nombreSucursal;
+      case "FONDO_INVERSION":
+      case "FIDEICOMISO":
+      case "SUCESION_INDIVISA":
+        return persona.razonSocial ?? persona.tipo;
+      default:
+        return "—";
+    }
   };
 
-  const mapFormToPersona = (values: AccionistaFormValues): Persona | null => {
-    if (values.personaType === "NATURAL") {
-      return {
-        tipo: "NATURAL",
-        nombre: values.nombre,
-        apellidoPaterno: values.apellidoPaterno,
-        apellidoMaterno: values.apellidoMaterno,
-        tipoDocumento: values.tipoDocumento,
-        numeroDocumento: values.numeroDocumento,
-        paisEmision: values.paisEmision,
-      };
+  const getPersonaDocument = (persona: Accionista["persona"]) => {
+    switch (persona.tipo) {
+      case "NATURAL":
+        return `${persona.tipoDocumento} · ${persona.numeroDocumento}`;
+      case "JURIDICA":
+        return `${persona.tipoDocumento ?? "RUC"} · ${persona.numeroDocumento}`;
+      case "SUCURSAL":
+      case "FONDO_INVERSION":
+        return persona.ruc ? `RUC · ${persona.ruc}` : "Sin RUC";
+      case "SUCESION_INDIVISA":
+        return persona.ruc ? `RUC · ${persona.ruc}` : "Sin RUC";
+      case "FIDEICOMISO":
+        if (persona.tieneRuc && persona.ruc) {
+          return `RUC · ${persona.ruc}`;
+        }
+        return persona.numeroRegistroFideicomiso
+          ? `Registro · ${persona.numeroRegistroFideicomiso}`
+          : "Sin registro";
+      default:
+        return "—";
     }
-
-    if (values.personaType === "JURIDICA") {
-      return {
-        tipo: "JURIDICA",
-        tipoDocumento: values.tipoDocumento,
-        numeroDocumento: values.numeroDocumento,
-        razonSocial: values.razonSocial,
-        nombreComercial: values.nombreComercial,
-        direccion: values.direccion,
-        pais: values.pais,
-      };
-    }
-
-    return null;
-  };
-
-  const getPersonaLabel = (persona: Persona) => {
-    if (persona.tipo === "NATURAL") {
-      return `${persona.nombre} ${persona.apellidoPaterno} ${persona.apellidoMaterno ?? ""}`.trim();
-    }
-    if (persona.tipo === "JURIDICA") {
-      return persona.razonSocial;
-    }
-    return persona.tipo;
-  };
-
-  const getPersonaDocument = (persona: Persona) => {
-    if ("numeroDocumento" in persona) {
-      return `${persona.tipo === "NATURAL" ? persona.tipoDocumento : persona.tipoDocumento ?? "RUC"} · ${
-        persona.numeroDocumento
-      }`;
-    }
-    if ("ruc" in persona && persona.ruc) {
-      return `RUC · ${persona.ruc}`;
-    }
-    return "—";
   };
 
   const closeModal = () => {
     isModalOpen.value = false;
-    editingId.value = null;
-    initialValues.value = undefined;
+    editingAccionista.value = null;
   };
 </script>
 
 <template>
   <div class="flex flex-col gap-8">
-    <div class="flex flex-wrap items-start justify-between gap-4">
-      <CardTitle
-        title="Accionistas"
-        body="Administra los accionistas registrados para esta sociedad."
-      />
+    <CardTitle
+      title="Accionistas"
+      body="Administra los accionistas registrados para esta sociedad."
+    >
+      <template #actions>
+        <ActionButton
+          v-if="!isReadonly"
+          variant="secondary"
+          label="Agregar"
+          size="md"
+          icon="Plus"
+          @click="openCreateModal"
+        />
+      </template>
+    </CardTitle>
 
-      <ActionButton
-        v-if="!isReadonly"
-        variant="primary"
-        label="Agregar accionista"
-        size="md"
-        icon="Plus"
-        @click="openCreateModal"
-      />
-    </div>
-
-    <p v-if="errorMessage" class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+    <p
+      v-if="errorMessage"
+      class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+    >
       {{ errorMessage }}
     </p>
 
@@ -247,12 +204,11 @@
 
     <AccionistaModal
       v-model="isModalOpen"
-      :mode="editingId ? 'edit' : 'create'"
+      :mode="editingAccionista ? 'edit' : 'create'"
       :is-saving="isSaving"
-      :initial-values="initialValues"
+      :initial-accionista="editingAccionista ?? undefined"
       @close="closeModal"
       @submit="handleModalSubmit"
     />
   </div>
 </template>
-
