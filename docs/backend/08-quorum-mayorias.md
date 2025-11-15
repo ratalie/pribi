@@ -6,6 +6,7 @@ Define los porcentajes requeridos para instalar y aprobar acuerdos de junta en p
 - **Base path:** `/api/v2/society-profile/{societyProfileId}/quorum`
 - **Auth:** `Bearer <token>`
 - **Permisos:** `ModuleAccess.SOCIETY`
+- **IDs:** Al ser un recurso tabular, el backend genera el identificador y sólo devuelve el `id` en las respuestas.
 
 ---
 

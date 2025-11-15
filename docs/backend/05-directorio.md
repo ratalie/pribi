@@ -10,6 +10,7 @@ Define la composición y reglas del directorio de la sociedad. Incluye la config
 ---
 
 ## 1. Configurar directorio
+> Este recurso es tabular: el backend genera y mantiene los identificadores, por lo que **no debes enviar `id`** en `POST` ni en `PUT`.
 
 ### Crear
 

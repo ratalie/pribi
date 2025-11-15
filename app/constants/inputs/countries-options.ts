@@ -146,4 +146,5 @@ export const countriesOptions = [
   { id: 145, label: "Vanuatu", value: "VUT" },
   { id: 146, label: "Venezuela", value: "VEN" },
   { id: 147, label: "Vietnam", value: "VNM" },
+  { id: 148, label: "Perú", value: "PER" },
 ];

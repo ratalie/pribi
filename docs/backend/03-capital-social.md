@@ -8,6 +8,7 @@ Incluye la definición del **valor nominal** y la configuración de **acciones p
   - Valor nominal: `/api/v2/society-profile/{societyProfileId}/nominal-value`
 - **Auth:** `Bearer <token>`
 - **Scopes:** `ModuleAccess.SOCIETY`
+- **Regla de IDs:** el backend genera el ID del valor nominal; en cambio, las acciones personalizadas requieren `id` (UUID) provisto por el frontend.
 
 ---
 
@@ -54,9 +55,10 @@ Representa el monto base con el que se valoran las acciones.
 ## Definición de acciones (`acctions`)
 Permite registrar tipos de acciones y versiones personalizadas.
 
-### Esquema de creación (`CrearAccionSchema`)
+### Esquema de creación (`AccionShema`)
 | Campo | Tipo | Reglas |
 | --- | --- | --- |
+| `id` | string | UUID generado por el frontend para esta acción personalizada |
 | `accionId` | string | UUID del catálogo base de acciones |
 | `tipo` | string | `COMUN` o `CLASE` |
 | `nombre` | string | Obligatorio si `tipo = CLASE` |
@@ -74,6 +76,7 @@ Permite registrar tipos de acciones y versiones personalizadas.
 - **Ejemplo payload**
 ```json
 {
+  "id": "019b1f57-ffff-eeee-dddd-1e3953c95b01",
   "accionId": "019b1f57-cafe-4dec-8fab-1e3953c95b01",
   "tipo": "CLASE",
   "nombre": "Acción Preferente Serie A",
@@ -90,7 +93,7 @@ Permite registrar tipos de acciones y versiones personalizadas.
 ### Actualizar acción
 - **Método:** `PUT`
 - **Ruta:** `/api/v2/society-profile/{societyProfileId}/acctions`
-- **Body (`ActualizarAccionShema`):** igual que creación pero con `id`.
+- **Body (`ActualizarAccionShema`):** igual que creación (debe incluir el mismo `id` enviado en el alta).
 
 ### Listar acciones
 - **Método:** `GET`

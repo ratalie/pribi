@@ -1,17 +1,21 @@
 # Acuerdos Especiales (v2)
 
 ## Contexto
+
 Registra disposiciones especiales pactadas entre accionistas (derecho de preferencia, restricciones a terceros, etc.). Normalmente se alimenta con archivos de respaldo.
 
 - **Base path:** `/api/v2/society-profile/{societyProfileId}/special-agreements`
 - **Auth:** `Bearer <token>`
 - **Permisos:** `ModuleAccess.SOCIETY`
+- **IDs:** El registro es único por `societyProfileId`; no se envía `id` en el cuerpo y el backend controla la clave primaria.
 
 ---
 
 ## Crear acuerdo especial
+
 - **Método:** `POST`
 - **Body (`crearAcuerdoEspecialSchema`):**
+
 ```json
 {
   "derechoPreferencia": true,
@@ -22,18 +26,20 @@ Registra disposiciones especiales pactadas entre accionistas (derecho de prefere
 ```
 
 ### Validaciones
-| Campo | Tipo | Descripción |
-| --- | --- | --- |
+
+| Campo                | Tipo    | Descripción                                         |
+| -------------------- | ------- | --------------------------------------------------- |
 | `derechoPreferencia` | boolean | Obligatorio. Indica si existe pacto de preferencia. |
-| `archivoEstatutos` | uuid? | Documenta versión de estatutos; opcional. |
-| `archivoAccionistas` | uuid? | Documentación dirigida a accionistas; opcional. |
-| `archivoTerceros` | uuid? | Documentación para terceros; opcional. |
+| `archivoEstatutos`   | uuid?   | Documenta versión de estatutos; opcional.           |
+| `archivoAccionistas` | uuid?   | Documentación dirigida a accionistas; opcional.     |
+| `archivoTerceros`    | uuid?   | Documentación para terceros; opcional.              |
 
 - **Respuesta (`201`):** sin payload; confirmar con `GET`.
 
 ---
 
 ## Actualizar acuerdo
+
 - **Método:** `PUT`
 - **Body (`actualizarAcuerdoEspecialSchema`):** campos opcionales (misma semántica que creación).
 - **Respuesta (`200`):** confirmación.
@@ -43,8 +49,10 @@ Registra disposiciones especiales pactadas entre accionistas (derecho de prefere
 ---
 
 ## Consultar acuerdo vigente
+
 - **Método:** `GET`
 - **Respuesta (`200`):**
+
 ```json
 {
   "derechoPreferencia": true,
@@ -56,19 +64,22 @@ Registra disposiciones especiales pactadas entre accionistas (derecho de prefere
   "archivoTerceros": null
 }
 ```
-*(La estructura exacta depende del mapper; los archivos suelen incluir metadatos como `id` y `version`.)*
+
+_(La estructura exacta depende del mapper; los archivos suelen incluir metadatos como `id` y `version`.)_
 
 ---
 
 ## Errores frecuentes
-| Código | Motivo | Recomendación |
-| --- | --- | --- |
-| `400` | Payload inválido (sin `derechoPreferencia`) | Validar formulario antes de enviar |
-| `401` | Token inválido | Reautenticar |
-| `403` | Falta de permisos | Verificar rol |
-| `404` | `societyProfileId` inexistente o sin registro previo | Crear primero con `POST` |
+
+| Código | Motivo                                               | Recomendación                      |
+| ------ | ---------------------------------------------------- | ---------------------------------- |
+| `400`  | Payload inválido (sin `derechoPreferencia`)          | Validar formulario antes de enviar |
+| `401`  | Token inválido                                       | Reautenticar                       |
+| `403`  | Falta de permisos                                    | Verificar rol                      |
+| `404`  | `societyProfileId` inexistente o sin registro previo | Crear primero con `POST`           |
 
 ## Checklist Frontend
+
 - Confirmar existencia del registro mediante `GET`; si responde `404`, mostrar formulario de alta.
 - Gestionar uploads antes de llamar al endpoint y guardar los `fileId` devueltos.
 - Permitir limpiar archivos enviando `null` explícito en el campo correspondiente.

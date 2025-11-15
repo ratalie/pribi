@@ -1,33 +1,43 @@
 # Autenticación para Registro Societario v2
 
 ## Propósito
-Describe cómo obtener el `access token` JWT requerido para consumir los endpoints protegidos del flujo **Registro de Sociedad v2**. El backend registra también información del dispositivo, por lo que es recomendable enviar un `User-Agent` válido.
 
-## Endpoint
-- **Método:** `POST`
-- **Ruta:** `/api/v2/auth`
-- **Autenticación previa:** No requiere
+Obtener el `access token` JWT que habilita todos los módulos del flujo. El backend también registra la IP y el `User-Agent`, por lo que conviene enviar valores reales.
+
+## Endpoints disponibles
+
+| Versión              | Método | Ruta           | Uso                                     |
+| -------------------- | ------ | -------------- | --------------------------------------- |
+| **v2 (recomendado)** | `POST` | `/api/v2/auth` | Nueva pila utilizada por los módulos v2 |
+| Legacy               | `POST` | `/api/v1/auth` | Sólo para clientes heredados            |
+
+> A menos que se indique lo contrario, usa el endpoint **v2**.
 
 ## Encabezados obligatorios
-| Header | Valor |
-| --- | --- |
-| `Content-Type` | `application/json` |
-| `User-Agent` | `<tu-aplicacion>/<versión>` *(recomendado)* |
+
+| Header         | Valor                                                  |
+| -------------- | ------------------------------------------------------ |
+| `Content-Type` | `application/json`                                     |
+| `User-Agent`   | `<tu-aplicacion>/<versión>` _(capturado y almacenado)_ |
 
 ## Body requerido
+
 ```json
 {
   "email": "usuario101@gmail.com",
   "password": "#Admin2025-probo!"
 }
 ```
+
 ### Validaciones (`LoginDto`)
-| Campo | Tipo | Reglas |
-| --- | --- | --- |
-| `email` | string | Formato correo válido (Zod `email()`) |
-| `password` | string | Obligatorio |
+
+| Campo      | Tipo   | Reglas                                |
+| ---------- | ------ | ------------------------------------- |
+| `email`    | string | Formato correo válido (Zod `email()`) |
+| `password` | string | Obligatorio                           |
 
 ## Respuesta exitosa (`200`)
+
 ```json
 {
   "success": true,
@@ -40,20 +50,23 @@ Describe cómo obtener el `access token` JWT requerido para consumir los endpoin
   }
 }
 ```
-- Guarda el valor de `data.token`; se utilizará como `Bearer` en los demás endpoints.
-- El token incluye `userId`, `studyId`, `email`, `role` y un `jti` para seguimiento; expira a los 7 días.
+
+- Conserva `data.token`; se utilizará como `Bearer` en los demás endpoints.
+- El token incluye `userId`, `studyId`, `email`, `role` y un `jti`; expira a los 7 días.
 
 ## Uso del token
-En cada endpoint protegido agrega el header:
+
+En cada request protegida añade:
+
 ```
 Authorization: Bearer <token>
 ```
-Sustituye `<token>` por el JWT obtenido en este paso.
 
-## Manejo de errores comunes
-| Código | Motivo | Ejemplo |
-| --- | --- | --- |
-| `400` | Datos faltantes o inválidos | `email` sin formato válido |
-| `401` | Credenciales inválidas (`Credenciales inválidas`) | Contraseña errónea |
-| `429` | Demasiados intentos | Reintentar después del periodo indicado |
-| `500` | Error interno | Contactar a backend |
+## Errores comunes
+
+| Código | Motivo                                            | Ejemplo                              |
+| ------ | ------------------------------------------------- | ------------------------------------ |
+| `400`  | Datos faltantes o inválidos                       | `email` sin formato válido           |
+| `401`  | Credenciales inválidas (`Credenciales inválidas`) | Contraseña errónea                   |
+| `429`  | Demasiados intentos                               | Reintentar después del “retry-after” |
+| `500`  | Error interno                                     | Contactar a backend                  |

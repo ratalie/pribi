@@ -5,6 +5,7 @@ Permite definir **clases de apoderados** (tipos) y registrar apoderados concreto
 
 - **Base path:** `/api/v2/society-profile/{societyProfileId}/attorney-register`
 - **Flujo:** primero crea clases, luego apoderados.
+- **IDs:** las clases de apoderados usan UUID generados por el backend; los apoderados no requieren `id` en el `POST`, únicamente `claseApoderadoId` y los datos de la persona.
 
 ---
 
@@ -15,11 +16,14 @@ Permite definir **clases de apoderados** (tipos) y registrar apoderados concreto
 - **Body (`CrearClaseApoderadoES`):**
 ```json
 {
+  "id": "019b3a00-aaaa-bbbb-cccc-1234567890ab",
   "nombre": "Apoderado General"
 }
 ```
-- **Validación:** `nombre` obligatorio (`min(1)`).
-- **Respuesta (`201`):** confirma creación.
+- **Validaciones:**  
+  - `id` es un **UUID generado por el frontend** (la aplicación define el identificador antes de enviar).  
+  - `nombre` obligatorio (`min(1)`).
+- **Respuesta (`201`):** confirma creación y puede devolver la estructura completa con el `id` aceptado.
 
 ### Actualizar clase
 - **Método:** `PUT /classes`
@@ -69,8 +73,10 @@ Permite definir **clases de apoderados** (tipos) y registrar apoderados concreto
 - **Body (`CrearApoderadoES`):**
 ```json
 {
+  "id": "019b3c11-aaaa-bbbb-cccc-1234567890ab",
   "claseApoderadoId": "019b3a00-aaaa-bbbb-cccc-1234567890ab",
   "persona": {
+    "id": "019b3c11-ffff-eeee-dddd-1234567890ab",
     "tipo": "NATURAL",
     "nombre": "Luis",
     "apellidoPaterno": "Alarcón",
@@ -85,7 +91,9 @@ Permite definir **clases de apoderados** (tipos) y registrar apoderados concreto
 ```
 
 #### Validaciones clave
-- `claseApoderadoId`: UUID existente.
+- `id`: UUID generado por el frontend (permite reintentos idempotentes).  
+- `claseApoderadoId`: UUID existente (creado en la sección anterior).
+- `persona.id`: UUID propio de la persona asociada; también lo genera el frontend y se reutiliza en actualizaciones.
 - `terminoCargo`: `INDEFINIDO` u `DETERMINADO`.
 - Si `terminoCargo = DETERMINADO`, `fechaFin` obligatoria. Si `INDEFINIDO`, no debe enviarse `fechaFin`.
 - Fechas en formato ISO 8601.

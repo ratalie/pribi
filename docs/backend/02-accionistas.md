@@ -6,6 +6,7 @@ Una vez creada la sociedad (`/api/v2/society-profile/{id}/society`), utiliza est
 - **Base path:** `/api/v2/society-profile/{societyProfileId}/shareholder`
 - **Auth:** `Bearer <token>`
 - **Scopes:** `ModuleAccess.SOCIETY` con acciones `WRITE`, `UPDATE`, `READ`
+- **IDs controlados por el cliente:** cada accionista y cada persona envían su propio `id` (UUID v4/v7). El backend persiste esos valores tal cual, por lo que deben ser únicos.
 
 ## Tipologías soportadas
 El campo `tipo` define la estructura esperada. Todas las variantes comparten un discriminador `tipo`.
@@ -19,58 +20,83 @@ El campo `tipo` define la estructura esperada. Todas las variantes comparten un 
 | `FIDEICOMISO`        | Patrimonio fideicometido                 | `FideicomisoES`                                     |
 | `SUCESION_INDIVISA`  | Sucesión indivisa                        | `SucesionIndivisaES`                                |
 
+> Cada una de estas variantes incluye un campo `id` (UUID) en el objeto `persona`. Ese `id` es responsabilidad del cliente y se utiliza para rastrear la entidad en flujos posteriores.
+
 ## Crear un accionista
 - **Método:** `POST`
 - **Ruta:** `/api/v2/society-profile/{societyProfileId}/shareholder`
 - **Body:** depende de `tipo`. Usa las reglas del esquema `PersonaES`.
+
+### Estructura base
+```json
+{
+  "id": "019b0d3a-1234-4567-89ab-0cd1ef234567",
+  "persona": {
+    "...": "..."
+  }
+}
+```
+El campo `id` identifica al accionista dentro del perfil; `persona.id` identifica a la persona asociada. Ambos deben ser UUID únicos.
 
 ### Ejemplos por tipo
 
 #### Persona natural
 ```json
 {
-  "tipo": "NATURAL",
-  "nombre": "Ana",
-  "apellidoPaterno": "García",
-  "apellidoMaterno": "Soto",
-  "tipoDocumento": "DNI",
-  "numeroDocumento": "45678912",
-  "paisEmision": "PE"
+  "id": "019b0d3a-1234-4567-89ab-0cd1ef234567",
+  "persona": {
+    "id": "019b0d3a-aaaa-bbbb-cccc-0cd1ef234567",
+    "tipo": "NATURAL",
+    "nombre": "Ana",
+    "apellidoPaterno": "García",
+    "apellidoMaterno": "Soto",
+    "tipoDocumento": "DNI",
+    "numeroDocumento": "45678912",
+    "paisEmision": "PE"
+  }
 }
 ```
 
 #### Persona jurídica
 ```json
 {
-  "tipo": "JURIDICA",
-  "tipoDocumento": "RUC",
-  "numeroDocumento": "20601234567",
-  "razonSocial": "TechVenture Solutions S.A.C.",
-  "direccion": "Av. José Pardo 610, Miraflores",
-  "constituida": true,
-  "nombreComercial": "TechVenture",
-  "distrito": "Miraflores",
-  "provincia": "Lima",
-  "departamento": "Lima",
-  "pais": "PE"
+  "id": "019b0d3a-bbbb-cccc-dddd-0cd1ef234567",
+  "persona": {
+    "id": "019b0d3a-bbbb-aaaa-eeee-0cd1ef234567",
+    "tipo": "JURIDICA",
+    "tipoDocumento": "RUC",
+    "numeroDocumento": "20601234567",
+    "razonSocial": "TechVenture Solutions S.A.C.",
+    "direccion": "Av. José Pardo 610, Miraflores",
+    "constituida": true,
+    "nombreComercial": "TechVenture",
+    "distrito": "Miraflores",
+    "provincia": "Lima",
+    "departamento": "Lima",
+    "pais": "PE"
+  }
 }
 ```
 
 #### Sucursal
 ```json
 {
-  "tipo": "SUCURSAL",
-  "ruc": "20607654321",
-  "nombreSucursal": "Sucursal Centro",
-  "partidaRegistral": "12345678",
-  "oficinaRegistrada": "Lima",
-  "direccionFiscal": "Av. Arequipa 1234, Lima",
-  "representante": {
-    "nombre": "Carlos",
-    "apellidoPaterno": "Mendoza",
-    "apellidoMaterno": "Silva",
-    "tipoDocumento": "DNI",
-    "numeroDocumento": "48901234"
+  "id": "019b0d3a-cccc-dddd-eeee-0cd1ef234567",
+  "persona": {
+    "id": "019b0d3a-cccc-aaaa-ffff-0cd1ef234567",
+    "tipo": "SUCURSAL",
+    "ruc": "20607654321",
+    "nombreSucursal": "Sucursal Centro",
+    "partidaRegistral": "12345678",
+    "oficinaRegistrada": "Lima",
+    "direccionFiscal": "Av. Arequipa 1234, Lima",
+    "representante": {
+      "nombre": "Carlos",
+      "apellidoPaterno": "Mendoza",
+      "apellidoMaterno": "Silva",
+      "tipoDocumento": "DNI",
+      "numeroDocumento": "48901234"
+    }
   }
 }
 ```
@@ -101,7 +127,7 @@ El campo `tipo` define la estructura esperada. Todas las variantes comparten un 
 ## Crear múltiples accionistas
 - **Método:** `POST`
 - **Ruta:** `/api/v2/society-profile/{societyProfileId}/shareholder/many`
-- **Body:** arreglo de objetos `PersonaES`.
+- **Body:** arreglo de objetos con la misma estructura base (`id` + `persona.id`).
 - **Uso típico:** importación masiva desde un Excel.
 - **Respuesta:** `201` sin payload (`message: Accionistas creados correctamente.`).
 
@@ -113,6 +139,7 @@ El campo `tipo` define la estructura esperada. Todas las variantes comparten un 
 {
   "id": "019b0d3a-1234-4567-89ab-0cd1ef234567",
   "persona": {
+    "id": "019b0d3a-aaaa-bbbb-cccc-0cd1ef234567",
     "tipo": "NATURAL",
     "nombre": "Ana",
     "apellidoPaterno": "García",

@@ -6,6 +6,8 @@ const STORE_SCHEMAS = {
   datosSociedad: { keyPath: "idSociety" },
   quorumConfig: { keyPath: "id" },
   accionistas: { keyPath: "id" },
+  apoderadosClases: { keyPath: "id" },
+  apoderadosRegistro: { keyPath: "id" },
 } as const;
 
 type StoreName = keyof typeof STORE_SCHEMAS;

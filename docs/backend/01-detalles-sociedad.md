@@ -8,7 +8,7 @@ Este módulo registra y mantiene la información base de la sociedad. Desde la v
 - **Dependencias:** haber creado previamente el perfil (`structureId`).
 
 ## Reglas generales
-- Debes generar un UUID para `id` antes de invocar el `POST`. Usa `crypto.randomUUID()` o equivalente.
+- **No envíes UUID** para esta tabla. El backend genera y persiste el `societyId` internamente y lo devuelve en las respuestas.
 - Los nombres de campo en las solicitudes están en español (`razonSocial`, `tipoSociedad`, etc.). Las respuestas (`GET`) retornan los atributos en inglés (`reasonSocial`, `typeSociety`, ...).
 - Al crear, el backend vincula automáticamente la sociedad con el `structureId` y bloquea duplicados por RUC.
 
@@ -20,7 +20,6 @@ Este módulo registra y mantiene la información base de la sociedad. Desde la v
 - **Body (`SocietyDto`):**
 | Campo | Tipo | Validaciones |
 | --- | --- | --- |
-| `id` | string (uuid) | Obligatorio. UUID generado por el cliente. |
 | `ruc` | string | Largo exacto 11, sólo dígitos. |
 | `razonSocial` | string | 1–255 caracteres. |
 | `tipoSociedad` | enum `TypeSociety` | Ver tabla más abajo. |
@@ -38,7 +37,6 @@ Este módulo registra y mantiene la información base de la sociedad. Desde la v
 ### Ejemplo de request
 ```json
 {
-  "id": "019b3d90-aaaa-bbbb-cccc-1234567890ab",
   "ruc": "20601234567",
   "razonSocial": "Fondo Andino de Inversión",
   "tipoSociedad": "S.A.C.",
@@ -64,14 +62,14 @@ Este módulo registra y mantiene la información base de la sociedad. Desde la v
   "data": "019b3d90-aaaa-bbbb-cccc-1234567890ab"
 }
 ```
-> El `data` devuelto es el mismo UUID enviado en `id`.
+> El `data` devuelto corresponde al `societyId` generado automáticamente.
 
 ---
 
 ## Actualizar datos principales
 - **Método:** `PUT`
 - **Ruta:** `/api/v2/society-profile/{structureId}/society`
-- **Body:** idéntico al `POST` (debe incluir `id`).
+- **Body:** idéntico al `POST` (sin `id`; el backend usa el registro asociado al `structureId`).
 - **Respuesta (`200`):**
 ```json
 {

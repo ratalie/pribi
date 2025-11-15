@@ -6,12 +6,14 @@ Relaciona cada accionista con una acción previamente configurada, indicando can
 - **Base path:** `/api/v2/society-profile/{societyProfileId}/asignaciones`
 - **Auth:** `Bearer <token>`
 - **Dependencias:** requiere acciones (`acctions`) y accionistas creados.
+- **IDs manejados por el cliente:** cada asignación utiliza un `id` (UUID) generado en el frontend, lo que facilita reintentos idempotentes.
 
 ## Crear asignación
 - **Método:** `POST`
 - **Body (`CrearAsignacionDetalleSchema`):**
 ```json
 {
+  "id": "019b2155-dead-beef-cafe-1234567890ab",
   "accionId": "019b1f57-cafe-4dec-8fab-1e3953c95b01",
   "accionistaId": "019b0d3a-1234-4567-89ab-0cd1ef234567",
   "cantidadSuscrita": 50,
@@ -25,6 +27,7 @@ Relaciona cada accionista con una acción previamente configurada, indicando can
 ### Validaciones clave
 | Campo | Regla |
 | --- | --- |
+| `id` | UUID propio del registro (lo genera el cliente) |
 | `accionId`, `accionistaId` | UUID válidos |
 | `cantidadSuscrita` | `> 0` (número positivo) |
 | `precioPorAccion` | `> 0` |
@@ -49,6 +52,7 @@ Relaciona cada accionista con una acción previamente configurada, indicando can
 
 ```json
 {
+  "id": "019b2155-dead-beef-cafe-1234567890ab",
   "cantidadSuscrita": 125.5,
   "precioPorAccion": 15.1,
   "porcentajePagadoPorAccion": 95,

@@ -5,11 +5,21 @@ Administra el ciclo de vida del **perfil de sociedad** (`societyProfileStructure
 
 - **Base path:** `/api/v2/society-profile`
 - **Auth:** `Bearer <token>` (ver `00-autenticacion.md`)
-- **ID primario:** entero incremental (`structureId`).
+- **Identificador:** entero incremental (`structureId`), gestionado por el backend. No se envían UUID para este recurso.
+
+### Endpoints disponibles
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| `POST` | `/api/v2/society-profile` | Crear perfil de sociedad |
+| `PUT` | `/api/v2/society-profile/{id}` | Actualizar el paso actual del perfil |
+| `GET` | `/api/v2/society-profile/{id}` | Obtener el detalle del perfil |
+| `DELETE` | `/api/v2/society-profile/{id}` | Eliminar (desactivar) el perfil |
+| `GET` | `/api/v2/society-profile/list` | Listado resumido de perfiles |
 
 ---
 
 ## Crear perfil de sociedad
+> Al ser un recurso tabular, **no envíes UUID**; el backend se encarga de los IDs internos y sólo devuelve `structureId`.
 - **Método:** `POST`
 - **Ruta:** `/api/v2/society-profile`
 - **Body:** ninguno

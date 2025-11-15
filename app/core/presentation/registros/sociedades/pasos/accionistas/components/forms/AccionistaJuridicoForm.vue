@@ -16,7 +16,8 @@
     razonSocialAccSchema,
     tipoDocumentoAccSchema,
   } from "../../schemas/accionistasSchemas";
-      import { useAccionistaJuridicoStore } from "../../stores/forms/useAccionistaJuridicoStore";
+  import { countriesOptions } from "~/constants/inputs/countries-options";
+  import { useAccionistaJuridicoStore } from "../../stores/forms/useAccionistaJuridicoStore";
 
   const accionistaJuridicoStore = useAccionistaJuridicoStore();
 </script>
@@ -125,12 +126,20 @@
               :schema="razonSocialAccSchema"
             />
 
+            <TextInputZod
+              v-model="accionistaJuridicoStore.direccion"
+              name="direccion_extranjero"
+              label="Dirección"
+              placeholder="Dirección fiscal"
+              :schema="direccionAccSchema"
+            />
+
             <SelectInputZod
               v-model="accionistaJuridicoStore.paisOrigen"
               name="pais_origen_extranjero"
               label="País"
               placeholder="Selecciona el país"
-              :options="[{ id: 1, value: 'Peru', label: 'Peru' }]"
+              :options="countriesOptions"
               :schema="paisOrigenAccSchema"
             />
           </div>
