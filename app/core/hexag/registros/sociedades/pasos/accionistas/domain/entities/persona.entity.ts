@@ -36,6 +36,8 @@ export interface PersonaJuridica extends PersonaBase {
   provincia?: string;
   departamento?: string;
   pais?: string;
+  jurisdiccion?: "peruana" | "extranjera";
+  representadoPor?: Representante | null;
 }
 
 export interface PersonaSucursal extends PersonaBase {
@@ -53,7 +55,7 @@ export interface PersonaFondoInversion extends PersonaBase {
   ruc: string;
   razonSocial: string;
   direccion?: string;
-  tipoFondo: "ABIERTO" | "CERRADO" | string;
+  tipoFondo: "ABIERTO" | "CERRADO" | "MIXTO" | string;
   representante?: Representante;
   fiduciario?: {
     ruc?: string;

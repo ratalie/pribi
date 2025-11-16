@@ -6,9 +6,10 @@
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import CascadeSelectInputZod from "~/components/base/inputs/text/ui/CascadeSelectInputZod.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
-  import { accionistaTypes } from "~/constants/inputs/accionista-types";
+import { accionistaTypes } from "~/constants/inputs/accionista-types";
 import { tipoAccionistaSchema } from "../schemas/modalAccionistas";
 import { TipoAccionistaEnum } from "../types/enums/TipoAccionistaEnum";
+import { TipoFondoEnum } from "~/types/enums/TipoFondoEnum";
   import AccionistaNaturalForm from "./forms/AccionistaNaturalForm.vue";
   import AccionistaJuridicoForm from "./forms/AccionistaJuridicoForm.vue";
   import AccionistaSucursalForm from "./forms/AccionistaSucursalForm.vue";
@@ -167,6 +168,13 @@ import {
     });
   };
 
+  const ensureTipoFondo = (value?: string | null): TipoFondoEnum => {
+    if (value === TipoFondoEnum.ABIERTO || value === TipoFondoEnum.MIXTO) {
+      return value;
+    }
+    return TipoFondoEnum.CERRADO;
+  };
+
   const hydrateStoresFromPersona = (persona?: Persona | null) => {
     resetStores();
     if (!persona) {
@@ -263,7 +271,7 @@ import {
           state.numeroDocumento = fondoPersona.ruc ?? "";
           state.razonSocial = fondoPersona.razonSocial ?? "";
           state.direccion = fondoPersona.direccion ?? "";
-          state.tipoFondo = fondoPersona.tipoFondo ?? "";
+          state.tipoFondo = ensureTipoFondo(fondoPersona.tipoFondo);
           state.numeroDocumentoSociedadAdministradora = fondoPersona.fiduciario?.ruc ?? "";
           state.tipoDocumentoSociedadAdministradora = fondoPersona.fiduciario?.ruc ? "RUC" : "";
           state.razonSocialSociedadAdministradora = fondoPersona.fiduciario?.razonSocial ?? "";

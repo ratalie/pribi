@@ -49,6 +49,8 @@ const mapPersona = (data: BackendPersona | undefined): Persona => {
         provincia: base.provincia,
         departamento: base.departamento,
         pais: base.pais,
+        jurisdiccion: base.jurisdiccion,
+        representadoPor: normalizeRepresentante(base.representadoPor),
       } as PersonaJuridica;
     case "SUCURSAL":
       return {

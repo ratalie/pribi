@@ -9,7 +9,7 @@ export interface ApoderadoRow {
   clase: string;
   nombre: string;
   documento: string;
-  termino: string;
+  isPlaceholder?: boolean;
 }
 
 

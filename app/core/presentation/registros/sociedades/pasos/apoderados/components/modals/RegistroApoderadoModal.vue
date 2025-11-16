@@ -6,13 +6,11 @@ import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
 import CardTitle from "~/components/base/cards/CardTitle.vue";
 import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
 import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
-import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
 import BaseModal from "~/components/base/modal/BaseModal.vue";
 import { tipoDocumentoOptions } from "~/constants/inputs/document-type";
+import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
 import {
   apoderadoFieldSchemas,
-  apoderadoSchema,
-  terminoCargoOptions,
   type ApoderadoForm,
 } from "../../schemas/apoderado.schema";
 
@@ -22,10 +20,9 @@ interface SelectOption {
   label: string;
 }
 
-type ApoderadoFormState = Omit<ApoderadoForm, "apellidoMaterno" | "paisEmision" | "fechaFin"> & {
+type ApoderadoFormState = Omit<ApoderadoForm, "apellidoMaterno" | "paisEmision"> & {
   apellidoMaterno: string;
   paisEmision: string;
-  fechaFin: string;
 };
 
 interface Props {
@@ -57,9 +54,6 @@ const formModel = ref<ApoderadoFormState>({
   apellidoPaterno: "",
   apellidoMaterno: "",
   paisEmision: "",
-  terminoCargo: "INDEFINIDO",
-  fechaInicio: "",
-  fechaFin: "",
 });
 
 watch(
@@ -74,9 +68,6 @@ watch(
       apellidoPaterno: value?.apellidoPaterno ?? "",
       apellidoMaterno: value?.apellidoMaterno ?? "",
       paisEmision: value?.paisEmision ?? "",
-      terminoCargo: value?.terminoCargo ?? "INDEFINIDO",
-      fechaInicio: value?.fechaInicio?.split("T")[0] ?? "",
-      fechaFin: value?.fechaFin?.split("T")[0] ?? "",
     };
   },
   { immediate: true }
@@ -91,7 +82,6 @@ const handleSubmit = () => {
     ...formModel.value,
     apellidoMaterno: formModel.value.apellidoMaterno || undefined,
     paisEmision: formModel.value.paisEmision || undefined,
-    fechaFin: formModel.value.fechaFin || undefined,
   };
   emit("submit", payload);
 };
@@ -101,7 +91,17 @@ const handleClose = () => {
   isOpen.value = false;
 };
 
-const showFechaFin = computed(() => formModel.value.terminoCargo === "DETERMINADO");
+const showPaisEmision = computed(() => formModel.value.tipoDocumento === TipoDocumentosEnum.PASAPORTE);
+
+watch(
+  () => formModel.value.tipoDocumento,
+  (tipo) => {
+    if (tipo !== TipoDocumentosEnum.PASAPORTE) {
+      formModel.value.paisEmision = "";
+    }
+  }
+);
+
 </script>
 
 <template>
@@ -167,45 +167,16 @@ const showFechaFin = computed(() => formModel.value.terminoCargo === "DETERMINAD
           />
 
           <TextInputZod
+            v-if="showPaisEmision"
             v-model="formModel.paisEmision"
             name="pais_emision"
-            label="País de emisión (opcional)"
+            label="País de emisión"
             placeholder="Ej. PE"
             :schema="apoderadoFieldSchemas.paisEmision"
           />
         </div>
       </div>
 
-      <div class="flex flex-col gap-6 rounded-xl border border-slate-200 p-6">
-        <p class="t-b2 font-semibold text-slate-800">Término del cargo</p>
-        <div class="grid grid-cols-2 gap-6">
-          <SelectInputZod
-            v-model="formModel.terminoCargo"
-            name="termino_cargo"
-            label="Término"
-            placeholder="Selecciona el término"
-            :options="terminoCargoOptions"
-            :schema="apoderadoFieldSchemas.terminoCargo"
-          />
-
-          <DateInputZod
-            v-model="formModel.fechaInicio"
-            name="fecha_inicio"
-            label="Fecha de inicio"
-            placeholder="Selecciona la fecha"
-            :schema="apoderadoFieldSchemas.fechaInicio"
-          />
-
-          <DateInputZod
-            v-if="showFechaFin"
-            v-model="formModel.fechaFin"
-            name="fecha_fin"
-            label="Fecha de finalización"
-            placeholder="Selecciona la fecha"
-            :schema="apoderadoFieldSchemas.fechaFin"
-          />
-        </div>
-      </div>
     </div>
 
     <template #footer>

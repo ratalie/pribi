@@ -14,6 +14,7 @@
     type PersonaTipoForm,
     type RepresentanteFormValues,
   } from "../types";
+  import { tipoFondoOptions } from "~/constants/inputs/tipo-fondos";
 
   interface Props {
     initialValues?: Partial<AccionistaFormValues>;
@@ -100,11 +101,6 @@
   const BOOLEAN_OPTIONS = [
     { id: "true", label: "Sí", value: "true" },
     { id: "false", label: "No", value: "false" },
-  ];
-
-  const FONDO_TIPO_OPTIONS = [
-    { id: "abierto", label: "Fondo abierto", value: "ABIERTO" },
-    { id: "cerrado", label: "Fondo cerrado", value: "CERRADO" },
   ];
 
   const optionalString = z.string().optional();
@@ -724,7 +720,7 @@
         name="fondo-tipo"
         label="Tipo de fondo"
         placeholder="Selecciona una opción"
-        :options="FONDO_TIPO_OPTIONS"
+        :options="tipoFondoOptions"
         :schema="required('Selecciona el tipo de fondo')"
       />
     </section>

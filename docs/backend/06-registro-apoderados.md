@@ -5,7 +5,7 @@ Permite definir **clases de apoderados** (tipos) y registrar apoderados concreto
 
 - **Base path:** `/api/v2/society-profile/{societyProfileId}/attorney-register`
 - **Flujo:** primero crea clases, luego apoderados.
-- **IDs:** las clases de apoderados usan UUID generados por el backend; los apoderados no requieren `id` en el `POST`, únicamente `claseApoderadoId` y los datos de la persona.
+- **IDs:** las clases y apoderados usan UUID generados por el frontend para mantener la experiencia offline / reintentos idempotentes.
 
 ---
 
@@ -84,9 +84,6 @@ Permite definir **clases de apoderados** (tipos) y registrar apoderados concreto
     "tipoDocumento": "DNI",
     "numeroDocumento": "45678910"
   },
-  "terminoCargo": "DETERMINADO",
-  "fechaInicio": "2025-01-01T00:00:00.000Z",
-  "fechaFin": "2025-12-31T00:00:00.000Z"
 }
 ```
 
@@ -94,9 +91,6 @@ Permite definir **clases de apoderados** (tipos) y registrar apoderados concreto
 - `id`: UUID generado por el frontend (permite reintentos idempotentes).  
 - `claseApoderadoId`: UUID existente (creado en la sección anterior).
 - `persona.id`: UUID propio de la persona asociada; también lo genera el frontend y se reutiliza en actualizaciones.
-- `terminoCargo`: `INDEFINIDO` u `DETERMINADO`.
-- Si `terminoCargo = DETERMINADO`, `fechaFin` obligatoria. Si `INDEFINIDO`, no debe enviarse `fechaFin`.
-- Fechas en formato ISO 8601.
 
 ### Respuesta (`201`)
 ```json
@@ -133,9 +127,6 @@ Permite definir **clases de apoderados** (tipos) y registrar apoderados concreto
         "tipoDocumento": "DNI",
         "numeroDocumento": "45678910"
       },
-      "terminoCargo": "DETERMINADO",
-      "fechaInicio": "2025-01-01T00:00:00.000Z",
-      "fechaFin": "2025-12-31T00:00:00.000Z",
       "poderId": null
     }
   ]
@@ -149,7 +140,7 @@ Permite definir **clases de apoderados** (tipos) y registrar apoderados concreto
 ## Errores frecuentes
 | Código | Motivo | Ejemplo |
 | --- | --- | --- |
-| `400` | Validaciones Zod (fechaFin faltante, nombre vacío) | `terminoCargo = DETERMINADO` sin `fechaFin` |
+| `400` | Validaciones Zod (nombre vacío, clase inexistente) | Falta de campos obligatorios |
 | `401` | Token inválido/expirado | Reautenticar |
 | `403` | Usuario sin permisos | Revisar rol |
 | `404` | Clase/apoderado inexistente | Confirmar IDs |
@@ -158,6 +149,6 @@ Permite definir **clases de apoderados** (tipos) y registrar apoderados concreto
 ## Checklist Frontend
 - Solicitar `societyProfileId` antes de cargar el módulo.
 - Mantener catálogo de clases en memoria (GET `/classes`).
-- Validar formulario con las mismas reglas (`fechaFin` condicional, selects de tipo).
+- Validar formulario con las mismas reglas (nombres obligatorios, documento único).
 - Mostrar en UI la relación clase → apoderados usando la respuesta agrupada.
 - Conservar `attorneyId` y `classId` para actualizaciones/eliminaciones.

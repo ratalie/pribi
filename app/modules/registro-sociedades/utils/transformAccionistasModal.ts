@@ -3,6 +3,7 @@ import type { PersonaNaturalState } from "~/stores/usePersonaNaturalStore";
 import { EstadoCivilEnum } from "~/types/enums/EstadoCivilEnum";
 import { RegimenPatrimonialEnum } from "~/types/enums/RegimenPatrimonialEnum";
 import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
+import { TipoFondoEnum } from "~/types/enums/TipoFondoEnum";
 import type { AccionistaFideicomisosState } from "../stores/modal/accionistas/useAccionistaFideicomisosStore";
 import type { AccionistaFondosInversionState } from "../stores/modal/accionistas/useAccionistaFondosInversionStore";
 import type { AccionistaJuridicoState } from "../stores/modal/accionistas/useAccionistaJuridicoStore";
@@ -47,6 +48,13 @@ function convertirStateAPersonaNatural(
     paisPasaporte: state.paisPasaporte || undefined,
   };
 }
+
+const ensureTipoFondo = (value?: string | null): TipoFondoEnum => {
+  if (value === TipoFondoEnum.ABIERTO || value === TipoFondoEnum.MIXTO) {
+    return value;
+  }
+  return TipoFondoEnum.CERRADO;
+};
 
 // ============================================================================
 // TRANSFORMAR DE MODAL A ACCIONISTA (para guardar)
@@ -317,7 +325,7 @@ function transformarFondosInversionAAccionista(
     numeroDocumento: state.numeroDocumento,
     razonSocial: state.razonSocial,
     direccion: state.direccion,
-    tipoFondo: state.tipoFondo,
+    tipoFondo: ensureTipoFondo(state.tipoFondo),
     numeroDocumentoSociedadAdministradora: state.numeroDocumentoSociedadAdministradora,
     tipoDocumentoSociedadAdministradora: "RUC", // Siempre es RUC (la administradora es empresa peruana)
     razonSocialSociedadAdministradora: state.razonSocialSociedadAdministradora,
@@ -522,7 +530,7 @@ function transformarAccionistaAFondosInversion(accionista: FondosInversionAccion
       numeroDocumento: accionista.numeroDocumento,
       razonSocial: accionista.razonSocial,
       direccion: accionista.direccion,
-      tipoFondo: accionista.tipoFondo,
+      tipoFondo: ensureTipoFondo(accionista.tipoFondo),
       numeroDocumentoSociedadAdministradora: accionista.numeroDocumentoSociedadAdministradora,
       tipoDocumentoSociedadAdministradora: accionista.tipoDocumentoSociedadAdministradora,
       razonSocialSociedadAdministradora: accionista.razonSocialSociedadAdministradora,

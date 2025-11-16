@@ -40,30 +40,37 @@ const handleRemove = (id: string) => emit("remove", id);
           <TableHead>Apoderado</TableHead>
           <TableHead>Clase</TableHead>
           <TableHead>Documento</TableHead>
-          <TableHead>Término de cargo</TableHead>
           <TableHead v-if="!readonly" class="text-right">Acciones</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         <TableRow v-if="isLoading">
-          <TableCell colspan="5" class="py-6 text-center text-slate-500">
+          <TableCell :colspan="readonly ? 3 : 4" class="py-6 text-center text-slate-500">
             Cargando apoderados…
           </TableCell>
         </TableRow>
         <TableRow v-else-if="items.length === 0">
-          <TableCell colspan="5" class="py-6 text-center text-slate-500">
+          <TableCell :colspan="readonly ? 3 : 4" class="py-6 text-center text-slate-500">
             Aún no registras apoderados.
           </TableCell>
         </TableRow>
-        <TableRow v-for="item in items" :key="item.id">
-          <TableCell class="font-medium text-slate-900">{{ item.nombre }}</TableCell>
+        <TableRow
+          v-for="item in items"
+          :key="item.id"
+          :class="[{ 'opacity-70': item.isPlaceholder, 'bg-slate-50': item.isPlaceholder }]"
+        >
+          <TableCell class="font-medium text-slate-900">
+            {{ item.nombre }}
+          </TableCell>
           <TableCell class="text-slate-600">{{ item.clase }}</TableCell>
           <TableCell class="text-slate-600">{{ item.documento }}</TableCell>
-          <TableCell class="text-slate-600">{{ item.termino }}</TableCell>
           <TableCell v-if="!readonly" class="text-right">
             <div class="flex justify-end gap-2">
-              <Button variant="ghost" size="sm" @click="handleEdit(item.id)">Editar</Button>
+              <Button variant="ghost" size="sm" @click="handleEdit(item.id)">
+                {{ item.isPlaceholder ? "Completar" : "Editar" }}
+              </Button>
               <Button
+                v-if="!item.isPlaceholder"
                 variant="ghost"
                 size="sm"
                 class="text-red-600"

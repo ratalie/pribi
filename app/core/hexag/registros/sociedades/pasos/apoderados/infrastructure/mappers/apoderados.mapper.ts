@@ -5,9 +5,6 @@ const normalizeApoderado = (payload: Record<string, any>): Apoderado => ({
   id: payload.id ?? "",
   claseApoderadoId: payload.claseApoderadoId ?? payload.classId ?? "",
   persona: payload.persona,
-  terminoCargo: payload.terminoCargo ?? "INDEFINIDO",
-  fechaInicio: payload.fechaInicio ?? payload.startDate ?? "",
-  fechaFin: payload.fechaFin ?? payload.endDate ?? null,
   createdAt: payload.createdAt,
   updatedAt: payload.updatedAt,
 });

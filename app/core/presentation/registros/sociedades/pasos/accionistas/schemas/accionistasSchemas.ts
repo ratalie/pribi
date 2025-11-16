@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { TipoFondoEnum } from "~/types/enums/TipoFondoEnum";
+
 // ============================================================================
 // SCHEMAS COMUNES - Utilizados por múltiples tipos de accionistas
 // ============================================================================
@@ -109,7 +111,10 @@ export const identificacionFideicomisosAccSchema = z
 // FONDOS DE INVERSIÓN - Schemas específicos para accionistas fondos de inversión
 // ============================================================================
 
-export const tipoFondoAccSchema = z.string().nonempty("El tipo de fondo es obligatorio");
+export const tipoFondoAccSchema = z.nativeEnum(TipoFondoEnum, {
+  required_error: "El tipo de fondo es obligatorio",
+  invalid_type_error: "Selecciona un tipo de fondo válido",
+});
 
 // Sociedad Administradora
 export const numeroDocumentoSociedadAdministradoraAccSchema = z

@@ -238,18 +238,17 @@
 </script>
 
 <template>
-  <div class="rounded-2xl border border-primary-300/40 bg-white shadow-sm">
-    <div class="border-b border-primary-200/40 p-6">
-      <CardTitle
-        title="Datos principales"
-        body="Completa o revisa los datos generales de la sociedad."
-      />
-      <p v-if="errorMessage" class="mt-3 text-sm text-red-500">
-        {{ errorMessage }}
-      </p>
-    </div>
+  <div class="bg-white p-14">
+    <CardTitle
+      title="Datos principales"
+      body="Complete todos los datos requeridos."
+      class="mb-8"
+    />
+    <p v-if="errorMessage" class="mb-8 text-sm text-red-500">
+      {{ errorMessage }}
+    </p>
 
-    <div v-if="isLoading" class="p-10">
+    <div v-if="isLoading">
       <div class="animate-pulse space-y-6">
         <div class="h-4 w-1/2 rounded bg-gray-200" />
         <div class="grid grid-cols-2 gap-6">
@@ -258,7 +257,7 @@
       </div>
     </div>
 
-    <div v-else-if="isReadonly" class="space-y-6 p-10">
+    <div v-else-if="isReadonly" class="space-y-6">
       <dl class="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2">
         <div>
           <dt class="text-sm font-medium text-gray-500">Número de RUC</dt>
@@ -326,13 +325,13 @@
       </div>
     </div>
 
-    <div v-else class="p-10">
-      <Form
-        class="grid grid-cols-2 gap-8"
-        @submit="handleSubmit"
-        @invalid-submit="handleInvalidSubmit"
-      >
-        <SearchInputZod
+    <Form
+      v-else
+      class="grid grid-cols-2 gap-14"
+      @submit="handleSubmit"
+      @invalid-submit="handleInvalidSubmit"
+    >
+      <SearchInputZod
           v-model="form.numeroRuc"
           name="numero-ruc"
           label="Número de RUC"
@@ -471,8 +470,7 @@
             </span>
             <span v-else>Guardar cambios</span>
           </Button>
-        </div>
-      </Form>
-    </div>
+      </div>
+    </Form>
   </div>
 </template>

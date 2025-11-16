@@ -1,12 +1,14 @@
 import { defineStore } from "pinia";
 
+import { TipoFondoEnum } from "~/types/enums/TipoFondoEnum";
+
 export const useAccionistaFondosInversionStore = defineStore("accionistaFondosInversionForm", {
   state: (): AccionistaFondosInversionState => ({
     tipoDocumento: "",
     numeroDocumento: "",
     razonSocial: "",
     direccion: "",
-    tipoFondo: "",
+    tipoFondo: TipoFondoEnum.CERRADO,
     numeroDocumentoSociedadAdministradora: "",
     tipoDocumentoSociedadAdministradora: "",
     razonSocialSociedadAdministradora: "",
@@ -19,7 +21,7 @@ export interface AccionistaFondosInversionState {
   numeroDocumento: string;
   razonSocial: string;
   direccion: string;
-  tipoFondo: string;
+  tipoFondo: TipoFondoEnum;
   numeroDocumentoSociedadAdministradora: string;
   tipoDocumentoSociedadAdministradora: string;
   razonSocialSociedadAdministradora: string;
