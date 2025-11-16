@@ -102,13 +102,18 @@
       return;
     }
 
-    currentApoderadoId.value = props.initialApoderado.id ?? null;
-    currentPersonaId.value = props.initialApoderado.persona.id ?? null;
-    selectedClaseId.value = props.initialApoderado.claseApoderadoId ?? "";
+    console.log(
+      "[RegistroApoderadoModal] initializeForm - Editing existing apoderado:",
+      props.initialApoderado
+    );
+    currentApoderadoId.value = props.initialApoderado?.id ?? null;
+    currentPersonaId.value = props.initialApoderado?.persona?.id ?? null;
+    selectedClaseId.value = props.initialApoderado?.claseApoderadoId ?? "";
 
-    if (props.initialApoderado.persona.tipo === "JURIDICA") {
+    if (props.initialApoderado?.persona?.tipo === "JURIDICA") {
       modalStore.setTipoPersona("juridica");
-      const persona = props.initialApoderado.persona;
+      const persona = props.initialApoderado?.persona;
+      if (!persona) return;
       modalStore.esEmpresaConstituidaEnPeru = persona.jurisdiccion !== "extranjera";
       personaJuridicaStore.setJurisdiccion(
         persona.jurisdiccion === "extranjera" ? "extranjera" : "peruana"
@@ -140,9 +145,10 @@
       } else {
         modalStore.tieneRepresentante = false;
       }
-    } else if (props.initialApoderado.persona.tipo === "NATURAL") {
+    } else if (props.initialApoderado?.persona?.tipo === "NATURAL") {
       modalStore.setTipoPersona("natural");
-      const persona = props.initialApoderado.persona;
+      const persona = props.initialApoderado?.persona;
+      if (!persona) return;
       personaNaturalStore.$patch({
         tipoDocumento: (persona.tipoDocumento as TipoDocumentosEnum) || "DNI",
         numeroDocumento: persona.numeroDocumento ?? "",

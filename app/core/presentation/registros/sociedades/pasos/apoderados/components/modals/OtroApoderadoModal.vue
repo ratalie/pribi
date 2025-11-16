@@ -60,16 +60,22 @@
       return;
     }
 
-    currentApoderadoId.value = props.initialApoderado.id ?? null;
+    console.log(
+      "[OtroApoderadoModal] initializeForm - Editing existing apoderado:",
+      props.initialApoderado
+    );
+    currentApoderadoId.value = props.initialApoderado?.id ?? null;
 
-    if (props.initialApoderado.persona.tipo !== "NATURAL") {
+    if (props.initialApoderado?.persona?.tipo !== "NATURAL") {
       console.error(
         "[OtroApoderadoModal] Otros apoderados solo pueden ser personas naturales"
       );
       return;
     }
 
-    const persona = props.initialApoderado.persona as PersonaNatural;
+    const persona = props.initialApoderado?.persona as PersonaNatural | undefined;
+    if (!persona) return;
+
     currentPersonaId.value = persona.id ?? null;
 
     personaNaturalStore.$patch({
