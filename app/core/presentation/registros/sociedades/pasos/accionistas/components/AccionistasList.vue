@@ -1,6 +1,13 @@
 <script setup lang="ts">
   import { Button } from "@/components/ui/button";
-  import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+  import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "@/components/ui/table";
 
   import type { AccionistaRow } from "../types";
 
@@ -26,7 +33,7 @@
 </script>
 
 <template>
-  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+  <div class="overflow-hidden bg-white">
     <Table>
       <TableHeader>
         <TableRow>
@@ -64,7 +71,12 @@
           <TableCell v-if="!readonly" class="text-right">
             <div class="flex justify-end gap-2">
               <Button variant="ghost" size="sm" @click="handleEdit(item.id)">Editar</Button>
-              <Button variant="ghost" size="sm" class="text-red-600" @click="handleRemove(item.id)">
+              <Button
+                variant="ghost"
+                size="sm"
+                class="text-red-600"
+                @click="handleRemove(item.id)"
+              >
                 Eliminar
               </Button>
             </div>
@@ -74,5 +86,3 @@
     </Table>
   </div>
 </template>
-
-

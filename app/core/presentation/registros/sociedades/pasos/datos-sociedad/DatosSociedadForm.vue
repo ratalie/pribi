@@ -1,20 +1,5 @@
 <script setup lang="ts">
   import { Button } from "@/components/ui/button";
-  import { Form } from "vee-validate";
-  import { computed, reactive, ref, toRef, watch } from "vue";
-  import CardTitle from "~/components/base/cards/CardTitle.vue";
-  import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
-  import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
-  import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
-  import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
-  import {
-    getRegistryOfficeLabel,
-    getTypeSocietyLabel,
-    normalizeRegistryOfficeCode,
-    normalizeTypeSocietyCode,
-  } from "~/constants/inputs/enum-helpers";
-  import { officeOptions } from "~/constants/inputs/office-options";
-  import { societyTypeOptions } from "~/constants/inputs/society-types";
   import type { DatosSociedadDTO } from "@hexag/registros/sociedades/pasos/datos-sociedad/application";
   import type { SociedadDatosGenerales } from "@hexag/registros/sociedades/pasos/datos-sociedad/domain";
   import {
@@ -34,6 +19,21 @@
     tipoSociedadSchema,
   } from "@hexag/registros/sociedades/pasos/datos-sociedad/domain/schemas";
   import { useDatosSociedad } from "@presentation/registros/sociedades/pasos/datos-sociedad/useDatosSociedad";
+  import { Form } from "vee-validate";
+  import { computed, reactive, ref, toRef, watch } from "vue";
+  import CardTitle from "~/components/base/cards/CardTitle.vue";
+  import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
+  import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
+  import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
+  import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
+  import {
+    getRegistryOfficeLabel,
+    getTypeSocietyLabel,
+    normalizeRegistryOfficeCode,
+    normalizeTypeSocietyCode,
+  } from "~/constants/inputs/enum-helpers";
+  import { officeOptions } from "~/constants/inputs/office-options";
+  import { societyTypeOptions } from "~/constants/inputs/society-types";
   import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
@@ -332,144 +332,144 @@
       @invalid-submit="handleInvalidSubmit"
     >
       <SearchInputZod
-          v-model="form.numeroRuc"
-          name="numero-ruc"
-          label="Número de RUC"
-          placeholder="Ingrese el número de RUC"
-          :schema="rucSchema"
-          :is-loading="false"
-          @search="handleSearchRuc"
-        />
+        v-model="form.numeroRuc"
+        name="numero-ruc"
+        label="Número de RUC"
+        placeholder="Ingrese el número de RUC"
+        :schema="rucSchema"
+        :is-loading="false"
+        @search="handleSearchRuc"
+      />
 
-        <SelectInputZod
-          v-model="form.tipoSocietario"
-          :options="societyOptions"
-          name="tipo-sociedad"
-          label="Tipo de sociedad"
-          placeholder="Tipo de sociedad"
-          :schema="tipoSociedadSchema"
-        />
+      <SelectInputZod
+        v-model="form.tipoSocietario"
+        :options="societyOptions"
+        name="tipo-sociedad"
+        label="Tipo de sociedad"
+        placeholder="Tipo de sociedad"
+        :schema="tipoSociedadSchema"
+      />
 
-        <TextInputZod
-          v-model="form.razonSocial"
-          name="razon-social"
-          label="Razón social"
-          placeholder="Razón social"
-          :schema="razonSocialSchema"
-        />
+      <TextInputZod
+        v-model="form.razonSocial"
+        name="razon-social"
+        label="Razón social"
+        placeholder="Razón social"
+        :schema="razonSocialSchema"
+      />
 
-        <TextInputZod
-          v-model="form.nombreComercial"
-          name="nombre-comercial"
-          label="Nombre comercial"
-          placeholder="Nombre comercial"
-          :schema="nombreComercialSchema"
-        />
+      <TextInputZod
+        v-model="form.nombreComercial"
+        name="nombre-comercial"
+        label="Nombre comercial"
+        placeholder="Nombre comercial"
+        :schema="nombreComercialSchema"
+      />
 
-        <TextInputZod
-          v-model="form.direccion"
-          name="direccion"
-          label="Dirección"
-          placeholder="Dirección"
-          :schema="direccionSchema"
-        />
+      <TextInputZod
+        v-model="form.direccion"
+        name="direccion"
+        label="Dirección"
+        placeholder="Dirección"
+        :schema="direccionSchema"
+      />
 
-        <TextInputZod
-          v-model="form.distrito"
-          name="distrito"
-          label="Distrito"
-          placeholder="Distrito"
-          :schema="distritoSchema"
-        />
+      <TextInputZod
+        v-model="form.distrito"
+        name="distrito"
+        label="Distrito"
+        placeholder="Distrito"
+        :schema="distritoSchema"
+      />
 
-        <TextInputZod
-          v-model="form.provincia"
-          name="provincia"
-          label="Provincia"
-          placeholder="Provincia"
-          :schema="provinciaSchema"
-        />
+      <TextInputZod
+        v-model="form.provincia"
+        name="provincia"
+        label="Provincia"
+        placeholder="Provincia"
+        :schema="provinciaSchema"
+      />
 
-        <TextInputZod
-          v-model="form.departamento"
-          name="departamento"
-          label="Departamento"
-          placeholder="Departamento"
-          :schema="departamentoSchema"
-        />
+      <TextInputZod
+        v-model="form.departamento"
+        name="departamento"
+        label="Departamento"
+        placeholder="Departamento"
+        :schema="departamentoSchema"
+      />
 
-        <DateInputZod
-          v-model="form.fechaInscripcionRuc"
-          name="fecha-inscripcion-ruc"
-          label="Fecha de inscripción de RUC"
-          placeholder="Selecciona la fecha"
-          :schema="fechaInscripcionRucSchema"
-        />
+      <DateInputZod
+        v-model="form.fechaInscripcionRuc"
+        name="fecha-inscripcion-ruc"
+        label="Fecha de inscripción de RUC"
+        placeholder="Selecciona la fecha"
+        :schema="fechaInscripcionRucSchema"
+      />
 
-        <TextInputZod
-          v-model="form.actividadExterior"
-          name="actividad-exterior"
-          label="Actividad exterior"
-          placeholder="Actividad exterior"
-          :schema="actividadExteriorSchema"
-        />
+      <TextInputZod
+        v-model="form.actividadExterior"
+        name="actividad-exterior"
+        label="Actividad exterior"
+        placeholder="Actividad exterior"
+        :schema="actividadExteriorSchema"
+      />
 
-        <DateInputZod
-          v-model="form.fechaEscrituraPublica"
-          name="fecha-escritura-publica"
-          label="Fecha de escritura pública"
-          placeholder="Selecciona la fecha"
-          :schema="fechaEscrituraPublicaSchema"
-        />
+      <DateInputZod
+        v-model="form.fechaEscrituraPublica"
+        name="fecha-escritura-publica"
+        label="Fecha de escritura pública"
+        placeholder="Selecciona la fecha"
+        :schema="fechaEscrituraPublicaSchema"
+      />
 
-        <DateInputZod
-          v-model="form.fechaRegistrosPublicos"
-          name="fecha-registros-publicos"
-          label="Fecha de registros públicos"
-          placeholder="Selecciona la fecha"
-          :schema="fechaRegistrosPublicosSchema"
-        />
+      <DateInputZod
+        v-model="form.fechaRegistrosPublicos"
+        name="fecha-registros-publicos"
+        label="Fecha de registros públicos"
+        placeholder="Selecciona la fecha"
+        :schema="fechaRegistrosPublicosSchema"
+      />
 
-        <TextInputZod
-          v-model="form.partidaRegistral"
-          name="partida-registral"
-          label="Partida registral"
-          placeholder="Partida registral"
-          :schema="partidaRegistralSchema"
-        />
+      <TextInputZod
+        v-model="form.partidaRegistral"
+        name="partida-registral"
+        label="Partida registral"
+        placeholder="Partida registral"
+        :schema="partidaRegistralSchema"
+      />
 
-        <SelectInputZod
-          v-model="form.oficinaRegistral"
-          :options="officeSelectOptions"
-          name="oficina-registral"
-          label="Oficina registral"
-          placeholder="Oficina registral"
-          :schema="oficinaRegistralSchema"
-        />
+      <SelectInputZod
+        v-model="form.oficinaRegistral"
+        :options="officeSelectOptions"
+        name="oficina-registral"
+        label="Oficina registral"
+        placeholder="Oficina registral"
+        :schema="oficinaRegistralSchema"
+      />
 
-        <div class="col-span-2 flex items-center justify-end gap-3 pt-4">
-          <Button variant="ghost" type="button" @click="reset">Restablecer</Button>
-          <Button type="submit" :disabled="isSaving">
-            <span v-if="isSaving" class="mr-2 inline-flex items-center gap-2">
-              <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24">
-                <circle
-                  class="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="4"
-                />
-                <path
-                  class="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                />
-              </svg>
-              Guardando...
-            </span>
-            <span v-else>Guardar cambios</span>
-          </Button>
+      <div class="col-span-2 flex items-center justify-end gap-3 pt-4">
+        <Button variant="ghost" type="button" @click="reset">Restablecer</Button>
+        <Button type="submit" :disabled="isSaving">
+          <span v-if="isSaving" class="mr-2 inline-flex items-center gap-2">
+            <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24">
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              />
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
+            </svg>
+            Guardando...
+          </span>
+          <span v-else>Guardar cambios</span>
+        </Button>
       </div>
     </Form>
   </div>

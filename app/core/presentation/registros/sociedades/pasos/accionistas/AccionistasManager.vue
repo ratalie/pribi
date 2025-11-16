@@ -170,11 +170,8 @@
 </script>
 
 <template>
-  <div class="flex flex-col gap-8">
-    <CardTitle
-      title="Accionistas"
-      body="Administra los accionistas registrados para esta sociedad."
-    >
+  <div class="h-full p-14 flex flex-col gap-12">
+    <CardTitle title="Accionistas" body="Complete todos los campos requeridos.">
       <template #actions>
         <ActionButton
           v-if="!isReadonly"
@@ -187,10 +184,7 @@
       </template>
     </CardTitle>
 
-    <p
-      v-if="errorMessage"
-      class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-    >
+    <p v-if="errorMessage" class="text-sm text-red-500">
       {{ errorMessage }}
     </p>
 

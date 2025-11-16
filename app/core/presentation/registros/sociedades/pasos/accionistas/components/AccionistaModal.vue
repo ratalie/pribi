@@ -2,48 +2,6 @@
   import { useVModel } from "@vueuse/core";
   import { computed, ref, watch } from "vue";
 
-  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
-  import CardTitle from "~/components/base/cards/CardTitle.vue";
-  import CascadeSelectInputZod from "~/components/base/inputs/text/ui/CascadeSelectInputZod.vue";
-  import BaseModal from "~/components/base/modal/BaseModal.vue";
-import { accionistaTypes } from "~/constants/inputs/accionista-types";
-import { tipoAccionistaSchema } from "../schemas/modalAccionistas";
-import { TipoAccionistaEnum } from "../types/enums/TipoAccionistaEnum";
-import { TipoFondoEnum } from "~/types/enums/TipoFondoEnum";
-  import AccionistaNaturalForm from "./forms/AccionistaNaturalForm.vue";
-  import AccionistaJuridicoForm from "./forms/AccionistaJuridicoForm.vue";
-  import AccionistaSucursalForm from "./forms/AccionistaSucursalForm.vue";
-  import SucesionesIndivisasForm from "./forms/SucesionesIndivisasForm.vue";
-  import FideicomisosForm from "./forms/FideicomisosForm.vue";
-  import FondosInversionForm from "./forms/FondosInversionForm.vue";
-import {
-  useAccionistaNaturalStore,
-  type AccionistaNaturalState,
-} from "../stores/forms/useAccionistaNaturalStore";
-import {
-  useAccionistaJuridicoStore,
-  type AccionistaJuridicoState,
-} from "../stores/forms/useAccionistaJuridicoStore";
-import {
-  useAccionistaSucursalStore,
-  type AccionistaSucursalState,
-} from "../stores/forms/useAccionistaSucursalStore";
-import {
-  useAccionistaSucesionesIndivisasStore,
-  type AccionistaSucesionesIndivisasState,
-} from "../stores/forms/useAccionistaSucesionesIndivisasStore";
-import {
-  useAccionistaFideicomisosStore,
-  type AccionistaFideicomisosState,
-} from "../stores/forms/useAccionistaFideicomisosStore";
-import {
-  useAccionistaFondosInversionStore,
-  type AccionistaFondosInversionState,
-} from "../stores/forms/useAccionistaFondosInversionStore";
-import {
-  usePersonaNaturalStore,
-  type PersonaNaturalState as RepresentanteState,
-} from "~/stores/usePersonaNaturalStore";
   import type { AccionistaDTO } from "@hexag/registros/sociedades/pasos/accionistas/application";
   import type {
     Persona,
@@ -51,11 +9,38 @@ import {
     PersonaFondoInversion,
     PersonaJuridica,
     PersonaNatural,
-    PersonaSucursal,
     PersonaSucesionIndivisa,
+    PersonaSucursal,
     Representante,
   } from "@hexag/registros/sociedades/pasos/accionistas/domain";
   import type { Accionista } from "@hexag/registros/sociedades/pasos/accionistas/domain/entities/accionista.entity";
+  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+  import CardTitle from "~/components/base/cards/CardTitle.vue";
+  import CascadeSelectInputZod from "~/components/base/inputs/text/ui/CascadeSelectInputZod.vue";
+  import BaseModal from "~/components/base/modal/BaseModal.vue";
+  import { accionistaTypes } from "~/constants/inputs/accionista-types";
+  import {
+    usePersonaNaturalStore,
+    type PersonaNaturalState as RepresentanteState,
+  } from "~/stores/usePersonaNaturalStore";
+  import { TipoFondoEnum } from "~/types/enums/TipoFondoEnum";
+  import { tipoAccionistaSchema } from "../schemas/modalAccionistas";
+  import { useAccionistaFideicomisosStore } from "../stores/forms/useAccionistaFideicomisosStore";
+  import { useAccionistaFondosInversionStore } from "../stores/forms/useAccionistaFondosInversionStore";
+  import { useAccionistaJuridicoStore } from "../stores/forms/useAccionistaJuridicoStore";
+  import {
+    useAccionistaNaturalStore,
+    type AccionistaNaturalState,
+  } from "../stores/forms/useAccionistaNaturalStore";
+  import { useAccionistaSucesionesIndivisasStore } from "../stores/forms/useAccionistaSucesionesIndivisasStore";
+  import { useAccionistaSucursalStore } from "../stores/forms/useAccionistaSucursalStore";
+  import { TipoAccionistaEnum } from "../types/enums/TipoAccionistaEnum";
+  import AccionistaJuridicoForm from "./forms/AccionistaJuridicoForm.vue";
+  import AccionistaNaturalForm from "./forms/AccionistaNaturalForm.vue";
+  import AccionistaSucursalForm from "./forms/AccionistaSucursalForm.vue";
+  import FideicomisosForm from "./forms/FideicomisosForm.vue";
+  import FondosInversionForm from "./forms/FondosInversionForm.vue";
+  import SucesionesIndivisasForm from "./forms/SucesionesIndivisasForm.vue";
 
   interface Props {
     modelValue: boolean;
@@ -159,7 +144,8 @@ import {
   const patchRepresentante = (representante?: Representante | null) => {
     if (!representante) return;
     representanteStore.$patch((state) => {
-      state.tipoDocumento = (representante.tipoDocumento ?? "") as RepresentanteState["tipoDocumento"];
+      state.tipoDocumento = (representante.tipoDocumento ??
+        "") as RepresentanteState["tipoDocumento"];
       state.numeroDocumento = representante.numeroDocumento ?? "";
       state.nombre = representante.nombre ?? "";
       state.apellidoPaterno = representante.apellidoPaterno ?? "";
@@ -191,7 +177,8 @@ import {
       case "NATURAL": {
         const naturalPersona = persona as PersonaNatural;
         naturalStore.$patch((state) => {
-          state.tipoDocumento = (naturalPersona.tipoDocumento ?? "") as AccionistaNaturalState["tipoDocumento"];
+          state.tipoDocumento = (naturalPersona.tipoDocumento ??
+            "") as AccionistaNaturalState["tipoDocumento"];
           state.numeroDocumento = naturalPersona.numeroDocumento ?? "";
           state.nombre = naturalPersona.nombre ?? "";
           state.apellidoPaterno = naturalPersona.apellidoPaterno ?? "";
@@ -273,7 +260,9 @@ import {
           state.direccion = fondoPersona.direccion ?? "";
           state.tipoFondo = ensureTipoFondo(fondoPersona.tipoFondo);
           state.numeroDocumentoSociedadAdministradora = fondoPersona.fiduciario?.ruc ?? "";
-          state.tipoDocumentoSociedadAdministradora = fondoPersona.fiduciario?.ruc ? "RUC" : "";
+          state.tipoDocumentoSociedadAdministradora = fondoPersona.fiduciario?.ruc
+            ? "RUC"
+            : "";
           state.razonSocialSociedadAdministradora = fondoPersona.fiduciario?.razonSocial ?? "";
           state.tieneRepresentante = Boolean(fondoPersona.representante);
         });
@@ -334,7 +323,11 @@ import {
 
     switch (tipoAccionista.value) {
       case TipoAccionistaEnum.NATURAL:
-        if (!naturalStore.numeroDocumento || !naturalStore.nombre || !naturalStore.apellidoPaterno) {
+        if (
+          !naturalStore.numeroDocumento ||
+          !naturalStore.nombre ||
+          !naturalStore.apellidoPaterno
+        ) {
           return null;
         }
         return assignId({
@@ -352,7 +345,9 @@ import {
         }
         return assignId({
           tipo: "JURIDICA",
-          tipoDocumento: juridicaStore.seConstituyoEnPeru ? "RUC" : juridicaStore.tipoDocumento || "RUC",
+          tipoDocumento: juridicaStore.seConstituyoEnPeru
+            ? "RUC"
+            : juridicaStore.tipoDocumento || "RUC",
           numeroDocumento: juridicaStore.numeroDocumento,
           razonSocial: juridicaStore.razonSocial,
           nombreComercial: trim(juridicaStore.nombreComercial),
@@ -400,9 +395,12 @@ import {
           partidaRegistral: trim(fideicomisoStore.partidaRegistral),
           oficinaRegistrada: trim(fideicomisoStore.sedeRegistral),
           direccionFiscal: trim(fideicomisoStore.domicilioFiscal),
-          representante: fideicomisoStore.tieneRepresentante ? buildRepresentante() : undefined,
+          representante: fideicomisoStore.tieneRepresentante
+            ? buildRepresentante()
+            : undefined,
           fiduciario:
-            fideicomisoStore.numeroDocumentoFiduciaria || fideicomisoStore.razonSocialFiduciaria
+            fideicomisoStore.numeroDocumentoFiduciaria ||
+            fideicomisoStore.razonSocialFiduciaria
               ? {
                   ruc: trim(fideicomisoStore.numeroDocumentoFiduciaria),
                   razonSocial: trim(fideicomisoStore.razonSocialFiduciaria),
@@ -441,9 +439,12 @@ import {
       return;
     }
 
-    const ensureUuid = (value?: string | null) => (value && value.length > 0 ? value : generateUuid());
+    const ensureUuid = (value?: string | null) =>
+      value && value.length > 0 ? value : generateUuid();
 
-    const personaIdValue = ensureUuid(persona.id ?? personaId.value ?? props.initialAccionista?.persona.id ?? null);
+    const personaIdValue = ensureUuid(
+      persona.id ?? personaId.value ?? props.initialAccionista?.persona.id ?? null
+    );
     persona.id = personaIdValue;
     personaId.value = personaIdValue;
 
@@ -469,7 +470,7 @@ import {
 
 <template>
   <BaseModal v-model="isOpen" size="lg" @close="handleClose">
-    <div class="flex flex-col gap-8">
+    <div class="flex flex-col gap-12">
       <CardTitle :title="title" body="Completa la información solicitada.">
         <template #actions>
           <div class="w-[340px]">
@@ -489,19 +490,17 @@ import {
     </div>
 
     <template #footer>
-      <div class="flex w-full flex-col gap-3 border-t border-slate-200 pt-4 md:flex-row md:justify-end">
+      <div class="flex items-center justify-center gap-3 w-full px-14">
         <ActionButton
           variant="primary_outline"
           label="Cancelar"
           size="md"
-          class="w-full md:w-auto"
           @click="handleClose"
         />
         <ActionButton
           :label="mode === 'create' ? 'Guardar' : 'Actualizar'"
           size="md"
           :is-loading="isSaving"
-          class="w-full md:w-auto"
           type="button"
           @click="handleSubmit"
         />
@@ -509,4 +508,3 @@ import {
     </template>
   </BaseModal>
 </template>
-

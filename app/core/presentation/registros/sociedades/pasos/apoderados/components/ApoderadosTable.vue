@@ -1,39 +1,39 @@
 <script setup lang="ts">
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  import { Button } from "@/components/ui/button";
+  import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "@/components/ui/table";
 
-import type { ApoderadoRow } from "../types";
+  import type { ApoderadoRow } from "../types";
 
-interface Props {
-  items: ApoderadoRow[];
-  isLoading?: boolean;
-  readonly?: boolean;
-}
+  interface Props {
+    items: ApoderadoRow[];
+    isLoading?: boolean;
+    readonly?: boolean;
+  }
 
-const props = withDefaults(defineProps<Props>(), {
-  items: () => [],
-  isLoading: false,
-  readonly: false,
-});
+  const props = withDefaults(defineProps<Props>(), {
+    items: () => [],
+    isLoading: false,
+    readonly: false,
+  });
 
-const emit = defineEmits<{
-  (e: "edit", id: string): void;
-  (e: "remove", id: string): void;
-}>();
+  const emit = defineEmits<{
+    (e: "edit", id: string): void;
+    (e: "remove", id: string): void;
+  }>();
 
-const handleEdit = (id: string) => emit("edit", id);
-const handleRemove = (id: string) => emit("remove", id);
+  const handleEdit = (id: string) => emit("edit", id);
+  const handleRemove = (id: string) => emit("remove", id);
 </script>
 
 <template>
-  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+  <div class="overflow-hidden bg-white">
     <Table>
       <TableHeader>
         <TableRow>
@@ -85,5 +85,3 @@ const handleRemove = (id: string) => emit("remove", id);
     </Table>
   </div>
 </template>
-
-

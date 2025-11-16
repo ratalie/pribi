@@ -28,6 +28,7 @@
 ```
 
 **Estilos aplicados:**
+
 - ✅ `bg-white` - Fondo blanco
 - ✅ `p-14` - **Padding 56px** (3.5rem)
 - ✅ `mb-8` - **Margen bottom 32px** para título
@@ -60,6 +61,7 @@
 ```
 
 **Estilos aplicados (diferentes a Figma):**
+
 - ⚠️ `rounded-2xl` - Bordes redondeados (NO en Figma)
 - ⚠️ `border border-primary-300/40` - Borde con color (NO en Figma)
 - ⚠️ `shadow-sm` - Sombra (NO en Figma)
@@ -74,6 +76,7 @@
 ## 🎯 Cambios Necesarios - Resumen
 
 ### 1. Contenedor Principal
+
 ```vue
 <!-- ❌ ACTUAL (nuevo) -->
 <div class="rounded-2xl border border-primary-300/40 bg-white shadow-sm">
@@ -83,6 +86,7 @@
 ```
 
 ### 2. Header / CardTitle
+
 ```vue
 <!-- ❌ ACTUAL (nuevo) -->
 <div class="border-b border-primary-200/40 p-6">
@@ -101,6 +105,7 @@
 ```
 
 ### 3. Contenedor del Formulario
+
 ```vue
 <!-- ❌ ACTUAL (nuevo) -->
 <div v-else class="p-10">
@@ -111,6 +116,7 @@
 ```
 
 ### 4. Modo Preview (ReadOnly)
+
 ```vue
 <!-- ❌ ACTUAL (nuevo) -->
 <div v-else-if="isReadonly" class="space-y-6 p-10">
@@ -120,6 +126,7 @@
 ```
 
 ### 5. Loading State
+
 ```vue
 <!-- ❌ ACTUAL (nuevo) -->
 <div v-if="isLoading" class="p-10">
@@ -137,16 +144,19 @@
 **Ubicación:** Línea ~237 de `DatosSociedadForm.vue`
 
 **De:**
+
 ```vue
 <div class="rounded-2xl border border-primary-300/40 bg-white shadow-sm">
 ```
 
 **A:**
+
 ```vue
 <div class="bg-white p-14">
 ```
 
 **Justificación:**
+
 - Elimina bordes redondeados (no en Figma)
 - Elimina borde y sombra (no en Figma)
 - Aplica padding de 56px (igual que Figma)
@@ -158,6 +168,7 @@
 **Ubicación:** Líneas ~238-244 de `DatosSociedadForm.vue`
 
 **De:**
+
 ```vue
 <div class="border-b border-primary-200/40 p-6">
   <CardTitle
@@ -171,6 +182,7 @@
 ```
 
 **A:**
+
 ```vue
 <CardTitle
   title="Datos principales"
@@ -183,6 +195,7 @@
 ```
 
 **Justificación:**
+
 - Elimina el div contenedor con borde inferior
 - Aplica `mb-8` (32px) al CardTitle, igual que Figma
 - Mantiene mensaje de error pero con mismo margin
@@ -194,16 +207,19 @@
 **Ubicación:** Línea ~246 de `DatosSociedadForm.vue`
 
 **De:**
+
 ```vue
 <div v-if="isLoading" class="p-10">
 ```
 
 **A:**
+
 ```vue
 <div v-if="isLoading">
 ```
 
 **Justificación:**
+
 - El padding ya está en el contenedor principal (`p-14`)
 - Evita padding duplicado
 
@@ -214,16 +230,19 @@
 **Ubicación:** Línea ~254 de `DatosSociedadForm.vue`
 
 **De:**
+
 ```vue
 <div v-else-if="isReadonly" class="space-y-6 p-10">
 ```
 
 **A:**
+
 ```vue
 <div v-else-if="isReadonly" class="space-y-6">
 ```
 
 **Justificación:**
+
 - El padding ya está en el contenedor principal
 - Consistencia con el resto
 
@@ -234,6 +253,7 @@
 **Ubicación:** Línea ~299 de `DatosSociedadForm.vue`
 
 **De:**
+
 ```vue
 <div v-else class="p-10">
   <Form
@@ -244,6 +264,7 @@
 ```
 
 **A:**
+
 ```vue
 <Form
   class="grid grid-cols-2 gap-14"
@@ -253,6 +274,7 @@
 ```
 
 **Justificación:**
+
 - Elimina div contenedor con padding duplicado
 - Cambia `gap-8` (32px) a `gap-14` (56px) como Figma
 - El padding principal (`p-14`) ya existe en el contenedor raíz
@@ -261,30 +283,31 @@
 
 ## 🔍 Tabla Comparativa de Estilos
 
-| Elemento | Legacy (Figma) ✅ | Nuevo (Actual) ⚠️ | Cambio Necesario |
-|----------|-------------------|-------------------|------------------|
+| Elemento                 | Legacy (Figma) ✅  | Nuevo (Actual) ⚠️       | Cambio Necesario        |
+| ------------------------ | ------------------ | ----------------------- | ----------------------- |
 | **Contenedor principal** |
-| Fondo | `bg-white` | `bg-white` | ✅ OK |
-| Padding | `p-14` (56px) | `p-6` + `p-10` anidados | ⚠️ Simplificar a `p-14` |
-| Bordes | Sin bordes | `rounded-2xl border` | ⚠️ Eliminar |
-| Sombra | Sin sombra | `shadow-sm` | ⚠️ Eliminar |
-| **Header** |
-| Separador | Sin separador | `border-b` | ⚠️ Eliminar |
-| Padding header | Dentro de `p-14` | `p-6` | ⚠️ Eliminar div |
-| Margin bottom título | `mb-8` (32px) | Sin margen | ⚠️ Agregar `mb-8` |
-| **Formulario** |
-| Grid | `grid-cols-2` | `grid-cols-2` | ✅ OK |
-| Gap entre campos | `gap-14` (56px) | `gap-8` (32px) | ⚠️ Cambiar a `gap-14` |
-| Padding form | Dentro de `p-14` | `p-10` | ⚠️ Eliminar |
-| **Botones** |
-| Ubicación | Col-span-2 | Col-span-2 | ✅ OK |
-| Padding top | `pt-4` (implícito) | `pt-4` | ✅ OK |
+| Fondo                    | `bg-white`         | `bg-white`              | ✅ OK                   |
+| Padding                  | `p-14` (56px)      | `p-6` + `p-10` anidados | ⚠️ Simplificar a `p-14` |
+| Bordes                   | Sin bordes         | `rounded-2xl border`    | ⚠️ Eliminar             |
+| Sombra                   | Sin sombra         | `shadow-sm`             | ⚠️ Eliminar             |
+| **Header**               |
+| Separador                | Sin separador      | `border-b`              | ⚠️ Eliminar             |
+| Padding header           | Dentro de `p-14`   | `p-6`                   | ⚠️ Eliminar div         |
+| Margin bottom título     | `mb-8` (32px)      | Sin margen              | ⚠️ Agregar `mb-8`       |
+| **Formulario**           |
+| Grid                     | `grid-cols-2`      | `grid-cols-2`           | ✅ OK                   |
+| Gap entre campos         | `gap-14` (56px)    | `gap-8` (32px)          | ⚠️ Cambiar a `gap-14`   |
+| Padding form             | Dentro de `p-14`   | `p-10`                  | ⚠️ Eliminar             |
+| **Botones**              |
+| Ubicación                | Col-span-2         | Col-span-2              | ✅ OK                   |
+| Padding top              | `pt-4` (implícito) | `pt-4`                  | ✅ OK                   |
 
 ---
 
 ## 📦 Impacto en Componentes
 
 ### Componentes que NO cambian:
+
 - ✅ `SearchInputZod`
 - ✅ `SelectInputZod`
 - ✅ `TextInputZod`
@@ -299,6 +322,7 @@
 ## ⚠️ Consideraciones Especiales
 
 ### 1. Modo Preview (ReadOnly)
+
 El modo preview tiene una estructura diferente con `<dl>` (definition list). **Mantener su estructura**, solo quitar padding:
 
 ```vue
@@ -312,6 +336,7 @@ El modo preview tiene una estructura diferente con `<dl>` (definition list). **M
 ```
 
 ### 2. Loading Skeleton
+
 El skeleton mantiene su estructura, solo eliminar padding:
 
 ```vue
@@ -325,6 +350,7 @@ El skeleton mantiene su estructura, solo eliminar padding:
 ```
 
 ### 3. Mensaje de Error
+
 Mover fuera del header eliminado y mantener con `mb-8`:
 
 ```vue
@@ -338,11 +364,13 @@ Mover fuera del header eliminado y mantener con `mb-8`:
 ## 🎯 Checklist de Implementación
 
 ### Antes de empezar:
+
 - [ ] Hacer commit de trabajo actual
 - [ ] Tomar screenshot de vista actual (antes)
 - [ ] Tener Figma abierto para comparar
 
 ### Cambios:
+
 - [ ] **Cambio 1:** Simplificar contenedor principal (quitar bordes/sombra, aplicar `p-14`)
 - [ ] **Cambio 2:** Eliminar header con `border-b`, aplicar `mb-8` a CardTitle
 - [ ] **Cambio 3:** Eliminar `p-10` de loading state
@@ -350,6 +378,7 @@ Mover fuera del header eliminado y mantener con `mb-8`:
 - [ ] **Cambio 5:** Eliminar `div` con `p-10` del form, cambiar `gap-8` a `gap-14`
 
 ### Después de cambios:
+
 - [ ] Probar vista en navegador
 - [ ] Comparar con Figma (espaciados, padding)
 - [ ] Verificar modo create/edit/preview
@@ -362,6 +391,7 @@ Mover fuera del header eliminado y mantener con `mb-8`:
 ## 🚀 Resultado Esperado
 
 ### Estructura Final:
+
 ```vue
 <template>
   <div class="bg-white p-14">
@@ -371,7 +401,7 @@ Mover fuera del header eliminado y mantener con `mb-8`:
       body="Complete todos los datos requeridos."
       class="mb-8"
     />
-    
+
     <!-- Mensaje de error (si existe) -->
     <p v-if="errorMessage" class="mb-8 text-sm text-red-500">
       {{ errorMessage }}
@@ -399,7 +429,7 @@ Mover fuera del header eliminado y mantener con `mb-8`:
       @invalid-submit="handleInvalidSubmit"
     >
       <!-- inputs -->
-      
+
       <!-- Botones -->
       <div class="col-span-2 flex items-center justify-end gap-3 pt-4">
         <Button variant="ghost" type="button" @click="reset">Restablecer</Button>
@@ -418,21 +448,23 @@ Mover fuera del header eliminado y mantener con `mb-8`:
 
 ### Espaciados (según Figma):
 
-| Elemento | Valor | Clase Tailwind |
-|----------|-------|----------------|
-| Padding contenedor | 56px | `p-14` |
-| Margen bottom título | 32px | `mb-8` |
-| Gap entre campos | 56px | `gap-14` |
-| Padding top botones | 16px | `pt-4` |
+| Elemento             | Valor | Clase Tailwind |
+| -------------------- | ----- | -------------- |
+| Padding contenedor   | 56px  | `p-14`         |
+| Margen bottom título | 32px  | `mb-8`         |
+| Gap entre campos     | 56px  | `gap-14`       |
+| Padding top botones  | 16px  | `pt-4`         |
 
 ### Antes vs Después:
 
 **ANTES (incorrecto):**
+
 - Padding total: 24px (header) + 40px (form) = **desigual**
 - Gap campos: 32px ❌
 - Bordes/sombras innecesarios ❌
 
 **DESPUÉS (correcto = Figma):**
+
 - Padding uniforme: 56px ✅
 - Gap campos: 56px ✅
 - Sin bordes/sombras ✅
