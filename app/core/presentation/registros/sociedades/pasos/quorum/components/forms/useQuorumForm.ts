@@ -1,9 +1,9 @@
-import { computed, reactive, toRefs, unref, watch } from "vue";
 import type { MaybeRef } from "vue";
+import { computed, reactive, toRefs, unref, watch } from "vue";
 
-import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 import type { QuorumDTO } from "~/core/hexag/registros/sociedades/pasos/quorum-mayorias/application";
-import { useQuorumStore } from "../stores/quorum.store";
+import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+import { useQuorumStore } from "../../../../stores/quorum.store";
 
 const clampPercent = (value: number): number => {
   if (!Number.isFinite(value)) return 0;
@@ -169,4 +169,3 @@ export function useQuorumForm(options: UseQuorumFormOptions) {
 }
 
 export type { QuorumNumericField };
-

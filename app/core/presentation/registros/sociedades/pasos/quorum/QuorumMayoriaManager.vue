@@ -4,12 +4,12 @@
   import { useRoute, useRouter } from "vue-router";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
-  import QuorumRowTable from "~/core/presentation/registros/sociedades/pasos/quorum/components/table/QuorumRow.vue";
-  import QuorumTable from "~/core/presentation/registros/sociedades/pasos/quorum/components/table/QuorumTable.vue";
   import {
     useQuorumForm,
     type QuorumNumericField,
   } from "~/core/presentation/registros/sociedades/pasos/quorum/components/forms/useQuorumForm";
+  import QuorumRowTable from "~/core/presentation/registros/sociedades/pasos/quorum/components/table/QuorumRow.vue";
+  import QuorumTable from "~/core/presentation/registros/sociedades/pasos/quorum/components/table/QuorumTable.vue";
   import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 

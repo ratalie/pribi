@@ -2,7 +2,7 @@
   import { computed } from "vue";
   import { useRoute } from "vue-router";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
-import QuorumMayoriasManager from "~/core/presentation/registros/sociedades/pasos/quorum/QuorumManager.vue";
+import QuorumMayoriasManager from "~/core/presentation/registros/sociedades/pasos/quorum/QuorumMayoriaManager.vue";
 
   definePageMeta({
     layout: "registros",

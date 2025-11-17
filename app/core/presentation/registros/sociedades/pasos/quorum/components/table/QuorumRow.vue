@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import InputPercentZod from "@/components/base/inputs/text/ui/InputPercentZod.vue";
   import { ref, watch } from "vue";
-  import { porcentajeSchema } from "~/modules/registro-sociedades/schemas/quorumMayoria";
+  import { porcentajeSchema } from "~/core/presentation/registros/sociedades/pasos/quorum/schemas/quorumMayoria";
 
   interface Props {
     quorumType?: string; // También acepta quorum-type desde kebab-case
