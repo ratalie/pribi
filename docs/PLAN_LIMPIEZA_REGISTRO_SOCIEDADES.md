@@ -143,3 +143,4 @@ Cada sprint debe cerrar con actualización de `PLAN_MIGRACION.md` y checklist en
 Con esto tendrás control del desorden acumulado y una ruta clara para mantener la funcionalidad del registro mientras el Equipo 4 consolida la arquitectura definitiva.
 
 
+

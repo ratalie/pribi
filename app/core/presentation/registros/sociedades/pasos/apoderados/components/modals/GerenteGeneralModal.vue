@@ -329,13 +329,25 @@
       return;
     }
 
+    // Si estamos editando, usar el ID del apoderado inicial
+    const apoderadoId = props.initialApoderado?.id ?? currentApoderadoId.value ?? generateUuid();
+    
+    // Si estamos editando, preservar el ID de la persona
+    if (props.initialApoderado?.persona?.id) {
+      persona.id = props.initialApoderado.persona.id;
+    }
+
     const payload: ApoderadoDTO = {
-      id: currentApoderadoId.value ?? generateUuid(),
-      claseApoderadoId: props.gerenteClassId,
+      id: apoderadoId,
+      claseApoderadoId: props.gerenteClassId, // ← Asegurar que usa el ID correcto de la clase
       persona,
     };
 
-    console.log("[GerenteGeneralModal] handleSubmit success", { payload });
+    console.log("[GerenteGeneralModal] handleSubmit success", { 
+      payload,
+      initialApoderadoId: props.initialApoderado?.id,
+      gerenteClassId: props.gerenteClassId,
+    });
     emit("submit", payload);
   };
   const handleClose = () => {

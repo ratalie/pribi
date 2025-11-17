@@ -12,7 +12,8 @@
   import SimpleCardDropDown from "~/components/base/cards/SimpleCardDropDown.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
-  import LabeledCardSwitch from "~/components/base/Switch/LabeledCardSwitch.vue";
+  import CustomSwitch from "~/components/base/Switch/CustomSwitch.vue";
+  import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
   import PersonaJuridicaExtranjeraForm from "~/components/composite/forms/PersonaJuridicaExtranjeraForm.vue";
   import PersonaJuridicaForm from "~/components/composite/forms/PersonaJuridicaForm.vue";
   import PersonaNaturalForm from "~/components/composite/forms/PersonaNaturalForm.vue";
@@ -93,11 +94,12 @@
     isInitializing.value = true;
     modalStore.$reset();
     resetPersonaData();
-    selectedClaseId.value = "";
     currentApoderadoId.value = null;
     currentPersonaId.value = null;
 
     if (!props.initialApoderado) {
+      // Si es creación, usar la primera clase disponible
+      selectedClaseId.value = props.claseOptions.length > 0 ? (props.claseOptions[0]?.id ?? "") : "";
       isInitializing.value = false;
       return;
     }
@@ -315,6 +317,7 @@
   const handleSubmit = () => {
     console.log("[RegistroApoderadoModal] handleSubmit start", {
       selectedClaseId: selectedClaseId.value,
+      initialApoderado: props.initialApoderado?.id,
       tipoPersona: modalStore.tipoPersona,
       personaNatural: isPersonaNatural.value ? personaNaturalStore.$state : null,
       personaJuridica: isPersonaJuridica.value ? personaJuridicaStore.$state : null,
@@ -322,6 +325,17 @@
 
     if (!selectedClaseId.value) {
       showError("Selecciona la clase de apoderado.");
+      return;
+    }
+
+    // Verificar que la clase seleccionada existe en las opciones
+    const claseExists = props.claseOptions.some((opt) => opt.id === selectedClaseId.value);
+    if (!claseExists) {
+      showError("La clase seleccionada no es válida.");
+      console.error("[RegistroApoderadoModal] Clase no encontrada:", {
+        selectedClaseId: selectedClaseId.value,
+        availableOptions: props.claseOptions,
+      });
       return;
     }
 
@@ -337,13 +351,23 @@
       return;
     }
 
+    // Si es edición, preservar el ID del apoderado y de la persona
+    const apoderadoId = currentApoderadoId.value ?? generateUuid();
+    if (props.initialApoderado?.persona?.id) {
+      persona.id = props.initialApoderado.persona.id;
+    }
+
     const payload: ApoderadoDTO = {
-      id: currentApoderadoId.value ?? generateUuid(),
-      claseApoderadoId: selectedClaseId.value,
+      id: apoderadoId,
+      claseApoderadoId: selectedClaseId.value, // ← Asegurar que usa el ID correcto de la clase
       persona,
     };
 
-    console.log("[RegistroApoderadoModal] handleSubmit success", { payload });
+    console.log("[RegistroApoderadoModal] handleSubmit success", { 
+      payload,
+      claseId: selectedClaseId.value,
+      claseOptions: props.claseOptions,
+    });
     emit("submit", payload);
   };
   const handleClose = () => {
@@ -357,7 +381,7 @@
 </script>
 
 <template>
-  <BaseModal v-model="isOpen" size="xl" @close="handleClose" @submit="handleSubmit">
+  <BaseModal v-model="isOpen" size="lg" @close="handleClose" @submit="handleSubmit">
     <div class="flex flex-col gap-8">
       <!-- HEADER -->
       <CardTitle :title="title" body="Completa la información solicitada.">
@@ -389,25 +413,45 @@
       <!-- PERSONA JURÍDICA -->
       <div v-if="isPersonaJuridica" class="flex flex-col gap-6">
         <!-- Switch: ¿Empresa constituida en Perú? -->
-        <LabeledCardSwitch
-          v-model="modalStore.esEmpresaConstituidaEnPeru"
-          title="¿La empresa está constituida en Perú?"
-        />
-
-        <!-- Form: Peruana o Extranjera -->
-        <PersonaJuridicaForm v-if="modalStore.esEmpresaConstituidaEnPeru" />
-        <PersonaJuridicaExtranjeraForm v-else />
+        <SimpleCardDropDown>
+          <template #title>
+            <div class="flex items-center justify-between gap-4 px-8 py-4">
+              <span class="t-t2 font-semibold text-slate-800">La empresa se constituyó en Perú</span>
+              <SimpleSwitchYesNo v-model="modalStore.esEmpresaConstituidaEnPeru" />
+            </div>
+          </template>
+          <template #content>
+            <div class="p-8">
+              <PersonaJuridicaForm v-if="modalStore.esEmpresaConstituidaEnPeru" />
+              <PersonaJuridicaExtranjeraForm v-else />
+            </div>
+          </template>
+        </SimpleCardDropDown>
 
         <!-- Switch: ¿Tiene representante? -->
-        <LabeledCardSwitch
-          v-model="modalStore.tieneRepresentante"
-          title="¿La empresa tiene un representante?"
-        />
+        <div class="flex flex-col gap-4 rounded-xl border border-slate-200 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="t-h6 font-semibold text-slate-800">Registrar representante</p>
+              <p class="t-b3 text-slate-500">El representante es necesario cuando la empresa es apoderada.</p>
+            </div>
+            <CustomSwitch
+              :checked="modalStore.tieneRepresentante"
+              @update:checked="modalStore.tieneRepresentante = $event"
+            />
+          </div>
 
-        <!-- Representante -->
-        <div v-if="modalStore.tieneRepresentante" class="flex flex-col gap-6">
-          <p class="t-b2 font-semibold text-slate-800">Datos del representante</p>
-          <PersonaNaturalForm />
+          <!-- Representante -->
+          <SimpleCardDropDown v-if="modalStore.tieneRepresentante">
+            <template #title>
+              <div class="px-8 py-4 font-semibold text-slate-800">Datos del representante</div>
+            </template>
+            <template #content>
+              <div class="p-8">
+                <PersonaNaturalForm />
+              </div>
+            </template>
+          </SimpleCardDropDown>
         </div>
       </div>
     </div>

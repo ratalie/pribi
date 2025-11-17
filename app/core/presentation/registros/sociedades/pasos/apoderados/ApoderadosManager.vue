@@ -310,7 +310,36 @@
     const profileId = ensureSocietyId();
     const isEditing = !!editingApoderado.value;
 
-    console.log("[ApoderadosManager] handleSubmitApoderado", { isEditing, payload });
+    // Si es edición, asegurar que se usen los IDs correctos
+    if (isEditing && editingApoderado.value) {
+      payload.id = editingApoderado.value.id;
+      // Verificar que la clase seleccionada existe
+      const claseExists = claseSelectOptions.value.some((opt) => opt.id === payload.claseApoderadoId);
+      if (!claseExists) {
+        toast({
+          variant: "destructive",
+          title: "Clase inválida",
+          description: "La clase seleccionada no es válida.",
+        });
+        console.error("[ApoderadosManager] Clase no encontrada:", {
+          selectedClaseId: payload.claseApoderadoId,
+          availableOptions: claseSelectOptions.value,
+        });
+        return;
+      }
+      // Preservar el ID de la persona si existe
+      if (editingApoderado.value.persona?.id) {
+        payload.persona.id = editingApoderado.value.persona.id;
+      }
+    }
+
+    console.log("[ApoderadosManager] handleSubmitApoderado", { 
+      isEditing, 
+      editingApoderadoId: editingApoderado.value?.id,
+      payload,
+      claseId: payload.claseApoderadoId,
+      claseOptions: claseSelectOptions.value,
+    });
 
     await withAsyncToast(
       () =>
@@ -345,6 +374,17 @@
       });
       return;
     }
+    
+    // Si no se pasó un apoderado, buscar si existe uno en el store
+    if (!apoderado) {
+      const existingApoderado = store.apoderados.find(
+        (item) => item.claseApoderadoId === gerenteClassId.value
+      );
+      if (existingApoderado) {
+        apoderado = existingApoderado;
+      }
+    }
+    
     gerenteEditingApoderado.value = apoderado;
     isGerenteModalOpen.value = true;
   };
@@ -356,9 +396,29 @@
 
   const handleGerenteModalSubmit = async (payload: ApoderadoDTO) => {
     const profileId = ensureSocietyId();
-    const isEditing = gerenteEditingApoderado.value !== null;
+    
+    // Verificar si realmente existe un apoderado con esta clase en el store
+    const existingApoderado = store.apoderados.find(
+      (apoderado) => apoderado.claseApoderadoId === gerenteClassId.value
+    );
+    
+    // Es edición si: 1) se pasó un apoderado al abrir el modal, O 2) existe uno en el store
+    const isEditing = gerenteEditingApoderado.value !== null || existingApoderado !== undefined;
+    
+    // Si es edición y existe en el store, usar el ID existente
+    if (isEditing && existingApoderado) {
+      payload.id = existingApoderado.id;
+      // También preservar el ID de la persona si existe
+      if (existingApoderado.persona?.id) {
+        payload.persona.id = existingApoderado.persona.id;
+      }
+    }
 
-    console.log("[ApoderadosManager] handleGerenteModalSubmit", { isEditing, payload });
+    console.log("[ApoderadosManager] handleGerenteModalSubmit", { 
+      isEditing, 
+      existingApoderado: existingApoderado?.id,
+      payload 
+    });
 
     const action = isEditing
       ? () => store.updateApoderado(profileId, payload)
