@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
+import { TipoFirmasEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoFirmasEnum";
 import { EntityCoinEnum } from "~/types/enums/EntityCoinEnum";
 import { TiemposVigenciaEnum } from "~/types/enums/TiemposVigenciaEnum";
-import { TipoFirmasEnum } from "~/types/enums/TipoFirmasEnum";
 import type { useApoderadoFacultadStore } from "../stores/modal/useApoderadoFacultadStore";
 import type { useRegimenFacultadesStore } from "../stores/useRegimenFacultadesStore";
 import type { Facultad } from "../types/apoderadosFacultades";

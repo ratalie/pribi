@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { computed } from "vue";
   import { useRoute } from "vue-router";
-  import RegimenFacultadesStep from "~/modules/registro-sociedades/components/steps/RegimenFacultadesStep.vue";
+  import RegimenFacultadesManager from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/RegimenFacultadesManager.vue";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   definePageMeta({
@@ -14,5 +14,5 @@
 </script>
 
 <template>
-  <RegimenFacultadesStep :mode="EntityModeEnum.CREAR" :society-id="societyId" />
+  <RegimenFacultadesManager :mode="EntityModeEnum.CREAR" :society-id="societyId" />
 </template>

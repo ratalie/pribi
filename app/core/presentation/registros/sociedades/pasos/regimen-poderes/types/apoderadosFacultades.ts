@@ -1,7 +1,7 @@
+import type { TipoFirmasEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoFirmasEnum";
+import type { TipoMontoEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoMontoEnum";
 import type { EntityCoinEnum } from "~/types/enums/EntityCoinEnum";
 import type { TiemposVigenciaEnum } from "~/types/enums/TiemposVigenciaEnum";
-import type { TipoFirmasEnum } from "~/types/enums/TipoFirmasEnum";
-import type { TipoMontoEnum } from "~/types/enums/TipoMontoEnum";
 
 export interface ApoderadoFacultad {
   id: string;
