@@ -3,8 +3,7 @@
   import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
   import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
-  import { useRegistroAccionesStore } from "~/core/presentation/registros/sociedades/pasos/acciones/stores/useRegistroAccionesStore";
-  import { useAsignacionAccionesStore } from "~/core/presentation/registros/sociedades/pasos/asignacion-acciones/stores/useAsignacionAccionesStore";
+  import { useRegistroAccionesStore } from "../../../acciones/stores/useRegistroAccionesStore";
   import {
     cantidadAccionesSuscritasSchema,
     capitalSocialSchema,
@@ -13,7 +12,8 @@
     precioAccionSchema,
     primaSchema,
     tipoAccionSchema,
-  } from "~/modules/registro-sociedades/schemas/modalAsignarAcciones";
+  } from "../../schemas/modalAsignarAcciones";
+  import { useAsignacionAccionesStore } from "../../stores/useAsignacionAccionesStore";
 
   const asignacionAccionesStore = useAsignacionAccionesStore();
   const registroAccionesStore = useRegistroAccionesStore();

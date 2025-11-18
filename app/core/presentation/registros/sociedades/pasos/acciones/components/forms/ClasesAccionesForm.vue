@@ -6,7 +6,7 @@
   import {
     cantidadAccionesClaseSchema,
     nombreClaseAccionSchema,
-  } from "~/modules/registro-sociedades/schemas/clasesAcciones";
+  } from "../../schemas/clasesAcciones";
   import { useClasesAccionesStore } from "../../stores/useClasesAccionesStore";
 
   const clasesAccionesStore = useClasesAccionesStore();
