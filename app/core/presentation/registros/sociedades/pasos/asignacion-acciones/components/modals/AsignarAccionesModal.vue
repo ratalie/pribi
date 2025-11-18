@@ -5,8 +5,8 @@
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
   import AsignaAccionesForm from "~/components/composite/forms/AsignaAccionesForm.vue";
-  import { useRegistroAsignacionAccionesStore } from "~/core/presentation/registros/sociedades/pasos/asignacion-acciones/stores/useRegistroAsignacionAccionesStore";
-  import { useAsignacionAccionesStore } from "~/stores/useAsignacionAccionesStore";
+  import { useAsignacionAccionesStore } from "../../stores/useAsignacionAccionesStore";
+  import { useRegistroAsignacionAccionesStore } from "../../stores/useRegistroAsignacionAccionesStore";
 
   interface Props {
     modelValue?: boolean;

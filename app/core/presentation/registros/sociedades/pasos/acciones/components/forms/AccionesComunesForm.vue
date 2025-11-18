@@ -2,45 +2,22 @@
   import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
   import FileUploadDragDropMultiple from "~/components/base/inputs/FileUploadDragDropMultiple.vue";
   import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
-  import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
-  import {
-    cantidadAccionesClaseSchema,
-    nombreClaseAccionSchema,
-  } from "~/modules/registro-sociedades/schemas/clasesAcciones";
+  import { cantidadAccionesSchema } from "~/modules/registro-sociedades/schemas/accionesComunes";
+  import { useAccionesComunesStore } from "../../stores/useAccionesComunesStore";
 
-  const clasesAccionesStore = useClasesAccionesStore();
+  const accionesComunesStore = useAccionesComunesStore();
 </script>
 
 <template>
   <div class="flex flex-col gap-10">
-    <!-- Input: Nombre de la Clase de Acción -->
-    <TextInputZod
-      v-model="clasesAccionesStore.nombreClaseAccion"
-      name="nombre_clase_accion"
-      label="Nombre de la Clase de Acción"
-      placeholder="Escribe la clase aquí"
-      :schema="nombreClaseAccionSchema"
-    />
-
     <!-- Input: Cantidad de Acciones suscritas -->
     <NumberInputZod
-      v-model="clasesAccionesStore.cantidadAccionesClase"
-      name="cantidad_acciones_clase"
+      v-model="accionesComunesStore.cantidadAcciones"
+      name="cantidad_acciones"
       label="Cantidad de Acciones suscritas"
       placeholder="Escribe la cantidad aquí"
-      :schema="cantidadAccionesClaseSchema"
+      :schema="cantidadAccionesSchema"
     />
-
-    <!-- Switch: Con derecho a Voto -->
-    <div class="flex items-center justify-between w-full">
-      <div class="flex flex-col gap-2">
-        <p class="font-secondary font-bold text-gray-800 t-t2">Con derecho a Voto</p>
-        <p class="font-secondary font-semibold text-gray-400 t-b2">
-          Selecciona una de las dos opciones.
-        </p>
-      </div>
-      <SimpleSwitchYesNo v-model="clasesAccionesStore.conDerechoVoto" />
-    </div>
 
     <!-- Switch: Redimibles -->
     <div class="flex items-center justify-between w-full">
@@ -50,7 +27,7 @@
           Selecciona una de las dos opciones.
         </p>
       </div>
-      <SimpleSwitchYesNo v-model="clasesAccionesStore.redimiblesClase" />
+      <SimpleSwitchYesNo v-model="accionesComunesStore.redimibles" />
     </div>
 
     <!-- Sección colapsable: Otros derechos especiales -->
@@ -63,16 +40,16 @@
             Suba los documentos que acredite los derechos especiales que tendrá esta acción
           </p>
         </div>
-        <SimpleSwitchYesNo v-model="clasesAccionesStore.otrosDerechosEspecialesClase" />
+        <SimpleSwitchYesNo v-model="accionesComunesStore.otrosDerechosEspeciales" />
       </div>
 
       <!-- Contenido expandible con v-if -->
       <div
-        v-if="clasesAccionesStore.otrosDerechosEspecialesClase"
+        v-if="accionesComunesStore.otrosDerechosEspeciales"
         class="bg-white p-1 rounded-b-lg"
       >
         <FileUploadDragDropMultiple
-          v-model="clasesAccionesStore.archivosDerechosEspecialesClase"
+          v-model="accionesComunesStore.archivosDerechosEspeciales"
           click-message="Haz click o arrastra tus documentos"
           :max-files="10"
           :max-size-m-b="5"
@@ -95,16 +72,16 @@
             acción
           </p>
         </div>
-        <SimpleSwitchYesNo v-model="clasesAccionesStore.obligacionesAdicionalesClase" />
+        <SimpleSwitchYesNo v-model="accionesComunesStore.obligacionesAdicionales" />
       </div>
 
       <!-- Contenido expandible con v-if -->
       <div
-        v-if="clasesAccionesStore.obligacionesAdicionalesClase"
+        v-if="accionesComunesStore.obligacionesAdicionales"
         class="bg-white p-1 rounded-b-lg"
       >
         <FileUploadDragDropMultiple
-          v-model="clasesAccionesStore.archivosObligacionesClase"
+          v-model="accionesComunesStore.archivosObligaciones"
           click-message="Haz click o arrastra tus documentos"
           :max-files="10"
           :max-size-m-b="5"
