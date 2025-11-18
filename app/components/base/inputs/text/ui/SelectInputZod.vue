@@ -29,8 +29,11 @@
   watch(
     () => props.modelValue,
     (newValue) => {
-      if (value.value !== newValue) value.value = newValue;
-    }
+      if (value.value !== newValue) {
+        value.value = newValue;
+      }
+    },
+    { immediate: true }
   );
 
   watch(value, (newValue) => {
