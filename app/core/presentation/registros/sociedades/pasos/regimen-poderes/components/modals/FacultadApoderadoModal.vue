@@ -7,8 +7,8 @@
   import BaseModal from "~/components/base/modal/BaseModal.vue";
   import { selectFacultadSchema } from "../../schemas/FacultadApoderado";
   import { useApoderadoFacultadStore } from "../../stores/modal/useApoderadoFacultadStore";
-  import IrrevocableCard from "../regimen-poderes/IrrevocableCard.vue";
-  import ReglasLimitesCard from "../regimen-poderes/ReglasLimitesCard.vue";
+  import IrrevocableCard from "../IrrevocableCard.vue";
+  import ReglasLimitesCard from "../ReglasLimitesCard.vue";
 
   interface Props {
     modelValue: boolean;

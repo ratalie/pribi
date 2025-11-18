@@ -4,8 +4,8 @@
   import SimpleCardDropDown from "~/components/base/cards/SimpleCardDropDown.vue";
   import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
   import { TiemposVigenciaEnum } from "~/types/enums/TiemposVigenciaEnum";
-  import { fechaFinSchema, fechaInicioSchema } from "../../schemas/FacultadApoderado";
-  import { useApoderadoFacultadStore } from "../../stores/modal/useApoderadoFacultadStore";
+  import { fechaFinSchema, fechaInicioSchema } from "../schemas/FacultadApoderado";
+  import { useApoderadoFacultadStore } from "../stores/modal/useApoderadoFacultadStore";
 
   const apoderadoFacultadStore = useApoderadoFacultadStore();
 </script>

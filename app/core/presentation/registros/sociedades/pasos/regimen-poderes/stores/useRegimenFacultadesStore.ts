@@ -1,8 +1,8 @@
 import type { BaseSelectOption } from "~/components/base/inputs/text/BaseInputSelect.vue";
+import { TipoFirmasEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoFirmasEnum";
+import { TipoMontoEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoMontoEnum";
 import { EntityCoinEnum } from "~/types/enums/EntityCoinEnum";
 import { TiemposVigenciaEnum } from "~/types/enums/TiemposVigenciaEnum";
-import { TipoFirmasEnum } from "~/types/enums/TipoFirmasEnum";
-import { TipoMontoEnum } from "~/types/enums/TipoMontoEnum";
 import type {
   ApoderadoFacultad,
   ApoderadoFacultadRow,

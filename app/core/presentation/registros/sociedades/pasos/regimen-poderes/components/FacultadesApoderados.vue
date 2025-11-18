@@ -9,7 +9,7 @@
   import TableHead from "~/components/ui/table/TableHead.vue";
   import TableHeader from "~/components/ui/table/TableHeader.vue";
   import TableRow from "~/components/ui/table/TableRow.vue";
-  import type { ApoderadoFacultadRow } from "../../types/apoderadosFacultades";
+  import type { ApoderadoFacultadRow } from "../types/apoderadosFacultades";
 
   interface Props {
     apoderadoItem: ApoderadoFacultadRow;

@@ -7,9 +7,9 @@
   import SimpleCardDropDown from "~/components/base/cards/SimpleCardDropDown.vue";
   import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
+  import { TipoFirmasEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoFirmasEnum";
+  import { TipoMontoEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoMontoEnum";
   import { EntityCoinEnum } from "~/types/enums/EntityCoinEnum";
-  import { TipoFirmasEnum } from "~/types/enums/TipoFirmasEnum";
-  import { TipoMontoEnum } from "~/types/enums/TipoMontoEnum";
   import {
     montoDesdeSchema,
     montoHastaSchema,
@@ -18,8 +18,8 @@
     selectMonedaSchema,
     selectTipoFirmaSchema,
     selectTipoMontoSchema,
-  } from "../../schemas/FacultadApoderado";
-  import { useApoderadoFacultadStore } from "../../stores/modal/useApoderadoFacultadStore";
+  } from "../schemas/FacultadApoderado";
+  import { useApoderadoFacultadStore } from "../stores/modal/useApoderadoFacultadStore";
 
   const apoderadoFacultadStore = useApoderadoFacultadStore();
 
