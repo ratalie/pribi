@@ -1,4 +1,4 @@
-import { TiposDirectoresEnum } from "~/types/enums/TiposDirectoresEnum";
+import { TiposDirectoresEnum } from "~/core/presentation/registros/sociedades/pasos/directorio/enums/TiposDirectoresEnum";
 
 export const tipoDirectoresOptions = Object.values(TiposDirectoresEnum).map((tipo, index) => ({
   id: index + 1,
