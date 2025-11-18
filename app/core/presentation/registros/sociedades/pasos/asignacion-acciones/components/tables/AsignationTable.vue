@@ -1,34 +1,30 @@
 <script setup lang="ts">
-  import { ChevronDown, ChevronUp } from "lucide-vue-next"; // o tu sistema de iconos
-  import { ref } from "vue";
+  import { ChevronDown, ChevronUp } from "lucide-vue-next";
+  import { computed, ref } from "vue";
+  import BaseButton from "~/components/base/buttons/BaseButton.vue";
+  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+  import DataTableDropDown from "~/components/base/tables/DataTableDropDown.vue";
   import Table from "~/components/ui/table/Table.vue";
   import TableBody from "~/components/ui/table/TableBody.vue";
   import TableCell from "~/components/ui/table/TableCell.vue";
   import TableHead from "~/components/ui/table/TableHead.vue";
   import TableHeader from "~/components/ui/table/TableHeader.vue";
   import TableRow from "~/components/ui/table/TableRow.vue";
-  import BaseButton from "../../buttons/BaseButton.vue";
-  import ActionButton from "../../buttons/composite/ActionButton.vue";
-  import AsignarAccionesModal from "../../modal/composite/AsignarAccionesModal.vue";
-  import DataTableDropDown from "../DataTableDropDown.vue";
+  import { useRegistroAsignacionAccionesStore } from "../../stores/useRegistroAsignacionAccionesStore";
+  import AsignarAccionesModal from "../modals/AsignarAccionesModal.vue";
 
   interface Props {
-    data: {
-      id: string;
-      accionista: string;
-      tipos: string;
-      acciones: { clase: string; acciones: number; porcentaje: number }[];
-    }[];
     titleMenu?: string;
-    actions?: {
-      label: string;
-      icon?: string;
-      separatorLine?: boolean;
-      onClick: (id: string) => void;
-    }[];
   }
 
-  defineProps<Props>();
+  const props = withDefaults(defineProps<Props>(), {
+    titleMenu: "Acciones",
+  });
+
+  const asignacionAccionesStore = useRegistroAsignacionAccionesStore();
+
+  // Obtener datos desde el store
+  const data = computed(() => asignacionAccionesStore.tablaAsignaciones);
 
   const getQuantityShares = (
     shares: { clase: string; acciones: number; porcentaje: number }[]
@@ -45,6 +41,8 @@
   const expanded = ref<string[]>([]);
   const isModalOpen = ref(false);
   const selectedAccionistaId = ref<string | null>(null);
+  const selectedAccionId = ref<string | null>(null);
+  const modalMode = ref<"crear" | "editar">("crear");
 
   function toggleRow(id: string) {
     if (expanded.value.includes(id)) {
@@ -54,14 +52,59 @@
     }
   }
 
-  function openModal(accionistaId: string) {
+  function openModal(accionistaId: string, accionId?: string) {
     selectedAccionistaId.value = accionistaId;
+    if (accionId) {
+      modalMode.value = "editar";
+      selectedAccionId.value = accionId;
+    } else {
+      modalMode.value = "crear";
+      selectedAccionId.value = null;
+    }
     isModalOpen.value = true;
   }
 
   function closeModal() {
     isModalOpen.value = false;
     selectedAccionistaId.value = null;
+    selectedAccionId.value = null;
+  }
+
+  function handleEdit(accionistaId: string, accionId: string) {
+    openModal(accionistaId, accionId);
+  }
+
+  function handleDelete(accionistaId: string, accionId: string) {
+    asignacionAccionesStore.removeAsignacionAccion(accionistaId, accionId);
+  }
+
+  // Obtener acciones para la fila expandida
+  function getAccionIdForRow(accionistaId: string, clase: string): string | null {
+    const asignacion = asignacionAccionesStore.getAsignacionByAccionistaId(accionistaId);
+    if (!asignacion) return null;
+
+    const accion = asignacion.acciones.find((a) => a.tipoAccion === clase);
+    return accion?.id || null;
+  }
+
+  // Obtener acciones para el dropdown de una fila específica
+  function getActionsForRow(accionistaId: string) {
+    return [
+      {
+        label: "Editar",
+        icon: "SquarePen",
+        onClick: (accionId: string) => {
+          if (accionId) handleEdit(accionistaId, accionId);
+        },
+      },
+      {
+        label: "Eliminar",
+        icon: "Trash2",
+        onClick: (accionId: string) => {
+          if (accionId) handleDelete(accionistaId, accionId);
+        },
+      },
+    ];
   }
 </script>
 
@@ -156,11 +199,11 @@
               {{ accion.porcentaje }}%
             </TableCell>
             <!-- Celda de acciones -->
-            <TableCell v-if="actions" class="w-12">
+            <TableCell class="w-12">
               <DataTableDropDown
-                :item-id="row.id"
-                :title-menu="titleMenu"
-                :actions="actions"
+                :item-id="getAccionIdForRow(row.id, accion.clase) || ''"
+                :title-menu="props.titleMenu"
+                :actions="getActionsForRow(row.id)"
               />
             </TableCell>
           </TableRow>
@@ -169,5 +212,12 @@
     </TableBody>
   </Table>
 
-  <AsignarAccionesModal v-model="isModalOpen" @close="closeModal" />
+  <AsignarAccionesModal
+    v-model="isModalOpen"
+    :mode="modalMode"
+    :accionista-id="selectedAccionistaId"
+    :accion-id="selectedAccionId"
+    @close="closeModal"
+    @submit="closeModal"
+  />
 </template>

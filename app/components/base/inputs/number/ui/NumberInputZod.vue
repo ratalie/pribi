@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useField } from "vee-validate";
-  import { watch } from "vue";
+  import { computed, watch } from "vue";
   import type { ZodTypeAny } from "zod";
   import BaseNumberInput from "../BaseNumberInput.vue";
 
@@ -44,12 +44,32 @@
     emit("update:modelValue", newValue);
   };
 
+  // Sincronizar el valor de vee-validate con el modelValue del store
   watch(
     () => props.modelValue,
     (newValue) => {
-      if (value.value !== newValue) value.value = newValue;
-    }
+      const numValue = newValue ?? 0;
+      // Solo actualizar si el valor es diferente para evitar bucles infinitos
+      if (value.value !== numValue) {
+        value.value = numValue;
+      }
+    },
+    { immediate: true, flush: "sync" }
   );
+
+  // También actualizar el store cuando cambia el valor de vee-validate
+  watch(value, (newValue) => {
+    if (props.modelValue !== newValue) {
+      emit("update:modelValue", newValue);
+    }
+  });
+
+  // Computed para el valor inicial que se pasa a BaseNumberInput
+  // Usar props.modelValue directamente ya que es reactivo y viene del store
+  const initialValueForInput = computed(() => {
+    const currentValue = props.modelValue ?? 0;
+    return currentValue.toString();
+  });
 </script>
 
 <template>
@@ -60,7 +80,7 @@
       </label>
       <BaseNumberInput
         :id="name"
-        :initial-value="props.modelValue.toString()"
+        :initial-value="initialValueForInput"
         :variant="errorMessage ? 'error' : 'default'"
         :size="'md'"
         :placeholder="placeholder"

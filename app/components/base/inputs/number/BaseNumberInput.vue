@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import clsx from "clsx";
+  import { computed, ref, watch } from "vue";
   import { useNumberFormatter } from "~/composables/useNumberFormatter";
 
   interface Props {
@@ -56,13 +57,14 @@
   watch(
     () => props.initialValue,
     (newValue) => {
-      if (newValue === "" || newValue === null) {
+      if (newValue === "" || newValue === null || newValue === undefined) {
         valueInput.value = "";
       } else if (newValue) {
         // Completar decimales faltantes si es necesario
         const paddedValue = padDecimals(newValue);
         // Formatear el valor con comas y decimales
-        valueInput.value = formatNumber(paddedValue);
+        const formattedValue = formatNumber(paddedValue);
+        valueInput.value = formattedValue;
       }
     },
     { immediate: true }
