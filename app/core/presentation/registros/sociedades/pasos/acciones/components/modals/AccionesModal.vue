@@ -7,13 +7,13 @@
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
-  import AccionesComunesForm from "~/core/presentation/registros/sociedades/pasos/acciones/components/forms/AccionesComunesForm.vue";
-  import ClasesAccionesForm from "~/core/presentation/registros/sociedades/pasos/acciones/components/forms/ClasesAccionesForm.vue";
   import { useAccionesComunesStore } from "../../stores/useAccionesComunesStore";
   import { useClasesAccionesStore } from "../../stores/useClasesAccionesStore";
   import { useRegistroAccionesStore } from "../../stores/useRegistroAccionesStore";
   import { useValorNominalStore } from "../../stores/useValorNominalStore";
   import type { AccionRegistro } from "../../types/acciones";
+  import AccionesComunesForm from "../forms/AccionesComunesForm.vue";
+  import ClasesAccionesForm from "../forms/ClasesAccionesForm.vue";
 
   interface Props {
     modelValue?: boolean;

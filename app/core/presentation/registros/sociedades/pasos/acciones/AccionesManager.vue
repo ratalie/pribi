@@ -5,9 +5,9 @@
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import OutLineCard from "~/components/base/cards/OutLineCard.vue";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
-  import AccionesModal from "~/core/presentation/registros/sociedades/pasos/acciones/components/modals/AccionesModal.vue";
-  import ValorNominalModal from "~/core/presentation/registros/sociedades/pasos/acciones/components/modals/ValorNominalModal.vue";
   import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import AccionesModal from "./components/modals/AccionesModal.vue";
+  import ValorNominalModal from "./components/modals/ValorNominalModal.vue";
   import { useAccionesComputed } from "./composable/useAccionesComputed";
 
   interface Props {
