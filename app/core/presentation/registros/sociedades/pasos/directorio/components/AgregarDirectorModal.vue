@@ -4,15 +4,15 @@
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
-  import DirectorForm from "~/components/composite/forms/DirectorForm.vue";
+  import DirectorForm from "~/core/presentation/registros/sociedades/pasos/directorio/components/forms/DirectorForm.vue";
+  import { TiposDirectoresEnum } from "~/core/presentation/registros/sociedades/pasos/directorio/enums/TiposDirectoresEnum";
   import {
     useDirectorioStore,
     type Director,
-  } from "~/modules/registro-sociedades/composables/useDirectores";
-  import { useDirectoresComputed } from "~/modules/registro-sociedades/composables/useDirectoresComputed";
+  } from "~/core/presentation/registros/sociedades/pasos/directorio/stores/useDirectores";
+  import { useDirectoresComputed } from "~/core/presentation/registros/sociedades/pasos/directorio/utils/useDirectoresComputed";
   import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
   import type { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
-  import { TiposDirectoresEnum } from "~/types/enums/TiposDirectoresEnum";
 
   interface Props {
     modelValue?: boolean;

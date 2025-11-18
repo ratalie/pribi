@@ -5,20 +5,20 @@
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
   import { tipoDocumentoOptions } from "~/constants/inputs/document-type";
   import { tipoDirectoresOptions } from "~/constants/tipo-director";
-  import { useDirectoresComputed } from "~/modules/registro-sociedades/composables/useDirectoresComputed";
   import {
     apellidoMaternoSchema,
     apellidoPaternoSchema,
     nombreAccionistaSchema,
     numeroDocumentoSchema,
     tipoDocumentoSchema,
-  } from "~/modules/registro-sociedades/schemas/modalAccionistas";
+  } from "~/core/presentation/registros/sociedades/pasos/accionistas/schemas/modalAccionistas";
+  import { TiposDirectoresEnum } from "~/core/presentation/registros/sociedades/pasos/directorio/enums/TiposDirectoresEnum";
   import {
     reemplazoAsignadoSchema,
     tipoDirectorSchema,
-  } from "~/modules/registro-sociedades/schemas/modalDirector";
+  } from "~/core/presentation/registros/sociedades/pasos/directorio/schemas/modal/modalDirector";
+  import { useDirectoresComputed } from "~/core/presentation/registros/sociedades/pasos/directorio/utils/useDirectoresComputed";
   import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
-  import { TiposDirectoresEnum } from "~/types/enums/TiposDirectoresEnum";
 
   const personaNaturalStore = usePersonaNaturalStore();
 

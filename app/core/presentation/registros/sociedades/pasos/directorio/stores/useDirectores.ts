@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
+import { TiposDirectoresEnum } from "~/core/presentation/registros/sociedades/pasos/directorio/enums/TiposDirectoresEnum";
 import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
-import { TiposDirectoresEnum } from "~/types/enums/TiposDirectoresEnum";
 
 type NombraPresidenteOption = "directorio" | "asamblea_accionistas";
 type SecretariaOption = "gerente_general" | "junta_accionistas";
