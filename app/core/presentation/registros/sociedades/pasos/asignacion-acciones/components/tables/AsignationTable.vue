@@ -1,17 +1,17 @@
 <script setup lang="ts">
   import { ChevronDown, ChevronUp } from "lucide-vue-next";
   import { computed, ref } from "vue";
+  import BaseButton from "~/components/base/buttons/BaseButton.vue";
+  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+  import DataTableDropDown from "~/components/base/tables/DataTableDropDown.vue";
   import Table from "~/components/ui/table/Table.vue";
   import TableBody from "~/components/ui/table/TableBody.vue";
   import TableCell from "~/components/ui/table/TableCell.vue";
   import TableHead from "~/components/ui/table/TableHead.vue";
   import TableHeader from "~/components/ui/table/TableHeader.vue";
   import TableRow from "~/components/ui/table/TableRow.vue";
-  import { useRegistroAsignacionAccionesStore } from "~/modules/registro-sociedades/stores/useRegistroAsignacionAccionesStore";
-  import BaseButton from "../../buttons/BaseButton.vue";
-  import ActionButton from "../../buttons/composite/ActionButton.vue";
-  import AsignarAccionesModal from "../../modal/composite/AsignarAccionesModal.vue";
-  import DataTableDropDown from "../DataTableDropDown.vue";
+  import { useRegistroAsignacionAccionesStore } from "../../stores/useRegistroAsignacionAccionesStore";
+  import AsignarAccionesModal from "../modals/AsignarAccionesModal.vue";
 
   interface Props {
     titleMenu?: string;

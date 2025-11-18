@@ -1,12 +1,12 @@
 <script setup lang="ts">
   import { useVModel } from "@vueuse/core";
   import { computed, nextTick, watch } from "vue";
+  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+  import CardTitle from "~/components/base/cards/CardTitle.vue";
+  import BaseModal from "~/components/base/modal/BaseModal.vue";
   import AsignaAccionesForm from "~/components/composite/forms/AsignaAccionesForm.vue";
-  import { useRegistroAsignacionAccionesStore } from "~/modules/registro-sociedades/stores/useRegistroAsignacionAccionesStore";
+  import { useRegistroAsignacionAccionesStore } from "~/core/presentation/registros/sociedades/pasos/asignacion-acciones/stores/useRegistroAsignacionAccionesStore";
   import { useAsignacionAccionesStore } from "~/stores/useAsignacionAccionesStore";
-  import ActionButton from "../../buttons/composite/ActionButton.vue";
-  import CardTitle from "../../cards/CardTitle.vue";
-  import BaseModal from "../BaseModal.vue";
 
   interface Props {
     modelValue?: boolean;

@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
 import { useValorNominalStore } from "~/stores/useValorNominalStore";
+import { useRegistroAccionesStore } from "../../../../../../../modules/registro-sociedades/stores/useRegistroAccionesStore";
+import { useRegistroAccionistasStore } from "../../../../../../../modules/registro-sociedades/stores/useRegistroAccionistasStore";
 import type {
   AccionDisponible,
   AsignacionAccionista,
   AsignacionAccionistaTableRow,
 } from "../types/asignacion-acciones";
-import { useRegistroAccionesStore } from "./useRegistroAccionesStore";
-import { useRegistroAccionistasStore } from "./useRegistroAccionistasStore";
 
 interface State {
   asignaciones: AsignacionAccionista[];
