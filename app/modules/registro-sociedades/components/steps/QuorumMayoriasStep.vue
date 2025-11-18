@@ -11,6 +11,6 @@
 </script>
 
 <template>
-  <div>Resumen: {{ mode }}</div>
+  <div>Quorum Mayorias: {{ mode }}</div>
   <p v-if="mode === EntityModeEnum.EDITAR && societyId">ID: {{ societyId }}</p>
 </template>
