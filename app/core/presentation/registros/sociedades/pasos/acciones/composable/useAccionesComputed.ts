@@ -1,9 +1,9 @@
 import { computed, ref } from "vue";
 import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
-import { useAccionesComunesStore } from "~/stores/useAccionesComunesStore";
-import { useClasesAccionesStore } from "~/stores/useClasesAccionesStore";
-import { useValorNominalStore } from "~/stores/useValorNominalStore";
+import { useAccionesComunesStore } from "../stores/useAccionesComunesStore";
+import { useClasesAccionesStore } from "../stores/useClasesAccionesStore";
 import { useRegistroAccionesStore } from "../stores/useRegistroAccionesStore";
+import { useValorNominalStore } from "../stores/useValorNominalStore";
 import type { AccionTableRow } from "../types/acciones";
 
 export const useAccionesComputed = () => {

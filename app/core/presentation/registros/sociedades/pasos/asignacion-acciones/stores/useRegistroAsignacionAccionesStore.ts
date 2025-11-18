@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
-import { useValorNominalStore } from "~/stores/useValorNominalStore";
-import { useRegistroAccionesStore } from "../../../../../../../modules/registro-sociedades/stores/useRegistroAccionesStore";
 import { useRegistroAccionistasStore } from "../../../../../../../modules/registro-sociedades/stores/useRegistroAccionistasStore";
+import { useRegistroAccionesStore } from "../../acciones/stores/useRegistroAccionesStore";
+import { useValorNominalStore } from "../../acciones/stores/useValorNominalStore";
 import type {
   AccionDisponible,
   AsignacionAccionista,

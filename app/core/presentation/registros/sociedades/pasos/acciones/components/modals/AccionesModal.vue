@@ -3,17 +3,17 @@
   import { computed, ref, watch } from "vue";
   import IconCoin from "~/assets/icons/icon-coin.svg";
   import SwitchTabs from "~/components/base/Switch/SwitchTabs.vue";
-  import AccionesComunesForm from "~/components/composite/forms/AccionesComunesForm.vue";
-  import ClasesAccionesForm from "~/components/composite/forms/ClasesAccionesForm.vue";
-  import { useRegistroAccionesStore } from "~/modules/registro-sociedades/stores/useRegistroAccionesStore";
-  import type { AccionRegistro } from "~/modules/registro-sociedades/types/acciones";
-  import { useAccionesComunesStore } from "~/stores/useAccionesComunesStore";
-  import { useClasesAccionesStore } from "~/stores/useClasesAccionesStore";
-  import { useValorNominalStore } from "~/stores/useValorNominalStore";
-  import BaseButton from "../../buttons/BaseButton.vue";
-  import ActionButton from "../../buttons/composite/ActionButton.vue";
-  import CardTitle from "../../cards/CardTitle.vue";
-  import BaseModal from "../BaseModal.vue";
+  import BaseButton from "~/components/base/buttons/BaseButton.vue";
+  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+  import CardTitle from "~/components/base/cards/CardTitle.vue";
+  import BaseModal from "~/components/base/modal/BaseModal.vue";
+  import { useAccionesComunesStore } from "../../stores/useAccionesComunesStore";
+  import { useClasesAccionesStore } from "../../stores/useClasesAccionesStore";
+  import { useRegistroAccionesStore } from "../../stores/useRegistroAccionesStore";
+  import { useValorNominalStore } from "../../stores/useValorNominalStore";
+  import type { AccionRegistro } from "../../types/acciones";
+  import AccionesComunesForm from "../forms/AccionesComunesForm.vue";
+  import ClasesAccionesForm from "../forms/ClasesAccionesForm.vue";
 
   interface Props {
     modelValue?: boolean;

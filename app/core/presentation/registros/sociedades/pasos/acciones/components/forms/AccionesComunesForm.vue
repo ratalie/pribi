@@ -2,7 +2,8 @@
   import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
   import FileUploadDragDropMultiple from "~/components/base/inputs/FileUploadDragDropMultiple.vue";
   import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
-  import { cantidadAccionesSchema } from "~/modules/registro-sociedades/schemas/accionesComunes";
+  import { cantidadAccionesSchema } from "../../schemas/accionesComunes";
+  import { useAccionesComunesStore } from "../../stores/useAccionesComunesStore";
 
   const accionesComunesStore = useAccionesComunesStore();
 </script>

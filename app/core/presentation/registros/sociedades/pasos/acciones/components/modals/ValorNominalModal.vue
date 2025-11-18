@@ -4,9 +4,9 @@
   import { useField } from "vee-validate";
   import { computed, ref } from "vue";
   import { z } from "zod";
+  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+  import BaseModal from "~/components/base/modal/BaseModal.vue";
   import { useNumberFormatter } from "~/composables/useNumberFormatter";
-  import ActionButton from "../../buttons/composite/ActionButton.vue";
-  import BaseModal from "../BaseModal.vue";
 
   interface Props {
     modelValue?: boolean;

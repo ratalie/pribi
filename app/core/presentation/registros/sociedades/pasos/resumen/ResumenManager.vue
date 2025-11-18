@@ -10,6 +10,6 @@
 </script>
 
 <template>
-  <div>Acciones: {{ mode }}</div>
+  <div>Resumen: {{ mode }}</div>
   <p v-if="mode === EntityModeEnum.EDITAR && societyId">ID: {{ societyId }}</p>
 </template>

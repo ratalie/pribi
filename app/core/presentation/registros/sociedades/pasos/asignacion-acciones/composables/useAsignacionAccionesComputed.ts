@@ -1,6 +1,6 @@
 import { computed, ref } from "vue";
-import { useValorNominalStore } from "~/stores/useValorNominalStore";
-import { useRegistroAccionesStore } from "../../../../../../../modules/registro-sociedades/stores/useRegistroAccionesStore";
+import { useRegistroAccionesStore } from "../../acciones/stores/useRegistroAccionesStore";
+import { useValorNominalStore } from "../../acciones/stores/useValorNominalStore";
 import { useRegistroAsignacionAccionesStore } from "../stores/useRegistroAsignacionAccionesStore";
 import type { AsignacionAccionistaTableRow } from "../types/asignacion-acciones";
 
