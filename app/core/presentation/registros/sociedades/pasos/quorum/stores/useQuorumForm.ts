@@ -3,7 +3,7 @@ import type { MaybeRef } from "vue";
 
 import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 import type { QuorumDTO } from "~/core/hexag/registros/sociedades/pasos/quorum-mayorias/application";
-import { useQuorumStore } from "../stores/quorum.store";
+import { useQuorumStore } from "~/core/presentation/registros/sociedades/pasos/quorum/stores/quorumStore";
 
 const clampPercent = (value: number): number => {
   if (!Number.isFinite(value)) return 0;
