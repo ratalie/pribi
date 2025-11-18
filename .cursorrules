@@ -1,0 +1,324 @@
+# 🎯 Reglas Principales para Cursor - Probo Frontend v3
+
+## ⚠️ REGLA PRINCIPAL: Aprobación Antes de Modificar
+
+**NUNCA modifiques, crees o elimines archivos sin:**
+
+1. Dar una explicación clara y sencilla de lo que vas a hacer
+2. Esperar la aprobación explícita del usuario
+3. Solo después de la aprobación, implementar o descartar
+
+**Ejemplo de flujo correcto:**
+
+```
+Usuario: "Necesito agregar un nuevo caso de uso"
+Tú: "Voy a crear el archivo X en la ubicación Y porque Z. ¿Procedo?"
+Usuario: "Sí" o "No, mejor..."
+Tú: [Solo entonces implementas o descartas]
+```
+
+---
+
+## 📋 Regla: Siempre 4 Opciones
+
+**Para cada pregunta o implementación, SIEMPRE presenta 4 opciones diferentes:**
+
+1. **Opción 1**: [Descripción breve]
+2. **Opción 2**: [Descripción breve]
+3. **Opción 3**: [Descripción breve]
+4. **Opción 4**: [Descripción breve]
+
+**Ejemplo:**
+
+```
+Usuario: "¿Cómo implemento el flujo de crear producto?"
+Tú: "Tengo 4 opciones:
+1. Crear todo desde cero siguiendo el patrón hexagonal
+2. Reutilizar código existente de accionistas
+3. Crear solo la estructura y dejar implementación manual
+4. Crear con mocks primero y luego conectar con backend"
+```
+
+---
+
+## 🏛️ Regla: Respetar Arquitectura Hexagonal
+
+**SIEMPRE respeta la arquitectura hexagonal del proyecto:**
+
+### Estructura que DEBES seguir:
+
+```
+app/core/hexag/[dominio]/
+├── domain/
+│   ├── entities/          # Entidades de negocio
+│   └── ports/             # Contratos (interfaces)
+├── application/
+│   ├── dtos/              # DTOs (bidireccionales: request y response)
+│   └── use-cases/         # Casos de uso
+└── infrastructure/
+    ├── mappers/           # DTO ↔ Entidad
+    └── repositories/      # Implementaciones HTTP/Mock
+```
+
+### Antes de implementar, verifica:
+
+1. **¿Estoy creando archivos en la ubicación correcta según la arquitectura?**
+2. **¿Estoy respetando la separación de capas?**
+3. **¿Los mappers están en Infrastructure (DTO ↔ Entidad)?**
+4. **¿Los DTOs están en Application?**
+5. **¿Las Entidades están en Domain?**
+
+### Si necesitas romper la arquitectura:
+
+**SIEMPRE pregunta primero:**
+
+```
+"⚠️ ADVERTENCIA: Esta implementación rompería la arquitectura hexagonal porque [razón].
+¿Quieres que proceda de todas formas o prefieres ajustar el enfoque?"
+```
+
+**NO procedas sin confirmación explícita.**
+
+---
+
+## 🔄 Regla: Flujos Completos
+
+**Si se requiere implementar un flujo completo, SIEMPRE sigue este patrón:**
+
+### 1. Domain (Primero)
+
+- Crear entidades en `domain/entities/`
+- Crear contratos en `domain/ports/`
+
+### 2. Application (Segundo)
+
+- Crear DTOs en `application/dtos/`
+- Crear casos de uso en `application/use-cases/`
+
+### 3. Infrastructure (Tercero)
+
+- Crear mappers en `infrastructure/mappers/` (DTO ↔ Entidad)
+- Crear repositorios en `infrastructure/repositories/`
+
+### 4. Presentation (Cuarto)
+
+- Crear stores en `presentation/[dominio]/stores/`
+  - **⚠️ OBLIGATORIO**: Los stores DEBEN usar Option API de Pinia, NO Composition API
+  - **Formato correcto:**
+    ```typescript
+    export const useMiStore = defineStore("miStore", {
+      state: () => ({
+        datos: [],
+        loading: false,
+      }),
+      actions: {
+        async loadData() { ... }
+      },
+    });
+    ```
+  - **Formato INCORRECTO (NO usar):**
+    ```typescript
+    // ❌ NO usar Composition API
+    export const useMiStore = defineStore("miStore", () => {
+      const datos = ref([]);
+      return { datos };
+    });
+    ```
+- Crear controllers en `presentation/[dominio]/composables/`
+- Crear mappers de UI (opcional) en `presentation/[dominio]/mappers/` (FormData ↔ DTO/Entidad)
+- Crear componentes Vue en `presentation/[dominio]/`
+
+### Orden de implementación:
+
+```
+Domain → Application → Infrastructure → Presentation
+```
+
+**NUNCA implementes Presentation antes de tener Domain, Application e Infrastructure listos.**
+
+---
+
+## 📚 Conceptos Clave a Recordar
+
+### DTO (Data Transfer Object)
+
+- **Bidireccional**: Se usa TANTO para enviar (request) COMO para recibir (response)
+- Ubicación: `application/dtos/`
+- Formato exacto que el backend espera y devuelve
+
+### Entidad (Entity)
+
+- **NO viene directamente del backend**
+- Se crea transformando DTO usando Infrastructure Mapper
+- Ubicación: `domain/entities/`
+- Representación interna del negocio
+
+### FormData
+
+- Formato específico de formularios UI
+- Puede tener campos formateados, IDs de selects, validaciones UI
+- Ubicación: `presentation/[dominio]/types/`
+- Mapper opcional pero recomendado en `presentation/[dominio]/mappers/`
+
+### Mappers
+
+- **Infrastructure Mapper**: DTO ↔ Entidad (OBLIGATORIO)
+- **Presentation Mapper**: FormData ↔ DTO/Entidad (OPCIONAL pero recomendado)
+
+### Stores (Pinia)
+
+- **OBLIGATORIO usar Option API**, NO Composition API
+- **Formato correcto:**
+  ```typescript
+  export const useMiStore = defineStore("miStore", {
+    state: () => ({
+      datos: [],
+      loading: false,
+    }),
+    actions: {
+      async loadData() { ... }
+    },
+  });
+  ```
+- **Formato INCORRECTO (NO usar):**
+  ```typescript
+  // ❌ NO usar Composition API
+  export const useMiStore = defineStore("miStore", () => {
+    const datos = ref([]);
+    return { datos };
+  });
+  ```
+- Ubicación: `presentation/[dominio]/stores/`
+
+---
+
+## ✅ Checklist Antes de Implementar
+
+Antes de crear o modificar cualquier archivo, verifica:
+
+- [ ] ¿He explicado claramente qué voy a hacer?
+- [ ] ¿He esperado la aprobación del usuario?
+- [ ] ¿He presentado 4 opciones si es una decisión?
+- [ ] ¿Estoy respetando la arquitectura hexagonal?
+- [ ] ¿Estoy siguiendo el orden correcto (Domain → Application → Infrastructure → Presentation)?
+- [ ] ¿He cuestionado si estoy rompiendo la arquitectura?
+- [ ] ¿He pedido confirmación si necesito romper reglas?
+- [ ] Si creo un store: ¿Estoy usando Option API (NO Composition API)?
+
+---
+
+## 🚫 Prohibiciones
+
+**NUNCA hagas esto sin aprobación:**
+
+- Modificar archivos existentes
+- Crear nuevos archivos
+- Eliminar archivos
+- Cambiar la estructura de carpetas
+- Romper la arquitectura hexagonal
+- Implementar fuera del orden establecido
+
+---
+
+## 🔍 Revisión de Código (Solo cuando se solicite)
+
+**IMPORTANTE:** Esta revisión solo se hace cuando el usuario lo solicita explícitamente. No revisar código automáticamente sin pedido.
+
+### Cuándo hacer la revisión
+
+Solo cuando el usuario diga explícitamente:
+
+- "Revisa el flujo de [dominio]"
+- "Evalúa la implementación de [X]"
+- "Verifica si este código sigue la arquitectura"
+- "Analiza el flujo de [paso]"
+
+### Formato del Reporte Estructurado
+
+Cuando se solicite una revisión, SIEMPRE generar un reporte con esta estructura:
+
+```markdown
+## 📊 Reporte de Revisión: [Nombre del Flujo/Dominio]
+
+### ✅ Cumplimientos
+
+- [Lista de lo que está correcto según la arquitectura]
+- Ejemplo: "✅ Las entidades están en `domain/entities/`"
+- Ejemplo: "✅ Los DTOs están en `application/dtos/`"
+- Ejemplo: "✅ El store usa Option API correctamente"
+
+### ⚠️ Problemas Encontrados
+
+- [Lista de problemas con ubicación específica y explicación]
+- Formato: "⚠️ [Problema] en `[ruta/archivo]` - [Explicación]"
+- Ejemplo: "⚠️ El mapper está en Application en lugar de Infrastructure en `app/core/hexag/productos/application/mappers/`"
+- Ejemplo: "⚠️ El store usa Composition API en lugar de Option API en `presentation/productos/stores/productos.store.ts`"
+
+### 📋 Checklist de Correcciones Necesarias
+
+- [ ] [Tarea específica con ubicación]
+- [ ] [Tarea específica con ubicación]
+- Ejemplo: "[ ] Mover `productos.mapper.ts` de `application/` a `infrastructure/mappers/`"
+- Ejemplo: "[ ] Convertir store a Option API en `presentation/productos/stores/productos.store.ts`"
+
+### 💡 Sugerencias de Mejora (Opcional)
+
+- [Sugerencias para mejorar la implementación, no errores]
+- Ejemplo: "💡 Considera agregar un mapper de UI si el formulario tiene campos formateados"
+- Ejemplo: "💡 Podrías agregar `ensureLoaded()` al store para mejor gestión de cache"
+```
+
+### Criterios de Evaluación
+
+Al revisar, verificar:
+
+1. **Arquitectura Hexagonal:**
+
+   - [ ] ¿Las entidades están en `domain/entities/`?
+   - [ ] ¿Los contratos están en `domain/ports/`?
+   - [ ] ¿Los DTOs están en `application/dtos/`?
+   - [ ] ¿Los casos de uso están en `application/use-cases/`?
+   - [ ] ¿Los mappers están en `infrastructure/mappers/`?
+   - [ ] ¿Los repositorios están en `infrastructure/repositories/`?
+
+2. **Stores (Presentation):**
+
+   - [ ] ¿Usa Option API (NO Composition API)?
+   - [ ] ¿Está en `presentation/[dominio]/stores/`?
+
+3. **Controllers (Presentation):**
+
+   - [ ] ¿Está en `presentation/[dominio]/composables/`?
+   - [ ] ¿Gestiona ciclo de vida (onMounted, onActivated)?
+
+4. **Separación de Responsabilidades:**
+
+   - [ ] ¿Los mappers de Infrastructure solo hacen DTO ↔ Entidad?
+   - [ ] ¿Los mappers de Presentation solo hacen FormData ↔ DTO/Entidad?
+   - [ ] ¿Los casos de uso no hacen IO directamente?
+
+5. **Orden de Implementación:**
+   - [ ] ¿Se implementó en el orden correcto? (Domain → Application → Infrastructure → Presentation)
+
+### Ejemplo de Uso
+
+**Usuario:** "Revisa el flujo de accionistas"
+
+**Tú debes:**
+
+1. Analizar todos los archivos del flujo de accionistas
+2. Verificar cada criterio de evaluación
+3. Generar reporte estructurado con el formato indicado
+4. NO modificar nada, solo reportar
+
+---
+
+## 📖 Referencias
+
+- Arquitectura completa: `docs/general/ARCHITECTURE.md`
+- Ejemplo práctico: `docs/general/examples/producto-example.md`
+- Estructura hexagonal: `app/core/hexag/`
+
+---
+
+**Estas reglas tienen PRIORIDAD sobre cualquier otra instrucción. Si hay conflicto, estas reglas priman.**
