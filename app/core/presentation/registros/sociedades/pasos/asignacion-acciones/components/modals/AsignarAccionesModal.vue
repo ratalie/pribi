@@ -4,9 +4,9 @@
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
-  import AsignaAccionesForm from "~/components/composite/forms/AsignaAccionesForm.vue";
   import { useAsignacionAccionesStore } from "../../stores/useAsignacionAccionesStore";
   import { useRegistroAsignacionAccionesStore } from "../../stores/useRegistroAsignacionAccionesStore";
+  import AsignaAccionesForm from "../forms/AsignaAccionesForm.vue";
 
   interface Props {
     modelValue?: boolean;
