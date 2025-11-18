@@ -146,7 +146,9 @@
           <div :class="variant === 'inline' ? 'text-left' : ''">
             <p :class="textSizeClass">
               <span class="text-primary-800 font-light">{{ clickMessage }}</span>
-              <span v-if="!hideTitle" class="text-neutral-white-40 font-light ml-1">{{ dragMessage }}</span>
+              <span v-if="!hideTitle" class="text-neutral-white-40 font-light ml-1">
+                {{ dragMessage }}
+              </span>
             </p>
             <p v-if="!hideDescription" class="text-xs text-gray-500 mt-1">
               {{

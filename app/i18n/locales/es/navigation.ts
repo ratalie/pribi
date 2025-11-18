@@ -3,6 +3,7 @@ export default {
   dashboard: "Dashboard",
   registro: "Registro Societario",
   registroSocietario: "Registro Societario",
+  registros: "Registros",
   documentacion: "Generación de Actas",
   gestion: "Gestión de Libros",
   storage: "Almacenamiento",
@@ -10,7 +11,11 @@ export default {
 
   // Sub-items Registro Societario
   sociedades: "Sociedades",
+  agregarSociedad: "Agregar Sociedad",
+  historialSociedades: "Historial de Registros",
   sucursales: "Sucursales",
+  agregarSucursal: "Agregar Sucursal",
+  historialSucursales: "Historial de Registros",
   accionistas: "Accionistas",
   administradores: "Administradores",
   domicilios: "Domicilios",
@@ -49,4 +54,7 @@ export default {
   configuracion: "Configuración",
   ayuda: "Ayuda",
   calculadoraLegal: "Calculadora Legal",
+  nav: {
+    ayuda: "Ayuda",
+  },
 } as const;

@@ -14,6 +14,8 @@
   } from "@/components/ui/sidebar";
   import { cn } from "@/lib/utils";
   import { ChevronDown, ChevronRight, X } from "lucide-vue-next";
+  import { ref } from "vue";
+  import { useRoute } from "vue-router";
   import logoProbo from "~/assets/icons/logo-probo.svg";
   import { useProboI18n } from "~/composables/useProboI18n";
   import { useUser } from "~/composables/useUser";
@@ -35,13 +37,16 @@
 
   // Estados de expansión
   const expandedSections = ref<Record<string, boolean>>({
-    "Registro Societario": true,
+    Registros: true,
     "Operaciones de Órgano de Control": true,
     Storage: true,
     Features: true,
   });
 
-  const expandedItems = ref<Record<string, boolean>>({});
+  const expandedItems = ref<Record<string, boolean>>({
+    "registros-sociedades": true,
+    "registros-sucursales": false,
+  });
 
   // Métodos
   const toggleSection = (section: string, value: boolean) => {
@@ -205,6 +210,18 @@
           <div class="flex items-center gap-3">
             <component :is="getIcon('')" v-if="getIcon('')" class="w-5 h-5" />
             <span>Componentes</span>
+          </div>
+        </NuxtLink>
+
+        <!-- Ruta a Sidebars -->
+        <NuxtLink
+          to="/indiceSidebarsPruebas"
+          class="w-full flex items-center justify-between px-3 py-2.5 text-white text-sm hover:bg-primary-200 hover:text-white rounded-lg h-auto font-normal"
+          :class="{ 'bg-primary-400': isActive('/indiceSidebarsPruebas') }"
+        >
+          <div class="flex items-center gap-3">
+            <component :is="getIcon('')" v-if="getIcon('')" class="w-5 h-5" />
+            <span>Sidebars</span>
           </div>
         </NuxtLink>
       </SidebarContent>

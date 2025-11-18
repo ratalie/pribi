@@ -3,6 +3,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "dual-panel-layout",
+});
+
 useHead({
   title: "Accionistas - PROBO",
 });

@@ -41,31 +41,45 @@ export const departamentoSchema = z
   .nonempty("El departamento es obligatorio")
   .min(2, "El departamento debe tener al menos 2 caracteres");
 
-export const fechaInscripcionRucSchema = z
-  .string()
-  .nonempty("La fecha de inscripción de RUC es obligatoria");
+const optionalDateSchema = (message: string) =>
+  z
+    .string()
+    .refine(
+      (value) => value === "" || /^\d{4}-\d{2}-\d{2}$/.test(value),
+      message
+    );
 
-export const actividadExteriorSchema = z
-  .string()
-  .nonempty("La actividad exterior es obligatoria")
-  .min(2, "La actividad exterior debe tener al menos 2 caracteres");
+const optionalStringSchema = (message: string, minLength = 2) =>
+  z
+    .string()
+    .refine(
+      (value) => value === "" || value.trim().length >= minLength,
+      message
+    );
 
-export const fechaEscrituraPublicaSchema = z
-  .string()
-  .nonempty("La fecha de escritura pública es obligatoria");
+export const fechaInscripcionRucSchema = optionalDateSchema(
+  "La fecha de inscripción de RUC debe tener el formato YYYY-MM-DD"
+);
 
-export const fechaRegistrosPublicosSchema = z
-  .string()
-  .nonempty("La fecha de registros públicos es obligatoria");
+export const actividadExteriorSchema = optionalStringSchema(
+  "La actividad exterior debe tener al menos 2 caracteres"
+);
 
-export const oficinaRegistralSchema = z
-  .string()
-  .nonempty("La oficina registral es obligatoria");
+export const fechaEscrituraPublicaSchema = optionalDateSchema(
+  "La fecha de escritura pública debe tener el formato YYYY-MM-DD"
+);
 
-export const partidaRegistralSchema = z
-  .string()
-  .nonempty("La partida registral es obligatoria")
-  .min(2, "La partida registral debe tener al menos 2 caracteres");
+export const fechaRegistrosPublicosSchema = optionalDateSchema(
+  "La fecha de registros públicos debe tener el formato YYYY-MM-DD"
+);
+
+export const oficinaRegistralSchema = optionalStringSchema(
+  "La oficina registral debe seleccionarse"
+);
+
+export const partidaRegistralSchema = optionalStringSchema(
+  "La partida registral debe tener al menos 2 caracteres"
+);
 
 export const datosSociedadSchema = z.object({
   ruc: rucSchema,

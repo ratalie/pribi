@@ -1,0 +1,89 @@
+<script setup lang="ts">
+  import { Button } from "@/components/ui/button";
+  import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "@/components/ui/table";
+
+  import type { AccionistaRow } from "../types";
+
+  interface Props {
+    items: AccionistaRow[];
+    isLoading?: boolean;
+    readonly?: boolean;
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    items: () => [],
+    isLoading: false,
+    readonly: false,
+  });
+
+  const emit = defineEmits<{
+    (e: "edit", id: string): void;
+    (e: "remove", id: string): void;
+  }>();
+
+  const handleEdit = (id: string) => emit("edit", id);
+  const handleRemove = (id: string) => emit("remove", id);
+</script>
+
+<template>
+  <div class="overflow-hidden bg-white">
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Accionista</TableHead>
+          <TableHead>Tipo</TableHead>
+          <TableHead>Documento</TableHead>
+          <TableHead>Participación</TableHead>
+          <TableHead v-if="!readonly" class="text-right">Acciones</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow v-if="isLoading">
+          <TableCell colspan="5" class="text-center py-6 text-slate-500">
+            Cargando accionistas…
+          </TableCell>
+        </TableRow>
+        <TableRow v-else-if="items.length === 0">
+          <TableCell colspan="5" class="text-center py-6 text-slate-500">
+            Aún no registras accionistas. Usa el botón “Agregar” para comenzar.
+          </TableCell>
+        </TableRow>
+        <TableRow v-for="item in items" :key="item.id">
+          <TableCell class="font-medium text-slate-900">
+            {{ item.etiqueta }}
+          </TableCell>
+          <TableCell class="text-slate-600">
+            {{ item.tipo }}
+          </TableCell>
+          <TableCell class="text-slate-600">
+            {{ item.documento }}
+          </TableCell>
+          <TableCell class="text-slate-600">
+            {{ item.participacion || "—" }}
+          </TableCell>
+          <TableCell v-if="!readonly" class="text-right">
+            <div class="flex justify-end gap-2">
+              <Button variant="ghost" size="sm" @click="handleEdit(item.id)">Editar</Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                class="text-red-600"
+                @click="handleRemove(item.id)"
+              >
+                Eliminar
+              </Button>
+            </div>
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  </div>
+</template>
+

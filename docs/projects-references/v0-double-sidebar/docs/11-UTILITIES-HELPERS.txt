@@ -1,0 +1,404 @@
+===============================================================================
+                      UTILIDADES Y HELPERS DEL PROYECTO
+===============================================================================
+
+UBICACIÓN
+---------
+lib/utils.ts
+
+
+===============================================================================
+FUNCIÓN: cn() - CLASS NAMES UTILITY
+===============================================================================
+
+CÓDIGO COMPLETO:
+```typescript
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+```
+
+
+PROPÓSITO:
+----------
+Combina clases CSS de forma inteligente, manejando:
+- Clases condicionales
+- Conflictos de Tailwind
+- Arrays y objetos de clases
+- Valores falsy
+
+
+DEPENDENCIAS:
+-------------
+
+1. clsx (v2.1.1)
+   - Construye strings de clases condicionalmente
+   - Acepta múltiples formatos
+   - Ignora valores falsy
+
+2. tailwind-merge (v2.5.5)
+   - Resuelve conflictos de clases Tailwind
+   - Merge inteligente
+   - Evita duplicados
+
+
+FUNCIONAMIENTO:
+---------------
+
+PASO 1 - clsx():
+```typescript
+clsx('bg-red-500', 'text-white', condition && 'font-bold')
+// → "bg-red-500 text-white font-bold" (si condition es true)
+```
+
+PASO 2 - twMerge():
+```typescript
+twMerge('bg-red-500 bg-blue-500')
+// → "bg-blue-500" (última clase gana)
+```
+
+COMBINADOS:
+```typescript
+cn('bg-red-500', 'bg-blue-500')
+// → "bg-blue-500"
+```
+
+
+CASOS DE USO:
+-------------
+
+1. CLASES CONDICIONALES:
+```typescript
+cn(
+  'base-class',
+  condition && 'conditional-class',
+  !condition && 'alternative-class'
+)
+```
+
+2. MERGE DE VARIANTES:
+```typescript
+cn(
+  buttonVariants({ variant, size }),
+  className  // Override con props
+)
+```
+
+3. ESTADOS ACTIVOS:
+```typescript
+cn(
+  'link-class',
+  isActive ? 'active-styles' : 'inactive-styles'
+)
+```
+
+4. ARRAYS DE CLASES:
+```typescript
+cn(['class1', 'class2'], 'class3')
+```
+
+5. OBJETOS DE CLASES:
+```typescript
+cn({
+  'class1': true,
+  'class2': false,
+  'class3': someCondition
+})
+```
+
+
+EJEMPLOS REALES DEL PROYECTO:
+------------------------------
+
+1. BUTTON COMPONENT:
+```typescript
+return (
+  <Comp
+    className={cn(buttonVariants({ variant, size, className }))}
+    {...props}
+  />
+)
+```
+
+EXPLICACIÓN:
+- buttonVariants() genera clases base
+- className (prop) override/agrega clases
+- twMerge resuelve conflictos
+
+2. MAINSIDEBAR - LINK ACTIVO:
+```typescript
+className={cn(
+  "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
+  isActive(item.href) 
+    ? "bg-accent text-accent-foreground" 
+    : "text-muted-foreground"
+)}
+```
+
+EXPLICACIÓN:
+- Clases base siempre aplicadas
+- Clases condicionales según isActive
+- twMerge evita duplicados de hover
+
+3. TABLEOFCONTENTS - LINK:
+```typescript
+className={cn(
+  "flex-1 block text-sm transition-colors hover:text-foreground py-1",
+  isActive ? "font-medium text-foreground" : "text-muted-foreground"
+)}
+```
+
+
+¿POR QUÉ ES NECESARIO cn()?
+----------------------------
+
+SIN cn():
+```typescript
+// Problema: conflictos de Tailwind
+className="bg-red-500 bg-blue-500"
+// Resultado: ambas clases aplicadas, comportamiento indefinido
+
+// Problema: condicionales verbosos
+className={`base ${condition ? 'class1' : 'class2'} ${other && 'class3'}`}
+// Resultado: difícil de leer y mantener
+```
+
+CON cn():
+```typescript
+// Solución: merge inteligente
+cn('bg-red-500', 'bg-blue-500')
+// Resultado: "bg-blue-500" (última gana)
+
+// Solución: sintaxis limpia
+cn('base', condition && 'class1', !condition && 'class2', other && 'class3')
+// Resultado: legible y mantenible
+```
+
+
+CONFLICTOS QUE RESUELVE:
+------------------------
+
+1. BACKGROUNDS:
+```typescript
+cn('bg-red-500', 'bg-blue-500')  
+// → "bg-blue-500"
+```
+
+2. PADDINGS:
+```typescript
+cn('p-4', 'px-8')  
+// → "p-4 px-8" (no conflicto, px es más específico)
+```
+
+3. WIDTHS:
+```typescript
+cn('w-full', 'w-1/2')  
+// → "w-1/2"
+```
+
+4. TEXT COLORS:
+```typescript
+cn('text-red-500', 'text-blue-500')  
+// → "text-blue-500"
+```
+
+
+VALORES ACEPTADOS:
+------------------
+
+```typescript
+// Strings
+cn('class1', 'class2')
+
+// Arrays
+cn(['class1', 'class2'])
+
+// Objetos
+cn({ class1: true, class2: false })
+
+// Condicionales
+cn('base', condition && 'conditional')
+
+// Undefined/null (ignorados)
+cn('class', undefined, null, false)
+
+// Mixto
+cn(
+  'base',
+  ['array-class'],
+  { 'obj-class': true },
+  condition && 'conditional'
+)
+```
+
+
+PERFORMANCE:
+------------
+
+✓ Muy rápido (operaciones string)
+✓ Tree-shakeable
+✓ Bundle pequeño (~2KB)
+✓ Sin dependencias pesadas
+
+
+ALTERNATIVAS:
+-------------
+
+1. classnames (solo condicionales, sin merge)
+2. classcat (similar a clsx)
+3. Manual string interpolation (error-prone)
+
+
+MEJORES PRÁCTICAS:
+------------------
+
+DO ✓:
+```typescript
+// Usar para variantes y condicionales
+cn(baseClass, variant === 'primary' && primaryClass)
+
+// Combinar con CVA
+cn(buttonVariants({ variant }), className)
+
+// Clases dinámicas
+cn('base', `dynamic-${value}`)
+```
+
+DON'T ✗:
+```typescript
+// No usar para clases estáticas simples
+cn('text-red-500')  // Innecesario, usa directamente
+
+// No abusar de la complejidad
+cn(
+  // 20 líneas de clases...
+)  // Mejor extraer a variable
+```
+
+
+USO EN SHADCN/UI:
+-----------------
+
+TODOS los componentes de shadcn/ui usan cn():
+
+```typescript
+// Button
+className={cn(buttonVariants({ variant, size, className }))}
+
+// Card
+className={cn("rounded-lg border bg-card", className)}
+
+// Dialog
+className={cn("fixed inset-0 z-50", className)}
+```
+
+PATRÓN COMÚN:
+1. Clases base del componente
+2. Variantes de CVA
+3. className prop para overrides
+4. cn() para merge todo
+
+
+TESTING:
+--------
+
+```typescript
+// Test básico
+expect(cn('class1', 'class2')).toBe('class1 class2')
+
+// Test conflicto
+expect(cn('bg-red-500', 'bg-blue-500')).toBe('bg-blue-500')
+
+// Test condicional
+expect(cn('base', false && 'hidden')).toBe('base')
+```
+
+
+===============================================================================
+OTRAS UTILIDADES POTENCIALES
+===============================================================================
+
+El proyecto PODRÍA agregar más utilidades en lib/utils.ts:
+
+1. FORMATTERS:
+```typescript
+export function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat('es-ES').format(date)
+}
+
+export function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat('es-PE', {
+    style: 'currency',
+    currency: 'PEN'
+  }).format(amount)
+}
+```
+
+2. VALIDATIONS:
+```typescript
+export function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
+export function isValidRUC(ruc: string): boolean {
+  return /^\d{11}$/.test(ruc)
+}
+```
+
+3. HELPERS:
+```typescript
+export function capitalize(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+export function slugify(str: string): string {
+  return str
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+```
+
+4. SCROLL:
+```typescript
+export function scrollToId(id: string): void {
+  const element = document.getElementById(id)
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
+```
+
+NOTA: Estas utilidades NO están implementadas actualmente.
+
+
+===============================================================================
+RESUMEN
+===============================================================================
+
+FUNCIÓN cn():
+✓ Core utility del proyecto
+✓ Usada en TODOS los componentes
+✓ Combina clsx + tailwind-merge
+✓ Esencial para shadcn/ui
+✓ Resuelve conflictos de Tailwind
+✓ Sintaxis limpia y mantenible
+
+IMPORTANCIA:
+🔥 CRÍTICA - El proyecto no funcionaría sin ella
+
+UBICACIÓN:
+lib/utils.ts (único archivo en /lib/ además de navigation-config.ts)
+
+USOS EN PROYECTO:
+- Button component: 1 uso
+- MainSidebar: 2 usos
+- TableOfContents: 2 usos
+- Potencial en todas las páginas
+
+
+===============================================================================

@@ -1,12 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import { computed, ref } from "vue";
 import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
-import {
-  usePersonaJuridicaStore,
-  type PersonaJuridicaState,
-} from "~/stores/usePersonaJuridicaStore";
-import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
-import type { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
+import { usePersonaJuridicaStore, type PersonaJuridicaState } from "~/stores/usePersonaJuridicaStore";
+import { usePersonaNaturalStore, type PersonaNaturalState } from "~/stores/usePersonaNaturalStore";
+import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
 import { useRegistroApoderadoModalStore } from "../stores/modal/useRegistroApoderadoModalStore";
 import { useRegistroApoderadosStore } from "../stores/useRegistroApoderadosStore";
 import type { RegistroApoderado, RegistroApoderadoRow } from "../types/registroApoderados";
@@ -16,6 +13,11 @@ export const useRegistroApoderados = () => {
   const registroApoderadoModalStore = useRegistroApoderadoModalStore();
   const personaNaturalStore = usePersonaNaturalStore();
   const personaJuridicaStore = usePersonaJuridicaStore();
+
+  const tipoDocumentoValues = new Set(Object.values(TipoDocumentosEnum));
+  const ensureTipoDocumento = (value: string): TipoDocumentosEnum | "" => {
+    return tipoDocumentoValues.has(value as TipoDocumentosEnum) ? (value as TipoDocumentosEnum) : "";
+  };
 
   const modeModalApoderado = ref<"crear" | "editar">("crear");
   const isRegistroModalOpen = ref(false);
@@ -78,7 +80,7 @@ export const useRegistroApoderados = () => {
       if (apoderado.personaNatural) {
         personaNaturalStore.$patch({ ...apoderado.personaNatural });
       } else {
-        personaNaturalStore.tipoDocumento = apoderado.tipoDocumento as TipoDocumentosEnum;
+        personaNaturalStore.tipoDocumento = ensureTipoDocumento(apoderado.tipoDocumento);
         personaNaturalStore.numeroDocumento = apoderado.numeroDocumento;
         personaNaturalStore.nombre = apoderado.nombreRazonSocial;
       }
@@ -148,12 +150,14 @@ export const useRegistroApoderados = () => {
       payload.personaJuridica = personaData;
       payload.personaNatural = null;
     } else {
-      const personaNaturalData = {
+      const personaNaturalData: PersonaNaturalState = {
         tipoDocumento: personaNaturalStore.tipoDocumento,
         numeroDocumento: personaNaturalStore.numeroDocumento,
         nombre: personaNaturalStore.nombre,
         apellidoPaterno: personaNaturalStore.apellidoPaterno,
         apellidoMaterno: personaNaturalStore.apellidoMaterno,
+        paisPasaporte: personaNaturalStore.paisPasaporte,
+        estadoCivil: personaNaturalStore.estadoCivil,
       };
 
       payload.nombreRazonSocial = buildNombreCompleto() || "Sin nombre";

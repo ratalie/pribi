@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import DatosSociedadStep from "~/modules/registro-sociedades/components/steps/DatosSociedadStep.vue";
+  import { computed } from "vue";
+  import { useRoute } from "vue-router";
+  import DatosSociedadForm from "~/core/presentation/registros/sociedades/pasos/datos-sociedad/DatosSociedadForm.vue";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   definePageMeta({
@@ -7,9 +9,12 @@
   });
 
   const route = useRoute();
-  const societyId = route.params.id as string;
+  const societyId = computed(() => route.params.id as string);
+
 </script>
 
 <template>
-  <DatosSociedadStep :mode="EntityModeEnum.EDITAR" :society-id="societyId" />
+  <section>
+    <DatosSociedadForm :society-id="societyId" :mode="EntityModeEnum.EDITAR" />
+  </section>
 </template>

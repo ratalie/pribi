@@ -3,6 +3,7 @@ export const deNavigation = {
   dashboard: "Dashboard",
   registro: "Unternehmensregister",
   registroSocietario: "Unternehmensregister",
+  registros: "Register",
   documentacion: "Protokollerstellung",
   gestion: "Bücherverwaltung",
   storage: "Speicher",
@@ -10,7 +11,11 @@ export const deNavigation = {
 
   // Unterabschnitte Unternehmensregister
   sociedades: "Unternehmen",
+  agregarSociedad: "Unternehmen hinzufügen",
+  historialSociedades: "Registerhistorie",
   sucursales: "Niederlassungen",
+  agregarSucursal: "Niederlassung hinzufügen",
+  historialSucursales: "Registerhistorie",
   accionistas: "Aktionäre",
   administradores: "Verwalter",
   domicilios: "Domizile",

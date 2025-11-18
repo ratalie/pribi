@@ -2,24 +2,70 @@ import type { NavigationSection } from "~/types/navigation";
 
 export const navigationSections: NavigationSection[] = [
   {
-    id: "registro-societario",
-    title: "Registro Societario",
-    translationKey: "navigation.registroSocietario",
+    id: "registros",
+    title: "Registros",
+    translationKey: "navigation.registros",
     items: [
       {
-        id: "sociedades",
+        id: "registros-sociedades",
         label: "Sociedades",
         translationKey: "navigation.sociedades",
         icon: "Building2",
-        href: "/registro-societario/sociedades",
+        hasSubmenu: true,
+        submenuItems: [
+          {
+            id: "sociedades-dashboard",
+            label: "Dashboard",
+            translationKey: "navigation.dashboard",
+            icon: "LayoutDashboard",
+            href: "/registros/sociedades/dashboard",
+          },
+          {
+            id: "sociedades-agregar",
+            label: "Agregar sociedad",
+            translationKey: "navigation.agregarSociedad",
+            icon: "FilePlus2",
+            href: "/registros/sociedades/agregar",
+          },
+          {
+            id: "sociedades-historial",
+            label: "Historial de registros",
+            translationKey: "navigation.historialSociedades",
+            icon: "History",
+            href: "/registros/sociedades/historial",
+          },
+        ],
         roles: ["admin", "manager", "user"],
       },
       {
-        id: "sucursales",
+        id: "registros-sucursales",
         label: "Sucursales",
         translationKey: "navigation.sucursales",
         icon: "MapPin",
-        href: "/registro-societario/sucursales",
+        hasSubmenu: true,
+        submenuItems: [
+          {
+            id: "sucursales-dashboard",
+            label: "Dashboard",
+            translationKey: "navigation.dashboard",
+            icon: "LayoutDashboard",
+            href: "/registros/sucursales/dashboard",
+          },
+          {
+            id: "sucursales-agregar",
+            label: "Agregar sucursal",
+            translationKey: "navigation.agregarSucursal",
+            icon: "FilePlus2",
+            href: "/registros/sucursales/agregar",
+          },
+          {
+            id: "sucursales-historial",
+            label: "Historial de registros",
+            translationKey: "navigation.historialSucursales",
+            icon: "History",
+            href: "/registros/sucursales/historial",
+          },
+        ],
         roles: ["admin", "manager", "user"],
       },
     ],

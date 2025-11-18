@@ -1,7 +1,14 @@
 export default {
   // 公司注册
   sociedades: "公司",
+  sociedadesDashboard: "公司仪表板",
+  sociedadesAgregar: "添加公司",
+  sociedadesHistorial: "注册历史",
+  sociedadesPreview: "公司预览",
   sucursales: "分支机构",
+  sucursalesDashboard: "分支仪表板",
+  sucursalesAgregar: "添加分支",
+  sucursalesHistorial: "分支历史",
 
   // 运营 - 董事会
   directorioDashboard: "董事会仪表板",

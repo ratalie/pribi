@@ -3,6 +3,7 @@ import type { PersonaNaturalState } from "~/stores/usePersonaNaturalStore";
 import { EstadoCivilEnum } from "~/types/enums/EstadoCivilEnum";
 import { RegimenPatrimonialEnum } from "~/types/enums/RegimenPatrimonialEnum";
 import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
+import { TipoFondoEnum } from "~/types/enums/TipoFondoEnum";
 import type { AccionistaFideicomisosState } from "../stores/modal/accionistas/useAccionistaFideicomisosStore";
 import type { AccionistaFondosInversionState } from "../stores/modal/accionistas/useAccionistaFondosInversionStore";
 import type { AccionistaJuridicoState } from "../stores/modal/accionistas/useAccionistaJuridicoStore";
@@ -21,11 +22,18 @@ import type {
 import { TipoAccionistaEnum } from "../types/accionistas";
 import type { PersonaNatural } from "../types/personas";
 
+type PersonaNaturalStateLike = Pick<
+  PersonaNaturalState,
+  "tipoDocumento" | "numeroDocumento" | "nombre" | "apellidoPaterno" | "apellidoMaterno" | "paisPasaporte"
+> & {
+  estadoCivil?: PersonaNaturalState["estadoCivil"];
+};
+
 /**
- * Convierte PersonaNaturalState a PersonaNatural haciendo el casting necesario
+ * Convierte un estado de persona natural (completo o parcial) a PersonaNatural
  */
 function convertirStateAPersonaNatural(
-  state: PersonaNaturalState | null
+  state: PersonaNaturalStateLike | null
 ): PersonaNatural | undefined {
   if (!state || !state.numeroDocumento) {
     return undefined;
@@ -40,6 +48,13 @@ function convertirStateAPersonaNatural(
     paisPasaporte: state.paisPasaporte || undefined,
   };
 }
+
+const ensureTipoFondo = (value?: string | null): TipoFondoEnum => {
+  if (value === TipoFondoEnum.ABIERTO || value === TipoFondoEnum.MIXTO) {
+    return value;
+  }
+  return TipoFondoEnum.CERRADO;
+};
 
 // ============================================================================
 // TRANSFORMAR DE MODAL A ACCIONISTA (para guardar)
@@ -310,7 +325,7 @@ function transformarFondosInversionAAccionista(
     numeroDocumento: state.numeroDocumento,
     razonSocial: state.razonSocial,
     direccion: state.direccion,
-    tipoFondo: state.tipoFondo,
+    tipoFondo: ensureTipoFondo(state.tipoFondo),
     numeroDocumentoSociedadAdministradora: state.numeroDocumentoSociedadAdministradora,
     tipoDocumentoSociedadAdministradora: "RUC", // Siempre es RUC (la administradora es empresa peruana)
     razonSocialSociedadAdministradora: state.razonSocialSociedadAdministradora,
@@ -399,6 +414,7 @@ function transformarAccionistaAJuridica(accionista: PersonaJuridicaAccionista): 
           apellidoPaterno: accionista.representanteLegal.apellidoPaterno,
           apellidoMaterno: accionista.representanteLegal.apellidoMaterno,
           paisPasaporte: accionista.representanteLegal.paisPasaporte || "",
+          estadoCivil: "" as EstadoCivilEnum | "",
         }
       : null,
   };
@@ -426,6 +442,7 @@ function transformarAccionistaASucursal(accionista: SucursalAccionista): {
           apellidoPaterno: accionista.representanteLegal.apellidoPaterno,
           apellidoMaterno: accionista.representanteLegal.apellidoMaterno,
           paisPasaporte: accionista.representanteLegal.paisPasaporte || "",
+          estadoCivil: "" as EstadoCivilEnum | "",
         }
       : null,
   };
@@ -456,6 +473,7 @@ function transformarAccionistaASucesionesIndivisas(
           apellidoPaterno: accionista.representanteLegal.apellidoPaterno,
           apellidoMaterno: accionista.representanteLegal.apellidoMaterno,
           paisPasaporte: accionista.representanteLegal.paisPasaporte || "",
+          estadoCivil: "" as EstadoCivilEnum | "",
         }
       : null,
   };
@@ -496,6 +514,7 @@ function transformarAccionistaAFideicomisos(accionista: FideicomisosAccionista):
           apellidoPaterno: accionista.representanteLegal.apellidoPaterno,
           apellidoMaterno: accionista.representanteLegal.apellidoMaterno,
           paisPasaporte: accionista.representanteLegal.paisPasaporte || "",
+          estadoCivil: "" as EstadoCivilEnum | "",
         }
       : null,
   };
@@ -511,7 +530,7 @@ function transformarAccionistaAFondosInversion(accionista: FondosInversionAccion
       numeroDocumento: accionista.numeroDocumento,
       razonSocial: accionista.razonSocial,
       direccion: accionista.direccion,
-      tipoFondo: accionista.tipoFondo,
+      tipoFondo: ensureTipoFondo(accionista.tipoFondo),
       numeroDocumentoSociedadAdministradora: accionista.numeroDocumentoSociedadAdministradora,
       tipoDocumentoSociedadAdministradora: accionista.tipoDocumentoSociedadAdministradora,
       razonSocialSociedadAdministradora: accionista.razonSocialSociedadAdministradora,
@@ -525,6 +544,7 @@ function transformarAccionistaAFondosInversion(accionista: FondosInversionAccion
           apellidoPaterno: accionista.representanteLegal.apellidoPaterno,
           apellidoMaterno: accionista.representanteLegal.apellidoMaterno,
           paisPasaporte: accionista.representanteLegal.paisPasaporte || "",
+          estadoCivil: "" as EstadoCivilEnum | "",
         }
       : null,
   };

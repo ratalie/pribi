@@ -6,6 +6,9 @@ export default withNuxt(
   {
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
+      "vue/html-self-closing": "off",
+      "vue/require-default-prop": "off",
+      "vue/attributes-order": "off",
     },
   }
 );

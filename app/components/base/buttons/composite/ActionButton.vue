@@ -13,6 +13,7 @@
     isDisabled?: boolean;
     label: string;
     type?: "button" | "submit";
+    form?: string;
   }
 
   const props = defineProps<Props>();
@@ -37,6 +38,7 @@
     :variant="variant"
     :size="size"
     :disabled="isLoading || isDisabled"
+    :form="form"
   >
     <component
       :is="isLoading ? getIcon('LoaderCircle') : getIcon(icon)"

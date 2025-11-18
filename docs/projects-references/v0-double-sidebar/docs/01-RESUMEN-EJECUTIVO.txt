@@ -1,0 +1,150 @@
+===============================================================================
+                         RESUMEN EJECUTIVO DEL PROYECTO
+===============================================================================
+
+NOMBRE DEL PROYECTO
+-------------------
+v0-double-sidebar-component
+
+DESCRIPCIÓN
+-----------
+Aplicación web de documentación con doble sidebar (navegación lateral izquierda 
+y tabla de contenidos derecha) construida con Next.js 16 y React 19. 
+
+El proyecto simula un sistema de gestión de juntas generales empresariales con 
+múltiples secciones y flujos de trabajo documentados.
+
+PROPÓSITO PRINCIPAL
+-------------------
+Proporcionar una interfaz de documentación navegable con:
+- Navegación jerárquica por secciones (sidebar izquierdo)
+- Tabla de contenidos contextual (sidebar derecho)
+- Estructura de wizard/formulario multi-paso
+- Visualización de información sobre juntas empresariales
+
+CARACTERÍSTICAS CLAVE
+---------------------
+✓ Doble sidebar responsivo
+✓ Navegación contextual automática
+✓ Scroll suave a secciones
+✓ Route groups de Next.js
+✓ Tema claro/oscuro
+✓ Mobile-first responsive design
+✓ TypeScript strict mode
+✓ Tailwind CSS v4
+
+STACK TECNOLÓGICO PRINCIPAL
+----------------------------
+Framework:          Next.js 16.0.0 (App Router)
+Librería UI:        React 19.2.0
+Lenguaje:           TypeScript 5
+Estilos:            Tailwind CSS 4.1.9
+Componentes:        shadcn/ui (sistema de componentes)
+Primitivos UI:      Radix UI (componentes accesibles)
+Gestión de temas:   next-themes
+Analytics:          Vercel Analytics
+Tipografías:        Geist & Geist Mono (Google Fonts)
+
+ARQUITECTURA
+------------
+Tipo: Single Page Application (SPA) con Server Components
+Patrón: App Router de Next.js con Route Groups
+Routing: File-based routing jerárquico
+State: Local state con React hooks (sin Redux/Zustand)
+Styling: Utility-first con Tailwind CSS
+
+ESTRUCTURA DE NAVEGACIÓN
+-------------------------
+1. Selección de Junta
+2. Datos de la Junta
+3. Instalación de la Junta
+4. Puntos de Agenda (6 sub-opciones)
+   - Aumento de Capital por Aporte
+   - Aumento de Capital por Capitalización
+   - Nombramiento de Gerente
+   - Nombramiento de Apoderados
+   - Remoción de Apoderados
+   - Remoción de Directores
+5. Resumen
+6. Descargar Documentos
+
+COMPONENTES CLAVE
+------------------
+- DocsLayout: Layout principal con doble sidebar
+- MainSidebar: Navegación principal izquierda
+- TableOfContents: Navegación contextual derecha
+- Button: Único componente UI de shadcn/ui en uso
+
+CARACTERÍSTICAS TÉCNICAS
+-------------------------
+- Server Components por defecto
+- Client Components donde necesario ('use client')
+- Path aliases (@/ para imports)
+- CSS Variables para theming
+- Mobile overlay navigation
+- Scroll anchor links
+- Nested layouts
+
+DEPENDENCIAS NOTABLES
+---------------------
+• 25+ paquetes Radix UI (primitivos base)
+• class-variance-authority (variantes de componentes)
+• clsx + tailwind-merge (utilidades de clases)
+• lucide-react (biblioteca de iconos - instalada pero no usada)
+• react-hook-form + zod (formularios - instalados pero no usados)
+• sonner (notificaciones - instalado pero no usado)
+
+ESTADO DEL PROYECTO
+--------------------
+- Configuración completa de shadcn/ui
+- Solo 1 componente UI implementado (Button)
+- Múltiples dependencias instaladas no utilizadas
+- Páginas mayormente vacías (esqueletos)
+- Estructura de navegación completa
+- Sistema de estilos funcional
+- Layout responsive completamente funcional
+
+CASOS DE USO
+------------
+✓ Documentación técnica
+✓ Sistemas wizard multi-paso
+✓ Aplicaciones de gestión documental
+✓ Plataformas legales/corporativas
+✓ Knowledge bases
+✓ Portales de onboarding
+
+PUNTOS FUERTES
+--------------
++ Arquitectura moderna y escalable
++ Excelente experiencia de navegación
++ Código TypeScript tipado
++ Componentes reutilizables
++ Diseño responsive sólido
++ Configuración de desarrollo profesional
+
+ÁREAS DE MEJORA
+----------------
+- Contenido de páginas incompleto
+- Muchas dependencias no utilizadas
+- Falta implementación de formularios
+- No hay manejo de estado global
+- Falta validación de datos
+- No hay integración con backend
+
+COMPATIBILIDAD
+--------------
+Node.js:        >= 18.x
+Navegadores:    Modernos (ES6+)
+Mobile:         iOS Safari, Chrome Android
+Build:          Vercel, Netlify, otras plataformas
+
+MÉTRICAS DEL PROYECTO
+----------------------
+Páginas:                    32 páginas .tsx
+Componentes personalizados: 4 componentes
+Componentes shadcn/ui:      1 componente (Button)
+Líneas de configuración:    ~500 líneas (config + estilos)
+Rutas totales:              ~25 rutas únicas
+Dependencias npm:           50+ paquetes
+
+===============================================================================

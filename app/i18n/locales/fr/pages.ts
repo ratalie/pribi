@@ -1,7 +1,14 @@
 export const frPages = {
   // Registre d'entreprise
   sociedades: "Sociétés",
+  sociedadesDashboard: "Tableau de bord des sociétés",
+  sociedadesAgregar: "Ajouter une société",
+  sociedadesHistorial: "Historique des enregistrements",
+  sociedadesPreview: "Aperçu de la société",
   sucursales: "Succursales",
+  sucursalesDashboard: "Tableau de bord des succursales",
+  sucursalesAgregar: "Ajouter une succursale",
+  sucursalesHistorial: "Historique des succursales",
 
   // Opérations - Conseil d'administration
   directorioDashboard: "Tableau de bord du conseil",

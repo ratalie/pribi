@@ -1,11 +1,9 @@
 <script setup lang="ts">
-  useHead({
-    title: "Sociedades - PROBO",
+  definePageMeta({
+    redirect: "/registro-societario/sociedades/dashboard",
   });
 </script>
 
 <template>
-  <div>
-    <PageTitle title-key="pages.sociedades" />
-  </div>
+  <div />
 </template>

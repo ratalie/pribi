@@ -1,0 +1,576 @@
+===============================================================================
+                    CONFIGURACIÓN DE NAVEGACIÓN COMPLETA
+===============================================================================
+
+UBICACIÓN
+---------
+lib/navigation-config.ts
+
+
+INTERFACES TYPESCRIPT
+---------------------
+
+```typescript
+export interface NavItem {
+  title: string
+  href?: string
+  isRoute?: boolean
+  items?: NavItem[]
+}
+```
+
+PROPIEDADES:
+- title: Texto mostrado en la UI
+- href: URL de destino (puede ser ruta o anchor #)
+- isRoute: Marca si href es una ruta navegable (vs anchor)
+- items: Sub-items para navegación jerárquica
+
+
+===============================================================================
+ESTRUCTURA DE NAVEGACIÓN PRINCIPAL
+===============================================================================
+
+```typescript
+export const navigationStructure: NavItem[] = [...]
+```
+
+CONTENIDO COMPLETO:
+
+1. SELECCIÓN DE JUNTA
+```typescript
+{
+  title: "Selección de Junta",
+  href: "/seleccion-junta",
+  isRoute: true,
+}
+```
+
+2. DATOS DE LA JUNTA
+```typescript
+{
+  title: "Datos de la Junta",
+  href: "/datos-junta",
+  isRoute: true,
+}
+```
+
+3. INSTALACIÓN DE LA JUNTA
+```typescript
+{
+  title: "Instalación de la Junta",
+  href: "/instalacion-junta",
+  isRoute: true,
+}
+```
+
+4. PUNTOS DE AGENDA (CON SUB-ITEMS)
+```typescript
+{
+  title: "Puntos de Agenda",
+  items: [
+    {
+      title: "Aumento de Capital por Aporte Dinerario",
+      href: "/puntos-agenda/aumento-capital-aporte/aportantes",
+      isRoute: true,
+    },
+    {
+      title: "Aumento de Capital por Capitalización de Créditos",
+      href: "/puntos-agenda/aumento-capital-capitalizacion/acreedores",
+      isRoute: true,
+    },
+    {
+      title: "Nombramiento de Gerente General",
+      href: "/puntos-agenda/nombramiento-gerente/nombramiento",
+      isRoute: true,
+    },
+    {
+      title: "Nombramiento de Apoderados",
+      href: "/puntos-agenda/nombramiento-apoderados/nombramiento",
+      isRoute: true,
+    },
+    {
+      title: "Remoción de Apoderados",
+      href: "/puntos-agenda/remocion-apoderados/remocion",
+      isRoute: true,
+    },
+    {
+      title: "Remoción de Directores",
+      href: "/puntos-agenda/remocion-directores/remocion",
+      isRoute: true,
+    },
+  ],
+}
+```
+
+5. RESUMEN
+```typescript
+{
+  title: "Resumen",
+  href: "/resumen",
+  isRoute: true,
+}
+```
+
+6. DESCARGAR DOCUMENTOS
+```typescript
+{
+  title: "Descargar Documentos",
+  href: "/descargar",
+  isRoute: true,
+}
+```
+
+
+===============================================================================
+TABLA DE CONTENIDOS POR RUTA
+===============================================================================
+
+```typescript
+export const tocByRoute: Record<string, NavItem[]> = {...}
+```
+
+PROPÓSITO:
+Mapea cada ruta a su tabla de contenidos específica.
+
+
+RUTA: /datos-junta
+------------------
+```typescript
+"/datos-junta": [
+  { title: "Tipo de Junta", href: "#tipo-junta" },
+  { title: "Modo de Realización", href: "#modo-realizacion" },
+  { title: "Detalle de la Junta/Convocatoria", href: "#detalle-junta" },
+  { title: "Convocatoria 1", href: "#convocatoria-1" },
+  { title: "Convocatoria 2", href: "#convocatoria-2" },
+]
+```
+
+CARACTERÍSTICAS:
+- Todos son scroll anchors (#)
+- No hay sub-navegación
+- Corresponden a secciones en la página
+
+
+RUTA: /instalacion-junta
+-------------------------
+```typescript
+"/instalacion-junta": [
+  { title: "Convocatoria Ejercida", href: "#convocatoria-ejercida" },
+  { title: "Mesa Directiva", href: "#mesa-directiva" },
+  { title: "Asistencia de la Junta", href: "#asistencia-junta" },
+  { title: "Quórums Alcanzados", href: "#quorums-alcanzados" },
+]
+```
+
+
+RUTA: /puntos-agenda/aumento-capital-aporte
+--------------------------------------------
+```typescript
+"/puntos-agenda/aumento-capital-aporte": [
+  { 
+    title: "Aportantes", 
+    href: "/puntos-agenda/aumento-capital-aporte/aportantes", 
+    isRoute: true 
+  },
+  { 
+    title: "Aportes", 
+    href: "/puntos-agenda/aumento-capital-aporte/aportes", 
+    isRoute: true 
+  },
+  {
+    title: "Votación",
+    href: "/puntos-agenda/aumento-capital-aporte/votacion",
+    isRoute: true,
+    items: [
+      { title: "Juan Matías Ramos", href: "#juan-matias-ramos" },
+      { title: "Yull Timoteo Zambrano", href: "#yull-timoteo-zambrano" },
+    ],
+  },
+]
+```
+
+CARACTERÍSTICAS:
+- Mezcla de rutas (isRoute: true) y anchors
+- Items con sub-items (Votación tiene personas)
+- Estructura jerárquica
+
+
+RUTA: /puntos-agenda/aumento-capital-capitalizacion
+----------------------------------------------------
+```typescript
+"/puntos-agenda/aumento-capital-capitalizacion": [
+  { 
+    title: "Acreedores", 
+    href: "/puntos-agenda/aumento-capital-capitalizacion/acreedores", 
+    isRoute: true 
+  },
+  {
+    title: "Capitalización de Créditos",
+    href: "/puntos-agenda/aumento-capital-capitalizacion/capitalizacion",
+    isRoute: true,
+  },
+  {
+    title: "Votación",
+    href: "/puntos-agenda/aumento-capital-capitalizacion/votacion",
+    isRoute: true,
+    items: [
+      { title: "Juan Matías Ramos", href: "#juan-matias-ramos" },
+      { title: "Yull Timoteo Zambrano", href: "#yull-timoteo-zambrano" },
+    ],
+  },
+]
+```
+
+
+RUTA: /puntos-agenda/nombramiento-gerente
+------------------------------------------
+```typescript
+"/puntos-agenda/nombramiento-gerente": [
+  { 
+    title: "Nombramiento", 
+    href: "/puntos-agenda/nombramiento-gerente/nombramiento", 
+    isRoute: true 
+  },
+  {
+    title: "Otorgamiento de Poderes",
+    href: "/puntos-agenda/nombramiento-gerente/otorgamiento",
+    isRoute: true,
+    items: [
+      { title: "Juan Matías Ramos", href: "#juan-matias-ramos" },
+      { title: "Yull Timoteo Zambrano", href: "#yull-timoteo-zambrano" },
+    ],
+  },
+  {
+    title: "Votación",
+    href: "/puntos-agenda/nombramiento-gerente/votacion",
+    isRoute: true,
+    items: [
+      { title: "Juan Matías Ramos", href: "#juan-matias-ramos" },
+      { title: "Yull Timoteo Zambrano", href: "#yull-timoteo-zambrano" },
+    ],
+  },
+]
+```
+
+
+RUTA: /puntos-agenda/nombramiento-apoderados
+---------------------------------------------
+```typescript
+"/puntos-agenda/nombramiento-apoderados": [
+  { 
+    title: "Nombramiento", 
+    href: "/puntos-agenda/nombramiento-apoderados/nombramiento", 
+    isRoute: true 
+  },
+  {
+    title: "Otorgamiento de Poderes",
+    href: "/puntos-agenda/nombramiento-apoderados/otorgamiento",
+    isRoute: true,
+    items: [
+      { title: "Juan Matías Ramos", href: "#juan-matias-ramos" },
+      { title: "Yull Timoteo Zambrano", href: "#yull-timoteo-zambrano" },
+    ],
+  },
+  {
+    title: "Votación",
+    href: "/puntos-agenda/nombramiento-apoderados/votacion",
+    isRoute: true,
+    items: [
+      { title: "Juan Matías Ramos", href: "#juan-matias-ramos" },
+      { title: "Yull Timoteo Zambrano", href: "#yull-timoteo-zambrano" },
+    ],
+  },
+]
+```
+
+
+RUTA: /puntos-agenda/remocion-apoderados
+-----------------------------------------
+```typescript
+"/puntos-agenda/remocion-apoderados": [
+  { 
+    title: "Remoción", 
+    href: "/puntos-agenda/remocion-apoderados/remocion", 
+    isRoute: true 
+  },
+  {
+    title: "Votación",
+    href: "/puntos-agenda/remocion-apoderados/votacion",
+    isRoute: true,
+    items: [
+      { title: "Juan Matías Ramos", href: "#juan-matias-ramos" },
+      { title: "Yull Timoteo Zambrano", href: "#yull-timoteo-zambrano" },
+    ],
+  },
+]
+```
+
+
+RUTA: /puntos-agenda/remocion-directores
+-----------------------------------------
+```typescript
+"/puntos-agenda/remocion-directores": [
+  { 
+    title: "Remoción", 
+    href: "/puntos-agenda/remocion-directores/remocion", 
+    isRoute: true 
+  },
+  {
+    title: "Votación",
+    href: "/puntos-agenda/remocion-directores/votacion",
+    isRoute: true,
+    items: [
+      { title: "Juan Matías Ramos", href: "#juan-matias-ramos" },
+      { title: "Yull Timoteo Zambrano", href: "#yull-timoteo-zambrano" },
+    ],
+  },
+]
+```
+
+
+RUTA: /resumen
+--------------
+```typescript
+"/resumen": [
+  { title: "Selección de Puntos de Acuerdo", href: "#seleccion-puntos" },
+  { title: "Detalles de la Junta", href: "#detalles-junta" },
+  { title: "Instalación de la Junta", href: "#instalacion-junta" },
+  { title: "Acuerdos", href: "#acuerdos" },
+]
+```
+
+
+RUTA: /descargar
+----------------
+```typescript
+"/descargar": [
+  { title: "Acta", href: "#acta" },
+  { title: "Detalles de la Junta", href: "#detalles-junta" },
+  { title: "Aumento Capital", href: "#aumento-capital" },
+  { title: "Nombramiento", href: "#nombramiento" },
+  { title: "Remociones", href: "#remociones" },
+]
+```
+
+
+===============================================================================
+PATRONES IDENTIFICADOS
+===============================================================================
+
+PATRÓN 1: PÁGINAS SIMPLES
+- Solo scroll anchors (#)
+- Sin sub-navegación
+- Ejemplo: /datos-junta, /instalacion-junta
+
+PATRÓN 2: PÁGINAS CON SUB-RUTAS
+- Links a otras páginas (isRoute: true)
+- Algunos con sub-items (personas)
+- Ejemplo: /puntos-agenda/*
+
+PATRÓN 3: ESTRUCTURA JERÁRQUICA
+- Nivel 1: Sección principal
+- Nivel 2: Sub-páginas
+- Nivel 3: Scroll anchors dentro de sub-páginas
+
+
+===============================================================================
+USO EN COMPONENTES
+===============================================================================
+
+MAINSIDEBAR:
+```typescript
+import { navigationStructure } from "@/lib/navigation-config"
+
+navigationStructure.map((item) => {
+  if (item.items) {
+    // Renderiza sección colapsable
+  } else {
+    // Renderiza link simple
+  }
+})
+```
+
+TABLEOFCONTENTS:
+```typescript
+import { tocByRoute } from "@/lib/navigation-config"
+
+const toc = tocByRoute[pathname] || []
+const parentRoute = pathname.split("/").slice(0, -1).join("/")
+const parentToc = tocByRoute[parentRoute] || []
+const displayToc = toc.length > 0 ? toc : parentToc
+```
+
+LÓGICA:
+1. Busca ToC para ruta actual
+2. Si no existe, busca en ruta padre
+3. Renderiza lo que encuentre
+
+
+===============================================================================
+CONVENCIONES DE NOMBRES
+===============================================================================
+
+IDs DE SECCIONES:
+- kebab-case
+- Descriptivos
+- Sin acentos
+- Ejemplos: #tipo-junta, #convocatoria-1, #juan-matias-ramos
+
+RUTAS:
+- kebab-case
+- Sin acentos (aunque es español)
+- Ejemplos: 
+  - /seleccion-junta
+  - /aumento-capital-aporte
+  - /nombramiento-gerente
+
+TÍTULOS:
+- Title Case en español
+- Con acentos y caracteres especiales
+- Ejemplos:
+  - "Selección de Junta"
+  - "Capitalización de Créditos"
+
+
+===============================================================================
+PERSONAS RECURRENTES
+===============================================================================
+
+En votaciones y otorgamientos aparecen:
+- Juan Matías Ramos (#juan-matias-ramos)
+- Yull Timoteo Zambrano (#yull-timoteo-zambrano)
+
+PATRÓN:
+Todas las secciones de votación y otorgamiento tienen estas personas.
+
+
+===============================================================================
+FLUJO DE NAVEGACIÓN SUGERIDO
+===============================================================================
+
+WIZARD-STYLE:
+1. Selección de Junta → Elige tipo
+2. Datos de la Junta → Completa información
+3. Instalación de la Junta → Registra asistentes
+4. Puntos de Agenda → Trabaja cada punto
+   4.1. Aporte Dinerario (si aplica)
+   4.2. Capitalización (si aplica)
+   4.3. Nombramientos (si aplica)
+   4.4. Remociones (si aplica)
+5. Resumen → Revisa todo
+6. Descargar → Genera documentos
+
+
+===============================================================================
+EXTENSIBILIDAD
+===============================================================================
+
+AGREGAR NUEVA SECCIÓN:
+```typescript
+// En navigationStructure
+{
+  title: "Nueva Sección",
+  href: "/nueva-seccion",
+  isRoute: true,
+}
+
+// En tocByRoute
+"/nueva-seccion": [
+  { title: "Subsección 1", href: "#subseccion-1" },
+  { title: "Subsección 2", href: "#subseccion-2" },
+]
+```
+
+AGREGAR SUB-ITEM A PUNTOS DE AGENDA:
+```typescript
+{
+  title: "Puntos de Agenda",
+  items: [
+    // ... items existentes
+    {
+      title: "Nuevo Punto",
+      href: "/puntos-agenda/nuevo-punto/inicio",
+      isRoute: true,
+    },
+  ],
+}
+```
+
+
+===============================================================================
+VALIDACIÓN Y TIPOS
+===============================================================================
+
+TYPESCRIPT GARANTIZA:
+✓ title siempre existe
+✓ href es opcional
+✓ items es array de NavItem (recursivo)
+✓ isRoute es boolean opcional
+
+NO HAY VALIDACIÓN DE:
+✗ href apunta a página existente
+✗ anchor IDs existen en las páginas
+✗ Rutas son únicas
+
+
+===============================================================================
+MEJORAS SUGERIDAS
+===============================================================================
+
+1. VALIDACIÓN EN BUILD TIME:
+```typescript
+// Verificar que todos los href existen
+const validateRoutes = (items: NavItem[]) => {
+  // Implementar validación
+}
+```
+
+2. GENERACIÓN AUTOMÁTICA:
+```typescript
+// Generar tocByRoute desde estructura de archivos
+const generateToC = async () => {
+  // Escanear páginas y extraer IDs
+}
+```
+
+3. TIPOS MÁS ESTRICTOS:
+```typescript
+type Route = `/${string}`
+type Anchor = `#${string}`
+type Href = Route | Anchor
+
+interface NavItem {
+  title: string
+  href?: Href
+  // ...
+}
+```
+
+
+===============================================================================
+RESUMEN
+===============================================================================
+
+ARCHIVO CENTRAL: lib/navigation-config.ts
+
+EXPORTS:
+- NavItem interface
+- navigationStructure (sidebar izquierdo)
+- tocByRoute (sidebar derecho)
+
+CARACTERÍSTICAS:
+✓ Configuración centralizada
+✓ Type-safe con TypeScript
+✓ Estructura jerárquica
+✓ Mezcla de rutas y anchors
+✓ Extensible y mantenible
+
+USO:
+✓ MainSidebar (navegación principal)
+✓ TableOfContents (navegación contextual)
+
+PATRÓN:
+Configuración over código → Fácil agregar/modificar rutas
+
+
+===============================================================================

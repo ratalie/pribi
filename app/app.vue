@@ -2,10 +2,15 @@
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
+  <ClientOnly>
+    <Toaster />
+  </ClientOnly>
   <NuxtRouteAnnouncer />
 </template>
 
 <script setup lang="ts">
+import Toaster from "@/components/ui/toast/Toaster.vue";
+
 // Inicializar tema globalmente
 useTheme();
 

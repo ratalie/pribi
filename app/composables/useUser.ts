@@ -1,4 +1,5 @@
 import type { User } from "~/types/user";
+import { useAuthStore } from "~/core/presentation/auth/stores/auth.store";
 
 // Mock user data - en producción vendría de una API
 const mockUser: User = {
@@ -45,11 +46,10 @@ export const useUser = () => {
     return currentUser.value?.role.id === "viewer";
   });
 
-  const logout = () => {
-    // Lógica de logout
-    console.log("Logging out...");
-    // Redirect to login page
-    navigateTo("/login");
+  const logout = async () => {
+    const authStore = useAuthStore();
+    authStore.logout();
+    await navigateTo("/auth/login");
   };
 
   return {
