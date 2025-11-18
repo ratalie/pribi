@@ -50,6 +50,8 @@ Imagina que tu aplicación tiene 3 capas que trabajan juntas:
 
    - **Entidades**: Son los objetos principales de tu negocio. Por ejemplo, "Sociedad" tiene propiedades como nombre, RUC, fecha de registro. "Accionista" tiene nombre, porcentaje de acciones, etc. Son como las "cosas" que maneja tu aplicación.
 
+     **Importante:** Las entidades NO vienen directamente del backend. El backend siempre devuelve DTOs, y tú transformas esos DTOs a Entidades usando los mappers de Infrastructure. La Entidad es tu representación interna del negocio, independiente del formato del backend.
+
      _Los tipos de estas entidades van en `domain/entities/`. Por ejemplo: `accionista.entity.ts` define cómo es un accionista dentro de tu aplicación._
 
    - **Reglas de negocio**: Son las validaciones y lógicas que deben cumplirse. Por ejemplo: "Un accionista no puede tener más del 100% de las acciones", "El RUC debe tener 11 dígitos", "Una sociedad debe tener al menos un accionista".
@@ -71,7 +73,14 @@ Imagina que tu aplicación tiene 3 capas que trabajan juntas:
 
    - **Casos de uso**: Son acciones específicas que el usuario puede hacer. Por ejemplo: "Crear Sociedad" (toma los datos del formulario, valida que estén completos, y los guarda), "Listar Accionistas" (obtiene la lista y la prepara para mostrar), "Eliminar Apoderado" (verifica permisos y luego elimina).
 
-   - **DTOs (Data Transfer Objects)**: Son los tipos que definen cómo se comunican con el backend. El mismo DTO se usa tanto para enviar datos al servidor como para recibirlos.
+   - **DTOs (Data Transfer Objects)**: Son los tipos que definen cómo se comunican con el backend. **El mismo DTO se usa TANTO para enviar (request) COMO para recibir (response) del backend.** Es bidireccional: `DTO ↔ Backend`.
+
+     **Características:**
+
+     - Formato exacto que el backend espera y devuelve
+     - Solo datos, sin lógica de negocio
+     - Puede tener menos campos que la Entidad (el backend no siempre envía todo)
+     - Se usa SOLO para comunicarse con el backend
 
      _Los tipos DTO van en `application/dtos/`. Por ejemplo: `accionista.dto.ts` define el formato exacto que espera el backend._
 
@@ -97,6 +106,8 @@ Implementación (HTTP o Mock)
 - La lógica de negocio no depende de Vue o Nuxt
 - Fácil de testear cada parte por separado
 
+> 💡 **¿Quieres ver un ejemplo completo con código?** Revisa el [Ejemplo Completo con Producto](./examples/producto-example.md) que muestra paso a paso cómo implementar cada capa desde cero, con ejemplos de código reales.
+
 ### Estructura de un Dominio
 
 Cada dominio (como `registros`) se organiza así:
@@ -116,6 +127,70 @@ hexag/registros/
 │       └── apoderados/       # Misma estructura
 └── sucursales/               # (Pendiente) misma estructura
 ```
+
+---
+
+## 🎨 Capa de Presentación (Presentation)
+
+La capa de presentación conecta la UI (Vue) con la lógica de negocio (arquitectura hexagonal). Aquí es donde los componentes Vue consumen los casos de uso y gestionan el estado de la interfaz.
+
+### Estructura
+
+```
+app/core/presentation/
+├── [dominio]/
+│   ├── stores/              # Stores Pinia que gestionan estado
+│   ├── composables/         # Controllers reactivos
+│   ├── mappers/             # (Opcional) Transforma FormData ↔ DTO/Entidad
+│   └── types/               # Tipos específicos de formularios UI
+```
+
+### Componentes Principales
+
+- **Stores (Pinia)**: Gestionan el estado y llaman a los casos de uso. Instancian repositorios y casos de uso, y mantienen el estado reactivo.
+
+- **Controllers (Composables)**: Gestionan el ciclo de vida de los componentes (onMounted, onActivated), la carga automática de datos, y exponen estados derivados (isBootstrapping, isEnsuring).
+
+- **Mappers de UI (Opcional pero Recomendado)**: Transforman entre FormData (formato de formularios) y DTO/Entidad.
+
+### Mappers de UI: ¿Cuándo son necesarios?
+
+**Son OBLIGATORIOS cuando:**
+
+- Tu formulario tiene campos formateados (ej: precio como `"$99.99"` en lugar de `99.99`)
+- Necesitas convertir tipos (ej: `stock: "10"` string → `stock: 10` number)
+- Usas IDs de selects (ej: `categoriaId: "cat-1"` → `categoria: "Electrónica"`)
+- Tienes campos de validación UI (`isValid`, `touched`)
+
+**Son OPCIONALES cuando:**
+
+- Tu formulario tiene exactamente los mismos campos y tipos que el DTO/Entidad
+- No hay formateo ni conversiones necesarias
+- Puedes usar DTO o Entidad directamente en el formulario
+
+**Recomendación:** Aunque sea opcional, es recomendable crear el mapper para mantener la separación de capas y prepararse para futuros cambios.
+
+### Flujo con Mappers de UI
+
+```
+Formulario (FormData)
+    ↓
+Presentation Mapper.toDTO()
+    ↓
+DTO → Backend
+
+Backend → DTO
+    ↓
+Infrastructure Mapper.toDomain()
+    ↓
+Entidad (en store)
+    ↓
+Presentation Mapper.toFormData()
+    ↓
+Formulario (FormData)
+```
+
+_Los mappers de UI van en `presentation/[dominio]/mappers/`. Por ejemplo: `producto-form.mapper.ts` tiene funciones `toDTO()` (FormData → DTO) y `toFormData()` (Entidad → FormData)._
 
 ---
 
