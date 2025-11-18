@@ -11,8 +11,8 @@ npm run dev
 
 ## 📚 Documentación
 
-- **[🏗️ Arquitectura](./docs/ARCHITECTURE.md)** - Patrones de componentes y módulos de negocio
-- **[🛣️ Routing](./docs/ROUTING.md)** - Sistema de rutas y navegación
+- **[🏗️ Arquitectura](./docs/general/ARCHITECTURE.md)** - Arquitectura hexagonal y estructura del proyecto
+- **[🛣️ Routing](./docs/general/ROUTING.md)** - Sistema de rutas y navegación
 
 ## 🏗️ Stack Tecnológico
 
@@ -30,7 +30,8 @@ npm run dev
 - ✅ **Sidebar de Navegación** responsive
 - ✅ **Modal de Configuraciones**
 - ✅ **Routing por Módulos** escalable
-- ✅ **Arquitectura de 3 Capas** para componentes
+- ✅ **Arquitectura Hexagonal** para lógica de negocio
+- ✅ **Arquitectura de 3 Capas** para componentes UI
 
 ## 🎨 Sistema de Temas
 

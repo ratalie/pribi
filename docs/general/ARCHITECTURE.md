@@ -1,15 +1,127 @@
-# 🏗️ Arquitectura de Componentes
+# 🏗️ Arquitectura del Proyecto
 
-Documentación completa de la arquitectura de componentes del proyecto.
+Documentación de la arquitectura general del proyecto.
 
-## Patrón Three-Layer Component Architecture
+## Visión General
 
-Este proyecto implementa el patrón **"Three-Layer Component Architecture"** que combina:
+El proyecto utiliza dos arquitecturas complementarias:
 
-- **Atomic Design Pattern**: Separación en componentes reutilizables
-- **Headless Component Pattern**: Lógica pura sin estilos
-- **Wrapper/Container Pattern**: Estilos sobre lógica base
-- **Composite Pattern**: Lógica de negocio específica
+1. **Arquitectura Hexagonal** - Para la lógica de negocio (en `app/core/hexag/`)
+2. **Arquitectura de 3 Capas** - Para los componentes UI (en `app/components/`)
+
+---
+
+## 🏛️ Arquitectura Hexagonal
+
+La arquitectura hexagonal separa la lógica de negocio de la interfaz y las tecnologías externas. Esto permite que el código sea más fácil de mantener, testear y cambiar.
+
+### Estructura Principal
+
+```
+app/core/
+├── hexag/              # Lógica de negocio (arquitectura hexagonal)
+│   ├── registros/      # Dominio de registros (sociedades, sucursales)
+│   └── auth/          # Dominio de autenticación
+├── presentation/       # Componentes Vue que usan la lógica de negocio
+└── shared/            # Utilidades compartidas
+```
+
+### ¿Cómo funciona?
+
+Imagina que tu aplicación tiene 3 capas que trabajan juntas:
+
+1. **Capa Externa (Infrastructure)**: Se comunica con el mundo exterior
+
+   Esta capa es la que "habla" con servicios externos. Es como el mensajero que va y viene:
+
+   - **APIs HTTP**: Hace peticiones a servidores reales para obtener o guardar datos. Por ejemplo, cuando necesitas la lista de accionistas, hace una petición `GET /api/accionistas`. Los repositorios HTTP están en `infrastructure/repositories/`.
+
+   - **Bases de datos**: Si en el futuro necesitas guardar datos localmente, aquí estaría esa conexión.
+
+   - **Mocks para desarrollo**: Durante el desarrollo, puedes usar datos falsos (mocks) en lugar de llamar a la API real. Esto te permite trabajar sin depender del backend. Los mocks están en `infrastructure/mocks/`.
+
+   - **Mappers**: Transforman los datos entre el formato del backend (DTO) y el formato interno (Entidad). Es como un traductor entre idiomas diferentes: cuando llegan datos del backend (formato DTO), los mappers los convierten a entidades (formato interno), y cuando envías datos al backend, los mappers convierten las entidades a DTOs.
+
+     _Los mappers están en `infrastructure/mappers/`. Por ejemplo: `accionistas.mapper.ts` tiene funciones `toDomain()` (convierte DTO → Entidad) y `toPayload()` (convierte Entidad → DTO)._
+
+2. **Capa de Negocio (Domain)**: Contiene las reglas de tu aplicación
+
+   Esta es la capa más importante: define QUÉ es tu aplicación y QUÉ reglas debe seguir. Es como las leyes de tu negocio:
+
+   - **Entidades**: Son los objetos principales de tu negocio. Por ejemplo, "Sociedad" tiene propiedades como nombre, RUC, fecha de registro. "Accionista" tiene nombre, porcentaje de acciones, etc. Son como las "cosas" que maneja tu aplicación.
+
+     _Los tipos de estas entidades van en `domain/entities/`. Por ejemplo: `accionista.entity.ts` define cómo es un accionista dentro de tu aplicación._
+
+   - **Reglas de negocio**: Son las validaciones y lógicas que deben cumplirse. Por ejemplo: "Un accionista no puede tener más del 100% de las acciones", "El RUC debe tener 11 dígitos", "Una sociedad debe tener al menos un accionista".
+
+   - **Contratos (puertos)**: Son como "acuerdos" que definen QUÉ operaciones se pueden hacer, pero no CÓMO se hacen. Es como un enchufe eléctrico: el contrato define la forma del enchufe (qué métodos debe tener), pero puedes tener diferentes implementaciones (HTTP, Mock, base de datos) que se "conectan" a ese mismo enchufe.
+
+     **Ejemplo real:** El contrato `AccionistasRepository` define que debe existir un método `list()` para obtener accionistas, pero no dice si se obtienen de una API HTTP o de datos falsos. Luego puedes tener:
+
+     - `AccionistasHttpRepository` que cumple el contrato haciendo peticiones HTTP reales
+     - `AccionistasMockRepository` que cumple el mismo contrato pero devuelve datos de prueba
+
+     **Ventajas:** Puedes cambiar de API real a mock sin tocar el resto del código. Tu lógica de negocio no depende de cómo se obtienen los datos, solo de que existan esos métodos.
+
+     _Los contratos van en `domain/ports/`. Las implementaciones van en `infrastructure/repositories/` (HTTP) o `infrastructure/mocks/` (datos falsos)._
+
+3. **Capa de Aplicación (Application)**: Orquesta las operaciones
+
+   Esta capa coordina todo. Es como el director de orquesta que dice "ahora haz esto, luego esto otro":
+
+   - **Casos de uso**: Son acciones específicas que el usuario puede hacer. Por ejemplo: "Crear Sociedad" (toma los datos del formulario, valida que estén completos, y los guarda), "Listar Accionistas" (obtiene la lista y la prepara para mostrar), "Eliminar Apoderado" (verifica permisos y luego elimina).
+
+   - **DTOs (Data Transfer Objects)**: Son los tipos que definen cómo se comunican con el backend. El mismo DTO se usa tanto para enviar datos al servidor como para recibirlos.
+
+     _Los tipos DTO van en `application/dtos/`. Por ejemplo: `accionista.dto.ts` define el formato exacto que espera el backend._
+
+### Ejemplo Práctico: Flujo de Accionistas
+
+```
+Vista Vue
+    ↓
+Controller (composable)
+    ↓
+Store (Pinia)
+    ↓
+Caso de Uso (ListAccionistasUseCase)
+    ↓
+Repositorio (puerto/contrato)
+    ↓
+Implementación (HTTP o Mock)
+```
+
+**Ventajas:**
+
+- Puedes cambiar de API real a mock sin tocar la lógica de negocio
+- La lógica de negocio no depende de Vue o Nuxt
+- Fácil de testear cada parte por separado
+
+### Estructura de un Dominio
+
+Cada dominio (como `registros`) se organiza así:
+
+```
+hexag/registros/
+├── shared/                    # Reglas comunes a todo el dominio
+├── sociedades/
+│   ├── domain/               # Entidades y reglas de negocio
+│   ├── application/          # Casos de uso
+│   ├── infrastructure/       # Repositorios HTTP y mocks
+│   └── pasos/                # Cada paso del flujo (accionistas, apoderados, etc.)
+│       ├── accionistas/
+│       │   ├── domain/       # Entidad Accionista, contrato del repositorio
+│       │   ├── application/  # Casos de uso: List, Create, Update, Delete
+│       │   └── infrastructure/ # Implementación HTTP y mocks
+│       └── apoderados/       # Misma estructura
+└── sucursales/               # (Pendiente) misma estructura
+```
+
+---
+
+## 🎨 Arquitectura de 3 Capas para Componentes
+
+Los componentes UI se organizan en 3 capas para máxima reutilización:
 
 ### Estructura de Capas
 
@@ -21,7 +133,7 @@ UI Layer (Wrapper)        →  Estilos + Base, reutilizable
 Custom Layer (Composite)  →  Lógica de negocio + UI específica
 ```
 
-## Estructura de Componentes Generales
+### Estructura de Carpetas
 
 ```
 app/components/
@@ -34,83 +146,67 @@ app/components/
 │   │   │   │   └── TextArea.vue       # Variante multilinea
 │   │   │   └── custom/
 │   │   │       └── ClientNameInput.vue # Lógica específica de negocio
-│   │   ├── number/
-│   │   ├── search/
 │   │   └── select/
 │   └── tables/
-│       ├── data-table/
-│       ├── simple-table/
-│       └── tree-table/
 ├── ui/                      # Componentes de interfaz reutilizables
 └── composite/               # Componentes específicos de flujo/negocio
 ```
 
-## Estructura de Módulos de Negocio
+**Ventajas:**
 
-```
-app/modules/registro-sociedades/
-├── components/
-│   ├── steps/
-│   │   ├── DatosSociedadStep.vue
-│   │   ├── AccionistasStep.vue
-│   │   ├── DirectorioStep.vue
-│   │   └── ...(6 componentes Step adicionales)
-│   ├── directorio/                #Componentes específicos del step (opcional)
-│   │   ├── DirectorCard.vue
-│   │   ├── DirectorTable.vue
-│   │   ├── DirectorForm.vue
-│   │   └── DirectorModal.vue
-│   ├── accionistas/
-│   │   ├── ShareholderCard.vue
-│   │   ├── ShareholderList.vue
-│   │   └── AccionistasModal.vue
-│   └── datos-sociedad/
-│       ├── CompanyInfoForm.vue
-│       ├── DocumentUploader.vue
-│       └── SocietyDataModal.vue
-├── composables/
-│   ├── useRegistroSocietario.ts     # Estado y lógica del wizard
-│   ├── useValidationRules.ts        # Reglas de validación específicas
-│   └── useSocietaryData.ts          # Gestión de datos de sociedad
-├── utils/
-│   ├── formatters.ts                # Formateo de datos societarios
-│   ├── validators.ts                # Validaciones de negocio
-│   └── constants.ts                 # Constantes del módulo
-└── types/
-    ├── society.ts                   # Interfaces de sociedad
-    ├── shareholders.ts              # Tipos de accionistas
-    └── wizard.ts                    # Estados del wizard
-```
-
-## Tipos y Utilidades Globales
-
-```
-├── types/
-│   ├── inputs/              # Interfaces para inputs
-│   ├── tables/              # Interfaces para tablas
-│   └── enums/               # Enums para variants, estados
-├── composables/
-│   ├── inputs/              # Hooks reactivos para inputs
-│   ├── tables/              # Hooks para tablas
-│   ├── api/                 # Hooks para APIs
-│   └── business/            # Lógica de negocio específica
-├── utils/
-│   ├── inputs/              # Funciones puras para inputs
-│   ├── tables/              # Utilidades para tablas
-│   └── formatters/          # Formateo de datos
-└── constants/
-    ├── inputs/              # Configuraciones de inputs
-    └── tables/              # Configuraciones de tablas
-```
-
-## Ventajas de esta Arquitectura
-
-- **Máxima reutilización**: Base se usa en múltiples contextos
-- **Mantenimiento sencillo**: Cambios aislados por capa
-- **Testing granular**: Cada capa se testea independientemente
-- **Escalabilidad**: Fácil agregar variantes o funcionalidades
-- **Consistencia**: UI layer garantiza diseño uniforme
+- Reutilización: Un componente base se usa en múltiples contextos
+- Mantenimiento: Cambios aislados por capa
+- Consistencia: UI layer garantiza diseño uniforme
 
 ---
 
-[← Volver al README principal](../README.md)
+## 🔄 Cómo se Conectan
+
+### Flujo Completo
+
+1. **Vista Vue** (`app/pages/`) - Renderiza componentes
+2. **Componentes de Presentación** (`app/core/presentation/`) - Usan stores y composables
+3. **Stores Pinia** - Gestionan estado y llaman casos de uso
+4. **Casos de Uso** (`app/core/hexag/.../application/`) - Ejecutan lógica de negocio
+5. **Repositorios** (`app/core/hexag/.../infrastructure/`) - Se comunican con APIs
+
+### Ejemplo Real: Ver Lista de Accionistas
+
+```
+1. Usuario visita página → pages/registros/sociedades/[id]/accionistas.vue
+2. Página usa componente → AccionistasManager.vue
+3. Componente usa controller → useAccionistasController()
+4. Controller usa store → useAccionistasStore()
+5. Store ejecuta caso de uso → ListAccionistasUseCase
+6. Caso de uso usa repositorio → AccionistasRepository (puerto)
+7. Repositorio HTTP hace petición → API real o Mock (MSW)
+```
+
+---
+
+## 📁 Estructura Completa del Proyecto
+
+```
+app/
+├── core/                    # Núcleo de la aplicación
+│   ├── hexag/              # Arquitectura hexagonal
+│   ├── presentation/       # Componentes Vue que usan hexag
+│   └── shared/            # Utilidades compartidas
+├── components/             # Componentes UI reutilizables (3 capas)
+├── pages/                  # Rutas de la aplicación
+├── layouts/                # Layouts de páginas
+└── types/                  # Tipos TypeScript globales
+```
+
+---
+
+## 🎯 Resumen
+
+- **Hexagonal**: Separa lógica de negocio de tecnologías externas
+- **3 Capas UI**: Organiza componentes para máxima reutilización
+- **Presentación**: Conecta Vue con la lógica de negocio
+- **Resultado**: Código mantenible, testeable y escalable
+
+---
+
+[← Volver al README principal](../../README.md)
