@@ -13,9 +13,11 @@ import type {
  */
 export class AcuerdosSocietariosMapper {
   /**
-   * Convierte metadata de archivo DTO a entidad.
+   * Convierte metadata de archivo DTO a entidad de dominio.
    */
-  private static toArchivoMetadata(dto: ArchivoMetadataDTO | null): ArchivoMetadata | null {
+  private static deMetadataArchivoADominio(
+    dto: ArchivoMetadataDTO | null
+  ): ArchivoMetadata | null {
     if (!dto) return null;
     return {
       id: dto.id,
@@ -25,26 +27,27 @@ export class AcuerdosSocietariosMapper {
   }
 
   /**
-   * Convierte DTO de respuesta (GET) a Entidad de dominio.
+   * Convierte DTO de respuesta GET a Entidad de dominio.
+   * Incluye metadata completa de archivos (estatutos, accionistas, terceros).
    */
-  static toDomainFromResponse(dto: AcuerdoSocietarioDataDTO): AcuerdoSocietario {
+  static deRespuestaADominio(dto: AcuerdoSocietarioDataDTO): AcuerdoSocietario {
     return {
       id: dto.id,
       derechoPreferencia: dto.derechoPreferencia,
       archivoEstatutos: dto.archivoEstatutos,
       archivoAccionistas: dto.archivoAccionistas,
       archivoTerceros: dto.archivoTerceros,
-      estatutos: this.toArchivoMetadata(dto.estatutos),
-      accionistas: this.toArchivoMetadata(dto.accionistas),
-      terceros: this.toArchivoMetadata(dto.terceros),
+      estatutos: this.deMetadataArchivoADominio(dto.estatutos),
+      accionistas: this.deMetadataArchivoADominio(dto.accionistas),
+      terceros: this.deMetadataArchivoADominio(dto.terceros),
     };
   }
 
   /**
-   * Convierte DTO (payload) a Entidad de dominio.
-   * Versión simplificada para CREATE/UPDATE que no incluye metadata de archivos.
+   * Convierte DTO (payload de CREATE/UPDATE) a Entidad de dominio.
+   * Versión simplificada que no incluye metadata de archivos.
    */
-  static toDomain(dto: AcuerdoSocietarioDTO): AcuerdoSocietario {
+  static deDtoADominio(dto: AcuerdoSocietarioDTO): AcuerdoSocietario {
     return {
       derechoPreferencia: dto.derechoPreferencia ?? false,
       archivoEstatutos: dto.archivoEstatutos ?? null,
@@ -58,9 +61,9 @@ export class AcuerdosSocietariosMapper {
 
   /**
    * Convierte DTO a payload para backend (POST/PUT).
-   * Solo incluye campos definidos (no undefined).
+   * Solo incluye campos definidos (no undefined), filtrando valores vacíos.
    */
-  static toPayload(dto: AcuerdoSocietarioDTO): AcuerdoSocietarioDTO {
+  static aPayloadParaBackend(dto: AcuerdoSocietarioDTO): AcuerdoSocietarioDTO {
     const payload: AcuerdoSocietarioDTO = {};
 
     if (dto.derechoPreferencia !== undefined) {

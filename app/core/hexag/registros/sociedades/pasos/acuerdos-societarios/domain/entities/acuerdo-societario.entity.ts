@@ -19,6 +19,4 @@ export interface AcuerdoSocietario {
   estatutos: ArchivoMetadata | null; // Metadata del archivo (solo en GET)
   accionistas: ArchivoMetadata | null; // Metadata del archivo (solo en GET)
   terceros: ArchivoMetadata | null; // Metadata del archivo (solo en GET)
-  createdAt?: string;
-  updatedAt?: string;
 }

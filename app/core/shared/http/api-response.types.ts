@@ -5,6 +5,6 @@
 export interface BackendApiResponse<T = unknown> {
   success: boolean;
   message: string;
-  data: T;
+  data?: T;
   code: number;
 }
