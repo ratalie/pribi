@@ -18,4 +18,3 @@ export class CreateAcuerdosSocietariosUseCase {
     return this.repository.create(profileId, payload);
   }
 }
-

@@ -18,4 +18,3 @@ export class UpdateAcuerdosSocietariosUseCase {
     return this.repository.update(profileId, payload);
   }
 }
-

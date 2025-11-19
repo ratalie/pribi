@@ -1,5 +1,5 @@
-import type { BackendApiResponse } from "~/core/shared/http/api-response.types";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
+import type { AcuerdoSocietarioResponseDTO } from "../../application/dtos/acuerdo-societario-response.dto";
 import type { AcuerdoSocietarioDTO } from "../../application/dtos/acuerdo-societario.dto";
 import type { AcuerdoSocietario } from "../../domain/entities/acuerdo-societario.entity";
 import type { AcuerdosSocietariosRepository } from "../../domain/ports/acuerdos-societarios.repository";
@@ -28,12 +28,9 @@ export class AcuerdosSocietariosHttpRepository implements AcuerdosSocietariosRep
     const config = withAuthHeaders({ method: "GET" as const });
 
     try {
-      const response = await $fetch<BackendApiResponse<any>>(url, config);
+      const response = await $fetch<AcuerdoSocietarioResponseDTO>(url, config);
       if (response?.data) {
-        const result = AcuerdosSocietariosMapper.toDomain(response.data, {
-          createdAt: response.data.createdAt,
-          updatedAt: response.data.updatedAt,
-        });
+        const result = AcuerdosSocietariosMapper.toDomainFromResponse(response.data);
         return result;
       }
       return null;
@@ -51,17 +48,12 @@ export class AcuerdosSocietariosHttpRepository implements AcuerdosSocietariosRep
     const url = this.getUrl(profileId);
     const config = withAuthHeaders({
       method: "POST" as const,
-      body: AcuerdosSocietariosMapper.toPayload(payload as AcuerdoSocietario),
+      body: AcuerdosSocietariosMapper.toPayload(payload),
     });
 
-    const response = await $fetch<BackendApiResponse<any>>(url, config);
-    if (response?.data) {
-      const result = AcuerdosSocietariosMapper.toDomain(response.data, {
-        createdAt: response.data.createdAt,
-        updatedAt: response.data.updatedAt,
-      });
-      return result;
-    }
+    // CREATE no devuelve 'data', solo success, message, code
+    await $fetch<AcuerdoSocietarioResponseDTO>(url, config);
+
     // Si el backend no devuelve data, usamos el payload como fallback
     const fallback = AcuerdosSocietariosMapper.toDomain(payload);
     return fallback;
@@ -71,17 +63,12 @@ export class AcuerdosSocietariosHttpRepository implements AcuerdosSocietariosRep
     const url = this.getUrl(profileId);
     const config = withAuthHeaders({
       method: "PUT" as const,
-      body: AcuerdosSocietariosMapper.toPayload(payload as AcuerdoSocietario),
+      body: AcuerdosSocietariosMapper.toPayload(payload),
     });
 
-    const response = await $fetch<BackendApiResponse<any>>(url, config);
-    if (response?.data) {
-      const result = AcuerdosSocietariosMapper.toDomain(response.data, {
-        createdAt: response.data.createdAt,
-        updatedAt: response.data.updatedAt,
-      });
-      return result;
-    }
+    // UPDATE no devuelve 'data', solo success, message, code
+    await $fetch<AcuerdoSocietarioResponseDTO>(url, config);
+
     // Si el backend no devuelve data, usamos el payload como fallback
     const fallback = AcuerdosSocietariosMapper.toDomain(payload);
     return fallback;
