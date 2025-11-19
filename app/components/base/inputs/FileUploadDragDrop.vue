@@ -5,8 +5,15 @@
   import { useFileUploadStyles } from "~/composables/useFileUploadStyles";
   import { formatFileSize } from "~/utils/fileHelpers";
 
+  interface FileMetadata {
+    id: string;
+    nombre: string;
+    url: string;
+  }
+
   interface Props {
     modelValue?: File | null;
+    fileMetadata?: FileMetadata | null; // Metadata del archivo desde el backend
     title?: string;
     subtitle?: string;
     acceptedTypes?: string[];
@@ -32,6 +39,7 @@
 
   const props = withDefaults(defineProps<Props>(), {
     modelValue: null,
+    fileMetadata: null,
     title: undefined,
     subtitle: undefined,
     acceptedTypes: () => [
@@ -85,8 +93,35 @@
 
   // El archivo viene directamente del v-model
   const file = computed(() => props.modelValue);
-  const hasFile = computed(() => !!props.modelValue);
+  const fileMetadata = computed(() => props.fileMetadata);
+
+  // Prioridad absoluta a metadata: si existe metadata, siempre la usamos
+  // El file solo se usa si NO hay metadata (estado transitorio mientras se sube)
+  const hasFile = computed(() => !!fileMetadata.value || !!file.value);
   const hasError = computed(() => !!errorMessage.value);
+
+  // Nombre del archivo: SIEMPRE prioridad a metadata
+  const fileName = computed(() => {
+    if (fileMetadata.value?.nombre) {
+      return fileMetadata.value.nombre;
+    }
+    if (file.value?.name) {
+      return file.value.name;
+    }
+    return "";
+  });
+
+  // Mostrar tamaño solo si NO hay metadata (file local temporal)
+  const showFileSize = computed(() => {
+    return !fileMetadata.value && !!file.value;
+  });
+
+  // Abrir URL del archivo en nueva pestaña
+  const openFileUrl = () => {
+    if (fileMetadata.value?.url) {
+      window.open(fileMetadata.value.url, "_blank");
+    }
+  };
 
   // Usar composable de estilos
   const {
@@ -132,10 +167,10 @@
       @dragenter="handleDragEnter"
       @dragleave="handleDragLeave"
       @drop="handleDrop"
-      @click="!file ? openFilePicker() : undefined"
+      @click="!hasFile ? openFilePicker() : undefined"
     >
-      <!-- Sin archivo -->
-      <div v-if="!file" class="text-center">
+      <!-- Sin archivo ni metadata -->
+      <div v-if="!hasFile" class="text-center">
         <div class="flex items-center" :class="layoutClass">
           <!-- Icono -->
           <div :class="iconContainerClasses">
@@ -163,7 +198,7 @@
       <!-- Con archivo -->
       <div
         v-else
-        class="flex items-center gap-3 px-6 py-4"
+        class="flex items-center gap-3 px-6 py-4 relative"
         :class="variant === 'inline' ? 'py-2' : 'flex-col py-8'"
       >
         <!-- Icono de documento -->
@@ -179,28 +214,55 @@
             class="font-semibold text-gray-800"
             :class="variant === 'inline' ? 'text-xs' : 'text-sm'"
           >
-            {{ file.name }}
+            {{ fileName }}
           </p>
-          <p v-if="!hideDescription" class="text-xs text-gray-500 mt-1">
+          <!-- Mostrar tamaño solo si NO hay metadata (file local temporal) -->
+          <p
+            v-if="!hideDescription && showFileSize && file"
+            class="text-xs text-gray-500 mt-1"
+          >
             {{ formatFileSize(file.size) }}
           </p>
         </div>
 
-        <!-- Botón eliminar -->
-        <button
-          type="button"
-          :class="[
-            'p-2 rounded-md bg-white border border-gray-300 hover:bg-red-50 hover:border-red-500 transition-colors group',
-            variant === 'inline' ? 'relative' : 'absolute top-3 right-3',
-          ]"
-          @click.stop="removeFile"
+        <!-- Botones de acción -->
+        <div
+          class="flex items-center gap-2"
+          :class="variant === 'inline' ? '' : 'absolute top-3 right-3'"
         >
-          <Icon
-            icon="heroicons:trash"
-            :class="variant === 'inline' ? 'h-4 w-4' : 'h-5 w-5'"
-            class="text-gray-600 group-hover:text-red-600 transition-colors"
-          />
-        </button>
+          <!-- Botón ver archivo (solo si hay metadata con URL) -->
+          <button
+            v-if="fileMetadata?.url"
+            type="button"
+            :class="[
+              'p-2 rounded-md bg-white border border-gray-300 hover:bg-blue-50 hover:border-blue-500 transition-colors group',
+            ]"
+            @click.stop="openFileUrl"
+            :title="'Ver archivo'"
+          >
+            <Icon
+              icon="heroicons:eye"
+              :class="variant === 'inline' ? 'h-4 w-4' : 'h-5 w-5'"
+              class="text-gray-600 group-hover:text-blue-600 transition-colors"
+            />
+          </button>
+
+          <!-- Botón eliminar -->
+          <button
+            type="button"
+            :class="[
+              'p-2 rounded-md bg-white border border-gray-300 hover:bg-red-50 hover:border-red-500 transition-colors group',
+            ]"
+            @click.stop="removeFile"
+            :title="'Eliminar archivo'"
+          >
+            <Icon
+              icon="heroicons:trash"
+              :class="variant === 'inline' ? 'h-4 w-4' : 'h-5 w-5'"
+              class="text-gray-600 group-hover:text-red-600 transition-colors"
+            />
+          </button>
+        </div>
       </div>
     </div>
 

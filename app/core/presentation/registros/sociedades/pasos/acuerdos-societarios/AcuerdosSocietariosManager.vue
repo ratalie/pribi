@@ -5,16 +5,16 @@
   import SimpleCardDropDown from "~/components/base/cards/SimpleCardDropDown.vue";
   import FileUploadDragDrop from "~/components/base/inputs/FileUploadDragDrop.vue";
   import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
-  import { useAcuerdosSocietariosStore } from "./stores/useAcuerdosSocietariosStore";
+  import { useAcuerdosSocietariosController } from "./composables/useAcuerdosSocietariosController";
 
   interface Props {
     mode: EntityModeEnum;
     societyId?: string;
   }
 
-  defineProps<Props>();
+  const props = defineProps<Props>();
 
-  const acuerdosSocietariosStore = useAcuerdosSocietariosStore();
+  const { acuerdosSocietariosStore } = useAcuerdosSocietariosController(props.societyId ?? "");
 </script>
 
 <template>
