@@ -27,7 +27,7 @@ export class AwsFileStorageRepository implements FileStorageRepository {
     formData.append("file", file);
 
     const response = await $fetch<UploadFileResponseDTO>(
-      `${this.baseUrl}/api/v2/society-profile/${societyProfileId}/files`,
+      `${this.baseUrl}/society-profile/${societyProfileId}/files`,
       {
         ...withAuthHeaders(),
         method: "POST",
@@ -46,7 +46,7 @@ export class AwsFileStorageRepository implements FileStorageRepository {
     request: GenerateFileUrlRequestDTO
   ): Promise<GenerateFileUrlResponseDTO> {
     const response = await $fetch<GenerateFileUrlResponseDTO>(
-      `${this.baseUrl}/api/v2/society-profile/${societyProfileId}/files/generate-url`,
+      `${this.baseUrl}/society-profile/${societyProfileId}/files/generate-url`,
       {
         ...withAuthHeaders(),
         method: "POST",

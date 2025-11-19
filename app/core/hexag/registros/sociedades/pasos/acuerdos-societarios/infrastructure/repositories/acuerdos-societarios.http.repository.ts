@@ -21,7 +21,7 @@ export class AcuerdosSocietariosHttpRepository implements AcuerdosSocietariosRep
       throw new Error("apiBase no está configurado");
     }
 
-    return `${apiBase}/api/v2/society-profile/${profileId}/special-agreements`;
+    return `${apiBase}/society-profile/${profileId}/special-agreements`;
   }
 
   async get(profileId: string): Promise<AcuerdoSocietario | null> {

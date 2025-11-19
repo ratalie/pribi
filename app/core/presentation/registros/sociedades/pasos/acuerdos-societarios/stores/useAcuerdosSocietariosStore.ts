@@ -5,10 +5,16 @@ import type {
   ArchivoMetadata,
 } from "~/core/hexag/registros/sociedades/pasos/acuerdos-societarios/domain";
 import { AcuerdosSocietariosHttpRepository } from "~/core/hexag/registros/sociedades/pasos/acuerdos-societarios/infrastructure";
+import { UploadFileUseCase } from "~/core/shared/infrastructure/file-storage/application/use-cases/upload-file.use-case";
+import { AwsFileStorageRepository } from "~/core/shared/infrastructure/file-storage/infrastructure/repositories/aws-file-storage.repository";
 
 // Instancias de casos de uso
 const repository = new AcuerdosSocietariosHttpRepository();
 const getUseCase = new GetAcuerdosSocietariosUseCase(repository);
+
+// Instancias de file storage
+const fileStorageRepository = new AwsFileStorageRepository();
+const uploadFileUseCase = new UploadFileUseCase(fileStorageRepository);
 
 export const useAcuerdosSocietariosStore = defineStore("acuerdos-societarios", {
   state: (): State => ({
@@ -90,6 +96,130 @@ export const useAcuerdosSocietariosStore = defineStore("acuerdos-societarios", {
         this.acuerdoSocietario = null;
       } finally {
         this.loading = false;
+      }
+    },
+
+    // Actions upload: subir archivos
+    async uploadEstatutosFile(societyId: string, file: File) {
+      try {
+        const uploadResponse = await uploadFileUseCase.execute(societyId, file);
+
+        if (!uploadResponse.data) {
+          throw new Error("No se recibió data en la respuesta del upload");
+        }
+
+        const { fileId, originalName } = uploadResponse.data;
+
+        // Inicializar acuerdoSocietario si no existe
+        if (!this.acuerdoSocietario) {
+          this.acuerdoSocietario = {
+            derechoPreferencia: false,
+            archivoEstatutos: null,
+            archivoAccionistas: null,
+            archivoTerceros: null,
+            estatutos: null,
+            accionistas: null,
+            terceros: null,
+          };
+        }
+
+        // Actualizar metadata
+        this.acuerdoSocietario.archivoEstatutos = fileId;
+        this.acuerdoSocietario.estatutos = {
+          id: fileId,
+          nombre: originalName,
+          url: "", // Sin URL por ahora
+        };
+
+        // Actualizar UI
+        this.showEstatutosSociales = true;
+      } catch (error) {
+        console.error(
+          "[AcuerdosSocietariosStore] Error al subir archivo de estatutos:",
+          error
+        );
+        this.estatutosSocialesFile = null;
+      }
+    },
+
+    async uploadAccionistasFile(societyId: string, file: File) {
+      try {
+        const uploadResponse = await uploadFileUseCase.execute(societyId, file);
+
+        if (!uploadResponse.data) {
+          throw new Error("No se recibió data en la respuesta del upload");
+        }
+
+        const { fileId, originalName } = uploadResponse.data;
+
+        // Inicializar acuerdoSocietario si no existe
+        if (!this.acuerdoSocietario) {
+          this.acuerdoSocietario = {
+            derechoPreferencia: false,
+            archivoEstatutos: null,
+            archivoAccionistas: null,
+            archivoTerceros: null,
+            estatutos: null,
+            accionistas: null,
+            terceros: null,
+          };
+        }
+
+        // Actualizar metadata
+        this.acuerdoSocietario.archivoAccionistas = fileId;
+        this.acuerdoSocietario.accionistas = {
+          id: fileId,
+          nombre: originalName,
+          url: "", // Sin URL por ahora
+        };
+
+        // Actualizar UI
+        this.showConvenioAccionistas = true;
+      } catch (error) {
+        console.error(
+          "[AcuerdosSocietariosStore] Error al subir archivo de accionistas:",
+          error
+        );
+        this.convenioAccionistasFile = null;
+      }
+    },
+
+    async uploadTercerosFile(societyId: string, file: File) {
+      try {
+        const uploadResponse = await uploadFileUseCase.execute(societyId, file);
+
+        if (!uploadResponse.data) {
+          throw new Error("No se recibió data en la respuesta del upload");
+        }
+
+        const { fileId, originalName } = uploadResponse.data;
+
+        // Inicializar acuerdoSocietario si no existe
+        if (!this.acuerdoSocietario) {
+          this.acuerdoSocietario = {
+            derechoPreferencia: false,
+            archivoEstatutos: null,
+            archivoAccionistas: null,
+            archivoTerceros: null,
+            estatutos: null,
+            accionistas: null,
+            terceros: null,
+          };
+        }
+
+        // Actualizar metadata
+        this.acuerdoSocietario.archivoTerceros = fileId;
+        this.acuerdoSocietario.terceros = {
+          id: fileId,
+          nombre: originalName,
+          url: "", // Sin URL por ahora
+        };
+
+        // Actualizar UI
+        this.showAcuerdoTerceros = true;
+      } catch (error) {
+        console.error("[AcuerdosSocietariosStore] Error al subir archivo de terceros:", error);
+        this.acuerdoTercerosFile = null;
       }
     },
   },

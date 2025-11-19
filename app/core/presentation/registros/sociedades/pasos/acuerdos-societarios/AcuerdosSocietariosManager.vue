@@ -49,6 +49,7 @@
           <div class="py-12 px-10">
             <FileUploadDragDrop
               v-model="acuerdosSocietariosStore.estatutosSocialesFile"
+              :file-metadata="acuerdosSocietariosStore.estatutosMetadata"
               variant="default"
               click-message="Haz click"
               drag-message="o arrastra el documento"
@@ -83,6 +84,7 @@
           <div class="py-12 px-10">
             <FileUploadDragDrop
               v-model="acuerdosSocietariosStore.convenioAccionistasFile"
+              :file-metadata="acuerdosSocietariosStore.accionistasMetadata"
               variant="default"
               click-message="Haz click"
               drag-message="o arrastra el documento"
@@ -116,6 +118,7 @@
           <div class="py-12 px-10">
             <FileUploadDragDrop
               v-model="acuerdosSocietariosStore.acuerdoTercerosFile"
+              :file-metadata="acuerdosSocietariosStore.tercerosMetadata"
               variant="default"
               click-message="Haz click"
               drag-message="o arrastra el documento"
