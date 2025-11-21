@@ -11,12 +11,7 @@ export interface AcuerdosSocietariosRepository {
   get(profileId: string): Promise<AcuerdoSocietario | null>;
 
   /**
-   * Crea los acuerdos societarios de una sociedad.
-   */
-  create(profileId: string, payload: AcuerdoSocietarioDTO): Promise<AcuerdoSocietario>;
-
-  /**
    * Actualiza los acuerdos societarios de una sociedad.
    */
-  update(profileId: string, payload: AcuerdoSocietarioDTO): Promise<AcuerdoSocietario>;
+  update(profileId: string, payload: AcuerdoSocietarioDTO): Promise<any>;
 }

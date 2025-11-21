@@ -16,13 +16,13 @@ export class AcuerdosSocietariosMapper {
    * Convierte metadata de archivo DTO a entidad de dominio.
    */
   private static deMetadataArchivoADominio(
-    dto: ArchivoMetadataDTO | null
+    dto: ArchivoMetadataDTO[] | null
   ): ArchivoMetadata | null {
     if (!dto) return null;
     return {
-      id: dto.id,
-      nombre: dto.nombre,
-      url: dto.url,
+      id: dto[0]?.fileId ?? "",
+      nombre: dto[0]?.originalName ?? "",
+      size: dto[0]?.size ?? 0,
     };
   }
 
@@ -32,30 +32,16 @@ export class AcuerdosSocietariosMapper {
    */
   static deRespuestaADominio(dto: AcuerdoSocietarioDataDTO): AcuerdoSocietario {
     return {
-      id: dto.id,
       derechoPreferencia: dto.derechoPreferencia,
-      archivoEstatutos: dto.archivoEstatutos,
-      archivoAccionistas: dto.archivoAccionistas,
-      archivoTerceros: dto.archivoTerceros,
-      estatutos: this.deMetadataArchivoADominio(dto.estatutos),
-      accionistas: this.deMetadataArchivoADominio(dto.accionistas),
-      terceros: this.deMetadataArchivoADominio(dto.terceros),
-    };
-  }
-
-  /**
-   * Convierte DTO (payload de CREATE/UPDATE) a Entidad de dominio.
-   * Versión simplificada que no incluye metadata de archivos.
-   */
-  static deDtoADominio(dto: AcuerdoSocietarioDTO): AcuerdoSocietario {
-    return {
-      derechoPreferencia: dto.derechoPreferencia ?? false,
-      archivoEstatutos: dto.archivoEstatutos ?? null,
-      archivoAccionistas: dto.archivoAccionistas ?? null,
-      archivoTerceros: dto.archivoTerceros ?? null,
-      estatutos: null,
-      accionistas: null,
-      terceros: null,
+      archivoEstatutos: this.deMetadataArchivoADominio(
+        dto.archivoEstatutos ? dto.archivoEstatutos.versions : null
+      ),
+      archivoAccionistas: this.deMetadataArchivoADominio(
+        dto.archivoAccionistas ? dto.archivoAccionistas.versions : null
+      ),
+      archivoTerceros: this.deMetadataArchivoADominio(
+        dto.archivoTerceros ? dto.archivoTerceros.versions : null
+      ),
     };
   }
 

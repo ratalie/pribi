@@ -30,6 +30,7 @@ export class AcuerdosSocietariosHttpRepository implements AcuerdosSocietariosRep
 
     try {
       const response = await $fetch<BackendApiResponse<AcuerdoSocietarioDataDTO>>(url, config);
+
       if (response?.data) {
         const result = AcuerdosSocietariosMapper.deRespuestaADominio(response.data);
         return result;
@@ -45,33 +46,13 @@ export class AcuerdosSocietariosHttpRepository implements AcuerdosSocietariosRep
     }
   }
 
-  async create(profileId: string, dto: AcuerdoSocietarioDTO): Promise<AcuerdoSocietario> {
-    const url = this.getUrl(profileId);
-    const config = withAuthHeaders({
-      method: "POST" as const,
-      body: AcuerdosSocietariosMapper.aPayloadParaBackend(dto),
-    });
-
-    // CREATE no devuelve 'data', solo success, message, code
-    await $fetch<BackendApiResponse>(url, config);
-
-    // Si el backend no devuelve data, usamos el payload como fallback
-    const fallback = AcuerdosSocietariosMapper.deDtoADominio(dto);
-    return fallback;
-  }
-
-  async update(profileId: string, dto: AcuerdoSocietarioDTO): Promise<AcuerdoSocietario> {
+  async update(profileId: string, dto: AcuerdoSocietarioDTO) {
     const url = this.getUrl(profileId);
     const config = withAuthHeaders({
       method: "PUT" as const,
       body: AcuerdosSocietariosMapper.aPayloadParaBackend(dto),
     });
 
-    // UPDATE no devuelve 'data', solo success, message, code
     await $fetch<BackendApiResponse>(url, config);
-
-    // Si el backend no devuelve data, usamos el payload como fallback
-    const fallback = AcuerdosSocietariosMapper.deDtoADominio(dto);
-    return fallback;
   }
 }

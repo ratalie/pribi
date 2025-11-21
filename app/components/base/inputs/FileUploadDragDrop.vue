@@ -8,7 +8,7 @@
   interface FileMetadata {
     id: string;
     nombre: string;
-    url: string;
+    size: number;
   }
 
   interface Props {
@@ -118,8 +118,8 @@
 
   // Abrir URL del archivo en nueva pestaña
   const openFileUrl = () => {
-    if (fileMetadata.value?.url) {
-      window.open(fileMetadata.value.url, "_blank");
+    if (fileMetadata.value?.id) {
+      window.open(fileMetadata.value.id, "_blank");
     }
   };
 
@@ -232,7 +232,7 @@
         >
           <!-- Botón ver archivo (solo si hay metadata con URL) -->
           <button
-            v-if="fileMetadata?.url"
+            v-if="fileMetadata?.id"
             type="button"
             :class="[
               'p-2 rounded-md bg-white border border-gray-300 hover:bg-blue-50 hover:border-blue-500 transition-colors group',

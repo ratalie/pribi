@@ -13,7 +13,7 @@ export class AwsFileStorageRepository implements FileStorageRepository {
 
   constructor(baseUrl?: string) {
     const config = useRuntimeConfig();
-    this.baseUrl = baseUrl ?? (config.public?.apiBaseUrl as string) ?? "";
+    this.baseUrl = baseUrl ?? (config.public?.apiBase as string) ?? "";
   }
 
   /**
