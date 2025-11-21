@@ -158,7 +158,9 @@
               text-body="de acciones con derecho a voto."
               :show-error="relationshipErrors.primeraConvocatoriaSimple"
               :error-limit="form.quorumMinimoSimple"
-              @update:number-value="handlePercentUpdate('primeraConvocatoriaSimple')"
+              @update:number-value="
+                (val) => handlePercentUpdate('primeraConvocatoriaSimple')(val)
+              "
             />
             <QuorumRowTable
               :is-preview="isPreview"
@@ -169,7 +171,9 @@
               text-body="de acciones con derecho a voto."
               :show-error="relationshipErrors.primeraConvocatoriaCalificada"
               :error-limit="form.quorumMinimoCalificado"
-              @update:number-value="handlePercentUpdate('primeraConvocatoriaCalificada')"
+              @update:number-value="
+                (val) => handlePercentUpdate('primeraConvocatoriaCalificada')(val)
+              "
             />
             <QuorumRowTable
               :is-preview="isPreview"
@@ -180,7 +184,9 @@
               text-body="de acciones con derecho a voto."
               :show-error="relationshipErrors.segundaConvocatoriaSimple"
               :error-limit="form.quorumMinimoSimple"
-              @update:number-value="handlePercentUpdate('segundaConvocatoriaSimple')"
+              @update:number-value="
+                (val) => handlePercentUpdate('segundaConvocatoriaSimple')(val)
+              "
             />
             <QuorumRowTable
               :is-preview="isPreview"
@@ -191,7 +197,9 @@
               text-body="de acciones con derecho a voto existentes."
               :show-error="relationshipErrors.segundaConvocatoriaCalificada"
               :error-limit="form.quorumMinimoCalificado"
-              @update:number-value="handlePercentUpdate('segundaConvocatoriaCalificada')"
+              @update:number-value="
+                (val) => handlePercentUpdate('segundaConvocatoriaCalificada')(val)
+              "
             />
           </QuorumTable>
         </div>
@@ -207,7 +215,7 @@
               ruler="Más del"
               :initial-value="formatPercent(form.quorumMinimoSimple)"
               text-body="de acciones con derecho a voto presentes."
-              @update:number-value="handlePercentUpdate('quorumMinimoSimple')"
+              @update:number-value="(val) => handlePercentUpdate('quorumMinimoSimple')(val)"
             />
             <QuorumRowTable
               :is-preview="isPreview"
@@ -215,7 +223,9 @@
               ruler="Más del"
               :initial-value="formatPercent(form.quorumMinimoCalificado)"
               text-body="de acciones con derecho a voto presentes."
-              @update:number-value="handlePercentUpdate('quorumMinimoCalificado')"
+              @update:number-value="
+                (val) => handlePercentUpdate('quorumMinimoCalificado')(val)
+              "
             />
           </QuorumTable>
         </div>

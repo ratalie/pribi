@@ -1,5 +1,5 @@
 import type { MaybeRef } from "vue";
-import { computed, reactive, toRefs, unref, watch } from "vue";
+import { computed, reactive, ref, toRefs, unref, watch } from "vue";
 
 import type { QuorumDTO } from "~/core/hexag/registros/sociedades/pasos/quorum-mayorias/application";
 import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
@@ -41,6 +41,7 @@ const NUMERIC_FIELDS: QuorumNumericField[] = [
 export function useQuorumForm(options: UseQuorumFormOptions) {
   const store = useQuorumStore();
   const form = reactive<QuorumDTO>(createEmptyForm());
+  const isInitializing = ref(true); // Flag para evitar sobrescribir durante edición
 
   const mode = computed(() => unref(options.mode) ?? EntityModeEnum.CREAR);
   const societyId = computed(() => unref(options.societyId));
@@ -70,8 +71,15 @@ export function useQuorumForm(options: UseQuorumFormOptions) {
 
   watch(
     () => store.config,
-    (config) => {
-      assignFromConfig(config);
+    (config, oldConfig) => {
+      // Solo asignar si estamos inicializando o si el config cambió desde null
+      // NO asignar si el usuario está editando (isInitializing = false)
+      const shouldAssign =
+        isInitializing.value || oldConfig === null || oldConfig === undefined;
+
+      if (shouldAssign) {
+        assignFromConfig(config);
+      }
     },
     { immediate: true }
   );
@@ -106,7 +114,9 @@ export function useQuorumForm(options: UseQuorumFormOptions) {
   async function load(source: "internal" | "external" = "internal") {
     if (!societyId.value) return;
     console.debug("[useQuorumForm] load:start", { source, societyId: societyId.value });
+    isInitializing.value = true; // Permitir que el watch asigne los valores
     await store.load(societyId.value);
+    isInitializing.value = false; // Después de cargar, el usuario puede editar
     console.debug("[useQuorumForm] load:done", {
       source,
       societyId: societyId.value,
@@ -134,11 +144,15 @@ export function useQuorumForm(options: UseQuorumFormOptions) {
     };
 
     if (!hasData.value) {
+      isInitializing.value = true; // Permitir que el watch actualice después del save
       await store.create(societyId.value, payload);
+      isInitializing.value = false; // Permitir edición nuevamente
       return "created";
     }
 
+    isInitializing.value = true; // Permitir que el watch actualice después del save
     await store.update(societyId.value, payload);
+    isInitializing.value = false; // Permitir edición nuevamente
     return "updated";
   }
 
