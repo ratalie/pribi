@@ -49,7 +49,6 @@ export function useQuorumForm(options: UseQuorumFormOptions) {
   const isLoading = computed(() => store.status === "loading");
   const isSaving = computed(() => store.status === "saving");
   const isReadonly = computed(() => mode.value === EntityModeEnum.PREVISUALIZAR);
-  const hasData = computed(() => store.config !== null);
   const errorMessage = computed(() => store.errorMessage);
 
   const setValue = (field: QuorumNumericField, value: number) => {
@@ -143,13 +142,8 @@ export function useQuorumForm(options: UseQuorumFormOptions) {
       id: store.config?.id,
     };
 
-    if (!hasData.value) {
-      isInitializing.value = true; // Permitir que el watch actualice después del save
-      await store.create(societyId.value, payload);
-      isInitializing.value = false; // Permitir edición nuevamente
-      return "created";
-    }
-
+    // El quorum siempre existe desde que se crea la sociedad (cascarón del backend)
+    // Por lo tanto, SIEMPRE usamos UPDATE (PUT), nunca CREATE (POST)
     isInitializing.value = true; // Permitir que el watch actualice después del save
     await store.update(societyId.value, payload);
     isInitializing.value = false; // Permitir edición nuevamente

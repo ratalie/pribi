@@ -36,13 +36,16 @@ export class QuorumHttpRepository implements QuorumRepository {
     return this.resolveBase(`/${sanitizedId}/quorum`);
   }
 
-  async get(societyProfileId: string): Promise<QuorumConfig | null> {
+  async get(societyProfileId: string, fallbackId?: string): Promise<QuorumConfig | null> {
     const url = this.resolveQuorumPath(societyProfileId);
+    // El id del quorum es el mismo que el societyProfileId (ej: /api/v2/society-profile/2/quorum => id = 2)
+    // Siempre usar societyProfileId como id porque el backend no lo retorna
+    const idToUse = fallbackId ?? societyProfileId;
     const response = await $fetch<{ data: any }>(
       url,
       withAuthHeaders({ method: "GET" as const })
     );
-    return QuorumMapper.toDomain(response?.data) ?? null;
+    return QuorumMapper.toDomain(response?.data, idToUse) ?? null;
   }
 
   async create(societyProfileId: string, payload: QuorumDTO): Promise<QuorumConfig> {
@@ -55,7 +58,8 @@ export class QuorumHttpRepository implements QuorumRepository {
       })
     );
 
-    const fresh = await this.get(societyProfileId);
+    // Usar el societyProfileId como fallback si el backend no retorna id
+    const fresh = await this.get(societyProfileId, societyProfileId);
     if (!fresh) {
       throw new Error("No pudimos obtener el quórum después de crearlo.");
     }
@@ -72,7 +76,8 @@ export class QuorumHttpRepository implements QuorumRepository {
       })
     );
 
-    const fresh = await this.get(societyProfileId);
+    // Siempre usar societyProfileId como id porque el backend no lo retorna
+    const fresh = await this.get(societyProfileId, societyProfileId);
     if (!fresh) {
       throw new Error("No pudimos obtener el quórum después de actualizarlo.");
     }

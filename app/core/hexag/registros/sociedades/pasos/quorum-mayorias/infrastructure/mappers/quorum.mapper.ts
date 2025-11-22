@@ -15,11 +15,21 @@ const normalizeNumber = (value: unknown, fallback = 0): number => {
 };
 
 export const QuorumMapper = {
-  toDomain(response: BackendQuorumResponse): QuorumConfig | null {
-    if (!response?.id) return null;
+  toDomain(response: BackendQuorumResponse, fallbackId?: string): QuorumConfig | null {
+    // Si no hay datos, retornar null
+    if (!response) {
+      return null;
+    }
+
+    // Si no hay id en la respuesta pero hay un fallbackId, usarlo
+    // El fallbackId siempre será el societyProfileId porque el backend no retorna el id
+    const id = response.id ?? fallbackId;
+    if (!id) {
+      return null;
+    }
 
     return {
-      id: response.id,
+      id,
       primeraConvocatoriaSimple: normalizeNumber(response.primeraConvocatoriaSimple),
       primeraConvocatoriaCalificada: normalizeNumber(response.primeraConvocatoriaCalificada),
       segundaConvocatoriaSimple: normalizeNumber(response.segundaConvocatoriaSimple),
