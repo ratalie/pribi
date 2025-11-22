@@ -34,6 +34,11 @@ export const useAcuerdosSocietariosStore = defineStore("acuerdos-societarios", {
     // Estado backend
     acuerdoSocietario: null,
     loading: false,
+
+    // Estados de carga
+    estatutosSocialesLoading: false,
+    convenioAccionistasLoading: false,
+    acuerdoTercerosLoading: false,
   }),
 
   getters: {
@@ -55,26 +60,6 @@ export const useAcuerdosSocietariosStore = defineStore("acuerdos-societarios", {
   },
 
   actions: {
-    // Actions UI
-    setEstatutosSocialesFile(file: File) {
-      this.estatutosSocialesFile = file;
-      this.showEstatutosSociales = true;
-    },
-
-    setConvenioAccionistasFile(file: File) {
-      this.convenioAccionistasFile = file;
-      this.showConvenioAccionistas = true;
-    },
-
-    setAcuerdoTercerosFile(file: File) {
-      this.acuerdoTercerosFile = file;
-      this.showAcuerdoTerceros = true;
-    },
-
-    setDerechoPreferente(value: boolean) {
-      this.derechoPreferente = value;
-    },
-
     // Action backend: cargar datos
     async load(profileId: string) {
       this.loading = true;
@@ -104,28 +89,10 @@ export const useAcuerdosSocietariosStore = defineStore("acuerdos-societarios", {
     },
 
     // Actions upload: subir archivos
-    async uploadEstatutosFile(societyId: string, file: File) {
+    async uploadEstatutosFile(societyId: string, file: File | null) {
       try {
-        const uploadResponse = await uploadFileUseCase.execute(societyId, file);
+        this.estatutosSocialesLoading = true;
 
-        if (!uploadResponse.data) {
-          throw new Error("No se recibió data en la respuesta del upload");
-        }
-
-        const uploadStep = await updateUseCase.execute(societyId, {
-          archivoEstatutos: uploadResponse.data.fileId,
-          archivoAccionistas: null,
-          archivoTerceros: null,
-          derechoPreferencia: this.derechoPreferente,
-        });
-
-        if (!uploadStep) {
-          throw new Error("No se pudo actualizar los acuerdos societarios");
-        }
-
-        const { fileId, originalName, size } = uploadResponse.data;
-
-        // Inicializar acuerdoSocietario si no existe
         if (!this.acuerdoSocietario) {
           this.acuerdoSocietario = {
             derechoPreferencia: false,
@@ -135,43 +102,48 @@ export const useAcuerdosSocietariosStore = defineStore("acuerdos-societarios", {
           };
         }
 
-        // Actualizar metadata
-        this.acuerdoSocietario.archivoEstatutos = {
-          id: fileId,
-          nombre: originalName,
-          size: size,
-        };
+        if (file) {
+          const uploadResponse = await uploadFileUseCase.execute(societyId, file);
+
+          if (!uploadResponse.data) {
+            throw new Error("No se recibió data en la respuesta del upload");
+          }
+
+          const { fileId, originalName, size } = uploadResponse.data;
+
+          // Actualizar metadata
+          this.acuerdoSocietario.archivoEstatutos = {
+            id: fileId,
+            nombre: originalName,
+            size: size,
+          };
+        } else {
+          this.acuerdoSocietario.archivoEstatutos = null;
+        }
+
+        await updateUseCase.execute(societyId, {
+          archivoEstatutos: this.acuerdoSocietario?.archivoEstatutos?.id ?? null,
+          archivoAccionistas: this.acuerdoSocietario?.archivoAccionistas?.id ?? null,
+          archivoTerceros: this.acuerdoSocietario?.archivoTerceros?.id ?? null,
+          derechoPreferencia: this.derechoPreferente,
+        });
+
+        this.estatutosSocialesFile = null;
       } catch (error) {
         console.error(
           "[AcuerdosSocietariosStore] Error al subir archivo de estatutos:",
           error
         );
         this.estatutosSocialesFile = null;
+      } finally {
+        this.estatutosSocialesLoading = false;
       }
     },
 
-    async uploadAccionistasFile(societyId: string, file: File) {
+    async uploadAccionistasFile(societyId: string, file: File | null) {
       try {
-        const uploadResponse = await uploadFileUseCase.execute(societyId, file);
+        this.convenioAccionistasLoading = true;
 
-        if (!uploadResponse.data) {
-          throw new Error("No se recibió data en la respuesta del upload");
-        }
-
-        const uploadStep = await updateUseCase.execute(societyId, {
-          archivoEstatutos: null,
-          archivoAccionistas: uploadResponse.data.fileId,
-          archivoTerceros: null,
-          derechoPreferencia: this.derechoPreferente,
-        });
-
-        if (!uploadStep) {
-          throw new Error("No se pudo actualizar los acuerdos societarios");
-        }
-
-        const { fileId, originalName, size } = uploadResponse.data;
-
-        // Inicializar acuerdoSocietario si no existe
         if (!this.acuerdoSocietario) {
           this.acuerdoSocietario = {
             derechoPreferencia: false,
@@ -181,43 +153,48 @@ export const useAcuerdosSocietariosStore = defineStore("acuerdos-societarios", {
           };
         }
 
-        // Actualizar metadata
-        this.acuerdoSocietario.archivoAccionistas = {
-          id: fileId,
-          nombre: originalName,
-          size: size,
-        };
+        if (file) {
+          const uploadResponse = await uploadFileUseCase.execute(societyId, file);
+
+          if (!uploadResponse.data) {
+            throw new Error("No se recibió data en la respuesta del upload");
+          }
+
+          const { fileId, originalName, size } = uploadResponse.data;
+
+          // Actualizar metadata
+          this.acuerdoSocietario.archivoAccionistas = {
+            id: fileId,
+            nombre: originalName,
+            size: size,
+          };
+        } else {
+          this.acuerdoSocietario.archivoAccionistas = null;
+        }
+
+        await updateUseCase.execute(societyId, {
+          archivoEstatutos: this.acuerdoSocietario?.archivoEstatutos?.id ?? null,
+          archivoAccionistas: this.acuerdoSocietario?.archivoAccionistas?.id ?? null,
+          archivoTerceros: this.acuerdoSocietario?.archivoTerceros?.id ?? null,
+          derechoPreferencia: this.derechoPreferente,
+        });
+
+        this.convenioAccionistasFile = null;
       } catch (error) {
         console.error(
           "[AcuerdosSocietariosStore] Error al subir archivo de accionistas:",
           error
         );
         this.convenioAccionistasFile = null;
+      } finally {
+        this.convenioAccionistasLoading = false;
       }
     },
 
-    async uploadTercerosFile(societyId: string, file: File) {
+    async uploadTercerosFile(societyId: string, file: File | null) {
       try {
-        const uploadResponse = await uploadFileUseCase.execute(societyId, file);
+        this.acuerdoTercerosLoading = true;
 
-        if (!uploadResponse.data) {
-          throw new Error("No se recibió data en la respuesta del upload");
-        }
-
-        const uploadStep = await updateUseCase.execute(societyId, {
-          archivoEstatutos: null,
-          archivoAccionistas: null,
-          archivoTerceros: uploadResponse.data.fileId,
-          derechoPreferencia: this.derechoPreferente,
-        });
-
-        if (!uploadStep) {
-          throw new Error("No se pudo actualizar los acuerdos societarios");
-        }
-
-        const { fileId, originalName, size } = uploadResponse.data;
-
-        // Inicializar acuerdoSocietario si no existe
         if (!this.acuerdoSocietario) {
           this.acuerdoSocietario = {
             derechoPreferencia: false,
@@ -227,15 +204,38 @@ export const useAcuerdosSocietariosStore = defineStore("acuerdos-societarios", {
           };
         }
 
-        // Actualizar metadata
-        this.acuerdoSocietario.archivoTerceros = {
-          id: fileId,
-          nombre: originalName,
-          size: size,
-        };
+        if (file) {
+          const uploadResponse = await uploadFileUseCase.execute(societyId, file);
+
+          if (!uploadResponse.data) {
+            throw new Error("No se recibió data en la respuesta del upload");
+          }
+
+          const { fileId, originalName, size } = uploadResponse.data;
+
+          // Actualizar metadata
+          this.acuerdoSocietario.archivoTerceros = {
+            id: fileId,
+            nombre: originalName,
+            size: size,
+          };
+        } else {
+          this.acuerdoSocietario.archivoTerceros = null;
+        }
+
+        await updateUseCase.execute(societyId, {
+          archivoEstatutos: this.acuerdoSocietario?.archivoEstatutos?.id ?? null,
+          archivoAccionistas: this.acuerdoSocietario?.archivoAccionistas?.id ?? null,
+          archivoTerceros: this.acuerdoSocietario?.archivoTerceros?.id ?? null,
+          derechoPreferencia: this.derechoPreferente,
+        });
+
+        this.acuerdoTercerosFile = null;
       } catch (error) {
         console.error("[AcuerdosSocietariosStore] Error al subir archivo de terceros:", error);
         this.acuerdoTercerosFile = null;
+      } finally {
+        this.acuerdoTercerosLoading = false;
       }
     },
   },
@@ -254,4 +254,9 @@ interface State {
   // Estado backend
   acuerdoSocietario: AcuerdoSocietario | null;
   loading: boolean;
+
+  // Estados de carga
+  estatutosSocialesLoading: boolean;
+  convenioAccionistasLoading: boolean;
+  acuerdoTercerosLoading: boolean;
 }

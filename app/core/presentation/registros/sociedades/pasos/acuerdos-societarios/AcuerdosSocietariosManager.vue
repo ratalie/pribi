@@ -14,7 +14,12 @@
 
   const props = defineProps<Props>();
 
-  const { acuerdosSocietariosStore } = useAcuerdosSocietariosController(props.societyId ?? "");
+  const {
+    acuerdosSocietariosStore,
+    handleEstatutosFileUpdate,
+    handleConvenioAccionistasFileUpdate,
+    handleAcuerdoTercerosFileUpdate,
+  } = useAcuerdosSocietariosController(props.societyId ?? "");
 </script>
 
 <template>
@@ -48,8 +53,10 @@
         <template v-if="acuerdosSocietariosStore.showEstatutosSociales" #content>
           <div class="py-12 px-10">
             <FileUploadDragDrop
-              v-model="acuerdosSocietariosStore.estatutosSocialesFile"
+              :model-value="acuerdosSocietariosStore.estatutosSocialesFile"
+              @update:model-value="handleEstatutosFileUpdate"
               :file-metadata="acuerdosSocietariosStore.estatutosMetadata"
+              :is-loading="acuerdosSocietariosStore.estatutosSocialesLoading"
               variant="default"
               click-message="Haz click"
               drag-message="o arrastra el documento"
@@ -83,8 +90,10 @@
         <template v-if="acuerdosSocietariosStore.showConvenioAccionistas" #content>
           <div class="py-12 px-10">
             <FileUploadDragDrop
-              v-model="acuerdosSocietariosStore.convenioAccionistasFile"
+              :model-value="acuerdosSocietariosStore.convenioAccionistasFile"
+              @update:model-value="handleConvenioAccionistasFileUpdate"
               :file-metadata="acuerdosSocietariosStore.accionistasMetadata"
+              :is-loading="acuerdosSocietariosStore.convenioAccionistasLoading"
               variant="default"
               click-message="Haz click"
               drag-message="o arrastra el documento"
@@ -117,8 +126,10 @@
         <template v-if="acuerdosSocietariosStore.showAcuerdoTerceros" #content>
           <div class="py-12 px-10">
             <FileUploadDragDrop
-              v-model="acuerdosSocietariosStore.acuerdoTercerosFile"
+              :model-value="acuerdosSocietariosStore.acuerdoTercerosFile"
+              @update:model-value="handleAcuerdoTercerosFileUpdate"
               :file-metadata="acuerdosSocietariosStore.tercerosMetadata"
+              :is-loading="acuerdosSocietariosStore.acuerdoTercerosLoading"
               variant="default"
               click-message="Haz click"
               drag-message="o arrastra el documento"

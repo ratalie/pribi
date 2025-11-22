@@ -13,6 +13,7 @@
 
   interface Props {
     modelValue?: File | null;
+    isLoading?: boolean;
     fileMetadata?: FileMetadata | null; // Metadata del archivo desde el backend
     title?: string;
     subtitle?: string;
@@ -150,7 +151,6 @@
   // Wrapper para removeFile que también actualiza el v-model
   const removeFile = () => {
     removeFileInternal();
-    emit("update:modelValue", null);
   };
 </script>
 
@@ -203,13 +203,16 @@
       >
         <!-- Icono de documento -->
         <Icon
-          icon="heroicons:document-text"
+          :icon="isLoading ? 'eos-icons:loading' : 'heroicons:document-text'"
           :class="variant === 'inline' ? 'h-6 w-6' : 'h-12 w-12'"
           class="text-primary-700"
         />
 
         <!-- Nombre y tamaño -->
-        <div :class="variant === 'inline' ? 'text-left flex-1' : 'text-center'">
+        <div
+          v-if="!isLoading"
+          :class="variant === 'inline' ? 'text-left flex-1' : 'text-center'"
+        >
           <p
             class="font-semibold text-gray-800"
             :class="variant === 'inline' ? 'text-xs' : 'text-sm'"
@@ -230,9 +233,9 @@
           class="flex items-center gap-2"
           :class="variant === 'inline' ? '' : 'absolute top-3 right-3'"
         >
-          <!-- Botón ver archivo (solo si hay metadata con URL) -->
+          <!-- Botón ver archivo : false para que no se muestre-->
           <button
-            v-if="fileMetadata?.id"
+            v-if="false"
             type="button"
             :class="[
               'p-2 rounded-md bg-white border border-gray-300 hover:bg-blue-50 hover:border-blue-500 transition-colors group',

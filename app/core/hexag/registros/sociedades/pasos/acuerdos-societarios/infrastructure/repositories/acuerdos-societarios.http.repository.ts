@@ -53,6 +53,10 @@ export class AcuerdosSocietariosHttpRepository implements AcuerdosSocietariosRep
       body: AcuerdosSocietariosMapper.aPayloadParaBackend(dto),
     });
 
-    await $fetch<BackendApiResponse>(url, config);
+    const response = await $fetch<BackendApiResponse>(url, config);
+
+    if (!response.success) {
+      throw new Error(response.message || "Error al actualizar los acuerdos societarios");
+    }
   }
 }
