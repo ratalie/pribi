@@ -2,37 +2,46 @@
   <div
     class="group/dropdown flex items-center gap-3 px-2 py-2 rounded-lg transition-colors hover:bg-primary-400/80"
   >
+    <!-- Click directo en usuario navega al panel -->
+    <div
+      class="flex items-center gap-4 flex-1 cursor-pointer"
+      @click="handleOpenProfile"
+    >
+      <Avatar class="w-10 h-10">
+        <AvatarImage
+          :src="currentUser.avatar || '/placeholder.svg'"
+          :alt="currentUser.name"
+        />
+        <AvatarFallback
+          class="bg-sidebar-primary text-sidebar-primary-foreground"
+        >
+          {{ getInitials(currentUser.name) }}
+        </AvatarFallback>
+      </Avatar>
+
+      <div class="flex-1 min-w-0">
+        <p class="text-white text-sm font-medium">
+          {{ currentUser.name }}
+        </p>
+        <p
+          class="text-gray-300 text-xs group-hover/dropdown:text-gray-100 transition-colors"
+        >
+          {{ currentUser.title }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Dropdown para opciones adicionales -->
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
-        <div class="flex items-center gap-8 w-full cursor-pointer">
-          <div class="flex item-center gap-4">
-            <Avatar class="w-10 h-10">
-              <AvatarImage
-                :src="currentUser.avatar || '/placeholder.svg'"
-                :alt="currentUser.name"
-              />
-              <AvatarFallback
-                class="bg-sidebar-primary text-sidebar-primary-foreground"
-              >
-                {{ getInitials(currentUser.name) }}
-              </AvatarFallback>
-            </Avatar>
-
-            <div class="flex-1 min-w-0">
-              <p class="text-white text-sm font-medium">
-                {{ currentUser.name }}
-              </p>
-              <p
-                class="text-gray-300 text-xs group-hover/dropdown:text-gray-100 transition-colors"
-              >
-                {{ currentUser.title }}
-              </p>
-            </div>
-          </div>
+        <button
+          class="p-1 rounded hover:bg-primary-500/50 transition-colors"
+          @click.stop
+        >
           <ChevronDown
             class="w-4 h-4 text-white transition-transform group-hover/dropdown:rotate-180 duration-200"
           />
-        </div>
+        </button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
@@ -50,6 +59,11 @@
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
+
+        <DropdownMenuItem @click="handleOpenAdminPanel">
+          <Shield class="w-4 h-4 mr-2" />
+          Panel Administrativo
+        </DropdownMenuItem>
 
         <DropdownMenuItem @click="handleOpenHelp">
           <HelpCircle class="w-4 h-4 mr-2" />
@@ -76,6 +90,7 @@ import {
   Settings,
   HelpCircle,
   LogOut,
+  Shield,
 } from "lucide-vue-next";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -106,12 +121,17 @@ const getInitials = (name: string) => {
 };
 
 const handleOpenProfile = () => {
-  // Navegar a perfil
+  // Navegar a perfil de usuario
   navigateTo("/profile");
 };
 
 const handleOpenConfiguration = () => {
   isConfigModalOpen.value = true;
+};
+
+const handleOpenAdminPanel = () => {
+  // Navegar a panel administrativo
+  navigateTo("/admin/panel");
 };
 
 const handleOpenHelp = () => {
