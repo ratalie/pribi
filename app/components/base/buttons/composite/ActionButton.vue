@@ -41,8 +41,8 @@
     :form="form"
   >
     <component
-      :is="isLoading ? getIcon('LoaderCircle') : getIcon(icon)"
-      v-if="icon"
+      :is="isLoading ? getIcon('LoaderCircle') : getIcon(icon || '')"
+      v-if="icon || (isLoading && getIcon('LoaderCircle'))"
       :class="[
         getSizeIcon(),
         iconPosition === 'right' ? 'order-2' : 'order-1',
