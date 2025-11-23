@@ -20,9 +20,7 @@ export const useAcuerdosSocietariosController = (societyId: string) => {
     acuerdosSocietariosStore.load(societyId);
   });
 
-  useFlowLayoutNext(() => {
-    console.log("onClickNext");
-  });
+  useFlowLayoutNext(() => acuerdosSocietariosStore.uploadStep(societyId));
 
   return {
     acuerdosSocietariosStore,

@@ -88,6 +88,24 @@ export const useAcuerdosSocietariosStore = defineStore("acuerdos-societarios", {
       }
     },
 
+    // Action backend: actualizar acuerdos societarios
+    async uploadStep(societyId: string) {
+      try {
+        await updateUseCase.execute(societyId, {
+          archivoEstatutos: this.acuerdoSocietario?.archivoEstatutos?.id ?? null,
+          archivoAccionistas: this.acuerdoSocietario?.archivoAccionistas?.id ?? null,
+          archivoTerceros: this.acuerdoSocietario?.archivoTerceros?.id ?? null,
+          derechoPreferencia: this.derechoPreferente,
+        });
+      } catch (error) {
+        console.error(
+          "[AcuerdosSocietariosStore] Error al actualizar acuerdos societarios:",
+          error
+        );
+        throw error;
+      }
+    },
+
     // Actions upload: subir archivos
     async uploadEstatutosFile(societyId: string, file: File | null) {
       try {
