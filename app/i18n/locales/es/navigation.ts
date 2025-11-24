@@ -15,7 +15,7 @@ export default {
   historialSucursales: "Historial de Registros",
 
   // Sub-items Operaciones
-  operaciones: "Operaciones de Órgano de Control",
+  operaciones: "Operaciones",
   directorio: "Directorio",
   juntaAccionistas: "Junta de Accionistas",
   historico: "Histórico",
@@ -29,7 +29,11 @@ export default {
   espaciosTrabajo: "Espacios de Trabajo",
   espacios: "Espacios",
   crearEspacio: "Crear espacio",
-  nav: {
-    ayuda: "Ayuda",
-  },
+
+  // Chat IA
+  chatIA: "Chat IA",
+  iniciarChat: "Iniciar Chat",
+
+  // Ayuda
+  ayuda: "Ayuda",
 } as const;

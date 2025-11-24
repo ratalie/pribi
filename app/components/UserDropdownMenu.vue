@@ -1,31 +1,25 @@
 <template>
-  <div
-    class="group/dropdown flex items-center gap-3 px-2 py-2 rounded-lg transition-colors hover:bg-primary-400/80"
-  >
+  <div class="probo-user-menu">
     <!-- Click directo en usuario navega al panel -->
     <div
-      class="flex items-center gap-4 flex-1 cursor-pointer"
+      class="probo-user-card"
       @click="handleOpenProfile"
     >
-      <Avatar class="w-10 h-10">
+      <Avatar class="probo-user-avatar">
         <AvatarImage
           :src="currentUser.avatar || '/placeholder.svg'"
           :alt="currentUser.name"
         />
-        <AvatarFallback
-          class="bg-sidebar-primary text-sidebar-primary-foreground"
-        >
+        <AvatarFallback class="probo-user-avatar-fallback">
           {{ getInitials(currentUser.name) }}
         </AvatarFallback>
       </Avatar>
 
-      <div class="flex-1 min-w-0">
-        <p class="text-white text-sm font-medium">
+      <div class="probo-user-info">
+        <p class="probo-user-name">
           {{ currentUser.name }}
         </p>
-        <p
-          class="text-gray-300 text-xs group-hover/dropdown:text-gray-100 transition-colors"
-        >
+        <p class="probo-user-role">
           {{ currentUser.title }}
         </p>
       </div>
@@ -35,11 +29,11 @@
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
         <button
-          class="p-1 rounded hover:bg-primary-500/50 transition-colors"
+          class="probo-user-dropdown-btn"
           @click.stop
         >
           <ChevronDown
-            class="w-4 h-4 text-white transition-transform group-hover/dropdown:rotate-180 duration-200"
+            class="w-4 h-4 text-white transition-transform duration-200"
           />
         </button>
       </DropdownMenuTrigger>
@@ -48,16 +42,8 @@
         align="end"
         class="w-56 bg-card text-card-foreground border-border"
       >
-        <DropdownMenuItem @click="handleOpenProfile">
-          <User class="w-4 h-4 mr-2" />
-          {{ t("user.profile") }}
-        </DropdownMenuItem>
-
-        <DropdownMenuItem @click="handleOpenConfiguration">
-          <Settings class="w-4 h-4 mr-2" />
-          {{ t("user.settings") }}
-        </DropdownMenuItem>
-
+        <!-- Profile y Settings ocultos según especificación -->
+        
         <DropdownMenuSeparator />
 
         <DropdownMenuItem @click="handleOpenAdminPanel">
@@ -143,3 +129,84 @@ const handleLogout = () => {
   logout();
 };
 </script>
+
+<style scoped>
+/* ============================================
+   USER MENU - Estilos según Figma
+   ============================================ */
+.probo-user-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.probo-user-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.probo-user-card:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.probo-user-avatar {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.probo-user-avatar-fallback {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 500;
+}
+
+.probo-user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.probo-user-name {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.probo-user-role {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+  margin-top: 2px;
+}
+
+.probo-user-dropdown-btn {
+  padding: 4px;
+  border-radius: 4px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.probo-user-dropdown-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #FFFFFF;
+}
+</style>

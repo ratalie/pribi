@@ -2,7 +2,8 @@ import type { Theme } from "~/types/user";
 
 export const useTheme = () => {
   // Estado reactivo del tema actual
-  const currentTheme = ref<Theme>("system");
+  // Por defecto: "light" (color claro) según especificación
+  const currentTheme = ref<Theme>("light");
 
   // Tema efectivo considerando preferencia del sistema
   const effectiveTheme = computed<"light" | "dark" | "purple">(() => {

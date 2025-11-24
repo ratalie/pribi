@@ -5,6 +5,7 @@ export const navigationSections: NavigationSection[] = [
     id: "registros",
     title: "Registros",
     translationKey: "navigation.registros",
+    icon: "Building",
     items: [
       {
         id: "registros-sociedades",
@@ -72,8 +73,9 @@ export const navigationSections: NavigationSection[] = [
   },
   {
     id: "operaciones",
-    title: "Operaciones de Órgano de Control",
+    title: "Operaciones",
     translationKey: "navigation.operaciones",
+    icon: "Briefcase",
     items: [
       {
         id: "directorio",
@@ -143,12 +145,13 @@ export const navigationSections: NavigationSection[] = [
     id: "storage",
     title: "Storage",
     translationKey: "navigation.storage",
+    icon: "HardDrive",
     items: [
       {
         id: "almacen",
         label: "Almacén",
         translationKey: "navigation.almacen",
-        icon: "Archive",
+        icon: "Database",
         href: "/storage/almacen",
         roles: ["admin", "manager", "user"],
       },
@@ -166,27 +169,44 @@ export const navigationSections: NavigationSection[] = [
     id: "espacios-trabajo",
     title: "Espacios de Trabajo",
     translationKey: "navigation.espaciosTrabajo",
+    icon: "FolderKanban",
     items: [
       {
         id: "espacios-trabajo-dashboard",
         label: "Dashboard",
         translationKey: "navigation.dashboard",
         icon: "LayoutDashboard",
-        href: "/features/espacios-trabajo/dashboard",
+        href: "/espacios-trabajo/dashboard",
       },
       {
         id: "espacios-trabajo-espacios",
         label: "Espacios",
         translationKey: "navigation.espacios",
         icon: "FolderKanban",
-        href: "/features/espacios-trabajo/espacios",
+        href: "/espacios-trabajo/espacios",
       },
       {
         id: "espacios-trabajo-crear",
         label: "Crear espacio",
         translationKey: "navigation.crearEspacio",
         icon: "FilePlus2",
-        href: "/features/espacios-trabajo/crear",
+        href: "/espacios-trabajo/crear",
+      },
+    ],
+  },
+  {
+    id: "chat-ia",
+    title: "Chat IA",
+    translationKey: "navigation.chatIA",
+    icon: "Bot",
+    items: [
+      {
+        id: "chat-ia-iniciar",
+        label: "Iniciar Chat",
+        translationKey: "navigation.iniciarChat",
+        icon: "Bot",
+        href: "/chat-ia",
+        roles: ["admin", "manager", "user"],
       },
     ],
   },
