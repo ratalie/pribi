@@ -23,7 +23,10 @@
     />
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div 
+      class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out"
+      :class="isCollapsed ? 'ml-[80px]' : 'ml-[280px]'"
+    >
       <!-- Main Content Area -->
       <main class="flex-1 overflow-y-auto">
         <NuxtLayout v-if="isFlowLayout" name="flow-layout">

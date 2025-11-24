@@ -134,8 +134,8 @@ export const useTheme = () => {
       console.log("  ✅ Tema válido encontrado:", stored);
       currentTheme.value = stored;
     } else {
-      console.log("  ℹ️ No hay tema válido, usando default: system");
-      currentTheme.value = "system";
+      console.log("  ℹ️ No hay tema válido, usando default: light");
+      currentTheme.value = "light";
     }
 
     console.log("  📊 Estado después de cargar:");

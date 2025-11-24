@@ -1,42 +1,44 @@
 <template>
   <div class="probo-user-menu">
-    <!-- Click directo en usuario navega al panel -->
-    <div
-      class="probo-user-card"
-      @click="handleOpenProfile"
-    >
-      <Avatar class="probo-user-avatar">
-        <AvatarImage
-          :src="currentUser.avatar || '/placeholder.svg'"
-          :alt="currentUser.name"
-        />
-        <AvatarFallback class="probo-user-avatar-fallback">
-          {{ getInitials(currentUser.name) }}
-        </AvatarFallback>
-      </Avatar>
-
-      <div class="probo-user-info">
-        <p class="probo-user-name">
-          {{ currentUser.name }}
-        </p>
-        <p class="probo-user-role">
-          {{ currentUser.title }}
-        </p>
-      </div>
-    </div>
-
-    <!-- Dropdown para opciones adicionales -->
-    <DropdownMenu>
-      <DropdownMenuTrigger as-child>
-        <button
-          class="probo-user-dropdown-btn"
-          @click.stop
-        >
-          <ChevronDown
-            class="w-4 h-4 text-white transition-transform duration-200"
+    <!-- Modo Expandido -->
+    <template v-if="!isCollapsed">
+      <!-- Click directo en usuario navega al panel -->
+      <div
+        class="probo-user-card"
+        @click="handleOpenProfile"
+      >
+        <Avatar class="probo-user-avatar">
+          <AvatarImage
+            :src="currentUser.avatar || '/placeholder.svg'"
+            :alt="currentUser.name"
           />
-        </button>
-      </DropdownMenuTrigger>
+          <AvatarFallback class="probo-user-avatar-fallback">
+            {{ getInitials(currentUser.name) }}
+          </AvatarFallback>
+        </Avatar>
+
+        <div class="probo-user-info">
+          <p class="probo-user-name">
+            {{ currentUser.name }}
+          </p>
+          <p class="probo-user-role">
+            {{ currentUser.title }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Dropdown para opciones adicionales -->
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <button
+            class="probo-user-dropdown-btn"
+            @click.stop
+          >
+            <ChevronDown
+              class="w-4 h-4 text-white transition-transform duration-200"
+            />
+          </button>
+        </DropdownMenuTrigger>
 
       <DropdownMenuContent
         align="end"
@@ -64,12 +66,57 @@
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+    </template>
+
+    <!-- Modo Colapsado: Solo Avatar -->
+    <template v-else>
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <button class="probo-user-avatar-collapsed">
+            <Avatar class="probo-user-avatar">
+              <AvatarImage
+                :src="currentUser.avatar || '/placeholder.svg'"
+                :alt="currentUser.name"
+              />
+              <AvatarFallback class="probo-user-avatar-fallback">
+                {{ getInitials(currentUser.name) }}
+              </AvatarFallback>
+            </Avatar>
+          </button>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent
+          align="end"
+          class="w-56 bg-card text-card-foreground border-border"
+        >
+          <DropdownMenuItem @click="handleOpenAdminPanel">
+            <Shield class="w-4 h-4 mr-2" />
+            Panel Administrativo
+          </DropdownMenuItem>
+
+          <DropdownMenuItem @click="handleOpenHelp">
+            <HelpCircle class="w-4 h-4 mr-2" />
+            {{ t("navigation.ayuda") }}
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem class="text-destructive" @click="handleLogout">
+            <LogOut class="w-4 h-4 mr-2" />
+            {{ t("user.logout") }}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </template>
   </div>
   <!-- Configuration Modal -->
   <ConfigurationModal v-model:open="isConfigModalOpen" />
 </template>
 
 <script setup lang="ts">
+defineProps<{
+  isCollapsed?: boolean;
+}>();
 import {
   ChevronDown,
   User,
@@ -208,5 +255,28 @@ const handleLogout = () => {
 .probo-user-dropdown-btn:hover {
   background-color: rgba(255, 255, 255, 0.05);
   color: #FFFFFF;
+}
+
+/* Modo Colapsado: Solo Avatar */
+.probo-user-avatar-collapsed {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.probo-user-avatar-collapsed:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.probo-user-avatar-collapsed .probo-user-avatar {
+  width: 32px;
+  height: 32px;
 }
 </style>
