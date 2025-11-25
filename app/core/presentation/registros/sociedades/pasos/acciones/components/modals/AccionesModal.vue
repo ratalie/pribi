@@ -82,8 +82,9 @@
         redimiblesClase: accion.redimibles,
         otrosDerechosEspecialesClase: accion.derechosEspeciales,
         obligacionesAdicionalesClase: accion.obligacionesAdicionales,
-        archivosDerechosEspecialesClase: [...accion.archivosDerechosEspeciales],
-        archivosObligacionesClase: [...accion.archivosObligaciones],
+        // TODO: Mapear archivos a metadata cuando vengan del backend
+        // metadataDerechosEspecialesClase: accion.archivosDerechosEspeciales ? [...accion.archivosDerechosEspeciales] : [],
+        // metadataObligacionesClase: accion.archivosObligaciones ? [...accion.archivosObligaciones] : [],
       });
       return;
     }
@@ -143,8 +144,11 @@
         redimibles: formData.redimiblesClase,
         derechosEspeciales: formData.otrosDerechosEspecialesClase,
         obligacionesAdicionales: formData.obligacionesAdicionalesClase,
-        archivosDerechosEspeciales: [...formData.archivosDerechosEspecialesClase],
-        archivosObligaciones: [...formData.archivosObligacionesClase],
+        // TODO: Cambiar tipo AccionRegistro para aceptar fileIds en lugar de File[]
+        archivosDerechosEspeciales: formData.metadataDerechosEspecialesClase.map(
+          (m) => m.fileId
+        ) as any,
+        archivosObligaciones: formData.metadataObligacionesClase.map((m) => m.fileId) as any,
       };
     }
 
@@ -237,7 +241,7 @@
         </template>
         <template #opcion-b>
           <div class="pt-10">
-            <ClasesAccionesForm />
+            <ClasesAccionesForm :society-id="props.societyId" />
           </div>
         </template>
       </SwitchTabs>

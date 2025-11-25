@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
-  import FileUploadDragDropMultiple from "~/components/base/inputs/FileUploadDragDropMultiple.vue";
+  import FileUploadMultipleWithMetadata from "~/components/base/inputs/FileUploadMultipleWithMetadata.vue";
   import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
   import {
@@ -8,6 +8,14 @@
     nombreClaseAccionSchema,
   } from "../../schemas/clasesAcciones";
   import { useClasesAccionesStore } from "../../stores/useClasesAccionesStore";
+
+  interface Props {
+    societyId?: string;
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    societyId: "",
+  });
 
   const clasesAccionesStore = useClasesAccionesStore();
 </script>
@@ -74,14 +82,21 @@
         v-if="clasesAccionesStore.otrosDerechosEspecialesClase"
         class="bg-white p-1 rounded-b-lg"
       >
-        <FileUploadDragDropMultiple
-          v-model="clasesAccionesStore.archivosDerechosEspecialesClase"
+        <FileUploadMultipleWithMetadata
+          v-if="props.societyId"
+          :files-metadata="clasesAccionesStore.metadataDerechosEspecialesClase"
+          :society-id="props.societyId"
           click-message="Haz click o arrastra tus documentos"
           :max-files="10"
           :max-size-m-b="5"
           format-description=".docx, .pdf, max 5mb"
           custom-icon="heroicons:arrow-up-tray"
+          @file-uploaded="clasesAccionesStore.addDerechosEspecialesClaseMetadata"
+          @file-removed="clasesAccionesStore.removeDerechosEspecialesClaseMetadata"
         />
+        <p v-else class="text-sm text-gray-500 p-4">
+          Se requiere societyId para subir archivos
+        </p>
       </div>
     </div>
 
@@ -106,14 +121,21 @@
         v-if="clasesAccionesStore.obligacionesAdicionalesClase"
         class="bg-white p-1 rounded-b-lg"
       >
-        <FileUploadDragDropMultiple
-          v-model="clasesAccionesStore.archivosObligacionesClase"
+        <FileUploadMultipleWithMetadata
+          v-if="props.societyId"
+          :files-metadata="clasesAccionesStore.metadataObligacionesClase"
+          :society-id="props.societyId"
           click-message="Haz click o arrastra tus documentos"
           :max-files="10"
           :max-size-m-b="5"
           format-description=".docx, .pdf, max 5mb"
           custom-icon="heroicons:arrow-up-tray"
+          @file-uploaded="clasesAccionesStore.addObligacionesClaseMetadata"
+          @file-removed="clasesAccionesStore.removeObligacionesClaseMetadata"
         />
+        <p v-else class="text-sm text-gray-500 p-4">
+          Se requiere societyId para subir archivos
+        </p>
       </div>
     </div>
 
