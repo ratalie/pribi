@@ -15,7 +15,7 @@
     societyId?: string;
   }
 
-  defineProps<Props>();
+  const props = defineProps<Props>();
 
   const {
     columns,
@@ -32,9 +32,10 @@
     openAccionesModal,
     closeValorNominalModal,
     closeAccionesModal,
+    handleSaveValorNominal,
     accionesActions,
     valorNominalStore,
-  } = useAccionesComputed();
+  } = useAccionesComputed(props.societyId ?? "");
 </script>
 
 <template>
@@ -80,9 +81,9 @@
 
     <ValorNominalModal
       v-model="isValorNominalModalOpen"
-      v-model:valor-nominal="valorNominalStore.valor"
+      :valor-nominal="valorNominalStore.valor"
+      :handle-save-valor-nominal="handleSaveValorNominal"
       @close="closeValorNominalModal"
-      @update:valor-nominal="valorNominalStore.setValor($event)"
     />
 
     <AccionesModal

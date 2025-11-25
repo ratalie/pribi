@@ -11,6 +11,7 @@
   interface Props {
     modelValue?: boolean;
     valorNominal?: number;
+    handleSaveValorNominal: (valor: number) => Promise<void>;
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -19,7 +20,6 @@
 
   const emits = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
-    (e: "update:valorNominal", value: number): void;
     (e: "close"): void;
   }>();
 
@@ -30,6 +30,7 @@
   // Valor temporal local (no emite hasta guardar)
   const valorNominalTemporal = ref(0);
   const valorNominalInput = ref("");
+  const isLoading = ref(false);
 
   // Schema de validación con Zod
   const valorNominalSchema = z
@@ -110,9 +111,6 @@
   };
 
   const isValorIngresado = computed(() => valorValidado.value > 0);
-  const inputAnimationClasses = computed(() =>
-    isValorIngresado.value ? "" : "animate-pulse ring-2 ring-primary-200 rounded-lg"
-  );
 
   const handleCancel = () => {
     emits("close");
@@ -122,13 +120,19 @@
   };
 
   const handleSave = async () => {
-    setTouched(true);
+    try {
+      setTouched(true);
+      isLoading.value = true;
 
-    emits("update:valorNominal", valorNominalTemporal.value);
+      await props.handleSaveValorNominal(valorNominalTemporal.value);
 
-    modelValue.value = false;
-    valorNominalTemporal.value = 0;
-    valorNominalInput.value = "";
+      valorNominalTemporal.value = 0;
+      valorNominalInput.value = "";
+    } catch (error) {
+      console.error("Error al guardar el valor nominal:", error);
+    } finally {
+      isLoading.value = false;
+    }
   };
 
   const handleInvalidSubmit = () => {
@@ -155,12 +159,7 @@
 
       <!-- Input numérico con formato decimal -->
       <div class="flex flex-col items-center justify-center gap-2">
-        <div
-          :class="[
-            'flex items-center justify-center gap-2 transition-all duration-300',
-            inputAnimationClasses,
-          ]"
-        >
+        <div class="flex items-center justify-center gap-2 transition-all duration-300">
           <span class="t-t1 font-secondary font-extrabold text-gray-900 shrink-0">S/</span>
 
           <input
@@ -194,6 +193,7 @@
           label="Guardar"
           class="w-96 h-11"
           :is-disabled="!isValorIngresado"
+          :is-loading="isLoading"
         />
       </div>
     </template>

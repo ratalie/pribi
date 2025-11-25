@@ -1,9 +1,14 @@
 import { defineStore } from "pinia";
+import { ListAccionesUseCase } from "~/core/hexag/registros/sociedades/pasos/acciones/application";
+import { AccionesHttpRepository } from "~/core/hexag/registros/sociedades/pasos/acciones/infrastructure";
 import type { AccionRegistro, AccionTableRow } from "../types/acciones";
 
 interface State {
   acciones: AccionRegistro[];
 }
+
+const repository = new AccionesHttpRepository();
+const listUseCase = new ListAccionesUseCase(repository);
 
 const percentageFormatter = new Intl.NumberFormat("es-PE", {
   style: "percent",
@@ -42,6 +47,14 @@ export const useRegistroAccionesStore = defineStore("registroAcciones", {
   },
 
   actions: {
+    async loadAcciones(profileId: string) {
+      try {
+        await listUseCase.execute(profileId);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
     addAccion(
       payload: Omit<AccionRegistro, "id" | "participacion"> & {
         id?: string;

@@ -1,4 +1,4 @@
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
 import { useAccionesComunesStore } from "../stores/useAccionesComunesStore";
 import { useClasesAccionesStore } from "../stores/useClasesAccionesStore";
@@ -6,9 +6,10 @@ import { useRegistroAccionesStore } from "../stores/useRegistroAccionesStore";
 import { useValorNominalStore } from "../stores/useValorNominalStore";
 import type { AccionTableRow } from "../types/acciones";
 
-export const useAccionesComputed = () => {
-  const valorNominalStore = useValorNominalStore();
+export const useAccionesComputed = (profileId: string) => {
   const registroAccionesStore = useRegistroAccionesStore();
+
+  const valorNominalStore = useValorNominalStore();
   const accionesComunesStore = useAccionesComunesStore();
   const clasesAccionesStore = useClasesAccionesStore();
 
@@ -65,15 +66,29 @@ export const useAccionesComputed = () => {
   const accionesModalMode = ref<"crear" | "editar">("crear");
   const accionSeleccionadaId = ref<string | null>(null);
 
-  // Funciones de utilidad
+  // Funciones de modal de valor nominal
+  const openValorNominalModal = () => {
+    isValorNominalModalOpen.value = true;
+  };
+
+  const closeValorNominalModal = () => {
+    isValorNominalModalOpen.value = false;
+  };
+
+  const handleSaveValorNominal = async (valor: number) => {
+    try {
+      await valorNominalStore.update(profileId, valor);
+
+      closeValorNominalModal();
+    } catch (error) {
+      console.error("[useAccionesComputed] Error al guardar valor nominal:", error);
+    }
+  };
+
+  // Funciones de modal de acciones
   const resetAccionForms = () => {
     accionesComunesStore.$reset();
     clasesAccionesStore.$reset();
-  };
-
-  // Funciones de modales
-  const openValorNominalModal = () => {
-    isValorNominalModalOpen.value = true;
   };
 
   const openAccionesModal = () => {
@@ -81,10 +96,6 @@ export const useAccionesComputed = () => {
     accionesModalMode.value = "crear";
     accionSeleccionadaId.value = null;
     isAccionesModalOpen.value = true;
-  };
-
-  const closeValorNominalModal = () => {
-    isValorNominalModalOpen.value = false;
   };
 
   const closeAccionesModal = () => {
@@ -122,6 +133,13 @@ export const useAccionesComputed = () => {
     },
   ];
 
+  onMounted(async () => {
+    await Promise.all([
+      registroAccionesStore.loadAcciones(profileId),
+      valorNominalStore.load(profileId),
+    ]);
+  });
+
   return {
     // Columnas
     columns,
@@ -143,6 +161,7 @@ export const useAccionesComputed = () => {
     openValorNominalModal,
     openAccionesModal,
     closeValorNominalModal,
+    handleSaveValorNominal,
     closeAccionesModal,
     // Acciones
     accionesActions,
