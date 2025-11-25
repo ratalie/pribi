@@ -34,7 +34,7 @@
             class="probo-user-dropdown-btn"
             @click.stop
           >
-            <ChevronDown
+            <MoreVertical
               class="w-4 h-4 text-white transition-transform duration-200"
             />
           </button>
@@ -118,7 +118,7 @@ defineProps<{
   isCollapsed?: boolean;
 }>();
 import {
-  ChevronDown,
+  MoreVertical,
   User,
   Settings,
   HelpCircle,
@@ -185,6 +185,8 @@ const handleLogout = () => {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-height: 56px; /* Altura fija para evitar cambios durante transición */
+  height: 56px;
 }
 
 .probo-user-card {
@@ -196,6 +198,8 @@ const handleLogout = () => {
   padding: 8px;
   border-radius: 8px;
   transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 40px; /* Altura mínima fija */
+  height: 40px;
 }
 
 .probo-user-card:hover {

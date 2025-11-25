@@ -14,9 +14,10 @@
   } from "@/components/ui/sidebar";
   import { cn } from "@/lib/utils";
   import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-vue-next";
-  import { ref } from "vue";
+  import { computed, ref } from "vue";
   import { useRoute } from "vue-router";
   import logoProbo from "~/assets/icons/logo-probo.svg";
+  import logoProboImagen from "~/assets/icons/probo-logo-imagen.svg";
   import { useProboI18n } from "~/composables/useProboI18n";
   import { useUser } from "~/composables/useUser";
   import { navigationSections } from "~/config/navigation";
@@ -32,6 +33,11 @@
   const route = useRoute();
   const { t } = useProboI18n();
   const { canViewModule } = useUser();
+
+  // Logo según estado: completo cuando expandido, solo imagen cuando contraído
+  const currentLogo = computed(() => {
+    return props.isCollapsed ? logoProboImagen : logoProbo;
+  });
 
   // Estados de expansión - Inicializar dinámicamente
   const expandedSections = ref<Record<string, boolean>>({});
@@ -130,10 +136,7 @@
 
 <template>
   <!-- Sidebar Container -->
-  <SidebarProvider
-    class="bg-red-500 w-fit"
-    :class="cn(props.isCollapsed ? 'w-[120px]' : 'w-[300px]')"
-  >
+  <SidebarProvider :class="cn(props.isCollapsed ? 'w-[100px]' : 'w-[280px]')">
     <!-- Sidebar base - 280px width cuando expandido, 100px cuando colapsado -->
     <Sidebar
       :class="
@@ -145,13 +148,20 @@
     >
       <!-- Header - Padding 24px -->
       <SidebarHeader class="probo-sidebar-header">
-        <div :class="cn('flex items-center justify-between mb-4')">
+        <div
+          :class="
+            cn(
+              'flex items-center justify-between mb-4',
+              props.isCollapsed ? 'flex-col gap-2' : 'flex-row'
+            )
+          "
+        >
           <!-- Logo con gradiente -->
           <NuxtLink
             to="/"
-            :class="cn('probo-logo-link', props.isCollapsed && 'justify-center')"
+            :class="cn('probo-logo-link', props.isCollapsed && 'justify-center w-full')"
           >
-            <img class="probo-logo-img" :src="logoProbo" alt="PROBO" />
+            <img class="probo-logo-img" :src="currentLogo" alt="PROBO" />
           </NuxtLink>
 
           <Button variant="ghost" size="sm" class="probo-collapse-btn" @click="toggleSidebar">
@@ -392,6 +402,21 @@
   .probo-logo-img {
     width: 100%;
     height: 100%;
+    object-fit: contain;
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Cuando está contraído, el logo debe ser más pequeño (solo la bola) */
+  .probo-sidebar-figma.w-\[100px\] .probo-logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+
+  /* Cuando está expandido, el logo completo puede ser más ancho */
+  .probo-sidebar-figma.w-\[280px\] .probo-logo-img {
+    max-width: 120px;
+    height: auto;
     object-fit: contain;
   }
 

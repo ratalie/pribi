@@ -22,8 +22,7 @@
 
     <!-- Main Content -->
     <div
-      class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out"
-      :class="isCollapsed ? 'ml-4' : 'ml-12'"
+      class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out ml-8"
     >
       <!-- Main Content Area -->
       <main class="flex-1 overflow-y-auto">
