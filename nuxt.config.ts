@@ -48,6 +48,7 @@ export default defineNuxtConfig({
     "shadcn-nuxt",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
+    "motion-v/nuxt",
   ],
 
   // CSS global - Tailwind 4
