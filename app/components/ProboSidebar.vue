@@ -33,12 +33,6 @@
   const { t } = useProboI18n();
   const { canViewModule } = useUser();
 
-  // Estado de hover expand (temporal)
-  const isHoverExpanded = ref(false);
-
-  // Estado efectivo: combinación de collapsed + hover
-  const isEffectivelyCollapsed = computed(() => props.isCollapsed && !isHoverExpanded.value);
-
   // Estados de expansión - Inicializar dinámicamente
   const expandedSections = ref<Record<string, boolean>>({});
 
@@ -96,17 +90,6 @@
     "registros-sucursales": false,
   });
 
-  // Handlers para hover expand
-  const handleMouseEnter = () => {
-    if (props.isCollapsed) {
-      isHoverExpanded.value = true;
-    }
-  };
-
-  const handleMouseLeave = () => {
-    isHoverExpanded.value = false;
-  };
-
   // Métodos
   const toggleSection = (section: string, value: boolean) => {
     expandedSections.value[section] = value;
@@ -138,24 +121,6 @@
     return false;
   };
 
-  // Detectar si un item de segundo nivel está activo
-  const isItemActive = (itemId: string, sectionId: string): boolean => {
-    const section = navigationSections.find((s) => s.id === sectionId);
-    if (!section) return false;
-
-    const item = section.items.find((i) => i.id === itemId);
-    if (!item) return false;
-
-    // Verificar si el item o sus subitems están activos
-    if (item.href && isActive(item.href)) return true;
-    if (item.submenuItems) {
-      for (const subItem of item.submenuItems) {
-        if (subItem.href && isActive(subItem.href)) return true;
-      }
-    }
-    return false;
-  };
-
   // Detectar si un item tiene algún subitem activo (para modo colapsado)
   const hasActiveSubItem = (item: any): boolean => {
     if (!item.submenuItems) return false;
@@ -166,34 +131,26 @@
 <template>
   <!-- Sidebar Container -->
   <SidebarProvider
-    :class="
-      cn(
-        'w-auto',
-        // Cuando está en hover expand, el provider no debe ocupar espacio
-        isHoverExpanded && props.isCollapsed ? 'w-0' : ''
-      )
-    "
+    class="bg-red-500 w-fit"
+    :class="cn(props.isCollapsed ? 'w-[120px]' : 'w-[300px]')"
   >
     <!-- Sidebar base - 280px width cuando expandido, 100px cuando colapsado -->
     <Sidebar
       :class="
         cn(
-          'probo-sidebar-figma h-screen flex flex-col overflow-hidden border-r transition-all duration-300 ease-in-out',
-          isEffectivelyCollapsed ? 'w-[100px]' : 'w-[280px]',
-          // Cuando está en hover expand, usar fixed para no empujar el contenido
-          isHoverExpanded && props.isCollapsed
-            ? 'fixed left-0 top-0 z-50 shadow-2xl'
-            : 'relative'
+          'probo-sidebar-figma h-screen flex flex-col overflow-hidden border-r transition-all duration-300 ease-in-out ',
+          props.isCollapsed ? 'w-[100px]' : 'w-[280px]'
         )
       "
-      @mouseenter="handleMouseEnter"
-      @mouseleave="handleMouseLeave"
     >
       <!-- Header - Padding 24px -->
       <SidebarHeader class="probo-sidebar-header">
         <div :class="cn('flex items-center justify-between mb-4')">
           <!-- Logo con gradiente -->
-          <NuxtLink to="/" :class="cn('probo-logo-link', isCollapsed && 'justify-center')">
+          <NuxtLink
+            to="/"
+            :class="cn('probo-logo-link', props.isCollapsed && 'justify-center')"
+          >
             <img class="probo-logo-img" :src="logoProbo" alt="PROBO" />
           </NuxtLink>
 
@@ -212,8 +169,8 @@
 
       <!-- Navigation Content -->
       <SidebarContent class="probo-sidebar-content">
-        <!-- Modo Expandido (o hover expand) -->
-        <template v-if="!isEffectivelyCollapsed">
+        <!-- Modo Expandido -->
+        <template v-if="!props.isCollapsed">
           <div
             v-for="section in navigationSections"
             :key="section.id"
@@ -251,16 +208,7 @@
                           @update:open="(value) => toggleItem(item.id, value)"
                         >
                           <CollapsibleTrigger as-child>
-                            <Button
-                              variant="ghost"
-                              class="probo-subsection-item"
-                              @click="
-                                isEffectivelyCollapsed && item.submenuItems?.[0]?.href
-                                  ? ((isHoverExpanded = true),
-                                    navigateTo(item.submenuItems[0].href))
-                                  : null
-                              "
-                            >
+                            <Button variant="ghost" class="probo-subsection-item">
                               <div class="flex items-center gap-2">
                                 <component
                                   :is="getIcon(item.icon || '')"
@@ -289,7 +237,6 @@
                                 :class="{
                                   'probo-item-active': isActive(subItem.href),
                                 }"
-                                @click="isHoverExpanded = false"
                               >
                                 <span>{{ t(subItem.translationKey) }}</span>
                               </NuxtLink>
@@ -356,7 +303,7 @@
                       }"
                       @click="
                         item.submenuItems && item.submenuItems.length > 0
-                          ? ((isHoverExpanded = true), (expandedItems[item.id] = true))
+                          ? (expandedItems[item.id] = true)
                           : item.href
                           ? navigateTo(item.href)
                           : null
@@ -381,7 +328,7 @@
 
       <!-- User Profile Footer - Padding 16px -->
       <SidebarFooter class="probo-sidebar-footer">
-        <UserDropdownMenu :is-collapsed="isEffectivelyCollapsed" />
+        <UserDropdownMenu :is-collapsed="props.isCollapsed" />
       </SidebarFooter>
     </Sidebar>
   </SidebarProvider>
@@ -480,15 +427,6 @@
   /* ============================================
    CONTENT AREA
    ============================================ */
-  .probo-sidebar-content {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 0 12px;
-    /* Scrollbar overlay para que no distorsione el contenedor */
-    scrollbar-gutter: stable;
-    transition: padding 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
 
   .probo-sidebar-figma.w-\[100px\] .probo-sidebar-content {
     padding: 0 10px;
@@ -934,5 +872,15 @@
     height: 70%;
     background: linear-gradient(180deg, #8b75ff, #6347f4);
     border-radius: 2px 0 0 2px;
+  }
+
+  .probo-sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0 12px; /*
+Scrollbar overlay para que no distorsione el contenedor */
+    scrollbar-gutter: stable;
+    transition: padding 300ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 </style>
