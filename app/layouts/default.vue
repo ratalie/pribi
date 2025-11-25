@@ -4,10 +4,20 @@
   const route = useRoute();
   const isFlowLayout = computed(() => route.meta.flowLayout === true);
 
-  const isCollapsed = ref(false);
+  // Estado del sidebar con persistencia en localStorage
+  const SIDEBAR_STORAGE_KEY = "probo-sidebar-collapsed";
+
+  // Inicializar desde localStorage
+  const getInitialCollapsedState = (): boolean => {
+    return false;
+  };
+
+  const isCollapsed = ref(getInitialCollapsedState());
 
   const toggleSidebar = () => {
     isCollapsed.value = !isCollapsed.value;
+    // Guardar en localStorage
+    localStorage.setItem(SIDEBAR_STORAGE_KEY, String(isCollapsed.value));
   };
 </script>
 

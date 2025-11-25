@@ -7,10 +7,26 @@
   const isFlowLayout = computed(() => route.meta.flowLayout === true);
   const isFlowLayoutJuntas = computed(() => route.meta.flowLayoutJuntas === true);
 
-  const isCollapsed = ref(false);
+  // Estado del sidebar con persistencia en localStorage
+  const SIDEBAR_STORAGE_KEY = "probo-sidebar-collapsed";
+  
+  // Inicializar desde localStorage
+  const getInitialCollapsedState = (): boolean => {
+    if (process.client) {
+      const stored = localStorage.getItem(SIDEBAR_STORAGE_KEY);
+      return stored === "true";
+    }
+    return false;
+  };
+
+  const isCollapsed = ref(getInitialCollapsedState());
 
   const toggleSidebar = () => {
     isCollapsed.value = !isCollapsed.value;
+    // Guardar en localStorage
+    if (process.client) {
+      localStorage.setItem(SIDEBAR_STORAGE_KEY, String(isCollapsed.value));
+    }
   };
 </script>
 
