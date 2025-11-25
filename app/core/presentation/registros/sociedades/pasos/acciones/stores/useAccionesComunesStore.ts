@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import type { TipoAccionesEnum } from "../types/enums/tipoAccionesEnum";
 
 interface FileMetadataResponseDTO {
   fileId: string;
@@ -8,12 +9,15 @@ interface FileMetadataResponseDTO {
 }
 
 export const useAccionesComunesStore = defineStore("accionesComunesModal", {
-  state: () => ({
+  state: (): State => ({
     // Campos del formulario
+    tipoAcciones: "",
     cantidadAcciones: 0,
     redimibles: false,
     otrosDerechosEspeciales: false,
     obligacionesAdicionales: false,
+    comentariosAdicionales: false,
+    comentariosAdicionalesTexto: "",
 
     // Metadata de archivos de "Otros derechos especiales"
     metadataDerechosEspeciales: [] as FileMetadataResponseDTO[],
@@ -30,6 +34,8 @@ export const useAccionesComunesStore = defineStore("accionesComunesModal", {
         redimibles: this.redimibles,
         otrosDerechosEspeciales: this.otrosDerechosEspeciales,
         obligacionesAdicionales: this.obligacionesAdicionales,
+        comentariosAdicionales: this.comentariosAdicionales,
+        comentariosAdicionalesTexto: this.comentariosAdicionalesTexto,
         metadataDerechosEspeciales: this.metadataDerechosEspeciales,
         metadataObligaciones: this.metadataObligaciones,
       };
@@ -58,3 +64,15 @@ export const useAccionesComunesStore = defineStore("accionesComunesModal", {
     },
   },
 });
+
+interface State {
+  tipoAcciones: TipoAccionesEnum | "";
+  cantidadAcciones: number;
+  redimibles: boolean;
+  otrosDerechosEspeciales: boolean;
+  obligacionesAdicionales: boolean;
+  comentariosAdicionales: boolean;
+  comentariosAdicionalesTexto: string;
+  metadataDerechosEspeciales: FileMetadataResponseDTO[];
+  metadataObligaciones: FileMetadataResponseDTO[];
+}

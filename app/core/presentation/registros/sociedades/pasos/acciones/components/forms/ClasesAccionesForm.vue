@@ -14,23 +14,25 @@
 
 <template>
   <div class="flex flex-col gap-10">
-    <!-- Input: Nombre de la Clase de Acción -->
-    <TextInputZod
-      v-model="clasesAccionesStore.nombreClaseAccion"
-      name="nombre_clase_accion"
-      label="Nombre de la Clase de Acción"
-      placeholder="Escribe la clase aquí"
-      :schema="nombreClaseAccionSchema"
-    />
+    <div class="flex gap-10">
+      <!-- Input: Nombre de la Clase de Acción -->
+      <TextInputZod
+        v-model="clasesAccionesStore.nombreClaseAccion"
+        name="nombre_clase_accion"
+        label="Nombre de la Clase de Acción"
+        placeholder="Escribe la clase aquí"
+        :schema="nombreClaseAccionSchema"
+      />
 
-    <!-- Input: Cantidad de Acciones suscritas -->
-    <NumberInputZod
-      v-model="clasesAccionesStore.cantidadAccionesClase"
-      name="cantidad_acciones_clase"
-      label="Cantidad de Acciones suscritas"
-      placeholder="Escribe la cantidad aquí"
-      :schema="cantidadAccionesClaseSchema"
-    />
+      <!-- Input: Cantidad de Acciones suscritas -->
+      <NumberInputZod
+        v-model="clasesAccionesStore.cantidadAccionesClase"
+        name="cantidad_acciones_clase"
+        label="Cantidad de Acciones suscritas"
+        placeholder="Escribe la cantidad aquí"
+        :schema="cantidadAccionesClaseSchema"
+      />
+    </div>
 
     <!-- Switch: Con derecho a Voto -->
     <div class="flex items-center justify-between w-full">
@@ -112,6 +114,44 @@
           format-description=".docx, .pdf, max 5mb"
           custom-icon="heroicons:arrow-up-tray"
         />
+      </div>
+    </div>
+
+    <!-- Sección colapsable: Comentarios adicionales -->
+    <div class="flex flex-col w-full border border-gray-300 rounded-lg">
+      <!-- Header con switch -->
+      <div class="bg-white p-4 flex items-center justify-between rounded-lg">
+        <div class="flex flex-col gap-1">
+          <p class="font-secondary font-bold text-gray-800 t-t2">Comentarios adicionales</p>
+          <p class="font-secondary font-semibold text-gray-400 t-b2">
+            Agrega observaciones complementarios relacionados con esta acción.
+          </p>
+        </div>
+        <SimpleSwitchYesNo v-model="clasesAccionesStore.comentariosAdicionales" />
+      </div>
+
+      <!-- Contenido expandible con v-if -->
+      <div v-if="clasesAccionesStore.comentariosAdicionales" class="bg-white p-1 rounded-b-lg">
+        <div class="flex flex-col gap-5">
+          <!-- Textarea con estilos de Figma -->
+          <div
+            class="border-2 border-dashed border-primary-200 bg-gray-25 rounded flex flex-col gap-4 min-h-[100px] px-8 py-4"
+          >
+            <textarea
+              v-model="clasesAccionesStore.comentariosAdicionalesTexto"
+              :maxlength="200"
+              placeholder="Ej. certificado de emisión, acuerdo de directorio, acta de apertura"
+              class="flex-1 bg-transparent border-none outline-none resize-none text-gray-700 font-secondary font-semibold t-b2 placeholder:text-gray-400"
+              rows="4"
+            />
+            <!-- Contador de caracteres -->
+            <div class="flex justify-end">
+              <p class="font-secondary font-semibold text-gray-400 t-b2">
+                {{ clasesAccionesStore.comentariosAdicionalesTexto.length }}/200
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

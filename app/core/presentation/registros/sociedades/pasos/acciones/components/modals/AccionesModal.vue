@@ -226,7 +226,7 @@
       <!-- Tabs para cambiar entre formularios -->
       <SwitchTabs
         v-model="activeTab"
-        opcion-a="Comunes"
+        opcion-a="Comunes y sin derecho a voto"
         opcion-b="Clases de Acciones"
         variant="default"
       >

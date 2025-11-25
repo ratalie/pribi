@@ -9,6 +9,8 @@ export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
     redimiblesClase: false,
     otrosDerechosEspecialesClase: false,
     obligacionesAdicionalesClase: false,
+    comentariosAdicionales: false,
+    comentariosAdicionalesTexto: "",
 
     // Archivos de "Otros derechos especiales"
     archivosDerechosEspecialesClase: [] as File[],
