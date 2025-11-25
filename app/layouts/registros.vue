@@ -1,9 +1,7 @@
 <script setup lang="ts">
-  import { Menu } from "lucide-vue-next";
   import { computed, ref } from "vue";
   import { useRoute } from "vue-router";
   import ProboSidebar from "~/components/ProboSidebar.vue";
-  import Button from "~/components/ui/button/Button.vue";
 
   const route = useRoute();
   const isFlowLayout = computed(() => route.meta.flowLayout === true);
@@ -27,8 +25,7 @@
 
     <!-- Main Content -->
     <div
-      class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out"
-      :class="isCollapsed ? 'ml-[100px]' : 'ml-[280px]'"
+      class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out ml-8"
     >
       <!-- Main Content Area -->
       <main class="flex-1 overflow-y-auto">
