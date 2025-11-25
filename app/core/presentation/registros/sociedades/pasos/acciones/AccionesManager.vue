@@ -90,6 +90,7 @@
       v-model="isAccionesModalOpen"
       :mode="accionesModalMode"
       :accion-id="accionSeleccionadaId"
+      :society-id="props.societyId"
       @close="closeAccionesModal"
     />
   </div>

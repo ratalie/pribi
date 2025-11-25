@@ -19,11 +19,13 @@
     modelValue?: boolean;
     mode?: "crear" | "editar";
     accionId?: string | null;
+    societyId?: string;
   }
 
   const props = withDefaults(defineProps<Props>(), {
     mode: "crear",
     accionId: null,
+    societyId: "",
   });
 
   const emits = defineEmits<{
@@ -92,8 +94,9 @@
       redimibles: accion.redimibles,
       otrosDerechosEspeciales: accion.derechosEspeciales,
       obligacionesAdicionales: accion.obligacionesAdicionales,
-      archivosDerechosEspeciales: [...accion.archivosDerechosEspeciales],
-      archivosObligaciones: [...accion.archivosObligaciones],
+      // TODO: Mapear archivos a metadata cuando vengan del backend
+      // metadataDerechosEspeciales: accion.archivosDerechosEspeciales ? [...accion.archivosDerechosEspeciales] : [],
+      // metadataObligaciones: accion.archivosObligaciones ? [...accion.archivosObligaciones] : [],
     });
   };
 
@@ -155,8 +158,12 @@
       redimibles: formData.redimibles,
       derechosEspeciales: formData.otrosDerechosEspeciales,
       obligacionesAdicionales: formData.obligacionesAdicionales,
-      archivosDerechosEspeciales: [...formData.archivosDerechosEspeciales],
-      archivosObligaciones: [...formData.archivosObligaciones],
+      // TODO: Enviar fileIds de metadata al backend
+      // TODO: Cambiar tipo AccionRegistro para aceptar fileIds en lugar de File[]
+      archivosDerechosEspeciales: formData.metadataDerechosEspeciales.map(
+        (m) => m.fileId
+      ) as any,
+      archivosObligaciones: formData.metadataObligaciones.map((m) => m.fileId) as any,
     };
   };
 
@@ -178,9 +185,9 @@
         ...existente,
         ...payload,
         id: props.accionId,
-      });
+      } as any);
     } else {
-      registroAccionesStore.addAccion(payload);
+      registroAccionesStore.addAccion(payload as any);
     }
 
     resetForms();
@@ -225,7 +232,7 @@
       >
         <template #opcion-a>
           <div class="pt-10">
-            <AccionesComunesForm />
+            <AccionesComunesForm :society-id="props.societyId" />
           </div>
         </template>
         <template #opcion-b>

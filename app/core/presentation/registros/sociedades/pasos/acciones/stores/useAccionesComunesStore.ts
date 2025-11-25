@@ -1,5 +1,12 @@
 import { defineStore } from "pinia";
 
+interface FileMetadataResponseDTO {
+  fileId: string;
+  mimeType: string;
+  originalName: string;
+  size: number;
+}
+
 export const useAccionesComunesStore = defineStore("accionesComunesModal", {
   state: () => ({
     // Campos del formulario
@@ -8,11 +15,11 @@ export const useAccionesComunesStore = defineStore("accionesComunesModal", {
     otrosDerechosEspeciales: false,
     obligacionesAdicionales: false,
 
-    // Archivos de "Otros derechos especiales"
-    archivosDerechosEspeciales: [] as File[],
+    // Metadata de archivos de "Otros derechos especiales"
+    metadataDerechosEspeciales: [] as FileMetadataResponseDTO[],
 
-    // Archivos de "Obligaciones adicionales"
-    archivosObligaciones: [] as File[],
+    // Metadata de archivos de "Obligaciones adicionales"
+    metadataObligaciones: [] as FileMetadataResponseDTO[],
   }),
 
   actions: {
@@ -23,9 +30,31 @@ export const useAccionesComunesStore = defineStore("accionesComunesModal", {
         redimibles: this.redimibles,
         otrosDerechosEspeciales: this.otrosDerechosEspeciales,
         obligacionesAdicionales: this.obligacionesAdicionales,
-        archivosDerechosEspeciales: this.archivosDerechosEspeciales,
-        archivosObligaciones: this.archivosObligaciones,
+        metadataDerechosEspeciales: this.metadataDerechosEspeciales,
+        metadataObligaciones: this.metadataObligaciones,
       };
+    },
+
+    addDerechosEspecialesMetadata(metadata: FileMetadataResponseDTO) {
+      this.metadataDerechosEspeciales.push(metadata);
+    },
+
+    removeDerechosEspecialesMetadata(fileId: string) {
+      const index = this.metadataDerechosEspeciales.findIndex((m) => m.fileId === fileId);
+      if (index !== -1) {
+        this.metadataDerechosEspeciales.splice(index, 1);
+      }
+    },
+
+    addObligacionesMetadata(metadata: FileMetadataResponseDTO) {
+      this.metadataObligaciones.push(metadata);
+    },
+
+    removeObligacionesMetadata(fileId: string) {
+      const index = this.metadataObligaciones.findIndex((m) => m.fileId === fileId);
+      if (index !== -1) {
+        this.metadataObligaciones.splice(index, 1);
+      }
     },
   },
 });
