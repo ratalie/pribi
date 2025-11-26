@@ -1,36 +1,34 @@
 <script setup lang="ts">
 import { motion } from "motion-v";
+import logoProboImagen from "~/assets/icons/probo-logo-imagen.svg";
+import logoProboTexto from "~/assets/icons/probo-logo-texto.svg";
 
 /**
  * HeaderSection Component (X)
- * Sección superior con título, subtítulo y descripción
+ * Sección superior con logo, título y descripción
  * Completamente aislado y editable independientemente
  */
-
-const features = [
-  "Gestión avanzada de proyectos",
-  "Colaboración en tiempo real",
-  "Seguridad de nivel empresarial",
-];
 </script>
 
 <template>
-  <div class="space-y-6">
-    <!-- Logo/Brand -->
+  <div class="space-y-4">
+    <!-- Logo PROBO Grande -->
     <motion.div
       :initial="{ opacity: 0, y: -20 }"
       :animate="{ opacity: 1, y: 0 }"
       :transition="{ duration: 0.6, delay: 0.2 }"
-      class="inline-flex items-center gap-3 mb-4"
+      class="flex items-center gap-3 mb-4"
     >
-      <div
-        class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center"
-      >
-        <div
-          class="w-6 h-6 rounded-lg bg-gradient-to-br from-[var(--primary-200)] to-white"
-        />
-      </div>
-      <span class="text-white/90 t-h6 font-primary">PROBO</span>
+      <img
+        :src="logoProboImagen"
+        alt="PROBO Logo"
+        class="h-12 w-12 lg:h-16 lg:w-16"
+      />
+      <img
+        :src="logoProboTexto"
+        alt="PROBO"
+        class="h-7 lg:h-9 w-auto"
+      />
     </motion.div>
 
     <!-- Main Title -->
@@ -38,50 +36,17 @@ const features = [
       :initial="{ opacity: 0, y: 20 }"
       :animate="{ opacity: 1, y: 0 }"
       :transition="{ duration: 0.6, delay: 0.4 }"
-      class="space-y-4"
+      class="space-y-2.5"
     >
-      <h1 class="text-white t-h1 font-primary max-w-xl leading-tight">
-        Bienvenido de vuelta
+      <h1 class="text-white t-h2 lg:t-h1 font-primary max-w-2xl leading-tight">
+        Aplicación para gestión jurídica, documentaria y
       </h1>
-      <p class="text-[var(--primary-100)] t-h6 font-secondary max-w-lg leading-relaxed">
-        Accede a tu cuenta y continúa gestionando tus proyectos de manera profesional
+      <p class="text-white/95 t-h6 lg:t-h5 font-secondary max-w-2xl leading-snug font-medium">
+        Almacena, gestiona y genera los documentos societarios de forma instantánea
       </p>
-    </motion.div>
-
-    <!-- Features list -->
-    <motion.div
-      :initial="{ opacity: 0 }"
-      :animate="{ opacity: 1 }"
-      :transition="{ duration: 0.6, delay: 0.6 }"
-      class="space-y-3 pt-1"
-    >
-      <motion.div
-        v-for="(feature, index) in features"
-        :key="index"
-        :initial="{ opacity: 0, x: -20 }"
-        :animate="{ opacity: 1, x: 0 }"
-        :transition="{ duration: 0.4, delay: 0.8 + index * 0.1 }"
-        class="flex items-center gap-3"
-      >
-        <div
-          class="w-5 h-5 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0"
-        >
-          <svg
-            class="w-3 h-3 text-white"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="3"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
-        </div>
-        <span class="text-white/85 t-t1 font-secondary">{{ feature }}</span>
-      </motion.div>
+      <p class="text-[var(--primary-100)] t-t1 font-secondary max-w-2xl leading-snug text-sm lg:text-base">
+        Mantén la información societaria actualizada, sube y analiza tus Documentos societarios, y crea los documentos generados por juntas.
+      </p>
     </motion.div>
   </div>
 </template>

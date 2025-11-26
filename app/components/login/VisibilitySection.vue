@@ -38,8 +38,8 @@ const APP_FEATURES = [
   },
   {
     id: 3,
-    title: "Repositorio: Documentos Históricos",
-    description: "Almacena y organiza documentos históricos de las sociedades",
+    title: "Repositorio",
+    description: "Centraliza tus documentos societarios. Organiza y visualiza tu información en carpetas individuales: Juntas Generales, Modificación de estatutos, Matrícula de Acciones, Sesiones de directorio, etc.",
     icon: FolderArchive,
     color: "from-amber-500 to-orange-500",
     visual: "repositorio",
@@ -47,7 +47,7 @@ const APP_FEATURES = [
   {
     id: 4,
     title: "Automatización de Documentos",
-    description: "Genera documentos Word automáticamente por juntas y operaciones",
+    description: "Probo visualiza, edita y gestiona toda tu información societaria. Organiza y visualiza tu información en carpetas individuales: Juntas Generales, Modificación de estatutos, Matrícula de Acciones, Sesiones de directorio, etc.",
     icon: FileText,
     color: "from-green-500 to-emerald-500",
     visual: "documentos",
@@ -62,8 +62,8 @@ const APP_FEATURES = [
   },
   {
     id: 6,
-    title: "Herramientas: Inteligencia Artificial",
-    description: "Chatea con la IA, consulta registros, operaciones, directorio y lee documentos",
+    title: "Chat IA",
+    description: "Tu asistente IA para la gestión societaria",
     icon: Sparkles,
     color: "from-violet-500 to-purple-500",
     visual: "ia",
@@ -143,7 +143,7 @@ const getVisualClass = (visual: string, index: number): string => {
       class="relative overflow-hidden rounded-2xl backdrop-blur-xl bg-white/5 border border-white/10 p-6 lg:p-8"
     >
       <!-- Content -->
-      <div class="relative h-[280px] lg:h-[320px] xl:h-[360px]">
+      <div class="relative h-[240px] lg:h-[280px] xl:h-[300px]">
         <motion.div
           v-for="(feature, index) in APP_FEATURES"
           :key="feature.id"
@@ -165,7 +165,7 @@ const getVisualClass = (visual: string, index: number): string => {
               :initial="{ scale: 0.8, opacity: 0 }"
               :animate="{ scale: 1, opacity: 1 }"
               :transition="{ delay: 0.2, duration: 0.5 }"
-              :class="`w-full h-full max-h-[180px] lg:max-h-[220px] rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center relative overflow-hidden shadow-2xl`"
+              :class="`w-full h-full max-h-[140px] lg:max-h-[160px] xl:max-h-[180px] rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center relative overflow-hidden shadow-2xl`"
             >
               <!-- Background pattern -->
               <div class="absolute inset-0 bg-white/10 backdrop-blur-sm" />
@@ -177,9 +177,9 @@ const getVisualClass = (visual: string, index: number): string => {
                   :initial="{ scale: 0, rotate: -180 }"
                   :animate="{ scale: 1, rotate: 0 }"
                   :transition="{ delay: 0.3, duration: 0.5, type: 'spring' }"
-                  class="w-16 h-16 lg:w-20 lg:h-20 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg"
+                  class="w-12 h-12 lg:w-16 lg:h-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg"
                 >
-                  <component :is="feature.icon" class="w-8 h-8 lg:w-10 lg:h-10 text-white" />
+                  <component :is="feature.icon" class="w-6 h-6 lg:w-8 lg:h-8 text-white" />
                 </motion.div>
                 
                 <!-- Feature-specific visual elements -->
@@ -199,8 +199,8 @@ const getVisualClass = (visual: string, index: number): string => {
 
           <!-- Feature info -->
           <div class="text-center space-y-1.5">
-            <h3 class="text-white t-h4 font-primary">{{ feature.title }}</h3>
-            <p class="text-[var(--primary-100)] t-t1 font-secondary">
+            <h3 class="text-white t-h5 lg:t-h4 font-primary">{{ feature.title }}</h3>
+            <p class="text-[var(--primary-100)] t-t1 font-secondary leading-snug max-w-lg mx-auto text-sm lg:text-base">
               {{ feature.description }}
             </p>
           </div>
