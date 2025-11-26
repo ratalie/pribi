@@ -126,23 +126,24 @@ export const useAccionesComputed = (profileId: string) => {
 
       switch (activeTab.value) {
         case "opcion-a": {
-          // Solo validar si estamos creando una nueva acción
-          if (accionesModalMode.value === "crear") {
-            const existeComunOPreferente = registroAccionesStore.acciones.some(
-              (accion) =>
-                accion.tipo === TipoAccionesEnum.COMUN ||
-                accion.tipo === TipoAccionesEnum.SIN_DERECHO_A_VOTO
-            );
-
-            if (existeComunOPreferente) {
-              throw new Error("Ya existe una acción común o preferente");
-            }
-          }
-
           const accionMapeada = mapperComunesModalALista(
             accionesComunesStore,
             accionSeleccionadaId.value ?? undefined
           );
+
+          // Solo validar si estamos creando una nueva acción
+          if (accionesModalMode.value === "crear") {
+            // Verificar si ya existe una acción del mismo tipo
+            const existeMismoTipo = registroAccionesStore.acciones.some(
+              (accion) => accion.tipo === accionMapeada.tipo
+            );
+
+            if (existeMismoTipo) {
+              const tipoNombre =
+                accionMapeada.tipo === TipoAccionesEnum.COMUN ? "común" : "sin derecho a voto";
+              throw new Error(`Ya existe una acción ${tipoNombre}`);
+            }
+          }
 
           if (accionesModalMode.value === "editar" && accionSeleccionadaId.value) {
             registroAccionesStore.updateAccion(accionMapeada);
@@ -227,9 +228,6 @@ export const useAccionesComputed = (profileId: string) => {
     columns,
     // Datos
     accionesData,
-    totalAcciones,
-    totalTipos,
-    capitalSocial,
     // Displays
     totalAccionesDisplay,
     totalTiposDisplay,
@@ -250,8 +248,7 @@ export const useAccionesComputed = (profileId: string) => {
     handleAccionesModalSubmit,
     // Acciones
     accionesActions,
-    // Stores (para acceso directo si es necesario)
+    // Stores
     valorNominalStore,
-    registroAccionesStore,
   };
 };

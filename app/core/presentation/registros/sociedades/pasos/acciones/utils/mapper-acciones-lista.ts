@@ -8,7 +8,23 @@ import type {
   useClasesAccionesStore,
 } from "../stores/useClasesAccionesStore";
 import type { AccionRegistro } from "../types/acciones";
-import { TipoAccionesEnum } from "../types/enums/tipoAccionesEnum";
+import { TipoAccionesEnum, tipoAccionesUIEnum } from "../types/enums/tipoAccionesEnum";
+
+/**
+ * Mapea el tipo de acción del backend al enum de UI
+ */
+export const getTipoAccionUI = (tipo: TipoAccionesEnum): string => {
+  switch (tipo) {
+    case TipoAccionesEnum.COMUN:
+      return tipoAccionesUIEnum.COMUNES;
+    case TipoAccionesEnum.SIN_DERECHO_A_VOTO:
+      return tipoAccionesUIEnum.SIN_DERECHO_A_VOTO;
+    case TipoAccionesEnum.CLASES:
+      return tipoAccionesUIEnum.CLASES_DE_ACCIÓN;
+    default:
+      return "Tipo desconocido";
+  }
+};
 
 /**
  * Mapea los datos del store de acciones comunes a AccionRegistro

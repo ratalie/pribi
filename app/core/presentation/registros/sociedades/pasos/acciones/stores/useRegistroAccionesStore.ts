@@ -2,6 +2,8 @@ import { defineStore } from "pinia";
 import { ListAccionesUseCase } from "~/core/hexag/registros/sociedades/pasos/acciones/application";
 import { AccionesHttpRepository } from "~/core/hexag/registros/sociedades/pasos/acciones/infrastructure";
 import type { AccionRegistro, AccionTableRow } from "../types/acciones";
+import { TipoAccionesEnum } from "../types/enums/tipoAccionesEnum";
+import { getTipoAccionUI } from "../utils/mapper-acciones-lista";
 
 interface State {
   acciones: AccionRegistro[];
@@ -32,7 +34,10 @@ export const useRegistroAccionesStore = defineStore("registroAcciones", {
       const total = state.acciones.reduce((sum, accion) => sum + accion.accionesSuscritas, 0);
       return state.acciones.map((accion) => ({
         id: accion.id,
-        tipo_acciones: accion.nombreAccion,
+        tipo_acciones:
+          accion.tipo === TipoAccionesEnum.CLASES
+            ? accion.nombreAccion
+            : getTipoAccionUI(accion.tipo),
         acciones_suscritas: accion.accionesSuscritas,
         participacion:
           total > 0 ? percentageFormatter.format(accion.accionesSuscritas / total) : "0%",
