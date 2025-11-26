@@ -40,7 +40,8 @@ const MODULE_MAPPING: Record<string, keyof UserPermissions["systemFeatures"]> = 
   SOCIETY: "societies",
   SHAREHOLDER: "shareholders",
   BOARD_OF_DIRECTORS: "directory",
-  ARCHIVES: "repositorio", // Para sucursales y repositorio
+  // ARCHIVES: "repositorio", // Comentado: "repositorio" no existe en SystemFeatures
+  // El repositorio se maneja a través de repositoryAccess, no systemFeatures
   MEETING_TYPE: "juntas", // Para juntas de accionistas
   MEETING_DETAILS: "juntas", // Para juntas de accionistas
   // Nuevos módulos (cuando backend los agregue)
@@ -56,27 +57,10 @@ const MODULE_MAPPING: Record<string, keyof UserPermissions["systemFeatures"]> = 
  * Backend puede usar:
  * - Acciones genéricas: "read", "write", "delete"
  * - Acciones específicas: "SOCIETY_DASHBOARD", "SOCIETY_CREAR", "SOCIETY_HISTORIAL"
+ * 
+ * NOTA: Este mapeo se maneja directamente en mapActionsToCRUD
+ * Se eliminó ACTION_MAPPING porque no se estaba usando
  */
-const ACTION_MAPPING: Record<string, keyof CRUD> = {
-  read: "read",
-  write: "write", // write = create + update
-  create: "create",
-  update: "update",
-  delete: "delete",
-  // Acciones específicas (cuando backend las agregue)
-  society_dashboard: "read",
-  society_crear: "create",
-  society_historial: "read",
-  sucursales_dashboard: "read",
-  sucursales_crear: "create",
-  sucursales_historial: "read",
-  junta_dashboard: "read",
-  junta_crear: "create",
-  junta_historial: "read",
-  directorio_dashboard: "read",
-  directorio_crear: "create",
-  directorio_historial: "read",
-};
 
 /**
  * Mapeo de acciones específicas a acciones frontend
@@ -193,14 +177,21 @@ export function mapBackendAccessMapToUserPermissions(
       if (frontendModule) {
         const crud = mapActionsToCRUD(module.actions);
         
-        // Si el módulo ya tiene permisos, combinarlos (OR lógico)
-        const existingCRUD = permissions.systemFeatures[frontendModule];
-        permissions.systemFeatures[frontendModule] = {
-          create: existingCRUD.create || crud.create,
-          read: existingCRUD.read || crud.read,
-          update: existingCRUD.update || crud.update,
-          delete: existingCRUD.delete || crud.delete,
-        };
+        // Verificar que el módulo sea de tipo CRUD (no boolean como chatAI o userManagement)
+        const moduleValue = permissions.systemFeatures[frontendModule];
+        
+        // Solo procesar si es CRUD (tiene propiedad 'create')
+        if (typeof moduleValue === "object" && "create" in moduleValue) {
+          // Si el módulo ya tiene permisos, combinarlos (OR lógico)
+          const existingCRUD = moduleValue as CRUD;
+          (permissions.systemFeatures[frontendModule] as CRUD) = {
+            create: existingCRUD.create || crud.create,
+            read: existingCRUD.read || crud.read,
+            update: existingCRUD.update || crud.update,
+            delete: existingCRUD.delete || crud.delete,
+          };
+        }
+        // Si no es CRUD (es boolean), no hacemos nada (chatAI, userManagement)
       }
     });
   });

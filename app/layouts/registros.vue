@@ -12,7 +12,7 @@
   
   // Inicializar desde localStorage
   const getInitialCollapsedState = (): boolean => {
-    if (process.client) {
+    if (import.meta.client) {
       const stored = localStorage.getItem(SIDEBAR_STORAGE_KEY);
       return stored === "true";
     }
@@ -24,7 +24,7 @@
   const toggleSidebar = () => {
     isCollapsed.value = !isCollapsed.value;
     // Guardar en localStorage
-    if (process.client) {
+    if (import.meta.client) {
       localStorage.setItem(SIDEBAR_STORAGE_KEY, String(isCollapsed.value));
     }
   };

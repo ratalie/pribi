@@ -24,6 +24,6 @@ import MesaDirectivaSection from "~/components/juntas/instalacion/MesaDirectivaS
 // Ruta: /operaciones/junta-accionistas/instalacion
 
 definePageMeta({
-  layout: "dual-panel-layout",
+  layout: "default",
 });
 </script>

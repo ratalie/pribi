@@ -121,7 +121,7 @@ const getVisualElements = (visual: string): number => {
   return counts[visual] || 3;
 };
 
-const getVisualClass = (visual: string, index: number): string => {
+const getVisualClass = (visual: string, _index: number): string => {
   const baseClass = "rounded-lg bg-white/20 backdrop-blur-sm shadow-lg";
   const sizes: Record<string, string> = {
     sociedades: "w-12 h-12 lg:w-14 lg:h-14",

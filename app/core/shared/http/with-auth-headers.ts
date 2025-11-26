@@ -11,7 +11,7 @@ import { useAuthStore } from "~/core/presentation/auth/stores/auth.store";
 function isTokenExpired(token: string): boolean {
   try {
     const parts = token.split(".");
-    if (parts.length !== 3) {
+    if (parts.length !== 3 || !parts[1]) {
       return false; // No es JWT válido, pero no bloqueamos
     }
     

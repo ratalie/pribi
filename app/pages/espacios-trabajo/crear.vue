@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { ref } from "vue";
-  import { useRouter } from "vue-router";
   import { Button } from "@/components/ui/button";
   import {
     Card,
@@ -38,7 +37,6 @@
     },
   ];
 
-  const router = useRouter();
   const isSubmitting = ref(false);
   const errorMessage = ref<string | null>(null);
 

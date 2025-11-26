@@ -34,7 +34,7 @@
     tipoDocumento: string;
   }
 
-  interface FiduciarioState extends Required<FiduciarioFormValues> {}
+  type FiduciarioState = Required<FiduciarioFormValues>;
 
   interface FormState {
     currentId?: string;
