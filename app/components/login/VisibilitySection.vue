@@ -1,7 +1,17 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
 import { motion } from "motion-v";
-import { ChevronLeft, ChevronRight } from "lucide-vue-next";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Building2,
+  Users,
+  FolderArchive,
+  FileText,
+  Briefcase,
+  Sparkles,
+  Shield,
+} from "lucide-vue-next";
 
 /**
  * VisibilitySection Component (Y)
@@ -12,21 +22,59 @@ import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 const APP_FEATURES = [
   {
     id: 1,
-    title: "Dashboard Intuitivo",
-    description: "Visualiza todos tus proyectos en un solo lugar",
-    color: "from-purple-400 to-blue-400",
+    title: "Registros: Sociedades",
+    description: "Gestiona el registro completo de sociedades y su información legal",
+    icon: Building2,
+    color: "from-blue-500 to-cyan-500",
+    visual: "sociedades",
   },
   {
     id: 2,
-    title: "Colaboración en Equipo",
-    description: "Trabaja con tu equipo en tiempo real",
-    color: "from-blue-400 to-cyan-400",
+    title: "Operaciones: Junta de Accionistas",
+    description: "Administra y documenta todas las operaciones de juntas de accionistas",
+    icon: Users,
+    color: "from-purple-500 to-pink-500",
+    visual: "junta",
   },
   {
     id: 3,
-    title: "Reportes Avanzados",
-    description: "Analítica detallada de tus proyectos",
-    color: "from-purple-400 to-pink-400",
+    title: "Repositorio: Documentos Históricos",
+    description: "Almacena y organiza documentos históricos de las sociedades",
+    icon: FolderArchive,
+    color: "from-amber-500 to-orange-500",
+    visual: "repositorio",
+  },
+  {
+    id: 4,
+    title: "Automatización de Documentos",
+    description: "Genera documentos Word automáticamente por juntas y operaciones",
+    icon: FileText,
+    color: "from-green-500 to-emerald-500",
+    visual: "documentos",
+  },
+  {
+    id: 5,
+    title: "Espacios de Trabajo",
+    description: "Gestiona documentos, usuarios, permisos y roles para trabajo colaborativo",
+    icon: Briefcase,
+    color: "from-indigo-500 to-blue-500",
+    visual: "espacios",
+  },
+  {
+    id: 6,
+    title: "Herramientas: Inteligencia Artificial",
+    description: "Chatea con la IA, consulta registros, operaciones, directorio y lee documentos",
+    icon: Sparkles,
+    color: "from-violet-500 to-purple-500",
+    visual: "ia",
+  },
+  {
+    id: 7,
+    title: "Privacidad y Seguridad",
+    description: "Estándares de seguridad y calidad con gestión correcta de roles y permisos",
+    icon: Shield,
+    color: "from-red-500 to-rose-500",
+    visual: "seguridad",
   },
 ];
 
@@ -58,16 +106,44 @@ const goToPrev = () => {
 const goToSlide = (index: number) => {
   currentIndex.value = index;
 };
+
+// Helper functions for visual elements
+const getVisualElements = (visual: string): number => {
+  const counts: Record<string, number> = {
+    sociedades: 3,
+    junta: 4,
+    repositorio: 3,
+    documentos: 4,
+    espacios: 3,
+    ia: 5,
+    seguridad: 3,
+  };
+  return counts[visual] || 3;
+};
+
+const getVisualClass = (visual: string, index: number): string => {
+  const baseClass = "rounded-lg bg-white/20 backdrop-blur-sm shadow-lg";
+  const sizes: Record<string, string> = {
+    sociedades: "w-12 h-12 lg:w-14 lg:h-14",
+    junta: "w-10 h-10 lg:w-12 lg:h-12",
+    repositorio: "w-14 h-10 lg:w-16 lg:h-12",
+    documentos: "w-10 h-14 lg:w-12 lg:h-16",
+    espacios: "w-12 h-12 lg:w-14 lg:h-14",
+    ia: "w-8 h-8 lg:w-10 lg:h-10 rounded-full",
+    seguridad: "w-12 h-12 lg:w-14 lg:h-14",
+  };
+  return `${baseClass} ${sizes[visual] || "w-12 h-12 lg:w-14 lg:h-14"}`;
+};
 </script>
 
 <template>
   <div class="relative">
     <!-- Main carousel area -->
     <div
-      class="relative overflow-hidden rounded-2xl backdrop-blur-xl bg-white/5 border border-white/10 p-8 lg:p-10"
+      class="relative overflow-hidden rounded-2xl backdrop-blur-xl bg-white/5 border border-white/10 p-6 lg:p-8"
     >
       <!-- Content -->
-      <div class="relative min-h-[380px] lg:min-h-[420px]">
+      <div class="relative h-[280px] lg:h-[320px] xl:h-[360px]">
         <motion.div
           v-for="(feature, index) in APP_FEATURES"
           :key="feature.id"
@@ -83,30 +159,38 @@ const goToSlide = (index: number) => {
             pointerEvents: currentIndex === index ? 'auto' : 'none',
           }"
         >
-          <!-- Feature image placeholder -->
-          <div class="flex-1 flex items-center justify-center mb-8">
+          <!-- Feature visual representation -->
+          <div class="flex-1 flex items-center justify-center mb-4">
             <motion.div
               :initial="{ scale: 0.8, opacity: 0 }"
               :animate="{ scale: 1, opacity: 1 }"
               :transition="{ delay: 0.2, duration: 0.5 }"
-              :class="`w-full aspect-video rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center relative overflow-hidden shadow-2xl`"
+              :class="`w-full h-full max-h-[180px] lg:max-h-[220px] rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center relative overflow-hidden shadow-2xl`"
             >
-              <!-- Decorative elements -->
+              <!-- Background pattern -->
               <div class="absolute inset-0 bg-white/10 backdrop-blur-sm" />
-              <div class="relative z-10 flex flex-col items-center gap-4">
-                <div
-                  class="w-24 h-24 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg"
+              
+              <!-- Visual content based on feature type -->
+              <div class="relative z-10 flex flex-col items-center gap-3 p-4">
+                <!-- Icon -->
+                <motion.div
+                  :initial="{ scale: 0, rotate: -180 }"
+                  :animate="{ scale: 1, rotate: 0 }"
+                  :transition="{ delay: 0.3, duration: 0.5, type: 'spring' }"
+                  class="w-16 h-16 lg:w-20 lg:h-20 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg"
                 >
-                  <div class="w-14 h-14 rounded-xl bg-white/30" />
-                </div>
-                <div class="flex gap-3">
+                  <component :is="feature.icon" class="w-8 h-8 lg:w-10 lg:h-10 text-white" />
+                </motion.div>
+                
+                <!-- Feature-specific visual elements -->
+                <div class="flex gap-2">
                   <motion.div
-                    v-for="i in 3"
+                    v-for="i in getVisualElements(feature.visual)"
                     :key="i"
                     :initial="{ opacity: 0, y: 10 }"
                     :animate="{ opacity: 1, y: 0 }"
                     :transition="{ delay: 0.4 + (i - 1) * 0.1 }"
-                    class="w-16 h-16 lg:w-20 lg:h-20 rounded-lg bg-white/20 backdrop-blur-sm shadow-lg"
+                    :class="getVisualClass(feature.visual, i)"
                   />
                 </div>
               </div>
@@ -114,9 +198,9 @@ const goToSlide = (index: number) => {
           </div>
 
           <!-- Feature info -->
-          <div class="text-center space-y-2">
-            <h3 class="text-white text-2xl lg:text-3xl">{{ feature.title }}</h3>
-            <p class="text-[var(--primary-100)] text-base lg:text-lg">
+          <div class="text-center space-y-1.5">
+            <h3 class="text-white t-h4 font-primary">{{ feature.title }}</h3>
+            <p class="text-[var(--primary-100)] t-t1 font-secondary">
               {{ feature.description }}
             </p>
           </div>
@@ -127,23 +211,23 @@ const goToSlide = (index: number) => {
       <button
         type="button"
         @click="goToPrev"
-        class="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all duration-300 flex items-center justify-center text-white border border-white/10 hover:scale-110"
+        class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all duration-300 flex items-center justify-center text-white border border-white/10 hover:scale-110 z-20"
         aria-label="Previous"
       >
-        <ChevronLeft class="w-5 h-5" />
+        <ChevronLeft class="w-4 h-4" />
       </button>
       <button
         type="button"
         @click="goToNext"
-        class="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all duration-300 flex items-center justify-center text-white border border-white/10 hover:scale-110"
+        class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all duration-300 flex items-center justify-center text-white border border-white/10 hover:scale-110 z-20"
         aria-label="Next"
       >
-        <ChevronRight class="w-5 h-5" />
+        <ChevronRight class="w-4 h-4" />
       </button>
     </div>
 
     <!-- Dots indicator -->
-    <div class="flex justify-center gap-2.5 mt-6">
+    <div class="flex justify-center gap-2 mt-4">
       <button
         v-for="(_, index) in APP_FEATURES"
         :key="index"
@@ -152,12 +236,27 @@ const goToSlide = (index: number) => {
         :class="[
           'transition-all duration-300',
           currentIndex === index
-            ? 'w-10 h-2.5 bg-white rounded-full shadow-lg'
-            : 'w-2.5 h-2.5 bg-white/30 rounded-full hover:bg-white/50',
+            ? 'w-8 h-2 bg-white rounded-full shadow-lg'
+            : 'w-2 h-2 bg-white/30 rounded-full hover:bg-white/50',
         ]"
         :aria-label="`Go to slide ${index + 1}`"
       />
     </div>
+
+    <!-- Botón "Conoce más" -->
+    <motion.div
+      :initial="{ opacity: 0, y: 10 }"
+      :animate="{ opacity: 1, y: 0 }"
+      :transition="{ duration: 0.5, delay: 0.8 }"
+      class="mt-4 flex justify-center"
+    >
+      <button
+        type="button"
+        class="px-6 py-2.5 rounded-lg bg-white/10 backdrop-blur-md hover:bg-white/20 border border-white/20 text-white t-t1 font-secondary transition-all duration-300 hover:scale-105 hover:shadow-lg"
+      >
+        Conoce más
+      </button>
+    </motion.div>
   </div>
 </template>
 

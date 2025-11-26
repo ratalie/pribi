@@ -15,13 +15,13 @@ const features = [
 </script>
 
 <template>
-  <div class="space-y-8">
+  <div class="space-y-6">
     <!-- Logo/Brand -->
     <motion.div
       :initial="{ opacity: 0, y: -20 }"
       :animate="{ opacity: 1, y: 0 }"
       :transition="{ duration: 0.6, delay: 0.2 }"
-      class="inline-flex items-center gap-3"
+      class="inline-flex items-center gap-3 mb-4"
     >
       <div
         class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center"
@@ -30,7 +30,7 @@ const features = [
           class="w-6 h-6 rounded-lg bg-gradient-to-br from-[var(--primary-200)] to-white"
         />
       </div>
-      <span class="text-white/90 text-lg">PROBO</span>
+      <span class="text-white/90 t-h6 font-primary">PROBO</span>
     </motion.div>
 
     <!-- Main Title -->
@@ -38,12 +38,12 @@ const features = [
       :initial="{ opacity: 0, y: 20 }"
       :animate="{ opacity: 1, y: 0 }"
       :transition="{ duration: 0.6, delay: 0.4 }"
-      class="space-y-5"
+      class="space-y-4"
     >
-      <h1 class="text-white text-5xl xl:text-6xl leading-tight max-w-xl">
+      <h1 class="text-white t-h1 font-primary max-w-xl leading-tight">
         Bienvenido de vuelta
       </h1>
-      <p class="text-[var(--primary-100)] text-lg xl:text-xl max-w-lg leading-relaxed">
+      <p class="text-[var(--primary-100)] t-h6 font-secondary max-w-lg leading-relaxed">
         Accede a tu cuenta y continúa gestionando tus proyectos de manera profesional
       </p>
     </motion.div>
@@ -53,7 +53,7 @@ const features = [
       :initial="{ opacity: 0 }"
       :animate="{ opacity: 1 }"
       :transition="{ duration: 0.6, delay: 0.6 }"
-      class="space-y-4 pt-2"
+      class="space-y-3 pt-1"
     >
       <motion.div
         v-for="(feature, index) in features"
@@ -64,10 +64,10 @@ const features = [
         class="flex items-center gap-3"
       >
         <div
-          class="w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0"
+          class="w-5 h-5 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0"
         >
           <svg
-            class="w-3.5 h-3.5 text-white"
+            class="w-3 h-3 text-white"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -80,7 +80,7 @@ const features = [
             />
           </svg>
         </div>
-        <span class="text-white/85 text-base">{{ feature }}</span>
+        <span class="text-white/85 t-t1 font-secondary">{{ feature }}</span>
       </motion.div>
     </motion.div>
   </div>

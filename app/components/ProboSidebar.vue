@@ -122,29 +122,22 @@
 
 <template>
   <!-- Sidebar Container -->
-  <SidebarProvider :class="cn(props.isCollapsed ? 'w-[100px]' : 'w-[280px]')">
+  <SidebarProvider :class="cn(props.isCollapsed ? 'w-[120px]' : 'w-[280px]')">
     <!-- Sidebar base - 280px width cuando expandido, 100px cuando colapsado -->
     <Sidebar
       :class="
         cn(
           'probo-sidebar-figma h-screen flex flex-col overflow-hidden border-r transition-all duration-300 ease-in-out ',
-          props.isCollapsed ? 'w-[100px]' : 'w-[280px]'
+          props.isCollapsed ? 'w-[120px]' : 'w-[280px]'
         )
       "
     >
       <!-- Header - Padding 24px -->
       <SidebarHeader class="probo-sidebar-header">
-        <div
-          :class="
-            cn(
-              'flex items-center justify-between mb-4',
-              props.isCollapsed ? 'flex-col gap-2' : 'flex-row'
-            )
-          "
-        >
+        <div class="probo-header-content flex items-center justify-between h-full">
           <!-- Logo: Separación clara entre estado COLAPSADO y EXPANDIDO -->
           <div
-            class="probo-logo-container flex items-center gap-2 h-full"
+            class="probo-logo-container flex justify-center items-center gap-2 h-full"
             @mouseenter="isLogoHovered = true"
             @mouseleave="isLogoHovered = false"
           >
@@ -152,7 +145,7 @@
                  ESTADO EXPANDIDO (NO COLAPSADO)
                  ============================================ -->
             <template v-if="!props.isCollapsed">
-              <!-- Item 2: Logo completo (bola + texto) como UN SOLO elemento colapsable -->
+              <!-- Item 2: Logo completo (bola + texto) -->
               <NuxtLink to="/" class="probo-logo-link flex items-center gap-2">
                 <img class="probo-logo-img" :src="logoProboImagen" alt="PROBO" />
                 <img class="probo-logo-texto" :src="logoProboTexto" alt="PROBO" />
@@ -380,6 +373,11 @@
   .probo-sidebar-header {
     padding: 24px;
     transition: padding 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    height: 64px; /* h-16 = 64px siempre */
+    min-height: 64px;
+    max-height: 64px;
+    display: flex;
+    align-items: center;
   }
 
   .probo-sidebar-figma.w-\[100px\] .probo-sidebar-header {
@@ -391,12 +389,25 @@
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   }
 
+  .probo-header-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   .probo-logo-container {
     display: flex;
     align-items: center;
     gap: 8px;
-    width: 100%;
     height: 100%;
+    flex: 1;
+  }
+
+  /* Cuando está contraído, centrar el logo verticalmente */
+  .probo-sidebar-figma.w-\[100px\] .probo-logo-container {
+    justify-content: center;
   }
 
   .probo-logo-link {
@@ -405,8 +416,16 @@
     justify-content: center;
     transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 8px;
-    padding: 4px;
+    padding: 0;
     flex-shrink: 0;
+    height: 40px;
+    min-height: 40px;
+  }
+
+  /* Cuando está contraído, el logo-link debe ser cuadrado (40x40) */
+  .probo-sidebar-figma.w-\[100px\] .probo-logo-link {
+    width: 40px;
+    min-width: 40px;
   }
 
   .probo-logo-link:hover {
@@ -421,6 +440,8 @@
   .probo-logo-img {
     width: 40px;
     height: 40px;
+    min-width: 40px;
+    min-height: 40px;
     object-fit: contain;
     flex-shrink: 0;
     transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -457,8 +478,10 @@
 
   .probo-collapse-btn,
   .probo-expand-btn {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
     padding: 0;
     display: flex;
     align-items: center;

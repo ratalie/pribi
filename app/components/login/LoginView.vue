@@ -18,7 +18,7 @@ import RightSection from "./RightSection.vue";
 </script>
 
 <template>
-  <div class="min-h-screen flex relative">
+  <div class="h-screen flex relative overflow-hidden">
     <!-- SECCIÓN A: Left Section (Contenido promocional) -->
     <div class="hidden lg:flex lg:w-1/2 xl:w-3/5 relative overflow-hidden">
       <!-- Background Pattern - Aislado -->
@@ -29,7 +29,7 @@ import RightSection from "./RightSection.vue";
     </div>
 
     <!-- SECCIÓN B: Right Section (Formulario de Login) -->
-    <div class="w-full lg:w-1/2 xl:w-2/5 relative">
+    <div class="w-full lg:w-1/2 xl:w-2/5 relative overflow-y-auto">
       <!-- Background para mobile -->
       <div class="lg:hidden absolute inset-0 -z-10">
         <BackgroundPattern />

@@ -4,7 +4,7 @@ export default {
   registro: "Registro Societario",
   registroSocietario: "Registro Societario",
   registros: "Registros",
-  storage: "Almacenamiento",
+  storage: "Repositorio",
 
   // Sub-items Registro Societario
   sociedades: "Sociedades",

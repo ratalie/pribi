@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useLoginForm } from "~/core/presentation/auth/composables/useLoginForm";
 import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
 import { useRouter } from "vue-router";
+import logoProbo from "~/assets/icons/logo-probo.svg";
 
 /**
  * RightSection Component (B)
@@ -75,19 +76,42 @@ const onSubmit = handleSubmit(async (values) => {
     :initial="{ opacity: 0, x: 50 }"
     :animate="{ opacity: 1, x: 0 }"
     :transition="{ duration: 0.8, ease: 'easeOut', delay: 0.2 }"
-    class="min-h-screen flex items-center justify-center p-8 lg:p-12 xl:p-16 lg:bg-transparent"
+    class="h-full flex flex-col justify-center items-start p-6 lg:p-8 xl:p-12 lg:bg-transparent overflow-y-auto"
   >
-    <div class="w-full max-w-md mx-auto">
-      <!-- Header del formulario -->
+    <div class="w-full max-w-md mx-auto space-y-6">
+      <!-- Logo PROBO -->
+      <motion.div
+        :initial="{ opacity: 0, y: -20 }"
+        :animate="{ opacity: 1, y: 0 }"
+        :transition="{ duration: 0.6, delay: 0.3 }"
+        class="flex items-center gap-3"
+      >
+        <img
+          :src="logoProbo"
+          alt="PROBO Logo"
+          class="h-8 w-auto"
+        />
+      </motion.div>
+
+      <!-- Mensaje inicial -->
       <motion.div
         :initial="{ opacity: 0, y: 20 }"
         :animate="{ opacity: 1, y: 0 }"
         :transition="{ duration: 0.6, delay: 0.4 }"
-        class="text-center mb-8"
+        class="space-y-2"
       >
-        <h2 class="text-[var(--gray-900)] text-4xl mb-3">Iniciar Sesión</h2>
-        <p class="text-[var(--gray-500)]">Ingresa tus credenciales para acceder</p>
+        <h2 class="text-[var(--gray-900)] t-h2 font-primary">Bienvenido</h2>
+        <p class="text-[var(--gray-500)] t-t1 font-secondary">
+          Accede a tu cuenta para gestionar tus sociedades y operaciones
+        </p>
       </motion.div>
+
+      <!-- Section Hero - Formulario -->
+      <motion.div
+        :initial="{ opacity: 0, y: 20 }"
+        :animate="{ opacity: 1, y: 0 }"
+        :transition="{ duration: 0.6, delay: 0.5 }"
+      >
 
       <!-- Formulario -->
       <motion.form
@@ -95,11 +119,11 @@ const onSubmit = handleSubmit(async (values) => {
         :animate="{ opacity: 1, y: 0 }"
         :transition="{ duration: 0.6, delay: 0.5 }"
         @submit.prevent="onSubmit"
-        class="space-y-5"
+        class="space-y-4"
       >
         <!-- Email field -->
-        <div class="space-y-2">
-          <Label for="email" class="text-[var(--gray-700)]"> Correo Electrónico </Label>
+        <div class="space-y-1.5">
+          <Label for="email" class="text-[var(--gray-700)] t-t1 font-secondary"> Correo Electrónico </Label>
           <div class="relative">
             <Mail
               class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--gray-400)]"
@@ -119,8 +143,8 @@ const onSubmit = handleSubmit(async (values) => {
         </div>
 
         <!-- Password field -->
-        <div class="space-y-2">
-          <Label for="password" class="text-[var(--gray-700)]"> Contraseña </Label>
+        <div class="space-y-1.5">
+          <Label for="password" class="text-[var(--gray-700)] t-t1 font-secondary"> Contraseña </Label>
           <div class="relative">
             <Lock
               class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--gray-400)]"
@@ -151,13 +175,13 @@ const onSubmit = handleSubmit(async (values) => {
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-2">
             <Checkbox id="remember" v-model:checked="remember" />
-            <label for="remember" class="text-sm text-[var(--gray-600)] cursor-pointer">
+            <label for="remember" class="t-t1 text-[var(--gray-600)] font-secondary cursor-pointer">
               Recordarme
             </label>
           </div>
           <button
             type="button"
-            class="text-sm text-[var(--primary-600)] hover:text-[var(--primary-700)] transition-colors"
+            class="t-t1 text-[var(--primary-600)] hover:text-[var(--primary-700)] font-secondary transition-colors"
           >
             ¿Olvidaste tu contraseña?
           </button>
@@ -185,6 +209,7 @@ const onSubmit = handleSubmit(async (values) => {
           <template v-else> Iniciar Sesión </template>
         </Button>
       </motion.form>
+      </motion.div>
     </div>
   </motion.div>
 </template>
