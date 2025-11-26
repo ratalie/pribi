@@ -76,9 +76,9 @@ const onSubmit = handleSubmit(async (values) => {
     :initial="{ opacity: 0, x: 50 }"
     :animate="{ opacity: 1, x: 0 }"
     :transition="{ duration: 0.8, ease: 'easeOut', delay: 0.2 }"
-    class="h-full flex flex-col justify-center items-start p-6 lg:p-8 xl:p-12 lg:bg-transparent overflow-y-auto"
+    class="h-full flex flex-col justify-center items-center p-6 lg:p-8 xl:p-12 lg:bg-transparent overflow-y-auto"
   >
-    <div class="w-full max-w-md mx-auto space-y-6">
+    <div class="w-full max-w-md space-y-6">
       <!-- Logo PROBO -->
       <motion.div
         :initial="{ opacity: 0, y: -20 }"
@@ -98,10 +98,10 @@ const onSubmit = handleSubmit(async (values) => {
         :initial="{ opacity: 0, y: 20 }"
         :animate="{ opacity: 1, y: 0 }"
         :transition="{ duration: 0.6, delay: 0.4 }"
-        class="space-y-2"
+        class="space-y-2.5"
       >
         <h2 class="text-[var(--gray-900)] t-h2 font-primary">Bienvenido</h2>
-        <p class="text-[var(--gray-500)] t-t1 font-secondary">
+        <p class="text-[var(--gray-500)] t-t1 font-secondary leading-relaxed">
           Accede a tu cuenta para gestionar tus sociedades y operaciones
         </p>
       </motion.div>
@@ -122,7 +122,7 @@ const onSubmit = handleSubmit(async (values) => {
         class="space-y-4"
       >
         <!-- Email field -->
-        <div class="space-y-1.5">
+        <div class="space-y-2">
           <Label for="email" class="text-[var(--gray-700)] t-t1 font-secondary"> Correo Electrónico </Label>
           <div class="relative">
             <Mail
@@ -143,7 +143,7 @@ const onSubmit = handleSubmit(async (values) => {
         </div>
 
         <!-- Password field -->
-        <div class="space-y-1.5">
+        <div class="space-y-2">
           <Label for="password" class="text-[var(--gray-700)] t-t1 font-secondary"> Contraseña </Label>
           <div class="relative">
             <Lock

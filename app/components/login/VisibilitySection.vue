@@ -137,10 +137,10 @@ const getVisualClass = (visual: string, index: number): string => {
 </script>
 
 <template>
-  <div class="relative">
+  <div class="relative w-full">
     <!-- Main carousel area -->
     <div
-      class="relative overflow-hidden rounded-2xl backdrop-blur-xl bg-white/5 border border-white/10 p-6 lg:p-8"
+      class="relative overflow-hidden rounded-2xl backdrop-blur-xl bg-white/5 border border-white/10 p-5 lg:p-7"
     >
       <!-- Content -->
       <div class="relative h-[240px] lg:h-[280px] xl:h-[300px]">
@@ -154,13 +154,13 @@ const getVisualClass = (visual: string, index: number): string => {
             x: currentIndex === index ? 0 : currentIndex > index ? -50 : 50,
           }"
           :transition="{ duration: 0.5, ease: 'easeInOut' }"
-          class="absolute inset-0 flex flex-col justify-between"
+          class="absolute inset-0 flex flex-col justify-between px-1"
           :style="{
             pointerEvents: currentIndex === index ? 'auto' : 'none',
           }"
         >
           <!-- Feature visual representation -->
-          <div class="flex-1 flex items-center justify-center mb-4">
+          <div class="flex-1 flex items-center justify-center mb-5">
             <motion.div
               :initial="{ scale: 0.8, opacity: 0 }"
               :animate="{ scale: 1, opacity: 1 }"
@@ -171,7 +171,7 @@ const getVisualClass = (visual: string, index: number): string => {
               <div class="absolute inset-0 bg-white/10 backdrop-blur-sm" />
               
               <!-- Visual content based on feature type -->
-              <div class="relative z-10 flex flex-col items-center gap-3 p-4">
+              <div class="relative z-10 flex flex-col items-center justify-center gap-3 p-4">
                 <!-- Icon -->
                 <motion.div
                   :initial="{ scale: 0, rotate: -180 }"
@@ -183,7 +183,7 @@ const getVisualClass = (visual: string, index: number): string => {
                 </motion.div>
                 
                 <!-- Feature-specific visual elements -->
-                <div class="flex gap-2">
+                <div class="flex gap-2 justify-center">
                   <motion.div
                     v-for="i in getVisualElements(feature.visual)"
                     :key="i"
@@ -198,9 +198,9 @@ const getVisualClass = (visual: string, index: number): string => {
           </div>
 
           <!-- Feature info -->
-          <div class="text-center space-y-1.5">
+          <div class="text-center space-y-2 px-2">
             <h3 class="text-white t-h5 lg:t-h4 font-primary">{{ feature.title }}</h3>
-            <p class="text-[var(--primary-100)] t-t1 font-secondary leading-snug max-w-lg mx-auto text-sm lg:text-base">
+            <p class="text-[var(--primary-100)] t-t1 font-secondary leading-relaxed max-w-lg mx-auto text-sm lg:text-base">
               {{ feature.description }}
             </p>
           </div>

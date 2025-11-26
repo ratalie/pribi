@@ -94,6 +94,28 @@
   // Estado para hover del logo
   const isLogoHovered = ref(false);
 
+  // Resetear hover cuando el sidebar se contrae o cambia de ruta
+  watch(
+    () => props.isCollapsed,
+    (isCollapsed) => {
+      // Siempre resetear el hover cuando el sidebar se contrae
+      if (isCollapsed) {
+        isLogoHovered.value = false;
+      }
+    }
+  );
+
+  // Resetear hover cuando cambia la ruta (si está contraído)
+  watch(
+    () => route.path,
+    () => {
+      // Si está contraído, resetear el hover para asegurar que siempre empiece con el logo
+      if (props.isCollapsed) {
+        isLogoHovered.value = false;
+      }
+    }
+  );
+
   // Auto-expandir items cuando la ruta cambia (solo si el sidebar NO está contraído)
   watch(
     () => route.path,
@@ -138,8 +160,8 @@
           <!-- Logo: Separación clara entre estado COLAPSADO y EXPANDIDO -->
           <div
             class="probo-logo-container flex justify-center items-center gap-2 h-full"
-            @mouseenter="isLogoHovered = true"
-            @mouseleave="isLogoHovered = false"
+            @mouseenter="() => { if (props.isCollapsed) isLogoHovered = true; }"
+            @mouseleave="() => { if (props.isCollapsed) isLogoHovered = false; }"
           >
             <!-- ============================================
                  ESTADO EXPANDIDO (NO COLAPSADO)

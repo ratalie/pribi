@@ -15,7 +15,7 @@ import VisibilitySection from "./VisibilitySection.vue";
     :initial="{ opacity: 0, x: -50 }"
     :animate="{ opacity: 1, x: 0 }"
     :transition="{ duration: 0.8, ease: 'easeOut' }"
-    class="flex flex-col h-full w-full p-6 lg:p-8 xl:p-10 relative z-10 justify-between"
+    class="flex flex-col h-full w-full p-8 lg:p-10 xl:p-12 relative z-10 justify-between"
   >
     <!-- X: Header Section - Título, descripción, features -->
     <div class="flex-shrink-0">
