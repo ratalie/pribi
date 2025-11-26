@@ -24,6 +24,6 @@ import ConvocatoriaJuntaSection from "~/components/juntas/detalles/ConvocatoriaJ
 // Ruta: /operaciones/junta-accionistas/detalles
 
 definePageMeta({
-  layout: "dual-panel-layout",
+  layout: "default",
 });
 </script>

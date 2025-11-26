@@ -12,6 +12,6 @@
 
 <script setup lang="ts">
   definePageMeta({
-    layout: "dual-panel-layout",
+    layout: "default",
   });
 </script>

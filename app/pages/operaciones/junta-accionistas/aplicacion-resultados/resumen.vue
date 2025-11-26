@@ -12,6 +12,6 @@
 import SummarySectionRenderer from "@/components/juntas/SummarySectionRenderer.vue";
 
 definePageMeta({
-  layout: "dual-panel-layout",
+  layout: "default",
 });
 </script>

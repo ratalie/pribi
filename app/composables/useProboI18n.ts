@@ -148,12 +148,18 @@ export const useProboI18n = () => {
   // Verificar si es RTL
   const isRTL = computed(() => currentLocaleInfo.value?.dir === "rtl");
 
-  // Inicializar idioma desde localStorage
+  // FORZAR SIEMPRE ESPAÑOL - Sin permitir cambio de idioma por ahora
   onMounted(() => {
     if (import.meta.client) {
-      const stored = localStorage.getItem("probo-language") as LocaleCode;
-      if (stored && availableLocales.some((l) => l.code === stored)) {
-        changeLocale(stored);
+      // Siempre forzar español, ignorando cualquier preferencia previa
+      changeLocale("es");
+      
+      // Limpiar cualquier preferencia previa
+      const cookieLocale = useCookie("i18n_redirected");
+      cookieLocale.value = "es";
+      
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem("probo-language", "es");
       }
     }
   });

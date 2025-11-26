@@ -1,9 +1,0 @@
-<template>
-  <PageTitle title-key="pages.chatIA" />
-</template>
-
-<script setup lang="ts">
-useHead({
-  title: "Chat IA - PROBO",
-});
-</script>
