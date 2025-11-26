@@ -28,11 +28,14 @@
     isAccionesModalOpen,
     accionesModalMode,
     accionSeleccionadaId,
+    activeTab,
+    isLoading,
     openValorNominalModal,
     openAccionesModal,
     closeValorNominalModal,
     closeAccionesModal,
     handleSaveValorNominal,
+    handleAccionesModalSubmit,
     accionesActions,
     valorNominalStore,
   } = useAccionesComputed(props.societyId ?? "");
@@ -91,7 +94,12 @@
       :mode="accionesModalMode"
       :accion-id="accionSeleccionadaId"
       :society-id="props.societyId"
+      :valor-nominal-display="valorNominalDisplay"
+      :is-loading="isLoading"
+      :active-tab="activeTab"
       @close="closeAccionesModal"
+      @submit="handleAccionesModalSubmit"
+      @update:active-tab="(value) => (activeTab = value)"
     />
   </div>
 </template>

@@ -1,11 +1,5 @@
 import { defineStore } from "pinia";
-
-interface FileMetadataResponseDTO {
-  fileId: string;
-  mimeType: string;
-  originalName: string;
-  size: number;
-}
+import type { FileMetadataDTO } from "../types/acciones";
 
 export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
   state: (): State => ({
@@ -20,10 +14,10 @@ export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
     comentariosAdicionalesTexto: "",
 
     // Metadata de archivos de "Otros derechos especiales"
-    metadataDerechosEspecialesClase: [] as FileMetadataResponseDTO[],
+    metadataDerechosEspecialesClase: [] as FileMetadataDTO[],
 
     // Metadata de archivos de "Obligaciones adicionales"
-    metadataObligacionesClase: [] as FileMetadataResponseDTO[],
+    metadataObligacionesClase: [] as FileMetadataDTO[],
   }),
 
   actions: {
@@ -43,7 +37,20 @@ export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
       };
     },
 
-    addDerechosEspecialesClaseMetadata(metadata: FileMetadataResponseDTO) {
+    setFormData(data: State) {
+      this.nombreClaseAccion = data.nombreClaseAccion;
+      this.cantidadAccionesClase = data.cantidadAccionesClase;
+      this.conDerechoVoto = data.conDerechoVoto;
+      this.redimiblesClase = data.redimiblesClase;
+      this.otrosDerechosEspecialesClase = data.otrosDerechosEspecialesClase;
+      this.obligacionesAdicionalesClase = data.obligacionesAdicionalesClase;
+      this.comentariosAdicionales = data.comentariosAdicionales;
+      this.comentariosAdicionalesTexto = data.comentariosAdicionalesTexto;
+      this.metadataDerechosEspecialesClase = [...(data.metadataDerechosEspecialesClase || [])];
+      this.metadataObligacionesClase = [...(data.metadataObligacionesClase || [])];
+    },
+
+    addDerechosEspecialesClaseMetadata(metadata: FileMetadataDTO) {
       this.metadataDerechosEspecialesClase.push(metadata);
     },
 
@@ -54,7 +61,7 @@ export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
       }
     },
 
-    addObligacionesClaseMetadata(metadata: FileMetadataResponseDTO) {
+    addObligacionesClaseMetadata(metadata: FileMetadataDTO) {
       this.metadataObligacionesClase.push(metadata);
     },
 
@@ -67,7 +74,7 @@ export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
   },
 });
 
-interface State {
+export interface ClasesAccionesState {
   nombreClaseAccion: string;
   cantidadAccionesClase: number;
   conDerechoVoto: boolean;
@@ -76,6 +83,8 @@ interface State {
   obligacionesAdicionalesClase: boolean;
   comentariosAdicionales: boolean;
   comentariosAdicionalesTexto: string;
-  metadataDerechosEspecialesClase: FileMetadataResponseDTO[];
-  metadataObligacionesClase: FileMetadataResponseDTO[];
+  metadataDerechosEspecialesClase: FileMetadataDTO[];
+  metadataObligacionesClase: FileMetadataDTO[];
 }
+
+type State = ClasesAccionesState;

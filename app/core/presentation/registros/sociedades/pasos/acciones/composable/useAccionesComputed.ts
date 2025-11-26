@@ -1,10 +1,22 @@
 import { computed, onMounted, ref } from "vue";
 import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
-import { useAccionesComunesStore } from "../stores/useAccionesComunesStore";
-import { useClasesAccionesStore } from "../stores/useClasesAccionesStore";
+import {
+  useAccionesComunesStore,
+  type AccionesComunesState,
+} from "../stores/useAccionesComunesStore";
+import {
+  useClasesAccionesStore,
+  type ClasesAccionesState,
+} from "../stores/useClasesAccionesStore";
 import { useRegistroAccionesStore } from "../stores/useRegistroAccionesStore";
 import { useValorNominalStore } from "../stores/useValorNominalStore";
 import type { AccionTableRow } from "../types/acciones";
+import { TipoAccionesEnum } from "../types/enums/tipoAccionesEnum";
+import {
+  mapperAccionesListaAModal,
+  mapperClasesModalALista,
+  mapperComunesModalALista,
+} from "../utils/mapper-acciones-lista";
 
 export const useAccionesComputed = (profileId: string) => {
   const registroAccionesStore = useRegistroAccionesStore();
@@ -65,6 +77,9 @@ export const useAccionesComputed = (profileId: string) => {
   const isAccionesModalOpen = ref(false);
   const accionesModalMode = ref<"crear" | "editar">("crear");
   const accionSeleccionadaId = ref<string | null>(null);
+  const activeTab = ref<"opcion-a" | "opcion-b">("opcion-a");
+
+  const isLoading = ref(false);
 
   // Funciones de modal de valor nominal
   const openValorNominalModal = () => {
@@ -89,6 +104,7 @@ export const useAccionesComputed = (profileId: string) => {
   const resetAccionForms = () => {
     accionesComunesStore.$reset();
     clasesAccionesStore.$reset();
+    activeTab.value = "opcion-a";
   };
 
   const openAccionesModal = () => {
@@ -99,7 +115,63 @@ export const useAccionesComputed = (profileId: string) => {
   };
 
   const closeAccionesModal = () => {
+    resetAccionForms();
     isAccionesModalOpen.value = false;
+  };
+
+  // Manejar submit del modal
+  const handleAccionesModalSubmit = async () => {
+    try {
+      isLoading.value = true;
+
+      switch (activeTab.value) {
+        case "opcion-a": {
+          // Solo validar si estamos creando una nueva acción
+          if (accionesModalMode.value === "crear") {
+            const existeComunOPreferente = registroAccionesStore.acciones.some(
+              (accion) =>
+                accion.tipo === TipoAccionesEnum.COMUN ||
+                accion.tipo === TipoAccionesEnum.SIN_DERECHO_A_VOTO
+            );
+
+            if (existeComunOPreferente) {
+              throw new Error("Ya existe una acción común o preferente");
+            }
+          }
+
+          const accionMapeada = mapperComunesModalALista(
+            accionesComunesStore,
+            accionSeleccionadaId.value ?? undefined
+          );
+
+          if (accionesModalMode.value === "editar" && accionSeleccionadaId.value) {
+            registroAccionesStore.updateAccion(accionMapeada);
+          } else {
+            registroAccionesStore.addAccion(accionMapeada);
+          }
+          break;
+        }
+        case "opcion-b": {
+          const accionMapeada = mapperClasesModalALista(
+            clasesAccionesStore,
+            accionSeleccionadaId.value ?? undefined
+          );
+
+          if (accionesModalMode.value === "editar" && accionSeleccionadaId.value) {
+            registroAccionesStore.updateAccion(accionMapeada);
+          } else {
+            registroAccionesStore.addAccion(accionMapeada);
+          }
+          break;
+        }
+      }
+
+      closeAccionesModal();
+    } catch (error) {
+      console.error("[useAccionesComputed] Error al guardar acciones:", error);
+    } finally {
+      isLoading.value = false;
+    }
   };
 
   // Funciones de acciones
@@ -107,10 +179,20 @@ export const useAccionesComputed = (profileId: string) => {
     const accion = registroAccionesStore.getAccionById(id);
 
     if (!accion) {
-      return;
+      throw new Error("Acción no encontrada");
     }
 
-    resetAccionForms();
+    const formData = mapperAccionesListaAModal(accion);
+
+    // Poblar el store correspondiente según el tipo de acción
+    if (accion.tipo === TipoAccionesEnum.CLASES) {
+      clasesAccionesStore.setFormData(formData as ClasesAccionesState);
+      activeTab.value = "opcion-b";
+    } else {
+      accionesComunesStore.setFormData(formData as AccionesComunesState);
+      activeTab.value = "opcion-a";
+    }
+
     accionesModalMode.value = "editar";
     accionSeleccionadaId.value = id;
     isAccionesModalOpen.value = true;
@@ -158,11 +240,14 @@ export const useAccionesComputed = (profileId: string) => {
     isAccionesModalOpen,
     accionesModalMode,
     accionSeleccionadaId,
+    activeTab,
+    isLoading,
     openValorNominalModal,
     openAccionesModal,
     closeValorNominalModal,
     handleSaveValorNominal,
     closeAccionesModal,
+    handleAccionesModalSubmit,
     // Acciones
     accionesActions,
     // Stores (para acceso directo si es necesario)

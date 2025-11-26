@@ -1,17 +1,17 @@
-export type TipoAccionRegistro = "comun" | "clase";
-
+import type { TipoAccionesEnum } from "./enums/tipoAccionesEnum";
 export interface AccionRegistro {
   id: string;
-  tipo: TipoAccionRegistro;
-  descripcion: string;
+  tipo: TipoAccionesEnum;
+  nombreAccion: string;
   accionesSuscritas: number;
   derechoVoto: boolean;
   redimibles: boolean;
-  derechosEspeciales: boolean;
+  otrosDerechosEspeciales: boolean;
+  metadataDerechosEspeciales: FileMetadataDTO[];
   obligacionesAdicionales: boolean;
-  archivosDerechosEspeciales: File[];
-  archivosObligaciones: File[];
-  participacion: number;
+  metadataObligaciones: FileMetadataDTO[];
+  comentariosAdicionales: boolean;
+  comentariosAdicionalesTexto: string;
 }
 
 export interface AccionTableRow {
@@ -23,4 +23,11 @@ export interface AccionTableRow {
   redimibles: boolean;
   derechos_especiales: boolean;
   obligaciones_adicionales: boolean;
+}
+
+export interface FileMetadataDTO {
+  fileId: string;
+  mimeType: string;
+  originalName: string;
+  size: number;
 }

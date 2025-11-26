@@ -1,12 +1,6 @@
 import { defineStore } from "pinia";
+import type { FileMetadataDTO } from "../types/acciones";
 import type { TipoAccionesEnum } from "../types/enums/tipoAccionesEnum";
-
-interface FileMetadataResponseDTO {
-  fileId: string;
-  mimeType: string;
-  originalName: string;
-  size: number;
-}
 
 export const useAccionesComunesStore = defineStore("accionesComunesModal", {
   state: (): State => ({
@@ -20,16 +14,17 @@ export const useAccionesComunesStore = defineStore("accionesComunesModal", {
     comentariosAdicionalesTexto: "",
 
     // Metadata de archivos de "Otros derechos especiales"
-    metadataDerechosEspeciales: [] as FileMetadataResponseDTO[],
+    metadataDerechosEspeciales: [] as FileMetadataDTO[],
 
     // Metadata de archivos de "Obligaciones adicionales"
-    metadataObligaciones: [] as FileMetadataResponseDTO[],
+    metadataObligaciones: [] as FileMetadataDTO[],
   }),
 
   actions: {
     // Método para obtener todos los datos del formulario
     getFormData() {
       return {
+        tipoAcciones: this.tipoAcciones,
         cantidadAcciones: this.cantidadAcciones,
         redimibles: this.redimibles,
         otrosDerechosEspeciales: this.otrosDerechosEspeciales,
@@ -41,7 +36,19 @@ export const useAccionesComunesStore = defineStore("accionesComunesModal", {
       };
     },
 
-    addDerechosEspecialesMetadata(metadata: FileMetadataResponseDTO) {
+    setFormData(data: State) {
+      this.tipoAcciones = data.tipoAcciones;
+      this.cantidadAcciones = data.cantidadAcciones;
+      this.redimibles = data.redimibles;
+      this.otrosDerechosEspeciales = data.otrosDerechosEspeciales;
+      this.obligacionesAdicionales = data.obligacionesAdicionales;
+      this.comentariosAdicionales = data.comentariosAdicionales;
+      this.comentariosAdicionalesTexto = data.comentariosAdicionalesTexto;
+      this.metadataDerechosEspeciales = [...(data.metadataDerechosEspeciales || [])];
+      this.metadataObligaciones = [...(data.metadataObligaciones || [])];
+    },
+
+    addDerechosEspecialesMetadata(metadata: FileMetadataDTO) {
       this.metadataDerechosEspeciales.push(metadata);
     },
 
@@ -52,7 +59,7 @@ export const useAccionesComunesStore = defineStore("accionesComunesModal", {
       }
     },
 
-    addObligacionesMetadata(metadata: FileMetadataResponseDTO) {
+    addObligacionesMetadata(metadata: FileMetadataDTO) {
       this.metadataObligaciones.push(metadata);
     },
 
@@ -65,7 +72,7 @@ export const useAccionesComunesStore = defineStore("accionesComunesModal", {
   },
 });
 
-interface State {
+export interface AccionesComunesState {
   tipoAcciones: TipoAccionesEnum | "";
   cantidadAcciones: number;
   redimibles: boolean;
@@ -73,6 +80,8 @@ interface State {
   obligacionesAdicionales: boolean;
   comentariosAdicionales: boolean;
   comentariosAdicionalesTexto: string;
-  metadataDerechosEspeciales: FileMetadataResponseDTO[];
-  metadataObligaciones: FileMetadataResponseDTO[];
+  metadataDerechosEspeciales: FileMetadataDTO[];
+  metadataObligaciones: FileMetadataDTO[];
 }
+
+type State = AccionesComunesState;
