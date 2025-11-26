@@ -19,12 +19,25 @@
 </template>
 
 <script setup lang="ts">
-  // Página: Descargar
-  // Nivel: 0 (Principal)
-  // RightSidebar: Habilitado (lista de actas)
-  // Ruta: /operaciones/junta-accionistas/descargar
+import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
 
-  definePageMeta({
-    layout: "default",
-  });
+/**
+ * Página: Documentos Generados
+ * 
+ * Paso 6 del flujo de Juntas de Accionistas.
+ * Permite visualizar y descargar los documentos finales generados.
+ * 
+ * Ruta: /operaciones/junta-accionistas/[id]/descargar
+ */
+
+definePageMeta({
+  layout: "registros",
+  flowLayoutJuntas: true,
+});
+
+// Configurar el botón "Siguiente" (en este caso sería "Finalizar")
+useJuntasFlowNext(async () => {
+  // TODO: Agregar lógica de finalización del flujo
+  // Por ahora, solo permite navegar (aunque este es el último paso)
+});
 </script>

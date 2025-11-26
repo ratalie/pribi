@@ -80,8 +80,18 @@
     }))
   );
 
+  /**
+   * Página: Resumen de la Junta
+   * 
+   * Paso 5 del flujo de Juntas de Accionistas.
+   * Vista de solo lectura que consolida toda la información de la junta.
+   * 
+   * Ruta: /operaciones/junta-accionistas/[id]/resumen
+   */
+
   definePageMeta({
-    layout: "default",
+    layout: "registros",
+    flowLayoutJuntas: true,
   });
 </script>
 

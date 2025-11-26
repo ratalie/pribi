@@ -24,6 +24,17 @@
 
 <script setup lang="ts">
 import Titles from "~/types/enums/Titles.enum";
+import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
+
+/**
+ * Página: Puntos de Acuerdo
+ * 
+ * Paso 4 del flujo de Juntas de Accionistas.
+ * Página principal que muestra las categorías de puntos de acuerdo.
+ * Los sub-steps específicos se muestran en el sidebar izquierdo (filtrados dinámicamente).
+ * 
+ * Ruta: /operaciones/junta-accionistas/[id]/puntos-acuerdo
+ */
 
 const sections = [
   {
@@ -49,6 +60,13 @@ const sections = [
 ];
 
 definePageMeta({
-  layout: "default",
+  layout: "registros",
+  flowLayoutJuntas: true,
+});
+
+// Configurar el botón "Siguiente"
+useJuntasFlowNext(async () => {
+  // TODO: Agregar validación y guardado de datos
+  // Por ahora, solo permite navegar al siguiente paso
 });
 </script>

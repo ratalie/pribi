@@ -17,13 +17,25 @@
 import TipoJuntaSection from "~/components/juntas/detalles/TipoJuntaSection.vue";
 import ModalidadJuntaSection from "~/components/juntas/detalles/ModalidadJuntaSection.vue";
 import ConvocatoriaJuntaSection from "~/components/juntas/detalles/ConvocatoriaJuntaSection.vue";
+import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
 
-// Página: Detalles de la Junta
-// Nivel: 0 (Principal)
-// RightSidebar: Anclas a las secciones internas
-// Ruta: /operaciones/junta-accionistas/detalles
+/**
+ * Página: Detalles de la Junta
+ * 
+ * Paso 2 del flujo de Juntas de Accionistas.
+ * Configura los datos esenciales de la junta (tipo, modalidad, convocatoria).
+ * 
+ * Ruta: /operaciones/junta-accionistas/[id]/detalles
+ */
 
 definePageMeta({
-  layout: "default",
+  layout: "registros",
+  flowLayoutJuntas: true,
+});
+
+// Configurar el botón "Siguiente"
+useJuntasFlowNext(async () => {
+  // TODO: Agregar validación y guardado de datos
+  // Por ahora, solo permite navegar al siguiente paso
 });
 </script>

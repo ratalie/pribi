@@ -17,13 +17,25 @@
 import ConvocatoriaRealizadaSection from "~/components/juntas/instalacion/ConvocatoriaRealizadaSection.vue";
 import AsistenciaRepresentacionSection from "~/components/juntas/instalacion/AsistenciaRepresentacionSection.vue";
 import MesaDirectivaSection from "~/components/juntas/instalacion/MesaDirectivaSection.vue";
+import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
 
-// Página: Instalación de la Junta
-// Nivel: 0 (Principal)
-// RightSidebar: Anclas a las secciones internas
-// Ruta: /operaciones/junta-accionistas/instalacion
+/**
+ * Página: Instalación de la Junta
+ * 
+ * Paso 3 del flujo de Juntas de Accionistas.
+ * Realiza la convocatoria, registra la asistencia y conforma la mesa directiva.
+ * 
+ * Ruta: /operaciones/junta-accionistas/[id]/instalacion
+ */
 
 definePageMeta({
-  layout: "default",
+  layout: "registros",
+  flowLayoutJuntas: true,
+});
+
+// Configurar el botón "Siguiente"
+useJuntasFlowNext(async () => {
+  // TODO: Agregar validación y guardado de datos
+  // Por ahora, solo permite navegar al siguiente paso
 });
 </script>
