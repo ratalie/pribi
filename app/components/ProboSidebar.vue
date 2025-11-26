@@ -63,23 +63,6 @@
     return route.path === href || route.path.startsWith(href + "/");
   };
 
-  // Detectar si una sección está activa (basado en ruta actual)
-  const isSectionActive = (sectionId: string): boolean => {
-    const section = navigationSections.find((s) => s.id === sectionId);
-    if (!section) return false;
-
-    // Verificar si algún item de la sección está activo
-    for (const item of section.items) {
-      if (item.href && isActive(item.href)) return true;
-      if (item.submenuItems) {
-        for (const subItem of item.submenuItems) {
-          if (subItem.href && isActive(subItem.href)) return true;
-        }
-      }
-    }
-    return false;
-  };
-
   // Detectar si un item tiene algún subitem activo (para modo colapsado)
   const hasActiveSubItem = (item: any): boolean => {
     if (!item.submenuItems) return false;
@@ -160,8 +143,16 @@
           <!-- Logo: Separación clara entre estado COLAPSADO y EXPANDIDO -->
           <div
             class="probo-logo-container flex justify-center items-center gap-2 h-full"
-            @mouseenter="() => { if (props.isCollapsed) isLogoHovered = true; }"
-            @mouseleave="() => { if (props.isCollapsed) isLogoHovered = false; }"
+            @mouseenter="
+              () => {
+                if (props.isCollapsed) isLogoHovered = true;
+              }
+            "
+            @mouseleave="
+              () => {
+                if (props.isCollapsed) isLogoHovered = false;
+              }
+            "
           >
             <!-- ============================================
                  ESTADO EXPANDIDO (NO COLAPSADO)
@@ -323,9 +314,6 @@
                 <!-- Nivel 1: Sección (Colapsable cuando está contraído) -->
                 <button
                   class="probo-collapsed-item probo-collapsed-level-1"
-                  :class="{
-                    'probo-collapsed-active': isSectionActive(section.id),
-                  }"
                   @click="toggleSection(section.title, !expandedSections[section.title])"
                 >
                   <!-- NO mostrar icono en nivel 1 cuando está contraído -->
@@ -526,80 +514,125 @@
     padding: 0 10px;
   }
 
-  /* Scrollbar personalizado - Solo visible en hover */
+  /* ============================================
+   SCROLLBAR OVERLAY - Sin flechas, solo ruedita
+   ============================================ */
   .probo-sidebar-content {
+    /* Firefox - Scrollbar overlay sin flechas */
     scrollbar-width: thin;
     scrollbar-color: transparent transparent;
+    /* Overlay: no empuja contenido */
+    scrollbar-gutter: auto;
   }
 
   .probo-sidebar-content:hover {
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   }
 
+  /* Webkit (Chrome, Safari, Edge) - Scrollbar overlay SIN FLECHAS */
   .probo-sidebar-content::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 6px !important;
+    height: 6px !important;
+    background: transparent !important;
+    /* Eliminar completamente cualquier espacio para flechas */
+    -webkit-appearance: none;
+    appearance: none;
   }
 
   .probo-sidebar-content::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 3px;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    /* Sin espacio para flechas */
+    -webkit-appearance: none;
+    appearance: none;
   }
 
   .probo-sidebar-content::-webkit-scrollbar-thumb {
-    background: transparent;
-    border-radius: 3px;
-    border: none;
-    transition: background 200ms ease;
+    background: transparent !important;
+    border-radius: 3px !important;
+    border: none !important;
+    transition: background 200ms ease !important;
+    min-height: 20px !important;
+    -webkit-appearance: none;
+    appearance: none;
   }
 
   .probo-sidebar-content:hover::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.2) !important;
   }
 
   .probo-sidebar-content:hover::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.3) !important;
   }
 
-  /* Ocultar completamente botones de scroll (flechas) - Todas las variantes */
+  /* ELIMINAR COMPLETAMENTE TODAS LAS FLECHAS - Estrategia agresiva */
   .probo-sidebar-content::-webkit-scrollbar-button {
     display: none !important;
     width: 0 !important;
     height: 0 !important;
     background: transparent !important;
     border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
   }
 
+  /* Todas las variantes de botones de scroll */
   .probo-sidebar-content::-webkit-scrollbar-button:start:decrement,
-  .probo-sidebar-content::-webkit-scrollbar-button:end:increment {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    background: transparent !important;
-    border: none !important;
-  }
-
+  .probo-sidebar-content::-webkit-scrollbar-button:end:increment,
   .probo-sidebar-content::-webkit-scrollbar-button:vertical:start:decrement,
   .probo-sidebar-content::-webkit-scrollbar-button:vertical:end:increment,
   .probo-sidebar-content::-webkit-scrollbar-button:horizontal:start:decrement,
-  .probo-sidebar-content::-webkit-scrollbar-button:horizontal:end:increment {
+  .probo-sidebar-content::-webkit-scrollbar-button:horizontal:end:increment,
+  .probo-sidebar-content::-webkit-scrollbar-button:single-button,
+  .probo-sidebar-content::-webkit-scrollbar-button:double-button,
+  .probo-sidebar-content::-webkit-scrollbar-button:single-button:vertical:start:decrement,
+  .probo-sidebar-content::-webkit-scrollbar-button:single-button:vertical:end:increment,
+  .probo-sidebar-content::-webkit-scrollbar-button:double-button:vertical:start:decrement,
+  .probo-sidebar-content::-webkit-scrollbar-button:double-button:vertical:end:increment {
     display: none !important;
     width: 0 !important;
     height: 0 !important;
     background: transparent !important;
     border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
 
-  /* Asegurar que no haya espacio para flechas */
+  /* Esquina del scrollbar */
   .probo-sidebar-content::-webkit-scrollbar-corner {
     display: none !important;
     background: transparent !important;
+    width: 0 !important;
+    height: 0 !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
   }
 
-  /* Firefox - Sin flechas */
-  .probo-sidebar-content {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  /* Track piece (partes del track) */
+  .probo-sidebar-content::-webkit-scrollbar-track-piece {
+    background: transparent !important;
+    border: none !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+  }
+
+  /* Asegurar que no haya ningún elemento residual */
+  .probo-sidebar-content::-webkit-scrollbar-button:before,
+  .probo-sidebar-content::-webkit-scrollbar-button:after {
+    display: none !important;
+    content: none !important;
   }
 
   /* ============================================
@@ -609,6 +642,7 @@
     margin-bottom: 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 20px;
+    padding-top: 12px;
   }
 
   .probo-section-wrapper:last-child {
@@ -858,7 +892,7 @@
   .probo-collapsed-section {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
     align-items: center;
     padding-bottom: 16px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -887,8 +921,15 @@
     position: relative;
   }
 
-  .probo-collapsed-item:hover {
+  /* Hover general - Solo para nivel 2 */
+  .probo-collapsed-level-2:hover {
     background-color: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+  }
+
+  /* Hover nivel 1 - Solo font-bold, sin background */
+  .probo-collapsed-level-1:hover {
+    background-color: transparent;
     color: #ffffff;
   }
 
@@ -923,7 +964,8 @@
 
   /* Nivel 1 - Secciones */
   .probo-collapsed-level-1 {
-    margin-bottom: 4px;
+    margin-bottom: 2px;
+    color: rgba(255, 255, 255, 0.65);
   }
 
   .probo-collapsed-level-1 .probo-collapsed-icon-img {
@@ -932,13 +974,20 @@
   }
 
   .probo-collapsed-level-1 .probo-collapsed-label {
-    font-weight: 500;
+    font-weight: 400;
     font-size: 12px;
+    transition: font-weight 150ms ease;
+  }
+
+  /* Hover nivel 1 - Solo font-bold, sin background */
+  .probo-collapsed-level-1:hover .probo-collapsed-label {
+    font-weight: 600;
   }
 
   /* Nivel 2 - Items */
   .probo-collapsed-level-2 {
     margin-left: 0;
+    margin-top: 2px;
   }
 
   .probo-collapsed-level-2 .probo-collapsed-icon-img {
@@ -950,13 +999,13 @@
     font-size: 10px;
   }
 
-  /* Estado activo en modo colapsado */
-  .probo-collapsed-active {
+  /* Estado activo en modo colapsado - SOLO para nivel 2 */
+  .probo-collapsed-level-2.probo-collapsed-active {
     background-color: rgba(255, 255, 255, 0.12) !important;
     color: #ffffff !important;
   }
 
-  .probo-collapsed-active::after {
+  .probo-collapsed-level-2.probo-collapsed-active::after {
     content: "";
     position: absolute;
     right: 0;
@@ -972,9 +1021,10 @@
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 0 12px; /*
-Scrollbar overlay para que no distorsione el contenedor */
-    scrollbar-gutter: stable;
+    padding: 0 12px;
+    gap: 0 !important;
+    /* Scrollbar overlay: no empuja contenido, se pone por encima */
+    scrollbar-gutter: auto;
     transition: padding 300ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 </style>
