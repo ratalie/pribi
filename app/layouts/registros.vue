@@ -9,7 +9,7 @@
 
   // Estado del sidebar con persistencia en localStorage
   const SIDEBAR_STORAGE_KEY = "probo-sidebar-collapsed";
-  
+
   // Inicializar desde localStorage
   const getInitialCollapsedState = (): boolean => {
     if (import.meta.client) {
@@ -40,9 +40,7 @@
     />
 
     <!-- Main Content -->
-    <div
-      class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out ml-8"
-    >
+    <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out">
       <!-- Main Content Area -->
       <main class="flex-1 overflow-y-auto">
         <!-- Layout para registros (sociedades) -->
