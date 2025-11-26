@@ -1,5 +1,6 @@
 import type { AccionResponseDTO } from "../../application/dtos/accion-response.dto";
 import type { AccionDTO } from "../../application/dtos/accion.dto";
+import type { AccionPayload } from "../../domain/entities/accion-payload.entity";
 import type { Accion } from "../../domain/entities/accion.entity";
 
 /**
@@ -11,7 +12,7 @@ export class AccionesMapper {
    * @param dto DTO de respuesta del backend
    * @returns Entidad de dominio
    */
-  static deRespuestaADominio(_dto: any): Accion {
+  static deRespuestaADominio(_dto: AccionResponseDTO): Accion {
     // TODO: Implementar mapeo de DTO a Entidad
     return {} as Accion;
   }
@@ -31,8 +32,8 @@ export class AccionesMapper {
    * @param dto DTO de la acción
    * @returns Payload para enviar al backend
    */
-  static aPayloadParaBackend(dto: AccionDTO): AccionDTO {
+  static aPayloadParaBackend(_dto: AccionPayload): AccionDTO {
     // TODO: Implementar mapeo de DTO a payload del backend
-    return dto;
+    return {} as AccionDTO;
   }
 }

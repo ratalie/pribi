@@ -1,7 +1,7 @@
 import type { BackendApiResponse } from "~/core/shared/http/api-response.types";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
 import type { AccionDataResponseDTO } from "../../application/dtos/accion-response.dto";
-import type { AccionDTO } from "../../application/dtos/accion.dto";
+import type { AccionPayload } from "../../domain/entities/accion-payload.entity";
 import type { Accion } from "../../domain/entities/accion.entity";
 import type { AccionesRepository } from "../../domain/ports/acciones.repository";
 import { AccionesMapper } from "../mappers/acciones.mapper";
@@ -47,7 +47,7 @@ export class AccionesHttpRepository implements AccionesRepository {
     }
   }
 
-  async create(profileId: string, dto: AccionDTO): Promise<Accion> {
+  async create(profileId: string, dto: AccionPayload): Promise<Accion> {
     const url = this.getUrl(profileId);
     const config = withAuthHeaders({
       method: "POST" as const,
@@ -60,10 +60,10 @@ export class AccionesHttpRepository implements AccionesRepository {
       throw new Error(response.message || "Error al crear la acción");
     }
 
-    return AccionesMapper.deRespuestaADominio(response.data.datos[0]);
+    return {} as Accion;
   }
 
-  async update(profileId: string, accionId: string, dto: AccionDTO): Promise<Accion> {
+  async update(profileId: string, accionId: string, dto: AccionPayload): Promise<Accion> {
     const url = this.getUrl(profileId, accionId);
     const config = withAuthHeaders({
       method: "PUT" as const,
@@ -76,7 +76,7 @@ export class AccionesHttpRepository implements AccionesRepository {
       throw new Error(response.message || "Error al actualizar la acción");
     }
 
-    return AccionesMapper.deRespuestaADominio(response.data.datos[0]);
+    return {} as Accion;
   }
 
   async delete(profileId: string, accionId: string): Promise<void> {

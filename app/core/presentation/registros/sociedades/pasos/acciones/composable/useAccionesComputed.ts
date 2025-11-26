@@ -1,5 +1,6 @@
 import { computed, onMounted, ref } from "vue";
 import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
+import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/enums/tipo-accion.enum";
 import {
   useAccionesComunesStore,
   type AccionesComunesState,
@@ -11,7 +12,6 @@ import {
 import { useRegistroAccionesStore } from "../stores/useRegistroAccionesStore";
 import { useValorNominalStore } from "../stores/useValorNominalStore";
 import type { AccionTableRow } from "../types/acciones";
-import { TipoAccionesEnum } from "../types/enums/tipoAccionesEnum";
 import {
   mapperAccionesListaAModal,
   mapperClasesModalALista,
@@ -140,7 +140,7 @@ export const useAccionesComputed = (profileId: string) => {
 
             if (existeMismoTipo) {
               const tipoNombre =
-                accionMapeada.tipo === TipoAccionesEnum.COMUN ? "común" : "sin derecho a voto";
+                accionMapeada.tipo === TipoAccionEnum.COMUN ? "común" : "sin derecho a voto";
               throw new Error(`Ya existe una acción ${tipoNombre}`);
             }
           }
@@ -186,7 +186,7 @@ export const useAccionesComputed = (profileId: string) => {
     const formData = mapperAccionesListaAModal(accion);
 
     // Poblar el store correspondiente según el tipo de acción
-    if (accion.tipo === TipoAccionesEnum.CLASES) {
+    if (accion.tipo === TipoAccionEnum.CLASES) {
       clasesAccionesStore.setFormData(formData as ClasesAccionesState);
       activeTab.value = "opcion-b";
     } else {

@@ -1,6 +1,6 @@
+import type { AccionPayload } from "../../domain/entities/accion-payload.entity";
 import type { Accion } from "../../domain/entities/accion.entity";
 import type { AccionesRepository } from "../../domain/ports/acciones.repository";
-import type { AccionDTO } from "../dtos/accion.dto";
 
 /**
  * Caso de uso para crear una nueva acción.
@@ -14,7 +14,7 @@ export class CreateAccionUseCase {
    * @param payload Datos de la acción a crear
    * @returns Acción creada
    */
-  async execute(profileId: string, payload: AccionDTO): Promise<Accion> {
+  async execute(profileId: string, payload: AccionPayload): Promise<Accion> {
     return this.repository.create(profileId, payload);
   }
 }

@@ -1,4 +1,4 @@
-import type { AccionDTO } from "../../application/dtos/accion.dto";
+import type { AccionPayload } from "../entities/accion-payload.entity";
 import type { Accion } from "../entities/accion.entity";
 
 /**
@@ -13,12 +13,12 @@ export interface AccionesRepository {
   /**
    * Crea una nueva acción.
    */
-  create(profileId: string, payload: AccionDTO): Promise<Accion>;
+  create(profileId: string, payload: AccionPayload): Promise<Accion>;
 
   /**
    * Actualiza una acción existente.
    */
-  update(profileId: string, accionId: string, payload: AccionDTO): Promise<Accion>;
+  update(profileId: string, accionId: string, payload: AccionPayload): Promise<Accion>;
 
   /**
    * Elimina una acción.

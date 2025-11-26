@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import type { AccionEntity } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/entities/accion.entity";
 import type {
   AccionesComunesState,
   useAccionesComunesStore,
@@ -7,7 +8,6 @@ import type {
   ClasesAccionesState,
   useClasesAccionesStore,
 } from "../stores/useClasesAccionesStore";
-import type { AccionRegistro } from "../types/acciones";
 import { TipoAccionesEnum, tipoAccionesUIEnum } from "../types/enums/tipoAccionesEnum";
 
 /**
@@ -32,7 +32,7 @@ export const getTipoAccionUI = (tipo: TipoAccionesEnum): string => {
 export const mapperComunesModalALista = (
   store: ReturnType<typeof useAccionesComunesStore>,
   id?: string
-): AccionRegistro => {
+): AccionEntity => {
   const formData = store.getFormData();
 
   return {
@@ -60,7 +60,7 @@ export const mapperComunesModalALista = (
 export const mapperClasesModalALista = (
   store: ReturnType<typeof useClasesAccionesStore>,
   id?: string
-): AccionRegistro => {
+): AccionEntity => {
   const formData = store.getFormData();
 
   return {
@@ -83,7 +83,7 @@ export const mapperClasesModalALista = (
  * Mapea los datos de AccionRegistro a AccionesComunesState o ClasesAccionesState
  */
 export const mapperAccionesListaAModal = (
-  accion: AccionRegistro
+  accion: AccionEntity
 ): AccionesComunesState | ClasesAccionesState => {
   switch (accion.tipo) {
     case TipoAccionesEnum.COMUN:
@@ -96,7 +96,7 @@ export const mapperAccionesListaAModal = (
   }
 };
 
-const convertirComunes = (accion: AccionRegistro): AccionesComunesState => {
+const convertirComunes = (accion: AccionEntity): AccionesComunesState => {
   return {
     tipoAcciones: accion.tipo,
     cantidadAcciones: accion.accionesSuscritas,
@@ -110,7 +110,7 @@ const convertirComunes = (accion: AccionRegistro): AccionesComunesState => {
   };
 };
 
-const convertirClases = (accion: AccionRegistro): ClasesAccionesState => {
+const convertirClases = (accion: AccionEntity): ClasesAccionesState => {
   return {
     nombreClaseAccion: accion.nombreAccion,
     cantidadAccionesClase: accion.accionesSuscritas,

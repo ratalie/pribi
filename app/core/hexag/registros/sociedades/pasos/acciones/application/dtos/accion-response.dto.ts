@@ -1,3 +1,6 @@
+import type { TipoAccionEnum } from "../../domain/enums/tipo-accion.enum";
+import type { FileMetadataDTO } from "./file-metadata.dto";
+
 /**
  * Estructura completa de la data en la respuesta GET de acciones.
  */
@@ -14,20 +17,12 @@ interface PaginacionResponseDTO {
 
 export interface AccionResponseDTO {
   id: string;
-  tipo: "COMUN" | "CLASE";
-  nombre?: string; // Solo presente si tipo es 'CLASE'
+  tipo: TipoAccionEnum;
+  nombre?: string; // Solo presente si tipo es 'CLASES'
   cantidadSuscrita: number;
   redimible: boolean;
   conDerechoVoto: boolean;
-  otrosDerechosEspeciales: boolean;
-  archivoOtrosDerechos?: FileMetadataResponseDTO;
-  regimenObligacionesAdicionales: boolean;
-  archivoObligaciones?: FileMetadataResponseDTO;
-}
-
-interface FileMetadataResponseDTO {
-  fileId: string;
-  mimeType: string;
-  originalName: string;
-  size: number;
+  archivoOtrosDerechos?: FileMetadataDTO[];
+  archivoObligaciones?: FileMetadataDTO[];
+  comentariosAdicionales?: string;
 }

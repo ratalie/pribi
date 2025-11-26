@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
 import { ListAccionesUseCase } from "~/core/hexag/registros/sociedades/pasos/acciones/application";
+import type { Accion } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/entities/accion.entity";
+import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/enums/tipo-accion.enum";
 import { AccionesHttpRepository } from "~/core/hexag/registros/sociedades/pasos/acciones/infrastructure";
-import type { AccionRegistro, AccionTableRow } from "../types/acciones";
-import { TipoAccionesEnum } from "../types/enums/tipoAccionesEnum";
+import type { AccionTableRow } from "../types/acciones";
 import { getTipoAccionUI } from "../utils/mapper-acciones-lista";
 
 interface State {
-  acciones: AccionRegistro[];
+  acciones: Accion[];
 }
 
 // Formateador de porcentaje
@@ -35,7 +36,7 @@ export const useRegistroAccionesStore = defineStore("registroAcciones", {
       return state.acciones.map((accion) => ({
         id: accion.id,
         tipo_acciones:
-          accion.tipo === TipoAccionesEnum.CLASES
+          accion.tipo === TipoAccionEnum.CLASES
             ? accion.nombreAccion
             : getTipoAccionUI(accion.tipo),
         acciones_suscritas: accion.accionesSuscritas,
@@ -58,11 +59,11 @@ export const useRegistroAccionesStore = defineStore("registroAcciones", {
       }
     },
 
-    addAccion(accion: AccionRegistro) {
+    addAccion(accion: Accion) {
       this.acciones.push(accion);
     },
 
-    updateAccion(payload: AccionRegistro) {
+    updateAccion(payload: Accion) {
       const index = this.acciones.findIndex((accion) => accion.id === payload.id);
 
       if (index === -1) {
@@ -76,7 +77,7 @@ export const useRegistroAccionesStore = defineStore("registroAcciones", {
       this.acciones = this.acciones.filter((accion) => accion.id !== id);
     },
 
-    getAccionById(id: string): AccionRegistro | null {
+    getAccionById(id: string): Accion | null {
       return this.acciones.find((accion) => accion.id === id) ?? null;
     },
 
