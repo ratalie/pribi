@@ -16,21 +16,23 @@ export default defineNuxtPlugin(async () => {
   $i18n.setLocaleMessage("de", deTranslations);
   $i18n.setLocaleMessage("fr", frTranslations);
 
-  // Forzar español por defecto si no hay cookie o locale guardado
+  // FORZAR SIEMPRE ESPAÑOL - Sin excepciones
   if (import.meta.client) {
+    // Establecer cookie a español
     const cookieLocale = useCookie("i18n_redirected", {
-      default: () => "es", // Por defecto español
+      default: () => "es",
     });
-    const currentLocale = $i18n.locale.value;
-
-    // Si no hay cookie válida o el locale actual no es válido, forzar español
-    const validLocales = ["es", "en", "zh", "hi", "de", "fr"];
-    if (!cookieLocale.value || !validLocales.includes(currentLocale)) {
-      $i18n.setLocale("es");
-      cookieLocale.value = "es";
-    } else {
-      // Asegurar que el locale esté sincronizado con la cookie
-      $i18n.setLocale(cookieLocale.value as "es" | "en" | "zh" | "hi" | "de" | "fr");
+    
+    // Forzar español siempre, ignorando cualquier preferencia previa
+    $i18n.setLocale("es");
+    cookieLocale.value = "es";
+    
+    // También limpiar localStorage si tiene otro idioma guardado
+    if (typeof localStorage !== "undefined") {
+      const stored = localStorage.getItem("probo-language");
+      if (stored && stored !== "es") {
+        localStorage.setItem("probo-language", "es");
+      }
     }
   }
 });

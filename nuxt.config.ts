@@ -81,17 +81,7 @@ export default defineNuxtConfig({
       { code: "fr", name: "Français" },
     ],
 
-    detectBrowserLanguage: {
-      // Desactivar detección automática del idioma del navegador
-      // Siempre usar español por defecto
-      useCookie: true,
-      cookieKey: "i18n_redirected",
-      redirectOn: "no prefix",
-      alwaysRedirect: false,
-      fallbackLocale: "es",
-      // No detectar idioma del navegador, siempre usar fallbackLocale (español)
-      cookieCrossOrigin: false,
-    },
+    detectBrowserLanguage: false, // Desactivar completamente la detección del idioma del navegador
   },
 
   shadcn: {
