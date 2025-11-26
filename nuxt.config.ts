@@ -82,11 +82,15 @@ export default defineNuxtConfig({
     ],
 
     detectBrowserLanguage: {
+      // Desactivar detección automática del idioma del navegador
+      // Siempre usar español por defecto
       useCookie: true,
       cookieKey: "i18n_redirected",
-      redirectOn: "root",
+      redirectOn: "no prefix",
       alwaysRedirect: false,
       fallbackLocale: "es",
+      // No detectar idioma del navegador, siempre usar fallbackLocale (español)
+      cookieCrossOrigin: false,
     },
   },
 

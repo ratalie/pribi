@@ -148,12 +148,24 @@ export const useProboI18n = () => {
   // Verificar si es RTL
   const isRTL = computed(() => currentLocaleInfo.value?.dir === "rtl");
 
-  // Inicializar idioma desde localStorage
+  // Inicializar idioma desde localStorage o cookie
   onMounted(() => {
     if (import.meta.client) {
+      // Prioridad: 1. Cookie de i18n, 2. localStorage, 3. Español por defecto
+      const cookieLocale = useCookie("i18n_redirected");
       const stored = localStorage.getItem("probo-language") as LocaleCode;
-      if (stored && availableLocales.some((l) => l.code === stored)) {
+      
+      // Si hay cookie válida, usarla
+      if (cookieLocale.value && availableLocales.some((l) => l.code === cookieLocale.value)) {
+        changeLocale(cookieLocale.value as LocaleCode);
+      }
+      // Si no hay cookie pero hay localStorage válido, usarlo
+      else if (stored && availableLocales.some((l) => l.code === stored)) {
         changeLocale(stored);
+      }
+      // Por defecto, forzar español
+      else {
+        changeLocale("es");
       }
     }
   });
