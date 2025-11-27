@@ -11,14 +11,25 @@
 </template>
 
 <script setup lang="ts">
-  // Página: Aportantes (Sub-paso de Aporte Dinerario)
-  // Nivel: 3 (Sub-página en rightSidebar)
-  // Padre: aporte-dinerario/index.vue (Nivel 2)
-  // RightSidebar: Aparece como hijo en sidebar del padre
-  // Ruta: /operaciones/junta-accionistas/aporte-dinerario/aportantes
-  // Enum: JuntaRoutes.APORTE_DINERARIO_APORTANTES
+import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
 
-  definePageMeta({
-    layout: "default",
-  });
+/**
+ * Página: Aportantes (Sub-sección de Aporte Dinerario)
+ * 
+ * Sección dentro del sub-step "Aporte Dinerario".
+ * Se muestra en el sidebar derecho como sección navegable.
+ * 
+ * Ruta: /operaciones/junta-accionistas/[id]/aporte-dinerario/aportantes
+ */
+
+definePageMeta({
+  layout: "registros",
+  flowLayoutJuntas: true,
+});
+
+// Configurar el botón "Siguiente"
+useJuntasFlowNext(async () => {
+  // TODO: Agregar validación y guardado de datos
+  // Por ahora, solo permite navegar al siguiente paso
+});
 </script>

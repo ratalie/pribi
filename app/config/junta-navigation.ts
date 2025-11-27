@@ -205,25 +205,36 @@ export const juntaNavigation = (context: JuntaNavigationContext): NavigationStep
   const juntasFlowStore = useJuntasFlowStore();
   const dynamicSubSteps = juntasFlowStore.getDynamicSubSteps;
 
+  console.log("🟡 [juntaNavigation] dynamicSubSteps desde store:", dynamicSubSteps);
+
   return BASE_STEPS.map((step) => {
     // Si es el paso "puntos-acuerdo", filtrar sub-steps dinámicamente
     if (step.slug === "puntos-acuerdo") {
-      // Si NO hay sub-steps seleccionados, devolver paso sin sub-steps
+      console.log("🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'");
+      
+      // Si NO hay sub-steps seleccionados, devolver paso sin sub-steps (pero siempre desplegable)
       if (dynamicSubSteps.length === 0) {
+        console.log("🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps");
         return {
           title: step.title,
           description: step.description,
           status: step.status,
           route: buildRoute(step.slug, context),
-          subSteps: [], // Array vacío
+          subSteps: [], // Array vacío pero el paso sigue siendo desplegable
         };
       }
+
+      console.log("🟡 [juntaNavigation] Filtrando sub-steps. Total BASE_SUB_STEPS:", BASE_SUB_STEPS.length);
 
       // Filtrar sub-steps según los seleccionados en Paso 1
       const filteredSubSteps: NavigationSubStep[] = BASE_SUB_STEPS.filter(
         (sub) => sub.parentSlug === "puntos-acuerdo"
       )
-        .filter((sub) => dynamicSubSteps.includes(sub.id))
+        .filter((sub) => {
+          const isIncluded = dynamicSubSteps.includes(sub.id);
+          console.log(`🟡 [juntaNavigation] Sub-step '${sub.id}': ${isIncluded ? 'INCLUIDO' : 'EXCLUIDO'}`);
+          return isIncluded;
+        })
         .map((sub) => ({
           id: sub.id,
           title: sub.title,
@@ -231,6 +242,8 @@ export const juntaNavigation = (context: JuntaNavigationContext): NavigationStep
           status: "empty" as const,
           route: buildSubStepRoute(sub.id, context),
         }));
+
+      console.log("🟡 [juntaNavigation] Sub-steps filtrados:", filteredSubSteps.length, filteredSubSteps.map(s => s.id));
 
       return {
         title: step.title,

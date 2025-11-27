@@ -12,11 +12,6 @@ export default defineNuxtConfig({
 
   ssr: false,
 
-  devServer: {
-    port: Number(process.env.NUXT_PORT) || 5173, // Puerto por defecto 5173 (o el que prefieras)
-    host: "localhost",
-  },
-
   alias: {
     "@hexag": fileURLToPath(new URL("./app/core/hexag", import.meta.url)),
     "@presentation": fileURLToPath(new URL("./app/core/presentation", import.meta.url)),

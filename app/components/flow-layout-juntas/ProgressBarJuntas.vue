@@ -22,7 +22,7 @@
         class="h-full transition-all duration-300"
         :style="{
           width: `${progressPercentage}%`,
-          backgroundColor: 'var(--primary-700, #6d28d9)',
+          backgroundColor: 'var(--primary-800, #3C28A4)',
         }"
       />
     </div>

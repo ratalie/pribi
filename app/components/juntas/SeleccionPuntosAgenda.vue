@@ -114,6 +114,8 @@ const puntosPorCategoria = computed(() => {
 
 // Manejar cambio en checkbox
 const handlePuntoChange = (puntoId: string, checked: boolean) => {
+  console.log("🔵 [SeleccionPuntosAgenda] handlePuntoChange:", { puntoId, checked });
+  
   if (checked) {
     if (!selectedPuntos.value.includes(puntoId)) {
       selectedPuntos.value.push(puntoId);
@@ -122,8 +124,12 @@ const handlePuntoChange = (puntoId: string, checked: boolean) => {
     selectedPuntos.value = selectedPuntos.value.filter((id) => id !== puntoId);
   }
 
+  console.log("🔵 [SeleccionPuntosAgenda] selectedPuntos actualizado:", selectedPuntos.value);
+
   // Guardar en el store inmediatamente
   juntasFlowStore.updateDynamicSubSteps([...selectedPuntos.value]);
+  
+  console.log("🔵 [SeleccionPuntosAgenda] Store actualizado con:", juntasFlowStore.getDynamicSubSteps);
 };
 
 // Verificar si un punto está seleccionado

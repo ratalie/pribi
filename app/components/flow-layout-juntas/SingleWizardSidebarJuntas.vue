@@ -23,19 +23,88 @@
   const expandedSteps = ref<string[]>([]);
   const expandedCategories = ref<string[]>([]);
 
-  // Expandir automáticamente el paso actual si tiene sub-steps
+  // Función para actualizar el estado expandido basado en los steps actuales
+  const updateExpandedSteps = () => {
+    console.log("🔴 [SingleWizardSidebarJuntas] updateExpandedSteps ejecutado");
+    console.log("🔴 [SingleWizardSidebarJuntas] props.steps:", props.steps);
+    console.log("🔴 [SingleWizardSidebarJuntas] props.currentStepId:", props.currentStepId);
+    
+    const newSteps = props.steps;
+    
+    // Expandir paso actual si tiene sub-steps
+    const currentStep = newSteps.find((s) => {
+      const stepSlug = s.route.split("/").pop();
+      return stepSlug === props.currentStepId || s.route.includes(props.currentStepId);
+    });
+    if (currentStep?.subSteps && currentStep.subSteps.length > 0) {
+      const stepSlug = currentStep.route.split("/").pop() || "";
+      if (!expandedSteps.value.includes(stepSlug)) {
+        expandedSteps.value.push(stepSlug);
+        console.log("🔴 [SingleWizardSidebarJuntas] Expandido paso actual:", stepSlug);
+      }
+    }
+    
+    // ⭐ SIEMPRE expandir "puntos-acuerdo" si existe (incluso si no tiene sub-steps aún)
+    const puntosAcuerdoStep = newSteps.find((s) => {
+      const stepSlug = s.route.split("/").pop();
+      return stepSlug === "puntos-acuerdo";
+    });
+    
+    if (puntosAcuerdoStep) {
+      const subStepsCount = puntosAcuerdoStep.subSteps?.length || 0;
+      console.log("🔴 [SingleWizardSidebarJuntas] Paso 'puntos-acuerdo' encontrado, sub-steps:", subStepsCount);
+      console.log("🔴 [SingleWizardSidebarJuntas] Sub-steps IDs:", puntosAcuerdoStep.subSteps?.map(s => s.id) || []);
+      
+      // Siempre expandir "puntos-acuerdo" si existe
+      if (!expandedSteps.value.includes("puntos-acuerdo")) {
+        expandedSteps.value.push("puntos-acuerdo");
+        console.log("🔴 [SingleWizardSidebarJuntas] Expandido 'puntos-acuerdo'");
+      }
+      
+      // Expandir todas las categorías de "puntos-acuerdo" si tiene sub-steps
+      if (subStepsCount > 0) {
+        const categories = new Set(puntosAcuerdoStep.subSteps?.map(s => s.category) || []);
+        categories.forEach(category => {
+          if (!expandedCategories.value.includes(category)) {
+            expandedCategories.value.push(category);
+            console.log("🔴 [SingleWizardSidebarJuntas] Expandida categoría:", category);
+          }
+        });
+      }
+    } else {
+      console.log("🔴 [SingleWizardSidebarJuntas] Paso 'puntos-acuerdo' NO encontrado en steps");
+    }
+  };
+
+  // Watch para props.steps (cambios en el array completo)
+  watch(
+    () => props.steps,
+    (newSteps, oldSteps) => {
+      console.log("🔴 [SingleWizardSidebarJuntas] Watch props.steps cambiaron");
+      console.log("🔴 [SingleWizardSidebarJuntas] Old steps count:", oldSteps?.length || 0);
+      console.log("🔴 [SingleWizardSidebarJuntas] New steps count:", newSteps.length);
+      
+      // Verificar si "puntos-acuerdo" cambió
+      const oldPuntosAcuerdo = oldSteps?.find(s => s.route.includes("puntos-acuerdo"));
+      const newPuntosAcuerdo = newSteps.find(s => s.route.includes("puntos-acuerdo"));
+      
+      if (oldPuntosAcuerdo && newPuntosAcuerdo) {
+        const oldSubStepsCount = oldPuntosAcuerdo.subSteps?.length || 0;
+        const newSubStepsCount = newPuntosAcuerdo.subSteps?.length || 0;
+        console.log("🔴 [SingleWizardSidebarJuntas] 'puntos-acuerdo' sub-steps:", { old: oldSubStepsCount, new: newSubStepsCount });
+      }
+      
+      updateExpandedSteps();
+    },
+    { immediate: true, deep: true }
+  );
+
+  // Watch para props.currentStepId
   watch(
     () => props.currentStepId,
-    (newStepId) => {
-      const currentStep = props.steps.find((s) => {
-        const stepSlug = s.route.split("/").pop();
-        return stepSlug === newStepId || s.route.includes(newStepId);
-      });
-      if (currentStep?.subSteps && currentStep.subSteps.length > 0) {
-        if (!expandedSteps.value.includes(newStepId)) {
-          expandedSteps.value.push(newStepId);
-        }
-      }
+    () => {
+      console.log("🔴 [SingleWizardSidebarJuntas] Watch currentStepId cambiaron:", props.currentStepId);
+      updateExpandedSteps();
     },
     { immediate: true }
   );
@@ -115,44 +184,6 @@
     return stepSlug === props.currentStepId || step.route.includes(props.currentStepId);
   };
 
-  // Obtener estilo del círculo (estilo probo-figma-ai)
-  const getCircleStyle = (step: NavigationStep) => {
-    const status = normalizeStatus(step.status);
-    const isCurrent = isStepCurrent(step);
-
-    if (status === "completed") {
-      return {
-        backgroundColor: "var(--primary-800, #6d28d9)",
-        borderColor: "var(--primary-800, #6d28d9)",
-        color: "white",
-      };
-    }
-    if (status === "current" || isCurrent) {
-      return {
-        backgroundColor: "white",
-        borderColor: "var(--primary-800, #6d28d9)",
-        borderWidth: "2px",
-        color: "var(--primary-800, #6d28d9)",
-      };
-    }
-    return {
-      backgroundColor: "white",
-      borderColor: "var(--gray-300, #d1d5db)",
-      borderWidth: "2px",
-      color: "var(--gray-400, #9ca3af)",
-    };
-  };
-
-  // Obtener color del texto
-  const getTextColor = (step: NavigationStep) => {
-    const status = normalizeStatus(step.status);
-    const isCurrent = isStepCurrent(step);
-
-    if (status === "completed" || status === "current" || isCurrent) {
-      return "var(--text-primary, #111827)";
-    }
-    return "var(--text-muted, #6b7280)";
-  };
 
   // Manejar click en sub-step
   const handleSubStepClick = (subStep: NavigationSubStep) => {
@@ -162,42 +193,46 @@
 </script>
 
 <template>
-  <div class="w-80 bg-white border-r overflow-y-auto h-full">
-    <div class="p-6">
-      <!-- Header -->
+  <div class="w-[401px] shrink-0 border-r bg-white overflow-y-auto h-full">
+    <div class="px-6 py-14">
+      <!-- Header con ícono y título -->
       <div class="flex items-center gap-3 mb-6">
         <div
-          class="w-10 h-10 rounded-lg flex items-center justify-center"
+          class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
           style="
-            background: linear-gradient(
-              135deg,
-              var(--primary-700, #6d28d9),
-              var(--primary-500, #8b5cf6)
-            );
-            border-radius: var(--radius-medium, 0.5rem);
+            background: linear-gradient(135deg, #673AB7, #9C27B0);
+            border-radius: 8px;
           "
         >
-          <span v-if="icon" class="text-white text-xl">{{ icon }}</span>
-          <span v-else class="text-white text-xl">📋</span>
+          <component
+            :is="getIcon('Users')"
+            v-if="getIcon('Users')"
+            class="w-5 h-5 text-white"
+          />
+          <svg
+            v-else
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="text-white"
+          >
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
         </div>
         <div>
-          <h3
-            class="text-sm font-primary font-semibold text-gray-900"
-            style="
-              color: var(--text-primary, #111827);
-              font-family: var(--font-primary, sans-serif);
-              font-weight: 600;
-            "
-          >
+          <h3 class="text-sm font-primary font-semibold text-gray-900" style="color: #212121">
             {{ title }}
           </h3>
-          <p
-            class="text-xs font-secondary text-gray-600"
-            style="
-              color: var(--text-muted, #6b7280);
-              font-family: var(--font-secondary, sans-serif);
-            "
-          >
+          <p class="text-xs font-secondary text-gray-600" style="color: #757575">
             Paso {{ progress.current }} de {{ progress.total }}
           </p>
         </div>
@@ -207,160 +242,113 @@
       <ProgressBarJuntas :current="progress.current" :total="progress.total" />
 
       <!-- Steps List -->
-      <div class="space-y-1">
-        <div v-for="(step, index) in steps" :key="index" class="relative">
-          <!-- Línea conectora vertical -->
-          <div
-            v-if="
-              index < steps.length - 1 || (index === steps.length - 1 && isStepExpanded(step))
-            "
-            class="absolute top-10 w-0.5"
-            :style="{
-              left: '15px',
-              height: isStepExpanded(step) ? 'auto' : '100%',
-              backgroundColor:
-                normalizeStatus(step.status) === 'completed' ||
-                normalizeStatus(step.status) === 'current'
-                  ? 'var(--primary-800, #6d28d9)'
-                  : 'var(--gray-300, #d1d5db)',
-            }"
+      <div>
+        <div v-for="(step, index) in steps" :key="index" class="flex items-start gap-4">
+          <!-- CheckIcon (estilo registros) -->
+          <CheckIcon
+            :status="normalizeStatus(step.status)"
+            :is-final-item="index === steps.length - 1 && !isStepExpanded(step)"
           />
 
           <!-- Step Content -->
-          <div
-            @click="
-              () => {
-                if (step.subSteps && step.subSteps.length > 0) {
-                  toggleStep(step);
-                } else {
-                  router.push(step.route);
-                  props.onStepClick?.(step.route.split('/').pop() || '');
-                }
-              }
-            "
-            :class="[
-              'flex gap-3 py-3 px-2 rounded-lg transition-colors cursor-pointer',
-              isStepCurrent(step) ? 'bg-purple-50' : 'hover:bg-gray-50',
-            ]"
-          >
-            <!-- Circle (estilo probo-figma-ai) -->
-            <div
-              class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 border-2 relative z-10"
-              :style="getCircleStyle(step)"
-            >
-              <component
-                v-if="normalizeStatus(step.status) === 'completed'"
-                :is="getIcon('Check')"
-                v-bind="getIcon('Check') ? {} : {}"
-                class="w-4 h-4 text-white"
-              />
-              <span
-                v-else-if="normalizeStatus(step.status) === 'current' || isStepCurrent(step)"
-                class="w-2 h-2 rounded-full"
-                style="background-color: var(--primary-800, #6d28d9)"
-              />
-              <span
+          <div class="flex-1">
+            <!-- Step Principal -->
+            <div class="flex items-center gap-2">
+              <!-- "puntos-acuerdo" siempre es desplegable, incluso sin sub-steps -->
+              <div
+                v-if="step.route.includes('puntos-acuerdo') || (step.subSteps && step.subSteps.length > 0)"
+                class="flex flex-col gap-1 cursor-pointer group flex-1"
+                @click="toggleStep(step)"
+              >
+                <div class="flex items-center gap-2">
+                  <p
+                    class="font-primary font-medium text-gray-600 t-t1 group-hover:text-primary-800 transition-colors group-hover:underline"
+                  >
+                    {{ step.title }}
+                  </p>
+                  <component
+                    :is="getIcon(isStepExpanded(step) ? 'ChevronDown' : 'ChevronRight')"
+                    v-if="getIcon('ChevronDown') && getIcon('ChevronRight')"
+                    class="w-4 h-4 text-gray-600 transition-transform"
+                    :class="isStepExpanded(step) ? 'rotate-180' : ''"
+                  />
+                </div>
+                <span class="font-secondary font-medium text-gray-600 t-b2 group-hover:underline">
+                  {{ step.description }}
+                </span>
+              </div>
+              <!-- Otros pasos sin sub-steps son links normales -->
+              <NuxtLink
                 v-else
-                class="w-2 h-2 rounded-full"
-                style="background-color: var(--gray-400, #9ca3af)"
-              />
-            </div>
-
-            <!-- Text -->
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2">
-                <h4
-                  class="text-sm mb-1 flex-1 font-secondary"
-                  :style="{
-                    color: getTextColor(step),
-                    fontFamily: 'var(--font-secondary, sans-serif)',
-                    fontWeight: isStepCurrent(step) ? 600 : 500,
-                  }"
+                :to="step.route"
+                class="flex flex-col gap-1 cursor-pointer group flex-1"
+                @click="props.onStepClick?.(step.route.split('/').pop() || '')"
+              >
+                <p
+                  class="font-primary font-medium text-gray-600 t-t1 group-hover:text-primary-800 transition-colors group-hover:underline"
                 >
                   {{ step.title }}
-                </h4>
-                <component
-                  v-if="step.subSteps && step.subSteps.length > 0"
-                  :is="getIcon(isStepExpanded(step) ? 'ChevronDown' : 'ChevronRight')"
-                  v-bind="
-                    getIcon(isStepExpanded(step) ? 'ChevronDown' : 'ChevronRight') ? {} : {}
-                  "
-                  class="w-4 h-4"
-                  style="color: var(--text-muted, #6b7280)"
-                />
-              </div>
-              <p
-                class="text-xs line-clamp-2 font-secondary"
-                :style="{
-                  color:
-                    normalizeStatus(step.status) === 'empty'
-                      ? 'var(--text-muted, #6b7280)'
-                      : 'var(--text-secondary, #4b5563)',
-                  fontFamily: 'var(--font-secondary, sans-serif)',
-                }"
-              >
-                {{ step.description }}
-              </p>
-            </div>
-          </div>
-
-          <!-- Sub-steps (solo si está expandido) -->
-          <div
-            v-if="isStepExpanded(step) && step.subSteps && step.subSteps.length > 0"
-            class="ml-8 mt-2 space-y-2"
-          >
-            <!-- Agrupar por categoría -->
-            <div
-              v-for="(subStepsInCategory, category) in getGroupedSubSteps(step.subSteps)"
-              :key="category"
-              class="space-y-1"
-            >
-              <!-- Header de Categoría (colapsable) -->
-              <button
-                @click="toggleCategory(category)"
-                class="w-full flex items-center gap-2 py-1 px-2 rounded hover:bg-gray-50 transition-colors"
-              >
-                <component
-                  :is="getIcon('ChevronRight')"
-                  v-if="getIcon('ChevronRight')"
-                  :class="[
-                    'w-4 h-4 text-gray-600 transition-transform',
-                    expandedCategories.includes(category) ? 'rotate-90' : '',
-                  ]"
-                />
-                <span
-                  class="text-sm font-secondary font-semibold text-gray-700 flex-1 text-left"
-                >
-                  {{ category }}
+                </p>
+                <span class="font-secondary font-medium text-gray-600 t-b2 group-hover:underline">
+                  {{ step.description }}
                 </span>
-              </button>
+              </NuxtLink>
+            </div>
 
-              <!-- Sub-items de la categoría -->
-              <div v-if="expandedCategories.includes(category)" class="ml-6 mt-1 space-y-1">
-                <div
-                  v-for="subStep in subStepsInCategory"
-                  :key="subStep.id"
-                  class="flex items-start gap-2"
+            <!-- Sub-steps (solo si está expandido) -->
+            <div
+              v-if="isStepExpanded(step) && step.subSteps && step.subSteps.length > 0"
+              class="ml-8 mt-2 space-y-2"
+            >
+              <!-- Agrupar por categoría -->
+              <div
+                v-for="(subStepsInCategory, category) in getGroupedSubSteps(step.subSteps)"
+                :key="category"
+                class="space-y-1"
+              >
+                <!-- Header de Categoría (colapsable) -->
+                <button
+                  @click="toggleCategory(category)"
+                  class="w-full flex items-center gap-2 py-1 px-2 rounded hover:bg-gray-50 transition-colors"
                 >
-                  <CheckIcon
-                    :status="normalizeSubStepStatus(subStep)"
-                    :is-final-item="false"
-                  />
-                  <button
-                    @click="handleSubStepClick(subStep)"
+                  <component
+                    :is="getIcon('ChevronRight')"
+                    v-if="getIcon('ChevronRight')"
                     :class="[
-                      'flex flex-col gap-1 cursor-pointer group text-left',
-                      subStep.id === currentSubStepId
-                        ? 'text-primary-800'
-                        : 'text-gray-600 hover:text-primary-800',
+                      'w-4 h-4 text-gray-600 transition-transform',
+                      expandedCategories.includes(category) ? 'rotate-90' : '',
                     ]"
+                  />
+                  <span
+                    class="text-sm font-secondary font-semibold text-gray-700 flex-1 text-left"
                   >
-                    <p
-                      class="font-primary font-medium t-b1 transition-colors group-hover:underline"
+                    {{ category }}
+                  </span>
+                </button>
+
+                <!-- Sub-items de la categoría -->
+                <div v-if="expandedCategories.includes(category)" class="ml-6 mt-1 space-y-1">
+                  <div
+                    v-for="subStep in subStepsInCategory"
+                    :key="subStep.id"
+                    class="flex items-start gap-4"
+                  >
+                    <CheckIcon
+                      :status="normalizeSubStepStatus(subStep)"
+                      :is-final-item="false"
+                    />
+                    <NuxtLink
+                      :to="subStep.route"
+                      class="flex flex-col gap-1 cursor-pointer group"
+                      @click="handleSubStepClick(subStep)"
                     >
-                      {{ subStep.title }}
-                    </p>
-                  </button>
+                      <p
+                        class="font-primary font-medium text-gray-600 t-b1 group-hover:text-primary-800 transition-colors group-hover:underline"
+                      >
+                        {{ subStep.title }}
+                      </p>
+                    </NuxtLink>
+                  </div>
                 </div>
               </div>
             </div>

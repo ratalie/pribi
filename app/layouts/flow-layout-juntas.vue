@@ -30,62 +30,257 @@
   const juntasFlowStore = useJuntasFlowStore();
 
   // Determinar si debe mostrarse el sidebar derecho
-  const hasRightSidebar = computed(() => juntasFlowStore.hasRightSidebar);
+  // Se muestra cuando hay un sub-step activo Y hay secciones configuradas
+  const hasRightSidebar = computed(() => {
+    const hasSubStep = !!currentSubStepId.value;
+    const hasSections = sections.value && sections.value.length > 0;
+    const result = hasSubStep && hasSections;
+    console.log("🟪 [flow-layout-juntas] hasRightSidebar:", {
+      hasSubStep,
+      hasSections,
+      currentSubStepId: currentSubStepId.value,
+      sectionsCount: sections.value?.length || 0,
+      result,
+    });
+    return result;
+  });
 
   // Obtener las secciones del sub-step actual
   // TODO: Esto debería venir de una configuración o del store
   // Por ahora, creamos secciones básicas según el sub-step
-  const getSectionsForSubStep = (subStepId?: string): SectionItem[] => {
+  const getSectionsForSubStep = (
+    subStepId?: string,
+    currentSection?: string
+  ): SectionItem[] => {
     if (!subStepId) return [];
 
     // Mapeo básico de sub-steps a secciones
     // Esto se puede expandir con una configuración más completa
-    const sectionsMap: Record<string, SectionItem[]> = {
+    const baseSectionsMap: Record<string, Array<Omit<SectionItem, "status">>> = {
       "aporte-dinerarios": [
+        {
+          id: "aporte-dinerario",
+          title: "Aporte Dinerario",
+          description: "Vista general del acuerdo",
+          navigationType: "route",
+        },
         {
           id: "seleccion-aportantes",
           title: "Selección de Aportantes",
           description: "Selecciona los aportantes",
-          status: "current",
+          navigationType: "route",
         },
         {
           id: "aportes-dinerarios",
           title: "Aportes Dinerarios",
           description: "Completa los montos de aporte",
-          status: "upcoming",
+          navigationType: "route",
         },
         {
           id: "votacion",
           title: "Votación",
           description: "Registra la votación",
-          status: "upcoming",
+          navigationType: "route",
         },
         {
           id: "resumen",
           title: "Resumen",
           description: "Revisa el resumen",
-          status: "upcoming",
+          navigationType: "route",
+        },
+      ],
+      "aplicacion-resultados": [
+        {
+          id: "aplicacion-resultados",
+          title: "Aplicación de Resultados",
+          description: "Vista general",
+          navigationType: "route",
+        },
+        {
+          id: "utilidades-montos",
+          title: "Utilidades y Montos a Distribuir",
+          description: "Cálculos y valores",
+          navigationType: "anchor",
+          subSections: [
+            {
+              id: "valores-preliminares",
+              title: "Valores Preliminares",
+              navigationType: "anchor",
+            },
+            {
+              id: "calculo-utilidad-antes-reserva",
+              title: "Cálculo de la Utilidad antes de la Reserva Legal",
+              navigationType: "anchor",
+            },
+            {
+              id: "calculo-reserva-legal",
+              title: "Cálculo de la Reserva Legal",
+              navigationType: "anchor",
+            },
+            {
+              id: "valores-utilidad-distribuible",
+              title: "Valores de la Utilidad Distribuible",
+              navigationType: "anchor",
+            },
+          ],
+        },
+        {
+          id: "votacion",
+          title: "Votación",
+          description: "Registra la votación",
+          navigationType: "route",
+        },
+        {
+          id: "resumen",
+          title: "Resumen",
+          description: "Revisa el resumen",
+          navigationType: "route",
         },
       ],
       // Agregar más mapeos según sea necesario
     };
 
-    return sectionsMap[subStepId] || [];
+    const baseSections = baseSectionsMap[subStepId] || [];
+
+    // Asignar estados basados en la sección actual
+    if (!currentSection) {
+      return baseSections.map((section, index) => ({
+        ...section,
+        status: index === 0 ? "current" : "upcoming",
+      }));
+    }
+
+    const currentIndex = baseSections.findIndex((s) => s.id === currentSection);
+    return baseSections.map((section, index) => {
+      if (index < currentIndex) {
+        return { ...section, status: "completed" as const };
+      } else if (index === currentIndex) {
+        return { ...section, status: "current" as const };
+      } else {
+        return { ...section, status: "upcoming" as const };
+      }
+    });
   };
 
   const sections = computed(() => {
-    return getSectionsForSubStep(currentSubStepId.value);
+    const result = getSectionsForSubStep(currentSubStepId.value, detectedCurrentSection.value);
+    console.log("🟦 [flow-layout-juntas] sections computed:", {
+      currentSubStepId: currentSubStepId.value,
+      detectedCurrentSection: detectedCurrentSection.value,
+      sectionsCount: result.length,
+      sections: result.map((s) => ({ id: s.id, title: s.title })),
+    });
+    return result;
   });
 
-  // Manejar click en sección (scroll a la sección)
+  // Función para obtener la ruta o ancla de una sección basada en el sub-step actual
+  const getSectionNavigation = (
+    sectionId: string,
+    subStepId?: string
+  ): { type: "route" | "anchor"; target: string } | null => {
+    const juntaId = route.params.id;
+    const basePath = juntaId
+      ? `/operaciones/junta-accionistas/${juntaId}`
+      : `/operaciones/junta-accionistas`;
+
+    // Mapeo de secciones a rutas para "aporte-dinerarios"
+    if (subStepId === "aporte-dinerarios") {
+      const sectionRouteMap: Record<string, string> = {
+        "aporte-dinerario": `${basePath}/aporte-dinerario`,
+        "seleccion-aportantes": `${basePath}/aporte-dinerario/aportantes`,
+        "aportes-dinerarios": `${basePath}/aporte-dinerario/aportes`,
+        votacion: `${basePath}/aporte-dinerario/votacion`,
+        resumen: `${basePath}/aporte-dinerario/resumen`,
+      };
+      const route = sectionRouteMap[sectionId];
+      if (route) {
+        return { type: "route", target: route };
+      }
+    }
+
+    // Mapeo para "aplicacion-resultados" (con anclas)
+    if (subStepId === "aplicacion-resultados") {
+      const sectionRouteMap: Record<string, string> = {
+        "aplicacion-resultados": `${basePath}/aplicacion-resultados`,
+        "utilidades-montos": `${basePath}/aplicacion-resultados`, // Misma página, ancla
+        votacion: `${basePath}/aplicacion-resultados/votacion`,
+        resumen: `${basePath}/aplicacion-resultados/resumen`,
+      };
+      const route = sectionRouteMap[sectionId];
+      if (route) {
+        // Si es "utilidades-montos", es un ancla
+        if (sectionId === "utilidades-montos") {
+          return { type: "anchor", target: sectionId };
+        }
+        return { type: "route", target: route };
+      }
+    }
+
+    return null;
+  };
+
+  // Manejar click en sección (navegar a la ruta o ancla correspondiente)
   const handleSectionClick = (sectionId: string) => {
+    console.log("🟦 [flow-layout-juntas] handleSectionClick:", sectionId);
     juntasFlowStore.setCurrentSection(sectionId);
-    // Scroll a la sección usando el hash
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    const navigation = getSectionNavigation(sectionId, currentSubStepId.value);
+
+    if (navigation) {
+      if (navigation.type === "route") {
+        console.log("🟦 [flow-layout-juntas] Navegando a ruta:", navigation.target);
+        router.push(navigation.target);
+      } else {
+        // Es un ancla, hacer scroll
+        console.log("🟦 [flow-layout-juntas] Navegando a ancla:", navigation.target);
+        const element = document.getElementById(navigation.target);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+          // Actualizar el hash sin recargar
+          router.replace({ hash: `#${navigation.target}` });
+        }
+      }
+    } else {
+      // Si no hay mapeo, intentar scroll a un elemento con ese ID (ancla por defecto)
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+        router.replace({ hash: `#${sectionId}` });
+      }
     }
   };
+
+  // Detectar la sección actual basándose en la ruta y hash
+  const detectedCurrentSection = computed(() => {
+    const path = route.path;
+    const hash = route.hash?.replace("#", "") || "";
+    const subStepId = currentSubStepId.value;
+
+    // Si hay hash, es probablemente un ancla
+    if (hash) {
+      return hash;
+    }
+
+    if (subStepId === "aporte-dinerarios") {
+      if (path.includes("/aporte-dinerario/aportantes")) return "seleccion-aportantes";
+      if (path.includes("/aporte-dinerario/aportes")) return "aportes-dinerarios";
+      if (path.includes("/aporte-dinerario/votacion")) return "votacion";
+      if (path.includes("/aporte-dinerario/resumen")) return "resumen";
+      if (path.includes("/aporte-dinerario") && !path.includes("/aporte-dinerario/"))
+        return "aporte-dinerario";
+    }
+
+    if (subStepId === "aplicacion-resultados") {
+      if (path.includes("/aplicacion-resultados/votacion")) return "votacion";
+      if (path.includes("/aplicacion-resultados/resumen")) return "resumen";
+      if (path.includes("/aplicacion-resultados") && !path.includes("/aplicacion-resultados/"))
+        return "aplicacion-resultados";
+      // Si estamos en la página principal, verificar hash para anclas
+      if (hash) return hash;
+    }
+
+    return currentSectionId.value || "";
+  });
 
   // Manejar click en paso
   const handleStepClick = (_stepId: string) => {
@@ -98,6 +293,7 @@
   };
 
   const router = useRouter();
+  const route = useRoute();
 
   // Manejar botón "Salir"
   const handleBack = () => {
@@ -118,9 +314,26 @@
 
   // Manejar botón "Anterior"
   const handlePrev = () => {
+    // Si estamos en una sección dentro de un sub-step, navegar a la sección anterior
+    if (currentSubStepId.value && detectedCurrentSection.value) {
+      const currentSections = sections.value;
+      const currentIdx = currentSections.findIndex(
+        (s) => s.id === detectedCurrentSection.value
+      );
+
+      if (currentIdx > 0) {
+        const prevSection = currentSections[currentIdx - 1];
+        if (prevSection) {
+          handleSectionClick(prevSection.id);
+          return;
+        }
+      }
+    }
+
+    // Si estamos en un paso principal, navegar al paso anterior
     const currentIdx = currentStepIndex.value;
     if (currentIdx > 0) {
-      const prevStep = steps[currentIdx - 1];
+      const prevStep = steps.value[currentIdx - 1];
       if (prevStep) {
         router.push(prevStep.route);
       }
@@ -129,94 +342,165 @@
 </script>
 
 <template>
-  <div class="flex flex-col h-screen overflow-hidden">
-    <!-- Header -->
-    <HeaderJuntasNavbar
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar Izquierdo (inicia desde arriba, no limitado por header) -->
+    <SingleWizardSidebarJuntas
       :steps="steps"
-      :current-step-index="currentStepIndex"
-      :on-back="handleBack"
-      :on-save="handleSave"
-      :on-reset="handleReset"
+      :current-step-id="currentStepSlug"
+      :current-sub-step-id="currentSubStepId"
+      :on-step-click="handleStepClick"
+      :on-sub-step-click="handleSubStepClick"
+      title="Junta de Accionistas"
+      :progress="{
+        current: currentStepIndex + 1,
+        total: steps.length,
+      }"
     />
 
-    <!-- Body -->
-    <div class="flex min-h-0 flex-1">
-      <!-- Sidebar Izquierdo -->
-      <SingleWizardSidebarJuntas
+    <!-- Contenido Principal -->
+    <div class="flex flex-col min-h-0 flex-1">
+      <!-- Header -->
+      <HeaderJuntasNavbar
         :steps="steps"
-        :current-step-id="currentStepSlug"
-        :current-sub-step-id="currentSubStepId"
-        :on-step-click="handleStepClick"
-        :on-sub-step-click="handleSubStepClick"
-        title="Junta de Accionistas"
-        :progress="{
-          current: currentStepIndex + 1,
-          total: steps.length,
-        }"
+        :current-step-index="currentStepIndex"
+        :on-back="handleBack"
+        :on-save="handleSave"
+        :on-reset="handleReset"
       />
 
-      <!-- Contenido Principal + Sidebar Derecho -->
-      <div class="flex-1 flex flex-col min-w-0">
-        <!-- Área de Contenido -->
-        <div class="flex-1 overflow-hidden">
-          <div v-if="hasRightSidebar" class="flex h-full">
-            <!-- Contenido Principal (con sidebar derecho) -->
-            <div class="flex-1 overflow-y-auto px-8 py-6">
-              <slot />
-            </div>
-
-            <!-- Sidebar Derecho (solo cuando hay sub-step activo) -->
-            <WizardRightSidebar
-              :sections="sections"
-              :current-section-id="currentSectionId || sections[0]?.id || ''"
-              :on-section-click="handleSectionClick"
-              :title="
-                steps.find((s) => s.subSteps?.some((ss) => ss.id === currentSubStepId))
-                  ?.title || 'Secciones'
-              "
-            />
-          </div>
-
-          <!-- Contenido Principal (sin sidebar derecho) -->
-          <div v-else class="overflow-y-auto px-8 py-6">
+      <!-- Área de Contenido + Sidebar Derecho -->
+      <div class="flex-1 overflow-hidden">
+        <div v-if="hasRightSidebar" class="flex h-full">
+          <!-- Contenido Principal (con sidebar derecho) -->
+          <div class="flex-1 overflow-y-auto px-8 py-6">
             <slot />
           </div>
+
+          <!-- Sidebar Derecho (solo cuando hay sub-step activo) -->
+          <WizardRightSidebar
+            v-if="sections && sections.length > 0"
+            :sections="sections"
+            :current-section-id="detectedCurrentSection || sections[0]?.id || ''"
+            :on-section-click="handleSectionClick"
+            :title="
+              steps.find((s: any) => s.subSteps?.some((ss: any) => ss.id === currentSubStepId))?.title ||
+              'Secciones'
+            "
+          />
         </div>
 
-        <!-- Footer -->
-        <div
-          class="bg-white border-t px-8 py-4 shrink-0"
-          style="border-color: var(--border-light, #e5e7eb)"
-        >
-          <div class="flex items-center justify-between max-w-5xl mx-auto">
+        <!-- Contenido Principal (sin sidebar derecho) -->
+        <div v-else class="overflow-y-auto px-8 py-6">
+          <slot />
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div
+        class="bg-white border-t px-8 py-4 shrink-0"
+        style="border-color: var(--border-light, #e5e7eb)"
+      >
+        <div class="flex flex-col gap-3 max-w-5xl mx-auto">
+          <!-- Información contextual -->
+          <div class="flex items-center justify-between">
+            <div class="flex flex-col gap-1">
+              <!-- Paso actual -->
+              <div class="flex items-center gap-2">
+                <span
+                  class="text-xs font-secondary uppercase tracking-wide"
+                  style="color: var(--text-muted, #6b7280)"
+                >
+                  {{ currentSubStepId ? "Punto de Acuerdo" : "Paso" }}
+                </span>
+                <span
+                  class="text-sm font-primary font-semibold"
+                  style="color: var(--text-primary, #111827)"
+                >
+                  {{
+                    currentSubStepId
+                      ? steps
+                          ?.find((s: any) =>
+                            s.subSteps?.some((ss: any) => ss.id === currentSubStepId)
+                          )
+                          ?.subSteps?.find((ss: any) => ss.id === currentSubStepId)?.title ||
+                        "Punto de Acuerdo"
+                      : (currentStepIndex >= 0 && steps?.[currentStepIndex]?.title) ||
+                        "Paso Actual"
+                  }}
+                </span>
+              </div>
+              <!-- Sección actual (solo si hay sub-step) -->
+              <div
+                v-if="
+                  currentSubStepId && detectedCurrentSection && sections && sections.length > 0
+                "
+                class="flex items-center gap-2"
+              >
+                <span
+                  class="text-xs font-secondary uppercase tracking-wide"
+                  style="color: var(--text-muted, #6b7280)"
+                >
+                  Sección:
+                </span>
+                <span
+                  class="text-xs font-primary font-medium"
+                  style="color: var(--text-muted, #6b7280)"
+                >
+                  {{
+                    sections.find((s) => s.id === detectedCurrentSection)?.title ||
+                    detectedCurrentSection
+                  }}
+                </span>
+              </div>
+            </div>
+            <!-- Contador de pasos -->
+            <div class="text-xs font-secondary" style="color: var(--text-muted, #6b7280)">
+              {{
+                currentStepIndex >= 0 && steps?.length
+                  ? `Paso ${currentStepIndex + 1} de ${steps.length}`
+                  : "Paso 0 de 0"
+              }}
+            </div>
+          </div>
+
+          <!-- Botones de navegación -->
+          <div class="flex items-center justify-between">
             <!-- Botón Anterior -->
             <ActionButton
-              label="Anterior"
+              :label="
+                currentSubStepId
+                  ? 'Anterior Sección'
+                  : currentStepIndex === 0
+                  ? 'Anterior'
+                  : 'Anterior Paso'
+              "
               size="md"
               variant="outline"
-              :is-disabled="currentStepIndex === 0"
+              :is-disabled="currentStepIndex === 0 && !currentSubStepId"
               icon="ArrowLeft"
               icon-position="left"
               @click="handlePrev"
             />
 
-            <!-- Paso actual -->
-            <div
-              class="text-sm font-secondary"
-              style="
-                color: var(--text-muted, #6b7280);
-                font-family: var(--font-secondary, sans-serif);
-              "
-            >
-              Paso {{ currentStepIndex + 1 }} de {{ steps.length }}
-            </div>
-
             <!-- Botón Siguiente -->
             <ActionButton
-              :label="currentStepIndex === steps.length - 1 ? 'Finalizar' : 'Siguiente'"
+              :label="
+                currentStepIndex >= 0 && steps?.length && currentStepIndex === steps.length - 1
+                  ? 'Finalizar'
+                  : currentSubStepId
+                  ? 'Siguiente Sección'
+                  : currentStepIndex >= 0 &&
+                    steps?.[currentStepIndex + 1]?.title === 'Puntos de Acuerdo'
+                  ? 'Siguiente: Puntos de Acuerdo'
+                  : 'Siguiente Paso'
+              "
               size="md"
               :is-loading="juntasFlowStore.isLoading"
-              :icon="currentStepIndex === steps.length - 1 ? 'Check' : 'ArrowRight'"
+              :icon="
+                currentStepIndex >= 0 && steps?.length && currentStepIndex === steps.length - 1
+                  ? 'Check'
+                  : 'ArrowRight'
+              "
               icon-position="right"
               @click="juntasFlowStore.onClickNext"
             />

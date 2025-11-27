@@ -42,7 +42,9 @@ export const useJuntasFlowStore = defineStore("juntasFlow", {
      * @param subStepIds Array de IDs de sub-steps seleccionados
      */
     updateDynamicSubSteps(subStepIds: string[]) {
+      console.log("🟢 [useJuntasFlowStore] updateDynamicSubSteps:", subStepIds);
       this.selectedSubSteps = subStepIds;
+      console.log("🟢 [useJuntasFlowStore] selectedSubSteps actualizado:", this.selectedSubSteps);
     },
     
     /**

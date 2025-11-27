@@ -184,24 +184,30 @@ export const useJuntasNavbarRoutes = () => {
   watch(
     () => route.path,
     (newPath) => {
+      console.log("🟠 [useJuntasNavbarRoutes] Ruta cambiada:", newPath);
       const context = resolveContext();
       for (const rule of routeMap) {
         if (rule.match(newPath)) {
           const steps = rule.getSteps(context);
+          console.log("🟠 [useJuntasNavbarRoutes] Pasos generados:", steps.length, steps.map(s => ({ title: s.title, subSteps: s.subSteps?.length || 0 })));
           juntasNavbarStore.setSteps(steps);
           
           // Actualizar estado del store con el paso actual
           const stepSlug = extractCurrentStepSlug();
           if (stepSlug) {
             juntasFlowStore.setCurrentStep(stepSlug);
+            console.log("🟠 [useJuntasNavbarRoutes] Paso actual:", stepSlug);
           }
           
           // Actualizar estado del store con el sub-step actual
           const subStepId = extractCurrentSubStepId();
+          console.log("🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado:", subStepId);
           if (subStepId) {
             juntasFlowStore.setCurrentSubStep(subStepId);
+            console.log("🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store:", subStepId);
           } else {
             juntasFlowStore.setCurrentSubStep("");
+            console.log("🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store");
           }
           
           return;
@@ -209,9 +215,32 @@ export const useJuntasNavbarRoutes = () => {
       }
 
       // Si no hay regla que coincida, limpiar pasos
+      console.log("🟠 [useJuntasNavbarRoutes] No se encontró regla para la ruta, limpiando pasos");
       juntasNavbarStore.setSteps([]);
     },
     { immediate: true }
+  );
+
+  /**
+   * Watch los sub-steps seleccionados en el store para actualizar los pasos
+   * Esto asegura que cuando se selecciona un punto de agenda, el sidebar se actualice
+   */
+  watch(
+    () => juntasFlowStore.getDynamicSubSteps,
+    (newSubSteps) => {
+      console.log("🟣 [useJuntasNavbarRoutes] Sub-steps en store cambiaron:", newSubSteps);
+      // Recalcular los pasos cuando cambian los sub-steps seleccionados
+      const context = resolveContext();
+      for (const rule of routeMap) {
+        if (rule.match(route.path)) {
+          const steps = rule.getSteps(context);
+          console.log("🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps:", steps.map(s => ({ title: s.title, subSteps: s.subSteps?.length || 0 })));
+          juntasNavbarStore.setSteps(steps);
+          return;
+        }
+      }
+    },
+    { deep: true }
   );
 
   /**
@@ -258,8 +287,14 @@ export const useJuntasNavbarRoutes = () => {
     return extractCurrentSectionId() || juntasFlowStore.currentSectionId;
   });
 
+  // Hacer steps reactivo usando computed para asegurar que se actualice cuando cambie el store
+  const steps = computed(() => {
+    console.log("🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps:", juntasNavbarStore.steps.length);
+    return juntasNavbarStore.steps;
+  });
+
   return {
-    steps: juntasNavbarStore.steps,
+    steps,
     currentStepIndex,
     currentStepSlug,
     currentSubStepId,

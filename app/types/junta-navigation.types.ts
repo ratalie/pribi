@@ -13,6 +13,12 @@ export interface SectionItem {
   title: string;
   description?: string;
   status?: "current" | "upcoming" | "completed";
+  // Soporte para sub-secciones (anclas dentro de la misma página)
+  subSections?: SectionItem[];
+  // Tipo de navegación: 'route' (nueva página) o 'anchor' (ancla en la misma página)
+  navigationType?: "route" | "anchor";
+  // Ruta completa (solo para navigationType: 'route')
+  route?: string;
 }
 
 export interface WizardStep {
