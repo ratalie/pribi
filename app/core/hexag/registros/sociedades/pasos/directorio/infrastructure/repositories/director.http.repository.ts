@@ -177,12 +177,46 @@ export class DirectorHttpRepository implements DirectorRepository {
     directorId: string,
     payload: DirectorDTO
   ): Promise<DirectorConfig> {
-    const url = this.resolveDirectoresPath(societyProfileId, directorId);
+    // Validar que directorId no esté vacío
+    if (!directorId || directorId.trim().length === 0) {
+      throw new Error("El ID del director es requerido para actualizar");
+    }
+
+    // Asegurar que el ID del director esté en el payload (NO en la URL)
+    const payloadWithId: DirectorDTO = {
+      ...payload,
+      id: directorId,
+    };
+
+    // Validar que el payload tenga los campos requeridos
+    if (!payloadWithId.persona) {
+      throw new Error("El objeto persona es requerido en el payload");
+    }
+    if (!payloadWithId.rolDirector) {
+      throw new Error("El rolDirector es requerido en el payload");
+    }
+
+    const mappedPayload = DirectorMapper.toPayload(payloadWithId);
+
+    // Construir la URL SIN el directorId (el ID va en el body, no en la ruta)
+    const url = this.resolveDirectoresPath(societyProfileId);
+
     const config = withAuthHeaders({
       method: "PUT" as const,
-      body: DirectorMapper.toPayload(payload),
+      body: mappedPayload,
     });
-    this.log("update:request", { url, directorId, societyProfileId });
+
+    this.log("update:request", {
+      url,
+      directorId,
+      societyProfileId,
+      originalPayload: payload,
+      payloadWithId,
+      mappedPayload,
+      directorIdInPayload: mappedPayload.id,
+      personaInPayload: mappedPayload.persona,
+      rolDirectorInPayload: mappedPayload.rolDirector,
+    });
 
     try {
       const response = await $fetch<ApiResponse<any>>(url, config);
@@ -207,6 +241,37 @@ export class DirectorHttpRepository implements DirectorRepository {
       throw new Error("No pudimos obtener el director actualizado.");
     } catch (error) {
       this.log("update:error", { error, url });
+      throw error;
+    }
+  }
+
+  async delete(societyProfileId: string, directorId: string): Promise<void> {
+    // Validar que directorId no esté vacío
+    if (!directorId || directorId.trim().length === 0) {
+      throw new Error("El ID del director es requerido para eliminar");
+    }
+
+    // Construir la URL (misma ruta que update, sin directorId en el path)
+    const url = this.resolveDirectoresPath(societyProfileId);
+
+    // El backend espera un array con los IDs a eliminar
+    const config = withAuthHeaders({
+      method: "DELETE" as const,
+      body: [directorId],
+    });
+
+    this.log("delete:request", {
+      url,
+      directorId,
+      societyProfileId,
+      body: [directorId],
+    });
+
+    try {
+      await $fetch(url, config);
+      this.log("delete:success", { directorId });
+    } catch (error) {
+      this.log("delete:error", { error, url, directorId });
       throw error;
     }
   }

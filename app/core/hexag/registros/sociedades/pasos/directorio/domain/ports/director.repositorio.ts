@@ -9,4 +9,5 @@ export interface DirectorRepository {
     directorId: string,
     payload: DirectorDTO
   ): Promise<DirectorConfig>;
+  delete(societyProfileId: string, directorId: string): Promise<void>;
 }

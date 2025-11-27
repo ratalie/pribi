@@ -96,18 +96,35 @@ export const DirectorMapper = {
     const tipoDocumentoBackend =
       tipoDocMap[dto.persona?.tipoDocumento || ""] || dto.persona?.tipoDocumento || "DNI";
 
+    // Validar que los campos requeridos no estén vacíos
+    if (!dto.persona) {
+      throw new Error("El objeto persona es requerido en el payload");
+    }
+
+    const personaPayload: Record<string, unknown> = {
+      // Siempre incluir persona.id (generado en frontend o existente)
+      id: dto.persona.id || "",
+      nombre: dto.persona.nombre || "",
+      apellidoPaterno: dto.persona.apellidoPaterno || "",
+      apellidoMaterno: dto.persona.apellidoMaterno || "",
+      numeroDocumento: dto.persona.numeroDocumento || "",
+      tipoDocumento: tipoDocumentoBackend,
+    };
+
+    // Solo incluir paisEmision si tiene valor (no enviar null o vacío)
+    if (dto.persona.paisEmision) {
+      personaPayload.paisEmision = dto.persona.paisEmision;
+    }
+
+    // Validar que el ID del director esté presente
+    if (!dto.id || dto.id.trim().length === 0) {
+      throw new Error("El ID del director es requerido para actualizar");
+    }
+
     const payload: Record<string, unknown> = {
-      // Siempre incluir id (generado en frontend o existente)
-      id: dto.id || "",
-      persona: {
-        // Siempre incluir persona.id (generado en frontend o existente)
-        id: dto.persona?.id || "",
-        nombre: dto.persona?.nombre || "",
-        apellidoPaterno: dto.persona?.apellidoPaterno || "",
-        apellidoMaterno: dto.persona?.apellidoMaterno || "",
-        numeroDocumento: dto.persona?.numeroDocumento || "",
-        tipoDocumento: tipoDocumentoBackend,
-      },
+      // Siempre incluir id (requerido para update)
+      id: dto.id,
+      persona: personaPayload,
       rolDirector: rolDirectorUpper,
     };
 
