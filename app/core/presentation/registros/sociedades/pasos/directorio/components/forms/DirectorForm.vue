@@ -17,14 +17,15 @@
     reemplazoAsignadoSchema,
     tipoDirectorSchema,
   } from "~/core/presentation/registros/sociedades/pasos/directorio/schemas/modal/modalDirector";
-  import { useDirectoresComputed } from "~/core/presentation/registros/sociedades/pasos/directorio/utils/useDirectoresComputed";
   import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
+  import type { TypeOption } from "~/types/TypeOptions";
 
   const personaNaturalStore = usePersonaNaturalStore();
 
   const props = defineProps<{
     tipoDirector: TiposDirectoresEnum | "";
     reemplazoAsignado: string;
+    presidenteOptions?: TypeOption[];
   }>();
 
   const emits = defineEmits<{
@@ -42,7 +43,7 @@
     set: (value: string) => emits("update:reemplazoAsignado", value),
   });
 
-  const { presidenteOptions } = useDirectoresComputed();
+  const presidenteOptions = computed(() => props.presidenteOptions || []);
 </script>
 
 <template>

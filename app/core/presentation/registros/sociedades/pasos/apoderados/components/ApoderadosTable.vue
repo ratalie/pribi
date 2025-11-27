@@ -12,20 +12,19 @@
   import type { ApoderadoRow } from "../types";
 
   interface Props {
-    items: ApoderadoRow[];
+    items?: ApoderadoRow[];
     isLoading?: boolean;
     readonly?: boolean;
   }
 
-  const props = withDefaults(defineProps<Props>(), {
+  withDefaults(defineProps<Props>(), {
     items: () => [],
     isLoading: false,
     readonly: false,
   });
 
   const emit = defineEmits<{
-    (e: "edit", id: string): void;
-    (e: "remove", id: string): void;
+    (e: "edit" | "remove", id: string): void;
   }>();
 
   const handleEdit = (id: string) => emit("edit", id);

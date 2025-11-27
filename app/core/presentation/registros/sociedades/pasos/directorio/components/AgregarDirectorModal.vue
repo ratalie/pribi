@@ -220,6 +220,7 @@
       <DirectorForm
         v-model:tipo-director="tipoDirector"
         v-model:reemplazo-asignado="reemplazoAsignado"
+        :presidente-options="presidenteOptions"
       />
     </div>
 

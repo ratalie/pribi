@@ -163,7 +163,8 @@ export function useDirectorioForm(options: UseDirectorioFormOptions) {
     if (store.config) {
       assignFromConfig(store.config);
     } else {
-      assignFromConfig(createEmptyForm());
+      // Si no hay config, asignar valores por defecto directamente al form
+      Object.assign(form, createEmptyForm());
     }
     console.debug("[useDirectorioForm] reset", { form: { ...form } });
   }

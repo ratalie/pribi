@@ -6,6 +6,7 @@
   import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
+  import { tipoFondoOptions } from "~/constants/inputs/tipo-fondos";
   import {
     DOCUMENT_TYPES,
     personaOptions,
@@ -14,7 +15,6 @@
     type PersonaTipoForm,
     type RepresentanteFormValues,
   } from "../types";
-  import { tipoFondoOptions } from "~/constants/inputs/tipo-fondos";
 
   interface Props {
     initialValues?: Partial<AccionistaFormValues>;
@@ -34,7 +34,7 @@
     tipoDocumento: string;
   }
 
-  interface FiduciarioState extends Required<FiduciarioFormValues> {}
+  type FiduciarioState = Required<FiduciarioFormValues>;
 
   interface FormState {
     currentId?: string;
@@ -238,7 +238,10 @@
         break;
       }
       case "FONDO_INVERSION": {
-        const fondo = value as Extract<AccionistaFormValues, { personaType: "FONDO_INVERSION" }>;
+        const fondo = value as Extract<
+          AccionistaFormValues,
+          { personaType: "FONDO_INVERSION" }
+        >;
         Object.assign(form.fondo, {
           ruc: fondo.ruc ?? "",
           razonSocial: fondo.razonSocial ?? "",
@@ -250,7 +253,10 @@
         break;
       }
       case "FIDEICOMISO": {
-        const fideicomiso = value as Extract<AccionistaFormValues, { personaType: "FIDEICOMISO" }>;
+        const fideicomiso = value as Extract<
+          AccionistaFormValues,
+          { personaType: "FIDEICOMISO" }
+        >;
         Object.assign(form.fideicomiso, {
           tieneRuc: fideicomiso.tieneRuc ?? "",
           ruc: fideicomiso.ruc ?? "",
@@ -265,7 +271,10 @@
         break;
       }
       case "SUCESION_INDIVISA": {
-        const sucesion = value as Extract<AccionistaFormValues, { personaType: "SUCESION_INDIVISA" }>;
+        const sucesion = value as Extract<
+          AccionistaFormValues,
+          { personaType: "SUCESION_INDIVISA" }
+        >;
         Object.assign(form.sucesion, {
           ruc: sucesion.ruc ?? "",
           razonSocial: sucesion.razonSocial ?? "",
@@ -325,7 +334,9 @@
     return trimmed.length > 0 ? trimmed : undefined;
   };
 
-  const buildRepresentative = (state: RepresentativeState): RepresentanteFormValues | undefined => {
+  const buildRepresentative = (
+    state: RepresentativeState
+  ): RepresentanteFormValues | undefined => {
     const nombre = normalizeString(state.nombre);
     const apellidoPaterno = normalizeString(state.apellidoPaterno);
     const numeroDocumento = normalizeString(state.numeroDocumento);
@@ -404,7 +415,9 @@
           tieneRuc: form.fideicomiso.tieneRuc || undefined,
           ruc: normalizeString(form.fideicomiso.ruc),
           razonSocial: normalizeString(form.fideicomiso.razonSocial),
-          numeroRegistroFideicomiso: normalizeString(form.fideicomiso.numeroRegistroFideicomiso),
+          numeroRegistroFideicomiso: normalizeString(
+            form.fideicomiso.numeroRegistroFideicomiso
+          ),
           partidaRegistral: normalizeString(form.fideicomiso.partidaRegistral),
           oficinaRegistrada: normalizeString(form.fideicomiso.oficinaRegistrada),
           direccionFiscal: normalizeString(form.fideicomiso.direccionFiscal),
@@ -478,10 +491,12 @@
         name="participacion"
         label="Participación porcentual"
         placeholder="0"
-        :schema="z
-          .number()
-          .min(0, 'Debe ser mayor o igual a 0')
-          .max(100, 'Debe ser menor o igual a 100')"
+        :schema="
+          z
+            .number()
+            .min(0, 'Debe ser mayor o igual a 0')
+            .max(100, 'Debe ser menor o igual a 100')
+        "
         format="decimal"
         :decimals="2"
         :decimal-factor="1"
@@ -1000,4 +1015,3 @@
     </div>
   </Form>
 </template>
-
