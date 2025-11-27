@@ -46,7 +46,7 @@
         <div class="flex gap-4">
           <!-- valor nominal -->
           <BaseButton
-            v-if="Number(valorNominalDisplay) > 0"
+            v-if="valorNominalStore.valor === 0"
             variant="pill"
             class="h-11"
             @click="openValorNominalModal"

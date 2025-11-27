@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import {
+  CreateAccionUseCase,
   DeleteAccionUseCase,
   ListAccionesUseCase,
   UpdateAccionUseCase,
@@ -24,6 +25,7 @@ const percentageFormatter = new Intl.NumberFormat("es-PE", {
 
 const repository = new AccionesHttpRepository();
 const listUseCase = new ListAccionesUseCase(repository);
+const createUseCase = new CreateAccionUseCase(repository);
 const updateUseCase = new UpdateAccionUseCase(repository);
 const deleteUseCase = new DeleteAccionUseCase(repository);
 
@@ -68,8 +70,25 @@ export const useRegistroAccionesStore = defineStore("registroAcciones", {
       }
     },
 
-    addAccion(accion: Accion) {
-      this.acciones.push(accion);
+    /**
+     * Crea una nueva acción en el backend y la agrega al estado local.
+     * @param profileId ID del perfil de sociedad
+     * @param accion Datos de la acción a crear
+     */
+    async createAccion(profileId: string, accion: Accion) {
+      try {
+        // Convertir Entity a Payload
+        const payload = AccionesMapper.deEntityAPayload(accion);
+
+        // Crear en el backend
+        await createUseCase.execute(profileId, payload);
+
+        // Agregar al estado local
+        this.acciones.push(accion);
+      } catch (error) {
+        console.error("[useRegistroAccionesStore] Error al crear acción:", error);
+        throw error;
+      }
     },
 
     /**
@@ -83,7 +102,7 @@ export const useRegistroAccionesStore = defineStore("registroAcciones", {
         const payload = AccionesMapper.deEntityAPayload(accion);
 
         // Actualizar en el backend
-        await updateUseCase.execute(profileId, accion.id, payload);
+        await updateUseCase.execute(profileId, payload);
 
         // Actualizar en el estado local
         const index = this.acciones.findIndex((a) => a.id === accion.id);
@@ -104,7 +123,7 @@ export const useRegistroAccionesStore = defineStore("registroAcciones", {
     async removeAccion(profileId: string, accionId: string) {
       try {
         // Eliminar en el backend
-        await deleteUseCase.execute(profileId, accionId);
+        await deleteUseCase.execute(profileId);
 
         // Eliminar del estado local
         this.acciones = this.acciones.filter((accion) => accion.id !== accionId);

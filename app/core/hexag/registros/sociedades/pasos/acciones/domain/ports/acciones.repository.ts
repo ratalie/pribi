@@ -11,12 +11,17 @@ export interface AccionesRepository {
   list(profileId: string): Promise<Accion[]>;
 
   /**
+   * Crea una nueva acción.
+   */
+  create(profileId: string, payload: AccionPayload): Promise<void>;
+
+  /**
    * Actualiza una acción existente.
    */
-  update(profileId: string, accionId: string, payload: AccionPayload): Promise<void>;
+  update(profileId: string, payload: AccionPayload): Promise<void>;
 
   /**
    * Elimina una acción.
    */
-  delete(profileId: string, accionId: string): Promise<void>;
+  delete(profileId: string): Promise<void>;
 }

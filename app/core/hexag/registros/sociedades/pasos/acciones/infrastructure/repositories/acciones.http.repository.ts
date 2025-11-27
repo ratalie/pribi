@@ -10,7 +10,7 @@ import { AccionesMapper } from "../mappers/acciones.mapper";
  * Implementación HTTP del repositorio de acciones.
  */
 export class AccionesHttpRepository implements AccionesRepository {
-  private getUrl(profileId: string, accionId?: string): string {
+  private getUrl(profileId: string): string {
     const config = useRuntimeConfig();
     const apiBase = config.public?.apiBase as string | undefined;
 
@@ -21,8 +21,7 @@ export class AccionesHttpRepository implements AccionesRepository {
       throw new Error("apiBase no está configurado");
     }
 
-    const baseUrl = `${apiBase}/society-profile/${profileId}/acction`;
-    return accionId ? `${baseUrl}/${accionId}` : baseUrl;
+    return `${apiBase}/society-profile/${profileId}/acction`;
   }
 
   async list(profileId: string): Promise<Accion[]> {
@@ -47,8 +46,22 @@ export class AccionesHttpRepository implements AccionesRepository {
     }
   }
 
-  async update(profileId: string, accionId: string, dto: AccionPayload): Promise<void> {
-    const url = this.getUrl(profileId, accionId);
+  async create(profileId: string, payload: AccionPayload): Promise<void> {
+    const url = this.getUrl(profileId);
+    const config = withAuthHeaders({
+      method: "POST" as const,
+      body: AccionesMapper.dePayloadABackend(payload),
+    });
+
+    const response = await $fetch<BackendApiResponse>(url, config);
+
+    if (!response.success) {
+      throw new Error(response.message || "Error al crear la acción");
+    }
+  }
+
+  async update(profileId: string, dto: AccionPayload): Promise<void> {
+    const url = this.getUrl(profileId);
     const config = withAuthHeaders({
       method: "PUT" as const,
       body: AccionesMapper.dePayloadABackend(dto),
@@ -56,13 +69,13 @@ export class AccionesHttpRepository implements AccionesRepository {
 
     const response = await $fetch<BackendApiResponse>(url, config);
 
-    if (!response.success || !response.data) {
+    if (!response.success) {
       throw new Error(response.message || "Error al actualizar la acción");
     }
   }
 
-  async delete(profileId: string, accionId: string): Promise<void> {
-    const url = this.getUrl(profileId, accionId);
+  async delete(profileId: string): Promise<void> {
+    const url = this.getUrl(profileId);
     const config = withAuthHeaders({ method: "DELETE" as const });
 
     const response = await $fetch<BackendApiResponse>(url, config);

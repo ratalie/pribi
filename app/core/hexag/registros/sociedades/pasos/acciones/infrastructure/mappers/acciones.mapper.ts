@@ -64,15 +64,20 @@ export class AccionesMapper {
       derechoVoto: accion.derechoVoto,
       redimible: accion.redimibles,
       otrosDerechosEspeciales: accion.otrosDerechosEspeciales,
-      archivosOtrosDerechos: accion.metadataDerechosEspeciales.length
-        ? accion.metadataDerechosEspeciales.map((file) => file.fileId)
-        : undefined,
+      archivosOtrosDerechos:
+        accion.otrosDerechosEspeciales && accion.metadataDerechosEspeciales.length > 0
+          ? accion.metadataDerechosEspeciales.map((file) => file.fileId)
+          : undefined,
       obligacionesAdicionales: accion.obligacionesAdicionales,
-      archivosObligaciones: accion.metadataObligaciones.length
-        ? accion.metadataObligaciones.map((file) => file.fileId)
-        : undefined,
+      archivosObligaciones:
+        accion.obligacionesAdicionales && accion.metadataObligaciones.length > 0
+          ? accion.metadataObligaciones.map((file) => file.fileId)
+          : undefined,
       comentariosAdicionales: accion.comentariosAdicionales,
-      comentariosAdicionalesTexto: accion.comentariosAdicionalesTexto || undefined,
+      comentariosAdicionalesTexto:
+        accion.comentariosAdicionales && accion.comentariosAdicionalesTexto
+          ? accion.comentariosAdicionalesTexto
+          : undefined,
     };
   }
 

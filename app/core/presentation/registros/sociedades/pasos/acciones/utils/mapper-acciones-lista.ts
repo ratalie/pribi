@@ -47,11 +47,17 @@ export const mapperComunesModalALista = (
     derechoVoto: formData.tipoAcciones !== TipoAccionEnum.SIN_DERECHO_A_VOTO,
     redimibles: formData.redimibles,
     otrosDerechosEspeciales: formData.otrosDerechosEspeciales,
-    metadataDerechosEspeciales: [...formData.metadataDerechosEspeciales],
+    metadataDerechosEspeciales: formData.otrosDerechosEspeciales
+      ? [...formData.metadataDerechosEspeciales]
+      : [],
     obligacionesAdicionales: formData.obligacionesAdicionales,
-    metadataObligaciones: [...formData.metadataObligaciones],
+    metadataObligaciones: formData.obligacionesAdicionales
+      ? [...formData.metadataObligaciones]
+      : [],
     comentariosAdicionales: formData.comentariosAdicionales,
-    comentariosAdicionalesTexto: formData.comentariosAdicionalesTexto,
+    comentariosAdicionalesTexto: formData.comentariosAdicionales
+      ? formData.comentariosAdicionalesTexto
+      : "",
   };
 };
 
@@ -72,11 +78,17 @@ export const mapperClasesModalALista = (
     derechoVoto: formData.conDerechoVoto,
     redimibles: formData.redimiblesClase,
     otrosDerechosEspeciales: formData.otrosDerechosEspecialesClase,
-    metadataDerechosEspeciales: [...formData.metadataDerechosEspecialesClase],
+    metadataDerechosEspeciales: formData.otrosDerechosEspecialesClase
+      ? [...formData.metadataDerechosEspecialesClase]
+      : [],
     obligacionesAdicionales: formData.obligacionesAdicionalesClase,
-    metadataObligaciones: [...formData.metadataObligacionesClase],
+    metadataObligaciones: formData.obligacionesAdicionalesClase
+      ? [...formData.metadataObligacionesClase]
+      : [],
     comentariosAdicionales: formData.comentariosAdicionales,
-    comentariosAdicionalesTexto: formData.comentariosAdicionalesTexto,
+    comentariosAdicionalesTexto: formData.comentariosAdicionales
+      ? formData.comentariosAdicionalesTexto
+      : "",
   };
 };
 

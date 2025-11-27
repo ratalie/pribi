@@ -141,9 +141,9 @@ export const useAccionesComputed = (profileId: string) => {
           }
 
           if (accionesModalMode.value === "editar" && accionSeleccionadaId.value) {
-            registroAccionesStore.updateAccion(profileId, accionMapeada);
+            await registroAccionesStore.updateAccion(profileId, accionMapeada);
           } else {
-            registroAccionesStore.addAccion(accionMapeada);
+            await registroAccionesStore.createAccion(profileId, accionMapeada);
           }
           break;
         }
@@ -154,9 +154,9 @@ export const useAccionesComputed = (profileId: string) => {
           );
 
           if (accionesModalMode.value === "editar" && accionSeleccionadaId.value) {
-            registroAccionesStore.updateAccion(profileId, accionMapeada);
+            await registroAccionesStore.updateAccion(profileId, accionMapeada);
           } else {
-            registroAccionesStore.addAccion(accionMapeada);
+            await registroAccionesStore.createAccion(profileId, accionMapeada);
           }
           break;
         }
@@ -194,8 +194,12 @@ export const useAccionesComputed = (profileId: string) => {
     isAccionesModalOpen.value = true;
   };
 
-  const handleDeleteAccion = (id: string) => {
-    registroAccionesStore.removeAccion(profileId, id);
+  const handleDeleteAccion = async (id: string) => {
+    try {
+      await registroAccionesStore.removeAccion(profileId, id);
+    } catch (error) {
+      console.error("[useAccionesComputed] Error al eliminar acción:", error);
+    }
   };
 
   const accionesActions = [
