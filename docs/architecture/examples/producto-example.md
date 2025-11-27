@@ -721,3 +721,4 @@ Página que renderiza el componente:
 ---
 
 [← Volver a Arquitectura](../ARCHITECTURE.md)
+

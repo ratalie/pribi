@@ -11,8 +11,8 @@ npm run dev
 
 ## 📚 Documentación
 
-- **[🏗️ Arquitectura](./docs/general/ARCHITECTURE.md)** - Arquitectura hexagonal y estructura del proyecto
-- **[🛣️ Routing](./docs/general/ROUTING.md)** - Sistema de rutas y navegación
+- **[🏗️ Arquitectura](./docs/architecture/ARCHITECTURE.md)** - Arquitectura hexagonal y estructura del proyecto
+- **[🛣️ Routing](./docs/architecture/ROUTING.md)** - Sistema de rutas y navegación
 
 ## 🏗️ Stack Tecnológico
 
