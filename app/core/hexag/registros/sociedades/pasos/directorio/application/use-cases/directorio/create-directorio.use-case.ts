@@ -1,5 +1,5 @@
-import type { DirectorioDTO } from "../dtos/directorio.dto";
-import type { DirectorioConfig, DirectorioRepository } from "../../domain";
+import type { DirectorioConfig, DirectorioRepository } from "../../../domain";
+import type { DirectorioDTO } from "../../dtos/directorio.dto";
 
 export class CreateDirectorioUseCase {
   constructor(private readonly repository: DirectorioRepository) {}

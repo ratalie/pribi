@@ -1,5 +1,8 @@
 <script setup lang="ts">
-  import { computed, ref } from "vue";
+  import { Button } from "@/components/ui/button";
+  import { Form } from "vee-validate";
+  import { computed, onMounted, ref, watch } from "vue";
+  import { useRoute, useRouter } from "vue-router";
   import noDirectorioImage from "~/assets/img/no-directorio.jpeg";
   import VDropdownComponent from "~/components/VDropdownComponent.vue";
   import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
@@ -14,32 +17,42 @@
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import Checkbox from "~/components/ui/checkbox/Checkbox.vue";
   import Switch from "~/components/ui/switch/Switch.vue";
+  import type { DirectorConfig } from "~/core/hexag/registros/sociedades/pasos/directorio/domain/entities/director.entity";
   import AgregarDirectorModal from "~/core/presentation/registros/sociedades/pasos/directorio/components/AgregarDirectorModal.vue";
+  import { useDirectorioForm } from "~/core/presentation/registros/sociedades/pasos/directorio/components/forms/useDirectorioForm";
   import {
     duracionDirectorioSchema,
     fechaFinDirectorioSchema,
     fechaInicioDirectorioSchema,
     presidenteDirectorioSchema,
   } from "~/core/presentation/registros/sociedades/pasos/directorio/schemas/directorio";
-  import {
-    useDirectorioStore,
-    type Director,
-  } from "~/core/presentation/registros/sociedades/pasos/directorio/stores/useDirectores";
+  import { useDirectores } from "~/core/presentation/registros/sociedades/pasos/directorio/useDirectores";
   import {
     useDirectoresComputed,
     type DirectorTableRow,
   } from "~/core/presentation/registros/sociedades/pasos/directorio/utils/useDirectoresComputed";
+  import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
   import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
   import type { TypeOption } from "~/types/TypeOptions";
-
-  // import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   interface Props {
-    // mode: EntityModeEnum;
+    mode?: EntityModeEnum;
     societyId?: string;
   }
 
-  defineProps<Props>();
+  const props = withDefaults(defineProps<Props>(), {
+    mode: EntityModeEnum.CREAR,
+    societyId: "",
+  });
+
+  const route = useRoute();
+  const router = useRouter();
+  const { withAsyncToast } = useToastFeedback();
+
+  const societyId = computed(
+    () => props.societyId || (route.params.id as string | undefined) || ""
+  );
 
   // Opciones para duración del directorio
   const termOptions: TypeOption[] = [
@@ -77,13 +90,412 @@
 
   const directoresColumnsDef = getColumns(directoresColumns);
 
-  // Acciones para el menú de opciones
-
-  const directorioStore = useDirectorioStore();
+  // Stores y composables
   const personaNaturalStore = usePersonaNaturalStore();
+  const { directores, fetchAll } = useDirectores(societyId);
+
+  // Ref para el presidente del directorio (necesario para useDirectoresComputed)
+  const presidenteDirectorioRef = ref("");
+
+  // Usar el composable para transformar directores a formato de tabla
+  const { directoresData, presidenteOptions: computedPresidenteOptions } =
+    useDirectoresComputed(directores, presidenteDirectorioRef);
+
+  // Composable para el formulario de directorio
+  const {
+    form: directorioForm,
+    load: loadDirectorio,
+    submit: submitDirectorio,
+    reset: resetDirectorio,
+    isLoading: isLoadingDirectorio,
+    isSaving: isSavingDirectorio,
+    isReadonly: isReadonlyDirectorio,
+    errorMessage: directorioErrorMessage,
+  } = useDirectorioForm({
+    societyId,
+    mode: computed(() => props.mode),
+  });
+
+  // Formulario local para sincronizar con el DTO
+  const form = ref({
+    cantidadDirectores: "",
+    cantidadPersonalizado: false,
+    minimoDirectores: "",
+    maximoDirectores: "",
+    duracionDirectorio: "",
+    fechaInicioDirectorio: "",
+    fechaFinDirectorio: "",
+    quorumMinimo: "",
+    quorumMayoria: "",
+    nombraPresidente: "opcion-a",
+    ejerceSecretaria: "opcion-a",
+    reeleccionDirectores: false,
+    presideJuntas: false,
+    votoDirimente: false,
+    presidenteDirectorio: "",
+  });
+
+  // Sincronizar desde DTO a formulario UI
+  watch(
+    () => directorioForm.cantidadDirectores,
+    (val) => {
+      form.value.cantidadDirectores = String(val || "");
+    },
+    { immediate: true }
+  );
+  watch(
+    () => directorioForm.conteoPersonalizado,
+    (val) => {
+      form.value.cantidadPersonalizado = val;
+    },
+    { immediate: true }
+  );
+  watch(
+    () => directorioForm.minimoDirectores,
+    (val) => {
+      form.value.minimoDirectores = val ? String(val) : "";
+    },
+    { immediate: true }
+  );
+  watch(
+    () => directorioForm.maximoDirectores,
+    (val) => {
+      form.value.maximoDirectores = val ? String(val) : "";
+    },
+    { immediate: true }
+  );
+  watch(
+    () => directorioForm.periodo,
+    (val) => {
+      form.value.duracionDirectorio = val || "";
+    },
+    { immediate: true }
+  );
+  watch(
+    () => directorioForm.inicioMandato,
+    (val) => {
+      form.value.fechaInicioDirectorio = val || "";
+    },
+    { immediate: true }
+  );
+  watch(
+    () => directorioForm.finMandato,
+    (val) => {
+      form.value.fechaFinDirectorio = val || "";
+    },
+    { immediate: true }
+  );
+  watch(
+    () => directorioForm.quorumMinimo,
+    (val) => {
+      form.value.quorumMinimo = String(val || "");
+    },
+    { immediate: true }
+  );
+  watch(
+    () => directorioForm.mayoria,
+    (val) => {
+      form.value.quorumMayoria = String(val || "");
+    },
+    { immediate: true }
+  );
+  watch(
+    () => directorioForm.presidenteDesignado,
+    (val) => {
+      form.value.nombraPresidente = val ? "opcion-a" : "opcion-b";
+    },
+    { immediate: true }
+  );
+  watch(
+    () => directorioForm.secretarioAsignado,
+    (val) => {
+      form.value.ejerceSecretaria = val ? "opcion-a" : "opcion-b";
+    },
+    { immediate: true }
+  );
+  watch(
+    () => directorioForm.reeleccionPermitida,
+    (val) => {
+      form.value.reeleccionDirectores = val;
+    },
+    { immediate: true }
+  );
+  watch(
+    () => directorioForm.presidentePreside,
+    (val) => {
+      form.value.presideJuntas = val;
+    },
+    { immediate: true }
+  );
+  watch(
+    () => directorioForm.presidenteDesempata,
+    (val) => {
+      form.value.votoDirimente = val;
+    },
+    { immediate: true }
+  );
+  watch(
+    () => directorioForm.presidenteId,
+    (val) => {
+      console.debug("[DirectorioManager] watch directorioForm.presidenteId", {
+        val,
+        formValue: form.value.presidenteDirectorio,
+        presidenteDirectorioRefValue: presidenteDirectorioRef.value,
+      });
+      const presidenteId = val || "";
+      form.value.presidenteDirectorio = presidenteId;
+      presidenteDirectorioRef.value = presidenteId;
+      console.debug("[DirectorioManager] watch directorioForm.presidenteId:done", {
+        formValue: form.value.presidenteDirectorio,
+        presidenteDirectorioRefValue: presidenteDirectorioRef.value,
+      });
+    },
+    { immediate: true }
+  );
+
+  // Sincronizar desde formulario UI a DTO
+  watch(
+    () => form.value.cantidadDirectores,
+    (val) => {
+      directorioForm.cantidadDirectores = Number(val) || 0;
+    }
+  );
+  watch(
+    () => form.value.cantidadPersonalizado,
+    (val) => {
+      directorioForm.conteoPersonalizado = val;
+    }
+  );
+  watch(
+    () => form.value.minimoDirectores,
+    (val) => {
+      directorioForm.minimoDirectores = val ? Number(val) : null;
+    }
+  );
+  watch(
+    () => form.value.maximoDirectores,
+    (val) => {
+      directorioForm.maximoDirectores = val ? Number(val) : null;
+    }
+  );
+  watch(
+    () => form.value.duracionDirectorio,
+    (val) => {
+      directorioForm.periodo = val;
+    }
+  );
+  watch(
+    () => form.value.fechaInicioDirectorio,
+    (val) => {
+      directorioForm.inicioMandato = val;
+    }
+  );
+  watch(
+    () => form.value.fechaFinDirectorio,
+    (val) => {
+      directorioForm.finMandato = val;
+    }
+  );
+  watch(
+    () => form.value.quorumMinimo,
+    (val) => {
+      directorioForm.quorumMinimo = Number(val) || 0;
+    }
+  );
+  watch(
+    () => form.value.quorumMayoria,
+    (val) => {
+      directorioForm.mayoria = Number(val) || 0;
+    }
+  );
+  watch(
+    () => form.value.nombraPresidente,
+    (val) => {
+      directorioForm.presidenteDesignado = val === "opcion-a";
+    }
+  );
+  watch(
+    () => form.value.ejerceSecretaria,
+    (val) => {
+      directorioForm.secretarioAsignado = val === "opcion-a";
+    }
+  );
+  watch(
+    () => form.value.reeleccionDirectores,
+    (val) => {
+      directorioForm.reeleccionPermitida = val;
+    }
+  );
+  watch(
+    () => form.value.presideJuntas,
+    (val) => {
+      directorioForm.presidentePreside = val;
+    }
+  );
+  watch(
+    () => form.value.votoDirimente,
+    (val) => {
+      directorioForm.presidenteDesempata = val;
+    }
+  );
+  watch(
+    () => form.value.presidenteDirectorio,
+    (val) => {
+      console.debug("[DirectorioManager] watch form.presidenteDirectorio", {
+        val,
+        directorioFormPresidenteId: directorioForm.presidenteId,
+      });
+      directorioForm.presidenteId = val || null;
+      presidenteDirectorioRef.value = val || "";
+      console.debug("[DirectorioManager] watch form.presidenteDirectorio:done", {
+        directorioFormPresidenteId: directorioForm.presidenteId,
+        presidenteDirectorioRefValue: presidenteDirectorioRef.value,
+      });
+    }
+  );
+
+  // Sincronizar también desde presidenteDirectorioRef al form
+  watch(
+    () => presidenteDirectorioRef.value,
+    (val) => {
+      if (val && val !== form.value.presidenteDirectorio) {
+        form.value.presidenteDirectorio = val;
+      }
+    }
+  );
+
+  // Watch para sincronizar cuando se carguen los directores y haya un presidenteId del backend
+  watch(
+    [
+      () => directores.value.length,
+      () => directorioForm.presidenteId,
+      () => computedPresidenteOptions.value.length,
+    ],
+    ([directoresCount, presidenteId, optionsCount]) => {
+      console.debug("[DirectorioManager] watch directores/presidenteId/options", {
+        directoresCount,
+        presidenteId,
+        optionsCount,
+        formValue: form.value.presidenteDirectorio,
+        presidenteDirectorioRefValue: presidenteDirectorioRef.value,
+      });
+
+      // Si hay directores cargados, hay opciones disponibles, y hay un presidenteId del backend
+      if (directoresCount > 0 && optionsCount > 0 && presidenteId) {
+        // Verificar que el presidenteId existe en las opciones
+        const existeEnOpciones = computedPresidenteOptions.value.some(
+          (opt) => String(opt.value) === String(presidenteId)
+        );
+        if (existeEnOpciones && form.value.presidenteDirectorio !== presidenteId) {
+          console.debug("[DirectorioManager] Sincronizando presidenteId desde backend", {
+            presidenteId,
+            existeEnOpciones,
+          });
+          form.value.presidenteDirectorio = presidenteId;
+          presidenteDirectorioRef.value = presidenteId;
+        }
+      }
+    },
+    { immediate: true }
+  );
+
+  // Función para sincronizar todos los valores del DTO al formulario UI
+  const syncFormFromDirectorio = () => {
+    console.debug("[DirectorioManager] syncFormFromDirectorio", {
+      directorioForm: { ...directorioForm },
+    });
+    form.value.cantidadDirectores = String(directorioForm.cantidadDirectores || "");
+    form.value.cantidadPersonalizado = directorioForm.conteoPersonalizado;
+    form.value.minimoDirectores = directorioForm.minimoDirectores
+      ? String(directorioForm.minimoDirectores)
+      : "";
+    form.value.maximoDirectores = directorioForm.maximoDirectores
+      ? String(directorioForm.maximoDirectores)
+      : "";
+    form.value.duracionDirectorio = directorioForm.periodo || "";
+    form.value.fechaInicioDirectorio = directorioForm.inicioMandato || "";
+    form.value.fechaFinDirectorio = directorioForm.finMandato || "";
+    form.value.quorumMinimo = String(directorioForm.quorumMinimo || "");
+    form.value.quorumMayoria = String(directorioForm.mayoria || "");
+    form.value.nombraPresidente = directorioForm.presidenteDesignado ? "opcion-a" : "opcion-b";
+    form.value.ejerceSecretaria = directorioForm.secretarioAsignado ? "opcion-a" : "opcion-b";
+    form.value.reeleccionDirectores = directorioForm.reeleccionPermitida;
+    form.value.presideJuntas = directorioForm.presidentePreside;
+    form.value.votoDirimente = directorioForm.presidenteDesempata;
+    const presidenteId = directorioForm.presidenteId || "";
+    form.value.presidenteDirectorio = presidenteId;
+    presidenteDirectorioRef.value = presidenteId;
+    console.debug("[DirectorioManager] syncFormFromDirectorio:done", {
+      form: { ...form.value },
+      presidenteDirectorioRef: presidenteDirectorioRef.value,
+    });
+  };
+
+  // Watch para sincronizar cuando directorioForm cambie completamente (después de cargar)
+  // Usamos cantidadDirectores como indicador de que hay datos cargados
+  watch(
+    () => directorioForm.cantidadDirectores,
+    (newVal) => {
+      if (newVal > 0) {
+        // Si hay cantidadDirectores, significa que se cargaron datos del backend
+        syncFormFromDirectorio();
+      }
+    },
+    { immediate: true }
+  );
+
+  // También sincronizar cuando cambien los valores principales
+  watch(
+    [
+      () => directorioForm.conteoPersonalizado,
+      () => directorioForm.periodo,
+      () => directorioForm.inicioMandato,
+      () => directorioForm.finMandato,
+      () => directorioForm.quorumMinimo,
+      () => directorioForm.mayoria,
+      () => directorioForm.presidenteDesignado,
+      () => directorioForm.secretarioAsignado,
+      () => directorioForm.reeleccionPermitida,
+      () => directorioForm.presidentePreside,
+      () => directorioForm.presidenteDesempata,
+      () => directorioForm.presidenteId,
+    ],
+    () => {
+      if (directorioForm.cantidadDirectores > 0) {
+        syncFormFromDirectorio();
+      }
+    },
+    { deep: true }
+  );
+
+  // Cargar directores y directorio al montar
+  onMounted(async () => {
+    if (societyId.value) {
+      try {
+        await Promise.all([fetchAll(), loadDirectorio()]);
+        // Sincronizar después de cargar
+        syncFormFromDirectorio();
+      } catch {
+        console.warn("⚠️ No se pudieron cargar los datos del servidor (bug del backend).");
+      }
+    }
+  });
+
+  // Recargar cuando cambie el societyId
+  watch(societyId, async (newId) => {
+    if (newId) {
+      try {
+        await Promise.all([fetchAll(), loadDirectorio()]);
+        // Sincronizar después de cargar
+        syncFormFromDirectorio();
+      } catch {
+        console.warn("⚠️ No se pudieron cargar los datos del servidor (bug del backend).");
+      }
+    }
+  });
 
   const modalMode = ref<"create" | "edit">("create");
-  const directorToEdit = ref<Director | null>(null);
+  const directorToEdit = ref<DirectorConfig | null>(null);
 
   const openCreateModal = () => {
     modalMode.value = "create";
@@ -93,7 +505,7 @@
   };
 
   const openEditModal = (id: string) => {
-    const director = directorioStore.directores.find((item) => item.id === id);
+    const director = directores.value.find((item) => item.id === id);
 
     if (!director) {
       return;
@@ -102,17 +514,53 @@
     modalMode.value = "edit";
     directorToEdit.value = { ...director };
     personaNaturalStore.$patch({
-      tipoDocumento: director.tipoDocumento,
-      numeroDocumento: director.numeroDocumento,
-      nombre: director.nombres,
-      apellidoPaterno: director.apellidoPaterno,
-      apellidoMaterno: director.apellidoMaterno,
+      tipoDocumento: director.persona.tipoDocumento,
+      numeroDocumento: director.persona.numeroDocumento,
+      nombre: director.persona.nombre,
+      apellidoPaterno: director.persona.apellidoPaterno,
+      apellidoMaterno: director.persona.apellidoMaterno,
     });
     isModalOpen.value = true;
   };
 
-  const handleDeleteDirector = (id: string) => {
-    directorioStore.removeDirector(id);
+  const handleDeleteDirector = async (_id: string) => {
+    // TODO: Implementar delete cuando esté disponible en el composable
+    console.warn("Eliminar director no implementado aún");
+  };
+
+  const handleDirectorSaved = async () => {
+    // Recargar los directores después de crear/editar para sincronizar ambas instancias
+    try {
+      await fetchAll();
+      console.debug("[DirectorioManager] handleDirectorSaved: directores recargados", {
+        count: directores.value.length,
+        directores: directores.value.map((d) => ({ id: d.id, nombre: d.persona.nombre })),
+      });
+      // Si el presidenteId actual no existe en los nuevos directores, limpiarlo
+      if (directorioForm.presidenteId) {
+        const existePresidente = directores.value.some(
+          (d) => d.id === directorioForm.presidenteId && d.rolDirector === "titular"
+        );
+        if (!existePresidente) {
+          console.debug(
+            "[DirectorioManager] handleDirectorSaved: presidenteId no encontrado, limpiando",
+            {
+              presidenteId: directorioForm.presidenteId,
+            }
+          );
+          directorioForm.presidenteId = null;
+          form.value.presidenteDirectorio = "";
+          presidenteDirectorioRef.value = "";
+        }
+      }
+    } catch (error) {
+      console.warn(
+        "[DirectorioManager] handleDirectorSaved: error al recargar directores",
+        error
+      );
+      // Si falla el GET, intentamos recargar de todos modos
+      // El array ya debería estar actualizado localmente en el modal
+    }
   };
 
   // Acciones para el menú de opciones
@@ -133,31 +581,8 @@
     },
   ];
 
-  // Datos del formulario
-  const form = ref({
-    cantidadDirectores: "",
-    cantidadPersonalizado: false,
-    duracionDirectorio: "",
-    fechaInicioDirectorio: "",
-    fechaFinDirectorio: "",
-    quorumMinimo: "",
-    quorumMayoria: "",
-    nombraPresidente: "opcion-a",
-    ejerceSecretaria: "opcion-a",
-    reeleccionDirectores: false,
-    presideJuntas: false,
-    votoDirimente: false,
-    presidenteDirectorio: "",
-  });
-
-  const presidenteDirectorioRef = computed({
-    get: () => form.value.presidenteDirectorio,
-    set: (value: string) => {
-      form.value.presidenteDirectorio = value;
-    },
-  });
-
-  const { directoresData, presidenteOptions } = useDirectoresComputed(presidenteDirectorioRef);
+  // Opciones para presidente (solo titulares) - usando el composable
+  const presidenteOptions = computedPresidenteOptions;
 
   const tieneDirectorio = ref(true);
 
@@ -172,15 +597,59 @@
 
   // Manejador de envío
   const handleSubmit = () => {
-    console.log("Formulario enviado:", form.value);
+    // El submit se maneja con handleNext
   };
 
   const handleInvalidSubmit = (ctx: any) => {
-    // ctx.errors contiene los errores de validación
-    // Puedes mostrar un toast, alert, o log
     console.log("Errores en el formulario:", ctx.errors);
-    // O usa tu sistema de notificaciones/toast aquí
   };
+
+  const handleReset = () => {
+    if (isSavingDirectorio.value) return;
+    resetDirectorio();
+  };
+
+  const nextRoute = computed(() => {
+    const segments = route.path.split("/");
+    segments[segments.length - 1] = "quorums-mayorias";
+    return segments.join("/");
+  });
+
+  const handleNext = async () => {
+    if (isReadonlyDirectorio.value) {
+      await router.push(nextRoute.value);
+      return;
+    }
+
+    // Asegurar que el presidenteId se sincronice antes del submit
+    directorioForm.presidenteId = form.value.presidenteDirectorio || null;
+    console.debug("[DirectorioManager] handleNext: antes de submit", {
+      formPresidenteDirectorio: form.value.presidenteDirectorio,
+      directorioFormPresidenteId: directorioForm.presidenteId,
+    });
+
+    await withAsyncToast(() => submitDirectorio(), {
+      loading: {
+        title: "Guardando directorio…",
+        description: "Estamos registrando la configuración en el sistema.",
+      },
+      success: () => ({
+        title: "Directorio guardado",
+        description: "La configuración se registró correctamente.",
+      }),
+      error: (error) => ({
+        title: "No pudimos guardar",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Revisa los valores e inténtalo nuevamente.",
+      }),
+    });
+
+    await router.push(nextRoute.value);
+  };
+
+  const disableNext = computed(() => isSavingDirectorio.value || isLoadingDirectorio.value);
 </script>
 
 <template>
@@ -231,6 +700,43 @@
             >
               Definir cantidad personalizada
             </label>
+          </div>
+
+          <!-- Inputs condicionales cuando cantidadPersonalizado está activo -->
+          <div v-if="form.cantidadPersonalizado" class="flex flex-col gap-2">
+            <label
+              for="cantidad-minima-directores"
+              class="t-t2 font-secondary text-gray-800 font-bold"
+            >
+              Cantidad Mínima de directores
+            </label>
+            <NumberInputStepper
+              id="cantidad-minima-directores"
+              v-model="form.minimoDirectores"
+              :min="3"
+              :max="9"
+              placeholder="3"
+              size="large"
+            />
+            <p class="t-t2 text-gray-500 font-secondary">Valor mínimo: {{ 3 }}.</p>
+          </div>
+
+          <div v-if="form.cantidadPersonalizado" class="flex flex-col gap-2">
+            <label
+              for="cantidad-maxima-directores"
+              class="t-t2 font-secondary text-gray-800 font-bold"
+            >
+              Cantidad Máxima de directores
+            </label>
+            <NumberInputStepper
+              id="cantidad-maxima-directores"
+              v-model="form.maximoDirectores"
+              :min="3"
+              :max="9"
+              placeholder="3"
+              size="large"
+            />
+            <!-- <p class="t-t2 text-gray-500 font-secondary">Valor mínimo: {{ 3 }}.</p> -->
           </div>
 
           <div class="flex gap-2">
@@ -392,6 +898,13 @@
               placeholder="Seleccionar"
               :schema="presidenteDirectorioSchema"
             />
+            <!-- Debug info -->
+            <div v-if="false" class="text-xs text-gray-400">
+              <p>presidenteDirectorio: {{ form.presidenteDirectorio }}</p>
+              <p>presidenteDirectorioRef: {{ presidenteDirectorioRef }}</p>
+              <p>directorioForm.presidenteId: {{ directorioForm.presidenteId }}</p>
+              <p>presidenteOptions: {{ presidenteOptions.length }} opciones</p>
+            </div>
             <!-- :is-disabled="true" -->
             <span class="t-b2 text-gray-500 font-secondary">
               Este campo se habilita al registrar al menos un director titular.
@@ -434,11 +947,35 @@
         </p>
       </div>
 
+      <div
+        v-if="tieneDirectorio"
+        class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
+      >
+        <p v-if="directorioErrorMessage" class="text-sm text-red-600">
+          {{ directorioErrorMessage }}
+        </p>
+        <div class="flex justify-end gap-3">
+          <Button
+            variant="ghost"
+            type="button"
+            :disabled="isSavingDirectorio"
+            @click="handleReset"
+          >
+            Restablecer
+          </Button>
+          <Button type="button" :disabled="disableNext" @click="handleNext">
+            {{ isReadonlyDirectorio ? "Ir al siguiente paso" : "Siguiente" }}
+          </Button>
+        </div>
+      </div>
+
       <AgregarDirectorModal
         v-model="isModalOpen"
         :mode="modalMode"
         :director-to-edit="directorToEdit"
+        :society-id="props.societyId"
         @close="closeModal"
+        @saved="handleDirectorSaved"
       />
     </div>
   </div>

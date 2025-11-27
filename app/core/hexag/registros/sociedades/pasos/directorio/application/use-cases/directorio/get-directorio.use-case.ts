@@ -1,4 +1,4 @@
-import type { DirectorioRepository, DirectorioConfig } from "../../domain";
+import type { DirectorioConfig, DirectorioRepository } from "../../../domain";
 
 export class GetDirectorioUseCase {
   constructor(private readonly repository: DirectorioRepository) {}

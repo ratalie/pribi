@@ -12,17 +12,19 @@ export interface DirectorDTO {
 export interface DirectorioDTO {
   id?: string;
   cantidadDirectores: number;
-  cantidadPersonalizado: boolean;
-  duracionDirectorio: string;
-  fechaInicioDirectorio: string;
-  fechaFinDirectorio: string;
+  conteoPersonalizado: boolean; // Backend: conteoPersonalizado
+  minimoDirectores: number | null; // Backend: minimoDirectores
+  maximoDirectores: number | null; // Backend: maximoDirectores
+  inicioMandato: string; // Backend: inicioMandato
+  finMandato: string; // Backend: finMandato
   quorumMinimo: number;
-  quorumMayoria: number;
-  nombraPresidente: "directorio" | "asamblea_accionistas";
-  ejerceSecretaria: "gerente_general" | "junta_accionistas";
-  reeleccionDirectores: boolean;
-  presideJuntas: boolean;
-  votoDirimente: boolean;
-  presidenteDirectorio: string; // ID del director presidente
-  directores: DirectorDTO[];
+  mayoria: number; // Backend: mayoria
+  presidenteDesignado: boolean; // Backend: presidenteDesignado
+  secretarioAsignado: boolean; // Backend: secretarioAsignado
+  reeleccionPermitida: boolean; // Backend: reeleccionPermitida
+  presidentePreside: boolean; // Backend: presidentePreside
+  presidenteDesempata: boolean; // Backend: presidenteDesempata
+  periodo: string; // Backend: periodo
+  presidenteId: string | null; // Backend: presidenteId
+  // Los directores se manejan por separado en su propio endpoint
 }
