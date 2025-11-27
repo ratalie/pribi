@@ -1,6 +1,6 @@
 import { computed, onMounted, ref } from "vue";
 import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
-import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/enums/tipo-accion.enum";
+import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
 import {
   useAccionesComunesStore,
   type AccionesComunesState,

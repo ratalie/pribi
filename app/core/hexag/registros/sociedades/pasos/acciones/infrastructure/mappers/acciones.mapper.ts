@@ -1,10 +1,6 @@
-import type { AccionResponseDTO } from "../../application/dtos/accion-response.dto";
-import type { AccionDTO } from "../../application/dtos/accion.dto";
-import type { FileMetadataDTO } from "../../application/dtos/file-metadata.dto";
-import type { AccionPayload } from "../../domain/entities/accion-payload.entity";
-import type { Accion } from "../../domain/entities/accion.entity";
-import type { FileMetadata } from "../../domain/entities/file-metadata.entity";
-import { TipoAccionEnum } from "../../domain/enums/tipo-accion.enum";
+import type { AccionResponseDTO, AccionDTO, FileMetadataDTO } from "../../application";
+import type { Accion, AccionPayload, FileMetadata } from "../../domain";
+import { TipoAccionEnum } from "../../domain";
 
 /**
  * Mapper para transformar entre DTO y Entidad de acciones.

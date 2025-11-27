@@ -5,10 +5,9 @@ import {
   ListAccionesUseCase,
   UpdateAccionUseCase,
 } from "~/core/hexag/registros/sociedades/pasos/acciones/application";
-import type { Accion } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/entities/accion.entity";
-import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/enums/tipo-accion.enum";
-import { AccionesHttpRepository } from "~/core/hexag/registros/sociedades/pasos/acciones/infrastructure";
-import { AccionesMapper } from "~/core/hexag/registros/sociedades/pasos/acciones/infrastructure/mappers/acciones.mapper";
+import type { Accion } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
+import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
+import { AccionesHttpRepository, AccionesMapper } from "~/core/hexag/registros/sociedades/pasos/acciones/infrastructure";
 import type { AccionTableRow } from "../types/acciones";
 import { getTipoAccionUI } from "../utils/mapper-acciones-lista";
 

@@ -1,5 +1,3 @@
-// Casos de uso para gestionar el paso "Acciones".
-
 export type { AccionResponseDTO } from "./dtos/accion-response.dto";
 export type { AccionDTO } from "./dtos/accion.dto";
 export type { FileMetadataDTO } from "./dtos/file-metadata.dto";

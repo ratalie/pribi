@@ -1,9 +1,7 @@
 import type { BackendApiResponse } from "~/core/shared/http/api-response.types";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
-import type { AccionDataResponseDTO } from "../../application/dtos/accion-response.dto";
-import type { AccionPayload } from "../../domain/entities/accion-payload.entity";
-import type { Accion } from "../../domain/entities/accion.entity";
-import type { AccionesRepository } from "../../domain/ports/acciones.repository";
+import type { AccionDataResponseDTO } from "../../application";
+import type { Accion, AccionPayload, AccionesRepository } from "../../domain";
 import { AccionesMapper } from "../mappers/acciones.mapper";
 
 /**

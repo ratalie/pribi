@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { FileMetadata } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/entities/file-metadata.entity";
+import type { FileMetadata } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
 
 export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
   state: (): State => ({

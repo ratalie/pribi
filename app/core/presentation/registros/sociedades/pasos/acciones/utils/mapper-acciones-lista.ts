@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import type { Accion } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/entities/accion.entity";
-import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/enums/tipo-accion.enum";
+import type { Accion } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
+import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
 import type {
   AccionesComunesState,
   useAccionesComunesStore,

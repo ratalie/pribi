@@ -1,5 +1,4 @@
-import type { Accion } from "../../domain/entities/accion.entity";
-import type { AccionesRepository } from "../../domain/ports/acciones.repository";
+import type { Accion, AccionesRepository } from "../../domain";
 
 /**
  * Caso de uso para obtener la lista de acciones de una sociedad.

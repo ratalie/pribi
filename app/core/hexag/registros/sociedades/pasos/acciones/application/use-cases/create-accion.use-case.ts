@@ -1,5 +1,4 @@
-import type { AccionPayload } from "../../domain/entities/accion-payload.entity";
-import type { AccionesRepository } from "../../domain/ports/acciones.repository";
+import type { AccionPayload, AccionesRepository } from "../../domain";
 
 /**
  * Caso de uso para crear una nueva acción.

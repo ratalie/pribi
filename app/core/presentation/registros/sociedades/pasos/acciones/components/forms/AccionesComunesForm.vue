@@ -2,7 +2,7 @@
   import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
   import FileUploadMultipleWithMetadata from "~/components/base/inputs/FileUploadMultipleWithMetadata.vue";
   import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
-  import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/enums/tipo-accion.enum";
+  import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
   import { cantidadAccionesSchema, tipoAccionSchema } from "../../schemas/accionesComunes";
   import { useAccionesComunesStore } from "../../stores/useAccionesComunesStore";
   import { tipoAccionesUIEnum } from "../../types/enums/tipoAccionesEnum";

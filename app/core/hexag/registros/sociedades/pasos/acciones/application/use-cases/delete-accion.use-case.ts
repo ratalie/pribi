@@ -1,4 +1,4 @@
-import type { AccionesRepository } from "../../domain/ports/acciones.repository";
+import type { AccionesRepository } from "../../domain";
 
 /**
  * Caso de uso para eliminar una acción.

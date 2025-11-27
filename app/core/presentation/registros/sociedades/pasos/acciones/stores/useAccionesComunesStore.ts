@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
-import type { FileMetadata } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/entities/file-metadata.entity";
-import type { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/enums/tipo-accion.enum";
+import type { FileMetadata, TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
 
 export const useAccionesComunesStore = defineStore("accionesComunesModal", {
   state: (): State => ({
