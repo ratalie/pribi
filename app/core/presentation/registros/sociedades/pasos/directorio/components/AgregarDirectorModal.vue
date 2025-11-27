@@ -29,7 +29,8 @@
 
   const emits = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
-    (e: "close" | "saved"): void;
+    (e: "close"): void;
+    (e: "saved", director: DirectorConfig): void;
   }>();
 
   const modelValue = useVModel(props, "modelValue", emits, {
@@ -87,6 +88,7 @@
           nombre: director.persona.nombre,
           apellidoPaterno: director.persona.apellidoPaterno,
           apellidoMaterno: director.persona.apellidoMaterno,
+          paisPasaporte: director.persona.paisEmision || "",
         });
         // Mapear rolDirector (TipoDirector) a TiposDirectoresEnum
         const rolDirectorToTiposMap: Record<TipoDirector, TiposDirectoresEnum> = {
@@ -178,6 +180,7 @@
           apellidoMaterno: personaNaturalStore.apellidoMaterno,
           numeroDocumento: personaNaturalStore.numeroDocumento,
           tipoDocumento: personaNaturalStore.tipoDocumento as TipoDocumentosEnum,
+          paisEmision: personaNaturalStore.paisPasaporte || null,
         },
         rolDirector: rolDirectorMap[selectedTipoDirector],
         reemplazaId:
@@ -186,13 +189,14 @@
             : null,
       };
 
+      let savedDirector: DirectorConfig;
       if (isEditMode.value && props.directorToEdit) {
-        await update(props.directorToEdit.id, directorDTO);
+        savedDirector = await update(props.directorToEdit.id, directorDTO);
       } else {
-        await create(directorDTO);
+        savedDirector = await create(directorDTO);
       }
 
-      emits("saved");
+      emits("saved", savedDirector);
       handleCancel();
     } catch (error) {
       console.error("Error al guardar director:", error);

@@ -18,6 +18,7 @@
   import Checkbox from "~/components/ui/checkbox/Checkbox.vue";
   import Switch from "~/components/ui/switch/Switch.vue";
   import type { DirectorConfig } from "~/core/hexag/registros/sociedades/pasos/directorio/domain/entities/director.entity";
+  import { TipoDirector } from "~/core/hexag/registros/sociedades/pasos/directorio/domain/enums/director-tipo.enum";
   import AgregarDirectorModal from "~/core/presentation/registros/sociedades/pasos/directorio/components/AgregarDirectorModal.vue";
   import { useDirectorioForm } from "~/core/presentation/registros/sociedades/pasos/directorio/components/forms/useDirectorioForm";
   import {
@@ -92,7 +93,7 @@
 
   // Stores y composables
   const personaNaturalStore = usePersonaNaturalStore();
-  const { directores, fetchAll } = useDirectores(societyId);
+  const { directores, fetchAll, delete: deleteDirector } = useDirectores(societyId);
 
   // Ref para el presidente del directorio (necesario para useDirectoresComputed)
   const presidenteDirectorioRef = ref("");
@@ -523,43 +524,75 @@
     isModalOpen.value = true;
   };
 
-  const handleDeleteDirector = async (_id: string) => {
-    // TODO: Implementar delete cuando esté disponible en el composable
-    console.warn("Eliminar director no implementado aún");
-  };
-
-  const handleDirectorSaved = async () => {
-    // Recargar los directores después de crear/editar para sincronizar ambas instancias
+  const handleDeleteDirector = async (directorId: string) => {
     try {
-      await fetchAll();
-      console.debug("[DirectorioManager] handleDirectorSaved: directores recargados", {
-        count: directores.value.length,
-        directores: directores.value.map((d) => ({ id: d.id, nombre: d.persona.nombre })),
+      await withAsyncToast(() => deleteDirector(directorId), {
+        loading: {
+          title: "Eliminando director…",
+          description: "Estamos eliminando el director del sistema.",
+        },
+        success: () => ({
+          title: "Director eliminado",
+          description: "El director se eliminó correctamente.",
+        }),
+        error: (error) => ({
+          title: "No pudimos eliminar",
+          description:
+            error instanceof Error
+              ? error.message
+              : "Ocurrió un error al intentar eliminar el director.",
+        }),
       });
-      // Si el presidenteId actual no existe en los nuevos directores, limpiarlo
-      if (directorioForm.presidenteId) {
-        const existePresidente = directores.value.some(
-          (d) => d.id === directorioForm.presidenteId && d.rolDirector === "titular"
-        );
-        if (!existePresidente) {
-          console.debug(
-            "[DirectorioManager] handleDirectorSaved: presidenteId no encontrado, limpiando",
-            {
-              presidenteId: directorioForm.presidenteId,
-            }
-          );
-          directorioForm.presidenteId = null;
-          form.value.presidenteDirectorio = "";
-          presidenteDirectorioRef.value = "";
-        }
+
+      // Si el director eliminado era el presidente, limpiar la referencia
+      if (directorioForm.presidenteId === directorId) {
+        directorioForm.presidenteId = null;
+        form.value.presidenteDirectorio = "";
+        presidenteDirectorioRef.value = "";
       }
     } catch (error) {
-      console.warn(
-        "[DirectorioManager] handleDirectorSaved: error al recargar directores",
-        error
+      console.error("Error al eliminar director:", error);
+    }
+  };
+
+  const handleDirectorSaved = async (savedDirector: DirectorConfig) => {
+    // Actualizar directamente el array local con el director creado/actualizado
+    // para evitar un GET adicional innecesario
+    const existingIndex = directores.value.findIndex((d) => d.id === savedDirector.id);
+    if (existingIndex >= 0) {
+      // Actualizar director existente
+      directores.value[existingIndex] = savedDirector;
+      console.debug(
+        "[DirectorioManager] handleDirectorSaved: director actualizado localmente",
+        {
+          directorId: savedDirector.id,
+        }
       );
-      // Si falla el GET, intentamos recargar de todos modos
-      // El array ya debería estar actualizado localmente en el modal
+    } else {
+      // Agregar nuevo director
+      directores.value.push(savedDirector);
+      console.debug("[DirectorioManager] handleDirectorSaved: director agregado localmente", {
+        directorId: savedDirector.id,
+        totalDirectores: directores.value.length,
+      });
+    }
+
+    // Verificar si el presidenteId actual sigue siendo válido
+    if (directorioForm.presidenteId) {
+      const existePresidente = directores.value.some(
+        (d) => d.id === directorioForm.presidenteId && d.rolDirector === TipoDirector.TITULAR
+      );
+      if (!existePresidente) {
+        console.debug(
+          "[DirectorioManager] handleDirectorSaved: presidenteId no encontrado, limpiando",
+          {
+            presidenteId: directorioForm.presidenteId,
+          }
+        );
+        directorioForm.presidenteId = null;
+        form.value.presidenteDirectorio = "";
+        presidenteDirectorioRef.value = "";
+      }
     }
   };
 

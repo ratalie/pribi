@@ -3,6 +3,7 @@ import { computed, ref, unref } from "vue";
 
 import type { DirectorDTO } from "~/core/hexag/registros/sociedades/pasos/directorio/application/dtos/director.dto";
 import { CreateDirectorUseCase } from "~/core/hexag/registros/sociedades/pasos/directorio/application/use-cases/director/create-director.use-case";
+import { DeleteDirectorUseCase } from "~/core/hexag/registros/sociedades/pasos/directorio/application/use-cases/director/delete-director.use-case";
 import { GetDirectorUseCase } from "~/core/hexag/registros/sociedades/pasos/directorio/application/use-cases/director/get-director.use-case";
 import { UpdateDirectorUseCase } from "~/core/hexag/registros/sociedades/pasos/directorio/application/use-cases/director/update-director.use-case";
 import type { DirectorConfig } from "~/core/hexag/registros/sociedades/pasos/directorio/domain/entities/director.entity";
@@ -17,6 +18,7 @@ const repository = new DirectorHttpRepository();
 const getUseCase = new GetDirectorUseCase(repository);
 const createUseCase = new CreateDirectorUseCase(repository);
 const updateUseCase = new UpdateDirectorUseCase(repository);
+const deleteUseCase = new DeleteDirectorUseCase(repository);
 
 export function useDirectores(options: MaybeRef<string> | UseDirectoresOptions) {
   const societyIdRef =
@@ -89,6 +91,25 @@ export function useDirectores(options: MaybeRef<string> | UseDirectoresOptions) 
     }
   };
 
+  const remove = async (directorId: string) => {
+    const id = resolveSocietyId();
+    isSaving.value = true;
+    error.value = null;
+    try {
+      await deleteUseCase.execute(id, directorId);
+      // Remover el director del array local
+      const index = directores.value.findIndex((item) => item.id === directorId);
+      if (index >= 0) {
+        directores.value.splice(index, 1);
+      }
+    } catch (err) {
+      error.value = err as Error;
+      throw err;
+    } finally {
+      isSaving.value = false;
+    }
+  };
+
   return {
     directores,
     isLoading,
@@ -98,5 +119,6 @@ export function useDirectores(options: MaybeRef<string> | UseDirectoresOptions) 
     fetchAll,
     create,
     update,
+    delete: remove,
   };
 }

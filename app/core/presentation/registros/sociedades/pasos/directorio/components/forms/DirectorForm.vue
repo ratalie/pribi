@@ -1,8 +1,10 @@
 <script setup lang="ts">
   import { computed } from "vue";
+  import { z } from "zod";
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
+  import { countriesOptions } from "~/constants/inputs/countries-options";
   import { tipoDocumentoOptions } from "~/constants/inputs/document-type";
   import { tipoDirectoresOptions } from "~/constants/tipo-director";
   import {
@@ -19,8 +21,10 @@
   } from "~/core/presentation/registros/sociedades/pasos/directorio/schemas/modal/modalDirector";
   import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
   import type { TypeOption } from "~/types/TypeOptions";
+  import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
 
   const personaNaturalStore = usePersonaNaturalStore();
+  const optionalString = z.string().optional();
 
   const props = defineProps<{
     tipoDirector: TiposDirectoresEnum | "";
@@ -63,6 +67,16 @@
       label="Número de documento"
       placeholder="Ingrese número de documento"
       :schema="numeroDocumentoSchema"
+    />
+
+    <SelectInputZod
+      v-if="personaNaturalStore.tipoDocumento === TipoDocumentosEnum.PASAPORTE"
+      v-model="personaNaturalStore.paisPasaporte"
+      name="pais-emision"
+      label="País de emisión"
+      placeholder="Selecciona el país"
+      :options="countriesOptions"
+      :schema="optionalString"
     />
 
     <TextInputZod
