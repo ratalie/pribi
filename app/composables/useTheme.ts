@@ -2,7 +2,8 @@ import type { Theme } from "~/types/user";
 
 export const useTheme = () => {
   // Estado reactivo del tema actual
-  const currentTheme = ref<Theme>("system");
+  // Por defecto: "light" (color claro) según especificación
+  const currentTheme = ref<Theme>("light");
 
   // Tema efectivo considerando preferencia del sistema
   const effectiveTheme = computed<"light" | "dark" | "purple">(() => {
@@ -133,8 +134,8 @@ export const useTheme = () => {
       console.log("  ✅ Tema válido encontrado:", stored);
       currentTheme.value = stored;
     } else {
-      console.log("  ℹ️ No hay tema válido, usando default: system");
-      currentTheme.value = "system";
+      console.log("  ℹ️ No hay tema válido, usando default: light");
+      currentTheme.value = "light";
     }
 
     console.log("  📊 Estado después de cargar:");

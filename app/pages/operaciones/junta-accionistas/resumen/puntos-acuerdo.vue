@@ -41,6 +41,6 @@ const acuerdos = computed(() =>
 );
 
 definePageMeta({
-  layout: "dual-panel-layout",
+  layout: "default",
 });
 </script>

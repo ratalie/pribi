@@ -49,6 +49,6 @@ const sections = [
 ];
 
 definePageMeta({
-  layout: "dual-panel-layout",
+  layout: "default",
 });
 </script>

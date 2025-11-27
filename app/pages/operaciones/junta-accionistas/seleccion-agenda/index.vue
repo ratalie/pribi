@@ -15,6 +15,6 @@
   // Ruta: /operaciones/junta-accionistas/seleccion-agenda
 
   definePageMeta({
-    layout: "dual-panel-layout",
+    layout: "default",
   });
 </script>

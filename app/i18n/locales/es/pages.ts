@@ -12,6 +12,7 @@ export default {
 
   // Operaciones - Directorio
   directorioDashboard: "Dashboard de Directorio",
+  directorioCrear: "Crear Directorio",
   directores: "Directores",
   directorioHistorico: "Histórico de Directorio",
 
@@ -22,6 +23,7 @@ export default {
 
   // Operaciones - Junta de Accionistas
   juntaDashboard: "Dashboard de Junta de Accionistas",
+  juntaCrear: "Crear Junta de Accionistas",
   accionistas: "Accionistas",
   juntaHistorico: "Histórico de Junta de Accionistas",
 
@@ -33,6 +35,8 @@ export default {
   chatIA: "Chat IA",
   documentosIA: "Documentos IA",
   reporteria: "Reportería",
+  espaciosTrabajoDashboard: "Dashboard de Espacios de Trabajo",
+  espaciosTrabajoCrear: "Crear Espacio de Trabajo",
 
   // Dashboard Home
   dashboardHome: "Dashboard Principal",
