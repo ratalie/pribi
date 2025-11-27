@@ -23,5 +23,5 @@ export interface AccionesRepository {
   /**
    * Elimina una acción.
    */
-  delete(profileId: string): Promise<void>;
+  delete(profileId: string, accionIds: string[]): Promise<void>;
 }

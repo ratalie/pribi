@@ -7,7 +7,10 @@ import {
 } from "~/core/hexag/registros/sociedades/pasos/acciones/application";
 import type { Accion } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
 import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
-import { AccionesHttpRepository, AccionesMapper } from "~/core/hexag/registros/sociedades/pasos/acciones/infrastructure";
+import {
+  AccionesHttpRepository,
+  AccionesMapper,
+} from "~/core/hexag/registros/sociedades/pasos/acciones/infrastructure";
 import type { AccionTableRow } from "../types/acciones";
 import { getTipoAccionUI } from "../utils/mapper-acciones-lista";
 
@@ -119,13 +122,13 @@ export const useRegistroAccionesStore = defineStore("registroAcciones", {
      * @param profileId ID del perfil de sociedad
      * @param accionId ID de la acción a eliminar
      */
-    async removeAccion(profileId: string, accionId: string) {
+    async removeAccion(profileId: string, accionIds: string) {
       try {
         // Eliminar en el backend
-        await deleteUseCase.execute(profileId);
+        await deleteUseCase.execute(profileId, [accionIds]);
 
         // Eliminar del estado local
-        this.acciones = this.acciones.filter((accion) => accion.id !== accionId);
+        this.acciones = this.acciones.filter((accion) => accion.id !== accionIds);
       } catch (error) {
         console.error("[useRegistroAccionesStore] Error al eliminar acción:", error);
         throw error;

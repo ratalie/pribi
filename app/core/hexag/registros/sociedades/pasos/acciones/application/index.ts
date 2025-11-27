@@ -1,4 +1,4 @@
-export type { AccionResponseDTO } from "./dtos/accion-response.dto";
+export type { AccionDataResponseDTO, AccionResponseDTO } from "./dtos/accion-response.dto";
 export type { AccionDTO } from "./dtos/accion.dto";
 export type { FileMetadataDTO } from "./dtos/file-metadata.dto";
 export { CreateAccionUseCase } from "./use-cases/create-accion.use-case";

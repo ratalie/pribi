@@ -12,7 +12,7 @@ export class DeleteAccionUseCase {
    * @param accionId ID de la acción a eliminar
    * @returns void
    */
-  async execute(profileId: string): Promise<void> {
-    return this.repository.delete(profileId);
+  async execute(profileId: string, accionIds: string[]): Promise<void> {
+    return this.repository.delete(profileId, accionIds);
   }
 }

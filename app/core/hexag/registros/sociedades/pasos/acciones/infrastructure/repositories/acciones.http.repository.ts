@@ -72,9 +72,12 @@ export class AccionesHttpRepository implements AccionesRepository {
     }
   }
 
-  async delete(profileId: string): Promise<void> {
+  async delete(profileId: string, accionIds: string[]): Promise<void> {
     const url = this.getUrl(profileId);
-    const config = withAuthHeaders({ method: "DELETE" as const });
+    const config = withAuthHeaders({
+      method: "DELETE" as const,
+      body: accionIds,
+    });
 
     const response = await $fetch<BackendApiResponse>(url, config);
 
