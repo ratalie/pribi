@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { nextTick } from "vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import HeaderJuntasNavbar from "~/components/flow-layout-juntas/HeaderJuntasNavbar.vue";
   import SingleWizardSidebarJuntas from "~/components/flow-layout-juntas/SingleWizardSidebarJuntas.vue";
@@ -75,6 +76,58 @@
           title: "Aportes Dinerarios",
           description: "Completa los montos de aporte",
           navigationType: "route",
+        },
+        {
+          id: "test-anclas",
+          title: "Test por Anclas",
+          description: "Prueba de hijos con anclas",
+          navigationType: "anchor",
+          subSections: [
+            {
+              id: "ancla-1",
+              title: "Ancla 1: Introducción",
+              description: "Primera sección de prueba",
+              navigationType: "anchor",
+            },
+            {
+              id: "ancla-2",
+              title: "Ancla 2: Desarrollo",
+              description: "Segunda sección de prueba",
+              navigationType: "anchor",
+            },
+            {
+              id: "ancla-3",
+              title: "Ancla 3: Conclusión",
+              description: "Tercera sección de prueba",
+              navigationType: "anchor",
+            },
+          ],
+        },
+        {
+          id: "test-rutas",
+          title: "Test por Rutas",
+          description: "Prueba de hijos con rutas",
+          navigationType: "route",
+          subSections: [
+            {
+              id: "ruta-1",
+              title: "Ruta 1: Primera Página",
+              description: "Navega a página de prueba 1",
+              navigationType: "route",
+            },
+            {
+              id: "ruta-2",
+              title: "Ruta 2: Segunda Página",
+              description: "Navega a página de prueba 2",
+              navigationType: "route",
+            },
+            {
+              id: "ruta-3",
+              title: "Ruta 3: Tercera Página",
+              description: "Navega a página de prueba 3",
+              navigationType: "route",
+            },
+          ],
         },
         {
           id: "votacion",
@@ -189,12 +242,21 @@
         "aporte-dinerario": `${basePath}/aporte-dinerario`,
         "seleccion-aportantes": `${basePath}/aporte-dinerario/aportantes`,
         "aportes-dinerarios": `${basePath}/aporte-dinerario/aportes`,
+        "test-anclas": `${basePath}/aporte-dinerario/test-anclas`, // Página con anclas
+        "test-rutas": `${basePath}/aporte-dinerario/test-rutas`, // Página principal de rutas
+        "ruta-1": `${basePath}/aporte-dinerario/test-rutas/ruta-1`,
+        "ruta-2": `${basePath}/aporte-dinerario/test-rutas/ruta-2`,
+        "ruta-3": `${basePath}/aporte-dinerario/test-rutas/ruta-3`,
         votacion: `${basePath}/aporte-dinerario/votacion`,
         resumen: `${basePath}/aporte-dinerario/resumen`,
       };
       const route = sectionRouteMap[sectionId];
       if (route) {
         return { type: "route", target: route };
+      }
+      // Si es una ancla (ancla-1, ancla-2, ancla-3), retornar como anchor
+      if (sectionId.startsWith("ancla-")) {
+        return { type: "anchor", target: sectionId };
       }
     }
 
@@ -219,25 +281,89 @@
     return null;
   };
 
+  // Encontrar la sección padre de una ancla
+  const findParentSectionForAnchor = (
+    anchorId: string,
+    subStepId?: string
+  ): { parentId: string; parentRoute: string } | null => {
+    if (!subStepId) return null;
+
+    const juntaId = route.params.id;
+    const basePath = juntaId
+      ? `/operaciones/junta-accionistas/${juntaId}`
+      : `/operaciones/junta-accionistas`;
+
+    // Buscar en las secciones configuradas
+    const sections = getSectionsForSubStep(subStepId, "");
+    for (const section of sections) {
+      if (section.subSections) {
+        const hasAnchor = section.subSections.some((sub) => sub.id === anchorId);
+        if (hasAnchor) {
+          // Encontrar la ruta de la sección padre
+          const parentRouteMap: Record<string, string> = {
+            "test-anclas": `${basePath}/aporte-dinerario/test-anclas`,
+            "utilidades-montos": `${basePath}/aplicacion-resultados`,
+          };
+          const parentRoute = parentRouteMap[section.id] || `${basePath}/${subStepId}`;
+          return { parentId: section.id, parentRoute };
+        }
+      }
+    }
+    return null;
+  };
+
   // Manejar click en sección (navegar a la ruta o ancla correspondiente)
   const handleSectionClick = (sectionId: string) => {
     console.log("🟦 [flow-layout-juntas] handleSectionClick:", sectionId);
     juntasFlowStore.setCurrentSection(sectionId);
 
     const navigation = getSectionNavigation(sectionId, currentSubStepId.value);
+    const currentPath = route.path;
 
     if (navigation) {
       if (navigation.type === "route") {
         console.log("🟦 [flow-layout-juntas] Navegando a ruta:", navigation.target);
         router.push(navigation.target);
       } else {
-        // Es un ancla, hacer scroll
+        // Es un ancla
         console.log("🟦 [flow-layout-juntas] Navegando a ancla:", navigation.target);
-        const element = document.getElementById(navigation.target);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-          // Actualizar el hash sin recargar
-          router.replace({ hash: `#${navigation.target}` });
+        
+        // Buscar la sección padre de esta ancla
+        const parentInfo = findParentSectionForAnchor(sectionId, currentSubStepId.value);
+        
+        if (parentInfo) {
+          // Verificar si estamos en la página correcta
+          const isOnParentPage = currentPath.includes(parentInfo.parentRoute.split('/').pop() || '');
+          
+          if (!isOnParentPage) {
+            // Estamos en otra ruta, navegar primero a la página padre con el hash
+            console.log("🟦 [flow-layout-juntas] Navegando primero a página padre:", parentInfo.parentRoute);
+            router.push(`${parentInfo.parentRoute}#${navigation.target}`).then(() => {
+              // Después de navegar, hacer scroll cuando la página se cargue
+              nextTick(() => {
+                const element = document.getElementById(navigation.target);
+                if (element) {
+                  setTimeout(() => {
+                    element.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }, 100);
+                }
+              });
+            });
+          } else {
+            // Ya estamos en la página correcta, solo hacer scroll
+            const element = document.getElementById(navigation.target);
+            if (element) {
+              element.scrollIntoView({ behavior: "smooth", block: "start" });
+              router.replace({ hash: `#${navigation.target}` });
+            }
+          }
+        } else {
+          // No se encontró padre, intentar scroll directo
+          const element = document.getElementById(navigation.target);
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+            router.replace({ hash: `#${navigation.target}` });
+          }
         }
       }
     } else {
@@ -264,6 +390,15 @@
     if (subStepId === "aporte-dinerarios") {
       if (path.includes("/aporte-dinerario/aportantes")) return "seleccion-aportantes";
       if (path.includes("/aporte-dinerario/aportes")) return "aportes-dinerarios";
+      if (path.includes("/aporte-dinerario/test-rutas/ruta-1")) return "ruta-1";
+      if (path.includes("/aporte-dinerario/test-rutas/ruta-2")) return "ruta-2";
+      if (path.includes("/aporte-dinerario/test-rutas/ruta-3")) return "ruta-3";
+      if (path.includes("/aporte-dinerario/test-rutas")) return "test-rutas";
+      if (path.includes("/aporte-dinerario/test-anclas")) {
+        // Si hay hash, retornar el hash (ancla)
+        if (hash) return hash;
+        return "test-anclas";
+      }
       if (path.includes("/aporte-dinerario/votacion")) return "votacion";
       if (path.includes("/aporte-dinerario/resumen")) return "resumen";
       if (path.includes("/aporte-dinerario") && !path.includes("/aporte-dinerario/"))

@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import type { SectionItem } from "~/types/junta-navigation.types";
   import CheckIcon from "../flow-layout/CheckIcon.vue";
+  import { getIcon } from "~/utils/iconMapper";
 
   interface Props {
     sections: SectionItem[];
@@ -12,6 +13,41 @@
   const props = withDefaults(defineProps<Props>(), {
     title: "Secciones",
   });
+
+  // Estado para controlar qué secciones están expandidas
+  const expandedSections = ref<string[]>([]);
+
+  // Auto-expandir secciones que tienen sub-secciones activas
+  watch(
+    () => props.currentSectionId,
+    (newSectionId) => {
+      props.sections.forEach((section) => {
+        if (section.subSections) {
+          const hasActiveSubSection = section.subSections.some(
+            (sub) => sub.id === newSectionId
+          );
+          if (hasActiveSubSection && !expandedSections.value.includes(section.id)) {
+            expandedSections.value.push(section.id);
+          }
+        }
+      });
+    },
+    { immediate: true }
+  );
+
+  // Toggle expansión de sección
+  const toggleSection = (sectionId: string) => {
+    if (expandedSections.value.includes(sectionId)) {
+      expandedSections.value = expandedSections.value.filter((id) => id !== sectionId);
+    } else {
+      expandedSections.value.push(sectionId);
+    }
+  };
+
+  // Verificar si una sección está expandida
+  const isSectionExpanded = (section: SectionItem): boolean => {
+    return expandedSections.value.includes(section.id) || isSectionActive(section);
+  };
 
   // Normalizar estado de sección
   const getSectionStatus = (section: SectionItem): "completed" | "current" | "empty" => {
@@ -107,7 +143,11 @@
 
             <!-- Botón de Sección Principal -->
             <button
-              @click="onSectionClick(section.id)"
+              @click="
+                section.subSections && section.subSections.length > 0
+                  ? toggleSection(section.id)
+                  : onSectionClick(section.id)
+              "
               :class="[
                 'w-full flex items-start gap-3 text-left group relative pl-4 pr-3 py-3 rounded-lg transition-colors',
                 isSectionActive(section)
@@ -139,14 +179,47 @@
                   {{ section.description }}
                 </p>
               </div>
+              <!-- Chevron para secciones con hijos -->
+              <div
+                v-if="section.subSections && section.subSections.length > 0"
+                class="flex items-center justify-center w-4 h-4 shrink-0"
+              >
+                <component
+                  :is="getIcon(isSectionExpanded(section) ? 'ChevronDown' : 'ChevronRight')"
+                  v-if="getIcon('ChevronDown') && getIcon('ChevronRight')"
+                  class="w-3 h-3 text-gray-600"
+                />
+                <svg
+                  v-else
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="text-gray-600"
+                >
+                  <path
+                    v-if="isSectionExpanded(section)"
+                    d="m6 9 6 6 6-6"
+                  />
+                  <path
+                    v-else
+                    d="m9 18 6-6-6-6"
+                  />
+                </svg>
+              </div>
             </button>
 
-            <!-- Sub-secciones (anclas dentro de la misma página) -->
+            <!-- Sub-secciones (anclas dentro de la misma página o rutas) -->
             <div
-              v-if="section.subSections && section.subSections.length > 0 && isSectionActive(section)"
-              class="ml-6 mt-1 space-y-0.5 border-l-2 pl-4"
+              v-if="section.subSections && section.subSections.length > 0 && isSectionExpanded(section)"
+              class="ml-6 mt-[8px] space-y-0.5 border-l-2 pl-4"
               :style="{
-                borderColor: isSectionActive(section) ? 'var(--primary-800, #3C28A4)' : '#e5e7eb',
+                borderColor: isSectionActive(section) || expandedSections.includes(section.id) ? 'var(--primary-800, #3C28A4)' : '#e5e7eb',
               }"
             >
               <button
