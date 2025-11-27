@@ -1,7 +1,7 @@
 export interface AccionTableRow {
   id: string;
   tipo_acciones: string;
-  acciones_suscritas: number;
+  acciones_suscritas: string;
   participacion: string;
   derecho_voto: boolean;
   redimibles: boolean;

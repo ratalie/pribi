@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import type { FileMetadataDTO } from "../types/acciones";
-import type { TipoAccionesEnum } from "../types/enums/tipoAccionesEnum";
+import type { FileMetadata } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/entities/file-metadata.entity";
+import type { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/enums/tipo-accion.enum";
 
 export const useAccionesComunesStore = defineStore("accionesComunesModal", {
   state: (): State => ({
@@ -14,10 +14,10 @@ export const useAccionesComunesStore = defineStore("accionesComunesModal", {
     comentariosAdicionalesTexto: "",
 
     // Metadata de archivos de "Otros derechos especiales"
-    metadataDerechosEspeciales: [] as FileMetadataDTO[],
+    metadataDerechosEspeciales: [] as FileMetadata[],
 
     // Metadata de archivos de "Obligaciones adicionales"
-    metadataObligaciones: [] as FileMetadataDTO[],
+    metadataObligaciones: [] as FileMetadata[],
   }),
 
   actions: {
@@ -48,7 +48,7 @@ export const useAccionesComunesStore = defineStore("accionesComunesModal", {
       this.metadataObligaciones = [...(data.metadataObligaciones || [])];
     },
 
-    addDerechosEspecialesMetadata(metadata: FileMetadataDTO) {
+    addDerechosEspecialesMetadata(metadata: FileMetadata) {
       this.metadataDerechosEspeciales.push(metadata);
     },
 
@@ -59,7 +59,7 @@ export const useAccionesComunesStore = defineStore("accionesComunesModal", {
       }
     },
 
-    addObligacionesMetadata(metadata: FileMetadataDTO) {
+    addObligacionesMetadata(metadata: FileMetadata) {
       this.metadataObligaciones.push(metadata);
     },
 
@@ -73,15 +73,15 @@ export const useAccionesComunesStore = defineStore("accionesComunesModal", {
 });
 
 export interface AccionesComunesState {
-  tipoAcciones: TipoAccionesEnum | "";
+  tipoAcciones: TipoAccionEnum | "";
   cantidadAcciones: number;
   redimibles: boolean;
   otrosDerechosEspeciales: boolean;
   obligacionesAdicionales: boolean;
   comentariosAdicionales: boolean;
   comentariosAdicionalesTexto: string;
-  metadataDerechosEspeciales: FileMetadataDTO[];
-  metadataObligaciones: FileMetadataDTO[];
+  metadataDerechosEspeciales: FileMetadata[];
+  metadataObligaciones: FileMetadata[];
 }
 
 type State = AccionesComunesState;

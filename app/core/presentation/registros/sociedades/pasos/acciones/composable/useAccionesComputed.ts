@@ -57,17 +57,14 @@ export const useAccionesComputed = (profileId: string) => {
   });
 
   // Datos computados
-  const accionesData = computed(() => registroAccionesStore.tablaAcciones);
   const totalAcciones = computed(() => registroAccionesStore.totalAcciones);
-  const totalTipos = computed(() => registroAccionesStore.totalTipos);
   const capitalSocial = computed(() => valorNominalStore.valor * totalAcciones.value);
 
   // Displays formateados
-  const totalAccionesDisplay = computed(() => totalAcciones.value.toLocaleString("es-PE"));
-  const totalTiposDisplay = computed(() => totalTipos.value.toString());
   const capitalSocialDisplay = computed(() =>
     currencyFormatter.format(capitalSocial.value || 0)
   );
+
   const valorNominalDisplay = computed(() =>
     currencyFormatter.format(valorNominalStore.valor || 0)
   );
@@ -77,7 +74,7 @@ export const useAccionesComputed = (profileId: string) => {
   const isAccionesModalOpen = ref(false);
   const accionesModalMode = ref<"crear" | "editar">("crear");
   const accionSeleccionadaId = ref<string | null>(null);
-  const activeTab = ref<"opcion-a" | "opcion-b">("opcion-a");
+  const switchTabs = ref<"opcion-a" | "opcion-b">("opcion-a");
 
   const isLoading = ref(false);
 
@@ -104,11 +101,9 @@ export const useAccionesComputed = (profileId: string) => {
   const resetAccionForms = () => {
     accionesComunesStore.$reset();
     clasesAccionesStore.$reset();
-    activeTab.value = "opcion-a";
   };
 
   const openAccionesModal = () => {
-    resetAccionForms();
     accionesModalMode.value = "crear";
     accionSeleccionadaId.value = null;
     isAccionesModalOpen.value = true;
@@ -124,7 +119,7 @@ export const useAccionesComputed = (profileId: string) => {
     try {
       isLoading.value = true;
 
-      switch (activeTab.value) {
+      switch (switchTabs.value) {
         case "opcion-a": {
           const accionMapeada = mapperComunesModalALista(
             accionesComunesStore,
@@ -188,10 +183,10 @@ export const useAccionesComputed = (profileId: string) => {
     // Poblar el store correspondiente según el tipo de acción
     if (accion.tipo === TipoAccionEnum.CLASES) {
       clasesAccionesStore.setFormData(formData as ClasesAccionesState);
-      activeTab.value = "opcion-b";
+      switchTabs.value = "opcion-b";
     } else {
       accionesComunesStore.setFormData(formData as AccionesComunesState);
-      activeTab.value = "opcion-a";
+      switchTabs.value = "opcion-a";
     }
 
     accionesModalMode.value = "editar";
@@ -224,13 +219,9 @@ export const useAccionesComputed = (profileId: string) => {
   });
 
   return {
-    // Columnas
     columns,
-    // Datos
-    accionesData,
+    registroAccionesStore,
     // Displays
-    totalAccionesDisplay,
-    totalTiposDisplay,
     capitalSocialDisplay,
     valorNominalDisplay,
     // Modales
@@ -238,7 +229,7 @@ export const useAccionesComputed = (profileId: string) => {
     isAccionesModalOpen,
     accionesModalMode,
     accionSeleccionadaId,
-    activeTab,
+    switchTabs,
     isLoading,
     openValorNominalModal,
     openAccionesModal,

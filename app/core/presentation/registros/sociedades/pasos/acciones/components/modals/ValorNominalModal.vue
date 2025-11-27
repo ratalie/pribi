@@ -11,6 +11,7 @@
   interface Props {
     modelValue?: boolean;
     valorNominal?: number;
+    switchTabs?: "opcion-a" | "opcion-b";
     handleSaveValorNominal: (valor: number) => Promise<void>;
   }
 
@@ -20,10 +21,15 @@
 
   const emits = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
+    (e: "update:switchTabs", value: "opcion-a" | "opcion-b"): void;
     (e: "close"): void;
   }>();
 
   const modelValue = useVModel(props, "modelValue", emits, {
+    passive: true,
+  });
+
+  const switchTabs = useVModel(props, "switchTabs", emits, {
     passive: true,
   });
 
@@ -151,6 +157,19 @@
   >
     <div class="flex flex-col items-center justify-center gap-7">
       <img :src="Moneda" alt="moneda" class="w-44" />
+
+      <div class="w-full flex flex-col items-center justify-center font-primary">
+        <p class="t-h4 font-semibold text-gray-800">Tipo de Acciones</p>
+        <p class="t-h6 font-normal text-gray-500 mb-4">
+          Selecciona el tipo de acciones que deseas registrar
+        </p>
+
+        <SwitchTabsText
+          v-model="switchTabs"
+          opcion-a="Comunes y sin derecho a voto"
+          opcion-b="Clases de Acciones"
+        />
+      </div>
 
       <div class="flex flex-col items-center justify-center font-primary">
         <p class="t-h4 font-semibold text-gray-800">Valor nominal</p>

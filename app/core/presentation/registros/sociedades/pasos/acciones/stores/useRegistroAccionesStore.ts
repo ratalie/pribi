@@ -39,7 +39,7 @@ export const useRegistroAccionesStore = defineStore("registroAcciones", {
           accion.tipo === TipoAccionEnum.CLASES
             ? accion.nombreAccion
             : getTipoAccionUI(accion.tipo),
-        acciones_suscritas: accion.accionesSuscritas,
+        acciones_suscritas: accion.accionesSuscritas.toLocaleString("es-PE"),
         participacion:
           total > 0 ? percentageFormatter.format(accion.accionesSuscritas / total) : "0%",
         derecho_voto: accion.derechoVoto,

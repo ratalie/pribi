@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import { useVModel } from "@vueuse/core";
   import IconCoin from "~/assets/icons/icon-coin.svg";
-  import SwitchTabs from "~/components/base/Switch/SwitchTabs.vue";
   import BaseButton from "~/components/base/buttons/BaseButton.vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
@@ -16,7 +15,7 @@
     societyId?: string;
     valorNominalDisplay?: string;
     isLoading?: boolean;
-    activeTab?: "opcion-a" | "opcion-b";
+    switchTabs?: "opcion-a" | "opcion-b";
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -25,20 +24,15 @@
     societyId: "",
     valorNominalDisplay: "S/ 0.00",
     isLoading: false,
-    activeTab: "opcion-a",
+    switchTabs: "opcion-a",
   });
 
   const emits = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
-    (e: "update:activeTab", value: "opcion-a" | "opcion-b"): void;
     (e: "submit" | "close" | "invalidSubmit"): void;
   }>();
 
   const modelValue = useVModel(props, "modelValue", emits, {
-    passive: true,
-  });
-
-  const modeTabs = useVModel(props, "activeTab", emits, {
     passive: true,
   });
 
@@ -78,25 +72,15 @@
         </template>
       </CardTitle>
 
-      <!-- Tabs para cambiar entre formularios -->
-      <SwitchTabs
-        :model-value="modeTabs"
-        opcion-a="Comunes y sin derecho a voto"
-        opcion-b="Clases de Acciones"
-        variant="default"
-        @update:model-value="(value: string) => emits('update:activeTab', value as 'opcion-a' | 'opcion-b')"
-      >
-        <template #opcion-a>
-          <div class="pt-10">
-            <AccionesComunesForm :society-id="props.societyId" />
-          </div>
-        </template>
-        <template #opcion-b>
-          <div class="pt-10">
-            <ClasesAccionesForm :society-id="props.societyId" />
-          </div>
-        </template>
-      </SwitchTabs>
+      <AccionesComunesForm
+        v-if="props.switchTabs === 'opcion-a'"
+        :society-id="props.societyId"
+      />
+
+      <ClasesAccionesForm
+        v-if="props.switchTabs === 'opcion-b'"
+        :society-id="props.societyId"
+      />
     </div>
 
     <template #footer>

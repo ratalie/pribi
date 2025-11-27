@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { FileMetadataDTO } from "../types/acciones";
+import type { FileMetadata } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/entities/file-metadata.entity";
 
 export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
   state: (): State => ({
@@ -14,10 +14,10 @@ export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
     comentariosAdicionalesTexto: "",
 
     // Metadata de archivos de "Otros derechos especiales"
-    metadataDerechosEspecialesClase: [] as FileMetadataDTO[],
+    metadataDerechosEspecialesClase: [] as FileMetadata[],
 
     // Metadata de archivos de "Obligaciones adicionales"
-    metadataObligacionesClase: [] as FileMetadataDTO[],
+    metadataObligacionesClase: [] as FileMetadata[],
   }),
 
   actions: {
@@ -50,7 +50,7 @@ export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
       this.metadataObligacionesClase = [...(data.metadataObligacionesClase || [])];
     },
 
-    addDerechosEspecialesClaseMetadata(metadata: FileMetadataDTO) {
+    addDerechosEspecialesClaseMetadata(metadata: FileMetadata) {
       this.metadataDerechosEspecialesClase.push(metadata);
     },
 
@@ -61,7 +61,7 @@ export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
       }
     },
 
-    addObligacionesClaseMetadata(metadata: FileMetadataDTO) {
+    addObligacionesClaseMetadata(metadata: FileMetadata) {
       this.metadataObligacionesClase.push(metadata);
     },
 
@@ -83,8 +83,8 @@ export interface ClasesAccionesState {
   obligacionesAdicionalesClase: boolean;
   comentariosAdicionales: boolean;
   comentariosAdicionalesTexto: string;
-  metadataDerechosEspecialesClase: FileMetadataDTO[];
-  metadataObligacionesClase: FileMetadataDTO[];
+  metadataDerechosEspecialesClase: FileMetadata[];
+  metadataObligacionesClase: FileMetadata[];
 }
 
 type State = ClasesAccionesState;

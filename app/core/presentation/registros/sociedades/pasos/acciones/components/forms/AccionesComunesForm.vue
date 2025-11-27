@@ -2,9 +2,10 @@
   import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
   import FileUploadMultipleWithMetadata from "~/components/base/inputs/FileUploadMultipleWithMetadata.vue";
   import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
+  import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/enums/tipo-accion.enum";
   import { cantidadAccionesSchema, tipoAccionSchema } from "../../schemas/accionesComunes";
   import { useAccionesComunesStore } from "../../stores/useAccionesComunesStore";
-  import { TipoAccionesEnum, tipoAccionesUIEnum } from "../../types/enums/tipoAccionesEnum";
+  import { tipoAccionesUIEnum } from "../../types/enums/tipoAccionesEnum";
 
   interface Props {
     societyId?: string;
@@ -18,14 +19,14 @@
 
   const tipoAccionesOptions = [
     {
-      id: TipoAccionesEnum.COMUN,
+      id: TipoAccionEnum.COMUN,
       label: tipoAccionesUIEnum.COMUNES,
-      value: TipoAccionesEnum.COMUN,
+      value: TipoAccionEnum.COMUN,
     },
     {
-      id: TipoAccionesEnum.SIN_DERECHO_A_VOTO,
+      id: TipoAccionEnum.SIN_DERECHO_A_VOTO,
       label: tipoAccionesUIEnum.SIN_DERECHO_A_VOTO,
-      value: TipoAccionesEnum.SIN_DERECHO_A_VOTO,
+      value: TipoAccionEnum.SIN_DERECHO_A_VOTO,
     },
   ];
 </script>
@@ -65,7 +66,7 @@
 
     <!-- Sección colapsable: Otros derechos especiales -->
     <div
-      v-if="accionesComunesStore.tipoAcciones === TipoAccionesEnum.SIN_DERECHO_A_VOTO"
+      v-if="accionesComunesStore.tipoAcciones === TipoAccionEnum.SIN_DERECHO_A_VOTO"
       class="flex flex-col w-full border border-gray-300 rounded-lg"
     >
       <!-- Header con switch -->

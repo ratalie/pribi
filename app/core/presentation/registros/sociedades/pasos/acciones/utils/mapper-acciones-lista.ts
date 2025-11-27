@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import type { AccionEntity } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/entities/accion.entity";
+import type { Accion } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/entities/accion.entity";
+import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/enums/tipo-accion.enum";
 import type {
   AccionesComunesState,
   useAccionesComunesStore,
@@ -8,18 +9,18 @@ import type {
   ClasesAccionesState,
   useClasesAccionesStore,
 } from "../stores/useClasesAccionesStore";
-import { TipoAccionesEnum, tipoAccionesUIEnum } from "../types/enums/tipoAccionesEnum";
+import { tipoAccionesUIEnum } from "../types/enums/tipoAccionesEnum";
 
 /**
  * Mapea el tipo de acción del backend al enum de UI
  */
-export const getTipoAccionUI = (tipo: TipoAccionesEnum): string => {
+export const getTipoAccionUI = (tipo: TipoAccionEnum): string => {
   switch (tipo) {
-    case TipoAccionesEnum.COMUN:
+    case TipoAccionEnum.COMUN:
       return tipoAccionesUIEnum.COMUNES;
-    case TipoAccionesEnum.SIN_DERECHO_A_VOTO:
+    case TipoAccionEnum.SIN_DERECHO_A_VOTO:
       return tipoAccionesUIEnum.SIN_DERECHO_A_VOTO;
-    case TipoAccionesEnum.CLASES:
+    case TipoAccionEnum.CLASES:
       return tipoAccionesUIEnum.CLASES_DE_ACCIÓN;
     default:
       return "Tipo desconocido";
@@ -32,18 +33,18 @@ export const getTipoAccionUI = (tipo: TipoAccionesEnum): string => {
 export const mapperComunesModalALista = (
   store: ReturnType<typeof useAccionesComunesStore>,
   id?: string
-): AccionEntity => {
+): Accion => {
   const formData = store.getFormData();
 
   return {
     id: id || uuidv4(),
     tipo:
-      formData.tipoAcciones === TipoAccionesEnum.SIN_DERECHO_A_VOTO
-        ? TipoAccionesEnum.SIN_DERECHO_A_VOTO
-        : TipoAccionesEnum.COMUN,
+      formData.tipoAcciones === TipoAccionEnum.SIN_DERECHO_A_VOTO
+        ? TipoAccionEnum.SIN_DERECHO_A_VOTO
+        : TipoAccionEnum.COMUN,
     nombreAccion: "Acciones comunes",
     accionesSuscritas: formData.cantidadAcciones,
-    derechoVoto: formData.tipoAcciones !== TipoAccionesEnum.SIN_DERECHO_A_VOTO,
+    derechoVoto: formData.tipoAcciones !== TipoAccionEnum.SIN_DERECHO_A_VOTO,
     redimibles: formData.redimibles,
     otrosDerechosEspeciales: formData.otrosDerechosEspeciales,
     metadataDerechosEspeciales: [...formData.metadataDerechosEspeciales],
@@ -60,12 +61,12 @@ export const mapperComunesModalALista = (
 export const mapperClasesModalALista = (
   store: ReturnType<typeof useClasesAccionesStore>,
   id?: string
-): AccionEntity => {
+): Accion => {
   const formData = store.getFormData();
 
   return {
     id: id || uuidv4(),
-    tipo: TipoAccionesEnum.CLASES,
+    tipo: TipoAccionEnum.CLASES,
     nombreAccion: formData.nombreClaseAccion.trim() || "Clase sin nombre",
     accionesSuscritas: formData.cantidadAccionesClase,
     derechoVoto: formData.conDerechoVoto,
@@ -83,20 +84,20 @@ export const mapperClasesModalALista = (
  * Mapea los datos de AccionRegistro a AccionesComunesState o ClasesAccionesState
  */
 export const mapperAccionesListaAModal = (
-  accion: AccionEntity
+  accion: Accion
 ): AccionesComunesState | ClasesAccionesState => {
   switch (accion.tipo) {
-    case TipoAccionesEnum.COMUN:
-    case TipoAccionesEnum.SIN_DERECHO_A_VOTO:
+    case TipoAccionEnum.COMUN:
+    case TipoAccionEnum.SIN_DERECHO_A_VOTO:
       return convertirComunes(accion);
-    case TipoAccionesEnum.CLASES:
+    case TipoAccionEnum.CLASES:
       return convertirClases(accion);
     default:
       throw new Error("Tipo de acción no válido");
   }
 };
 
-const convertirComunes = (accion: AccionEntity): AccionesComunesState => {
+const convertirComunes = (accion: Accion): AccionesComunesState => {
   return {
     tipoAcciones: accion.tipo,
     cantidadAcciones: accion.accionesSuscritas,
@@ -110,7 +111,7 @@ const convertirComunes = (accion: AccionEntity): AccionesComunesState => {
   };
 };
 
-const convertirClases = (accion: AccionEntity): ClasesAccionesState => {
+const convertirClases = (accion: Accion): ClasesAccionesState => {
   return {
     nombreClaseAccion: accion.nombreAccion,
     cantidadAccionesClase: accion.accionesSuscritas,
