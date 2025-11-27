@@ -141,7 +141,7 @@ export const useAccionesComputed = (profileId: string) => {
           }
 
           if (accionesModalMode.value === "editar" && accionSeleccionadaId.value) {
-            registroAccionesStore.updateAccion(accionMapeada);
+            registroAccionesStore.updateAccion(profileId, accionMapeada);
           } else {
             registroAccionesStore.addAccion(accionMapeada);
           }
@@ -154,7 +154,7 @@ export const useAccionesComputed = (profileId: string) => {
           );
 
           if (accionesModalMode.value === "editar" && accionSeleccionadaId.value) {
-            registroAccionesStore.updateAccion(accionMapeada);
+            registroAccionesStore.updateAccion(profileId, accionMapeada);
           } else {
             registroAccionesStore.addAccion(accionMapeada);
           }
@@ -195,7 +195,7 @@ export const useAccionesComputed = (profileId: string) => {
   };
 
   const handleDeleteAccion = (id: string) => {
-    registroAccionesStore.removeAccion(id);
+    registroAccionesStore.removeAccion(profileId, id);
   };
 
   const accionesActions = [

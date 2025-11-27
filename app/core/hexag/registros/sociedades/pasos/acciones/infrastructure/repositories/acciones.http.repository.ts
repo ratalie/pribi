@@ -47,36 +47,18 @@ export class AccionesHttpRepository implements AccionesRepository {
     }
   }
 
-  async create(profileId: string, dto: AccionPayload): Promise<Accion> {
-    const url = this.getUrl(profileId);
-    const config = withAuthHeaders({
-      method: "POST" as const,
-      body: AccionesMapper.aPayloadParaBackend(dto),
-    });
-
-    const response = await $fetch<BackendApiResponse<AccionDataResponseDTO>>(url, config);
-
-    if (!response.success || !response.data) {
-      throw new Error(response.message || "Error al crear la acción");
-    }
-
-    return {} as Accion;
-  }
-
-  async update(profileId: string, accionId: string, dto: AccionPayload): Promise<Accion> {
+  async update(profileId: string, accionId: string, dto: AccionPayload): Promise<void> {
     const url = this.getUrl(profileId, accionId);
     const config = withAuthHeaders({
       method: "PUT" as const,
-      body: AccionesMapper.aPayloadParaBackend(dto),
+      body: AccionesMapper.dePayloadABackend(dto),
     });
 
-    const response = await $fetch<BackendApiResponse<AccionDataResponseDTO>>(url, config);
+    const response = await $fetch<BackendApiResponse>(url, config);
 
     if (!response.success || !response.data) {
       throw new Error(response.message || "Error al actualizar la acción");
     }
-
-    return {} as Accion;
   }
 
   async delete(profileId: string, accionId: string): Promise<void> {

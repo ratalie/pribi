@@ -1,5 +1,4 @@
 import type { AccionPayload } from "../../domain/entities/accion-payload.entity";
-import type { Accion } from "../../domain/entities/accion.entity";
 import type { AccionesRepository } from "../../domain/ports/acciones.repository";
 
 /**
@@ -13,9 +12,8 @@ export class UpdateAccionUseCase {
    * @param profileId ID del perfil de sociedad
    * @param accionId ID de la acción a actualizar
    * @param payload Datos actualizados de la acción
-   * @returns Acción actualizada
    */
-  async execute(profileId: string, accionId: string, payload: AccionPayload): Promise<Accion> {
+  async execute(profileId: string, accionId: string, payload: AccionPayload): Promise<void> {
     return this.repository.update(profileId, accionId, payload);
   }
 }

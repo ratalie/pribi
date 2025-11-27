@@ -1,8 +1,13 @@
 import { defineStore } from "pinia";
-import { ListAccionesUseCase } from "~/core/hexag/registros/sociedades/pasos/acciones/application";
+import {
+  DeleteAccionUseCase,
+  ListAccionesUseCase,
+  UpdateAccionUseCase,
+} from "~/core/hexag/registros/sociedades/pasos/acciones/application";
 import type { Accion } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/entities/accion.entity";
 import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/enums/tipo-accion.enum";
 import { AccionesHttpRepository } from "~/core/hexag/registros/sociedades/pasos/acciones/infrastructure";
+import { AccionesMapper } from "~/core/hexag/registros/sociedades/pasos/acciones/infrastructure/mappers/acciones.mapper";
 import type { AccionTableRow } from "../types/acciones";
 import { getTipoAccionUI } from "../utils/mapper-acciones-lista";
 
@@ -19,6 +24,8 @@ const percentageFormatter = new Intl.NumberFormat("es-PE", {
 
 const repository = new AccionesHttpRepository();
 const listUseCase = new ListAccionesUseCase(repository);
+const updateUseCase = new UpdateAccionUseCase(repository);
+const deleteUseCase = new DeleteAccionUseCase(repository);
 
 export const useRegistroAccionesStore = defineStore("registroAcciones", {
   state: (): State => ({
@@ -53,9 +60,11 @@ export const useRegistroAccionesStore = defineStore("registroAcciones", {
   actions: {
     async loadAcciones(profileId: string) {
       try {
-        await listUseCase.execute(profileId);
+        const acciones = await listUseCase.execute(profileId);
+        this.acciones = acciones;
       } catch (error) {
         console.error(error);
+        this.acciones = [];
       }
     },
 
@@ -63,18 +72,46 @@ export const useRegistroAccionesStore = defineStore("registroAcciones", {
       this.acciones.push(accion);
     },
 
-    updateAccion(payload: Accion) {
-      const index = this.acciones.findIndex((accion) => accion.id === payload.id);
+    /**
+     * Actualiza una acción en el backend y en el estado local.
+     * @param profileId ID del perfil de sociedad
+     * @param accion Datos actualizados de la acción
+     */
+    async updateAccion(profileId: string, accion: Accion) {
+      try {
+        // Convertir Entity a Payload
+        const payload = AccionesMapper.deEntityAPayload(accion);
 
-      if (index === -1) {
-        return;
+        // Actualizar en el backend
+        await updateUseCase.execute(profileId, accion.id, payload);
+
+        // Actualizar en el estado local
+        const index = this.acciones.findIndex((a) => a.id === accion.id);
+        if (index !== -1) {
+          this.acciones.splice(index, 1, { ...accion });
+        }
+      } catch (error) {
+        console.error("[useRegistroAccionesStore] Error al actualizar acción:", error);
+        throw error;
       }
-
-      this.acciones.splice(index, 1, { ...payload });
     },
 
-    removeAccion(id: string) {
-      this.acciones = this.acciones.filter((accion) => accion.id !== id);
+    /**
+     * Elimina una acción del backend y del estado local.
+     * @param profileId ID del perfil de sociedad
+     * @param accionId ID de la acción a eliminar
+     */
+    async removeAccion(profileId: string, accionId: string) {
+      try {
+        // Eliminar en el backend
+        await deleteUseCase.execute(profileId, accionId);
+
+        // Eliminar del estado local
+        this.acciones = this.acciones.filter((accion) => accion.id !== accionId);
+      } catch (error) {
+        console.error("[useRegistroAccionesStore] Error al eliminar acción:", error);
+        throw error;
+      }
     },
 
     getAccionById(id: string): Accion | null {
