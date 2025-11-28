@@ -1,41 +1,29 @@
-import type { ApoderadoDTO, ClaseApoderadoDTO } from "../../application";
-import type { Apoderado, ClaseApoderado } from "../../domain";
+import type { ApoderadoDTO } from "../../application";
+import type { ApoderadoResponseDTO } from "../../application/dtos/apoderado-response.dto";
+import type { Apoderado, ApoderadoPayload } from "../../domain";
 
-const normalizeApoderado = (payload: Record<string, any>): Apoderado => ({
-  id: payload.id ?? "",
-  claseApoderadoId: payload.claseApoderadoId ?? payload.classId ?? "",
-  persona: payload.persona,
-  createdAt: payload.createdAt,
-  updatedAt: payload.updatedAt,
-});
+export class ApoderadosMapper {
+  static deListaRespuestaADominio(response: ApoderadoResponseDTO[]): Apoderado[] {
+    return response.map((item) => ({
+      id: item.id,
+      claseApoderadoId: item.claseApoderadoId,
+      persona: item.persona,
+    }));
+  }
 
-const normalizeClase = (payload: Record<string, any>): ClaseApoderado => ({
-  id: payload.id ?? payload.claseId ?? "",
-  nombre: payload.nombre ?? "",
-  apoderados: Array.isArray(payload.apoderados)
-    ? payload.apoderados.map((item: Record<string, any>) => normalizeApoderado(item))
-    : undefined,
-  createdAt: payload.createdAt,
-  updatedAt: payload.updatedAt,
-});
+  static deEntityAPayload(entity: Apoderado): ApoderadoPayload {
+    return {
+      id: entity.id,
+      claseApoderadoId: entity.claseApoderadoId,
+      persona: entity.persona,
+    };
+  }
 
-export const ApoderadosMapper = {
-  toClase(payload: Record<string, any>): ClaseApoderado {
-    return normalizeClase(payload);
-  },
-  toClaseList(payload: Record<string, any>[] = []): ClaseApoderado[] {
-    return payload.map((item) => normalizeClase(item));
-  },
-  toApoderado(payload: Record<string, any>): Apoderado {
-    return normalizeApoderado(payload);
-  },
-  toApoderadoList(payload: Record<string, any>[] = []): Apoderado[] {
-    return payload.map((item) => normalizeApoderado(item));
-  },
-  toClasePayload(dto: ClaseApoderadoDTO) {
-    return dto;
-  },
-  toApoderadoPayload(dto: ApoderadoDTO) {
-    return dto;
-  },
-};
+  static dePayloadABackend(payload: ApoderadoPayload): ApoderadoDTO {
+    return {
+      id: payload.id,
+      claseApoderadoId: payload.claseApoderadoId,
+      persona: payload.persona,
+    };
+  }
+}

@@ -1,8 +1,8 @@
-import { useClasesApoderadoStore } from "../stores/useClasesApoderadoStore";
+import { useClasesYApoderadosStore } from "../stores/useClasesYApoderadoStore";
 import { mapperNombreAEntidad } from "../utils/mapper-clases-apoderados";
 
 export const useClasesApoderado = (profileId: string) => {
-  const clasesApoderadoStore = useClasesApoderadoStore();
+  const clasesYApoderadoStore = useClasesYApoderadosStore();
   const valorInicialClase = ref("");
 
   const isOpenModalClase = ref(false);
@@ -28,9 +28,9 @@ export const useClasesApoderado = (profileId: string) => {
       const entity = mapperNombreAEntidad(nombreClase, editingClaseId.value);
 
       if (modeModalClase.value === "crear") {
-        await clasesApoderadoStore.crearClase(profileId, entity);
+        await clasesYApoderadoStore.crearClase(profileId, entity);
       } else {
-        await clasesApoderadoStore.actualizarClase(profileId, entity);
+        await clasesYApoderadoStore.actualizarClase(profileId, entity);
       }
 
       closeModalClase();
@@ -43,7 +43,7 @@ export const useClasesApoderado = (profileId: string) => {
   };
 
   const handleEditarClase = (claseId: string) => {
-    const clase = clasesApoderadoStore.obtenerClasePorId(claseId);
+    const clase = clasesYApoderadoStore.obtenerClasePorId(claseId);
 
     if (!clase) {
       console.error("Clase no encontrada");
@@ -59,7 +59,7 @@ export const useClasesApoderado = (profileId: string) => {
 
   const handleEliminarClase = async (claseId: string) => {
     try {
-      await clasesApoderadoStore.eliminarClase(profileId, claseId);
+      await clasesYApoderadoStore.eliminarClase(profileId, claseId);
     } catch (error) {
       console.error(error);
       throw error;
@@ -80,7 +80,7 @@ export const useClasesApoderado = (profileId: string) => {
   ];
 
   return {
-    clasesApoderadoStore,
+    clasesYApoderadoStore,
     valorInicialClase,
     claseActions,
     isOpenModalClase,

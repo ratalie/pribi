@@ -4,7 +4,10 @@ import {
   ListClasesApoderadoUseCase,
   UpdateClaseApoderadoUseCase,
 } from "~/core/hexag/registros/sociedades/pasos/apoderados/application";
-import type { ClaseApoderado } from "~/core/hexag/registros/sociedades/pasos/apoderados/domain";
+import type {
+  Apoderado,
+  ClaseApoderado,
+} from "~/core/hexag/registros/sociedades/pasos/apoderados/domain";
 import { ApoderadosHttpRepository } from "~/core/hexag/registros/sociedades/pasos/apoderados/infrastructure";
 import { ClasesApoderadosMapper } from "~/core/hexag/registros/sociedades/pasos/apoderados/infrastructure/mappers/clases-apoderados.mapper";
 import type { ClaseApoderadoRow } from "../types";
@@ -16,9 +19,10 @@ const createUseCase = new CreateClaseApoderadoUseCase(repository);
 const updateUseCase = new UpdateClaseApoderadoUseCase(repository);
 const deleteUseCase = new DeleteClaseApoderadoUseCase(repository);
 
-export const useClasesApoderadoStore = defineStore("clasesApoderado", {
+export const useClasesYApoderadosStore = defineStore("clases-y-apoderados", {
   state: (): State => ({
     clases: [],
+    apoderados: [],
   }),
 
   getters: {
@@ -90,4 +94,5 @@ export const useClasesApoderadoStore = defineStore("clasesApoderado", {
 
 interface State {
   clases: ClaseApoderado[];
+  apoderados: Apoderado[];
 }

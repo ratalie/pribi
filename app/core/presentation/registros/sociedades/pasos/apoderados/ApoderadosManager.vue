@@ -11,16 +11,16 @@
   import { useApoderadosController } from "~/core/presentation/registros/sociedades/composables/useApoderadosController";
   import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
-  import ApoderadosTable from "./components/ApoderadosTable.vue";
   import ClasesApoderadoTable from "./components/ClasesApoderadoTable.vue";
+  import GerenteGeneralTable from "./components/GerenteGeneralTable.vue";
   import ClaseApoderadoModal from "./components/modals/ClaseApoderadoModal.vue";
   import GerenteGeneralModal from "./components/modals/GerenteGeneralModal.vue";
   import OtroApoderadoModal from "./components/modals/OtroApoderadoModal.vue";
   import RegistroApoderadoModal from "./components/modals/RegistroApoderadoModal.vue";
   import { useClasesApoderado } from "./composables/useClasesApoderado";
+  import { useGerenteGeneral } from "./composables/useGerenteGeneral";
   import { ClasesApoderadoEspecialesEnum } from "./enums/ClasesApoderadoEspecialesEnum";
   import { useApoderadosStore } from "./stores/apoderados.store";
-  import type { ApoderadoRow } from "./types";
 
   interface Props {
     societyId: string;
@@ -513,7 +513,7 @@
   };
 
   const {
-    clasesApoderadoStore,
+    clasesYApoderadoStore,
     valorInicialClase,
     claseActions,
     isOpenModalClase,
@@ -524,9 +524,11 @@
     handleSubmitClase,
   } = useClasesApoderado(props.societyId ?? "");
 
+  const { gerenteActions } = useGerenteGeneral();
+
   onMounted(() => {
     if (props.societyId) {
-      clasesApoderadoStore.loadClases(props.societyId);
+      clasesYApoderadoStore.loadClases(props.societyId);
     }
   });
 </script>
@@ -549,7 +551,7 @@
       </CardTitle>
 
       <ClasesApoderadoTable
-        :items="clasesApoderadoStore.datosTablaClases"
+        :items="clasesYApoderadoStore.datosTablaClases"
         :actions="claseActions"
       />
     </SimpleCard>
@@ -571,13 +573,8 @@
           />
         </template>
       </CardTitle>
-      <ApoderadosTable
-        :items="gerenteRows"
-        :is-loading="isControllerLoading"
-        :readonly="isReadonly"
-        @edit="handleEditarApoderado"
-        @remove="handleEliminarApoderado"
-      />
+
+      <GerenteGeneralTable :items="gerenteRows" :actions="gerenteActions" />
     </SimpleCard>
 
     <!-- Tabla 2: Apoderados (con clase) -->

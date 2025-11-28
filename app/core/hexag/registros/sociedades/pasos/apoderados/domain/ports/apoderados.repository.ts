@@ -1,5 +1,4 @@
-import type { Apoderado, ClaseApoderado, ClaseApoderadoPayload } from "..";
-import type { ApoderadoDTO } from "../../application/dtos";
+import type { Apoderado, ApoderadoPayload, ClaseApoderado, ClaseApoderadoPayload } from "..";
 
 export interface ApoderadosRepository {
   listClases(profileId: string): Promise<ClaseApoderado[]>;
@@ -8,7 +7,7 @@ export interface ApoderadosRepository {
   deleteClase(profileId: string, claseId: string): Promise<void>;
 
   listApoderados(profileId: string): Promise<Apoderado[]>;
-  createApoderado(profileId: string, payload: ApoderadoDTO): Promise<Apoderado>;
-  updateApoderado(profileId: string, payload: ApoderadoDTO): Promise<Apoderado>;
-  deleteApoderado(profileId: string, claseId: string, apoderadoId: string): Promise<void>;
+  createApoderado(profileId: string, payload: ApoderadoPayload): Promise<void>;
+  updateApoderado(profileId: string, payload: ApoderadoPayload): Promise<void>;
+  deleteApoderado(profileId: string, apoderadoId: string): Promise<void>;
 }

@@ -4,10 +4,9 @@ export interface ClaseApoderadoRow {
   numeroApoderados: number;
 }
 
-export interface ApoderadoRow {
+export interface GerenteGeneralRow {
   id: string;
-  clase: string;
   nombre: string;
-  documento: string;
-  isPlaceholder?: boolean;
+  tipoDocumento: string;
+  numeroDocumento: string;
 }

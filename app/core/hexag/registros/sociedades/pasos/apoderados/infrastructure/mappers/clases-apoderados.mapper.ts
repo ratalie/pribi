@@ -1,5 +1,4 @@
-import type { ClaseApoderadoDTO } from "../../application";
-import type { ClaseApoderadoResponseDTO } from "../../application/dtos/clase-apoderado-response.dto";
+import type { ClaseApoderadoDTO, ClaseApoderadoResponseDTO } from "../../application";
 import type { ClaseApoderado, ClaseApoderadoPayload } from "../../domain";
 
 export class ClasesApoderadosMapper {
