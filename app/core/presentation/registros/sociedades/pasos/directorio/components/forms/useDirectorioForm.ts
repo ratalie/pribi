@@ -72,7 +72,9 @@ export function useDirectorioForm(options: UseDirectorioFormOptions) {
       return;
     }
 
-    form.cantidadDirectores = normalizeNumber(value.cantidadDirectores, 3);
+    // Asegurar que cantidadDirectores siempre tenga un valor mínimo de 3 si es 0 o null
+    const cantidadDirectoresValue = normalizeNumber(value.cantidadDirectores, 3);
+    form.cantidadDirectores = cantidadDirectoresValue > 0 ? cantidadDirectoresValue : 3;
     form.conteoPersonalizado = normalizeBoolean(value.conteoPersonalizado);
     form.minimoDirectores = value.minimoDirectores;
     form.maximoDirectores = value.maximoDirectores;
@@ -133,10 +135,14 @@ export function useDirectorioForm(options: UseDirectorioFormOptions) {
     }
 
     // Asegurarse de que el presidenteId esté incluido en el payload
-    // También asegurar que minimoDirectores y maximoDirectores tengan valores cuando conteoPersonalizado es true
+    // También asegurar que cantidadDirectores tenga un valor por defecto de 3 si es 0 o null
+    // Y asegurar que minimoDirectores y maximoDirectores tengan valores cuando conteoPersonalizado es true
     const payload: DirectorioDTO = {
       ...form,
       id: store.config?.id,
+      // Asegurar que cantidadDirectores siempre tenga un valor mínimo de 3 si es 0 o null
+      cantidadDirectores:
+        form.cantidadDirectores && form.cantidadDirectores > 0 ? form.cantidadDirectores : 3,
       // Asegurar que presidenteId esté explícitamente incluido
       presidenteId: form.presidenteId || null,
       // Asegurar que minimoDirectores y maximoDirectores tengan valores válidos cuando conteoPersonalizado es true

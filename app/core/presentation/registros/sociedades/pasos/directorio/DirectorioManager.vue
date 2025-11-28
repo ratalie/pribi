@@ -114,7 +114,7 @@
 
   // Formulario local para sincronizar con el DTO
   const form = ref({
-    cantidadDirectores: "",
+    cantidadDirectores: "3", // Valor por defecto: 3
     cantidadPersonalizado: false,
     minimoDirectores: "3",
     maximoDirectores: "3",
@@ -135,7 +135,8 @@
   watch(
     () => directorioForm.cantidadDirectores,
     (val) => {
-      form.value.cantidadDirectores = String(val || "");
+      // Si hay un valor válido (>0), usarlo; si no, usar 3 por defecto
+      form.value.cantidadDirectores = val && val > 0 ? String(val) : "3";
     },
     { immediate: true }
   );
@@ -253,8 +254,11 @@
   watch(
     () => form.value.cantidadDirectores,
     (val) => {
-      directorioForm.cantidadDirectores = Number(val) || 0;
-    }
+      // Si está vacío o es 0, usar 3 por defecto; si no, convertir a número
+      const numValue = Number(val);
+      directorioForm.cantidadDirectores = numValue && numValue > 0 ? numValue : 3;
+    },
+    { immediate: true }
   );
   watch(
     () => form.value.cantidadPersonalizado,
@@ -426,7 +430,10 @@
     console.debug("[DirectorioManager] syncFormFromDirectorio", {
       directorioForm: { ...directorioForm },
     });
-    form.value.cantidadDirectores = String(directorioForm.cantidadDirectores || "");
+    form.value.cantidadDirectores =
+      directorioForm.cantidadDirectores && directorioForm.cantidadDirectores > 0
+        ? String(directorioForm.cantidadDirectores)
+        : "3";
     form.value.cantidadPersonalizado = directorioForm.conteoPersonalizado;
     form.value.minimoDirectores = directorioForm.minimoDirectores
       ? String(directorioForm.minimoDirectores)
@@ -655,9 +662,21 @@
       return;
     }
 
+    // Asegurar que cantidadDirectores tenga un valor por defecto de 3 si está vacío o es 0
+    if (
+      !form.value.cantidadDirectores ||
+      form.value.cantidadDirectores.trim() === "" ||
+      Number(form.value.cantidadDirectores) === 0
+    ) {
+      form.value.cantidadDirectores = "3";
+      directorioForm.cantidadDirectores = 3;
+    }
+
     // Asegurar que el presidenteId se sincronice antes del submit
     directorioForm.presidenteId = form.value.presidenteDirectorio || null;
     console.debug("[DirectorioManager] handleNext: antes de submit", {
+      formCantidadDirectores: form.value.cantidadDirectores,
+      directorioFormCantidadDirectores: directorioForm.cantidadDirectores,
       formPresidenteDirectorio: form.value.presidenteDirectorio,
       directorioFormPresidenteId: directorioForm.presidenteId,
     });
