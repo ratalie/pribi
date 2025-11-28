@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+export const tipoAccionSchema = z.string().nonempty("El tipo de acción es obligatorio");
+
 export const cantidadAccionesSchema = z
   .number()
   .min(1, "La cantidad de acciones debe ser mayor a 0");

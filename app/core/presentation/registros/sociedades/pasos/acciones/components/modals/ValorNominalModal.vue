@@ -11,6 +11,8 @@
   interface Props {
     modelValue?: boolean;
     valorNominal?: number;
+    switchTabs?: "opcion-a" | "opcion-b";
+    handleSaveValorNominal: (valor: number) => Promise<void>;
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -19,7 +21,7 @@
 
   const emits = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
-    (e: "update:valorNominal", value: number): void;
+    (e: "update:switchTabs", value: "opcion-a" | "opcion-b"): void;
     (e: "close"): void;
   }>();
 
@@ -27,9 +29,14 @@
     passive: true,
   });
 
+  const switchTabs = useVModel(props, "switchTabs", emits, {
+    passive: true,
+  });
+
   // Valor temporal local (no emite hasta guardar)
   const valorNominalTemporal = ref(0);
   const valorNominalInput = ref("");
+  const isLoading = ref(false);
 
   // Schema de validación con Zod
   const valorNominalSchema = z
@@ -110,9 +117,6 @@
   };
 
   const isValorIngresado = computed(() => valorValidado.value > 0);
-  const inputAnimationClasses = computed(() =>
-    isValorIngresado.value ? "" : "animate-pulse ring-2 ring-primary-200 rounded-lg"
-  );
 
   const handleCancel = () => {
     emits("close");
@@ -122,13 +126,19 @@
   };
 
   const handleSave = async () => {
-    setTouched(true);
+    try {
+      setTouched(true);
+      isLoading.value = true;
 
-    emits("update:valorNominal", valorNominalTemporal.value);
+      await props.handleSaveValorNominal(valorNominalTemporal.value);
 
-    modelValue.value = false;
-    valorNominalTemporal.value = 0;
-    valorNominalInput.value = "";
+      valorNominalTemporal.value = 0;
+      valorNominalInput.value = "";
+    } catch (error) {
+      console.error("Error al guardar el valor nominal:", error);
+    } finally {
+      isLoading.value = false;
+    }
   };
 
   const handleInvalidSubmit = () => {
@@ -148,6 +158,19 @@
     <div class="flex flex-col items-center justify-center gap-7">
       <img :src="Moneda" alt="moneda" class="w-44" />
 
+      <div class="w-full flex flex-col items-center justify-center font-primary">
+        <p class="t-h4 font-semibold text-gray-800">Tipo de Acciones</p>
+        <p class="t-h6 font-normal text-gray-500 mb-4">
+          Selecciona el tipo de acciones que deseas registrar
+        </p>
+
+        <SwitchTabsText
+          v-model="switchTabs"
+          opcion-a="Comunes y sin derecho a voto"
+          opcion-b="Clases de Acciones"
+        />
+      </div>
+
       <div class="flex flex-col items-center justify-center font-primary">
         <p class="t-h4 font-semibold text-gray-800">Valor nominal</p>
         <p class="t-h6 font-normal text-gray-500">Ingresa el valor nominal de las acciones.</p>
@@ -155,12 +178,7 @@
 
       <!-- Input numérico con formato decimal -->
       <div class="flex flex-col items-center justify-center gap-2">
-        <div
-          :class="[
-            'flex items-center justify-center gap-2 transition-all duration-300',
-            inputAnimationClasses,
-          ]"
-        >
+        <div class="flex items-center justify-center gap-2 transition-all duration-300">
           <span class="t-t1 font-secondary font-extrabold text-gray-900 shrink-0">S/</span>
 
           <input
@@ -194,6 +212,7 @@
           label="Guardar"
           class="w-96 h-11"
           :is-disabled="!isValorIngresado"
+          :is-loading="isLoading"
         />
       </div>
     </template>
