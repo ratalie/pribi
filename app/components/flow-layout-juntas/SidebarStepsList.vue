@@ -7,6 +7,7 @@
     isStepCurrent,
     normalizeStatus,
   } from "~/utils/juntas/sidebar.utils";
+  import CheckIconCircle from "./CheckIconCircle.vue";
   import SidebarStepItem from "./SidebarStepItem.vue";
   import SidebarSubStepCategory from "./SidebarSubStepCategory.vue";
 
@@ -36,60 +37,22 @@
 </script>
 
 <template>
-  <div class="flex flex-col bg-red-300">
+  <div class="flex flex-col">
     <div v-for="(step, index) in steps" :key="index" class="flex flex-col mb-4 relative">
       <!-- Contenedor principal con CheckIcon + Contenido -->
-      <div class="flex items-start gap-4 relative pb-2">
-        <!-- CheckIconJuntas (específico para juntas) - estructura original con línea -->
-        <div
-          class="group shrink-0 flex flex-col relative hover:bg-gray-50 w-full rounded-md pb-2"
-        >
+      <div class="flex items-start gap-4 relative">
+        <!-- CheckIcon Container (separado para fácil estilizado) -->
+        <div class="shrink-0 flex flex-col relative w-full">
           <!-- Contenedor con hover que incluye CheckIcon (círculo) + Contenido (ancho limitado) -->
           <div
-            class="flex items-start gap-4 rounded-md transition-colors pl-2 -mx-2 h-fit w-full relative z-0"
+            class="group flex items-start gap-4 rounded-md hover:bg-gray-50 transition-colors px-2 -mx-2 h-fit pb-2 w-full relative z-0"
           >
-            <!-- Círculo del CheckIcon -->
+            <!-- Círculo del CheckIcon (componente separado y estilizable) -->
             <div class="shrink-0">
-              <div class="flex flex-col justify-center items-center">
-                <!-- circulo vacio -->
-                <div
-                  v-if="normalizeStatus(step.status) === 'empty'"
-                  class="w-7 h-7 flex items-center justify-center border-2 border-gray-300 rounded-full"
-                />
-                <!-- circulo con punto -->
-                <div
-                  v-else-if="normalizeStatus(step.status) === 'current'"
-                  class="w-7 h-7 flex items-center justify-center border-2 border-primary-800 rounded-full"
-                >
-                  <span class="w-2.5 h-2.5 rounded-full bg-primary-800" />
-                </div>
-                <!-- icono check -->
-                <div
-                  v-else-if="normalizeStatus(step.status) === 'completed'"
-                  class="w-7 h-7 flex items-center justify-center border-2 bg-primary-800 border-primary-800 rounded-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                    role="img"
-                    class="text-white"
-                    width="20"
-                    height="20"
-                    preserveAspectRatio="xMidYMid meet"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fill="currentColor"
-                      fill-rule="evenodd"
-                      d="M16.707 5.293a1 1 0 0 1 0 1.414l-8 8a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 1.414-1.414L8 12.586l7.293-7.293a1 1 0 0 1 1.414 0"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </div>
-              </div>
+              <CheckIconCircle :status="normalizeStatus(step.status)" />
             </div>
-            <!-- Step Content -->
-            <div class="flex-1 w-full bg-blue-800">
+            <!-- Step Content (separado para fácil estilizado) -->
+            <div class="flex-1">
               <!-- Step Principal -->
               <SidebarStepItem
                 :step="step"
