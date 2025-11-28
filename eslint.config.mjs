@@ -6,6 +6,7 @@ export default withNuxt(
   {
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-extraneous-class": "off",
       "vue/html-self-closing": "off",
       "vue/require-default-prop": "off",
       "vue/attributes-order": "off",

@@ -14,6 +14,7 @@ export interface NavigationSection {
   id: string;
   title: string;
   translationKey: string;
+  icon?: string;
   items: NavItem[];
   roles?: string[];
 }

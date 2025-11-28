@@ -4,6 +4,7 @@
   import ProgressNavBar from "~/components/flow-layout/ProgressNavBar.vue";
 
   const { steps, currentStepIndex } = useProgressNavbarRoutes();
+  const flowLayoutStore = useFlowLayoutStore();
 </script>
 
 <template>
@@ -26,7 +27,12 @@
         <div
           class="h-[92px] border-t sticky bottom-0 bg-white z-10 shrink-0 flex items-center justify-end px-16"
         >
-          <ActionButton label="Siguiente" size="md" />
+          <ActionButton
+            label="Siguiente"
+            size="md"
+            :is-loading="flowLayoutStore.isLoading"
+            @click="flowLayoutStore.onClickNext"
+          />
         </div>
       </div>
     </div>

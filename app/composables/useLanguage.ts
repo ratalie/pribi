@@ -6,7 +6,7 @@ const translations = {
     "nav.registroSocietario": "Registro Societario",
     "nav.sociedades": "Sociedades",
     "nav.sucursales": "Sucursales",
-    "nav.operaciones": "Operaciones de Órgano de Control",
+    "nav.operaciones": "Operaciones",
     "nav.directorio": "Directorio",
     "nav.gerenciaGeneral": "Gerencia General",
     "nav.juntaAccionistas": "Junta de Accionistas",
@@ -54,8 +54,7 @@ const translations = {
     "config.secondaryFontDesc": "Fuente para código y elementos monospace",
     "config.fontPreview": "Vista Previa",
     "config.previewPrimary": "Texto de ejemplo con fuente principal",
-    "config.previewPrimaryDesc":
-      "Así se verá el texto general de la aplicación",
+    "config.previewPrimaryDesc": "Así se verá el texto general de la aplicación",
     "config.previewCode": "Hola mundo! 123",
     "config.currentPrimary": "Fuente principal actual",
     "config.currentSecondary": "Fuente de código actual",
@@ -92,18 +91,15 @@ const translations = {
     "config.gmail": "Gmail",
     "config.gmailDesc": "Integración con Gmail",
     "config.gmailIntegration": "Integración Gmail",
-    "config.gmailIntegrationDesc":
-      "Conecta tu cuenta de Gmail para sincronizar emails",
+    "config.gmailIntegrationDesc": "Conecta tu cuenta de Gmail para sincronizar emails",
     "config.connectGmail": "Conectar Gmail",
     "config.googleDrive": "Google Drive",
     "config.googleDriveDesc": "Integración con Google Drive",
     "config.googleDriveIntegration": "Integración Google Drive",
-    "config.googleDriveIntegrationDesc":
-      "Conecta Google Drive para almacenar documentos",
+    "config.googleDriveIntegrationDesc": "Conecta Google Drive para almacenar documentos",
     "config.connectGoogleDrive": "Conectar Google Drive",
     "dashboard.title": "Dashboard PROBO",
-    "dashboard.subtitle":
-      "Bienvenido a tu plataforma de gestión legal corporativa",
+    "dashboard.subtitle": "Bienvenido a tu plataforma de gestión legal corporativa",
     "dashboard.sociedadesRegistradas": "Sociedades Registradas",
     "dashboard.documentosGenerados": "Documentos Generados",
     "dashboard.usuariosActivos": "Usuarios Activos",
@@ -167,8 +163,7 @@ const translations = {
     "config.secondaryFontDesc": "Font for code and monospace elements",
     "config.fontPreview": "Preview",
     "config.previewPrimary": "Sample text with primary font",
-    "config.previewPrimaryDesc":
-      "This is how general application text will look",
+    "config.previewPrimaryDesc": "This is how general application text will look",
     "config.previewCode": "Hello world! 123",
     "config.currentPrimary": "Current primary font",
     "config.currentSecondary": "Current code font",
@@ -210,8 +205,7 @@ const translations = {
     "config.googleDrive": "Google Drive",
     "config.googleDriveDesc": "Google Drive integration",
     "config.googleDriveIntegration": "Google Drive Integration",
-    "config.googleDriveIntegrationDesc":
-      "Connect Google Drive to store documents",
+    "config.googleDriveIntegrationDesc": "Connect Google Drive to store documents",
     "config.connectGoogleDrive": "Connect Google Drive",
     "dashboard.title": "PROBO Dashboard",
     "dashboard.subtitle": "Welcome to your corporate legal management platform",
@@ -243,8 +237,7 @@ export const useLanguage = () => {
   const t = computed(() => {
     return (key: string): string => {
       const langTranslations =
-        translations[currentLanguage.value as keyof typeof translations] ||
-        translations.es;
+        translations[currentLanguage.value as keyof typeof translations] || translations.es;
       return langTranslations[key as keyof typeof langTranslations] || key;
     };
   });

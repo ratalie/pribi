@@ -48,7 +48,7 @@
   const normalize = (value: string) => value.trim().toLowerCase();
   const defaultClassesEnsuredFor = ref<string | null>(null);
   const GERENTE_PLACEHOLDER_ID = "__placeholder_gerente__";
-  const _OTROS_PLACEHOLDER_ID = "__placeholder_otros__";
+  // const OTROS_PLACEHOLDER_ID = "__placeholder_otros__"; // No usado actualmente
 
   const generateUuid = () => {
     if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
@@ -160,13 +160,13 @@
       }))
   );
 
+
   const _hasAnyClaseDisponible = computed(
     () => Boolean(gerenteClassId.value) || claseSelectOptions.value.length > 0
   );
 
   const isClaseModalOpen = ref(false);
   const editingClaseId = ref<string | null>(null);
-  const claseInitialValues = ref<ClaseApoderadoForm | null>(null);
 
   const isApoderadoModalOpen = ref(false);
   const editingApoderado = ref<Apoderado | null>(null);

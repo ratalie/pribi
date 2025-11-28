@@ -29,6 +29,10 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "",
       authEndpoint: process.env.NUXT_PUBLIC_AUTH_ENDPOINT || "",
       mswDisabled: process.env.MSW_DISABLED === "true",
+      // MSW: Deshabilitar MSW de roles y permisos
+      // true = No usar MSW para permisos (usar backend real o modo degradado)
+      // false = Usar MSW para permisos (desarrollo)
+      mswRolesPermisosDisabled: process.env.MSW_ROLES_PERMISOS_DISABLED === "true",
       defaultRedirectAfterLogin: "/registros/sociedades/dashboard",
       societyProfileEndpoint: process.env.NUXT_PUBLIC_SOCIETY_PROFILE_ENDPOINT || "",
       societyProfileListSuffix: process.env.NUXT_PUBLIC_SOCIETY_PROFILE_LIST_SUFFIX || "",
@@ -49,6 +53,7 @@ export default defineNuxtConfig({
     "shadcn-nuxt",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
+    "motion-v/nuxt",
   ],
 
   // CSS global - Tailwind 4
@@ -76,13 +81,7 @@ export default defineNuxtConfig({
       { code: "fr", name: "Français" },
     ],
 
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: "i18n_redirected",
-      redirectOn: "root",
-      alwaysRedirect: false,
-      fallbackLocale: "es",
-    },
+    detectBrowserLanguage: false, // Desactivar completamente la detección del idioma del navegador
   },
 
   shadcn: {

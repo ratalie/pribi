@@ -1,5 +1,6 @@
 import type { User } from "~/types/user";
 import { useAuthStore } from "~/core/presentation/auth/stores/auth.store";
+import { usePermissions } from "./usePermissions";
 
 // Mock user data - en producción vendría de una API
 const mockUser: User = {
@@ -21,19 +22,30 @@ const mockUser: User = {
 
 export const useUser = () => {
   const currentUser = ref<User>(mockUser);
+  const { canViewModule: canViewModulePermissions, isDegradedMode } = usePermissions();
 
   // Verificar si el usuario puede ver un módulo específico
   const canViewModule = (moduleId: string): boolean => {
+    // Si está en modo degradado, permite todo (NO BLOQUEA)
+    if (isDegradedMode.value) {
+      return true;
+    }
+
     if (!currentUser.value) return false;
 
     // Admin puede ver todo
     if (currentUser.value.role.id === "admin") return true;
 
-    // Verificar permisos específicos por módulo
-    return currentUser.value.role.permissions.some(
+    // Verificar permisos específicos por módulo (legacy)
+    const hasLegacyPermission = currentUser.value.role.permissions.some(
       (permission) =>
         permission.module === moduleId || permission.module === "*"
     );
+
+    // Verificar permisos nuevos (si están disponibles)
+    const hasNewPermission = canViewModulePermissions(moduleId);
+
+    return hasLegacyPermission || hasNewPermission;
   };
 
   // Verificar si el usuario tiene un rol específico
@@ -43,6 +55,10 @@ export const useUser = () => {
 
   // Verificar si es solo lectura
   const isReadOnly = computed(() => {
+    // Si está en modo degradado, no es solo lectura
+    if (isDegradedMode.value) {
+      return false;
+    }
     return currentUser.value?.role.id === "viewer";
   });
 

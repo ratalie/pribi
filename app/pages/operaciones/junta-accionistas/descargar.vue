@@ -25,6 +25,6 @@
   // Ruta: /operaciones/junta-accionistas/descargar
 
   definePageMeta({
-    layout: "dual-panel-layout",
+    layout: "default",
   });
 </script>
