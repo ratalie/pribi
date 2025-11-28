@@ -9,7 +9,7 @@ export interface PersonaNatural extends PersonaBase {
   tipo: PersonTypeEnum.NATURAL;
   nombre: string;
   apellidoPaterno: string;
-  apellidoMaterno?: string;
+  apellidoMaterno: string;
   tipoDocumento: DocumentTypeEnum;
   numeroDocumento: string;
   paisEmision?: string;

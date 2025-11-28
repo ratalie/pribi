@@ -1,26 +1,27 @@
 <script setup lang="ts">
-  import { computed, ref, toRef, watch } from "vue";
-
   import { useToast } from "@/components/ui/toast/use-toast";
   import type { Persona } from "@hexag/registros/sociedades/pasos/accionistas/domain";
   import type { ApoderadoDTO } from "@hexag/registros/sociedades/pasos/apoderados/application";
   import type { Apoderado } from "@hexag/registros/sociedades/pasos/apoderados/domain";
+  import { computed, ref, toRef } from "vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import { useApoderadosController } from "~/core/presentation/registros/sociedades/composables/useApoderadosController";
   import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import ApoderadosTable from "./components/ApoderadosTable.vue";
   import ClasesApoderadoTable from "./components/ClasesApoderadoTable.vue";
   import GerenteGeneralTable from "./components/GerenteGeneralTable.vue";
   import ClaseApoderadoModal from "./components/modals/ClaseApoderadoModal.vue";
   import GerenteGeneralModal from "./components/modals/GerenteGeneralModal.vue";
   import OtroApoderadoModal from "./components/modals/OtroApoderadoModal.vue";
   import RegistroApoderadoModal from "./components/modals/RegistroApoderadoModal.vue";
+  import { useApoderados } from "./composables/useApoderados";
   import { useClasesApoderado } from "./composables/useClasesApoderado";
   import { useGerenteGeneral } from "./composables/useGerenteGeneral";
-  import { ClasesApoderadoEspecialesEnum } from "./enums/ClasesApoderadoEspecialesEnum";
   import { useApoderadosStore } from "./stores/apoderados.store";
+  import { ClasesApoderadoEspecialesEnum } from "./types/enums/ClasesApoderadoEspecialesEnum";
 
   interface Props {
     societyId: string;
@@ -41,17 +42,8 @@
   const { withAsyncToast } = useToastFeedback();
   const { toast } = useToast();
 
-  const normalize = (value: string) => value.trim().toLowerCase();
-  const defaultClassesEnsuredFor = ref<string | null>(null);
+  const normalize = (value: string) => value;
   const GERENTE_PLACEHOLDER_ID = "__placeholder_gerente__";
-  // const OTROS_PLACEHOLDER_ID = "__placeholder_otros__"; // No usado actualmente
-
-  const generateUuid = () => {
-    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-      return crypto.randomUUID();
-    }
-    return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
-  };
 
   const isReadonly = computed(() => props.mode === EntityModeEnum.PREVISUALIZAR);
   const ensureSocietyId = () => {
@@ -78,7 +70,7 @@
     Boolean(classId && gerenteClassId.value && classId === gerenteClassId.value);
   const isGerenteApoderado = (apoderado: Apoderado) =>
     isGerenteClassId(apoderado.claseApoderadoId);
-  const gerentePlaceholderRow = computed<ApoderadoRow | null>(() => {
+  const gerentePlaceholderRow = computed<any | null>(() => {
     if (!gerenteClass.value || hasGerenteApoderado.value) return null;
     return {
       id: GERENTE_PLACEHOLDER_ID,
@@ -101,7 +93,7 @@
     Boolean(classId && otrosClassId.value && classId === otrosClassId.value);
   const isOtroApoderado = (apoderado: Apoderado) => isOtrosClassId(apoderado.claseApoderadoId);
 
-  const toApoderadoRow = (apoderado: Apoderado): ApoderadoRow => ({
+  const toApoderadoRow = (apoderado: Apoderado): any => ({
     id: apoderado.id,
     clase:
       store.clases.find((clase) => clase.id === apoderado.claseApoderadoId)?.nombre ?? "—",
@@ -110,7 +102,7 @@
   });
 
   // Tabla 1: Gerente General
-  const gerenteRows = computed<ApoderadoRow[]>(() => {
+  const gerenteRows = computed<any[]>(() => {
     const rows = store.apoderados.filter(isGerenteApoderado).map(toApoderadoRow);
     if (rows.length === 0 && gerentePlaceholderRow.value) {
       return [gerentePlaceholderRow.value];
@@ -118,159 +110,17 @@
     return rows;
   });
 
-  // Tabla 2: Apoderados (con clase, excluyendo Gerente General y Otros Apoderados)
-  const apoderadosRows = computed<ApoderadoRow[]>(() =>
-    store.apoderados
-      .filter(
-        (apoderado) =>
-          !isGerenteApoderado(apoderado) &&
-          !isOtroApoderado(apoderado) &&
-          apoderado.claseApoderadoId
-      )
-      .map(toApoderadoRow)
-  );
-
   // Tabla 3: Otros Apoderados (con clase especial "Otros Apoderados")
-  const otrosApoderadosRows = computed<ApoderadoRow[]>(() =>
+  const otrosApoderadosRows = computed<any[]>(() =>
     store.apoderados.filter(isOtroApoderado).map(toApoderadoRow)
   );
 
-  const claseSelectOptions = computed(() =>
-    store.clases
-      .filter((clase) => !isGerenteClassId(clase.id) && !isOtrosClassId(clase.id))
-      .map((clase) => ({
-        id: clase.id,
-        value: clase.id,
-        label: clase.nombre,
-      }))
-  );
-
-  const isApoderadoModalOpen = ref(false);
-  const editingApoderado = ref<Apoderado | null>(null);
   const isGerenteModalOpen = ref(false);
   const gerenteEditingApoderado = ref<Apoderado | null>(null);
   const isOtroApoderadoModalOpen = ref(false);
   const otroApoderadoEditingApoderado = ref<Apoderado | null>(null);
 
   const isSavingApoderado = computed(() => store.apoderadosStatus === "saving");
-
-  const openCreateApoderadoModal = () => {
-    if (claseSelectOptions.value.length === 0) {
-      toast({
-        variant: "destructive",
-        title: "Agrega una clase de apoderado",
-        description:
-          "Debes crear al menos una clase (además de Gerente General) para registrar apoderados.",
-      });
-      return;
-    }
-
-    editingApoderado.value = null;
-    isApoderadoModalOpen.value = true;
-  };
-
-  const handleEditarApoderado = (apoderadoId: string) => {
-    if (apoderadoId === GERENTE_PLACEHOLDER_ID) {
-      openGerenteModal();
-      return;
-    }
-
-    const apoderado = store.apoderados.find((item) => item.id === apoderadoId);
-    if (!apoderado) return;
-
-    if (isGerenteApoderado(apoderado)) {
-      openGerenteModal(apoderado);
-      return;
-    }
-
-    editingApoderado.value = apoderado;
-    isApoderadoModalOpen.value = true;
-  };
-
-  const handleEliminarApoderado = async (apoderadoId: string) => {
-    if (apoderadoId === GERENTE_PLACEHOLDER_ID) {
-      openGerenteModal();
-      return;
-    }
-
-    const target = store.apoderados.find((item) => item.id === apoderadoId);
-    if (!target) return;
-    const confirmed = window.confirm("¿Deseas eliminar este apoderado?");
-    if (!confirmed) return;
-    const profileId = ensureSocietyId();
-    await withAsyncToast(
-      () => store.deleteApoderado(profileId, target.claseApoderadoId, apoderadoId),
-      {
-        loading: { title: "Eliminando apoderado…" },
-        success: { title: "Apoderado eliminado" },
-        error: () => ({
-          title: "No se pudo eliminar al apoderado",
-          description: "Intenta nuevamente.",
-        }),
-      }
-    );
-  };
-
-  const handleSubmitApoderado = async (payload: ApoderadoDTO) => {
-    const profileId = ensureSocietyId();
-    const isEditing = !!editingApoderado.value;
-
-    // Si es edición, asegurar que se usen los IDs correctos
-    if (isEditing && editingApoderado.value) {
-      payload.id = editingApoderado.value.id;
-      // Verificar que la clase seleccionada existe
-      const claseExists = claseSelectOptions.value.some(
-        (opt) => opt.id === payload.claseApoderadoId
-      );
-      if (!claseExists) {
-        toast({
-          variant: "destructive",
-          title: "Clase inválida",
-          description: "La clase seleccionada no es válida.",
-        });
-        console.error("[ApoderadosManager] Clase no encontrada:", {
-          selectedClaseId: payload.claseApoderadoId,
-          availableOptions: claseSelectOptions.value,
-        });
-        return;
-      }
-      // Preservar el ID de la persona si existe
-      if (editingApoderado.value.persona?.id) {
-        payload.persona.id = editingApoderado.value.persona.id;
-      }
-    }
-
-    console.log("[ApoderadosManager] handleSubmitApoderado", {
-      isEditing,
-      editingApoderadoId: editingApoderado.value?.id,
-      payload,
-      claseId: payload.claseApoderadoId,
-      claseOptions: claseSelectOptions.value,
-    });
-
-    await withAsyncToast(
-      () =>
-        isEditing
-          ? store.updateApoderado(profileId, payload)
-          : store.createApoderado(profileId, payload),
-      {
-        loading: { title: isEditing ? "Actualizando apoderado…" : "Guardando apoderado…" },
-        success: { title: isEditing ? "Apoderado actualizado" : "Apoderado registrado" },
-        error: () => ({
-          title: isEditing
-            ? "No se pudo actualizar el apoderado"
-            : "No se pudo guardar el apoderado",
-        }),
-      }
-    );
-
-    closeApoderadoModal();
-  };
-
-  const closeApoderadoModal = () => {
-    isApoderadoModalOpen.value = false;
-    editingApoderado.value = null;
-  };
 
   const openGerenteModal = (apoderado: Apoderado | null = null) => {
     if (!gerenteClassId.value) {
@@ -371,58 +221,6 @@
         return "—";
     }
   };
-
-  const ensureDefaultClasses = async () => {
-    const profileId = societyId.value;
-    if (!profileId) return;
-    if (defaultClassesEnsuredFor.value === profileId) return;
-    if (store.clasesStatus !== "idle") return;
-
-    const gerenteExists = store.clases.some(
-      (clase) =>
-        normalize(clase.nombre) === normalize(ClasesApoderadoEspecialesEnum.GERENTE_GENERAL)
-    );
-    const otrosExists = store.clases.some(
-      (clase) =>
-        normalize(clase.nombre) === normalize(ClasesApoderadoEspecialesEnum.OTROS_APODERADOS)
-    );
-
-    try {
-      // Crear Gerente General si no existe
-      if (!gerenteExists) {
-        await store.createClase(profileId, {
-          id: generateUuid(),
-          nombre: ClasesApoderadoEspecialesEnum.GERENTE_GENERAL,
-        });
-      }
-
-      // Crear Otros Apoderados si no existe
-      if (!otrosExists) {
-        await store.createClase(profileId, {
-          id: generateUuid(),
-          nombre: ClasesApoderadoEspecialesEnum.OTROS_APODERADOS,
-        });
-      }
-
-      defaultClassesEnsuredFor.value = profileId;
-    } catch (error) {
-      console.error("[ApoderadosManager] ensureDefaultClasses error", error);
-    }
-  };
-
-  watch(
-    () => ({
-      status: store.clasesStatus,
-      society: societyId.value,
-      length: store.clases.length,
-    }),
-    ({ status }) => {
-      if (status === "idle") {
-        ensureDefaultClasses();
-      }
-    },
-    { immediate: true }
-  );
 
   const openOtroApoderadoModal = () => {
     if (!otrosClassId.value) {
@@ -526,9 +324,23 @@
 
   const { gerenteActions } = useGerenteGeneral();
 
-  onMounted(() => {
+  const {
+    selectedClaseId,
+    isOpenModalApoderado,
+    isLoadingApoderado,
+    modeModalApoderado,
+    apoderadoActions,
+    openModalApoderado,
+    closeModalApoderado,
+    handleSubmitApoderado,
+  } = useApoderados(props.societyId ?? "");
+
+  onMounted(async () => {
     if (props.societyId) {
-      clasesYApoderadoStore.loadClases(props.societyId);
+      await Promise.all([
+        clasesYApoderadoStore.loadClases(props.societyId),
+        clasesYApoderadoStore.loadApoderados(props.societyId),
+      ]);
     }
   });
 </script>
@@ -590,17 +402,15 @@
             label="Agregar apoderado"
             size="md"
             icon="Plus"
-            :disabled="claseSelectOptions.length === 0"
-            @click="openCreateApoderadoModal"
+            :disabled="clasesYApoderadoStore.datosTablaClases.length === 0"
+            @click="openModalApoderado"
           />
         </template>
       </CardTitle>
+
       <ApoderadosTable
-        :items="apoderadosRows"
-        :is-loading="isControllerLoading"
-        :readonly="isReadonly"
-        @edit="handleEditarApoderado"
-        @remove="handleEliminarApoderado"
+        :items="clasesYApoderadoStore.datosTablaApoderados"
+        :actions="apoderadoActions"
       />
     </SimpleCard>
 
@@ -618,6 +428,7 @@
           />
         </template>
       </CardTitle>
+
       <ApoderadosTable
         :items="otrosApoderadosRows"
         :is-loading="isControllerLoading"
@@ -636,15 +447,6 @@
       @submit="handleSubmitClase"
     />
 
-    <RegistroApoderadoModal
-      v-model="isApoderadoModalOpen"
-      :mode="editingApoderado ? 'edit' : 'create'"
-      :is-saving="isSavingApoderado"
-      :initial-apoderado="editingApoderado"
-      :clase-options="claseSelectOptions"
-      @submit="handleSubmitApoderado"
-    />
-
     <GerenteGeneralModal
       v-if="gerenteClassId"
       v-model="isGerenteModalOpen"
@@ -654,6 +456,16 @@
       :initial-apoderado="gerenteEditingApoderado"
       @close="closeGerenteModal"
       @submit="handleGerenteModalSubmit"
+    />
+
+    <RegistroApoderadoModal
+      v-model="isOpenModalApoderado"
+      v-model:clase-apoderado-id="selectedClaseId"
+      :mode="modeModalApoderado"
+      :is-saving="isLoadingApoderado"
+      :clase-options="clasesYApoderadoStore.datosClasesOpciones"
+      @close="closeModalApoderado"
+      @submit="handleSubmitApoderado"
     />
 
     <OtroApoderadoModal

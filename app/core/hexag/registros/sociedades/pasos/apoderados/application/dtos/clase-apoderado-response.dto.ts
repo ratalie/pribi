@@ -1,4 +1,4 @@
-import type { ApoderadoDTO } from ".";
+import type { ApoderadoDTO } from "./apoderado.dto";
 
 export interface ClaseApoderadoResponseDTO {
   id: string;

@@ -8,7 +8,7 @@
     TableRow,
   } from "@/components/ui/table";
 
-  import type { ClaseApoderadoRow } from "../types";
+  import type { ClaseApoderadoRow } from "../types/types";
 
   interface Props {
     items: ClaseApoderadoRow[];

@@ -7,10 +7,10 @@
     TableHeader,
     TableRow,
   } from "@/components/ui/table";
-  import type { GerenteGeneralRow } from "../types/types";
+  import type { ApoderadoRow } from "../types/types";
 
   interface Props {
-    items: GerenteGeneralRow[];
+    items: ApoderadoRow[];
     titleMenu?: string;
     actions: {
       label: string;
@@ -20,7 +20,7 @@
     }[];
   }
 
-  withDefaults(defineProps<Props>(), {
+  const props = withDefaults(defineProps<Props>(), {
     titleMenu: undefined,
   });
 </script>
@@ -30,6 +30,11 @@
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead
+            class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
+          >
+            Clase de Apoderado
+          </TableHead>
           <TableHead
             class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
           >
@@ -54,6 +59,11 @@
             <TableCell
               class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
             >
+              {{ item.claseApoderadoNombre }}
+            </TableCell>
+            <TableCell
+              class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
+            >
               {{ item.nombre }}
             </TableCell>
             <TableCell
@@ -66,20 +76,20 @@
             >
               {{ item.numeroDocumento }}
             </TableCell>
-
             <!-- Celda de acciones -->
-            <TableCell v-if="actions" class="w-auto">
+            <TableCell v-if="props.actions" class="w-auto">
               <DataTableDropDown
                 :item-id="item.id"
-                :title-menu="titleMenu"
-                :actions="actions"
+                :title-menu="props.titleMenu"
+                :actions="props.actions"
               />
             </TableCell>
           </TableRow>
         </template>
+
         <template v-else>
           <TableRow>
-            <TableCell :colspan="3 + (actions ? 1 : 0)" class="h-24">
+            <TableCell :colspan="3 + (props.actions ? 1 : 0)" class="h-24">
               <EmptyTableMessage />
             </TableCell>
           </TableRow>
