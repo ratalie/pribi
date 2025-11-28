@@ -1,8 +1,7 @@
 <script setup lang="ts">
-  import { Button } from "@/components/ui/button";
   import { Form } from "vee-validate";
   import { computed, onMounted, ref, watch } from "vue";
-  import { useRoute, useRouter } from "vue-router";
+  import { useRoute } from "vue-router";
   import noDirectorioImage from "~/assets/img/no-directorio.jpeg";
   import VDropdownComponent from "~/components/VDropdownComponent.vue";
   import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
@@ -17,6 +16,7 @@
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import Checkbox from "~/components/ui/checkbox/Checkbox.vue";
   import Switch from "~/components/ui/switch/Switch.vue";
+  import { useFlowLayoutNext } from "~/composables/useFlowLayoutNext";
   import type { DirectorConfig } from "~/core/hexag/registros/sociedades/pasos/directorio/domain/entities/director.entity";
   import { TipoDirector } from "~/core/hexag/registros/sociedades/pasos/directorio/domain/enums/director-tipo.enum";
   import AgregarDirectorModal from "~/core/presentation/registros/sociedades/pasos/directorio/components/AgregarDirectorModal.vue";
@@ -48,7 +48,7 @@
   });
 
   const route = useRoute();
-  const router = useRouter();
+  // const router = useRouter(); // Ya no es necesario, la navegación la maneja useFlowLayoutNext
   const { withAsyncToast } = useToastFeedback();
 
   const societyId = computed(
@@ -107,9 +107,6 @@
     form: directorioForm,
     load: loadDirectorio,
     submit: submitDirectorio,
-    reset: resetDirectorio,
-    isLoading: isLoadingDirectorio,
-    isSaving: isSavingDirectorio,
     isReadonly: isReadonlyDirectorio,
     errorMessage: directorioErrorMessage,
   } = useDirectorioForm({
@@ -663,20 +660,17 @@
     console.log("Errores en el formulario:", ctx.errors);
   };
 
-  const handleReset = () => {
-    if (isSavingDirectorio.value) return;
-    resetDirectorio();
-  };
 
-  const nextRoute = computed(() => {
-    const segments = route.path.split("/");
-    segments[segments.length - 1] = "quorums-mayorias";
-    return segments.join("/");
-  });
+  // El nextRoute ya no es necesario porque useFlowLayoutNext maneja la navegación automáticamente
+  // const nextRoute = computed(() => {
+  //   const segments = route.path.split("/");
+  //   segments[segments.length - 1] = "quorums-mayorias";
+  //   return segments.join("/");
+  // });
 
   const handleNext = async () => {
     if (isReadonlyDirectorio.value) {
-      await router.push(nextRoute.value);
+      // Si es readonly, solo navegar (sin guardar)
       return;
     }
 
@@ -704,11 +698,12 @@
             : "Revisa los valores e inténtalo nuevamente.",
       }),
     });
-
-    await router.push(nextRoute.value);
+    // Nota: La navegación al siguiente paso la maneja automáticamente useFlowLayoutNext
   };
 
-  const disableNext = computed(() => isSavingDirectorio.value || isLoadingDirectorio.value);
+  // Registrar la función handleNext en el store del layout
+  // Esto conecta el botón "Siguiente" del layout con nuestra función handleNext
+  useFlowLayoutNext(handleNext);
 </script>
 
 <template>
@@ -1014,7 +1009,7 @@
         <p v-if="directorioErrorMessage" class="text-sm text-red-600">
           {{ directorioErrorMessage }}
         </p>
-        <div class="flex justify-end gap-3">
+        <!-- <div class="flex justify-end gap-3">
           <Button
             variant="ghost"
             type="button"
@@ -1023,10 +1018,9 @@
           >
             Restablecer
           </Button>
-          <Button type="button" :disabled="disableNext" @click="handleNext">
-            {{ isReadonlyDirectorio ? "Ir al siguiente paso" : "Siguiente" }}
-          </Button>
-        </div>
+           Botón "Siguiente" ahora está en el layout (flow-layout.vue) -->
+          <!-- Se maneja automáticamente mediante useFlowLayoutNext -->
+        <!-- </div> --> 
       </div>
 
       <AgregarDirectorModal

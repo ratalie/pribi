@@ -160,13 +160,13 @@
       }))
   );
 
-
   const _hasAnyClaseDisponible = computed(
     () => Boolean(gerenteClassId.value) || claseSelectOptions.value.length > 0
   );
 
   const isClaseModalOpen = ref(false);
   const editingClaseId = ref<string | null>(null);
+  const claseInitialValues = ref<ClaseApoderadoForm | null>(null);
 
   const isApoderadoModalOpen = ref(false);
   const editingApoderado = ref<Apoderado | null>(null);
