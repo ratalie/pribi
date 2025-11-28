@@ -1,9 +1,9 @@
 <script setup lang="ts">
-  import { Button } from "@/components/ui/button";
   import { computed, onMounted, watch } from "vue";
-  import { useRoute, useRouter } from "vue-router";
+  import { useRoute } from "vue-router";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
+  import { useFlowLayoutNext } from "~/composables/useFlowLayoutNext";
   import {
     useQuorumForm,
     type QuorumNumericField,
@@ -27,7 +27,7 @@
   const headersQuorum2 = ["Tipo de Quórum", "Reglas"];
 
   const route = useRoute();
-  const router = useRouter();
+  // const router = useRouter(); // Ya no es necesario, la navegación la maneja useFlowLayoutNext
   const { withAsyncToast } = useToastFeedback();
 
   const societyId = computed(
@@ -38,10 +38,8 @@
     form,
     load,
     submit,
-    reset,
     setValue,
     isLoading,
-    isSaving,
     isReadonly,
     errorMessage,
     relationshipErrors,
@@ -58,24 +56,20 @@
     return value.toFixed(2);
   }
 
-  const nextRoute = computed(() => {
-    const segments = route.path.split("/");
-    segments[segments.length - 1] = "acuerdos-societarios";
-    return segments.join("/");
-  });
+  // El nextRoute ya no es necesario porque useFlowLayoutNext maneja la navegación automáticamente
+  // const nextRoute = computed(() => {
+  //   const segments = route.path.split("/");
+  //   segments[segments.length - 1] = "acuerdos-societarios";
+  //   return segments.join("/");
+  // });
 
   const handlePercentUpdate = (field: QuorumNumericField) => (value: number) => {
     setValue(field, value);
   };
 
-  const handleReset = () => {
-    if (isSaving.value) return;
-    reset();
-  };
-
   const handleNext = async () => {
     if (isReadonly.value) {
-      await router.push(nextRoute.value);
+      // Si es readonly, solo navegar (sin guardar)
       return;
     }
 
@@ -96,9 +90,12 @@
             : "Revisa los valores e inténtalo nuevamente.",
       }),
     });
-
-    await router.push(nextRoute.value);
+    // Nota: La navegación al siguiente paso la maneja automáticamente useFlowLayoutNext
   };
+
+  // Registrar la función handleNext en el store del layout
+  // Esto conecta el botón "Siguiente" del layout con nuestra función handleNext
+  useFlowLayoutNext(handleNext);
 
   watch(
     societyId,
@@ -116,9 +113,7 @@
   });
 
   const isPreview = computed(() => isReadonly.value);
-  const disableNext = computed(
-    () => isSaving.value || (!isReadonly.value && hasValidationErrors.value)
-  );
+  // disableNext ya no es necesario porque el botón está en el layout
 </script>
 
 <template>
@@ -235,14 +230,8 @@
         <p v-if="hasValidationErrors && !isReadonly" class="text-sm text-red-600">
           Ajusta los porcentajes para que cada convocatoria sea mayor o igual al quórum mínimo.
         </p>
-        <div class="flex justify-end gap-3">
-          <Button variant="ghost" type="button" :disabled="isSaving" @click="handleReset">
-            Restablecer
-          </Button>
-          <Button type="button" :disabled="disableNext" @click="handleNext">
-            {{ isReadonly ? "Ir al siguiente paso" : "Siguiente" }}
-          </Button>
-        </div>
+        <!-- Botones "Restablecer" y "Siguiente" ahora están en el layout (flow-layout.vue) -->
+        <!-- Se maneja automáticamente mediante useFlowLayoutNext -->
       </div>
     </template>
   </div>
