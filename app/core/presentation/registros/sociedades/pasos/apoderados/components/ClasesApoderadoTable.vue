@@ -12,7 +12,7 @@
   import type { ClaseApoderadoRow } from "../types";
 
   interface Props {
-    items: ClaseApoderadoRow[];
+    items?: ClaseApoderadoRow[];
     isLoading?: boolean;
     readonly?: boolean;
   }

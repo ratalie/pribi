@@ -1,8 +1,5 @@
 import { defineStore } from "pinia";
 
-type NombraPresidenteOption = "directorio" | "asamblea_accionistas";
-type SecretariaOption = "gerente_general" | "junta_accionistas";
-
 interface LimitesDirectorio {
   minimo: number;
   maximo: number;
@@ -10,21 +7,23 @@ interface LimitesDirectorio {
 
 interface ConfiguracionDirectorio {
   cantidadDirectores: number;
-  cantidadPersonalizado: boolean;
-  duracionDirectorio: string;
-  fechaInicioDirectorio: string;
-  fechaFinDirectorio: string;
+  conteoPersonalizado: boolean; // Backend: conteoPersonalizado
+  minimoDirectores: number | null; // Backend: minimoDirectores
+  maximoDirectores: number | null; // Backend: maximoDirectores
+  inicioMandato: string; // Backend: inicioMandato (antes fechaInicioDirectorio)
+  finMandato: string; // Backend: finMandato (antes fechaFinDirectorio)
   quorumMinimo: number;
-  quorumMayoria: number;
-  nombraPresidente: NombraPresidenteOption;
-  ejerceSecretaria: SecretariaOption;
-  reeleccionDirectores: boolean;
+  mayoria: number; // Backend: mayoria (antes quorumMayoria)
+  presidenteDesignado: boolean; // Backend: presidenteDesignado (derivado de nombraPresidente)
+  secretarioAsignado: boolean; // Backend: secretarioAsignado (derivado de ejerceSecretaria)
+  reeleccionPermitida: boolean; // Backend: reeleccionPermitida (antes reeleccionDirectores)
+  periodo: string; // Backend: periodo (antes duracionDirectorio)
 }
 
 interface PresidenteDirectorioConfig {
-  presideJuntas: boolean;
-  votoDirimente: boolean;
-  presidenteDirectorio: string;
+  presidentePreside: boolean; // Backend: presidentePreside (antes presideJuntas)
+  presidenteDesempata: boolean; // Backend: presidenteDesempata (antes votoDirimente)
+  presidenteId: string; // Backend: presidenteId (antes presidenteDirectorio)
 }
 
 interface State {
@@ -36,21 +35,23 @@ interface State {
 
 const defaultConfiguracion = (): ConfiguracionDirectorio => ({
   cantidadDirectores: 3,
-  cantidadPersonalizado: false,
-  duracionDirectorio: "",
-  fechaInicioDirectorio: "",
-  fechaFinDirectorio: "",
+  conteoPersonalizado: false,
+  minimoDirectores: null,
+  maximoDirectores: null,
+  inicioMandato: "",
+  finMandato: "",
   quorumMinimo: 0,
-  quorumMayoria: 0,
-  nombraPresidente: "directorio",
-  ejerceSecretaria: "gerente_general",
-  reeleccionDirectores: false,
+  mayoria: 0,
+  presidenteDesignado: true, // true = directorio, false = asamblea_accionistas
+  secretarioAsignado: true, // true = gerente_general, false = junta_accionistas
+  reeleccionPermitida: false,
+  periodo: "",
 });
 
 const defaultPresidente = (): PresidenteDirectorioConfig => ({
-  presideJuntas: false,
-  votoDirimente: false,
-  presidenteDirectorio: "",
+  presidentePreside: false,
+  presidenteDesempata: false,
+  presidenteId: "",
 });
 
 export const useDirectorioStore = defineStore("directorio", {
@@ -81,13 +82,13 @@ export const useDirectorioStore = defineStore("directorio", {
         typeof partial.cantidadDirectores === "number" &&
         partial.cantidadDirectores !== this.limites.minimo
       ) {
-        this.configuracion.cantidadPersonalizado = true;
+        this.configuracion.conteoPersonalizado = true;
       }
       if (
         typeof partial.cantidadDirectores === "number" &&
         partial.cantidadDirectores === this.limites.minimo
       ) {
-        this.configuracion.cantidadPersonalizado = false;
+        this.configuracion.conteoPersonalizado = false;
       }
     },
 
