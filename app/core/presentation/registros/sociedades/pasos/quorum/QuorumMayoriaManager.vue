@@ -10,7 +10,6 @@
   } from "~/core/presentation/registros/sociedades/pasos/quorum/components/forms/useQuorumForm";
   import QuorumRowTable from "~/core/presentation/registros/sociedades/pasos/quorum/components/table/QuorumRow.vue";
   import QuorumTable from "~/core/presentation/registros/sociedades/pasos/quorum/components/table/QuorumTable.vue";
-  import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   interface Props {
@@ -27,8 +26,6 @@
   const headersQuorum2 = ["Tipo de Quórum", "Reglas"];
 
   const route = useRoute();
-  // const router = useRouter(); // Ya no es necesario, la navegación la maneja useFlowLayoutNext
-  const { withAsyncToast } = useToastFeedback();
 
   const societyId = computed(
     () => props.societyId || (route.params.id as string | undefined) || ""
@@ -73,23 +70,7 @@
       return;
     }
 
-    await withAsyncToast(() => submit(), {
-      loading: {
-        title: "Guardando quórum…",
-        description: "Estamos registrando la configuración en el sistema.",
-      },
-      success: () => ({
-        title: "Quórum guardado",
-        description: "La configuración se registró correctamente.",
-      }),
-      error: (error) => ({
-        title: "No pudimos guardar",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Revisa los valores e inténtalo nuevamente.",
-      }),
-    });
+    await submit();
     // Nota: La navegación al siguiente paso la maneja automáticamente useFlowLayoutNext
   };
 

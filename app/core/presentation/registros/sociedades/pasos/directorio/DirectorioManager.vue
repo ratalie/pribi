@@ -32,7 +32,6 @@
     useDirectoresComputed,
     type DirectorTableRow,
   } from "~/core/presentation/registros/sociedades/pasos/directorio/utils/useDirectoresComputed";
-  import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
   import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
   import type { TypeOption } from "~/types/TypeOptions";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
@@ -49,7 +48,6 @@
 
   const route = useRoute();
   // const router = useRouter(); // Ya no es necesario, la navegación la maneja useFlowLayoutNext
-  const { withAsyncToast } = useToastFeedback();
 
   const societyId = computed(
     () => props.societyId || (route.params.id as string | undefined) || ""
@@ -549,23 +547,7 @@
 
   const handleDeleteDirector = async (directorId: string) => {
     try {
-      await withAsyncToast(() => deleteDirector(directorId), {
-        loading: {
-          title: "Eliminando director…",
-          description: "Estamos eliminando el director del sistema.",
-        },
-        success: () => ({
-          title: "Director eliminado",
-          description: "El director se eliminó correctamente.",
-        }),
-        error: (error) => ({
-          title: "No pudimos eliminar",
-          description:
-            error instanceof Error
-              ? error.message
-              : "Ocurrió un error al intentar eliminar el director.",
-        }),
-      });
+      await deleteDirector(directorId);
 
       // Si el director eliminado era el presidente, limpiar la referencia
       if (directorioForm.presidenteId === directorId) {
@@ -660,7 +642,6 @@
     console.log("Errores en el formulario:", ctx.errors);
   };
 
-
   // El nextRoute ya no es necesario porque useFlowLayoutNext maneja la navegación automáticamente
   // const nextRoute = computed(() => {
   //   const segments = route.path.split("/");
@@ -681,23 +662,7 @@
       directorioFormPresidenteId: directorioForm.presidenteId,
     });
 
-    await withAsyncToast(() => submitDirectorio(), {
-      loading: {
-        title: "Guardando directorio…",
-        description: "Estamos registrando la configuración en el sistema.",
-      },
-      success: () => ({
-        title: "Directorio guardado",
-        description: "La configuración se registró correctamente.",
-      }),
-      error: (error) => ({
-        title: "No pudimos guardar",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Revisa los valores e inténtalo nuevamente.",
-      }),
-    });
+    await submitDirectorio();
     // Nota: La navegación al siguiente paso la maneja automáticamente useFlowLayoutNext
   };
 
@@ -1019,8 +984,8 @@
             Restablecer
           </Button>
            Botón "Siguiente" ahora está en el layout (flow-layout.vue) -->
-          <!-- Se maneja automáticamente mediante useFlowLayoutNext -->
-        <!-- </div> --> 
+        <!-- Se maneja automáticamente mediante useFlowLayoutNext -->
+        <!-- </div> -->
       </div>
 
       <AgregarDirectorModal
