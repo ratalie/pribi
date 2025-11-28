@@ -19,7 +19,7 @@
     <!-- Contenido del resumen -->
     <div class="flex flex-col gap-6">
       <!-- Sección: Aportantes -->
-      <section class="flex flex-col gap-4">
+      <section id="resumen-aportantes" class="flex flex-col gap-4 scroll-mt-4">
         <h5 class="text-lg font-semibold font-primary text-gray-900">Aportantes</h5>
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
           <p class="text-sm text-gray-600">
@@ -35,7 +35,7 @@
       </section>
 
       <!-- Sección: Aportes -->
-      <section class="flex flex-col gap-4">
+      <section id="resumen-aportes" class="flex flex-col gap-4 scroll-mt-4">
         <h5 class="text-lg font-semibold font-primary text-gray-900">Aportes Dinerarios</h5>
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
           <p class="text-sm text-gray-600">
@@ -51,7 +51,7 @@
       </section>
 
       <!-- Sección: Votación -->
-      <section class="flex flex-col gap-4">
+      <section id="resumen-votacion" class="flex flex-col gap-4 scroll-mt-4">
         <h5 class="text-lg font-semibold font-primary text-gray-900">Votación</h5>
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
           <p class="text-sm text-gray-600">

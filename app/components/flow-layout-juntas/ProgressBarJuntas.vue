@@ -16,10 +16,10 @@
     <!-- Barra de progreso -->
     <div
       class="h-2 rounded-full overflow-hidden transition-all duration-300"
-      style="background-color: var(--gray-200, #e5e7eb)"
+      style="background-color: var(--primary-100, #e5e7eb)"
     >
       <div
-        class="h-full transition-all duration-300"
+        class="h-full transition-all duration-300 rounded-full"
         :style="{
           width: `${progressPercentage}%`,
           backgroundColor: 'var(--primary-800, #3C28A4)',

@@ -6,21 +6,28 @@
     />
 
     <div class="flex flex-col gap-12">
-      <section
-        v-for="section in baseSections"
-        :id="section.id"
-        :key="section.id"
-        class="flex flex-col gap-5"
-      >
-        <TitleH4
-          :title="section.title"
-          :subtitle="section.subtitle"
-          :variant="Titles.WITH_SUBTITLE_SPACING"
+      <!-- Sección: Detalles de la Junta -->
+      <!-- Importa el componente de resumen existente -->
+      <section id="detalles" class="flex flex-col gap-5 scroll-mt-4">
+        <SummarySectionRenderer
+          section-id="detalles"
+          title-override="Detalles de la Junta"
+          description="Consolidado de las decisiones registradas sobre tipo, modalidad y convocatoria de la junta."
         />
-        <BlankContainer />
       </section>
 
-      <section id="puntos-acuerdo" class="flex flex-col gap-6">
+      <!-- Sección: Instalación -->
+      <!-- Importa el componente de resumen existente -->
+      <section id="instalacion" class="flex flex-col gap-5 scroll-mt-4">
+        <SummarySectionRenderer
+          section-id="instalacion"
+          title-override="Instalación de la Junta"
+          description="Acta de instalación, verificación de quórum y designación de la mesa directiva reunidos en un solo lugar."
+        />
+      </section>
+
+      <!-- Sección: Puntos de Acuerdo -->
+      <section id="puntos-acuerdo" class="flex flex-col gap-6 scroll-mt-4">
         <TitleH4
           title="Puntos de Acuerdo"
           subtitle="Síntesis de cada punto tratado y su estado actual dentro de la junta."
@@ -30,26 +37,22 @@
           <div
             v-for="agreement in acuerdosResumen"
             :key="agreement.id"
-            class="flex flex-col gap-5"
+            :id="agreement.id"
+            class="flex flex-col gap-5 scroll-mt-4"
           >
-            <!-- Si es "aporte-dinerario", usar el componente reutilizable -->
-            <ResumenAporteDinerario
-              v-if="
-                agreement.id === 'aporte-dinerarios' ||
-                agreement.id === 'aporte-dinerario' ||
-                agreement.title?.toLowerCase().includes('aporte dinerario')
-              "
-              context="resumen-general"
+            <!-- Buscar si existe un componente de resumen específico para este acuerdo -->
+            <component
+              :is="acuerdoResumenComponents[agreement.id]"
+              v-if="acuerdoResumenComponents[agreement.id]"
+              :context="'resumen-general'"
             />
-            <!-- Para otros acuerdos, mostrar el formato estándar -->
-            <template v-else>
-              <TitleH4
-                :title="agreement.title"
-                :subtitle="agreement.subtitle"
-                :variant="Titles.WITH_SUBTITLE_SPACING"
-              />
-              <BlankContainer />
-            </template>
+            <!-- Si no hay componente específico, usar SummarySectionRenderer genérico -->
+            <SummarySectionRenderer
+              v-else
+              :section-id="agreement.id"
+              :title-override="agreement.title"
+              :description="agreement.subtitle"
+            />
           </div>
         </div>
       </section>
@@ -59,39 +62,62 @@
 
 <script setup lang="ts">
   import { computed } from "vue";
+  import SummarySectionRenderer from "~/components/juntas/SummarySectionRenderer.vue";
   import ResumenAporteDinerario from "~/components/juntas/ResumenAporteDinerario.vue";
   import { usePuntosAcuerdoSummary } from "~/modules/junta-accionistas/summaries/puntos-acuerdo";
+  import { useJuntasFlowStore } from "~/stores/useJuntasFlowStore";
+  import { mapStoreIdToSectionId } from "~/composables/useJuntasResumenSections";
   import Titles from "~/types/enums/Titles.enum";
 
-  const baseSections = [
-    {
-      id: "general",
-      title: "Resumen General",
-      subtitle: "Visión global del proceso: participación, acuerdos y pendientes críticos.",
-    },
-    {
-      id: "votaciones",
-      title: "Votaciones",
-      subtitle: "Seguimiento de cada votación realizada y su resultado consolidado.",
-    },
-    {
-      id: "documentos",
-      title: "Documentos",
-      subtitle: "Repositorio de actas, certificados y documentos generados en la junta.",
-    },
-  ];
+  /**
+   * Mapeo de acuerdos a sus componentes de resumen
+   * Cada acuerdo puede tener su propio componente de resumen reutilizable
+   */
+  const acuerdoResumenComponents: Record<string, any> = {
+    "aporte-dinerarios": ResumenAporteDinerario,
+    "aporte-dinerario": ResumenAporteDinerario,
+    // Agregar más acuerdos aquí cuando tengan sus componentes de resumen
+    // "nombramiento-gerente": ResumenNombramientoGerente,
+    // "remocion-apoderados": ResumenRemocionApoderados,
+    // etc.
+  };
 
   const puntosAcuerdoSummary = usePuntosAcuerdoSummary();
+  const juntasFlowStore = useJuntasFlowStore();
 
-  const acuerdosResumen = computed(() =>
-    puntosAcuerdoSummary.value.map((section) => ({
-      id: section.id,
-      title: section.title,
-      subtitle:
-        section.blocks?.[0]?.description ||
-        "Resumen del acuerdo y acciones necesarias para su implementación.",
-    }))
-  );
+  /**
+   * Filtrar acuerdos SOLO por los seleccionados en Paso 1
+   * Este computed es reactivo y se actualiza cuando cambia el store
+   */
+  const acuerdosResumen = computed(() => {
+    // Acceder directamente al state para asegurar reactividad
+    const selectedSubSteps = juntasFlowStore.selectedSubSteps;
+    const selectedSectionIds = selectedSubSteps.map(mapStoreIdToSectionId);
+    
+    console.log("🔵 [resumen/index] selectedSubSteps desde state:", selectedSubSteps);
+    console.log("🔵 [resumen/index] selectedSectionIds mapeados:", selectedSectionIds);
+    console.log("🔵 [resumen/index] puntosAcuerdoSummary disponibles:", puntosAcuerdoSummary.value.map(s => ({ id: s.id, title: s.title })));
+    
+    // Filtrar SOLO los acuerdos seleccionados
+    const filtered = puntosAcuerdoSummary.value
+      .filter((section) => {
+        const isIncluded = selectedSectionIds.includes(section.id);
+        if (!isIncluded) {
+          console.log("🔵 [resumen/index] Sección excluida:", section.id, "no está en", selectedSectionIds);
+        }
+        return isIncluded;
+      })
+      .map((section) => ({
+        id: section.id,
+        title: section.title,
+        subtitle:
+          section.blocks?.[0]?.description ||
+          "Resumen del acuerdo y acciones necesarias para su implementación.",
+      }));
+    
+    console.log("🔵 [resumen/index] acuerdosResumen filtrados:", filtered.map(a => a.id));
+    return filtered;
+  });
 
   /**
    * Página: Resumen de la Junta

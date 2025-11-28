@@ -67,12 +67,45 @@ function createSectionFromAgreement(item: FlowItemTree, order: number): SummaryS
   };
 }
 
+/**
+ * Construye las secciones de resumen para Puntos de Acuerdo
+ *
+ * Estructura del árbol:
+ * - puntos-acuerdo (Nivel 0)
+ *   - aumento-capital-section (Nivel 1 - SECTION)
+ *     - aporte-dinerario (Nivel 2 - AGREEMENT) ← Estos son los que necesitamos
+ *     - capitalizacion-creditos (Nivel 2 - AGREEMENT)
+ *   - nombramiento-section (Nivel 1 - SECTION)
+ *     - nombramiento-gerente (Nivel 2 - AGREEMENT) ← Estos son los que necesitamos
+ *     - ...
+ *
+ * Necesitamos extraer los acuerdos individuales (Nivel 2), NO las sections (Nivel 1)
+ */
 function buildPuntosAcuerdoSections(): SummarySection[] {
   const puntosAcuerdo = findItemById(flowTree, "puntos-acuerdo");
   if (!puntosAcuerdo?.children) return [];
-  return puntosAcuerdo.children.map((child, index) =>
-    createSectionFromAgreement(child, index + 10)
+
+  const agreements: SummarySection[] = [];
+  let orderCounter = 10;
+
+  // Iterar sobre las sections (Nivel 1)
+  puntosAcuerdo.children.forEach((section) => {
+    // Para cada section, iterar sobre sus hijos (acuerdos de Nivel 2)
+    if (section.children && section.children.length > 0) {
+      section.children.forEach((agreement) => {
+        // Crear SummarySection para cada acuerdo individual (Nivel 2)
+        const summarySection = createSectionFromAgreement(agreement, orderCounter);
+        agreements.push(summarySection);
+        orderCounter++;
+      });
+    }
+  });
+
+  console.log(
+    "🔵 [puntos-acuerdo] Acuerdos individuales encontrados:",
+    agreements.map((a) => ({ id: a.id, title: a.title }))
   );
+  return agreements;
 }
 
 /**

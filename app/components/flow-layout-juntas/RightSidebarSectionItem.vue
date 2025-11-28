@@ -1,0 +1,101 @@
+<script setup lang="ts">
+import type { SectionItem } from "~/types/junta-navigation.types";
+import { getIcon } from "~/utils/iconMapper";
+import { isSectionActive, getSectionStatus } from "~/utils/juntas/right-sidebar.utils";
+
+interface Props {
+  section: SectionItem;
+  currentSectionId: string;
+  sections: SectionItem[];
+  isExpanded: boolean;
+  isInExpandedList: boolean;
+  onToggle: () => void;
+  onSectionClick: (sectionId: string) => void;
+}
+
+const props = defineProps<Props>();
+
+const sectionActive = computed(() => isSectionActive(props.section, props.currentSectionId));
+const sectionStatus = computed(() =>
+  getSectionStatus(props.section, props.currentSectionId, props.sections)
+);
+</script>
+
+<template>
+  <div
+    :class="['relative', sectionActive && 'bg-primary-50/50 rounded-lg']"
+  >
+    <!-- Barra vertical morada cuando está activa -->
+    <div
+      v-if="sectionActive"
+      class="absolute left-0 top-0 bottom-0 w-1 rounded-l-lg"
+      style="background-color: var(--primary-800, #3C28A4)"
+    />
+
+    <!-- Botón de Sección Principal -->
+    <button
+      @click="
+        section.subSections && section.subSections.length > 0
+          ? onToggle
+          : onSectionClick(section.id)
+      "
+      :class="[
+        'w-full flex items-start gap-3 text-left group relative pl-4 pr-3 py-3 rounded-lg transition-colors',
+        sectionActive ? 'bg-primary-50/50' : 'hover:bg-gray-50',
+      ]"
+    >
+      <!-- Contenido Principal -->
+      <div class="flex-1 min-w-0">
+        <h4
+          :class="[
+            'text-base mb-0.5 font-primary transition-colors',
+            sectionActive
+              ? 'text-primary-800 font-semibold'
+              : sectionStatus === 'completed'
+              ? 'text-gray-900 font-medium'
+              : 'text-gray-600 font-medium',
+          ]"
+        >
+          {{ section.title }}
+        </h4>
+        <p
+          v-if="section.description"
+          :class="[
+            'text-sm font-secondary',
+            sectionActive ? 'text-primary-700' : 'text-gray-600',
+          ]"
+        >
+          {{ section.description }}
+        </p>
+      </div>
+      <!-- Chevron para secciones con hijos -->
+      <div
+        v-if="section.subSections && section.subSections.length > 0"
+        class="flex items-center justify-center w-4 h-4 shrink-0"
+      >
+        <component
+          :is="getIcon(isExpanded ? 'ChevronDown' : 'ChevronRight')"
+          v-if="getIcon('ChevronDown') && getIcon('ChevronRight')"
+          class="w-3 h-3 text-gray-600"
+        />
+        <svg
+          v-else
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="text-gray-600"
+        >
+          <path v-if="isExpanded" d="m6 9 6 6 6-6" />
+          <path v-else d="m9 18 6-6-6-6" />
+        </svg>
+      </div>
+    </button>
+  </div>
+</template>
+

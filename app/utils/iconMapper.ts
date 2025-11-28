@@ -53,7 +53,11 @@ import {
   X,
 } from "lucide-vue-next";
 
-const iconMap = {
+// Tipo para componentes Lucide
+type IconValue = any;
+
+// Mapa de componentes Lucide
+const iconMap: Record<string, IconValue> = {
   Building2,
   Building,
   Vault,
@@ -108,6 +112,16 @@ const iconMap = {
   Bot,
 };
 
-export const getIcon = (iconName: string) => {
-  return iconMap[iconName as keyof typeof iconMap] || null;
+/**
+ * Obtiene un icono de Lucide
+ *
+ * @param iconName - Nombre del componente Lucide (ej: "Users", "Settings")
+ * @returns Componente Vue de lucide-vue-next o null si no existe
+ *
+ * @example
+ * getIcon("Users") → Componente Vue de lucide-vue-next
+ * getIcon("Settings") → Componente Vue de lucide-vue-next
+ */
+export const getIcon = (iconName: string): IconValue | null => {
+  return iconMap[iconName] || null;
 };

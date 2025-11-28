@@ -99,14 +99,14 @@ onMounted(() => {
 
 // Agrupar puntos por categoría
 const puntosPorCategoria = computed(() => {
-  const categorias: Record<string, typeof PUNTOS_AGENDA> = {};
+  const categorias: Record<string, Array<typeof PUNTOS_AGENDA[number]>> = {};
 
   PUNTOS_AGENDA.forEach((punto) => {
     const categoria = punto.category;
     if (!categorias[categoria]) {
       categorias[categoria] = [];
     }
-    categorias[categoria].push(punto);
+    categorias[categoria]!.push(punto);
   });
 
   return categorias;

@@ -1,34 +1,27 @@
 <script setup lang="ts">
-  import type { NavigationStep } from "~/types/navigationSteps";
-  import { getIcon } from "~/utils/iconMapper";
-  import BaseButton from "../base/buttons/BaseButton.vue";
+import type { NavigationStep } from "~/types/navigationSteps";
+import { getIcon } from "~/utils/iconMapper";
+import { useJuntasHeaderNavigation } from "~/composables/useJuntasHeaderNavigation";
+import BaseButton from "../base/buttons/BaseButton.vue";
+import HeaderTitle from "./HeaderTitle.vue";
+import HeaderActions from "./HeaderActions.vue";
 
-  interface Props {
-    steps: NavigationStep[];
-    currentStepIndex: number;
-    onBack?: () => void;
-    onSave?: () => void;
-    onReset?: () => void;
-  }
+interface Props {
+  steps: NavigationStep[];
+  currentStepIndex: number;
+  onBack?: () => void;
+  onSave?: () => void;
+  onReset?: () => void;
+}
 
-  const props = defineProps<Props>();
+const props = defineProps<Props>();
 
-  const router = useRouter();
-
-  const goBackStep = () => {
-    if (props.currentStepIndex > 0) {
-      const prevStep = props.steps[props.currentStepIndex - 1];
-      if (prevStep) {
-        router.push(prevStep.route);
-      }
-    } else {
-      props.onBack?.();
-    }
-  };
-
-  const currentStep = computed(() => {
-    return props.steps[props.currentStepIndex];
-  });
+// Usar composable para navegación
+const { goBackStep, currentStep } = useJuntasHeaderNavigation(
+  computed(() => props.steps),
+  computed(() => props.currentStepIndex),
+  props.onBack
+);
 </script>
 
 <template>
@@ -46,35 +39,9 @@
           Salir
         </BaseButton>
         <div class="h-8 w-px bg-gray-200"></div>
-        <div>
-          <h1 class="text-xl mb-0.5 font-primary font-semibold text-gray-900">
-            {{ currentStep?.title || "Junta de Accionistas" }}
-          </h1>
-          <p class="text-sm font-secondary text-gray-600">
-            {{ currentStep?.description || "" }}
-          </p>
-        </div>
+        <HeaderTitle :current-step="currentStep" />
       </div>
-      <div class="flex gap-2">
-        <BaseButton
-          v-if="onSave"
-          variant="outline"
-          @click="onSave"
-          class="flex items-center gap-2"
-        >
-          <component :is="getIcon('FileCheck')" v-if="getIcon('FileCheck')" class="w-4 h-4" />
-          Guardar Cambios
-        </BaseButton>
-        <BaseButton
-          v-if="onReset"
-          variant="outline"
-          @click="onReset"
-          class="flex items-center gap-2"
-        >
-          <component :is="getIcon('RotateCcw')" v-if="getIcon('RotateCcw')" class="w-4 h-4" />
-          Restablecer
-        </BaseButton>
-      </div>
+      <HeaderActions :on-save="onSave" :on-reset="onReset" />
     </div>
   </div>
 </template>

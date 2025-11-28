@@ -81,7 +81,7 @@ export const useJuntasNavbarRoutes = () => {
 
     // Patrón 1: Con ID: /operaciones/junta-accionistas/[id]/[slug]
     let match = path.match(/\/operaciones\/junta-accionistas\/[^/]+\/([^/]+)(?:\/|$)/);
-    if (match) {
+    if (match && match[1]) {
       const slug = match[1];
       // Si es un paso principal y no es un sub-step, retornarlo
       if (mainStepSlugs.includes(slug) && !subStepSlugs.includes(slug)) {
@@ -91,7 +91,7 @@ export const useJuntasNavbarRoutes = () => {
     
     // Patrón 2: Sin ID: /operaciones/junta-accionistas/[slug]
     match = path.match(/\/operaciones\/junta-accionistas\/([^/]+)(?:\/|$)/);
-    if (match) {
+    if (match && match[1]) {
       const slug = match[1];
       // Si es un paso principal y no es un sub-step, retornarlo
       if (mainStepSlugs.includes(slug) && !subStepSlugs.includes(slug)) {
