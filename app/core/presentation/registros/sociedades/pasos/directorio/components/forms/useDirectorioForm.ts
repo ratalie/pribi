@@ -133,11 +133,23 @@ export function useDirectorioForm(options: UseDirectorioFormOptions) {
     }
 
     // Asegurarse de que el presidenteId esté incluido en el payload
+    // También asegurar que minimoDirectores y maximoDirectores tengan valores cuando conteoPersonalizado es true
     const payload: DirectorioDTO = {
       ...form,
       id: store.config?.id,
       // Asegurar que presidenteId esté explícitamente incluido
       presidenteId: form.presidenteId || null,
+      // Asegurar que minimoDirectores y maximoDirectores tengan valores válidos cuando conteoPersonalizado es true
+      minimoDirectores: form.conteoPersonalizado
+        ? typeof form.minimoDirectores === "number" && form.minimoDirectores > 0
+          ? form.minimoDirectores
+          : 3
+        : form.minimoDirectores,
+      maximoDirectores: form.conteoPersonalizado
+        ? typeof form.maximoDirectores === "number" && form.maximoDirectores > 0
+          ? form.maximoDirectores
+          : 3
+        : form.maximoDirectores,
     };
 
     console.debug("[useDirectorioForm] submit:payload", {

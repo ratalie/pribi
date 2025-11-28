@@ -121,8 +121,8 @@
   const form = ref({
     cantidadDirectores: "",
     cantidadPersonalizado: false,
-    minimoDirectores: "",
-    maximoDirectores: "",
+    minimoDirectores: "3",
+    maximoDirectores: "3",
     duracionDirectorio: "",
     fechaInicioDirectorio: "",
     fechaFinDirectorio: "",
@@ -154,14 +154,14 @@
   watch(
     () => directorioForm.minimoDirectores,
     (val) => {
-      form.value.minimoDirectores = val ? String(val) : "";
+      form.value.minimoDirectores = val ? String(val) : "2";
     },
     { immediate: true }
   );
   watch(
     () => directorioForm.maximoDirectores,
     (val) => {
-      form.value.maximoDirectores = val ? String(val) : "";
+      form.value.maximoDirectores = val ? String(val) : "3";
     },
     { immediate: true }
   );
@@ -265,18 +265,44 @@
     () => form.value.cantidadPersonalizado,
     (val) => {
       directorioForm.conteoPersonalizado = val;
+      // Cuando se activa cantidadPersonalizado, asegurar valores por defecto
+      if (val) {
+        if (!form.value.minimoDirectores || form.value.minimoDirectores.trim() === "") {
+          form.value.minimoDirectores = "3";
+        }
+        if (!form.value.maximoDirectores || form.value.maximoDirectores.trim() === "") {
+          form.value.maximoDirectores = "3";
+        }
+        // Asegurar que el DTO tenga los valores
+        directorioForm.minimoDirectores =
+          form.value.minimoDirectores && form.value.minimoDirectores.trim() !== ""
+            ? Number(form.value.minimoDirectores)
+            : 3;
+        directorioForm.maximoDirectores =
+          form.value.maximoDirectores && form.value.maximoDirectores.trim() !== ""
+            ? Number(form.value.maximoDirectores)
+            : 3;
+      }
     }
   );
   watch(
     () => form.value.minimoDirectores,
     (val) => {
-      directorioForm.minimoDirectores = val ? Number(val) : null;
+      // Si hay un valor, convertirlo a número, si no, usar el valor por defecto 3
+      // Solo establecer si cantidadPersonalizado está activo
+      if (form.value.cantidadPersonalizado) {
+        directorioForm.minimoDirectores = val && val.trim() !== "" ? Number(val) : 3;
+      }
     }
   );
   watch(
     () => form.value.maximoDirectores,
     (val) => {
-      directorioForm.maximoDirectores = val ? Number(val) : null;
+      // Si hay un valor, convertirlo a número, si no, usar el valor por defecto 3
+      // Solo establecer si cantidadPersonalizado está activo
+      if (form.value.cantidadPersonalizado) {
+        directorioForm.maximoDirectores = val && val.trim() !== "" ? Number(val) : 3;
+      }
     }
   );
   watch(
@@ -409,10 +435,10 @@
     form.value.cantidadPersonalizado = directorioForm.conteoPersonalizado;
     form.value.minimoDirectores = directorioForm.minimoDirectores
       ? String(directorioForm.minimoDirectores)
-      : "";
+      : "3";
     form.value.maximoDirectores = directorioForm.maximoDirectores
       ? String(directorioForm.maximoDirectores)
-      : "";
+      : "3";
     form.value.duracionDirectorio = directorioForm.periodo || "";
     form.value.fechaInicioDirectorio = directorioForm.inicioMandato || "";
     form.value.fechaFinDirectorio = directorioForm.finMandato || "";
@@ -720,8 +746,9 @@
               :max="9"
               placeholder="3"
               size="large"
+              :is-disabled="form.cantidadPersonalizado"
             />
-            <p class="t-t2 text-gray-500 font-secondary">Valor mínimo: {{ 3 }}.</p>
+            <p class="t-t2 text-gray-500 font-secondary">Valor mínimo: {{ 2 }}.</p>
           </div>
 
           <!-- Segunda columna: Checkbox -->

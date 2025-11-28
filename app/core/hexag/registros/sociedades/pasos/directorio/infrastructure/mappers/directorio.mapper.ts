@@ -102,9 +102,11 @@ export const DirectorioMapper = {
       periodoMap[periodoInput] || (periodoInput ? periodoInput : "ONE_YEAR");
 
     // Calcular valores por defecto para quorumMinimo y mayoria si son 0 o menores
-    // Valor por defecto: la mitad de la cantidad de directores (o mínimo si existe) más 1
+    // Si conteoPersonalizado es true, usar minimoDirectores; si es false, usar cantidadDirectores
     const cantidadBase = dto.conteoPersonalizado
-      ? dto.minimoDirectores ?? dto.cantidadDirectores ?? 3
+      ? dto.minimoDirectores && dto.minimoDirectores > 0
+        ? dto.minimoDirectores
+        : 3
       : dto.cantidadDirectores ?? 3;
 
     const quorumMinimoCalculado =
@@ -137,15 +139,29 @@ export const DirectorioMapper = {
     }
 
     // Si conteoPersonalizado = false: enviar cantidadDirectores, NO enviar minimoDirectores/maximoDirectores
-    // Si conteoPersonalizado = true: NO enviar cantidadDirectores, enviar minimoDirectores y maximoDirectores
+    // Si conteoPersonalizado = true: NO enviar cantidadDirectores, enviar minimoDirectores y maximoDirectores (obligatorios)
     if (dto.conteoPersonalizado) {
       // Conteo personalizado: usar minimoDirectores y maximoDirectores (obligatorios)
-      if (dto.minimoDirectores !== null && dto.minimoDirectores !== undefined) {
-        payload.minimoDirectores = dto.minimoDirectores;
-      }
-      if (dto.maximoDirectores !== null && dto.maximoDirectores !== undefined) {
-        payload.maximoDirectores = dto.maximoDirectores;
-      }
+      // Si no tienen valores o son inválidos, usar valores por defecto (3 para mínimo, 3 para máximo)
+      // Asegurar que siempre tengan valores válidos (números > 0)
+      const minimoDefault = 3;
+      const maximoDefault = 3;
+
+      // Normalizar minimoDirectores: debe ser un número válido > 0
+      const minimoValue =
+        typeof dto.minimoDirectores === "number" && dto.minimoDirectores > 0
+          ? dto.minimoDirectores
+          : minimoDefault;
+
+      // Normalizar maximoDirectores: debe ser un número válido > 0
+      const maximoValue =
+        typeof dto.maximoDirectores === "number" && dto.maximoDirectores > 0
+          ? dto.maximoDirectores
+          : maximoDefault;
+
+      // SIEMPRE incluir estos campos cuando conteoPersonalizado es true
+      payload.minimoDirectores = minimoValue;
+      payload.maximoDirectores = maximoValue;
     } else {
       // Conteo estándar: usar cantidadDirectores, NO incluir minimoDirectores ni maximoDirectores
       payload.cantidadDirectores = dto.cantidadDirectores;
