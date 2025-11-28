@@ -6,7 +6,6 @@
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
-  import PersonaNaturalForm from "~/components/composite/forms/PersonaNaturalForm.vue";
 
   interface SelectOption {
     id: string;
@@ -72,7 +71,7 @@
       </CardTitle>
 
       <div class="flex flex-col gap-6">
-        <PersonaNaturalForm />
+        <PersonaNatural />
       </div>
     </div>
 

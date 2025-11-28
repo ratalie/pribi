@@ -8,6 +8,8 @@ import {
   UpdateApoderadoUseCase,
   UpdateClaseApoderadoUseCase,
 } from "~/core/hexag/registros/sociedades/pasos/apoderados/application";
+import { CreateGerenteGeneralUseCase } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/create-gerente.use-case";
+import { UpdateGerenteGeneralUseCase } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/update-gerente.use-case";
 import {
   PersonTypeEnum,
   type Apoderado,
@@ -31,6 +33,9 @@ const listApoderadosUseCase = new ListApoderadosUseCase(repository);
 const createApoderadoUseCase = new CreateApoderadoUseCase(repository);
 const updateApoderadoUseCase = new UpdateApoderadoUseCase(repository);
 const deleteApoderadoUseCase = new DeleteApoderadoUseCase(repository);
+
+const createGerenteGeneralUseCase = new CreateGerenteGeneralUseCase(repository);
+const updateGerenteGeneralUseCase = new UpdateGerenteGeneralUseCase(repository);
 
 export const useClasesYApoderadosStore = defineStore("clases-y-apoderados", {
   state: (): State => ({
@@ -225,6 +230,34 @@ export const useClasesYApoderadosStore = defineStore("clases-y-apoderados", {
         await deleteApoderadoUseCase.execute(profileId, apoderadoId);
 
         this.apoderados = this.apoderados.filter((a) => a.id !== apoderadoId);
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+
+    //gerente general
+    async crearGerenteGeneral(profileId: string, apoderado: Apoderado) {
+      try {
+        const payload = ApoderadosMapper.deEntityAPayload(apoderado);
+        await createGerenteGeneralUseCase.execute(profileId, payload);
+
+        this.apoderados.push(apoderado);
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+
+    async actualizarGerenteGeneral(profileId: string, apoderado: Apoderado) {
+      try {
+        const payload = ApoderadosMapper.deEntityAPayload(apoderado);
+        await updateGerenteGeneralUseCase.execute(profileId, payload);
+
+        const index = this.apoderados.findIndex((a) => a.id === apoderado.id);
+        if (index !== -1) {
+          this.apoderados[index] = apoderado;
+        }
       } catch (error) {
         console.error(error);
         throw error;

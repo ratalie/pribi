@@ -10,4 +10,7 @@ export interface ApoderadosRepository {
   createApoderado(profileId: string, payload: ApoderadoPayload): Promise<void>;
   updateApoderado(profileId: string, payload: ApoderadoPayload): Promise<void>;
   deleteApoderado(profileId: string, apoderadoId: string): Promise<void>;
+
+  createGerenteGeneral(profileId: string, payload: ApoderadoPayload): Promise<void>;
+  updateGerenteGeneral(profileId: string, payload: ApoderadoPayload): Promise<void>;
 }

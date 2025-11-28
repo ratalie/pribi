@@ -9,6 +9,7 @@
   import GerenteGeneralTable from "./components/GerenteGeneralTable.vue";
   import OtrosApoderadosTable from "./components/OtrosApoderadosTable.vue";
   import ClaseApoderadoModal from "./components/modals/ClaseApoderadoModal.vue";
+  import GerenteGeneralModal from "./components/modals/GerenteGeneralModal.vue";
   import RegistroApoderadoModal from "./components/modals/RegistroApoderadoModal.vue";
   import { useApoderados } from "./composables/useApoderados";
   import { useClasesApoderado } from "./composables/useClasesApoderado";
@@ -37,7 +38,16 @@
     handleSubmitClase,
   } = useClasesApoderado(props.societyId ?? "");
 
-  const { gerenteActions } = useGerenteGeneral();
+  const {
+    isOpenModalGerenteGeneral,
+    isLoadingGerenteGeneral,
+    modeModalGerenteGeneral,
+    tipoPersona,
+    gerenteActions,
+    openModalGerenteGeneral,
+    closeModalGerenteGeneral,
+    handleSubmitGerenteGeneral,
+  } = useGerenteGeneral(props.societyId ?? "");
 
   const {
     selectedClaseId,
@@ -71,7 +81,7 @@
             v-if="!isReadonly"
             variant="secondary"
             label="Agregar clase"
-            size="md"
+            size="lg"
             icon="Plus"
             @click="openModalClase"
           />
@@ -95,9 +105,9 @@
             v-if="!isReadonly"
             variant="secondary"
             label="Agregar gerente"
-            size="md"
+            size="lg"
             icon="Plus"
-            @click="() => {}"
+            @click="openModalGerenteGeneral"
           />
         </template>
       </CardTitle>
@@ -116,7 +126,7 @@
             v-if="!isReadonly"
             variant="secondary"
             label="Agregar apoderado"
-            size="md"
+            size="lg"
             icon="Plus"
             :disabled="clasesYApoderadoStore.datosTablaClases.length === 0"
             @click="openModalApoderado"
@@ -138,7 +148,7 @@
             v-if="!isReadonly"
             variant="secondary"
             label="Agregar apoderado"
-            size="md"
+            size="lg"
             icon="Plus"
             @click="openModalApoderado('Otros Apoderados')"
           />
@@ -160,14 +170,14 @@
       @submit="handleSubmitClase"
     />
 
-    <!--     <GerenteGeneralModal
-      v-model="isGerenteModalOpen"
-      :mode="gerenteEditingApoderado ? 'edit' : 'create'"
-      :is-saving="isSavingApoderado"
-      :initial-apoderado="gerenteEditingApoderado"
-      @close="closeGerenteModal"
-      @submit="handleGerenteModalSubmit"
-    /> -->
+    <GerenteGeneralModal
+      v-model="isOpenModalGerenteGeneral"
+      v-model:tipo-persona="tipoPersona"
+      :mode="modeModalGerenteGeneral"
+      :is-saving="isLoadingGerenteGeneral"
+      @close="closeModalGerenteGeneral"
+      @submit="handleSubmitGerenteGeneral"
+    />
 
     <RegistroApoderadoModal
       v-model="isOpenModalApoderado"

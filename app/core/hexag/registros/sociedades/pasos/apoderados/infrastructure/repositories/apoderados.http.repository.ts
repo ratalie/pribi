@@ -28,6 +28,7 @@ export class ApoderadosHttpRepository implements ApoderadosRepository {
     return `${apiBase}/society-profile/${profileId}/attorney-register${useSuffix}`;
   }
 
+  //clases de apoderado
   async listClases(profileId: string): Promise<ClaseApoderado[]> {
     const url = this.getUrl(profileId, "classes");
     const config = withAuthHeaders({ method: "GET" as const });
@@ -83,6 +84,7 @@ export class ApoderadosHttpRepository implements ApoderadosRepository {
     }
   }
 
+  //apoderados
   async listApoderados(profileId: string): Promise<Apoderado[]> {
     const url = this.getUrl(profileId, "attorneys");
     const config = withAuthHeaders({ method: "GET" as const });
@@ -132,6 +134,35 @@ export class ApoderadosHttpRepository implements ApoderadosRepository {
 
     if (!response.success) {
       throw new Error(response.message || "Error al eliminar el apoderado");
+    }
+  }
+
+  //gerente general
+  async createGerenteGeneral(profileId: string, payload: ApoderadoDTO): Promise<void> {
+    const url = this.getUrl(profileId, "Gerente");
+    const config = withAuthHeaders({
+      method: "POST" as const,
+      body: ApoderadosMapper.dePayloadABackend(payload),
+    });
+
+    const response = await $fetch<BackendApiResponse>(url, config);
+
+    if (!response.success) {
+      throw new Error(response.message || "Error al crear el gerente general");
+    }
+  }
+
+  async updateGerenteGeneral(profileId: string, payload: ApoderadoDTO): Promise<void> {
+    const url = this.getUrl(profileId, "Gerente");
+    const config = withAuthHeaders({
+      method: "PUT" as const,
+      body: ApoderadosMapper.dePayloadABackend(payload),
+    });
+
+    const response = await $fetch<BackendApiResponse>(url, config);
+
+    if (!response.success) {
+      throw new Error(response.message || "Error al actualizar el gerente general");
     }
   }
 }
