@@ -11,5 +11,3 @@ export interface ApoderadoRow {
   documento: string;
   isPlaceholder?: boolean;
 }
-
-

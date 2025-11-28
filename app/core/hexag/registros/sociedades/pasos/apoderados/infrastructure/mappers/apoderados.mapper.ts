@@ -1,5 +1,5 @@
-import type { Apoderado, ClaseApoderado } from "../../domain";
 import type { ApoderadoDTO, ClaseApoderadoDTO } from "../../application";
+import type { Apoderado, ClaseApoderado } from "../../domain";
 
 const normalizeApoderado = (payload: Record<string, any>): Apoderado => ({
   id: payload.id ?? "",
@@ -39,5 +39,3 @@ export const ApoderadosMapper = {
     return dto;
   },
 };
-
-

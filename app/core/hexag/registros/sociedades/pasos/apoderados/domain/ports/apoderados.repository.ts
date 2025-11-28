@@ -1,11 +1,10 @@
-import type { Apoderado } from "../entities/apoderado.entity";
-import type { ClaseApoderado } from "../entities/clase-apoderado.entity";
-import type { ApoderadoDTO, ClaseApoderadoDTO } from "../../application/dtos";
+import type { Apoderado, ClaseApoderado, ClaseApoderadoPayload } from "..";
+import type { ApoderadoDTO } from "../../application/dtos";
 
 export interface ApoderadosRepository {
   listClases(profileId: string): Promise<ClaseApoderado[]>;
-  createClase(profileId: string, payload: ClaseApoderadoDTO): Promise<ClaseApoderado>;
-  updateClase(profileId: string, payload: ClaseApoderadoDTO): Promise<ClaseApoderado>;
+  createClase(profileId: string, payload: ClaseApoderadoPayload): Promise<void>;
+  updateClase(profileId: string, payload: ClaseApoderadoPayload): Promise<void>;
   deleteClase(profileId: string, claseId: string): Promise<void>;
 
   listApoderados(profileId: string): Promise<Apoderado[]>;
@@ -13,5 +12,3 @@ export interface ApoderadosRepository {
   updateApoderado(profileId: string, payload: ApoderadoDTO): Promise<Apoderado>;
   deleteApoderado(profileId: string, claseId: string, apoderadoId: string): Promise<void>;
 }
-
-

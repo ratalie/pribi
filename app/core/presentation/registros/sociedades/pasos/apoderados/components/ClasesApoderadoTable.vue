@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { Button } from "@/components/ui/button";
   import {
     Table,
     TableBody,
@@ -13,22 +12,18 @@
 
   interface Props {
     items: ClaseApoderadoRow[];
-    isLoading?: boolean;
-    readonly?: boolean;
+    titleMenu?: string;
+    actions: {
+      label: string;
+      icon?: string;
+      separatorLine?: boolean;
+      onClick: (id: string) => void;
+    }[];
   }
 
-  withDefaults(defineProps<Props>(), {
-    items: () => [],
-    isLoading: false,
-    readonly: false,
+  const props = withDefaults(defineProps<Props>(), {
+    titleMenu: undefined,
   });
-
-  const emit = defineEmits<{
-    (e: "edit" | "remove", id: string): void;
-  }>();
-
-  const handleEdit = (id: string) => emit("edit", id);
-  const handleRemove = (id: string) => emit("remove", id);
 </script>
 
 <template>
@@ -36,41 +31,60 @@
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>#</TableHead>
-          <TableHead>Clase</TableHead>
-          <TableHead>N.° de apoderados</TableHead>
-          <TableHead v-if="!readonly" class="text-right">Acciones</TableHead>
+          <TableHead
+            class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
+          >
+            ID
+          </TableHead>
+          <TableHead
+            class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
+          >
+            Clase de Apoderado
+          </TableHead>
+          <TableHead
+            class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
+          >
+            N.° de apoderados
+          </TableHead>
+          <TableHead v-if="actions" class="w-12" />
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow v-if="isLoading">
-          <TableCell colspan="4" class="py-6 text-center text-slate-500">
-            Cargando clases de apoderado…
-          </TableCell>
-        </TableRow>
-        <TableRow v-else-if="items.length === 0">
-          <TableCell colspan="4" class="py-6 text-center text-slate-500">
-            Aún no registras clases de apoderado.
-          </TableCell>
-        </TableRow>
-        <TableRow v-for="(item, index) in items" :key="item.id">
-          <TableCell class="text-slate-500">{{ index + 1 }}</TableCell>
-          <TableCell class="font-medium text-slate-900">{{ item.nombre }}</TableCell>
-          <TableCell class="text-slate-600">{{ item.numeroApoderados }}</TableCell>
-          <TableCell v-if="!readonly" class="text-right">
-            <div class="flex justify-end gap-2">
-              <Button variant="ghost" size="sm" @click="handleEdit(item.id)">Editar</Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                class="text-red-600"
-                @click="handleRemove(item.id)"
-              >
-                Eliminar
-              </Button>
-            </div>
-          </TableCell>
-        </TableRow>
+        <template v-if="items.length > 0">
+          <TableRow v-for="(item, index) in items" :key="item.id">
+            <TableCell
+              class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
+            >
+              {{ index + 1 }}
+            </TableCell>
+            <TableCell
+              class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
+            >
+              {{ item.nombre }}
+            </TableCell>
+            <TableCell
+              class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
+            >
+              {{ item.numeroApoderados }}
+            </TableCell>
+            <!-- Celda de acciones -->
+            <TableCell v-if="props.actions" class="w-auto">
+              <DataTableDropDown
+                :item-id="item.id"
+                :title-menu="props.titleMenu"
+                :actions="props.actions"
+              />
+            </TableCell>
+          </TableRow>
+        </template>
+
+        <template v-else>
+          <TableRow>
+            <TableCell :colspan="3 + (props.actions ? 1 : 0)" class="h-24">
+              <EmptyTableMessage />
+            </TableCell>
+          </TableRow>
+        </template>
       </TableBody>
     </Table>
   </div>

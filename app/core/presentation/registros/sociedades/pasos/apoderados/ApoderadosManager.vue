@@ -3,10 +3,7 @@
 
   import { useToast } from "@/components/ui/toast/use-toast";
   import type { Persona } from "@hexag/registros/sociedades/pasos/accionistas/domain";
-  import type {
-    ApoderadoDTO,
-    ClaseApoderadoDTO,
-  } from "@hexag/registros/sociedades/pasos/apoderados/application";
+  import type { ApoderadoDTO } from "@hexag/registros/sociedades/pasos/apoderados/application";
   import type { Apoderado } from "@hexag/registros/sociedades/pasos/apoderados/domain";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
@@ -20,10 +17,10 @@
   import GerenteGeneralModal from "./components/modals/GerenteGeneralModal.vue";
   import OtroApoderadoModal from "./components/modals/OtroApoderadoModal.vue";
   import RegistroApoderadoModal from "./components/modals/RegistroApoderadoModal.vue";
+  import { useClasesApoderado } from "./composables/useClasesApoderado";
   import { ClasesApoderadoEspecialesEnum } from "./enums/ClasesApoderadoEspecialesEnum";
-  import type { ClaseApoderadoForm } from "./schemas/claseApoderado.schema";
   import { useApoderadosStore } from "./stores/apoderados.store";
-  import type { ApoderadoRow, ClaseApoderadoRow } from "./types";
+  import type { ApoderadoRow } from "./types";
 
   interface Props {
     societyId: string;
@@ -41,7 +38,6 @@
     ttlMs: 60_000,
   });
   const isControllerLoading = computed(() => controller.isEnsuring.value);
-  const controllerError = controller.error;
   const { withAsyncToast } = useToastFeedback();
   const { toast } = useToast();
 
@@ -58,7 +54,6 @@
   };
 
   const isReadonly = computed(() => props.mode === EntityModeEnum.PREVISUALIZAR);
-  const errorMessage = computed(() => controllerError.value);
   const ensureSocietyId = () => {
     if (!societyId.value) {
       throw new Error("No encontramos el identificador de la sociedad.");
@@ -106,16 +101,6 @@
     Boolean(classId && otrosClassId.value && classId === otrosClassId.value);
   const isOtroApoderado = (apoderado: Apoderado) => isOtrosClassId(apoderado.claseApoderadoId);
 
-  const claseRows = computed<ClaseApoderadoRow[]>(() =>
-    store.clases.map((clase) => ({
-      id: clase.id,
-      nombre: clase.nombre,
-      numeroApoderados: store.apoderados.filter(
-        (apoderado) => apoderado.claseApoderadoId === clase.id
-      ).length,
-    }))
-  );
-
   const toApoderadoRow = (apoderado: Apoderado): ApoderadoRow => ({
     id: apoderado.id,
     clase:
@@ -160,14 +145,6 @@
       }))
   );
 
-  // const hasAnyClaseDisponible = computed(
-  //   () => Boolean(gerenteClassId.value) || claseSelectOptions.value.length > 0
-  // ); // No usado actualmente
-
-  const isClaseModalOpen = ref(false);
-  const editingClaseId = ref<string | null>(null);
-  const claseInitialValues = ref<ClaseApoderadoForm | null>(null);
-
   const isApoderadoModalOpen = ref(false);
   const editingApoderado = ref<Apoderado | null>(null);
   const isGerenteModalOpen = ref(false);
@@ -175,79 +152,7 @@
   const isOtroApoderadoModalOpen = ref(false);
   const otroApoderadoEditingApoderado = ref<Apoderado | null>(null);
 
-  const openCreateClaseModal = () => {
-    editingClaseId.value = null;
-    claseInitialValues.value = { nombre: "" };
-    isClaseModalOpen.value = true;
-  };
-
-  const handleEditarClase = (claseId: string) => {
-    const clase = store.clases.find((item) => item.id === claseId);
-    if (!clase) return;
-    editingClaseId.value = clase.id;
-    claseInitialValues.value = { nombre: clase.nombre };
-    isClaseModalOpen.value = true;
-  };
-
-  const handleEliminarClase = async (claseId: string) => {
-    const confirmed = window.confirm("¿Deseas eliminar esta clase de apoderado?");
-    if (!confirmed) return;
-    const profileId = ensureSocietyId();
-    await withAsyncToast(() => store.deleteClase(profileId, claseId), {
-      loading: { title: "Eliminando clase…" },
-      success: { title: "Clase eliminada" },
-      error: () => ({
-        title: "No se pudo eliminar la clase",
-        description: "Intenta nuevamente.",
-      }),
-    });
-  };
-
-  const isSavingClase = computed(() => store.clasesStatus === "saving");
   const isSavingApoderado = computed(() => store.apoderadosStatus === "saving");
-
-  const handleSubmitClase = async (values: ClaseApoderadoForm) => {
-    const profileId = ensureSocietyId();
-    const dto: ClaseApoderadoDTO = {
-      id: editingClaseId.value ?? generateUuid(),
-      nombre: values.nombre.trim(),
-    };
-
-    if (isDuplicateClassName(dto.nombre, editingClaseId.value ?? null)) {
-      toast({
-        variant: "destructive",
-        title: "Nombre duplicado",
-        description: "Ya existe una clase con ese nombre.",
-      });
-      return;
-    }
-
-    const action =
-      editingClaseId.value !== null
-        ? () => store.updateClase(profileId, dto)
-        : () => store.createClase(profileId, dto);
-    await withAsyncToast(action, {
-      loading: { title: editingClaseId.value ? "Actualizando…" : "Guardando…" },
-      success: {
-        title: "Clases de apoderado",
-        description:
-          editingClaseId.value !== null
-            ? "Clase actualizada correctamente."
-            : "Clase creada correctamente.",
-      },
-      error: () => ({
-        title: "No se pudo guardar",
-        description: "Revisa la información e inténtalo nuevamente.",
-      }),
-    });
-    closeClaseModal();
-  };
-
-  const closeClaseModal = () => {
-    isClaseModalOpen.value = false;
-    editingClaseId.value = null;
-    claseInitialValues.value = null;
-  };
 
   const openCreateApoderadoModal = () => {
     if (claseSelectOptions.value.length === 0) {
@@ -314,7 +219,9 @@
     if (isEditing && editingApoderado.value) {
       payload.id = editingApoderado.value.id;
       // Verificar que la clase seleccionada existe
-      const claseExists = claseSelectOptions.value.some((opt) => opt.id === payload.claseApoderadoId);
+      const claseExists = claseSelectOptions.value.some(
+        (opt) => opt.id === payload.claseApoderadoId
+      );
       if (!claseExists) {
         toast({
           variant: "destructive",
@@ -333,8 +240,8 @@
       }
     }
 
-    console.log("[ApoderadosManager] handleSubmitApoderado", { 
-      isEditing, 
+    console.log("[ApoderadosManager] handleSubmitApoderado", {
+      isEditing,
       editingApoderadoId: editingApoderado.value?.id,
       payload,
       claseId: payload.claseApoderadoId,
@@ -374,7 +281,7 @@
       });
       return;
     }
-    
+
     // Si no se pasó un apoderado, buscar si existe uno en el store
     if (!apoderado) {
       const existingApoderado = store.apoderados.find(
@@ -384,7 +291,7 @@
         apoderado = existingApoderado;
       }
     }
-    
+
     gerenteEditingApoderado.value = apoderado;
     isGerenteModalOpen.value = true;
   };
@@ -396,15 +303,16 @@
 
   const handleGerenteModalSubmit = async (payload: ApoderadoDTO) => {
     const profileId = ensureSocietyId();
-    
+
     // Verificar si realmente existe un apoderado con esta clase en el store
     const existingApoderado = store.apoderados.find(
       (apoderado) => apoderado.claseApoderadoId === gerenteClassId.value
     );
-    
+
     // Es edición si: 1) se pasó un apoderado al abrir el modal, O 2) existe uno en el store
-    const isEditing = gerenteEditingApoderado.value !== null || existingApoderado !== undefined;
-    
+    const isEditing =
+      gerenteEditingApoderado.value !== null || existingApoderado !== undefined;
+
     // Si es edición y existe en el store, usar el ID existente
     if (isEditing && existingApoderado) {
       payload.id = existingApoderado.id;
@@ -413,12 +321,6 @@
         payload.persona.id = existingApoderado.persona.id;
       }
     }
-
-    console.log("[ApoderadosManager] handleGerenteModalSubmit", { 
-      isEditing, 
-      existingApoderado: existingApoderado?.id,
-      payload 
-    });
 
     const action = isEditing
       ? () => store.updateApoderado(profileId, payload)
@@ -468,13 +370,6 @@
       default:
         return "—";
     }
-  };
-
-  const isDuplicateClassName = (nombre: string, excludeId: string | null) => {
-    const normalizedName = normalize(nombre);
-    return store.clases.some(
-      (clase) => normalize(clase.nombre) === normalizedName && clase.id !== excludeId
-    );
   };
 
   const ensureDefaultClasses = async () => {
@@ -616,16 +511,29 @@
     isOtroApoderadoModalOpen.value = false;
     otroApoderadoEditingApoderado.value = null;
   };
+
+  const {
+    clasesApoderadoStore,
+    valorInicialClase,
+    claseActions,
+    isOpenModalClase,
+    isLoadingClase,
+    modeModalClase,
+    openModalClase,
+    closeModalClase,
+    handleSubmitClase,
+  } = useClasesApoderado(props.societyId ?? "");
+
+  onMounted(() => {
+    if (props.societyId) {
+      clasesApoderadoStore.loadClases(props.societyId);
+    }
+  });
 </script>
 
 <template>
   <div class="p-14 flex flex-col gap-12">
     <CardTitle title="Registro de Apoderados" body="Complete todos los campos requeridos." />
-
-    <p v-if="errorMessage" class="text-sm text-red-500">
-      {{ errorMessage }}
-    </p>
-
     <SimpleCard>
       <CardTitle title="Clases de apoderado">
         <template #actions>
@@ -635,17 +543,14 @@
             label="Agregar clase"
             size="md"
             icon="Plus"
-            @click="openCreateClaseModal"
+            @click="openModalClase"
           />
         </template>
       </CardTitle>
 
       <ClasesApoderadoTable
-        :items="claseRows"
-        :is-loading="isControllerLoading"
-        :readonly="isReadonly"
-        @edit="handleEditarClase"
-        @remove="handleEliminarClase"
+        :items="clasesApoderadoStore.datosTablaClases"
+        :actions="claseActions"
       />
     </SimpleCard>
 
@@ -726,11 +631,11 @@
     </SimpleCard>
 
     <ClaseApoderadoModal
-      v-model="isClaseModalOpen"
-      :mode="editingClaseId ? 'edit' : 'create'"
-      :is-saving="isSavingClase"
-      :initial-value="claseInitialValues"
-      @close="closeClaseModal"
+      v-model="isOpenModalClase"
+      :mode="modeModalClase"
+      :is-saving="isLoadingClase"
+      :initial-value="valorInicialClase"
+      @close="closeModalClase"
       @submit="handleSubmitClase"
     />
 
