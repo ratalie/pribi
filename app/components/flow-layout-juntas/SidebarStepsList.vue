@@ -36,15 +36,17 @@
 </script>
 
 <template>
-  <div>
+  <div class="flex flex-col bg-red-300">
     <div v-for="(step, index) in steps" :key="index" class="flex flex-col mb-4 relative">
       <!-- Contenedor principal con CheckIcon + Contenido -->
-      <div class="flex items-start gap-4 relative">
+      <div class="flex items-start gap-4 relative pb-2">
         <!-- CheckIconJuntas (específico para juntas) - estructura original con línea -->
-        <div class="shrink-0 flex flex-col relative">
+        <div
+          class="group shrink-0 flex flex-col relative hover:bg-gray-50 w-full rounded-md pb-2"
+        >
           <!-- Contenedor con hover que incluye CheckIcon (círculo) + Contenido (ancho limitado) -->
           <div
-            class="group flex items-start gap-4 rounded-md hover:bg-gray-50 transition-colors px-2 -mx-2 h-fit w-fit relative z-0"
+            class="flex items-start gap-4 rounded-md transition-colors pl-2 -mx-2 h-fit w-full relative z-0"
           >
             <!-- Círculo del CheckIcon -->
             <div class="shrink-0">
@@ -87,7 +89,7 @@
               </div>
             </div>
             <!-- Step Content -->
-            <div class="flex-1">
+            <div class="flex-1 w-full bg-blue-800">
               <!-- Step Principal -->
               <SidebarStepItem
                 :step="step"

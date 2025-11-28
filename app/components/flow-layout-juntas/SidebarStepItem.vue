@@ -18,7 +18,7 @@
 </script>
 
 <template>
-  <div class="flex items-center gap-2 w-full">
+  <div class="flex items-center gap-2 w-full bg-amber-300">
     <!-- Items colapsables (con sub-steps, pero NO puntos-acuerdo) -->
     <div
       v-if="
@@ -30,7 +30,7 @@
       <div class="flex flex-col gap-1 flex-1">
         <p
           :class="[
-            'font-primary transition-colors text-3xl',
+            'font-primary transition-colors text-sm',
             isCurrent
               ? 'text-primary-800 '
               : 'text-gray-600 font-medium group-hover:text-primary-800',
@@ -57,38 +57,43 @@
     </div>
     <!-- Puntos de Acuerdo: link solo en contenido, chevron separado -->
     <template v-else-if="step.route.includes('puntos-acuerdo')">
-      <NuxtLink
-        :to="step.route"
-        class="flex flex-col gap-1 flex-1 cursor-pointer"
-        @click="onClick?.(stepSlug)"
-      >
-        <p
-          :class="[
-            'font-primary text-sm transition-colors',
-            isCurrent
-              ? 'text-primary-800 font-semibold'
-              : 'text-gray-600 font-medium group-hover:text-primary-800',
-          ]"
+      <div class="flex items-center justify-between w-full bg-green-300">
+        <NuxtLink
+          :to="step.route"
+          class="flex flex-col gap-1 flex-1 cursor-pointer"
+          @click="onClick?.(stepSlug)"
         >
-          {{ step.title }}
-        </p>
-        <span
-          :class="[
-            'font-secondary font-medium text-xs transition-colors',
-            isCurrent ? 'text-gray-800' : 'text-gray-600',
-          ]"
+          <p
+            :class="[
+              'font-primary text-sm transition-colors',
+              isCurrent
+                ? 'text-primary-800 font-semibold'
+                : 'text-gray-600 font-medium group-hover:text-primary-800',
+            ]"
+          >
+            {{ step.title }}
+          </p>
+          <span
+            :class="[
+              'font-secondary font-medium text-xs transition-colors',
+              isCurrent ? 'text-gray-800' : 'text-gray-600',
+            ]"
+          >
+            {{ step.description }}
+          </span>
+        </NuxtLink>
+        <button
+          class="shrink-0 cursor-pointer p-1 -m-1 bg-blue-500 h-10 flex items-start"
+          @click.stop="onToggle"
         >
-          {{ step.description }}
-        </span>
-      </NuxtLink>
-      <button class="shrink-0 cursor-pointer p-1 -m-1" @click.stop="onToggle">
-        <component
-          :is="getIcon(isExpanded ? 'ChevronDown' : 'ChevronRight')"
-          v-if="getIcon('ChevronDown') && getIcon('ChevronRight')"
-          class="w-4 h-4 text-gray-600 transition-transform"
-          :class="isExpanded ? 'rotate-180' : ''"
-        />
-      </button>
+          <component
+            :is="getIcon(isExpanded ? 'ChevronDown' : 'ChevronRight')"
+            v-if="getIcon('ChevronDown') && getIcon('ChevronRight')"
+            class="w-4 h-4 text-gray-600 transition-transform bg-yellow-700"
+            :class="isExpanded ? 'rotate-180' : ''"
+          />
+        </button>
+      </div>
     </template>
     <!-- Otros pasos: siempre son links completos -->
     <NuxtLink

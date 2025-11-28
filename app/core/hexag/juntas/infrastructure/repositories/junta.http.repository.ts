@@ -10,10 +10,26 @@ export class JuntaHttpRepository implements JuntaRepository {
 
   private resolveUrl(societyId: number, path: string = ""): string {
     const config = useRuntimeConfig();
-    const baseUrl = config.public?.apiBaseUrl as string | undefined;
-    const basePath = baseUrl ? `${baseUrl}${this.basePath}` : this.basePath;
-    const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-    return `${basePath}/${societyId}/register-assembly${normalizedPath}`;
+    const apiBase = (config.public?.apiBase as string | undefined) || "";
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+
+    const candidates = [apiBase, origin, "http://localhost:3000"];
+
+    for (const base of candidates) {
+      if (!base) continue;
+      try {
+        const baseUrl = new URL(base, origin || "http://localhost:3000");
+        const basePath = this.basePath.startsWith("/") ? this.basePath : `/${this.basePath}`;
+        // Construir la ruta completa: /api/v2/society-profile/:societyId/register-assembly/:path
+        const fullPath = `${basePath}/${societyId}/register-assembly${path}`;
+        return new URL(fullPath, baseUrl.origin).toString();
+      } catch {
+        continue;
+      }
+    }
+
+    // Fallback: construir URL relativa
+    return `${this.basePath}/${societyId}/register-assembly${path}`;
   }
 
   async create(societyId: number): Promise<string> {
