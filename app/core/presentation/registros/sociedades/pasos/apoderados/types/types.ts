@@ -1,4 +1,4 @@
-import type { DocumentTypeUIEnum } from "./enums/DocumentTypeEnum";
+import type { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
 
 export interface ClaseApoderadoRow {
   id: string;
@@ -9,7 +9,7 @@ export interface ClaseApoderadoRow {
 export interface GerenteGeneralRow {
   id: string;
   nombre: string;
-  tipoDocumento: DocumentTypeUIEnum;
+  tipoDocumento: TipoDocumentosEnum;
   numeroDocumento: string;
 }
 
@@ -17,6 +17,6 @@ export interface ApoderadoRow {
   id: string;
   claseApoderadoNombre: string;
   nombre: string;
-  tipoDocumento: DocumentTypeUIEnum;
+  tipoDocumento: TipoDocumentosEnum;
   numeroDocumento: string;
 }

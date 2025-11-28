@@ -17,6 +17,7 @@
   interface Props {
     modelValue: boolean;
     claseApoderadoId: string;
+    mostrarSelectorClase: boolean;
     mode: "crear" | "editar";
     isSaving?: boolean;
     claseOptions: SelectOption[];
@@ -57,7 +58,7 @@
       <!-- HEADER -->
       <CardTitle :title="title" body="Completa la información solicitada.">
         <template #actions>
-          <div class="w-[340px]">
+          <div v-if="mostrarSelectorClase" class="w-[340px]">
             <SelectInputZod
               v-model="claseApoderadoId"
               name="clase_apoderado"

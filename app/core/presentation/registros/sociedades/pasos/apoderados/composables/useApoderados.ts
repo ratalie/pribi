@@ -1,4 +1,5 @@
 import { useClasesYApoderadosStore } from "../stores/useClasesYApoderadoStore";
+import { ClasesApoderadoEspecialesEnum } from "../types/enums/ClasesApoderadoEspecialesEnum";
 import {
   mapperApoderadoNaturalEntityAModal,
   mapperApoderadoNaturalModalALista,
@@ -7,14 +8,23 @@ import {
 export const useApoderados = (societyId: string) => {
   const clasesYApoderadoStore = useClasesYApoderadosStore();
   const personaNaturalStore = usePersonaNaturalStore();
+
   const selectedClaseId = ref("");
+  const mostrarSelectorClase = ref(true);
 
   const isOpenModalApoderado = ref(false);
   const isLoadingApoderado = ref(false);
   const modeModalApoderado = ref<"crear" | "editar">("crear");
   const editingApoderadoId = ref<string | null>(null);
 
-  const openModalApoderado = () => {
+  const openModalApoderado = (claseFijaNombre?: string) => {
+    if (claseFijaNombre && typeof claseFijaNombre === "string") {
+      selectedClaseId.value =
+        clasesYApoderadoStore.clases.find((clase) => clase.nombre === claseFijaNombre)?.id ??
+        "";
+      mostrarSelectorClase.value = false;
+    }
+
     isOpenModalApoderado.value = true;
   };
 
@@ -22,7 +32,9 @@ export const useApoderados = (societyId: string) => {
     //estado del modal:
     isOpenModalApoderado.value = false;
     modeModalApoderado.value = "crear";
+    //estados para los tipos de apoderados
     editingApoderadoId.value = null;
+    mostrarSelectorClase.value = true;
     //valores del modal:
     selectedClaseId.value = "";
     personaNaturalStore.$reset();
@@ -60,6 +72,10 @@ export const useApoderados = (societyId: string) => {
 
       selectedClaseId.value = apoderado.claseApoderadoId;
 
+      mostrarSelectorClase.value =
+        clasesYApoderadoStore.obtenerClasePorId(apoderado.claseApoderadoId)?.nombre !==
+        ClasesApoderadoEspecialesEnum.OTROS_APODERADOS;
+
       editingApoderadoId.value = apoderadoId;
       modeModalApoderado.value = "editar";
       openModalApoderado();
@@ -89,6 +105,7 @@ export const useApoderados = (societyId: string) => {
 
   return {
     selectedClaseId,
+    mostrarSelectorClase,
     isOpenModalApoderado,
     isLoadingApoderado,
     modeModalApoderado,

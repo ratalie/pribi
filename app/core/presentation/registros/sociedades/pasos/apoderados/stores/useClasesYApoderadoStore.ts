@@ -16,6 +16,7 @@ import {
 import { ApoderadosHttpRepository } from "~/core/hexag/registros/sociedades/pasos/apoderados/infrastructure";
 import { ApoderadosMapper } from "~/core/hexag/registros/sociedades/pasos/apoderados/infrastructure/mappers/apoderados.mapper";
 import { ClasesApoderadosMapper } from "~/core/hexag/registros/sociedades/pasos/apoderados/infrastructure/mappers/clases-apoderados.mapper";
+import { ClasesApoderadoEspecialesEnum } from "../types/enums/ClasesApoderadoEspecialesEnum";
 import type { ApoderadoRow, ClaseApoderadoRow } from "../types/types";
 import { convertirDocumentoDomainAUI } from "../utils/mapper-apoderados";
 
@@ -39,7 +40,13 @@ export const useClasesYApoderadosStore = defineStore("clases-y-apoderados", {
 
   getters: {
     datosClasesOpciones(): { id: string; value: string; label: string }[] {
-      return this.clases.map((clase) => ({
+      const clasesAsignables = this.clases.filter(
+        (clase) =>
+          clase.nombre !== ClasesApoderadoEspecialesEnum.GERENTE_GENERAL &&
+          clase.nombre !== ClasesApoderadoEspecialesEnum.OTROS_APODERADOS
+      );
+
+      return clasesAsignables.map((clase) => ({
         id: clase.id,
         value: clase.id,
         label: clase.nombre,
@@ -47,15 +54,33 @@ export const useClasesYApoderadosStore = defineStore("clases-y-apoderados", {
     },
 
     datosTablaClases(): ClaseApoderadoRow[] {
-      return this.clases.map((clase) => ({
-        id: clase.id,
-        nombre: clase.nombre,
-        numeroApoderados: 0,
-      }));
+      return this.clases.map((clase) => {
+        const numeroApoderados = this.apoderados.filter(
+          (apoderado) => apoderado.claseApoderadoId === clase.id
+        ).length;
+
+        return {
+          id: clase.id,
+          nombre: clase.nombre,
+          numeroApoderados,
+        };
+      });
     },
 
     datosTablaApoderados(): ApoderadoRow[] {
-      return this.apoderados.map((apoderado) => {
+      const apoderados = this.apoderados.filter((apoderado) => {
+        const clase = this.clases.find((c) => c.id === apoderado.claseApoderadoId);
+
+        if (!clase) return true;
+
+        const esClaseEspecial =
+          clase.nombre === ClasesApoderadoEspecialesEnum.GERENTE_GENERAL ||
+          clase.nombre === ClasesApoderadoEspecialesEnum.OTROS_APODERADOS;
+
+        return !esClaseEspecial;
+      });
+
+      return apoderados.map((apoderado) => {
         const clase = this.clases.find((c) => c.id === apoderado.claseApoderadoId);
         const nombre =
           apoderado.persona.tipo === PersonTypeEnum.NATURAL
@@ -65,6 +90,29 @@ export const useClasesYApoderadosStore = defineStore("clases-y-apoderados", {
         return {
           id: apoderado.id,
           claseApoderadoNombre: clase?.nombre ?? "",
+          nombre: nombre,
+          tipoDocumento: convertirDocumentoDomainAUI(apoderado.persona.tipoDocumento),
+          numeroDocumento: apoderado.persona.numeroDocumento,
+        };
+      });
+    },
+
+    datosTablaOtrosApoderados(): ApoderadoRow[] {
+      const apoderados = this.apoderados.filter((apoderado) => {
+        const clase = this.clases.find((c) => c.id === apoderado.claseApoderadoId);
+
+        return clase?.nombre === ClasesApoderadoEspecialesEnum.OTROS_APODERADOS;
+      });
+
+      return apoderados.map((apoderado) => {
+        const nombre =
+          apoderado.persona.tipo === PersonTypeEnum.NATURAL
+            ? `${apoderado.persona.nombre} ${apoderado.persona.apellidoPaterno} ${apoderado.persona.apellidoMaterno}`
+            : apoderado.persona.razonSocial;
+
+        return {
+          id: apoderado.id,
+          claseApoderadoNombre: ClasesApoderadoEspecialesEnum.OTROS_APODERADOS,
           nombre: nombre,
           tipoDocumento: convertirDocumentoDomainAUI(apoderado.persona.tipoDocumento),
           numeroDocumento: apoderado.persona.numeroDocumento,
