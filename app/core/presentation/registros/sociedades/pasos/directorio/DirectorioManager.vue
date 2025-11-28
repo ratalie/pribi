@@ -1,119 +1,186 @@
 <script setup lang="ts">
-  import { computed, ref } from "vue";
-  import noDirectorioImage from "~/assets/img/no-directorio.jpeg";
+  import { computed, onMounted, ref, watch } from "vue";
+  import { useRoute } from "vue-router";
   import VDropdownComponent from "~/components/VDropdownComponent.vue";
-  import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
-  import SwitchTabs from "~/components/base/Switch/SwitchTabs.vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
-  import NumberInputStepper from "~/components/base/inputs/number/NumberInputStepper.vue";
-  import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
-  import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
-  import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
+  import { getColumns } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
-  import Checkbox from "~/components/ui/checkbox/Checkbox.vue";
   import Switch from "~/components/ui/switch/Switch.vue";
+  import { useFlowLayoutNext } from "~/composables/useFlowLayoutNext";
   import AgregarDirectorModal from "~/core/presentation/registros/sociedades/pasos/directorio/components/AgregarDirectorModal.vue";
+  import DirectorioConfigForm from "~/core/presentation/registros/sociedades/pasos/directorio/components/DirectorioConfigForm.vue";
+  import DirectorioEmptyState from "~/core/presentation/registros/sociedades/pasos/directorio/components/DirectorioEmptyState.vue";
+  import PresidenteDirectorioForm from "~/core/presentation/registros/sociedades/pasos/directorio/components/PresidenteDirectorioForm.vue";
+  import { useDirectorioForm } from "~/core/presentation/registros/sociedades/pasos/directorio/components/forms/useDirectorioForm";
+  import { useDirectorioDirectores } from "~/core/presentation/registros/sociedades/pasos/directorio/composables/useDirectorioDirectores";
   import {
-    duracionDirectorioSchema,
-    fechaFinDirectorioSchema,
-    fechaInicioDirectorioSchema,
-    presidenteDirectorioSchema,
-  } from "~/core/presentation/registros/sociedades/pasos/directorio/schemas/directorio";
+    useDirectorioFormSync,
+    type DirectorioFormUI,
+  } from "~/core/presentation/registros/sociedades/pasos/directorio/composables/useDirectorioFormSync";
+  import { useDirectorioModals } from "~/core/presentation/registros/sociedades/pasos/directorio/composables/useDirectorioModals";
   import {
-    useDirectorioStore,
-    type Director,
-  } from "~/core/presentation/registros/sociedades/pasos/directorio/stores/useDirectores";
-  import {
-    useDirectoresComputed,
-    type DirectorTableRow,
-  } from "~/core/presentation/registros/sociedades/pasos/directorio/utils/useDirectoresComputed";
-  import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
-  import type { TypeOption } from "~/types/TypeOptions";
-
-  // import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+    directoresColumns,
+    termOptions,
+  } from "~/core/presentation/registros/sociedades/pasos/directorio/constants/directorio.constants";
+  import { useDirectores } from "~/core/presentation/registros/sociedades/pasos/directorio/useDirectores";
+  import { useDirectoresComputed } from "~/core/presentation/registros/sociedades/pasos/directorio/utils/useDirectoresComputed";
+  import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   interface Props {
-    // mode: EntityModeEnum;
+    mode?: EntityModeEnum;
     societyId?: string;
   }
 
-  defineProps<Props>();
+  const props = withDefaults(defineProps<Props>(), {
+    mode: EntityModeEnum.CREAR,
+    societyId: "",
+  });
 
-  // Opciones para duración del directorio
-  const termOptions: TypeOption[] = [
-    {
-      id: 1,
-      label: "1 año",
-      name: "1 año",
-      value: "1",
-      acronimo: "1",
-    },
-    {
-      id: 2,
-      label: "2 años",
-      name: "2 años",
-      value: "2",
-      acronimo: "2",
-    },
-    {
-      id: 3,
-      label: "3 años",
-      name: "3 años",
-      value: "3",
-      acronimo: "3",
-    },
-  ];
+  const route = useRoute();
+  // const router = useRouter(); // Ya no es necesario, la navegación la maneja useFlowLayoutNext
+
+  const societyId = computed(
+    () => props.societyId || (route.params.id as string | undefined) || ""
+  );
 
   // Columnas de la tabla de directores
-  const directoresColumns: TableColumn<DirectorTableRow>[] = [
-    { key: "nombres_apellidos", label: "Nombres y Apellidos", type: "text" },
-    { key: "tipo_documento", label: "Tipo de Documento", type: "text" },
-    { key: "numero_documento", label: "Nº de Documento", type: "text" },
-    { key: "tipo_director", label: "Tipo de Director", type: "text" },
-    { key: "reemplazo_asignado", label: "Reemplazo asignado", type: "text" },
-  ];
-
   const directoresColumnsDef = getColumns(directoresColumns);
 
-  // Acciones para el menú de opciones
+  // Stores y composables
+  const { directores, fetchAll, delete: deleteDirector } = useDirectores(societyId);
 
-  const directorioStore = useDirectorioStore();
-  const personaNaturalStore = usePersonaNaturalStore();
+  // Ref para el presidente del directorio (necesario para useDirectoresComputed)
+  const presidenteDirectorioRef = ref("");
 
-  const modalMode = ref<"create" | "edit">("create");
-  const directorToEdit = ref<Director | null>(null);
+  // Usar el composable para transformar directores a formato de tabla
+  const { directoresData, presidenteOptions: computedPresidenteOptions } =
+    useDirectoresComputed(directores, presidenteDirectorioRef);
 
-  const openCreateModal = () => {
-    modalMode.value = "create";
-    directorToEdit.value = null;
-    personaNaturalStore.$reset();
-    isModalOpen.value = true;
-  };
+  // Composable para el formulario de directorio
+  const {
+    form: directorioForm,
+    load: loadDirectorio,
+    submit: submitDirectorio,
+    isReadonly: isReadonlyDirectorio,
+    errorMessage: directorioErrorMessage,
+  } = useDirectorioForm({
+    societyId,
+    mode: computed(() => props.mode),
+  });
 
-  const openEditModal = (id: string) => {
-    const director = directorioStore.directores.find((item) => item.id === id);
+  // Formulario local para sincronizar con el DTO
+  const form = ref<DirectorioFormUI>({
+    cantidadDirectores: "3", // Valor por defecto: 3
+    cantidadPersonalizado: false,
+    minimoDirectores: "3",
+    maximoDirectores: "3",
+    duracionDirectorio: "",
+    fechaInicioDirectorio: "",
+    fechaFinDirectorio: "",
+    quorumMinimo: "",
+    quorumMayoria: "",
+    nombraPresidente: "opcion-a",
+    ejerceSecretaria: "opcion-a",
+    reeleccionDirectores: false,
+    presideJuntas: false,
+    votoDirimente: false,
+    presidenteDirectorio: "",
+  });
 
-    if (!director) {
-      return;
+  // Usar el composable para sincronizar el formulario UI con el DTO
+  const { syncFormFromDirectorio } = useDirectorioFormSync({
+    form,
+    directorioForm,
+    presidenteDirectorioRef,
+    directores,
+    presidenteOptions: computedPresidenteOptions,
+  });
+
+  // Watch para sincronizar cuando directorioForm cambie completamente (después de cargar)
+  // Usamos cantidadDirectores como indicador de que hay datos cargados
+  watch(
+    () => directorioForm.cantidadDirectores,
+    (newVal) => {
+      if (newVal > 0) {
+        // Si hay cantidadDirectores, significa que se cargaron datos del backend
+        syncFormFromDirectorio();
+      }
+    },
+    { immediate: true }
+  );
+
+  // También sincronizar cuando cambien los valores principales
+  watch(
+    [
+      () => directorioForm.conteoPersonalizado,
+      () => directorioForm.periodo,
+      () => directorioForm.inicioMandato,
+      () => directorioForm.finMandato,
+      () => directorioForm.quorumMinimo,
+      () => directorioForm.mayoria,
+      () => directorioForm.presidenteDesignado,
+      () => directorioForm.secretarioAsignado,
+      () => directorioForm.reeleccionPermitida,
+      () => directorioForm.presidentePreside,
+      () => directorioForm.presidenteDesempata,
+      () => directorioForm.presidenteId,
+    ],
+    () => {
+      if (directorioForm.cantidadDirectores > 0) {
+        syncFormFromDirectorio();
+      }
+    },
+    { deep: true }
+  );
+
+  // Cargar directores y directorio al montar
+  onMounted(async () => {
+    if (societyId.value) {
+      try {
+        await Promise.all([fetchAll(), loadDirectorio()]);
+        // Sincronizar después de cargar
+        syncFormFromDirectorio();
+      } catch {
+        console.warn("⚠️ No se pudieron cargar los datos del servidor (bug del backend).");
+      }
     }
+  });
 
-    modalMode.value = "edit";
-    directorToEdit.value = { ...director };
-    personaNaturalStore.$patch({
-      tipoDocumento: director.tipoDocumento,
-      numeroDocumento: director.numeroDocumento,
-      nombre: director.nombres,
-      apellidoPaterno: director.apellidoPaterno,
-      apellidoMaterno: director.apellidoMaterno,
-    });
-    isModalOpen.value = true;
-  };
+  // Recargar cuando cambie el societyId
+  watch(societyId, async (newId) => {
+    if (newId) {
+      try {
+        await Promise.all([fetchAll(), loadDirectorio()]);
+        // Sincronizar después de cargar
+        syncFormFromDirectorio();
+      } catch {
+        console.warn("⚠️ No se pudieron cargar los datos del servidor (bug del backend).");
+      }
+    }
+  });
 
-  const handleDeleteDirector = (id: string) => {
-    directorioStore.removeDirector(id);
-  };
+  // Composable para manejar la lógica de modales
+  const {
+    modalMode,
+    directorToEdit,
+    isModalOpen,
+    openCreateModal,
+    openEditModal,
+    closeModal,
+  } = useDirectorioModals({
+    directores,
+  });
+
+  // Composable para manejar la lógica de directores
+  const { handleDeleteDirector, handleDirectorSaved } = useDirectorioDirectores({
+    directores,
+    deleteDirector,
+    directorioForm,
+    form,
+    presidenteDirectorioRef,
+  });
 
   // Acciones para el menú de opciones
   const directoresActions = [
@@ -133,54 +200,50 @@
     },
   ];
 
-  // Datos del formulario
-  const form = ref({
-    cantidadDirectores: "",
-    cantidadPersonalizado: false,
-    duracionDirectorio: "",
-    fechaInicioDirectorio: "",
-    fechaFinDirectorio: "",
-    quorumMinimo: "",
-    quorumMayoria: "",
-    nombraPresidente: "opcion-a",
-    ejerceSecretaria: "opcion-a",
-    reeleccionDirectores: false,
-    presideJuntas: false,
-    votoDirimente: false,
-    presidenteDirectorio: "",
-  });
-
-  const presidenteDirectorioRef = computed({
-    get: () => form.value.presidenteDirectorio,
-    set: (value: string) => {
-      form.value.presidenteDirectorio = value;
-    },
-  });
-
-  const { directoresData, presidenteOptions } = useDirectoresComputed(presidenteDirectorioRef);
+  // Opciones para presidente (solo titulares) - usando el composable
+  const presidenteOptions = computedPresidenteOptions;
 
   const tieneDirectorio = ref(true);
 
-  const isModalOpen = ref(false);
+  // El nextRoute ya no es necesario porque useFlowLayoutNext maneja la navegación automáticamente
+  // const nextRoute = computed(() => {
+  //   const segments = route.path.split("/");
+  //   segments[segments.length - 1] = "quorums-mayorias";
+  //   return segments.join("/");
+  // });
 
-  const closeModal = () => {
-    isModalOpen.value = false;
-    modalMode.value = "create";
-    directorToEdit.value = null;
-    personaNaturalStore.$reset();
+  const handleNext = async () => {
+    if (isReadonlyDirectorio.value) {
+      // Si es readonly, solo navegar (sin guardar)
+      return;
+    }
+
+    // Asegurar que cantidadDirectores tenga un valor por defecto de 3 si está vacío o es 0
+    if (
+      !form.value.cantidadDirectores ||
+      form.value.cantidadDirectores.trim() === "" ||
+      Number(form.value.cantidadDirectores) === 0
+    ) {
+      form.value.cantidadDirectores = "3";
+      directorioForm.cantidadDirectores = 3;
+    }
+
+    // Asegurar que el presidenteId se sincronice antes del submit
+    directorioForm.presidenteId = form.value.presidenteDirectorio || null;
+    console.debug("[DirectorioManager] handleNext: antes de submit", {
+      formCantidadDirectores: form.value.cantidadDirectores,
+      directorioFormCantidadDirectores: directorioForm.cantidadDirectores,
+      formPresidenteDirectorio: form.value.presidenteDirectorio,
+      directorioFormPresidenteId: directorioForm.presidenteId,
+    });
+
+    await submitDirectorio();
+    // Nota: La navegación al siguiente paso la maneja automáticamente useFlowLayoutNext
   };
 
-  // Manejador de envío
-  const handleSubmit = () => {
-    console.log("Formulario enviado:", form.value);
-  };
-
-  const handleInvalidSubmit = (ctx: any) => {
-    // ctx.errors contiene los errores de validación
-    // Puedes mostrar un toast, alert, o log
-    console.log("Errores en el formulario:", ctx.errors);
-    // O usa tu sistema de notificaciones/toast aquí
-  };
+  // Registrar la función handleNext en el store del layout
+  // Esto conecta el botón "Siguiente" del layout con nuestra función handleNext
+  useFlowLayoutNext(handleNext);
 </script>
 
 <template>
@@ -195,210 +258,13 @@
           />
         </template>
       </CardTitle>
-      <SimpleCard v-if="tieneDirectorio">
-        <CardTitle title="Configuracion del Directorio" body="" />
+      <DirectorioConfigForm v-model:form="form" :term-options="termOptions" />
 
-        <Form
-          class="grid grid-cols-2 gap-14 w-full"
-          @submit="handleSubmit"
-          @invalid-submit="handleInvalidSubmit"
-        >
-          <!-- Primera columna: NumberInputStepper -->
-          <div class="flex flex-col gap-2">
-            <label
-              for="cantidad-directores"
-              class="t-t2 font-secondary text-gray-800 font-bold"
-            >
-              Cantidad de directores
-            </label>
-            <NumberInputStepper
-              id="cantidad-directores"
-              v-model="form.cantidadDirectores"
-              :min="3"
-              :max="9"
-              placeholder="3"
-              size="large"
-            />
-            <p class="t-t2 text-gray-500 font-secondary">Valor mínimo: {{ 3 }}.</p>
-          </div>
-
-          <!-- Segunda columna: Checkbox -->
-          <div class="flex items-center gap-2">
-            <Checkbox id="cantidad-personalizado" v-model="form.cantidadPersonalizado" />
-            <label
-              for="cantidad-personalizado"
-              class="t-t2 font-secondary text-gray-800 font-medium cursor-pointer"
-            >
-              Definir cantidad personalizada
-            </label>
-          </div>
-
-          <div class="flex gap-2">
-            <SelectInputZod
-              v-model="form.duracionDirectorio"
-              :options="termOptions"
-              name="duracion-directorio"
-              label="Duración del Directorio"
-              placeholder="Duración del Directorio"
-              :schema="duracionDirectorioSchema"
-            />
-          </div>
-          <div />
-          <div class="flex gap-2">
-            <DateInputZod
-              v-model="form.fechaInicioDirectorio"
-              name="fecha-inicio-directorio"
-              label="Fecha de Inicio del Directorio"
-              placeholder="Ingrese la fecha de inicio del directorio"
-              :schema="fechaInicioDirectorioSchema"
-            />
-          </div>
-          <div class="flex gap-2">
-            <DateInputZod
-              v-model="form.fechaFinDirectorio"
-              name="fecha-fin-directorio"
-              label="Fecha de Fin del Directorio"
-              placeholder="Ingrese la fecha de fin del directorio"
-              :schema="fechaFinDirectorioSchema"
-            />
-          </div>
-
-          <div class="flex flex-col gap-2">
-            <label for="quorum-minimo" class="t-t2 font-secondary text-gray-800 font-bold">
-              Quorum mínimo de asistencia
-            </label>
-            <NumberInputStepper
-              id="quorum-minimo"
-              v-model="form.quorumMinimo"
-              :min="3"
-              :max="100"
-              placeholder="0"
-              size="large"
-            />
-            <p class="t-t2 text-gray-500 font-secondary">
-              Mínimo requerido: la mitad más uno de sus miembros.
-            </p>
-          </div>
-          <div class="flex flex-col gap-2">
-            <label for="quorum-mayoria" class="t-t2 font-secondary text-gray-800 font-bold">
-              Mayoría para aprobar acuerdos
-            </label>
-            <NumberInputStepper
-              id="quorum-mayoria"
-              v-model="form.quorumMayoria"
-              :min="3"
-              :max="100"
-              placeholder="0"
-              size="large"
-            />
-            <p class="t-t2 text-gray-500 font-secondary">
-              Mínimo requerido: la mitad más uno de los participantes.
-            </p>
-          </div>
-          <div class="flex flex-col gap-2 col-span-2">
-            <div class="flex flex-col gap-2">
-              <label
-                for="nombra-presidente"
-                class="t-t2 font-secondary text-gray-800 font-bold"
-              >
-                ¿Quién nombra al Presidente del Directorio?
-              </label>
-              <span class="t-b2 text-gray-500 font-secondary">
-                Selecciona una de las dos opciones.
-              </span>
-            </div>
-            <SwitchTabs
-              v-model="form.nombraPresidente"
-              opcion-a="El Directorio"
-              opcion-b="La Asamblea de Accionistas"
-              variant="default"
-            />
-          </div>
-          <div class="flex flex-col gap-2 col-span-2">
-            <div class="flex flex-col gap-2">
-              <label
-                for="ejerce-secretaria"
-                class="t-t2 font-secondary text-gray-800 font-bold"
-              >
-                ¿Quién ejercerá la secretaria de las juntas de accionistas?
-              </label>
-              <span class="t-b2 text-gray-500 font-secondary">
-                Selecciona una de las dos opciones.
-              </span>
-            </div>
-            <SwitchTabs
-              v-model="form.ejerceSecretaria"
-              opcion-a="El Gerente General"
-              opcion-b="La Junta de Accionistas lo designa"
-              variant="default"
-            />
-          </div>
-
-          <div class="flex justify-between gap-2 col-span-2">
-            <div class="flex flex-col gap-2">
-              <label
-                for="reeleccion-directores"
-                class="t-t2 font-secondary text-gray-800 font-bold"
-              >
-                ¿Los directores pueden ser reelegidos?
-              </label>
-              <span class="t-b2 text-gray-500 font-secondary">
-                Selecciona una de las dos opciones.
-              </span>
-            </div>
-            <SimpleSwitchYesNo v-model="form.reeleccionDirectores" label="" />
-          </div>
-        </Form>
-      </SimpleCard>
-
-      <SimpleCard v-if="tieneDirectorio">
-        <CardTitle title="Presidente del Directorio" body="" />
-
-        <Form
-          class="flex flex-col gap-14 w-full"
-          @submit="handleSubmit"
-          @invalid-submit="handleInvalidSubmit"
-        >
-          <div class="flex justify-between gap-2 col-span-2">
-            <div class="flex flex-col gap-2">
-              <label for="preside-juntas" class="t-t2 font-secondary text-gray-800 font-bold">
-                ¿El presidente del Directorio preside las juntas de accionistas?
-              </label>
-              <span class="t-b2 text-gray-500 font-secondary">
-                Selecciona una de las dos opciones.
-              </span>
-            </div>
-            <SimpleSwitchYesNo v-model="form.presideJuntas" label="" />
-          </div>
-
-          <div class="flex justify-between gap-2 col-span-2">
-            <div class="flex flex-col gap-2">
-              <label for="voto-dirimente" class="t-t2 font-secondary text-gray-800 font-bold">
-                ¿El presidente del Directorio tiene voto dirimente?
-              </label>
-              <span class="t-b2 text-gray-500 font-secondary">
-                Selecciona una de las dos opciones.
-              </span>
-            </div>
-            <SimpleSwitchYesNo v-model="form.votoDirimente" label="" />
-          </div>
-
-          <div class="flex flex-col gap-2 w-1/2">
-            <SelectInputZod
-              v-model="form.presidenteDirectorio"
-              :options="presidenteOptions"
-              name="presidente-directorio"
-              label="Presidente del Directorio"
-              placeholder="Seleccionar"
-              :schema="presidenteDirectorioSchema"
-            />
-            <!-- :is-disabled="true" -->
-            <span class="t-b2 text-gray-500 font-secondary">
-              Este campo se habilita al registrar al menos un director titular.
-            </span>
-          </div>
-        </Form>
-      </SimpleCard>
+      <PresidenteDirectorioForm
+        v-if="tieneDirectorio"
+        v-model:form="form"
+        :presidente-options="presidenteOptions"
+      />
 
       <SimpleCard v-if="tieneDirectorio">
         <CardTitle title="Directores" body="">
@@ -420,25 +286,36 @@
         />
       </SimpleCard>
 
-      <div v-else class="flex flex-col w-full h-full items-center justify-center self-center">
-        <img
-          :src="noDirectorioImage"
-          alt="No directorio"
-          class="w-52 h-40 object-contain mb-8"
-        />
-        <p class="t-t1 text-gray-600 font-primary text-center font-semibold mb-1">
-          Este paso está desactivado
+      <DirectorioEmptyState v-else />
+
+      <div
+        v-if="tieneDirectorio"
+        class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
+      >
+        <p v-if="directorioErrorMessage" class="text-sm text-red-600">
+          {{ directorioErrorMessage }}
         </p>
-        <p class="t-b2 text-gray-400 font-secondary text-center">
-          Si decides incluir un Directorio, puedes activarlo en la parte superior.
-        </p>
+        <!-- <div class="flex justify-end gap-3">
+          <Button
+            variant="ghost"
+            type="button"
+            :disabled="isSavingDirectorio"
+            @click="handleReset"
+          >
+            Restablecer
+          </Button>
+           Botón "Siguiente" ahora está en el layout (flow-layout.vue) -->
+        <!-- Se maneja automáticamente mediante useFlowLayoutNext -->
+        <!-- </div> -->
       </div>
 
       <AgregarDirectorModal
         v-model="isModalOpen"
         :mode="modalMode"
         :director-to-edit="directorToEdit"
+        :society-id="props.societyId"
         @close="closeModal"
+        @saved="handleDirectorSaved"
       />
     </div>
   </div>

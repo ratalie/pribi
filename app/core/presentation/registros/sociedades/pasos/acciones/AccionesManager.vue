@@ -15,26 +15,28 @@
     societyId?: string;
   }
 
-  defineProps<Props>();
+  const props = defineProps<Props>();
 
   const {
     columns,
-    accionesData,
-    totalAccionesDisplay,
-    totalTiposDisplay,
+    registroAccionesStore,
     capitalSocialDisplay,
     valorNominalDisplay,
     isValorNominalModalOpen,
     isAccionesModalOpen,
     accionesModalMode,
     accionSeleccionadaId,
+    switchTabs,
+    isLoading,
     openValorNominalModal,
     openAccionesModal,
     closeValorNominalModal,
     closeAccionesModal,
+    handleSaveValorNominal,
+    handleAccionesModalSubmit,
     accionesActions,
     valorNominalStore,
-  } = useAccionesComputed();
+  } = useAccionesComputed(props.societyId ?? "");
 </script>
 
 <template>
@@ -43,7 +45,12 @@
       <template #actions>
         <div class="flex gap-4">
           <!-- valor nominal -->
-          <BaseButton variant="pill" class="h-11" @click="openValorNominalModal">
+          <BaseButton
+            v-if="valorNominalStore.valor === 0"
+            variant="pill"
+            class="h-11"
+            @click="openValorNominalModal"
+          >
             <img :src="IconCoin" alt="Valor Nominal" />
             <p class="font-bold">
               Valor Nominal:
@@ -64,32 +71,68 @@
       </template>
     </CardTitle>
 
+    <!-- datos del tipo de acciones y el valor nominal -->
+    <div class="grid grid-cols-2 gap-8">
+      <div
+        class="flex justify-between items-center px-6 py-3.5 border-2 bg-gray-25 rounded-lg"
+      >
+        <p class="font-primary font-semibold t-h6 text-gray-800">Tipo de acciones</p>
+        <p class="font-secondary font-medium t-t1 text-gray-800">
+          {{
+            switchTabs === "opcion-a" ? "Comunes y sin derecho a voto" : "Clases de Acciones"
+          }}
+        </p>
+      </div>
+
+      <div
+        class="flex justify-between items-center px-6 py-3.5 border-2 bg-gray-25 rounded-lg"
+      >
+        <div class="flex items-center gap-2">
+          <img :src="IconCoin" alt="Valor Nominal" />
+          <p class="font-primary font-semibold t-h6 text-gray-800">Valor Nominal:</p>
+        </div>
+        <p class="font-secondary font-medium t-t1 text-gray-800">{{ valorNominalDisplay }}</p>
+      </div>
+    </div>
+
     <!-- cards de resumen -->
     <div class="grid grid-cols-3 gap-6">
-      <OutLineCard title="Total de acciones de la sociedad" :value="totalAccionesDisplay" />
-      <OutLineCard title="Cantidad de Tipo de Acciones" :value="totalTiposDisplay" />
+      <OutLineCard
+        title="Total de acciones de la sociedad"
+        :value="registroAccionesStore.totalAcciones.toLocaleString('es-PE')"
+      />
+      <OutLineCard
+        title="Cantidad de Tipo de Acciones"
+        :value="registroAccionesStore.totalTipos.toString()"
+      />
       <OutLineCard title="Capital Social" :value="capitalSocialDisplay" />
     </div>
 
     <SimpleTable
       :columns="columns"
-      :data="accionesData"
+      :data="registroAccionesStore.tablaAcciones"
       title-menu="Acciones"
       :actions="accionesActions"
     />
 
     <ValorNominalModal
       v-model="isValorNominalModalOpen"
-      v-model:valor-nominal="valorNominalStore.valor"
+      v-model:switch-tabs="switchTabs"
+      :valor-nominal="valorNominalStore.valor"
+      :handle-save-valor-nominal="handleSaveValorNominal"
       @close="closeValorNominalModal"
-      @update:valor-nominal="valorNominalStore.setValor($event)"
     />
 
     <AccionesModal
       v-model="isAccionesModalOpen"
       :mode="accionesModalMode"
       :accion-id="accionSeleccionadaId"
+      :society-id="props.societyId"
+      :valor-nominal-display="valorNominalDisplay"
+      :is-loading="isLoading"
+      :switch-tabs="switchTabs"
       @close="closeAccionesModal"
+      @submit="handleAccionesModalSubmit"
     />
   </div>
 </template>

@@ -1,14 +1,27 @@
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
-import { useAccionesComunesStore } from "../stores/useAccionesComunesStore";
-import { useClasesAccionesStore } from "../stores/useClasesAccionesStore";
+import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
+import {
+  useAccionesComunesStore,
+  type AccionesComunesState,
+} from "../stores/useAccionesComunesStore";
+import {
+  useClasesAccionesStore,
+  type ClasesAccionesState,
+} from "../stores/useClasesAccionesStore";
 import { useRegistroAccionesStore } from "../stores/useRegistroAccionesStore";
 import { useValorNominalStore } from "../stores/useValorNominalStore";
 import type { AccionTableRow } from "../types/acciones";
+import {
+  mapperAccionesListaAModal,
+  mapperClasesModalALista,
+  mapperComunesModalALista,
+} from "../utils/mapper-acciones-lista";
 
-export const useAccionesComputed = () => {
-  const valorNominalStore = useValorNominalStore();
+export const useAccionesComputed = (profileId: string) => {
   const registroAccionesStore = useRegistroAccionesStore();
+
+  const valorNominalStore = useValorNominalStore();
   const accionesComunesStore = useAccionesComunesStore();
   const clasesAccionesStore = useClasesAccionesStore();
 
@@ -44,17 +57,14 @@ export const useAccionesComputed = () => {
   });
 
   // Datos computados
-  const accionesData = computed(() => registroAccionesStore.tablaAcciones);
   const totalAcciones = computed(() => registroAccionesStore.totalAcciones);
-  const totalTipos = computed(() => registroAccionesStore.totalTipos);
   const capitalSocial = computed(() => valorNominalStore.valor * totalAcciones.value);
 
   // Displays formateados
-  const totalAccionesDisplay = computed(() => totalAcciones.value.toLocaleString("es-PE"));
-  const totalTiposDisplay = computed(() => totalTipos.value.toString());
   const capitalSocialDisplay = computed(() =>
     currencyFormatter.format(capitalSocial.value || 0)
   );
+
   const valorNominalDisplay = computed(() =>
     currencyFormatter.format(valorNominalStore.valor || 0)
   );
@@ -64,31 +74,100 @@ export const useAccionesComputed = () => {
   const isAccionesModalOpen = ref(false);
   const accionesModalMode = ref<"crear" | "editar">("crear");
   const accionSeleccionadaId = ref<string | null>(null);
+  const switchTabs = ref<"opcion-a" | "opcion-b">("opcion-a");
 
-  // Funciones de utilidad
-  const resetAccionForms = () => {
-    accionesComunesStore.$reset();
-    clasesAccionesStore.$reset();
-  };
+  const isLoading = ref(false);
 
-  // Funciones de modales
+  // Funciones de modal de valor nominal
   const openValorNominalModal = () => {
     isValorNominalModalOpen.value = true;
-  };
-
-  const openAccionesModal = () => {
-    resetAccionForms();
-    accionesModalMode.value = "crear";
-    accionSeleccionadaId.value = null;
-    isAccionesModalOpen.value = true;
   };
 
   const closeValorNominalModal = () => {
     isValorNominalModalOpen.value = false;
   };
 
+  const handleSaveValorNominal = async (valor: number) => {
+    try {
+      await valorNominalStore.update(profileId, valor);
+
+      closeValorNominalModal();
+    } catch (error) {
+      console.error("[useAccionesComputed] Error al guardar valor nominal:", error);
+    }
+  };
+
+  // Funciones de modal de acciones
+  const resetAccionForms = () => {
+    accionesComunesStore.$reset();
+    clasesAccionesStore.$reset();
+  };
+
+  const openAccionesModal = () => {
+    accionesModalMode.value = "crear";
+    accionSeleccionadaId.value = null;
+    isAccionesModalOpen.value = true;
+  };
+
   const closeAccionesModal = () => {
+    resetAccionForms();
     isAccionesModalOpen.value = false;
+  };
+
+  // Manejar submit del modal
+  const handleAccionesModalSubmit = async () => {
+    try {
+      isLoading.value = true;
+
+      switch (switchTabs.value) {
+        case "opcion-a": {
+          const accionMapeada = mapperComunesModalALista(
+            accionesComunesStore,
+            accionSeleccionadaId.value ?? undefined
+          );
+
+          // Solo validar si estamos creando una nueva acción
+          if (accionesModalMode.value === "crear") {
+            // Verificar si ya existe una acción del mismo tipo
+            const existeMismoTipo = registroAccionesStore.acciones.some(
+              (accion) => accion.tipo === accionMapeada.tipo
+            );
+
+            if (existeMismoTipo) {
+              const tipoNombre =
+                accionMapeada.tipo === TipoAccionEnum.COMUN ? "común" : "sin derecho a voto";
+              throw new Error(`Ya existe una acción ${tipoNombre}`);
+            }
+          }
+
+          if (accionesModalMode.value === "editar" && accionSeleccionadaId.value) {
+            await registroAccionesStore.updateAccion(profileId, accionMapeada);
+          } else {
+            await registroAccionesStore.createAccion(profileId, accionMapeada);
+          }
+          break;
+        }
+        case "opcion-b": {
+          const accionMapeada = mapperClasesModalALista(
+            clasesAccionesStore,
+            accionSeleccionadaId.value ?? undefined
+          );
+
+          if (accionesModalMode.value === "editar" && accionSeleccionadaId.value) {
+            await registroAccionesStore.updateAccion(profileId, accionMapeada);
+          } else {
+            await registroAccionesStore.createAccion(profileId, accionMapeada);
+          }
+          break;
+        }
+      }
+
+      closeAccionesModal();
+    } catch (error) {
+      console.error("[useAccionesComputed] Error al guardar acciones:", error);
+    } finally {
+      isLoading.value = false;
+    }
   };
 
   // Funciones de acciones
@@ -96,17 +175,31 @@ export const useAccionesComputed = () => {
     const accion = registroAccionesStore.getAccionById(id);
 
     if (!accion) {
-      return;
+      throw new Error("Acción no encontrada");
     }
 
-    resetAccionForms();
+    const formData = mapperAccionesListaAModal(accion);
+
+    // Poblar el store correspondiente según el tipo de acción
+    if (accion.tipo === TipoAccionEnum.CLASES) {
+      clasesAccionesStore.setFormData(formData as ClasesAccionesState);
+      switchTabs.value = "opcion-b";
+    } else {
+      accionesComunesStore.setFormData(formData as AccionesComunesState);
+      switchTabs.value = "opcion-a";
+    }
+
     accionesModalMode.value = "editar";
     accionSeleccionadaId.value = id;
     isAccionesModalOpen.value = true;
   };
 
-  const handleDeleteAccion = (id: string) => {
-    registroAccionesStore.removeAccion(id);
+  const handleDeleteAccion = async (id: string) => {
+    try {
+      await registroAccionesStore.removeAccion(profileId, id);
+    } catch (error) {
+      console.error("[useAccionesComputed] Error al eliminar acción:", error);
+    }
   };
 
   const accionesActions = [
@@ -122,17 +215,17 @@ export const useAccionesComputed = () => {
     },
   ];
 
+  onMounted(async () => {
+    await Promise.all([
+      registroAccionesStore.loadAcciones(profileId),
+      valorNominalStore.load(profileId),
+    ]);
+  });
+
   return {
-    // Columnas
     columns,
-    // Datos
-    accionesData,
-    totalAcciones,
-    totalTipos,
-    capitalSocial,
+    registroAccionesStore,
     // Displays
-    totalAccionesDisplay,
-    totalTiposDisplay,
     capitalSocialDisplay,
     valorNominalDisplay,
     // Modales
@@ -140,14 +233,17 @@ export const useAccionesComputed = () => {
     isAccionesModalOpen,
     accionesModalMode,
     accionSeleccionadaId,
+    switchTabs,
+    isLoading,
     openValorNominalModal,
     openAccionesModal,
     closeValorNominalModal,
+    handleSaveValorNominal,
     closeAccionesModal,
+    handleAccionesModalSubmit,
     // Acciones
     accionesActions,
-    // Stores (para acceso directo si es necesario)
+    // Stores
     valorNominalStore,
-    registroAccionesStore,
   };
 };

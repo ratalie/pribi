@@ -12,7 +12,7 @@
   import type { AccionistaRow } from "../types";
 
   interface Props {
-    items: AccionistaRow[];
+    items?: AccionistaRow[];
     isLoading?: boolean;
     readonly?: boolean;
   }
@@ -85,4 +85,3 @@
     </Table>
   </div>
 </template>
-

@@ -5,7 +5,7 @@
 
   interface Props {
     modelValue?: boolean;
-    size?: "sm" | "md" | "lg";
+    size?: "xs" | "sm" | "md" | "lg";
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -20,10 +20,12 @@
 
   const getSizeClasses = () => {
     switch (props.size) {
-      case "sm":
+      case "xs":
         return "min-w-[400px]";
-      case "md":
+      case "sm":
         return "min-w-[521px]";
+      case "md":
+        return "min-w-[714px]";
       case "lg":
         return "min-w-[1042px]";
     }
@@ -31,6 +33,7 @@
 
   const getPaddingSizeClasses = () => {
     switch (props.size) {
+      case "xs":
       case "sm":
         return "px-10 py-12";
       case "md":

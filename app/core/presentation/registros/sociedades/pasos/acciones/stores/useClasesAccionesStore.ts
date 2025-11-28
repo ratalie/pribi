@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
+import type { FileMetadata } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
 
 export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
-  state: () => ({
+  state: (): State => ({
     // Campos del formulario
     nombreClaseAccion: "",
     cantidadAccionesClase: 0,
@@ -9,12 +10,14 @@ export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
     redimiblesClase: false,
     otrosDerechosEspecialesClase: false,
     obligacionesAdicionalesClase: false,
+    comentariosAdicionales: false,
+    comentariosAdicionalesTexto: "",
 
-    // Archivos de "Otros derechos especiales"
-    archivosDerechosEspecialesClase: [] as File[],
+    // Metadata de archivos de "Otros derechos especiales"
+    metadataDerechosEspecialesClase: [] as FileMetadata[],
 
-    // Archivos de "Obligaciones adicionales"
-    archivosObligacionesClase: [] as File[],
+    // Metadata de archivos de "Obligaciones adicionales"
+    metadataObligacionesClase: [] as FileMetadata[],
   }),
 
   actions: {
@@ -27,9 +30,61 @@ export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
         redimiblesClase: this.redimiblesClase,
         otrosDerechosEspecialesClase: this.otrosDerechosEspecialesClase,
         obligacionesAdicionalesClase: this.obligacionesAdicionalesClase,
-        archivosDerechosEspecialesClase: this.archivosDerechosEspecialesClase,
-        archivosObligacionesClase: this.archivosObligacionesClase,
+        comentariosAdicionales: this.comentariosAdicionales,
+        comentariosAdicionalesTexto: this.comentariosAdicionalesTexto,
+        metadataDerechosEspecialesClase: this.metadataDerechosEspecialesClase,
+        metadataObligacionesClase: this.metadataObligacionesClase,
       };
+    },
+
+    setFormData(data: State) {
+      this.nombreClaseAccion = data.nombreClaseAccion;
+      this.cantidadAccionesClase = data.cantidadAccionesClase;
+      this.conDerechoVoto = data.conDerechoVoto;
+      this.redimiblesClase = data.redimiblesClase;
+      this.otrosDerechosEspecialesClase = data.otrosDerechosEspecialesClase;
+      this.obligacionesAdicionalesClase = data.obligacionesAdicionalesClase;
+      this.comentariosAdicionales = data.comentariosAdicionales;
+      this.comentariosAdicionalesTexto = data.comentariosAdicionalesTexto;
+      this.metadataDerechosEspecialesClase = [...(data.metadataDerechosEspecialesClase || [])];
+      this.metadataObligacionesClase = [...(data.metadataObligacionesClase || [])];
+    },
+
+    addDerechosEspecialesClaseMetadata(metadata: FileMetadata) {
+      this.metadataDerechosEspecialesClase.push(metadata);
+    },
+
+    removeDerechosEspecialesClaseMetadata(fileId: string) {
+      const index = this.metadataDerechosEspecialesClase.findIndex((m) => m.fileId === fileId);
+      if (index !== -1) {
+        this.metadataDerechosEspecialesClase.splice(index, 1);
+      }
+    },
+
+    addObligacionesClaseMetadata(metadata: FileMetadata) {
+      this.metadataObligacionesClase.push(metadata);
+    },
+
+    removeObligacionesClaseMetadata(fileId: string) {
+      const index = this.metadataObligacionesClase.findIndex((m) => m.fileId === fileId);
+      if (index !== -1) {
+        this.metadataObligacionesClase.splice(index, 1);
+      }
     },
   },
 });
+
+export interface ClasesAccionesState {
+  nombreClaseAccion: string;
+  cantidadAccionesClase: number;
+  conDerechoVoto: boolean;
+  redimiblesClase: boolean;
+  otrosDerechosEspecialesClase: boolean;
+  obligacionesAdicionalesClase: boolean;
+  comentariosAdicionales: boolean;
+  comentariosAdicionalesTexto: string;
+  metadataDerechosEspecialesClase: FileMetadata[];
+  metadataObligacionesClase: FileMetadata[];
+}
+
+type State = ClasesAccionesState;

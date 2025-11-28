@@ -99,4 +99,3 @@ export const useQuorumStore = defineStore(
     persist: true,
   }
 );
-
