@@ -81,7 +81,8 @@ export function getGroupedSubSteps(
  */
 export function isStepCurrent(step: NavigationStep, currentStepId: string): boolean {
   const stepSlug = extractStepSlug(step.route);
-  return stepSlug === currentStepId || step.route.includes(currentStepId);
+  // Solo comparación exacta del slug para evitar activar múltiples steps
+  return stepSlug === currentStepId;
 }
 
 

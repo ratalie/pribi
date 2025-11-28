@@ -1,37 +1,31 @@
 <script setup lang="ts">
-import type { NavigationStep } from "~/types/navigationSteps";
-import { getIcon } from "~/utils/iconMapper";
-import { useJuntasHeaderNavigation } from "~/composables/useJuntasHeaderNavigation";
-import BaseButton from "../base/buttons/BaseButton.vue";
-import HeaderTitle from "./HeaderTitle.vue";
-import HeaderActions from "./HeaderActions.vue";
+  import { useJuntasHeaderNavigation } from "~/composables/useJuntasHeaderNavigation";
+  import type { NavigationStep } from "~/types/navigationSteps";
+  import { getIcon } from "~/utils/iconMapper";
+  import BaseButton from "../base/buttons/BaseButton.vue";
+  import HeaderActions from "./HeaderActions.vue";
+  import HeaderTitle from "./HeaderTitle.vue";
 
-interface Props {
-  steps: NavigationStep[];
-  currentStepIndex: number;
-  onBack?: () => void;
-  onSave?: () => void;
-  onReset?: () => void;
-}
+  interface Props {
+    steps: NavigationStep[];
+    currentStepIndex: number;
+    onBack?: () => void;
+    onSave?: () => void;
+    onReset?: () => void;
+  }
 
-const props = defineProps<Props>();
+  const props = defineProps<Props>();
 
-// Usar composable para navegación
-const { goBackStep, currentStep } = useJuntasHeaderNavigation(
-  computed(() => props.steps),
-  computed(() => props.currentStepIndex),
-  props.onBack
-);
+  // Usar composable para navegación
+  const { goBackStep, currentStep } = useJuntasHeaderNavigation(
+    computed(() => props.steps),
+    computed(() => props.currentStepIndex),
+    props.onBack
+  );
 </script>
 
 <template>
-  <div
-    class="bg-white border-b px-8 py-4"
-    style="
-      border-color: var(--border-light, #e5e7eb);
-      box-shadow: var(--shadow-card, 0 1px 3px 0 rgba(0, 0, 0, 0.1));
-    "
-  >
+  <div class="bg-white border-b border-gray-200 shadow-sm px-8 py-4">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-4">
         <BaseButton variant="ghost" @click="goBackStep" class="flex items-center gap-2">

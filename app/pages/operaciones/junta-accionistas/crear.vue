@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref } from "vue";
+  import { ref, computed, onMounted } from "vue";
   import { useRouter } from "vue-router";
   import { Button } from "@/components/ui/button";
   import {
@@ -10,7 +10,17 @@
     CardHeader,
     CardTitle,
   } from "@/components/ui/card";
-  import { LoaderCircle } from "lucide-vue-next";
+  import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select";
+  import { LoaderCircle, Building2 } from "lucide-vue-next";
+  import { useSociedadHistorialStore } from "~/core/presentation/registros/sociedades/stores/sociedad-historial.store";
+  import { useJuntaHistorialStore } from "~/core/presentation/juntas/stores/junta-historial.store";
+  import { storeToRefs } from "pinia";
 
   definePageMeta({
     layout: "default",
@@ -39,18 +49,61 @@
   ];
 
   const router = useRouter();
+  const sociedadHistorialStore = useSociedadHistorialStore();
+  const juntaHistorialStore = useJuntaHistorialStore();
+  const { sociedades } = storeToRefs(sociedadHistorialStore);
+
+  const selectedSocietyId = ref<string | null>(null);
   const isSubmitting = ref(false);
   const errorMessage = ref<string | null>(null);
+  const isLoadingSociedades = ref(false);
+
+  const selectedSociedad = computed(() => {
+    if (!selectedSocietyId.value) return null;
+    return sociedades.value.find(
+      (s) => s.idSociety === selectedSocietyId.value
+    );
+  });
+
+  const canStart = computed(() => {
+    return selectedSocietyId.value !== null && !isSubmitting.value;
+  });
+
+  onMounted(async () => {
+    isLoadingSociedades.value = true;
+    try {
+      await sociedadHistorialStore.cargarHistorial();
+    } catch (error) {
+      console.error("Error al cargar sociedades:", error);
+      errorMessage.value = "No pudimos cargar las sociedades disponibles.";
+    } finally {
+      isLoadingSociedades.value = false;
+    }
+  });
 
   const handleStartFlow = async () => {
-    if (isSubmitting.value) return;
+    if (isSubmitting.value || !selectedSocietyId.value) return;
 
     isSubmitting.value = true;
     errorMessage.value = null;
 
     try {
-      // Redirigir al primer paso del flujo de junta
-      await router.push("/operaciones/junta-accionistas/seleccion-agenda");
+      const societyIdNumber = parseInt(selectedSocietyId.value, 10);
+      if (Number.isNaN(societyIdNumber)) {
+        throw new Error("ID de sociedad inválido");
+      }
+
+      // Crear la junta en el backend
+      const flowId = await juntaHistorialStore.crearJunta(societyIdNumber);
+
+      if (!flowId) {
+        errorMessage.value = "No fue posible crear la junta. Inténtalo nuevamente.";
+        isSubmitting.value = false;
+        return;
+      }
+
+      // Redirigir al primer paso del flujo de junta con el ID
+      await router.push(`/operaciones/junta-accionistas/${flowId}/seleccion-agenda`);
     } catch (error) {
       errorMessage.value = "No fue posible iniciar el flujo de junta. Inténtalo nuevamente.";
       console.error("Error al iniciar flujo de junta:", error);
@@ -75,16 +128,73 @@
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div class="grid gap-6 md:grid-cols-3">
-          <div
-            v-for="step in onboardingSteps"
-            :key="step.title"
-            class="rounded-xl border border-primary-400/40 bg-white/60 p-4 shadow-sm"
-          >
-            <h3 class="text-base font-semibold text-primary-800">{{ step.title }}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-gray-600">
-              {{ step.description }}
+        <div class="space-y-6">
+          <!-- Selector de Sociedades -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-primary-800">
+              Selecciona la sociedad para la junta
+            </label>
+            <Select
+              v-model="selectedSocietyId"
+              :disabled="isLoadingSociedades || isSubmitting"
+            >
+              <SelectTrigger class="w-full">
+                <SelectValue placeholder="Selecciona una sociedad..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="sociedad in sociedades"
+                  :key="sociedad.idSociety"
+                  :value="sociedad.idSociety"
+                >
+                  <div class="flex items-center gap-2">
+                    <Building2 class="h-4 w-4" />
+                    <span>{{ sociedad.razonSocial || "Sociedad sin nombre" }}</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <p v-if="isLoadingSociedades" class="text-xs text-gray-500">
+              Cargando sociedades...
             </p>
+            <p v-else-if="sociedades.length === 0" class="text-xs text-amber-600">
+              No hay sociedades disponibles. Crea una sociedad primero.
+            </p>
+          </div>
+
+          <!-- Información de la sociedad seleccionada -->
+          <div
+            v-if="selectedSociedad"
+            class="rounded-lg border border-primary-300/40 bg-primary-50/40 p-4"
+          >
+            <h4 class="mb-2 text-sm font-semibold text-primary-800">
+              Sociedad seleccionada:
+            </h4>
+            <div class="space-y-1 text-sm text-gray-700">
+              <p>
+                <strong>Razón Social:</strong> {{ selectedSociedad.razonSocial }}
+              </p>
+              <p v-if="selectedSociedad.ruc">
+                <strong>RUC:</strong> {{ selectedSociedad.ruc }}
+              </p>
+              <p v-if="selectedSociedad.tipoSocietario">
+                <strong>Tipo:</strong> {{ selectedSociedad.tipoSocietario }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Pasos del flujo -->
+          <div class="grid gap-6 md:grid-cols-3">
+            <div
+              v-for="step in onboardingSteps"
+              :key="step.title"
+              class="rounded-xl border border-primary-400/40 bg-white/60 p-4 shadow-sm"
+            >
+              <h3 class="text-base font-semibold text-primary-800">{{ step.title }}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-gray-600">
+                {{ step.description }}
+              </p>
+            </div>
           </div>
         </div>
       </CardContent>
@@ -103,11 +213,11 @@
             variant="primary"
             size="md"
             class="w-full md:w-auto"
-            :disabled="isSubmitting"
+            :disabled="!canStart"
             @click="handleStartFlow"
           >
             <LoaderCircle v-if="isSubmitting" class="mr-2 h-4 w-4 animate-spin" />
-            Comenzar formulario guiado
+            {{ canStart ? "Comenzar formulario guiado" : "Selecciona una sociedad para continuar" }}
           </Button>
         </div>
       </CardFooter>

@@ -52,7 +52,7 @@ export function useJuntasSidebarExpansion(
       }
     }
 
-    // ⭐ SIEMPRE expandir "puntos-acuerdo" si existe (incluso si no tiene sub-steps aún)
+    // Solo expandir "puntos-acuerdo" si es el paso actual o si ya está expandido manualmente
     const puntosAcuerdoStep = newSteps.find((s) => {
       const stepSlug = extractStepSlug(s.route);
       return stepSlug === "puntos-acuerdo";
@@ -60,30 +60,23 @@ export function useJuntasSidebarExpansion(
 
     if (puntosAcuerdoStep) {
       const subStepsCount = puntosAcuerdoStep.subSteps?.length || 0;
-      console.log(
-        "🔴 [useJuntasSidebarExpansion] Paso 'puntos-acuerdo' encontrado, sub-steps:",
-        subStepsCount
-      );
-      console.log(
-        "🔴 [useJuntasSidebarExpansion] Sub-steps IDs:",
-        puntosAcuerdoStep.subSteps?.map((s) => s.id) || []
-      );
-
-      // Siempre expandir "puntos-acuerdo" si existe
-      if (!expandedSteps.value.includes("puntos-acuerdo")) {
+      const isPuntosAcuerdoCurrent = currentStepId.value === "puntos-acuerdo";
+      
+      // Solo expandir "puntos-acuerdo" si es el paso actual
+      if (isPuntosAcuerdoCurrent && !expandedSteps.value.includes("puntos-acuerdo")) {
         expandedSteps.value.push("puntos-acuerdo");
-        console.log("🔴 [useJuntasSidebarExpansion] Expandido 'puntos-acuerdo'");
-      }
-
-      // Expandir todas las categorías de "puntos-acuerdo" si tiene sub-steps
-      if (subStepsCount > 0) {
-        const categories = new Set(puntosAcuerdoStep.subSteps?.map((s) => s.category) || []);
-        categories.forEach((category) => {
-          if (category && !expandedCategories.value.includes(category)) {
-            expandedCategories.value.push(category);
-            console.log("🔴 [useJuntasSidebarExpansion] Expandida categoría:", category);
-          }
-        });
+        console.log("🔴 [useJuntasSidebarExpansion] Expandido 'puntos-acuerdo' (es paso actual)");
+        
+        // Expandir todas las categorías de "puntos-acuerdo" si tiene sub-steps
+        if (subStepsCount > 0) {
+          const categories = new Set(puntosAcuerdoStep.subSteps?.map((s) => s.category) || []);
+          categories.forEach((category) => {
+            if (category && !expandedCategories.value.includes(category)) {
+              expandedCategories.value.push(category);
+              console.log("🔴 [useJuntasSidebarExpansion] Expandida categoría:", category);
+            }
+          });
+        }
       }
     } else {
       console.log("🔴 [useJuntasSidebarExpansion] Paso 'puntos-acuerdo' NO encontrado en steps");

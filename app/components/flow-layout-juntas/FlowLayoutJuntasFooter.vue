@@ -1,50 +1,47 @@
 <script setup lang="ts">
-import type { NavigationStep } from "~/types/navigationSteps";
-import type { SectionItem } from "~/types/junta-navigation.types";
-import { useJuntasFooterLabels } from "~/composables/useJuntasFooterLabels";
-import FooterContextualInfo from "./FooterContextualInfo.vue";
-import FooterNavigationButtons from "./FooterNavigationButtons.vue";
+  import { useJuntasFooterLabels } from "~/composables/useJuntasFooterLabels";
+  import type { SectionItem } from "~/types/junta-navigation.types";
+  import type { NavigationStep } from "~/types/navigationSteps";
+  import FooterContextualInfo from "./FooterContextualInfo.vue";
+  import FooterNavigationButtons from "./FooterNavigationButtons.vue";
 
-interface Props {
-  steps: NavigationStep[];
-  currentStepIndex: number;
-  currentSubStepId?: string;
-  detectedCurrentSection?: string;
-  sectionsWithCurrent: SectionItem[];
-  isLoading: boolean;
-  onPrev: () => void;
-  onNext: () => void;
-}
+  interface Props {
+    steps: NavigationStep[];
+    currentStepIndex: number;
+    currentSubStepId?: string;
+    detectedCurrentSection?: string;
+    sectionsWithCurrent: SectionItem[];
+    isLoading: boolean;
+    onPrev: () => void;
+    onNext: () => void;
+  }
 
-const props = defineProps<Props>();
+  const props = defineProps<Props>();
 
-// Usar composable para obtener todos los labels y títulos
-const {
-  currentStepTitle,
-  currentSectionTitle,
-  prevButtonLabel,
-  nextButtonLabel,
-  nextButtonIcon,
-  stepCounter,
-} = useJuntasFooterLabels(
-  computed(() => props.steps),
-  computed(() => props.currentStepIndex),
-  computed(() => props.currentSubStepId),
-  computed(() => props.detectedCurrentSection),
-  computed(() => props.sectionsWithCurrent)
-);
+  // Usar composable para obtener todos los labels y títulos
+  const {
+    currentStepTitle,
+    currentSectionTitle,
+    prevButtonLabel,
+    nextButtonLabel,
+    nextButtonIcon,
+    stepCounter,
+  } = useJuntasFooterLabels(
+    computed(() => props.steps),
+    computed(() => props.currentStepIndex),
+    computed(() => props.currentSubStepId),
+    computed(() => props.detectedCurrentSection),
+    computed(() => props.sectionsWithCurrent)
+  );
 
-// Determinar si el botón anterior está deshabilitado
-const isPrevDisabled = computed(
-  () => props.currentStepIndex === 0 && !props.currentSubStepId
-);
+  // Determinar si el botón anterior está deshabilitado
+  const isPrevDisabled = computed(
+    () => props.currentStepIndex === 0 && !props.currentSubStepId
+  );
 </script>
 
 <template>
-  <div
-    class="bg-white border-t px-8 py-4 shrink-0"
-    style="border-color: var(--border-light, #e5e7eb)"
-  >
+  <div class="bg-white border-t border-gray-200 px-8 py-4 shrink-0">
     <div class="flex flex-col gap-3 max-w-5xl mx-auto">
       <!-- Información contextual -->
       <FooterContextualInfo

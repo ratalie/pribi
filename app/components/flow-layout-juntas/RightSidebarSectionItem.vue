@@ -1,35 +1,32 @@
 <script setup lang="ts">
-import type { SectionItem } from "~/types/junta-navigation.types";
-import { getIcon } from "~/utils/iconMapper";
-import { isSectionActive, getSectionStatus } from "~/utils/juntas/right-sidebar.utils";
+  import type { SectionItem } from "~/types/junta-navigation.types";
+  import { getIcon } from "~/utils/iconMapper";
+  import { getSectionStatus, isSectionActive } from "~/utils/juntas/right-sidebar.utils";
 
-interface Props {
-  section: SectionItem;
-  currentSectionId: string;
-  sections: SectionItem[];
-  isExpanded: boolean;
-  isInExpandedList: boolean;
-  onToggle: () => void;
-  onSectionClick: (sectionId: string) => void;
-}
+  interface Props {
+    section: SectionItem;
+    currentSectionId: string;
+    sections: SectionItem[];
+    isExpanded: boolean;
+    isInExpandedList: boolean;
+    onToggle: () => void;
+    onSectionClick: (sectionId: string) => void;
+  }
 
-const props = defineProps<Props>();
+  const props = defineProps<Props>();
 
-const sectionActive = computed(() => isSectionActive(props.section, props.currentSectionId));
-const sectionStatus = computed(() =>
-  getSectionStatus(props.section, props.currentSectionId, props.sections)
-);
+  const sectionActive = computed(() => isSectionActive(props.section, props.currentSectionId));
+  const sectionStatus = computed(() =>
+    getSectionStatus(props.section, props.currentSectionId, props.sections)
+  );
 </script>
 
 <template>
-  <div
-    :class="['relative', sectionActive && 'bg-primary-50/50 rounded-lg']"
-  >
+  <div :class="['relative', sectionActive && 'bg-primary-50/50 rounded-lg']">
     <!-- Barra vertical morada cuando está activa -->
     <div
       v-if="sectionActive"
-      class="absolute left-0 top-0 bottom-0 w-1 rounded-l-lg"
-      style="background-color: var(--primary-800, #3C28A4)"
+      class="absolute left-0 top-0 bottom-0 w-1 rounded-l-lg bg-primary-800"
     />
 
     <!-- Botón de Sección Principal -->
@@ -98,4 +95,3 @@ const sectionStatus = computed(() =>
     </button>
   </div>
 </template>
-
