@@ -7,13 +7,19 @@
   import SharesCard from "./components/SharesCard.vue";
   import AsignationTable from "./components/tables/AsignationTable.vue";
   import { useAsignacionAccionesComputed } from "./composables/useAsignacionAccionesComputed";
+  import { useAsignacionAccionesLoader } from "./composables/useAsignacionAccionesLoader";
 
   interface Props {
     mode: EntityModeEnum;
     societyId?: string;
   }
 
-  defineProps<Props>();
+  const props = defineProps<Props>();
+
+  // Cargar datos desde el backend
+  useAsignacionAccionesLoader({
+    societyId: props.societyId,
+  });
 
   const {
     accionesDisponibles,

@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
 import { useRegistroAccionistasStore } from "../../../../../../../modules/registro-sociedades/stores/useRegistroAccionistasStore";
 import { useRegistroAccionesStore } from "../../acciones/stores/useRegistroAccionesStore";
 import { useValorNominalStore } from "../../acciones/stores/useValorNominalStore";
@@ -20,120 +21,94 @@ const generateId = () => {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 };
 
-// Data hardcodeada inicial
-const initialAsignaciones: AsignacionAccionista[] = [
-  {
-    id: "1",
-    accionista: "Carlos Andrés Ramírez Torres",
-    acciones: [
-      {
-        id: "1-1",
-        accionistaId: "1",
-        accionista: "Carlos Andrés Ramírez Torres",
-        tipoAccion: "Clase A",
-        cantidadAcciones: 30,
-        porcentaje: 10.5,
-        precioAccion: 100.0,
-        capitalSocial: 3000.0,
-        prima: 500.0,
-        totalmentePagado: true,
-        porcentajePagado: 80.0,
-        dividendoPasivo: 600.0,
-      },
-      {
-        id: "1-2",
-        accionistaId: "1",
-        accionista: "Carlos Andrés Ramírez Torres",
-        tipoAccion: "Clase B",
-        cantidadAcciones: 20,
-        porcentaje: 3.79,
-        precioAccion: 150.0,
-        capitalSocial: 3000.0,
-        prima: 300.0,
-        totalmentePagado: false,
-        porcentajePagado: 0,
-        dividendoPasivo: 0,
-      },
-    ],
-  },
-  {
-    id: "2",
-    accionista: "María Fernanda López García",
-    acciones: [
-      {
-        id: "2-1",
-        accionistaId: "2",
-        accionista: "María Fernanda López García",
-        tipoAccion: "Comunes",
-        cantidadAcciones: 50,
-        porcentaje: 5.0,
-        precioAccion: 200.0,
-        capitalSocial: 10000.0,
-        prima: 1000.0,
-        totalmentePagado: true,
-        porcentajePagado: 100.0,
-        dividendoPasivo: 0,
-      },
-    ],
-  },
-  {
-    id: "3",
-    accionista: "Juan Pablo Martínez Sánchez",
-    acciones: [
-      {
-        id: "3-1",
-        accionistaId: "3",
-        accionista: "Juan Pablo Martínez Sánchez",
-        tipoAccion: "Preferentes",
-        cantidadAcciones: 40,
-        porcentaje: 4.0,
-        precioAccion: 120.0,
-        capitalSocial: 4800.0,
-        prima: 600.0,
-        totalmentePagado: true,
-        porcentajePagado: 90.0,
-        dividendoPasivo: 480.0,
-      },
-      {
-        id: "3-2",
-        accionistaId: "3",
-        accionista: "Juan Pablo Martínez Sánchez",
-        tipoAccion: "Clase A",
-        cantidadAcciones: 25,
-        porcentaje: 8.79,
-        precioAccion: 100.0,
-        capitalSocial: 2500.0,
-        prima: 250.0,
-        totalmentePagado: false,
-        porcentajePagado: 0,
-        dividendoPasivo: 0,
-      },
-      {
-        id: "3-3",
-        accionistaId: "3",
-        accionista: "Juan Pablo Martínez Sánchez",
-        tipoAccion: "Clase B",
-        cantidadAcciones: 15,
-        porcentaje: 2.5,
-        precioAccion: 150.0,
-        capitalSocial: 2250.0,
-        prima: 225.0,
-        totalmentePagado: true,
-        porcentajePagado: 75.0,
-        dividendoPasivo: 337.5,
-      },
-    ],
-  },
-];
+/**
+ * Obtiene el nombre de la acción para mostrar en la UI según su tipo
+ */
+const getNombreAccionParaUI = (tipo: TipoAccionEnum, nombreAccion: string): string => {
+  switch (tipo) {
+    case TipoAccionEnum.CLASES:
+      // Para clases, usar el nombre de la acción (ej: "Clase A", "Clase B")
+      return nombreAccion || "Acción sin nombre";
+    case TipoAccionEnum.COMUN:
+      // Para acciones comunes, mostrar "Comunes"
+      return "Comunes";
+    case TipoAccionEnum.SIN_DERECHO_A_VOTO:
+      // Para preferentes sin voto, mostrar "Preferentes sin voto"
+      return "Preferentes sin voto";
+    default:
+      return nombreAccion || "Acción sin nombre";
+  }
+};
+
+/**
+ * Obtiene posibles nombres que puede tener una acción en las asignaciones
+ * Esto ayuda a buscar las acciones asignadas correctamente
+ */
+const getNombresPosiblesParaBusqueda = (
+  tipo: TipoAccionEnum,
+  nombreAccion: string
+): string[] => {
+  const nombres: string[] = [nombreAccion]; // Siempre incluir el nombre original
+
+  switch (tipo) {
+    case TipoAccionEnum.COMUN:
+      // Las acciones comunes pueden estar guardadas como "Comunes" o "Acciones comunes"
+      nombres.push("Comunes", "Acciones comunes", "comunes");
+      break;
+    case TipoAccionEnum.SIN_DERECHO_A_VOTO:
+      // Las preferentes sin voto pueden estar guardadas de varias formas
+      nombres.push("Preferentes sin voto", "Preferentes", "Sin derecho a voto");
+      break;
+    case TipoAccionEnum.CLASES:
+      // Para clases, solo usar el nombre original (ej: "Clase A")
+      break;
+  }
+
+  return nombres;
+};
 
 export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacionAcciones", {
   state: (): State => ({
-    asignaciones: [...initialAsignaciones],
+    asignaciones: [],
   }),
 
   getters: {
     tablaAsignaciones: (state): AsignacionAccionistaTableRow[] => {
-      return state.asignaciones.map((asignacion) => {
+      const registroAccionesStore = useRegistroAccionesStore();
+      const registroAccionistasStore = useRegistroAccionistasStore();
+      const accionesRegistradas = registroAccionesStore.acciones;
+      const accionistas = registroAccionistasStore.accionistas;
+
+      // Crear un mapa de asignaciones existentes por ID de accionista
+      const asignacionesMap = new Map<string, AsignacionAccionista>();
+      state.asignaciones.forEach((asignacion) => {
+        asignacionesMap.set(asignacion.id, asignacion);
+      });
+
+      // Para cada accionista, crear o usar la asignación existente
+      return accionistas.map((accionista) => {
+        // Obtener el nombre del accionista según su tipo
+        let accionistaNombre = "Accionista desconocido";
+
+        if (accionista.tipoAccionista === "natural") {
+          accionistaNombre = `${accionista.nombre} ${accionista.apellidoPaterno} ${accionista.apellidoMaterno}`;
+        } else if (accionista.tipoAccionista === "juridica") {
+          accionistaNombre = accionista.razonSocial;
+        } else if (accionista.tipoAccionista === "sucursal") {
+          accionistaNombre = accionista.nombreSucursal;
+        } else if (accionista.tipoAccionista === "fideicomisos") {
+          accionistaNombre = accionista.identificacionFideicomiso;
+        } else {
+          accionistaNombre = accionista.razonSocial || "Accionista desconocido";
+        }
+
+        // Obtener la asignación existente o crear una nueva vacía
+        const asignacion = asignacionesMap.get(accionista.id) || {
+          id: accionista.id,
+          accionista: accionistaNombre,
+          acciones: [],
+        };
+
         const tiposCount = asignacion.acciones.length;
         const tiposText = tiposCount === 1 ? "1 tipo" : `${tiposCount} tipos`;
 
@@ -141,11 +116,43 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
           id: asignacion.id,
           accionista: asignacion.accionista,
           tipos: tiposText,
-          acciones: asignacion.acciones.map((accion) => ({
-            clase: accion.tipoAccion,
-            acciones: accion.cantidadAcciones,
-            porcentaje: accion.porcentaje,
-          })),
+          acciones: asignacion.acciones.map((accion) => {
+            // Buscar la acción registrada que coincida con el nombre
+            const accionRegistrada = accionesRegistradas.find(
+              (a) => a.nombreAccion === accion.tipoAccion
+            );
+
+            let claseFormateada = accion.tipoAccion;
+
+            // Si encontramos la acción registrada, usar su tipo para formatear
+            if (accionRegistrada) {
+              claseFormateada = getNombreAccionParaUI(
+                accionRegistrada.tipo,
+                accionRegistrada.nombreAccion
+              );
+            } else {
+              // Si no encontramos la acción registrada, intentar inferir el tipo por el nombre
+              // Esto es útil para datos legacy o hardcodeados
+              const nombreLower = accion.tipoAccion.toLowerCase();
+
+              if (nombreLower.includes("comun") || nombreLower === "comunes") {
+                claseFormateada = "Comunes";
+              } else if (
+                nombreLower.includes("preferente") ||
+                nombreLower.includes("sin derecho") ||
+                nombreLower.includes("no voto")
+              ) {
+                claseFormateada = "Preferentes sin voto";
+              }
+              // Si empieza con "Clase" o parece ser una clase, mantener el nombre original
+            }
+
+            return {
+              clase: claseFormateada,
+              acciones: accion.cantidadAcciones,
+              porcentaje: accion.porcentaje,
+            };
+          }),
         };
       });
     },
@@ -166,12 +173,31 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
 
       // Si hay acciones registradas, usar esas y calcular acciones asignadas dinámicamente
       if (accionesRegistradas.length > 0) {
-        return accionesRegistradas.map((accion) => ({
-          id: accion.id,
-          nombre: accion.descripcion,
-          accionesSuscritas: accion.accionesSuscritas,
-          accionesAsignadas: accionesAsignadasPorTipo.get(accion.descripcion) || 0,
-        }));
+        return accionesRegistradas.map((accion) => {
+          // Obtener el nombre correcto según el tipo de acción
+          const nombreParaUI = getNombreAccionParaUI(accion.tipo, accion.nombreAccion);
+
+          // Buscar acciones asignadas por todos los nombres posibles
+          const nombresPosibles = getNombresPosiblesParaBusqueda(
+            accion.tipo,
+            accion.nombreAccion
+          );
+          let accionesAsignadas = 0;
+
+          for (const nombre of nombresPosibles) {
+            const encontradas = accionesAsignadasPorTipo.get(nombre);
+            if (encontradas !== undefined) {
+              accionesAsignadas += encontradas;
+            }
+          }
+
+          return {
+            id: accion.id,
+            nombre: nombreParaUI,
+            accionesSuscritas: accion.accionesSuscritas,
+            accionesAsignadas,
+          };
+        });
       }
 
       // Si no hay acciones registradas, usar datos hardcodeados para acciones suscritas
@@ -440,7 +466,7 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
         totalesPorTipo.set("Clase B", 2000);
       } else {
         accionesRegistradas.forEach((accion) => {
-          totalesPorTipo.set(accion.descripcion, accion.accionesSuscritas);
+          totalesPorTipo.set(accion.nombreAccion, accion.accionesSuscritas);
         });
       }
 
@@ -460,7 +486,59 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
 
     // Resetear a los datos iniciales
     reset() {
-      this.asignaciones = [...initialAsignaciones];
+      this.asignaciones = [];
+      this.recalculatePorcentajes();
+    },
+
+    /**
+     * Inicializa las asignaciones desde los accionistas cargados del backend.
+     * Crea una entrada vacía para cada accionista, lista para asignar acciones.
+     */
+    initializeFromAccionistas() {
+      const registroAccionistasStore = useRegistroAccionistasStore();
+      const accionistas = registroAccionistasStore.accionistas;
+
+      // Crear un mapa de accionistas existentes por ID para no duplicar
+      const asignacionesExistentes = new Map<string, AsignacionAccionista>();
+      this.asignaciones.forEach((asignacion) => {
+        asignacionesExistentes.set(asignacion.id, asignacion);
+      });
+
+      // Para cada accionista, crear una asignación si no existe
+      accionistas.forEach((accionista) => {
+        if (!asignacionesExistentes.has(accionista.id)) {
+          // Obtener el nombre del accionista según su tipo
+          let accionistaNombre = "Accionista desconocido";
+
+          if (accionista.tipoAccionista === "natural") {
+            accionistaNombre = `${accionista.nombre} ${accionista.apellidoPaterno} ${accionista.apellidoMaterno}`;
+          } else if (accionista.tipoAccionista === "juridica") {
+            accionistaNombre = accionista.razonSocial;
+          } else if (accionista.tipoAccionista === "sucursal") {
+            accionistaNombre = accionista.nombreSucursal;
+          } else if (accionista.tipoAccionista === "fideicomisos") {
+            accionistaNombre = accionista.identificacionFideicomiso;
+          } else {
+            accionistaNombre = accionista.razonSocial || "Accionista desconocido";
+          }
+
+          // Crear asignación vacía para este accionista
+          const nuevaAsignacion: AsignacionAccionista = {
+            id: accionista.id,
+            accionista: accionistaNombre,
+            acciones: [], // Sin acciones asignadas aún
+          };
+
+          this.asignaciones.push(nuevaAsignacion);
+        }
+      });
+
+      // Remover asignaciones de accionistas que ya no existen
+      this.asignaciones = this.asignaciones.filter((asignacion) =>
+        accionistas.some((acc) => acc.id === asignacion.id)
+      );
+
+      // Recalcular porcentajes después de la inicialización
       this.recalculatePorcentajes();
     },
   },
