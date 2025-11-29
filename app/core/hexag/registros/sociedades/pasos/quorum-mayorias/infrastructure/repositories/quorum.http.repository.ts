@@ -49,11 +49,13 @@ export class QuorumHttpRepository implements QuorumRepository {
   }
 
   async create(societyProfileId: string, payload: QuorumDTO): Promise<QuorumConfig> {
+    // El backend ya crea la estructura inicial en el POST root,
+    // entonces usamos PUT para actualizar/crear los quórums
     const url = this.resolveQuorumPath(societyProfileId);
     await $fetch(
       url,
       withAuthHeaders({
-        method: "POST" as const,
+        method: "PUT" as const,
         body: QuorumMapper.toPayload(payload),
       })
     );

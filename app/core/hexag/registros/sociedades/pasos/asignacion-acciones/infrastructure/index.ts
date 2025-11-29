@@ -1,2 +1,1 @@
-// Adaptadores del paso "Asignación de acciones".
-
+export { AsignacionAccionesHttpRepository } from "./repositories/asignacion-acciones.http.repository";

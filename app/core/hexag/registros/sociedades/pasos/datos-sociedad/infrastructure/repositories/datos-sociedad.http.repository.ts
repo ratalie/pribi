@@ -75,11 +75,13 @@ export class DatosSociedadHttpRepository implements DatosSociedadRepository {
   }
 
   async create(idSociety: string, payload: DatosSociedadDTO): Promise<SociedadDatosGenerales> {
+    // El backend ya crea la estructura inicial en el POST root,
+    // entonces usamos PUT para actualizar/crear los datos de la sociedad
     const payloadWithId = this.ensurePayloadId(payload);
     await $fetch(
       this.resolveSocietyPath(idSociety),
       withAuthHeaders({
-        method: "POST" as const,
+        method: "PUT" as const,
         body: DatosSociedadMapper.toPayload(payloadWithId),
     })
     );
