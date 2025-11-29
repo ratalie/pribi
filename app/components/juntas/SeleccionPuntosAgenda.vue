@@ -1,5 +1,22 @@
 <script setup lang="ts">
 import { useJuntasFlowStore } from "~/stores/useJuntasFlowStore";
+import { useAgendaItemsStore } from "~/core/presentation/juntas/stores/agenda-items.store";
+import { useJuntaHistorialStore } from "~/core/presentation/juntas/stores/junta-historial.store";
+import { AgendaItemsMapper } from "~/core/hexag/juntas/infrastructure/mappers/agenda-items.mapper";
+import { storeToRefs } from "pinia";
+
+/**
+ * Props del componente
+ */
+interface Props {
+  societyId?: number | null;
+  flowId?: string | null;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  societyId: null,
+  flowId: null,
+});
 
 /**
  * Componente para seleccionar puntos de agenda
@@ -9,7 +26,15 @@ import { useJuntasFlowStore } from "~/stores/useJuntasFlowStore";
  * 
  * Los sub-steps seleccionados se guardan en useJuntasFlowStore
  * para filtrar dinámicamente los pasos en el sidebar.
+ * 
+ * También carga y guarda los datos en el backend usando el store de agenda-items.
  */
+
+// Stores
+const juntasFlowStore = useJuntasFlowStore();
+const agendaItemsStore = useAgendaItemsStore();
+const juntaHistorialStore = useJuntaHistorialStore();
+const { agendaItems, isLoading, errorMessage } = storeToRefs(agendaItemsStore);
 
 // Todos los sub-steps posibles, agrupados por categoría
 const PUNTOS_AGENDA = [
@@ -87,14 +112,33 @@ const PUNTOS_AGENDA = [
   },
 ] as const;
 
-const juntasFlowStore = useJuntasFlowStore();
-
 // Estado local de checkboxes seleccionados
 const selectedPuntos = ref<string[]>([]);
 
-// Cargar selección previa del store
-onMounted(() => {
+// Cargar datos del backend al montar
+onMounted(async () => {
+  // Primero cargar desde el store local (para mantener compatibilidad)
   selectedPuntos.value = [...juntasFlowStore.getDynamicSubSteps];
+
+  // Si tenemos societyId y flowId, cargar desde el backend
+  if (props.societyId && props.flowId) {
+    const flowIdNumber = parseInt(props.flowId, 10);
+    if (!Number.isNaN(flowIdNumber)) {
+      try {
+        await agendaItemsStore.loadAgendaItems(props.societyId, flowIdNumber);
+        
+        // Si hay datos cargados, convertir a IDs del frontend y actualizar
+        if (agendaItems.value) {
+          const frontendIds = AgendaItemsMapper.dtoToFrontendIds(agendaItems.value);
+          selectedPuntos.value = frontendIds;
+          juntasFlowStore.updateDynamicSubSteps(frontendIds);
+        }
+      } catch (error) {
+        console.error("[SeleccionPuntosAgenda] Error al cargar agenda items:", error);
+        // Si hay error, mantener los datos del store local
+      }
+    }
+  }
 });
 
 // Agrupar puntos por categoría

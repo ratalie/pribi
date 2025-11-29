@@ -22,7 +22,7 @@
     TableHeader,
     TableRow,
   } from "@/components/ui/table";
-  import { Eye, MoreVertical, Pencil, Trash2 } from "lucide-vue-next";
+  import { Eye, MoreVertical, Pencil, Trash2, TestTube } from "lucide-vue-next";
   import { storeToRefs } from "pinia";
 import { computed, onMounted } from "vue";
   import { useRouter } from "vue-router";
@@ -87,6 +87,23 @@ const formatPasoActual = (paso: SocietyRegisterStep | string | undefined) => {
     if (!confirmed) return;
     await historialStore.eliminarSociedad(id);
   };
+
+  const goToTestPage = () => {
+    router.push("/dev/seeds-sociedades");
+  };
+
+  const handleDeleteAll = async () => {
+    if (sociedades.value.length === 0) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `¿Estás seguro de eliminar TODAS las ${sociedades.value.length} sociedades registradas? Esta acción no se puede deshacer.`
+    );
+    if (!confirmed) return;
+
+    await historialStore.eliminarTodasLasSociedades();
+  };
 </script>
 
 <template>
@@ -95,14 +112,40 @@ const formatPasoActual = (paso: SocietyRegisterStep | string | undefined) => {
 
     <Card class="border border-primary-400/40 bg-primary-75/20 text-gray-600">
       <CardHeader>
-        <CardTitle class="text-lg font-semibold text-primary-800">
-          Historial de registros societarios
-        </CardTitle>
-        <CardDescription class="text-gray-500">
-          Consulta las sociedades creadas en el sistema. Este listado utiliza los endpoints
-          mockeados con MSW, por lo que podrás validar el flujo completo antes de integrar el
-          backend real.
-        </CardDescription>
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <CardTitle class="text-lg font-semibold text-primary-800">
+              Historial de registros societarios
+            </CardTitle>
+            <CardDescription class="text-gray-500">
+              Consulta las sociedades creadas en el sistema. Este listado utiliza los endpoints
+              mockeados con MSW, por lo que podrás validar el flujo completo antes de integrar el
+              backend real.
+            </CardDescription>
+          </div>
+          <div class="flex gap-2 ml-4">
+            <Button
+              variant="outline"
+              size="sm"
+              class="text-primary-700 border-primary-300 hover:bg-primary-50"
+              @click="goToTestPage"
+            >
+              <TestTube class="h-4 w-4 mr-2" />
+              Vista de Test
+            </Button>
+            <Button
+              v-if="sociedades.length > 0"
+              variant="destructive"
+              size="sm"
+              class="text-white"
+              :disabled="isLoading"
+              @click="handleDeleteAll"
+            >
+              <Trash2 class="h-4 w-4 mr-2" />
+              Eliminar Todas
+            </Button>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <div

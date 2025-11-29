@@ -1,4 +1,7 @@
-import type { AsignacionAccionesRepository, AsignacionAccionesDTO } from "../../domain/ports/asignacion-acciones.repository";
+import type {
+  AsignacionAccionesDTO,
+  AsignacionAccionesRepository,
+} from "../../domain/ports/asignacion-acciones.repository";
 
 export class CreateAsignacionAccionesUseCase {
   constructor(private readonly repository: AsignacionAccionesRepository) {}
@@ -7,4 +10,3 @@ export class CreateAsignacionAccionesUseCase {
     return this.repository.create(societyProfileId, payload);
   }
 }
-

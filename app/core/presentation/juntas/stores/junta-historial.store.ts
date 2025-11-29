@@ -93,6 +93,9 @@ export const useJuntaHistorialStore = defineStore(
           return null;
         }
 
+        // Guardar el societyId seleccionado
+        this.setSelectedSocietyId(societyId);
+
         const repository = new JuntaHttpRepository();
         const createUseCase = new CreateJuntaUseCase(repository);
 

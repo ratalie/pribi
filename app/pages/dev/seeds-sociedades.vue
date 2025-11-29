@@ -120,15 +120,24 @@
     const basePath = "/api/v2/society-profile";
     const candidates = [apiBase, origin, "http://localhost:3000"];
 
-    let baseUrl = "http://localhost:3000";
+    let url = "";
     for (const base of candidates) {
-      if (base && base.length > 0) {
-        baseUrl = base;
+      if (!base) continue;
+      try {
+        const baseUrl = new URL(base, origin || "http://localhost:3000");
+        // Usar solo el origin del baseUrl, no la ruta completa
+        const fullPath = `${basePath}/${societyId}/share-assignment`;
+        url = new URL(fullPath, baseUrl.origin).toString();
         break;
+      } catch {
+        continue;
       }
     }
 
-    const url = `${baseUrl}${basePath}/${societyId}/share-assignment`;
+    // Fallback si no se pudo construir la URL
+    if (!url) {
+      url = `${basePath}/${societyId}/share-assignment`;
+    }
 
     const authHeaders = withAuthHeaders({
       method: "POST" as const,

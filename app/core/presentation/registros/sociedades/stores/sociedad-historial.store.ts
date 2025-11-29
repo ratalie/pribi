@@ -114,6 +114,50 @@ export const useSociedadHistorialStore = defineStore(
       }
     }
 
+    async function eliminarTodasLasSociedades() {
+      if (sociedades.value.length === 0) {
+        return;
+      }
+
+      status.value = "loading";
+      errorMessage.value = null;
+
+      const errors: string[] = [];
+      let eliminadas = 0;
+
+      try {
+        for (const sociedad of sociedades.value) {
+          try {
+            await deleteUseCase.execute(sociedad.idSociety);
+            eliminadas++;
+            console.debug("[Store][SociedadHistorial] Sociedad eliminada", sociedad.idSociety);
+          } catch (error) {
+            const errorMsg =
+              (error as any)?.message ?? "Error desconocido";
+            errors.push(`${sociedad.razonSocial || sociedad.idSociety}: ${errorMsg}`);
+            console.error(
+              "[SociedadHistorialStore] Error al eliminar sociedad:",
+              sociedad.idSociety,
+              error
+            );
+          }
+        }
+
+        // Recargar historial después de eliminar
+        await cargarHistorial();
+
+        if (errors.length > 0) {
+          errorMessage.value = `Se eliminaron ${eliminadas} de ${sociedades.value.length} sociedades. Errores:\n${errors.join("\n")}`;
+        } else {
+          errorMessage.value = null;
+        }
+      } catch (error) {
+        console.error("[SociedadHistorialStore] Error general al eliminar todas:", error);
+        errorMessage.value = "Ocurrió un error al eliminar las sociedades.";
+        status.value = "error";
+      }
+    }
+
     return {
       sociedades,
       status,
@@ -125,6 +169,7 @@ export const useSociedadHistorialStore = defineStore(
       cargarHistorial,
       crearSociedad,
       eliminarSociedad,
+      eliminarTodasLasSociedades,
     };
   },
   {

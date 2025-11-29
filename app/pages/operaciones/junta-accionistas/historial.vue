@@ -122,6 +122,11 @@
 
   const goToEdit = (flowId: string) => {
     if (!selectedSocietyId.value) return;
+    const societyIdNumber = parseInt(selectedSocietyId.value, 10);
+    if (!Number.isNaN(societyIdNumber)) {
+      // Guardar el societyId en el store para que esté disponible en la página de edición
+      juntaHistorialStore.setSelectedSocietyId(societyIdNumber);
+    }
     router.push(`/operaciones/junta-accionistas/${flowId}/seleccion-agenda`);
   };
 
