@@ -61,6 +61,8 @@
     handleSubmitApoderado,
   } = useApoderados(props.societyId ?? "");
 
+  useFlowLayoutNext(() => {});
+
   onMounted(async () => {
     if (props.societyId) {
       await Promise.all([
