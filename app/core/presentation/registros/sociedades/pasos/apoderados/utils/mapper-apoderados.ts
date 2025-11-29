@@ -19,7 +19,7 @@ export const convertirDocumentoDomainAUI = (
     case DocumentTypeEnum.RUC:
       return TipoDocumentosEnum.RUC;
     default:
-      return TipoDocumentosEnum.DNI;
+      return documento;
   }
 };
 
@@ -36,20 +36,21 @@ export const convertirDocumentoUIADomain = (
     case TipoDocumentosEnum.RUC:
       return DocumentTypeEnum.RUC;
     default:
-      return DocumentTypeEnum.DNI;
+      return documento;
   }
 };
 
 export const mapperApoderadoNaturalModalALista = (
   claseApoderadoId: string,
   personaNaturalStore: ReturnType<typeof usePersonaNaturalStore>,
-  apoderadoId?: string
+  apoderadoId?: string,
+  personaId?: string
 ): Apoderado => {
   return {
     id: apoderadoId ?? uuidv4(),
     claseApoderadoId: claseApoderadoId,
     persona: {
-      id: uuidv4(),
+      id: personaId ?? uuidv4(),
       tipo: PersonTypeEnum.NATURAL,
       nombre: personaNaturalStore.nombre,
       apellidoPaterno: personaNaturalStore.apellidoPaterno,
@@ -66,29 +67,79 @@ export const mapperApoderadoNaturalModalALista = (
 export const mapperApoderadoNaturalEntityAModal = (
   apoderado: Apoderado
 ): PersonaNaturalState => {
-  const personaNatural = {
-    name: apoderado.persona.tipo === PersonTypeEnum.NATURAL ? apoderado.persona.nombre : "",
-    apellidoPaterno:
-      apoderado.persona.tipo === PersonTypeEnum.NATURAL
-        ? apoderado.persona.apellidoPaterno
-        : "",
-    apellidoMaterno:
-      apoderado.persona.tipo === PersonTypeEnum.NATURAL
-        ? apoderado.persona.apellidoMaterno
-        : "",
-    paisPasaporte:
-      apoderado.persona.tipo === PersonTypeEnum.NATURAL
-        ? apoderado.persona.paisEmision ?? ""
-        : "",
-  };
+  if (apoderado.persona.tipo !== PersonTypeEnum.NATURAL) {
+    throw new Error("Apoderado no es natural");
+  }
 
   return {
-    tipoDocumento: convertirDocumentoDomainAUI(apoderado.persona.tipoDocumento),
+    tipoDocumento: convertirDocumentoDomainAUI(
+      apoderado.persona.tipoDocumento as DocumentTypeEnum
+    ),
     numeroDocumento: apoderado.persona.numeroDocumento,
-    nombre: personaNatural.name,
-    apellidoPaterno: personaNatural.apellidoPaterno,
-    apellidoMaterno: personaNatural.apellidoMaterno,
-    paisPasaporte: personaNatural.paisPasaporte,
+    nombre: apoderado.persona.nombre,
+    apellidoPaterno: apoderado.persona.apellidoPaterno,
+    apellidoMaterno: apoderado.persona.apellidoMaterno,
+    paisPasaporte: apoderado.persona.paisEmision ?? "",
     estadoCivil: null,
+  };
+};
+
+export const mapperApoderadoJuridicaModalALista = (
+  claseApoderadoId: string,
+  personaJuridicaStore: ReturnType<typeof usePersonaJuridicaStore>,
+  apoderadoId?: string,
+  personaId?: string
+): Apoderado => {
+  return {
+    id: apoderadoId ?? uuidv4(),
+    claseApoderadoId: claseApoderadoId,
+    persona: {
+      id: personaId ?? uuidv4(),
+      tipo: PersonTypeEnum.JURIDICA,
+      tipoDocumento: personaJuridicaStore.seConstituyoEnPeru
+        ? DocumentTypeEnum.RUC
+        : personaJuridicaStore.tipoDocumento,
+      numeroDocumento: personaJuridicaStore.numeroDocumento,
+      razonSocial: personaJuridicaStore.razonSocial,
+      direccion: personaJuridicaStore.direccion,
+      constituida: personaJuridicaStore.seConstituyoEnPeru,
+      nombreComercial: personaJuridicaStore.seConstituyoEnPeru
+        ? personaJuridicaStore.nombreComercial
+        : undefined,
+      distrito: personaJuridicaStore.seConstituyoEnPeru
+        ? personaJuridicaStore.distrito
+        : undefined,
+      provincia: personaJuridicaStore.seConstituyoEnPeru
+        ? personaJuridicaStore.provincia
+        : undefined,
+      departamento: personaJuridicaStore.seConstituyoEnPeru
+        ? personaJuridicaStore.departamento
+        : undefined,
+      pais: !personaJuridicaStore.seConstituyoEnPeru
+        ? personaJuridicaStore.paisOrigen
+        : undefined,
+    },
+  };
+};
+
+export const mapperApoderadoJuridicaEntityAModal = (
+  apoderado: Apoderado
+): PersonaJuridicaState => {
+  if (apoderado.persona.tipo !== PersonTypeEnum.JURIDICA) {
+    throw new Error("Apoderado no es jurídico");
+  }
+
+  return {
+    seConstituyoEnPeru: apoderado.persona.constituida,
+    tipoDocumento: apoderado.persona.tipoDocumento,
+    numeroDocumento: apoderado.persona.numeroDocumento,
+    razonSocial: apoderado.persona.razonSocial,
+    nombreComercial: apoderado.persona.nombreComercial ?? "",
+    direccion: apoderado.persona.direccion ?? "",
+    distrito: apoderado.persona.distrito ?? "",
+    provincia: apoderado.persona.provincia ?? "",
+    departamento: apoderado.persona.departamento ?? "",
+    paisOrigen: apoderado.persona.pais ?? "",
+    tieneRepresentante: false,
   };
 };

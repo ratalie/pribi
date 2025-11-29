@@ -107,12 +107,16 @@
             label="Agregar gerente"
             size="lg"
             icon="Plus"
+            :is-disabled="clasesYApoderadoStore.tieneGerenteRegistrado"
             @click="openModalGerenteGeneral"
           />
         </template>
       </CardTitle>
 
-      <GerenteGeneralTable :items="[]" :actions="gerenteActions" />
+      <GerenteGeneralTable
+        :items="clasesYApoderadoStore.datosTablaGerenteGeneral"
+        :actions="gerenteActions"
+      />
     </SimpleCard>
 
     <!-- Tabla 2: Apoderados (con clase) -->

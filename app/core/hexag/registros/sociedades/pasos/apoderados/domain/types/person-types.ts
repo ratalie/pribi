@@ -17,16 +17,14 @@ export interface PersonaNatural extends PersonaBase {
 
 export interface PersonaJuridica extends PersonaBase {
   tipo: PersonTypeEnum.JURIDICA;
-  tipoDocumento: DocumentTypeEnum;
+  tipoDocumento: DocumentTypeEnum | string;
   numeroDocumento: string;
   razonSocial: string;
   direccion?: string;
-  constituida?: boolean;
+  constituida: boolean;
   nombreComercial?: string;
   distrito?: string;
   provincia?: string;
   departamento?: string;
   pais?: string;
-  jurisdiccion?: "peruana" | "extranjera";
-  representadoPor?: DocumentTypeEnum | null;
 }

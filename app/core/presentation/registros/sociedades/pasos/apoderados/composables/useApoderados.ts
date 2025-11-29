@@ -16,6 +16,7 @@ export const useApoderados = (societyId: string) => {
   const isLoadingApoderado = ref(false);
   const modeModalApoderado = ref<"crear" | "editar">("crear");
   const editingApoderadoId = ref<string | null>(null);
+  const editingPersonaId = ref<string | null>(null);
 
   const openModalApoderado = (claseFijaNombre?: string) => {
     if (claseFijaNombre && typeof claseFijaNombre === "string") {
@@ -34,6 +35,7 @@ export const useApoderados = (societyId: string) => {
     modeModalApoderado.value = "crear";
     //estados para los tipos de apoderados
     editingApoderadoId.value = null;
+    editingPersonaId.value = null;
     mostrarSelectorClase.value = true;
     //valores del modal:
     selectedClaseId.value = "";
@@ -47,7 +49,8 @@ export const useApoderados = (societyId: string) => {
       const apoderadoEntidad = mapperApoderadoNaturalModalALista(
         selectedClaseId.value,
         personaNaturalStore,
-        editingApoderadoId.value ?? undefined
+        editingApoderadoId.value ?? undefined,
+        editingPersonaId.value ?? undefined
       );
 
       if (modeModalApoderado.value === "crear") {
@@ -77,6 +80,7 @@ export const useApoderados = (societyId: string) => {
         ClasesApoderadoEspecialesEnum.OTROS_APODERADOS;
 
       editingApoderadoId.value = apoderadoId;
+      editingPersonaId.value = apoderado.persona.id;
       modeModalApoderado.value = "editar";
       openModalApoderado();
     }
