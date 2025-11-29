@@ -4,12 +4,12 @@
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
+  import type { DirectorDTO } from "~/core/hexag/registros/sociedades/pasos/directorio/application/dtos/director.dto";
+  import type { DirectorConfig } from "~/core/hexag/registros/sociedades/pasos/directorio/domain/entities/director.entity";
+  import { TipoDirector } from "~/core/hexag/registros/sociedades/pasos/directorio/domain/enums/director-tipo.enum";
   import DirectorForm from "~/core/presentation/registros/sociedades/pasos/directorio/components/forms/DirectorForm.vue";
   import { TiposDirectoresEnum } from "~/core/presentation/registros/sociedades/pasos/directorio/enums/TiposDirectoresEnum";
-  import {
-    useDirectorioStore,
-    type Director,
-  } from "~/core/presentation/registros/sociedades/pasos/directorio/stores/useDirectores";
+  import { useDirectores } from "~/core/presentation/registros/sociedades/pasos/directorio/useDirectores";
   import { useDirectoresComputed } from "~/core/presentation/registros/sociedades/pasos/directorio/utils/useDirectoresComputed";
   import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
   import type { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
@@ -17,17 +17,20 @@
   interface Props {
     modelValue?: boolean;
     mode?: "create" | "edit";
-    directorToEdit?: Director | null;
+    directorToEdit?: DirectorConfig | null;
+    societyId?: string;
   }
 
   const props = withDefaults(defineProps<Props>(), {
     mode: "create",
     directorToEdit: null,
+    societyId: "",
   });
 
   const emits = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
     (e: "close"): void;
+    (e: "saved", director: DirectorConfig): void;
   }>();
 
   const modelValue = useVModel(props, "modelValue", emits, {
@@ -35,12 +38,25 @@
   });
 
   const personaNaturalStore = usePersonaNaturalStore();
-  const directorioStore = useDirectorioStore();
-  const { presidenteOptions } = useDirectoresComputed();
+  const { directores, create, update, isSaving } = useDirectores(
+    computed(() => props.societyId)
+  );
+  const { presidenteOptions } = useDirectoresComputed(directores);
   const tipoDirector = ref<TiposDirectoresEnum | "">("");
   const reemplazoAsignado = ref("");
   const isEditMode = computed(() => props.mode === "edit" && !!props.directorToEdit);
   const submitLabel = computed(() => (isEditMode.value ? "Editar" : "Guardar"));
+
+  // Función para generar UUID (igual que en AccionistaModal)
+  const generateUuid = (): string => {
+    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+      return crypto.randomUUID();
+    }
+    return Math.random().toString(36).slice(2) + Date.now().toString(36);
+  };
+
+  const ensureUuid = (value?: string | null) =>
+    value && value.length > 0 ? value : generateUuid();
 
   const isSubmitDisabled = computed(() => {
     if (!tipoDirector.value) {
@@ -67,14 +83,21 @@
 
       if (mode === "edit" && director) {
         personaNaturalStore.$patch({
-          tipoDocumento: director.tipoDocumento,
-          numeroDocumento: director.numeroDocumento,
-          nombre: director.nombres,
-          apellidoPaterno: director.apellidoPaterno,
-          apellidoMaterno: director.apellidoMaterno,
+          tipoDocumento: director.persona.tipoDocumento,
+          numeroDocumento: director.persona.numeroDocumento,
+          nombre: director.persona.nombre,
+          apellidoPaterno: director.persona.apellidoPaterno,
+          apellidoMaterno: director.persona.apellidoMaterno,
+          paisPasaporte: director.persona.paisEmision || "",
         });
-        tipoDirector.value = director.tipoDirector;
-        reemplazoAsignado.value = director.reemplazoAsignado ?? "";
+        // Mapear rolDirector (TipoDirector) a TiposDirectoresEnum
+        const rolDirectorToTiposMap: Record<TipoDirector, TiposDirectoresEnum> = {
+          [TipoDirector.TITULAR]: TiposDirectoresEnum.TITULAR,
+          [TipoDirector.SUPLENTE]: TiposDirectoresEnum.SUPLENTE,
+          [TipoDirector.ALTERNO]: TiposDirectoresEnum.ALTERNO,
+        };
+        tipoDirector.value = rolDirectorToTiposMap[director.rolDirector] || "";
+        reemplazoAsignado.value = director.reemplazaId ?? "";
         return;
       }
 
@@ -125,32 +148,60 @@
   };
 
   const handleSave = async () => {
-    if (isSubmitDisabled.value) {
+    if (isSubmitDisabled.value || !props.societyId) {
       return;
     }
 
-    const selectedTipoDirector = tipoDirector.value as TiposDirectoresEnum;
-    const directorPayload = {
-      nombres: personaNaturalStore.nombre,
-      apellidoPaterno: personaNaturalStore.apellidoPaterno,
-      apellidoMaterno: personaNaturalStore.apellidoMaterno,
-      numeroDocumento: personaNaturalStore.numeroDocumento,
-      tipoDocumento: personaNaturalStore.tipoDocumento as TipoDocumentosEnum,
-      tipoDirector: selectedTipoDirector,
-      reemplazoAsignado:
-        selectedTipoDirector === TiposDirectoresEnum.ALTERNO ? reemplazoAsignado.value : null,
-    };
+    try {
+      // Mapear TiposDirectoresEnum a TipoDirector
+      const rolDirectorMap: Record<TiposDirectoresEnum, TipoDirector> = {
+        [TiposDirectoresEnum.TITULAR]: TipoDirector.TITULAR,
+        [TiposDirectoresEnum.SUPLENTE]: TipoDirector.SUPLENTE,
+        [TiposDirectoresEnum.ALTERNO]: TipoDirector.ALTERNO,
+      };
 
-    if (isEditMode.value && props.directorToEdit) {
-      directorioStore.updateDirector({
-        id: props.directorToEdit.id,
-        ...directorPayload,
-      });
-    } else {
-      directorioStore.addDirector(directorPayload);
+      const selectedTipoDirector = tipoDirector.value as TiposDirectoresEnum;
+
+      // Generar UUIDs si no existen (igual que en AccionistaModal)
+      const directorId =
+        isEditMode.value && props.directorToEdit ? props.directorToEdit.id : ensureUuid(null);
+
+      const personaId =
+        isEditMode.value && props.directorToEdit
+          ? props.directorToEdit.persona.id
+          : ensureUuid(null);
+
+      const directorDTO: DirectorDTO = {
+        id: directorId,
+        persona: {
+          id: personaId,
+          nombre: personaNaturalStore.nombre,
+          apellidoPaterno: personaNaturalStore.apellidoPaterno,
+          apellidoMaterno: personaNaturalStore.apellidoMaterno,
+          numeroDocumento: personaNaturalStore.numeroDocumento,
+          tipoDocumento: personaNaturalStore.tipoDocumento as TipoDocumentosEnum,
+          paisEmision: personaNaturalStore.paisPasaporte || null,
+        },
+        rolDirector: rolDirectorMap[selectedTipoDirector],
+        reemplazaId:
+          selectedTipoDirector === TiposDirectoresEnum.ALTERNO
+            ? reemplazoAsignado.value || null
+            : null,
+      };
+
+      let savedDirector: DirectorConfig;
+      if (isEditMode.value && props.directorToEdit) {
+        savedDirector = await update(props.directorToEdit.id, directorDTO);
+      } else {
+        savedDirector = await create(directorDTO);
+      }
+
+      emits("saved", savedDirector);
+      handleCancel();
+    } catch (error) {
+      console.error("Error al guardar director:", error);
+      // Aquí puedes agregar un toast de error
     }
-
-    handleCancel();
   };
 
   const handleInvalidSubmit = () => {
@@ -173,6 +224,7 @@
       <DirectorForm
         v-model:tipo-director="tipoDirector"
         v-model:reemplazo-asignado="reemplazoAsignado"
+        :presidente-options="presidenteOptions"
       />
     </div>
 
@@ -190,7 +242,7 @@
           variant="primary"
           :label="submitLabel"
           size="md"
-          :is-disabled="isSubmitDisabled"
+          :is-disabled="isSubmitDisabled || isSaving"
         />
       </div>
     </template>

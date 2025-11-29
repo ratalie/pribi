@@ -27,18 +27,28 @@
     convocatoria: undefined,
   });
 
-  const emits = defineEmits(["update:numberValue"]);
+  const emits = defineEmits(["update:numberValue", "update:number-value"]);
 
   const value = ref(props.initialValue || "0.00");
+  const isUserEditing = ref(false);
 
   watch(value, (newValue) => {
-    emits("update:numberValue", parseFloat(newValue));
+    const parsedValue = parseFloat(newValue);
+    // Cuando el usuario cambia el valor, marcar que está editando
+    isUserEditing.value = true;
+    // Resetear el flag después de un tiempo para permitir actualizaciones externas
+    setTimeout(() => {
+      isUserEditing.value = false;
+    }, 1000);
+
+    emits("update:number-value", parsedValue);
   });
 
   watch(
     () => props.initialValue,
     (newValue) => {
-      if (newValue && newValue !== value.value) {
+      // Solo actualizar si el usuario NO está editando y el valor realmente cambió
+      if (newValue && newValue !== value.value && !isUserEditing.value) {
         value.value = newValue;
       }
     }

@@ -1,16 +1,15 @@
 <script setup lang="ts">
-  import { Button } from "@/components/ui/button";
   import { computed, onMounted, watch } from "vue";
-  import { useRoute, useRouter } from "vue-router";
+  import { useRoute } from "vue-router";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
+  import { useFlowLayoutNext } from "~/composables/useFlowLayoutNext";
   import {
     useQuorumForm,
     type QuorumNumericField,
   } from "~/core/presentation/registros/sociedades/pasos/quorum/components/forms/useQuorumForm";
   import QuorumRowTable from "~/core/presentation/registros/sociedades/pasos/quorum/components/table/QuorumRow.vue";
   import QuorumTable from "~/core/presentation/registros/sociedades/pasos/quorum/components/table/QuorumTable.vue";
-  import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   interface Props {
@@ -27,8 +26,6 @@
   const headersQuorum2 = ["Tipo de Quórum", "Reglas"];
 
   const route = useRoute();
-  const router = useRouter();
-  const { withAsyncToast } = useToastFeedback();
 
   const societyId = computed(
     () => props.societyId || (route.params.id as string | undefined) || ""
@@ -38,10 +35,8 @@
     form,
     load,
     submit,
-    reset,
     setValue,
     isLoading,
-    isSaving,
     isReadonly,
     errorMessage,
     relationshipErrors,
@@ -58,47 +53,30 @@
     return value.toFixed(2);
   }
 
-  const nextRoute = computed(() => {
-    const segments = route.path.split("/");
-    segments[segments.length - 1] = "acuerdos-societarios";
-    return segments.join("/");
-  });
+  // El nextRoute ya no es necesario porque useFlowLayoutNext maneja la navegación automáticamente
+  // const nextRoute = computed(() => {
+  //   const segments = route.path.split("/");
+  //   segments[segments.length - 1] = "acuerdos-societarios";
+  //   return segments.join("/");
+  // });
 
   const handlePercentUpdate = (field: QuorumNumericField) => (value: number) => {
     setValue(field, value);
   };
 
-  const handleReset = () => {
-    if (isSaving.value) return;
-    reset();
-  };
-
   const handleNext = async () => {
     if (isReadonly.value) {
-      await router.push(nextRoute.value);
+      // Si es readonly, solo navegar (sin guardar)
       return;
     }
 
-    await withAsyncToast(() => submit(), {
-      loading: {
-        title: "Guardando quórum…",
-        description: "Estamos registrando la configuración en el sistema.",
-      },
-      success: () => ({
-        title: "Quórum guardado",
-        description: "La configuración se registró correctamente.",
-      }),
-      error: (error) => ({
-        title: "No pudimos guardar",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Revisa los valores e inténtalo nuevamente.",
-      }),
-    });
-
-    await router.push(nextRoute.value);
+    await submit();
+    // Nota: La navegación al siguiente paso la maneja automáticamente useFlowLayoutNext
   };
+
+  // Registrar la función handleNext en el store del layout
+  // Esto conecta el botón "Siguiente" del layout con nuestra función handleNext
+  useFlowLayoutNext(handleNext);
 
   watch(
     societyId,
@@ -116,9 +94,7 @@
   });
 
   const isPreview = computed(() => isReadonly.value);
-  const disableNext = computed(
-    () => isSaving.value || (!isReadonly.value && hasValidationErrors.value)
-  );
+  // disableNext ya no es necesario porque el botón está en el layout
 </script>
 
 <template>
@@ -158,7 +134,9 @@
               text-body="de acciones con derecho a voto."
               :show-error="relationshipErrors.primeraConvocatoriaSimple"
               :error-limit="form.quorumMinimoSimple"
-              @update:number-value="handlePercentUpdate('primeraConvocatoriaSimple')"
+              @update:number-value="
+                (val) => handlePercentUpdate('primeraConvocatoriaSimple')(val)
+              "
             />
             <QuorumRowTable
               :is-preview="isPreview"
@@ -169,7 +147,9 @@
               text-body="de acciones con derecho a voto."
               :show-error="relationshipErrors.primeraConvocatoriaCalificada"
               :error-limit="form.quorumMinimoCalificado"
-              @update:number-value="handlePercentUpdate('primeraConvocatoriaCalificada')"
+              @update:number-value="
+                (val) => handlePercentUpdate('primeraConvocatoriaCalificada')(val)
+              "
             />
             <QuorumRowTable
               :is-preview="isPreview"
@@ -180,7 +160,9 @@
               text-body="de acciones con derecho a voto."
               :show-error="relationshipErrors.segundaConvocatoriaSimple"
               :error-limit="form.quorumMinimoSimple"
-              @update:number-value="handlePercentUpdate('segundaConvocatoriaSimple')"
+              @update:number-value="
+                (val) => handlePercentUpdate('segundaConvocatoriaSimple')(val)
+              "
             />
             <QuorumRowTable
               :is-preview="isPreview"
@@ -191,7 +173,9 @@
               text-body="de acciones con derecho a voto existentes."
               :show-error="relationshipErrors.segundaConvocatoriaCalificada"
               :error-limit="form.quorumMinimoCalificado"
-              @update:number-value="handlePercentUpdate('segundaConvocatoriaCalificada')"
+              @update:number-value="
+                (val) => handlePercentUpdate('segundaConvocatoriaCalificada')(val)
+              "
             />
           </QuorumTable>
         </div>
@@ -207,7 +191,7 @@
               ruler="Más del"
               :initial-value="formatPercent(form.quorumMinimoSimple)"
               text-body="de acciones con derecho a voto presentes."
-              @update:number-value="handlePercentUpdate('quorumMinimoSimple')"
+              @update:number-value="(val) => handlePercentUpdate('quorumMinimoSimple')(val)"
             />
             <QuorumRowTable
               :is-preview="isPreview"
@@ -215,7 +199,9 @@
               ruler="Más del"
               :initial-value="formatPercent(form.quorumMinimoCalificado)"
               text-body="de acciones con derecho a voto presentes."
-              @update:number-value="handlePercentUpdate('quorumMinimoCalificado')"
+              @update:number-value="
+                (val) => handlePercentUpdate('quorumMinimoCalificado')(val)
+              "
             />
           </QuorumTable>
         </div>
@@ -225,14 +211,8 @@
         <p v-if="hasValidationErrors && !isReadonly" class="text-sm text-red-600">
           Ajusta los porcentajes para que cada convocatoria sea mayor o igual al quórum mínimo.
         </p>
-        <div class="flex justify-end gap-3">
-          <Button variant="ghost" type="button" :disabled="isSaving" @click="handleReset">
-            Restablecer
-          </Button>
-          <Button type="button" :disabled="disableNext" @click="handleNext">
-            {{ isReadonly ? "Ir al siguiente paso" : "Siguiente" }}
-          </Button>
-        </div>
+        <!-- Botones "Restablecer" y "Siguiente" ahora están en el layout (flow-layout.vue) -->
+        <!-- Se maneja automáticamente mediante useFlowLayoutNext -->
       </div>
     </template>
   </div>
