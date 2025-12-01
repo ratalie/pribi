@@ -1,6 +1,8 @@
 import { useJuntasFlowStore } from "~/stores/useJuntasFlowStore";
 import type { JuntaNavigationContext } from "~/types/junta-navigation.types";
 import type { NavigationStep, NavigationSubStep } from "~/types/navigationSteps";
+import { buildJuntaRoute } from "~/utils/juntas/route-builder.utils";
+import { JuntaRoutes } from "~/config/routes/junta-accionistas.routes";
 
 /**
  * Configuración base de los 6 pasos principales del flujo de Juntas
@@ -148,24 +150,57 @@ const BASE_SUB_STEPS: Array<
  * Si no hay juntaId, usa la ruta sin ID (para flujos nuevos).
  */
 const buildRoute = (slug: string, context: JuntaNavigationContext): string => {
+  // Mapear slug a JuntaRoute
+  const slugToRoute: Record<string, JuntaRoutes> = {
+    "seleccion-agenda": JuntaRoutes.SELECCION_AGENDA,
+    "detalles": JuntaRoutes.DETALLES,
+    "instalacion": JuntaRoutes.INSTALACION,
+    "puntos-acuerdo": JuntaRoutes.PUNTOS_ACUERDO,
+    "resumen": JuntaRoutes.RESUMEN,
+    "descargar": JuntaRoutes.DESCARGAR,
+  };
+
+  const route = slugToRoute[slug];
+  if (route) {
+    return buildJuntaRoute(route, context.juntaId);
+  }
+
+  // Fallback: construir manualmente si no está en el mapeo
   if (context.juntaId) {
     return `/operaciones/junta-accionistas/${context.juntaId}/${slug}`;
   }
-  // Para flujos nuevos sin ID aún
   return `/operaciones/junta-accionistas/${slug}`;
 };
 
 /**
  * Construye la ruta para un sub-step
  *
- * NOTA: La estructura actual tiene los sub-steps directamente bajo /operaciones/junta-accionistas/
- * Ejemplo: /operaciones/junta-accionistas/aporte-dinerario
- *
- * Si en el futuro se cambia a /operaciones/junta-accionistas/[id]/puntos-acuerdo/[sub-step],
- * actualizar esta función.
+ * Usa buildJuntaRoute para construir rutas con o sin ID según el contexto.
  */
 const buildSubStepRoute = (subStepId: string, context: JuntaNavigationContext): string => {
-  // Mapeo de IDs de sub-steps a slugs de rutas
+  // Mapeo de IDs de sub-steps a JuntaRoutes
+  const subStepRouteMap: Record<string, JuntaRoutes> = {
+    "aporte-dinerarios": JuntaRoutes.APORTE_DINERARIO,
+    "aporte-no-dinerario": JuntaRoutes.APORTE_DINERARIO, // TODO: crear ruta específica si existe
+    "capitalizacion-creditos": JuntaRoutes.CAPITALIZACION_CREDITOS,
+    "remocion-gerente": JuntaRoutes.REMOCION_GERENTE,
+    "remocion-apoderados": JuntaRoutes.REMOCION_APODERADOS,
+    "remocion-directores": JuntaRoutes.REMOCION_DIRECTORES,
+    "nombramiento-gerente": JuntaRoutes.NOMBRAMIENTO_GERENTE,
+    "nombramiento-apoderados": JuntaRoutes.NOMBRAMIENTO_APODERADOS,
+    "nombramiento-directores": JuntaRoutes.NOMBRAMIENTO_DIRECTORES,
+    "nombramiento-nuevo-directorio": JuntaRoutes.NOMBRAMIENTO_DIRECTORIO,
+    "pronunciamiento-gestion": JuntaRoutes.PRONUNCIAMIENTO_GESTION,
+    "aplicacion-resultados": JuntaRoutes.APLICACION_RESULTADOS,
+    "delegacion-auditores": JuntaRoutes.NOMBRAMIENTO_AUDITORES,
+  };
+
+  const route = subStepRouteMap[subStepId];
+  if (route) {
+    return buildJuntaRoute(route, context.juntaId);
+  }
+
+  // Fallback: construir manualmente si no está en el mapeo
   const subStepSlugMap: Record<string, string> = {
     "aporte-dinerarios": "aporte-dinerario",
     "aporte-no-dinerario": "aporte-no-dinerario",
@@ -187,7 +222,6 @@ const buildSubStepRoute = (subStepId: string, context: JuntaNavigationContext): 
   if (context.juntaId) {
     return `/operaciones/junta-accionistas/${context.juntaId}/${slug}`;
   }
-  // Para flujos nuevos sin ID aún
   return `/operaciones/junta-accionistas/${slug}`;
 };
 
