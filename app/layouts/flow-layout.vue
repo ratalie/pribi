@@ -5,6 +5,10 @@
 
   const { steps, currentStepIndex } = useProgressNavbarRoutes();
   const flowLayoutStore = useFlowLayoutStore();
+
+  onUnmounted(() => {
+    flowLayoutStore.clearValues();
+  });
 </script>
 
 <template>

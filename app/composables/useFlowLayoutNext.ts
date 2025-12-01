@@ -2,17 +2,19 @@ import { useFlowLayoutStore } from "~/stores/useFlowLayoutStore";
 
 type FlowNextHandler = (() => void) | (() => Promise<void>);
 
-export const useFlowLayoutNext = (handleNext: FlowNextHandler) => {
+export const useFlowLayoutNext = (handleNext?: FlowNextHandler) => {
   const flowLayoutStore = useFlowLayoutStore();
   const progressNavbarStore = useProgressNavbarStore();
   const router = useRouter();
   const route = useRoute();
 
   onMounted(() => {
+    flowLayoutStore.clearValues();
+
     flowLayoutStore.onClickNext = async () => {
       try {
         flowLayoutStore.isLoading = true;
-        await handleNext();
+        await handleNext?.();
 
         // navegamos al siguiente paso
         const nextStep = progressNavbarStore.getNextStepByCurrentStep(route.path);
@@ -26,9 +28,5 @@ export const useFlowLayoutNext = (handleNext: FlowNextHandler) => {
         flowLayoutStore.isLoading = false;
       }
     };
-  });
-
-  onUnmounted(() => {
-    flowLayoutStore.clearValues();
   });
 };
