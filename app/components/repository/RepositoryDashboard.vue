@@ -20,7 +20,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import GlobalSearchBar from "./GlobalSearchBar.vue";
+import AdvancedSearchBar from "./AdvancedSearchBar.vue";
+import type { AdvancedFilters } from "./types";
 import { useRepositorioDashboard } from "~/core/presentation/repositorio/composables/useRepositorioDashboard";
 import { useCarpetasPersonalizadasStore } from "~/core/presentation/repositorio/stores/carpetas-personalizadas.store";
 import type { ChartConfig } from "@/components/ui/chart";
@@ -61,6 +62,9 @@ const {
 } = useRepositorioDashboard();
 
 const carpetasStore = useCarpetasPersonalizadasStore();
+
+// Estado de filtros avanzados
+const filters = ref<AdvancedFilters>({ scope: "dashboard" });
 
 // Cargar carpetas cuando cambie la sociedad
 watch(
@@ -407,13 +411,15 @@ const totalEnlaces = computed(() => {
         </div>
       </div>
 
-      <!-- SECCIÓN 2: Buscador Global -->
+      <!-- SECCIÓN 2: Buscador Avanzado -->
       <div class="mb-6">
-        <GlobalSearchBar
+        <AdvancedSearchBar
           v-model="queryBusqueda"
-          current-scope="dashboard"
+          :current-scope="'dashboard'"
+          :filters="filters"
           placeholder="Buscar en todo el repositorio..."
           @update:model-value="buscar"
+          @update:filters="filters = $event"
         />
       </div>
 

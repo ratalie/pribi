@@ -4,8 +4,9 @@ import {
   CreateJuntaUseCase,
   DeleteJuntaUseCase,
   ListJuntasUseCase,
+  GetSnapshotUseCase,
 } from "~/core/hexag/juntas/application/use-cases";
-import type { JuntaResumenDTO } from "~/core/hexag/juntas/application/dtos";
+import type { JuntaResumenDTO, SnapshotCompleteDTO } from "~/core/hexag/juntas/application/dtos";
 import { JuntaHttpRepository } from "~/core/hexag/juntas/infrastructure/repositories";
 
 type Status = "idle" | "loading" | "error";
@@ -99,6 +100,38 @@ export const useJuntaHistorialStore = defineStore("juntas-historial", {
         try {
           const id = await createUseCase.execute(societyId);
           console.debug("[Store][JuntaHistorial] Junta creada con id", id);
+
+          // 🎯 OBTENER SNAPSHOT DESPUÉS DE CREAR LA JUNTA
+          try {
+            const flowIdNumber = parseInt(id, 10);
+            if (!Number.isNaN(flowIdNumber)) {
+              const getSnapshotUseCase = new GetSnapshotUseCase(repository);
+              const snapshot = await getSnapshotUseCase.execute(societyId, flowIdNumber);
+
+              // 📊 MOSTRAR SNAPSHOT POR CONSOLA (formateado)
+              console.log("\n" + "=".repeat(80));
+              console.log("📸 SNAPSHOT COMPLETO DE JUNTA");
+              console.log("=".repeat(80));
+              console.log(`Sociedad ID: ${societyId}`);
+              console.log(`Flow ID: ${flowIdNumber}`);
+              console.log("\n📋 RESUMEN:");
+              console.log(`  • Accionistas: ${snapshot.shareholders.length}`);
+              console.log(`  • Clases de Acciones: ${snapshot.shareClasses.length}`);
+              console.log(`  • Asignaciones: ${snapshot.shareAllocations.length}`);
+              console.log(`  • Directores: ${snapshot.directors?.length || 0}`);
+              console.log(`  • Apoderados: ${snapshot.attorneys?.length || 0}`);
+              console.log(`  • Valor Nominal: $${snapshot.nominalValue.toLocaleString()}`);
+              console.log(`  • Tiene Directorio: ${snapshot.directory ? "Sí" : "No"}`);
+              console.log(`  • Tiene Quorums: ${snapshot.quorums ? "Sí" : "No"}`);
+              console.log("\n📦 DATOS COMPLETOS:");
+              console.log(JSON.stringify(snapshot, null, 2));
+              console.log("=".repeat(80) + "\n");
+            }
+          } catch (snapshotError) {
+            console.warn("[Store][JuntaHistorial] Error al obtener snapshot:", snapshotError);
+            // No fallar la creación si el snapshot falla
+          }
+
           // Recargar el historial después de crear
           await this.cargarHistorial(societyId);
           return id;

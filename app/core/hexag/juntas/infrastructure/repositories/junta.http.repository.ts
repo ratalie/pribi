@@ -1,7 +1,7 @@
 import type { FetchOptions } from "ofetch";
 
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
-import type { JuntaResumenDTO } from "../../application/dtos";
+import type { JuntaResumenDTO, SnapshotCompleteDTO } from "../../application/dtos";
 import type { JuntaRepository } from "../../domain/ports";
 import { JuntaMapper } from "../mappers/junta.mapper";
 
@@ -30,6 +30,30 @@ export class JuntaHttpRepository implements JuntaRepository {
 
     // Fallback: construir URL relativa
     return `${this.basePath}/${societyId}/register-assembly${path}`;
+  }
+
+  private resolveSnapshotUrl(societyId: number, flowId: number): string {
+    const config = useRuntimeConfig();
+    const apiBase = (config.public?.apiBase as string | undefined) || "";
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+
+    const candidates = [apiBase, origin, "http://localhost:3000"];
+
+    for (const base of candidates) {
+      if (!base) continue;
+      try {
+        const baseUrl = new URL(base, origin || "http://localhost:3000");
+        const basePath = this.basePath.startsWith("/") ? this.basePath : `/${this.basePath}`;
+        // Construir la ruta: /api/v2/society-profile/:societyId/register-assembly/:flowId/snapshot/complete
+        const fullPath = `${basePath}/${societyId}/register-assembly/${flowId}/snapshot/complete`;
+        return new URL(fullPath, baseUrl.origin).toString();
+      } catch {
+        continue;
+      }
+    }
+
+    // Fallback: construir URL relativa
+    return `${this.basePath}/${societyId}/register-assembly/${flowId}/snapshot/complete`;
   }
 
   async create(societyId: number): Promise<string> {
@@ -161,6 +185,58 @@ export class JuntaHttpRepository implements JuntaRepository {
         error?.message ??
         "Error desconocido";
       console.error("[Repository][JuntaHttp] delete() error", {
+        url,
+        societyId,
+        flowId,
+        statusCode,
+        message,
+      });
+      throw error;
+    }
+  }
+
+  async getSnapshot(societyId: number, flowId: number): Promise<SnapshotCompleteDTO> {
+    const url = this.resolveSnapshotUrl(societyId, flowId);
+    const authConfig = withAuthHeaders() as FetchOptions & {
+      headers?: Record<string, string>;
+    };
+    const requestConfig = {
+      ...authConfig,
+      method: "GET" as const,
+    };
+
+    console.debug("[Repository][JuntaHttp] getSnapshot() request", {
+      url,
+      societyId,
+      flowId,
+    });
+
+    try {
+      const response = await $fetch<{
+        success: boolean;
+        message: string;
+        code: number;
+        data: SnapshotCompleteDTO;
+      }>(url, requestConfig);
+
+      console.debug("[Repository][JuntaHttp] getSnapshot() response", {
+        hasData: !!response?.data,
+        snapshotKeys: response?.data ? Object.keys(response.data) : [],
+      });
+
+      if (!response?.data) {
+        throw new Error("La respuesta del backend no incluye el snapshot.");
+      }
+
+      return response.data;
+    } catch (error: any) {
+      const statusCode = error?.statusCode ?? error?.response?.status ?? null;
+      const message =
+        error?.data?.message ??
+        error?.response?._data?.message ??
+        error?.message ??
+        "Error desconocido";
+      console.error("[Repository][JuntaHttp] getSnapshot() error", {
         url,
         societyId,
         flowId,
