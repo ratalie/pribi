@@ -143,10 +143,18 @@ export const navigationSections: NavigationSection[] = [
   },
   {
     id: "storage",
-    title: "Storage",
-    translationKey: "navigation.storage",
+    title: "Repositorio",
+    translationKey: "navigation.repositorio",
     icon: "HardDrive",
     items: [
+      {
+        id: "repositorio-dashboard",
+        label: "Dashboard",
+        translationKey: "navigation.dashboard",
+        icon: "LayoutDashboard",
+        href: "/storage/dashboard",
+        roles: ["admin", "manager", "user"],
+      },
       {
         id: "almacen",
         label: "Almacén",
@@ -161,6 +169,14 @@ export const navigationSections: NavigationSection[] = [
         translationKey: "navigation.documentosGenerados",
         icon: "FileText",
         href: "/storage/documentos-generados",
+        roles: ["admin", "manager", "user"],
+      },
+      {
+        id: "carpetas-personalizadas",
+        label: "Carpetas Personalizadas",
+        translationKey: "navigation.carpetasPersonalizadas",
+        icon: "FolderOpen",
+        href: "/storage/carpetas-personalizadas",
         roles: ["admin", "manager", "user"],
       },
     ],

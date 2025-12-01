@@ -81,17 +81,15 @@ export const apoderadosHandlers = [
     return HttpResponse.json({ success: true, code: 200, data: entity });
   }),
 
-  http.delete(`${baseUrl}/attorneys/:classId/:attorneyId`, async ({ params }) => {
+  http.delete(`${baseUrl}/attorneys/:attorneyId`, async ({ params }) => {
     const id = ensureParam(params.id);
-    const classId = ensureParam(params.classId);
     const attorneyId = ensureParam(params.attorneyId);
-    if (!id || !classId || !attorneyId) {
+    if (!id || !attorneyId) {
       return HttpResponse.json({ error: "Invalid identifiers" }, { status: 400 });
     }
     await deleteApoderadoMock(id, attorneyId);
     console.debug("[MSW][Apoderados] DELETE attorney", {
       societyProfileId: id,
-      classId,
       attorneyId,
     });
     return HttpResponse.json({ success: true, code: 200 });
