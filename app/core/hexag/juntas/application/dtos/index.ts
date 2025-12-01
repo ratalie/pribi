@@ -28,4 +28,10 @@ export {
   isPersonaFideicomiso,
   isPersonaSucesionIndivisa,
 } from "./snapshot-complete.dto";
+export type {
+  ConvocatoriaDto,
+  DetallesJuntaDto,
+  MeetingCallDto,
+  GeneralMeetingConfigDto,
+} from "./meeting-details.dto";
 

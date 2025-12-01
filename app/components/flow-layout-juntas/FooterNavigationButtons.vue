@@ -45,7 +45,12 @@
       :is-loading="isLoading"
       :icon="nextButtonIcon"
       icon-position="right"
-      @click="onNext"
+      @click="() => {
+        console.log('🖱️ [FooterNavigationButtons] Click en botón Siguiente');
+        console.log('🖱️ [FooterNavigationButtons] onNext es:', typeof onNext);
+        console.log('🖱️ [FooterNavigationButtons] onNext función:', onNext.toString());
+        onNext();
+      }"
     />
   </div>
 </template>
