@@ -11,6 +11,18 @@ export const usePersonaNaturalStore = defineStore("personaNatural", {
     paisPasaporte: "",
     estadoCivil: null,
   }),
+
+  actions: {
+    setFormData(data: PersonaNaturalState) {
+      this.tipoDocumento = data.tipoDocumento;
+      this.numeroDocumento = data.numeroDocumento;
+      this.nombre = data.nombre;
+      this.apellidoPaterno = data.apellidoPaterno;
+      this.apellidoMaterno = data.apellidoMaterno;
+      this.paisPasaporte = data.paisPasaporte;
+      this.estadoCivil = data.estadoCivil;
+    },
+  },
 });
 
 export interface PersonaNaturalState {

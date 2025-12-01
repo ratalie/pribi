@@ -167,6 +167,8 @@
     isModalOpen.value = false;
     editingAccionista.value = null;
   };
+
+  useFlowLayoutNext(() => {});
 </script>
 
 <template>

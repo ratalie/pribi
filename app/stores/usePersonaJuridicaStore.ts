@@ -1,67 +1,45 @@
-import type { PersonaNatural } from "./usePersonaNaturalStore";
-
-export type JurisdiccionPersonaJuridica = "peruana" | "extranjera";
-
-export const usePersonaJuridicaStore = defineStore("personaJuridicaForm", {
+export const usePersonaJuridicaStore = defineStore("personaJuridica", {
   state: (): PersonaJuridicaState => ({
-    jurisdiccion: "peruana",
-    tipoDocumento: "RUC",
+    seConstituyoEnPeru: true,
+    tipoDocumento: "",
     numeroDocumento: "",
-    nombreComercial: "",
     razonSocial: "",
-    pais: "PER",
+    nombreComercial: "",
     direccion: "",
-    provincia: "",
     distrito: "",
+    provincia: "",
     departamento: "",
-    representadoPor: null,
+    paisOrigen: "",
+    tieneRepresentante: false,
   }),
 
   actions: {
-    setJurisdiccion(value: JurisdiccionPersonaJuridica) {
-      this.jurisdiccion = value;
-
-      if (value === "peruana") {
-        this.tipoDocumento = "RUC";
-        if (!this.pais) {
-          this.pais = "PER";
-        }
-        return;
-      }
-
-      this.tipoDocumento = "";
-      this.pais = "";
-      this.provincia = "";
-      this.distrito = "";
-      this.departamento = "";
-    },
-
-    setRepresentadoPor(value: PersonaNatural | null) {
-      this.representadoPor = value ? { ...value } : null;
-    },
-
-    resetRepresentadoPor() {
-      this.representadoPor = null;
-    },
-
-    resetUbicacionPeruana() {
-      this.provincia = "";
-      this.distrito = "";
-      this.departamento = "";
+    setFormData(data: PersonaJuridicaState) {
+      this.seConstituyoEnPeru = data.seConstituyoEnPeru;
+      this.tipoDocumento = data.tipoDocumento;
+      this.numeroDocumento = data.numeroDocumento;
+      this.razonSocial = data.razonSocial;
+      this.nombreComercial = data.nombreComercial;
+      this.direccion = data.direccion;
+      this.distrito = data.distrito;
+      this.provincia = data.provincia;
+      this.departamento = data.departamento;
+      this.paisOrigen = data.paisOrigen;
+      this.tieneRepresentante = data.tieneRepresentante;
     },
   },
 });
 
 export interface PersonaJuridicaState {
-  jurisdiccion: JurisdiccionPersonaJuridica;
+  seConstituyoEnPeru: boolean;
   tipoDocumento: string;
   numeroDocumento: string;
-  nombreComercial: string;
   razonSocial: string;
-  pais: string;
+  nombreComercial: string;
   direccion: string;
-  provincia: string;
   distrito: string;
+  provincia: string;
   departamento: string;
-  representadoPor: PersonaNatural | null;
+  paisOrigen: string;
+  tieneRepresentante: boolean;
 }

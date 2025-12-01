@@ -1,4 +1,4 @@
-import type { AccionResponseDTO, AccionDTO, FileMetadataDTO } from "../../application";
+import type { AccionDTO, AccionResponseDTO, FileMetadataDTO } from "../../application";
 import type { Accion, AccionPayload, FileMetadata } from "../../domain";
 import { TipoAccionEnum } from "../../domain";
 
@@ -13,10 +13,11 @@ export class AccionesMapper {
    */
   private static fileMetadataDTOToEntity(dto: FileMetadataDTO): FileMetadata {
     return {
-      fileId: dto.fileId,
-      mimeType: dto.mimeType,
-      originalName: dto.originalName,
-      size: dto.size,
+      archivoId: dto.archivoId,
+      tipoMino: dto.tipoMino,
+      nombreOriginal: dto.nombreOriginal,
+      tamaño: dto.tamaño,
+      version: dto.version,
     };
   }
 
@@ -62,12 +63,12 @@ export class AccionesMapper {
       otrosDerechosEspeciales: accion.otrosDerechosEspeciales,
       archivosOtrosDerechos:
         accion.otrosDerechosEspeciales && accion.metadataDerechosEspeciales.length > 0
-          ? accion.metadataDerechosEspeciales.map((file) => file.fileId)
+          ? accion.metadataDerechosEspeciales.map((file) => file.archivoId)
           : undefined,
       obligacionesAdicionales: accion.obligacionesAdicionales,
       archivosObligaciones:
         accion.obligacionesAdicionales && accion.metadataObligaciones.length > 0
-          ? accion.metadataObligaciones.map((file) => file.fileId)
+          ? accion.metadataObligaciones.map((file) => file.archivoId)
           : undefined,
       comentariosAdicionales: accion.comentariosAdicionales,
       comentariosAdicionalesTexto:
