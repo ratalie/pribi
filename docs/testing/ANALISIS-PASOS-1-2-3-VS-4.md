@@ -190,3 +190,4 @@ MSW funcionará perfectamente con los helpers actuales. La refactorización es u
 **Última actualización**: 2025-12-01
 **Recomendación**: ⭐ **IR DIRECTO A MSW**
 
+

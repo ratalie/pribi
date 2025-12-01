@@ -140,3 +140,4 @@ export async function deleteAccionesMock(profileId: string, accionIds: string[])
   return deletedCount > 0;
 }
 
+

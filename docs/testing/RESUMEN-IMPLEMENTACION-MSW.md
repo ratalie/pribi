@@ -236,3 +236,4 @@ npm run test:registros  # ✅ 47 tests pasando (integración)
 **Última actualización**: 2025-12-01
 **Estado**: ✅ **MSW COMPLETAMENTE IMPLEMENTADO**
 
+

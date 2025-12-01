@@ -20,7 +20,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { GlobalSearchBar } from "./GlobalSearchBar.vue";
+import GlobalSearchBar from "./GlobalSearchBar.vue";
 import { useRepositorioDashboard } from "~/core/presentation/repositorio/composables/useRepositorioDashboard";
 import { useCarpetasPersonalizadasStore } from "~/core/presentation/repositorio/stores/carpetas-personalizadas.store";
 import type { ChartConfig } from "@/components/ui/chart";

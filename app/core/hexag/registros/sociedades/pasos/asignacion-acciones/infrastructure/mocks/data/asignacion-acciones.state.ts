@@ -94,3 +94,4 @@ export async function deleteAsignacionMock(
   console.debug("[MSW][AsignacionAcciones] Eliminada asignación mock", asignacionId);
   return true;
 }
+

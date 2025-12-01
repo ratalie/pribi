@@ -1,5 +1,5 @@
 const DB_NAME = "probo-registros-msw";
-const DB_VERSION = 1;
+const DB_VERSION = 2; // Incrementado para agregar directorioConfig store
 
 const STORE_SCHEMAS = {
   sociedades: { keyPath: "idSociety" },
@@ -8,6 +8,7 @@ const STORE_SCHEMAS = {
   accionistas: { keyPath: "id" },
   acciones: { keyPath: "id" },
   asignacionAcciones: { keyPath: "id" },
+  directorioConfig: { keyPath: "societyProfileId" },
   directores: { keyPath: "id" },
   apoderadosClases: { keyPath: "id" },
   apoderadosRegistro: { keyPath: "id" },

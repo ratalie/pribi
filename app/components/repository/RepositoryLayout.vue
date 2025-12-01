@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import GlobalSearchBar from "./GlobalSearchBar.vue";
+
 interface Props {
   title?: string;
   showSearch?: boolean;
