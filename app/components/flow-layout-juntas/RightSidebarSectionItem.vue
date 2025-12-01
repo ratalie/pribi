@@ -75,22 +75,6 @@
           v-if="getIcon('ChevronDown') && getIcon('ChevronRight')"
           class="w-3 h-3 text-gray-600"
         />
-        <svg
-          v-else
-          xmlns="http://www.w3.org/2000/svg"
-          width="12"
-          height="12"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="text-gray-600"
-        >
-          <path v-if="isExpanded" d="m6 9 6 6 6-6" />
-          <path v-else d="m9 18 6-6-6-6" />
-        </svg>
       </div>
     </button>
   </div>

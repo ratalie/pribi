@@ -28,11 +28,6 @@
   <div class="bg-white border-b border-gray-200 shadow-sm px-8 py-4">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-4">
-        <BaseButton variant="ghost" @click="goBackStep" class="flex items-center gap-2">
-          <component :is="getIcon('ArrowLeft')" v-if="getIcon('ArrowLeft')" class="w-4 h-4" />
-          Salir
-        </BaseButton>
-        <div class="h-8 w-px bg-gray-200"></div>
         <HeaderTitle :current-step="currentStep" />
       </div>
       <HeaderActions :on-save="onSave" :on-reset="onReset" />

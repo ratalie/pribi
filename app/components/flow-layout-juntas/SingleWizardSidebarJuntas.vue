@@ -15,14 +15,21 @@
     progress: { current: number; total: number };
   }
 
-  defineProps<Props>();
+  const props = defineProps<Props>();
 </script>
 
 <template>
   <div class="w-[401px] shrink-0 border-r bg-white overflow-y-auto h-full">
     <div class="px-6 py-10">
       <!-- Header con ícono y título -->
-      <SidebarHeader :title="title" :progress="progress" :icon="icon" />
+      <SidebarHeader
+        :title="title"
+        :progress="progress"
+        :icon="icon"
+        :steps="steps"
+        :current-step-id="currentStepId"
+        :current-sub-step-id="currentSubStepId"
+      />
 
       <!-- Progress Bar -->
       <ProgressBarJuntas :current="progress.current" :total="progress.total" />

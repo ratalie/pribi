@@ -18,7 +18,7 @@
 </script>
 
 <template>
-  <div class="flex items-center gap-2 w-full bg-amber-300">
+  <div class="flex items-center gap-2 w-full">
     <!-- Items colapsables (con sub-steps, pero NO puntos-acuerdo) -->
     <div
       v-if="
@@ -41,7 +41,7 @@
 
         <span
           :class="[
-            'font-secondary  text-xs transition-colors',
+            'font-secondary text-sm transition-colors',
             isCurrent ? 'font-semibold text-gray-800' : 'font-normal text-gray-600',
           ]"
         >
@@ -57,7 +57,7 @@
     </div>
     <!-- Puntos de Acuerdo: link solo en contenido, chevron separado -->
     <template v-else-if="step.route.includes('puntos-acuerdo')">
-      <div class="flex items-center justify-between w-full bg-green-300">
+      <div class="flex items-center justify-between w-full">
         <NuxtLink
           :to="step.route"
           class="flex flex-col gap-1 flex-1 cursor-pointer"
@@ -75,7 +75,7 @@
           </p>
           <span
             :class="[
-              'font-secondary font-medium text-xs transition-colors',
+              'font-secondary font-medium text-sm transition-colors',
               isCurrent ? 'text-gray-800' : 'text-gray-600',
             ]"
           >
@@ -83,13 +83,13 @@
           </span>
         </NuxtLink>
         <button
-          class="shrink-0 cursor-pointer p-1 -m-1 bg-blue-500 h-10 flex items-start"
+          class="shrink-0 cursor-pointer p-1 -m-1 h-10 flex items-start"
           @click.stop="onToggle"
         >
           <component
             :is="getIcon(isExpanded ? 'ChevronDown' : 'ChevronRight')"
             v-if="getIcon('ChevronDown') && getIcon('ChevronRight')"
-            class="w-4 h-4 text-gray-600 transition-transform bg-yellow-700"
+            class="w-4 h-4 text-gray-600 transition-transform"
             :class="isExpanded ? 'rotate-180' : ''"
           />
         </button>
@@ -115,7 +115,7 @@
         </p>
         <span
           :class="[
-            'font-secondary text-xs transition-colors',
+            'font-secondary text-sm transition-colors',
             isCurrent ? 'font-semibold text-gray-700' : 'font-medium text-gray-600',
           ]"
         >

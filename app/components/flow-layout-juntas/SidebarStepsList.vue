@@ -72,15 +72,15 @@
       <!-- Se extiende desde el círculo hasta el siguiente círculo (incluyendo sub-steps y mb-4) -->
       <!-- Cálculo de posición:
            - El hover tiene py-1 (4px arriba)
-           - El círculo tiene h-7 (28px)
-           - Entonces el círculo termina a: 4px (py-1) + 28px (h-7) = 32px
-           - left-[14px] centra la línea con el círculo (w-7 = 28px, centro = 14px)
+           - El círculo tiene h-6 (24px)
+           - Entonces el círculo termina a: 4px (py-1) + 24px (h-6) = 28px
+           - left-3 centra la línea con el círculo (w-6 = 24px, centro = 12px)
            - La línea se extiende hasta el final incluyendo mb-4 (16px) para conectar con el siguiente círculo
       -->
       <div
         v-if="index !== steps.length - 1 || isStepExpanded(step)"
         :class="[
-          'absolute w-0.5 left-3.5 top-7 z-10 transition-all duration-300 pointer-events-none',
+          'absolute w-0.5 left-[11px] top-6 z-10 transition-all duration-300 pointer-events-none',
           // Se extiende hasta el final incluyendo mb-4 para conectar con el siguiente círculo
           '-bottom-4',
           {
@@ -95,7 +95,7 @@
       <!-- Sub-steps (solo si está expandido, fuera del hover, debajo del step) -->
       <div
         v-if="isStepExpanded(step) && step.subSteps && step.subSteps.length > 0"
-        class="ml-11 mt-2 space-y-2"
+        class="ml-11 space-y-2"
         @click.stop
       >
         <!-- Agrupar por categoría -->

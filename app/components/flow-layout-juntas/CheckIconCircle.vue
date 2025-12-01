@@ -20,7 +20,7 @@
 <template>
   <div
     :class="[
-      'w-7 h-7 flex items-center justify-center border-2 rounded-full',
+      'w-6 h-6 flex items-center justify-center border-2 rounded-full',
       // Estado vacío
       status === 'empty' || !status
         ? 'border-gray-300'
@@ -39,7 +39,7 @@
     <component
       v-else-if="status === 'completed' && CheckIcon"
       :is="CheckIcon"
-      :class="['text-white w-5 h-5', iconClass]"
+      :class="['text-white w-4 h-4', iconClass]"
     />
   </div>
 </template>
