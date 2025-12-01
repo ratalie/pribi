@@ -8,6 +8,7 @@
     TableRow,
   } from "@/components/ui/table";
 
+  import { ClasesApoderadoEspecialesEnum } from "../types/enums/ClasesApoderadoEspecialesEnum";
   import type { ClaseApoderadoRow } from "../types/types";
 
   interface Props {
@@ -70,6 +71,10 @@
             <!-- Celda de acciones -->
             <TableCell v-if="props.actions" class="w-auto">
               <DataTableDropDown
+                v-if="
+                  item.nombre !== ClasesApoderadoEspecialesEnum.GERENTE_GENERAL &&
+                  item.nombre !== ClasesApoderadoEspecialesEnum.OTROS_APODERADOS
+                "
                 :item-id="item.id"
                 :title-menu="props.titleMenu"
                 :actions="props.actions"
