@@ -180,6 +180,8 @@ export const useAccionesComputed = (profileId: string) => {
 
     const formData = mapperAccionesListaAModal(accion);
 
+    console.log(formData);
+
     // Poblar el store correspondiente según el tipo de acción
     if (accion.tipo === TipoAccionEnum.CLASES) {
       clasesAccionesStore.setFormData(formData as ClasesAccionesState);
