@@ -235,6 +235,8 @@
       new Date(datos.value.updatedAt)
     );
   });
+
+  useFlowLayoutNext(() => {});
 </script>
 
 <template>

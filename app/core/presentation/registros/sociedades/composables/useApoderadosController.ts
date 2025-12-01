@@ -1,5 +1,5 @@
-import { computed, onActivated, onMounted, ref, unref, watch } from "vue";
 import type { MaybeRef } from "vue";
+import { computed, onActivated, onMounted, ref, unref, watch } from "vue";
 
 import { useApoderadosStore } from "../pasos/apoderados/stores/apoderados.store";
 
@@ -42,7 +42,8 @@ export function useApoderadosController(options: ControllerOptions) {
       lastError.value = null;
       return result;
     } catch (error: any) {
-      const message = error?.data?.message ?? error?.message ?? "No pudimos cargar los apoderados.";
+      const message =
+        error?.data?.message ?? error?.message ?? "No pudimos cargar los apoderados.";
       lastError.value = message;
       throw error;
     } finally {
@@ -85,12 +86,16 @@ export function useApoderadosController(options: ControllerOptions) {
   }
 
   const isEnsuring = computed(
-    () => manualEnsuring.value || store.clasesStatus === "loading" || store.apoderadosStatus === "loading"
+    () =>
+      manualEnsuring.value ||
+      store.clasesStatus === "loading" ||
+      store.apoderadosStatus === "loading"
   );
-  const isBootstrapping = computed(() => isEnsuring.value && !store.hasClases && !store.hasApoderados);
+  const isBootstrapping = computed(
+    () => isEnsuring.value && !store.hasClases && !store.hasApoderados
+  );
 
   return {
-    ensure: runEnsure,
     isEnsuring,
     isBootstrapping,
     error: computed(() => lastError.value ?? store.errorMessage),
@@ -98,5 +103,3 @@ export function useApoderadosController(options: ControllerOptions) {
     apoderados: computed(() => store.apoderados),
   };
 }
-
-

@@ -8,10 +8,11 @@
   import { formatFileSize } from "~/utils/fileHelpers";
 
   interface FileMetadataResponseDTO {
-    fileId: string;
-    mimeType: string;
-    originalName: string;
-    size: number;
+    archivoId: string;
+    tipoMino: string;
+    nombreOriginal: string;
+    tamaño: number;
+    version: number;
   }
 
   interface Props {
@@ -99,10 +100,11 @@
 
           // Mapear UploadFileDataDTO a FileMetadataResponseDTO
           const metadata: FileMetadataResponseDTO = {
-            fileId: uploadResponse.data.fileId,
-            mimeType: uploadResponse.data.mimeType,
-            originalName: uploadResponse.data.originalName,
-            size: uploadResponse.data.size,
+            archivoId: uploadResponse.data.fileId,
+            tipoMino: uploadResponse.data.mimeType,
+            nombreOriginal: uploadResponse.data.originalName,
+            tamaño: uploadResponse.data.size,
+            version: Number(uploadResponse.data.versionId),
           };
 
           // Emitir evento con la metadata
@@ -142,8 +144,9 @@
 
   // Obtener icono según tipo de archivo
   const getFileIcon = (metadata: FileMetadataResponseDTO): string => {
-    const name = metadata.originalName.toLowerCase();
-    const mimeType = metadata.mimeType.toLowerCase();
+    // Validaciones defensivas para evitar errores con valores undefined/null
+    const name = (metadata.nombreOriginal || "").toLowerCase();
+    const mimeType = (metadata.tipoMino || "").toLowerCase();
 
     // PDF
     if (mimeType === "application/pdf" || name.endsWith(".pdf")) {
@@ -211,7 +214,7 @@
 
   // Manejar eliminación de archivo
   const handleRemoveFile = (metadata: FileMetadataResponseDTO) => {
-    emit("file-removed", metadata.fileId);
+    emit("file-removed", metadata.archivoId);
   };
 
   // Manejar eliminación de archivo temporal
@@ -288,7 +291,7 @@
           <!-- Archivos guardados (metadata) -->
           <div
             v-for="metadata in filesMetadata"
-            :key="metadata.fileId"
+            :key="metadata.archivoId"
             class="relative border border-gray-200 rounded-lg p-1.5 bg-white hover:shadow-md transition-shadow group"
             style="height: 110px; width: 114px"
           >
@@ -308,7 +311,7 @@
                 <p
                   class="text-[11px] font-medium text-gray-800 line-clamp-1 w-full text-left px-0.5"
                 >
-                  {{ metadata.originalName }}
+                  {{ metadata.nombreOriginal || "Archivo sin nombre" }}
                 </p>
               </div>
 
@@ -328,7 +331,7 @@
 
               <!-- Tamaño del archivo -->
               <p class="text-[10px] text-gray-500 font-medium">
-                {{ formatFileSize(metadata.size) }}
+                {{ formatFileSize(metadata.tamaño) }}
               </p>
             </div>
           </div>
@@ -418,7 +421,7 @@
         <button
           type="button"
           class="text-xs text-gray-600 hover:text-red-600 font-medium transition-colors flex items-center gap-1.5"
-          @click="filesMetadata.forEach((m) => emit('file-removed', m.fileId))"
+          @click="filesMetadata.forEach((m) => emit('file-removed', m.archivoId))"
         >
           <Icon icon="heroicons:trash" class="h-4 w-4" />
           Eliminar todos

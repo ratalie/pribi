@@ -1,17 +1,16 @@
-import type { Apoderado } from "../entities/apoderado.entity";
-import type { ClaseApoderado } from "../entities/clase-apoderado.entity";
-import type { ApoderadoDTO, ClaseApoderadoDTO } from "../../application/dtos";
+import type { Apoderado, ApoderadoPayload, ClaseApoderado, ClaseApoderadoPayload } from "..";
 
 export interface ApoderadosRepository {
   listClases(profileId: string): Promise<ClaseApoderado[]>;
-  createClase(profileId: string, payload: ClaseApoderadoDTO): Promise<ClaseApoderado>;
-  updateClase(profileId: string, payload: ClaseApoderadoDTO): Promise<ClaseApoderado>;
+  createClase(profileId: string, payload: ClaseApoderadoPayload): Promise<void>;
+  updateClase(profileId: string, payload: ClaseApoderadoPayload): Promise<void>;
   deleteClase(profileId: string, claseId: string): Promise<void>;
 
   listApoderados(profileId: string): Promise<Apoderado[]>;
-  createApoderado(profileId: string, payload: ApoderadoDTO): Promise<Apoderado>;
-  updateApoderado(profileId: string, payload: ApoderadoDTO): Promise<Apoderado>;
-  deleteApoderado(profileId: string, claseId: string, apoderadoId: string): Promise<void>;
+  createApoderado(profileId: string, payload: ApoderadoPayload): Promise<void>;
+  updateApoderado(profileId: string, payload: ApoderadoPayload): Promise<void>;
+  deleteApoderado(profileId: string, apoderadoId: string): Promise<void>;
+
+  createGerenteGeneral(profileId: string, payload: ApoderadoPayload): Promise<void>;
+  updateGerenteGeneral(profileId: string, payload: ApoderadoPayload): Promise<void>;
 }
-
-

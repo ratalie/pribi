@@ -12,11 +12,11 @@ import {
   type ApoderadoDTO,
   type ClaseApoderadoDTO,
 } from "~/core/hexag/registros/sociedades/pasos/apoderados/application";
-import { ApoderadosHttpRepository } from "~/core/hexag/registros/sociedades/pasos/apoderados/infrastructure";
 import type {
   Apoderado,
   ClaseApoderado,
 } from "~/core/hexag/registros/sociedades/pasos/apoderados/domain";
+import { ApoderadosHttpRepository } from "~/core/hexag/registros/sociedades/pasos/apoderados/infrastructure";
 
 type Status = "idle" | "loading" | "saving" | "error";
 
@@ -54,7 +54,8 @@ export const useApoderadosStore = defineStore("registros-apoderados", {
   getters: {
     hasClases: (state) => state.clases.length > 0,
     hasApoderados: (state) => state.apoderados.length > 0,
-    isLoading: (state) => state.clasesStatus === "loading" || state.apoderadosStatus === "loading",
+    isLoading: (state) =>
+      state.clasesStatus === "loading" || state.apoderadosStatus === "loading",
   },
   actions: {
     markFetchMetadata(profileId: string, source: "internal" | "external") {
@@ -227,5 +228,3 @@ export const useApoderadosStore = defineStore("registros-apoderados", {
   },
   persist: true,
 });
-
-

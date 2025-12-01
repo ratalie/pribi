@@ -7,12 +7,10 @@
     TableHeader,
     TableRow,
   } from "@/components/ui/table";
-
-  import { ClasesApoderadoEspecialesEnum } from "../types/enums/ClasesApoderadoEspecialesEnum";
-  import type { ClaseApoderadoRow } from "../types/types";
+  import type { ApoderadoRow } from "../types/types";
 
   interface Props {
-    items: ClaseApoderadoRow[];
+    items: ApoderadoRow[];
     titleMenu?: string;
     actions: {
       label: string;
@@ -40,12 +38,17 @@
           <TableHead
             class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
           >
-            Clase de Apoderado
+            Nombre / Razón Social
           </TableHead>
           <TableHead
             class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
           >
-            N.° de apoderados
+            Tipo de Documento
+          </TableHead>
+          <TableHead
+            class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
+          >
+            Nº de Documento
           </TableHead>
           <TableHead v-if="actions" class="w-12" />
         </TableRow>
@@ -66,15 +69,16 @@
             <TableCell
               class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
             >
-              {{ item.numeroApoderados }}
+              {{ item.tipoDocumento }}
+            </TableCell>
+            <TableCell
+              class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
+            >
+              {{ item.numeroDocumento }}
             </TableCell>
             <!-- Celda de acciones -->
             <TableCell v-if="props.actions" class="w-auto">
               <DataTableDropDown
-                v-if="
-                  item.nombre !== ClasesApoderadoEspecialesEnum.GERENTE_GENERAL &&
-                  item.nombre !== ClasesApoderadoEspecialesEnum.OTROS_APODERADOS
-                "
                 :item-id="item.id"
                 :title-menu="props.titleMenu"
                 :actions="props.actions"
@@ -85,7 +89,7 @@
 
         <template v-else>
           <TableRow>
-            <TableCell :colspan="3 + (props.actions ? 1 : 0)" class="h-24">
+            <TableCell :colspan="4 + (props.actions ? 1 : 0)" class="h-24">
               <EmptyTableMessage />
             </TableCell>
           </TableRow>

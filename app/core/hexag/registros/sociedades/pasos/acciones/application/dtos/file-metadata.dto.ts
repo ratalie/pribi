@@ -1,6 +1,7 @@
 export interface FileMetadataDTO {
-  fileId: string;
-  mimeType: string;
-  originalName: string;
-  size: number;
+  archivoId: string;
+  tipoMino: string;
+  nombreOriginal: string;
+  tamaño: number;
+  version: number;
 }

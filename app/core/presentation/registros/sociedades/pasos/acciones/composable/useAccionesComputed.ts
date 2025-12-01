@@ -215,6 +215,8 @@ export const useAccionesComputed = (profileId: string) => {
     },
   ];
 
+  useFlowLayoutNext(() => {});
+
   onMounted(async () => {
     await Promise.all([
       registroAccionesStore.loadAcciones(profileId),
