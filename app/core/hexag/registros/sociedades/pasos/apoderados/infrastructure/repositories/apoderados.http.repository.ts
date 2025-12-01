@@ -98,7 +98,8 @@ export class ApoderadosHttpRepository implements ApoderadosRepository {
   }
 
   async deleteApoderado(profileId: string, claseId: string, apoderadoId: string): Promise<void> {
-    const url = this.getRegisterPath(profileId, `attorneys/${claseId}/${apoderadoId}`);
+    // Según docs/API_DOCUMENTATION.md línea 966: DELETE /attorneys/:attorneyId (sin classId)
+    const url = this.getRegisterPath(profileId, `attorneys/${apoderadoId}`);
     await $fetch(url, withAuthHeaders({ method: "DELETE" as const }));
   }
 }

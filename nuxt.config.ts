@@ -17,6 +17,7 @@ export default defineNuxtConfig({
     "@presentation": fileURLToPath(new URL("./app/core/presentation", import.meta.url)),
     "@shared": fileURLToPath(new URL("./app/core/shared", import.meta.url)),
     "@components": fileURLToPath(new URL("./app/components", import.meta.url)),
+    "@tests": fileURLToPath(new URL("./tests", import.meta.url)),
   },
 
   runtimeConfig: {

@@ -33,7 +33,7 @@
     <FlowLayoutJuntasSidebar />
 
     <!-- Contenido Principal -->
-    <div class="flex flex-col min-h-0 flex-1">
+    <div class="flex flex-col min-h-0 flex-1 overflow-hidden">
       <!-- Header -->
       <!-- Este componente gestiona internamente todos sus datos y handlers -->
       <FlowLayoutJuntasHeader />

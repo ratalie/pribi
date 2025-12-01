@@ -12,7 +12,7 @@ const BASE_STEPS: Array<
 > = [
   {
     slug: "seleccion-agenda",
-    title: "Puntos de Agenda",
+    title: "Selección de Puntos de Agenda",
     description: "Selecciona los puntos a incluir en la junta",
     status: "completed",
   },
@@ -30,7 +30,7 @@ const BASE_STEPS: Array<
   },
   {
     slug: "puntos-acuerdo",
-    title: "Puntos de Acuerdo",
+    title: "Puntos de Agenda",
     description: "Completa las acciones y decisiones adoptadas",
     status: "current",
   },

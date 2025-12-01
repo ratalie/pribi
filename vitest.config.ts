@@ -12,11 +12,14 @@ export default defineConfig({
     pool: "threads",
     poolOptions: {
       threads: {
-        singleThread: false,
+        // Ejecutar tests de integración en secuencia para evitar race conditions
+        // cuando múltiples tests intentan limpiar/crear sociedades al mismo tiempo
+        singleThread: process.env.TEST_USE_MSW === "false" ? true : false,
       },
     },
     include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
     exclude: ["node_modules", "dist", ".idea", ".git", ".cache"],
+    testTimeout: 10000, // 10 segundos para tests de integración (pueden tardar más con el backend real)
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],

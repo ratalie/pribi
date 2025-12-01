@@ -17,7 +17,10 @@
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
     "test:integration": "TEST_USE_MSW=false vitest run",
-    "test:msw": "TEST_USE_MSW=true vitest"
+    "test:msw": "TEST_USE_MSW=true vitest",
+    "test:sociedades": "TEST_USE_MSW=false vitest run sociedad.repository.integration.test.ts",
+    "test:registros": "TEST_USE_MSW=false vitest run datos-sociedad.repository.integration.test.ts accionistas.repository.integration.test.ts acciones.repository.integration.test.ts asignacion-acciones.repository.integration.test.ts quorum.repository.integration.test.ts director.repository.integration.test.ts apoderados.repository.integration.test.ts",
+    "test:registros:all": "TEST_USE_MSW=false vitest run sociedad.repository.integration.test.ts datos-sociedad.repository.integration.test.ts accionistas.repository.integration.test.ts acciones.repository.integration.test.ts asignacion-acciones.repository.integration.test.ts quorum.repository.integration.test.ts director.repository.integration.test.ts apoderados.repository.integration.test.ts"
   },
   "dependencies": {
     "@googlemaps/markerclusterer": "^2.6.2",

@@ -98,3 +98,14 @@ export type Persona =
   | PersonaFideicomiso
   | PersonaSucesionIndivisa;
 
+/**
+ * Type guards para Persona
+ */
+export function isPersonaNatural(persona: Persona): persona is PersonaNatural {
+  return persona.tipo === "NATURAL";
+}
+
+export function isPersonaJuridica(persona: Persona): persona is PersonaJuridica {
+  return persona.tipo === "JURIDICA";
+}
+

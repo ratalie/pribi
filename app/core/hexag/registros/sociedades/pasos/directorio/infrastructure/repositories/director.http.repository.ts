@@ -114,11 +114,18 @@ export class DirectorHttpRepository implements DirectorRepository {
 
   async create(societyProfileId: string, payload: DirectorDTO): Promise<DirectorConfig> {
     const url = this.resolveDirectoresPath(societyProfileId);
+    const mappedPayload = DirectorMapper.toPayload(payload);
     const config = withAuthHeaders({
       method: "POST" as const,
-      body: DirectorMapper.toPayload(payload),
+      body: mappedPayload,
     });
-    this.log("create:request", { url, societyProfileId, rolDirector: payload.rolDirector });
+    this.log("create:request", { 
+      url, 
+      societyProfileId, 
+      rolDirector: payload.rolDirector,
+      payload: JSON.stringify(payload, null, 2),
+      mappedPayload: JSON.stringify(mappedPayload, null, 2)
+    });
 
     try {
       const response = await $fetch<ApiResponse<any>>(url, config);

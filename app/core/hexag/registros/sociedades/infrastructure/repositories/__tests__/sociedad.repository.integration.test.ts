@@ -15,8 +15,8 @@
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { SociedadHttpRepository } from "../sociedad.http.repository";
-import { getTestConfig } from "../../../../../../../../tests/config/test-config";
-import { TestLogger } from "../../../../../../../../tests/utils/test-logger";
+import { getTestConfig } from "@tests/config/test-config";
+import { TestLogger } from "@tests/utils/test-logger";
 
 const testConfig = getTestConfig();
 

@@ -10,16 +10,22 @@ import { AccionesMapper } from "../mappers/acciones.mapper";
 export class AccionesHttpRepository implements AccionesRepository {
   private getUrl(profileId: string): string {
     const config = useRuntimeConfig();
-    const apiBase = config.public?.apiBase as string | undefined;
+    const apiBase = (config.public?.apiBase as string | undefined) || "";
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
 
-    if (!apiBase) {
-      console.error(
-        "[AccionesHttpRepository] apiBase no está configurado en runtimeConfig.public.apiBase"
-      );
-      throw new Error("apiBase no está configurado");
+    const candidates = [apiBase, origin, "http://localhost:3000"];
+
+    for (const base of candidates) {
+      if (!base) continue;
+      try {
+        const baseUrl = new URL(base, origin || "http://localhost:3000");
+        return new URL(`/api/v2/society-profile/${profileId}/acction`, baseUrl.origin).toString();
+      } catch {
+        continue;
+      }
     }
 
-    return `${apiBase}/society-profile/${profileId}/acction`;
+    return `/api/v2/society-profile/${profileId}/acction`;
   }
 
   async list(profileId: string): Promise<Accion[]> {
@@ -27,10 +33,13 @@ export class AccionesHttpRepository implements AccionesRepository {
     const config = withAuthHeaders({ method: "GET" as const });
 
     try {
+      console.log("[Repository][AccionesHttp] list:request", { url });
       const response = await $fetch<BackendApiResponse<AccionDataResponseDTO>>(url, config);
+      console.log("[Repository][AccionesHttp] list:response", JSON.stringify(response, null, 2));
 
       if (response?.data) {
         const result = AccionesMapper.deListaRespuestaADominio(response.data.datos);
+        console.log("[Repository][AccionesHttp] list:mapped", { count: result.length });
         return result;
       }
       return [];
@@ -38,20 +47,25 @@ export class AccionesHttpRepository implements AccionesRepository {
       // Si el backend devuelve 404, significa que no hay datos aún
       const statusCode = error?.statusCode ?? error?.response?.status ?? null;
       if (statusCode === 404) {
+        console.log("[Repository][AccionesHttp] list:404 - No hay acciones");
         return [];
       }
+      console.error("[Repository][AccionesHttp] list:error", error);
       throw error;
     }
   }
 
   async create(profileId: string, payload: AccionPayload): Promise<void> {
     const url = this.getUrl(profileId);
+    const mappedPayload = AccionesMapper.dePayloadABackend(payload);
     const config = withAuthHeaders({
       method: "POST" as const,
-      body: AccionesMapper.dePayloadABackend(payload),
+      body: mappedPayload,
     });
 
+    console.log("[Repository][AccionesHttp] create:request", { url, payload: JSON.stringify(mappedPayload, null, 2) });
     const response = await $fetch<BackendApiResponse>(url, config);
+    console.log("[Repository][AccionesHttp] create:response", JSON.stringify(response, null, 2));
 
     if (!response.success) {
       throw new Error(response.message || "Error al crear la acción");
@@ -60,12 +74,15 @@ export class AccionesHttpRepository implements AccionesRepository {
 
   async update(profileId: string, dto: AccionPayload): Promise<void> {
     const url = this.getUrl(profileId);
+    const mappedPayload = AccionesMapper.dePayloadABackend(dto);
     const config = withAuthHeaders({
       method: "PUT" as const,
-      body: AccionesMapper.dePayloadABackend(dto),
+      body: mappedPayload,
     });
 
+    console.log("[Repository][AccionesHttp] update:request", { url, payload: JSON.stringify(mappedPayload, null, 2) });
     const response = await $fetch<BackendApiResponse>(url, config);
+    console.log("[Repository][AccionesHttp] update:response", JSON.stringify(response, null, 2));
 
     if (!response.success) {
       throw new Error(response.message || "Error al actualizar la acción");
@@ -79,7 +96,9 @@ export class AccionesHttpRepository implements AccionesRepository {
       body: accionIds,
     });
 
+    console.log("[Repository][AccionesHttp] delete:request", { url, accionIds });
     const response = await $fetch<BackendApiResponse>(url, config);
+    console.log("[Repository][AccionesHttp] delete:response", JSON.stringify(response, null, 2));
 
     if (!response.success) {
       throw new Error(response.message || "Error al eliminar la acción");

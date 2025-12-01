@@ -1,31 +1,42 @@
 <script setup lang="ts">
-import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
 
-interface Props {
-  prevButtonLabel: string;
-  nextButtonLabel: string;
-  nextButtonIcon: "Check" | "ArrowRight";
-  isLoading: boolean;
-  isPrevDisabled: boolean;
-  onPrev: () => void;
-  onNext: () => void;
-}
+  interface Props {
+    prevButtonLabel: string;
+    nextButtonLabel: string;
+    nextButtonIcon: "Check" | "ArrowRight";
+    isLoading: boolean;
+    isPrevDisabled: boolean;
+    onPrev: () => void;
+    onNext: () => void;
+  }
 
-const _props = defineProps<Props>();
+  const _props = defineProps<Props>();
 </script>
 
 <template>
   <div class="flex items-center justify-between">
     <!-- Botón Anterior -->
     <ActionButton
+      v-if="!isPrevDisabled"
       :label="prevButtonLabel"
       size="md"
       variant="outline"
-      :is-disabled="isPrevDisabled"
       icon="ArrowLeft"
       icon-position="left"
       @click="onPrev"
     />
+    <!-- Placeholder cuando está deshabilitado (paso 1) -->
+    <div v-else class="opacity-0 pointer-events-none cursor-none">
+      <ActionButton
+        :label="prevButtonLabel"
+        size="md"
+        variant="outline"
+        :is-disabled="true"
+        icon="ArrowLeft"
+        icon-position="left"
+      />
+    </div>
 
     <!-- Botón Siguiente -->
     <ActionButton
@@ -38,4 +49,3 @@ const _props = defineProps<Props>();
     />
   </div>
 </template>
-

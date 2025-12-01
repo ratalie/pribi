@@ -1,11 +1,11 @@
-import { routeMap } from "~/config/progress-navbar-map";
 import type { ProgressNavigationContext } from "~/config/progress-navbar-map";
-import { useJuntasNavbarStore } from "~/stores/useJuntasNavbarStore";
+import { routeMap } from "~/config/progress-navbar-map";
 import { useJuntasFlowStore } from "~/stores/useJuntasFlowStore";
+import { useJuntasNavbarStore } from "~/stores/useJuntasNavbarStore";
 
 /**
  * Composable para gestionar la navegación del flujo de Juntas de Accionistas
- * 
+ *
  * Detecta la ruta actual, carga los pasos correspondientes y calcula
  * el paso actual, sub-step actual y sección actual.
  */
@@ -54,8 +54,8 @@ export const useJuntasNavbarRoutes = () => {
     const flow = path.includes("/crear")
       ? "crear"
       : path.includes("/editar")
-        ? "editar"
-        : undefined;
+      ? "editar"
+      : undefined;
     return {
       societyId: extractSocietyId(),
       flowId: extractFlowId(),
@@ -72,7 +72,7 @@ export const useJuntasNavbarRoutes = () => {
    */
   const extractCurrentStepSlug = (): string | undefined => {
     const path = route.path;
-    
+
     // Lista de slugs de pasos principales (excluyendo sub-steps)
     const mainStepSlugs = [
       "seleccion-agenda",
@@ -101,7 +101,9 @@ export const useJuntasNavbarRoutes = () => {
     ];
 
     // Patrón 1: Con ambos IDs: /operaciones/sociedades/[societyId]/junta-accionistas/[flowId]/[slug]
-    let match = path.match(/\/operaciones\/sociedades\/[^/]+\/junta-accionistas\/[^/]+\/([^/]+)(?:\/|$)/);
+    let match = path.match(
+      /\/operaciones\/sociedades\/[^/]+\/junta-accionistas\/[^/]+\/([^/]+)(?:\/|$)/
+    );
     if (match && match[1]) {
       const slug = match[1];
       // Si es un paso principal y no es un sub-step, retornarlo
@@ -109,7 +111,7 @@ export const useJuntasNavbarRoutes = () => {
         return slug;
       }
     }
-    
+
     // Patrón 2: Con solo societyId: /operaciones/sociedades/[societyId]/junta-accionistas/[slug]
     match = path.match(/\/operaciones\/sociedades\/[^/]+\/junta-accionistas\/([^/]+)(?:\/|$)/);
     if (match && match[1]) {
@@ -119,7 +121,7 @@ export const useJuntasNavbarRoutes = () => {
         return slug;
       }
     }
-    
+
     // Patrón 3: Sin IDs: /operaciones/sociedades/junta-accionistas/[slug] (raro, pero lo soportamos)
     match = path.match(/\/operaciones\/sociedades\/junta-accionistas\/([^/]+)(?:\/|$)/);
     if (match && match[1]) {
@@ -129,23 +131,23 @@ export const useJuntasNavbarRoutes = () => {
         return slug;
       }
     }
-    
+
     return undefined;
   };
 
   /**
    * Extrae el ID del sub-step actual desde la ruta
-   * 
+   *
    * NOTA: La estructura actual tiene los sub-steps bajo /operaciones/junta-accionistas/[societyId]/[flowId]/
    * Ejemplos:
    * - /operaciones/junta-accionistas/30/7/aporte-dinerario -> "aporte-dinerarios"
    * - /operaciones/junta-accionistas/30/7/aporte-dinerario -> "aporte-dinerarios"
-   * 
+   *
    * Mapeo de slugs a IDs de sub-steps
    */
   const extractCurrentSubStepId = (): string | undefined => {
     const path = route.path;
-    
+
     // Lista de slugs de sub-steps (coinciden con las carpetas)
     const subStepSlugs = [
       "aporte-dinerario",
@@ -183,17 +185,23 @@ export const useJuntasNavbarRoutes = () => {
     // Buscar si la ruta contiene algún slug de sub-step
     for (const slug of subStepSlugs) {
       // Patrón 1: Con ambos IDs: /operaciones/sociedades/[societyId]/junta-accionistas/[flowId]/[slug]
-      let match = path.match(new RegExp(`/operaciones/sociedades/[^/]+/junta-accionistas/[^/]+/${slug}(?:/|$)`));
+      let match = path.match(
+        new RegExp(`/operaciones/sociedades/[^/]+/junta-accionistas/[^/]+/${slug}(?:/|$)`)
+      );
       if (match) {
         return slugToIdMap[slug];
       }
       // Patrón 2: Con solo societyId: /operaciones/sociedades/[societyId]/junta-accionistas/[slug]
-      match = path.match(new RegExp(`/operaciones/sociedades/[^/]+/junta-accionistas/${slug}(?:/|$)`));
+      match = path.match(
+        new RegExp(`/operaciones/sociedades/[^/]+/junta-accionistas/${slug}(?:/|$)`)
+      );
       if (match) {
         return slugToIdMap[slug];
       }
       // Patrón 3: Sin IDs: /operaciones/sociedades/junta-accionistas/[slug] (raro)
-      match = path.match(new RegExp(`/operaciones/sociedades/junta-accionistas/${slug}(?:/|$)`));
+      match = path.match(
+        new RegExp(`/operaciones/sociedades/junta-accionistas/${slug}(?:/|$)`)
+      );
       if (match) {
         return slugToIdMap[slug];
       }
@@ -225,33 +233,45 @@ export const useJuntasNavbarRoutes = () => {
       for (const rule of routeMap) {
         if (rule.match(newPath)) {
           const steps = rule.getSteps(context);
-          console.log("🟠 [useJuntasNavbarRoutes] Pasos generados:", steps.length, steps.map(s => ({ title: s.title, subSteps: s.subSteps?.length || 0 })));
+          console.log(
+            "🟠 [useJuntasNavbarRoutes] Pasos generados:",
+            steps.length,
+            steps.map((s) => ({ title: s.title, subSteps: s.subSteps?.length || 0 }))
+          );
           juntasNavbarStore.setSteps(steps);
-          
+
           // Actualizar estado del store con el paso actual
           const stepSlug = extractCurrentStepSlug();
           if (stepSlug) {
             juntasFlowStore.setCurrentStep(stepSlug);
             console.log("🟠 [useJuntasNavbarRoutes] Paso actual:", stepSlug);
           }
-          
+
           // Actualizar estado del store con el sub-step actual
           const subStepId = extractCurrentSubStepId();
-          console.log("🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado:", subStepId);
+          console.log(
+            "🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado:",
+            subStepId
+          );
           if (subStepId) {
             juntasFlowStore.setCurrentSubStep(subStepId);
-            console.log("🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store:", subStepId);
+            console.log(
+              "🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store:",
+              subStepId
+            );
           } else {
             juntasFlowStore.setCurrentSubStep("");
             console.log("🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store");
           }
-          
+
           return;
         }
       }
 
       // Si no hay regla que coincida, limpiar pasos
-      console.log("🟠 [useJuntasNavbarRoutes] No se encontró regla para la ruta, limpiando pasos");
+      console.log(
+        "🟠 [useJuntasNavbarRoutes] No se encontró regla para la ruta, limpiando pasos"
+      );
       juntasNavbarStore.setSteps([]);
     },
     { immediate: true }
@@ -270,7 +290,10 @@ export const useJuntasNavbarRoutes = () => {
       for (const rule of routeMap) {
         if (rule.match(route.path)) {
           const steps = rule.getSteps(context);
-          console.log("🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps:", steps.map(s => ({ title: s.title, subSteps: s.subSteps?.length || 0 })));
+          console.log(
+            "🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps:",
+            steps.map((s) => ({ title: s.title, subSteps: s.subSteps?.length || 0 }))
+          );
           juntasNavbarStore.setSteps(steps);
           return;
         }
@@ -297,9 +320,23 @@ export const useJuntasNavbarRoutes = () => {
 
   /**
    * Calcula el índice del paso actual
+   * Busca por slug del paso en lugar de ruta completa para mayor robustez
    */
   const currentStepIndex = computed(() => {
-    return juntasNavbarStore.steps.findIndex((step) => step.route === route.path);
+    const stepSlug = extractCurrentStepSlug();
+    if (!stepSlug) return -1;
+
+    const index = juntasNavbarStore.steps.findIndex((step) => {
+      const stepSlugFromRoute = step.route.split("/").pop();
+      return stepSlugFromRoute === stepSlug;
+    });
+
+    // Si no se encuentra por slug, intentar por ruta completa
+    if (index === -1) {
+      return juntasNavbarStore.steps.findIndex((step) => step.route === route.path);
+    }
+
+    return index;
   });
 
   /**
@@ -325,7 +362,10 @@ export const useJuntasNavbarRoutes = () => {
 
   // Hacer steps reactivo usando computed para asegurar que se actualice cuando cambie el store
   const steps = computed(() => {
-    console.log("🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps:", juntasNavbarStore.steps.length);
+    console.log(
+      "🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps:",
+      juntasNavbarStore.steps.length
+    );
     return juntasNavbarStore.steps;
   });
 
@@ -337,4 +377,3 @@ export const useJuntasNavbarRoutes = () => {
     currentSectionId,
   };
 };
-

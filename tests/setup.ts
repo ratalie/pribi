@@ -92,18 +92,67 @@ vi.mock("#app", () => ({
 (globalThis as any).$fetch = async (url: string, options?: any) => {
   // Si MSW está activo, las peticiones serán interceptadas automáticamente
   // Si no, usar fetch real
+  
+  // Serializar body a JSON si es un objeto y Content-Type es application/json
+  let body = options?.body;
+  const headers = new Headers(options?.headers || {});
+  const requestContentType = headers.get("content-type") || options?.headers?.["Content-Type"] || options?.headers?.["content-type"];
+  
+  if (body && typeof body === "object" && !(body instanceof FormData) && !(body instanceof Blob)) {
+    // Si Content-Type es application/json o no está definido, serializar a JSON
+    if (!requestContentType || requestContentType.includes("application/json")) {
+      body = JSON.stringify(body);
+      headers.set("Content-Type", "application/json");
+    }
+  }
+  
   const fetchFn = typeof fetch !== "undefined" ? fetch : globalThis.fetch;
   const response = await fetchFn(url, {
     ...options,
-    headers: {
-      ...options?.headers,
-    },
+    method: options?.method || "GET",
+    headers: Object.fromEntries(headers.entries()),
+    body: body,
   });
   
   if (!response.ok) {
-    const error: any = new Error(`HTTP ${response.status}`);
+    // Intentar obtener el mensaje de error del backend
+    let errorMessage = `HTTP ${response.status}`;
+    let errorData: any = null;
+    try {
+      const text = await response.text();
+      if (text) {
+        errorData = JSON.parse(text);
+        errorMessage = errorData?.message || errorData?.error || errorMessage;
+        
+        // Capturar errores de validación detallados
+        if (errorData?.errors) {
+          const errorsArray = Array.isArray(errorData.errors) 
+            ? errorData.errors 
+            : Object.entries(errorData.errors).map(([key, value]) => ({ field: key, message: value }));
+          errorMessage += `\nErrores de validación:\n${JSON.stringify(errorsArray, null, 2)}`;
+        }
+        
+        // Capturar mensaje de data si existe
+        if (errorData?.data?.message) {
+          errorMessage = errorData.data.message;
+        }
+        
+        // Log detallado para debugging
+        console.error(`[Tests] Error HTTP ${response.status}:`, {
+          message: errorMessage,
+          errorData: JSON.stringify(errorData, null, 2),
+          url: response.url || url,
+        });
+      }
+    } catch (parseError) {
+      // Si no se puede parsear, usar el status text
+      errorMessage = response.statusText || errorMessage;
+      console.error(`[Tests] Error al parsear respuesta:`, parseError);
+    }
+    const error: any = new Error(errorMessage);
     error.statusCode = response.status;
     error.response = response;
+    error.data = errorData;
     throw error;
   }
   
