@@ -9,7 +9,7 @@
  * - Sin IDs: /operaciones/sociedades/:societyId/junta-accionistas/seleccion-agenda
  */
 
-import { JuntaRoutes } from "~/config/routes/junta-accionistas.routes";
+import type { JuntaRoutes } from "~/config/routes/junta-accionistas.routes";
 
 /**
  * Construye una ruta de junta con societyId y flowId si están disponibles

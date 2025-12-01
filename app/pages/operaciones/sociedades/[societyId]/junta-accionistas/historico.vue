@@ -31,7 +31,7 @@
     TableHeader,
     TableRow,
   } from "@/components/ui/table";
-  import { Eye, MoreVertical, Pencil, Trash2, Building2 } from "lucide-vue-next";
+  import { MoreVertical, Pencil, Trash2, Building2 } from "lucide-vue-next";
   import { storeToRefs } from "pinia";
   import { useSociedadHistorialStore } from "~/core/presentation/registros/sociedades/stores/sociedad-historial.store";
   import { useJuntaHistorialStore } from "~/core/presentation/juntas/stores/junta-historial.store";
@@ -53,11 +53,9 @@
   const selectedSocietyId = ref<string | null>(null);
   const isLoadingSociedades = ref(false);
 
-  const selectedSociedad = computed(() => {
+  const _selectedSociedad = computed(() => {
     if (!selectedSocietyId.value) return null;
-    return sociedades.value.find(
-      (s) => s.idSociety === selectedSocietyId.value
-    );
+    return sociedades.value.find((s) => s.idSociety === selectedSocietyId.value);
   });
 
   const isLoading = computed(() => status.value === "loading");
@@ -110,7 +108,8 @@
     }
   });
 
-  const handleSocietyChange = async (societyId: string | null) => {
+  const handleSocietyChange = async (value: unknown) => {
+    const societyId = value as string | null;
     selectedSocietyId.value = societyId;
     if (societyId) {
       const societyIdNumber = parseInt(societyId, 10);
@@ -127,7 +126,9 @@
       // Guardar el societyId en el store para que esté disponible en la página de edición
       juntaHistorialStore.setSelectedSocietyId(societyIdNumber);
     }
-    router.push(`/operaciones/sociedades/${societyIdNumber}/junta-accionistas/${flowId}/seleccion-agenda`);
+    router.push(
+      `/operaciones/sociedades/${societyIdNumber}/junta-accionistas/${flowId}/seleccion-agenda`
+    );
   };
 
   const handleDelete = async (flowId: string) => {
@@ -152,16 +153,15 @@
           Histórico de juntas de accionistas
         </CardTitle>
         <CardDescription class="text-gray-500">
-          Consulta las juntas creadas en el sistema. Selecciona una sociedad para ver sus juntas.
+          Consulta las juntas creadas en el sistema. Selecciona una sociedad para ver sus
+          juntas.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div class="space-y-6">
           <!-- Selector de Sociedades -->
           <div class="space-y-2">
-            <label class="text-sm font-medium text-primary-800">
-              Selecciona la sociedad
-            </label>
+            <label class="text-sm font-medium text-primary-800">Selecciona la sociedad</label>
             <Select
               v-model="selectedSocietyId"
               :disabled="isLoadingSociedades"
@@ -202,16 +202,24 @@
             <Table class="[&_th]:text-left">
               <TableHeader class="text-primary-600">
                 <TableRow class="border-primary-300/40 bg-primary-25/40">
-                  <TableHead class="w-[120px] font-medium uppercase tracking-wide text-xs text-primary-700">
+                  <TableHead
+                    class="w-[120px] font-medium uppercase tracking-wide text-xs text-primary-700"
+                  >
                     ID
                   </TableHead>
-                  <TableHead class="font-medium uppercase tracking-wide text-xs text-primary-700">
+                  <TableHead
+                    class="font-medium uppercase tracking-wide text-xs text-primary-700"
+                  >
                     Estado
                   </TableHead>
-                  <TableHead class="w-[200px] font-medium uppercase tracking-wide text-xs text-primary-700">
+                  <TableHead
+                    class="w-[200px] font-medium uppercase tracking-wide text-xs text-primary-700"
+                  >
                     Paso actual
                   </TableHead>
-                  <TableHead class="w-[140px] font-medium uppercase tracking-wide text-xs text-primary-700">
+                  <TableHead
+                    class="w-[140px] font-medium uppercase tracking-wide text-xs text-primary-700"
+                  >
                     Creación
                   </TableHead>
                   <TableHead class="w-[60px]" />
@@ -228,8 +236,8 @@
                 <template v-else-if="juntas.length === 0">
                   <TableRow>
                     <TableCell colspan="5" class="py-6 text-center text-primary-600">
-                      No hay juntas registradas para esta sociedad. Crea una nueva junta desde el
-                      módulo de creación.
+                      No hay juntas registradas para esta sociedad. Crea una nueva junta desde
+                      el módulo de creación.
                     </TableCell>
                   </TableRow>
                 </template>

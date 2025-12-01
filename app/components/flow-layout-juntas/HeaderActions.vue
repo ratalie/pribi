@@ -7,7 +7,7 @@ interface Props {
   onReset?: () => void;
 }
 
-const props = defineProps<Props>();
+const _props = defineProps<Props>();
 </script>
 
 <template>

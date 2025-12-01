@@ -34,8 +34,8 @@
 
     return acciones.map((accion) => ({
       id: accion.id,
-      value: accion.descripcion,
-      label: accion.descripcion,
+      value: accion.nombreAccion,
+      label: accion.nombreAccion,
     }));
   });
 </script>

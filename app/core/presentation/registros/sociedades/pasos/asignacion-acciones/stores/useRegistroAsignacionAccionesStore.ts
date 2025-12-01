@@ -168,9 +168,9 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
       if (accionesRegistradas.length > 0) {
         return accionesRegistradas.map((accion) => ({
           id: accion.id,
-          nombre: accion.descripcion,
+          nombre: accion.nombreAccion,
           accionesSuscritas: accion.accionesSuscritas,
-          accionesAsignadas: accionesAsignadasPorTipo.get(accion.descripcion) || 0,
+          accionesAsignadas: accionesAsignadasPorTipo.get(accion.nombreAccion) || 0,
         }));
       }
 
@@ -440,7 +440,7 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
         totalesPorTipo.set("Clase B", 2000);
       } else {
         accionesRegistradas.forEach((accion) => {
-          totalesPorTipo.set(accion.descripcion, accion.accionesSuscritas);
+          totalesPorTipo.set(accion.nombreAccion, accion.accionesSuscritas);
         });
       }
 

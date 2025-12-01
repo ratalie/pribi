@@ -5,7 +5,7 @@
  * para calcular títulos, labels de botones y contadores.
  */
 
-import type { NavigationStep, NavigationSubStep } from "~/types/navigationSteps";
+import type { NavigationStep } from "~/types/navigationSteps";
 import type { SectionItem } from "~/types/junta-navigation.types";
 
 /**

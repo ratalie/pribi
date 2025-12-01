@@ -4,7 +4,7 @@
  * Mapea IDs de secciones a sus rutas correspondientes
  */
 
-import { buildBasePath } from "~/utils/juntas/route-detection.utils";
+// import { buildBasePath } from "~/utils/juntas/route-detection.utils"; // No usado actualmente
 
 /**
  * Mapeo de secciones a rutas para "aporte-dinerarios"

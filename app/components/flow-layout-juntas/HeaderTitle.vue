@@ -5,7 +5,7 @@ interface Props {
   currentStep?: NavigationStep;
 }
 
-const props = defineProps<Props>();
+const _props = defineProps<Props>();
 </script>
 
 <template>

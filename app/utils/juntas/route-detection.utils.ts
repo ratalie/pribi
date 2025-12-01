@@ -8,7 +8,7 @@ import { SUB_STEP_SLUGS } from "~/config/juntas/sub-steps.constants";
  * Patrón regex para detectar rutas de resumen general
  * Formato: /operaciones/sociedades/{societyId}/junta-accionistas[/{flowId}]/resumen
  */
-const RESUMEN_GENERAL_PATTERN = /^\/operaciones\/sociedades\/[^/]+\/junta-accionistas(\/[^/]+)?\/resumen$/;
+const _RESUMEN_GENERAL_PATTERN = /^\/operaciones\/sociedades\/[^/]+\/junta-accionistas(\/[^/]+)?\/resumen$/;
 
 /**
  * Detecta si una ruta es el resumen general

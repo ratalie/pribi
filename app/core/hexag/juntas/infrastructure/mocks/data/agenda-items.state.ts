@@ -1,10 +1,5 @@
-import {
-  getAllRecords,
-  getRecord,
-  putRecord,
-} from "../../../../shared/mock-database";
+import { getRecord, putRecord } from "~/core/hexag/registros/shared/mock-database";
 import type { AgendaItemsDTO } from "../../../application/dtos/agenda-item.dto";
-import { createDefaultAgendaItemsDTO } from "../../../application/dtos/agenda-item.dto";
 
 const STORE_NAME = "agenda-items";
 
@@ -63,6 +58,5 @@ export async function updateAgendaItemsMock(
     data: record.data,
   });
 
-  await putRecord(STORE_NAME, key, record);
+  await putRecord(STORE_NAME, record);
 }
-

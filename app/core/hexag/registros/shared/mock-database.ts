@@ -8,6 +8,8 @@ const STORE_SCHEMAS = {
   accionistas: { keyPath: "id" },
   apoderadosClases: { keyPath: "id" },
   apoderadosRegistro: { keyPath: "id" },
+  juntas: { keyPath: "id" },
+  "agenda-items": { keyPath: "id" },
 } as const;
 
 type StoreName = keyof typeof STORE_SCHEMAS;
@@ -88,7 +90,9 @@ export async function getRecord<T>(storeName: StoreName, id: string): Promise<T 
 
     request.onsuccess = () => resolve((request.result as T) ?? null);
     request.onerror = () =>
-      reject(request.error ?? new Error(`No se pudo obtener el registro ${id} de ${storeName}`));
+      reject(
+        request.error ?? new Error(`No se pudo obtener el registro ${id} de ${storeName}`)
+      );
 
     transaction.oncomplete = () => db.close();
   });
@@ -131,7 +135,9 @@ export async function deleteRecord(storeName: StoreName, id: string): Promise<bo
 
     request.onsuccess = () => resolve(true);
     request.onerror = () =>
-      reject(request.error ?? new Error(`No se pudo eliminar el registro ${id} de ${storeName}`));
+      reject(
+        request.error ?? new Error(`No se pudo eliminar el registro ${id} de ${storeName}`)
+      );
 
     transaction.oncomplete = () => db.close();
   });
@@ -157,3 +163,10 @@ export async function clearStore(storeName: StoreName): Promise<void> {
   });
 }
 
+/**
+ * Limpia todos los stores de mock (útil para tests)
+ */
+export async function clearAllMockData(): Promise<void> {
+  const storeNames = Object.keys(STORE_SCHEMAS) as StoreName[];
+  await Promise.all(storeNames.map((storeName) => clearStore(storeName)));
+}

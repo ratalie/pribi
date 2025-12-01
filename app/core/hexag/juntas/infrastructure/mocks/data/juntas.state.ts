@@ -3,7 +3,7 @@ import {
   getAllRecords,
   getRecord,
   putRecord,
-} from "../../../../shared/mock-database";
+} from "~/core/hexag/registros/shared/mock-database";
 
 const STORE_NAME = "juntas";
 
@@ -44,7 +44,7 @@ export async function createJuntaMock(societyId: number): Promise<JuntaMockData>
 
   console.debug("[MSW][Juntas] Creando junta mock", record);
 
-  await putRecord(STORE_NAME, record.id, record);
+  await putRecord(STORE_NAME, record);
   return structuredClone(record);
 }
 
@@ -61,10 +61,7 @@ export async function listJuntasMock(societyId: number): Promise<JuntaMockData[]
   return ordered;
 }
 
-export async function deleteJuntaMock(
-  societyId: number,
-  flowId: string
-): Promise<boolean> {
+export async function deleteJuntaMock(societyId: number, flowId: string): Promise<boolean> {
   const existing = await getRecord<JuntaMockData>(STORE_NAME, flowId);
   if (!existing) {
     console.warn("[MSW][Juntas] Intento de eliminar junta inexistente", {
@@ -87,4 +84,3 @@ export async function deleteJuntaMock(
   console.debug("[MSW][Juntas] Eliminada junta mock", { societyId, flowId });
   return true;
 }
-

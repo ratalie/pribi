@@ -6,6 +6,15 @@ import type { SociedadResumenDTO } from "../../application/dtos";
 import type { SociedadRepository } from "../../domain/ports";
 import { SocietyRegisterStep } from "../../domain/enums/society-register-step.enum";
 
+// Mock para tests - useRuntimeConfig será mockeado en tests/setup.ts
+declare const useRuntimeConfig: () => {
+  public?: {
+    apiBase?: string;
+    societyProfileEndpoint?: string;
+    societyProfileListSuffix?: string;
+  };
+};
+
 export class SociedadHttpRepository implements SociedadRepository {
   private readonly basePath = (() => {
     const config = useRuntimeConfig();

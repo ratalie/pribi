@@ -1,4 +1,3 @@
-import { computed, ref } from "vue";
 import { defineStore } from "pinia";
 
 import {
@@ -11,41 +10,39 @@ import { JuntaHttpRepository } from "~/core/hexag/juntas/infrastructure/reposito
 
 type Status = "idle" | "loading" | "error";
 
-export const useJuntaHistorialStore = defineStore(
-  "juntas-historial",
-  {
-    state: () => ({
-      juntas: [] as JuntaResumenDTO[],
-      status: "idle" as Status,
-      errorMessage: null as string | null,
-      selectedSocietyId: null as number | null,
-    }),
+export const useJuntaHistorialStore = defineStore("juntas-historial", {
+  state: () => ({
+    juntas: [] as JuntaResumenDTO[],
+    status: "idle" as Status,
+    errorMessage: null as string | null,
+    selectedSocietyId: null as number | null,
+  }),
 
-    getters: {
-      totalJuntas: (state) => state.juntas.length,
+  getters: {
+    totalJuntas: (state) => state.juntas.length,
 
-      juntasPorEstado: (state) => {
-        return state.juntas.reduce<Record<string, JuntaResumenDTO[]>>(
-          (acc, junta) => {
-            const estado = junta.estado ?? "BORRADOR";
-            if (!acc[estado]) {
-              acc[estado] = [];
-            }
-            acc[estado].push(junta);
-            return acc;
-          },
-          {}
-        );
-      },
-
-      juntasEnProgreso: (state) =>
-        state.juntas.filter((junta) => junta.estado !== "FINALIZADO"),
-
-      juntasFinalizadas: (state) =>
-        state.juntas.filter((junta) => junta.estado === "FINALIZADO"),
+    juntasPorEstado: (state) => {
+      return state.juntas.reduce<Record<string, JuntaResumenDTO[]>>(
+        (acc, junta) => {
+          const estado = junta.estado ?? "BORRADOR";
+          if (!acc[estado]) {
+            acc[estado] = [];
+          }
+          acc[estado].push(junta);
+          return acc;
+        },
+        {}
+      );
     },
 
-    actions: {
+    juntasEnProgreso: (state) =>
+      state.juntas.filter((junta) => junta.estado !== "FINALIZADO"),
+
+    juntasFinalizadas: (state) =>
+      state.juntas.filter((junta) => junta.estado === "FINALIZADO"),
+  },
+
+  actions: {
       setSelectedSocietyId(societyId: number | null) {
         this.selectedSocietyId = societyId;
       },
@@ -136,9 +133,6 @@ export const useJuntaHistorialStore = defineStore(
         }
       },
     },
-  },
-  {
-    persist: true,
   }
 );
 

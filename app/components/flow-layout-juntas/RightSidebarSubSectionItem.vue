@@ -8,16 +8,16 @@ interface Props {
   onSectionClick: (sectionId: string) => void;
 }
 
-const props = defineProps<Props>();
+const { subSection, currentSectionId, onSectionClick } = defineProps<Props>();
 
 const subSectionActive = computed(() =>
-  isSubSectionActive(props.subSection, props.currentSectionId)
+  isSubSectionActive(subSection, currentSectionId)
 );
 </script>
 
 <template>
   <button
-    @click="onSectionClick(subSection.id)"
+    @click="() => onSectionClick(subSection.id)"
     :class="[
       'w-full flex items-start gap-2 text-left py-2 px-3 rounded-md transition-colors',
       subSectionActive

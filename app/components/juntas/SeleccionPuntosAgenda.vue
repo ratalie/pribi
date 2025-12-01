@@ -33,8 +33,8 @@ const props = withDefaults(defineProps<Props>(), {
 // Stores
 const juntasFlowStore = useJuntasFlowStore();
 const agendaItemsStore = useAgendaItemsStore();
-const juntaHistorialStore = useJuntaHistorialStore();
-const { agendaItems, isLoading, errorMessage } = storeToRefs(agendaItemsStore);
+const _juntaHistorialStore = useJuntaHistorialStore();
+const { agendaItems } = storeToRefs(agendaItemsStore);
 
 // Todos los sub-steps posibles, agrupados por categoría
 const PUNTOS_AGENDA = [

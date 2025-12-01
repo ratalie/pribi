@@ -4,7 +4,6 @@
 
 import { computed } from "vue";
 import { getBaseSectionsForSubStep, applySectionStatuses } from "~/config/juntas/sections.config";
-import type { SectionItem } from "~/types/junta-navigation.types";
 
 /**
  * Gestiona las secciones del sidebar derecho para el flujo normal (sub-steps)

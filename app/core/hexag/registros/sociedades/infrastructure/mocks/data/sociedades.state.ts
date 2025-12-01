@@ -4,7 +4,7 @@ import {
   getAllRecords,
   getRecord,
   putRecord,
-} from "../../../../shared/mock-database";
+} from "~/core/hexag/registros/shared/mock-database";
 
 const STORE_NAME = "sociedades";
 

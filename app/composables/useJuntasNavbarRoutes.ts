@@ -42,7 +42,7 @@ export const useJuntasNavbarRoutes = () => {
    * Extrae el ID de la junta de los parámetros de la ruta (compatibilidad hacia atrás)
    * @deprecated Usar extractFlowId() en su lugar
    */
-  const extractJuntaId = (): string | undefined => {
+  const _extractJuntaId = (): string | undefined => {
     return extractFlowId();
   };
 
@@ -284,7 +284,7 @@ export const useJuntasNavbarRoutes = () => {
    */
   watch(
     () => route.hash,
-    (newHash) => {
+    (_newHash) => {
       const sectionId = extractCurrentSectionId();
       if (sectionId) {
         juntasFlowStore.setCurrentSection(sectionId);

@@ -24,7 +24,7 @@ export const routeMap: RouteRule[] = [
     getSteps: (context) =>
       societyRegisterNavigation({
         base: "registro-societario",
-        societyId: context.societyId,
+        societyId: context.societyId ? String(context.societyId) : undefined,
         flow: context.flow,
       }),
   },
@@ -33,7 +33,7 @@ export const routeMap: RouteRule[] = [
     getSteps: (context) =>
       societyRegisterNavigation({
         base: "registros",
-        societyId: context.societyId,
+        societyId: context.societyId ? String(context.societyId) : undefined,
         flow: context.flow,
       }),
   },
@@ -42,7 +42,7 @@ export const routeMap: RouteRule[] = [
     getSteps: (context) =>
       juntaNavigation({
         base: "operaciones",
-        societyId: context.societyId,
+        societyId: context.societyId ? String(context.societyId) : undefined,
         flowId: context.flowId || context.juntaId, // Compatibilidad hacia atrás
         flow: context.flow,
       }),

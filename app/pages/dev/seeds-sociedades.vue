@@ -147,7 +147,7 @@
     await $fetch(url, authHeaders);
   };
 
-  const listAccionistasUseCase = new ListAccionistasUseCase(accionistasRepo);
+  const _listAccionistasUseCase = new ListAccionistasUseCase(accionistasRepo);
   const listAccionesUseCase = new ListAccionesUseCase(accionesRepo);
 
   // Estado
@@ -172,7 +172,7 @@
   };
 
   // Función helper para asegurar UUID (igual que en AccionistaModal)
-  const ensureUUID = (value?: string | null): string =>
+  const _ensureUUID = (value?: string | null): string =>
     value && value.length > 0 ? value : generateUUID();
 
   // Datos de prueba
@@ -300,6 +300,9 @@
           { cantidad: 5, personalizado: false, secretario: true, preside: false },
         ];
         const config = configs[index % configs.length];
+        if (!config) {
+          throw new Error(`Config no encontrada para índice ${index}`);
+        }
         const cantidadDirectores = config.cantidad;
 
         const nombres = ["Carlos", "Ana", "Luis", "María", "Pedro", "Laura", "Diego"];
@@ -326,8 +329,8 @@
           directorio: {
             cantidadDirectores,
             conteoPersonalizado: config.personalizado,
-            minimoDirectores: config.personalizado ? config.min || null : null,
-            maximoDirectores: config.personalizado ? config.max || null : null,
+            minimoDirectores: config.personalizado ? config.min ?? null : null,
+            maximoDirectores: config.personalizado ? config.max ?? null : null,
             inicioMandato: "01-01-2025", // Formato dd-mm-aaaa
             finMandato: "01-01-2026", // Formato dd-mm-aaaa (exactamente 1 año después para periodo de 1 año)
             quorumMinimo: 2,
@@ -427,9 +430,9 @@
 
       // Paso 1: Datos principales
       currentStep.value = `[Sociedad ${index + 1}] Paso 1/8: Datos principales...`;
-      steps.datosSociedad = await executeStep("datosSociedad", "datosSociedad", () =>
-        datosSociedadUseCase.execute(societyId, testData.datosSociedad)
-      );
+      steps.datosSociedad = await executeStep("datosSociedad", "datosSociedad", async () => {
+        await datosSociedadUseCase.execute(societyId, testData.datosSociedad);
+      });
       if (!steps.datosSociedad.completed) throw new Error(steps.datosSociedad.error);
 
       // Paso 2: Crear 2 accionistas naturales
@@ -508,9 +511,9 @@
 
       // Paso 5: Quórums y mayorías
       currentStep.value = `[Sociedad ${index + 1}] Paso 5/9: Quórums y mayorías...`;
-      steps.quorums = await executeStep("quorums", "quorums", () =>
-        quorumUseCase.execute(societyId, testData.quorum)
-      );
+      steps.quorums = await executeStep("quorums", "quorums", async () => {
+        await quorumUseCase.execute(societyId, testData.quorum);
+      });
       if (!steps.quorums.completed) throw new Error(steps.quorums.error);
 
       // Paso 6: Crear directores PRIMERO (cantidad según configuración)
@@ -527,12 +530,17 @@
           // Guardar el ID del primer director titular como presidente
           if (!primerDirectorId && directorCreado.rolDirector === TipoDirector.TITULAR) {
             primerDirectorId = directorCreado.id;
-            console.debug(`[Seeds] Primer director titular encontrado, ID: ${primerDirectorId}`);
+            console.debug(
+              `[Seeds] Primer director titular encontrado, ID: ${primerDirectorId}`
+            );
           }
         }
         // Guardar IDs de directores creados
         (testData as any).directoresIds = directoresCreados;
-        console.debug(`[Seeds] Directores creados: ${directoresCreados.length}, IDs:`, directoresCreados);
+        console.debug(
+          `[Seeds] Directores creados: ${directoresCreados.length}, IDs:`,
+          directoresCreados
+        );
       });
       if (!steps.directores.completed) throw new Error(steps.directores.error);
 
@@ -545,15 +553,14 @@
           ...testData.directorio,
           presidenteId: primerDirectorId, // Usar el ID del primer director titular como presidente
         };
-        console.debug(
-          `[Seeds] Configurando directorio para sociedad ${societyId}`,
-          {
-            ...directorioConPresidente,
-            presidenteId: primerDirectorId,
-          }
-        );
+        console.debug(`[Seeds] Configurando directorio para sociedad ${societyId}`, {
+          ...directorioConPresidente,
+          presidenteId: primerDirectorId,
+        });
         await directorioUseCase.execute(societyId, directorioConPresidente);
-        console.debug(`[Seeds] Directorio configurado exitosamente con presidenteId: ${primerDirectorId}`);
+        console.debug(
+          `[Seeds] Directorio configurado exitosamente con presidenteId: ${primerDirectorId}`
+        );
       });
       if (!steps.directorio.completed) {
         console.error(`[Seeds] Error configurando directorio: ${steps.directorio.error}`);
@@ -833,7 +840,7 @@
       <CardContent>
         <div class="space-y-4">
           <div
-            v-for="(society, index) in createdSocieties"
+            v-for="society in createdSocieties"
             :key="society.id"
             class="rounded-lg border border-gray-200 bg-white p-4"
           >

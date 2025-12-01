@@ -3,7 +3,6 @@ import SeleccionPuntosAgenda from "~/components/juntas/SeleccionPuntosAgenda.vue
 import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
 import { useJuntasFlowStore } from "~/stores/useJuntasFlowStore";
 import { useAgendaItemsStore } from "~/core/presentation/juntas/stores/agenda-items.store";
-import { useJuntaHistorialStore } from "~/core/presentation/juntas/stores/junta-historial.store";
 import { AgendaItemsMapper } from "~/core/hexag/juntas/infrastructure/mappers/agenda-items.mapper";
 
 /**
@@ -41,7 +40,6 @@ const flowId = computed(() => {
 // Stores
 const juntasFlowStore = useJuntasFlowStore();
 const agendaItemsStore = useAgendaItemsStore();
-const juntaHistorialStore = useJuntaHistorialStore();
 
 // Configurar el botón "Siguiente"
 useJuntasFlowNext(async () => {

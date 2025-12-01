@@ -33,7 +33,7 @@
     <!-- Sections List -->
     <div class="flex-1 p-6">
       <div class="space-y-1">
-        <div v-for="(section, index) in sections" :key="section.id" class="relative">
+        <div v-for="section in sections" :key="section.id" class="relative">
           <!-- Sección Principal -->
           <RightSidebarSectionItem
             :section="section"
