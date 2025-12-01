@@ -13,7 +13,7 @@ import { AgendaItemsMapper } from "~/core/hexag/juntas/infrastructure/mappers/ag
  * Permite seleccionar los puntos de agenda que se tratarán en la junta.
  * Los puntos seleccionados determinan qué sub-steps aparecerán en el Paso 4.
  * 
- * Ruta: /operaciones/junta-accionistas/[id]/seleccion-agenda
+ * Ruta: /operaciones/sociedades/[societyId]/junta-accionistas/[flowId]/seleccion-agenda
  */
 
 definePageMeta({
@@ -22,23 +22,26 @@ definePageMeta({
 });
 
 const route = useRoute();
-const juntaId = computed(() => route.params.id as string);
+
+// Extraer IDs de la ruta
+const societyId = computed(() => {
+  const param = route.params.societyId;
+  if (typeof param === "string") return parseInt(param, 10);
+  if (Array.isArray(param) && param[0]) return parseInt(param[0] as string, 10);
+  return null;
+});
+
+const flowId = computed(() => {
+  const param = route.params.flowId;
+  if (typeof param === "string") return param;
+  if (Array.isArray(param) && param[0]) return param[0] as string;
+  return null;
+});
 
 // Stores
 const juntasFlowStore = useJuntasFlowStore();
 const agendaItemsStore = useAgendaItemsStore();
 const juntaHistorialStore = useJuntaHistorialStore();
-
-// Obtener societyId del store de juntas historial
-const societyId = computed(() => {
-  // Intentar obtener del store de historial
-  if (juntaHistorialStore.selectedSocietyId) {
-    return juntaHistorialStore.selectedSocietyId;
-  }
-  // Si no está en el store, intentar obtener de la junta actual
-  const junta = juntaHistorialStore.juntas.find((j) => j.id === juntaId.value);
-  return junta?.societyId ?? null;
-});
 
 // Configurar el botón "Siguiente"
 useJuntasFlowNext(async () => {
@@ -50,7 +53,7 @@ useJuntasFlowNext(async () => {
   }
 
   // Validar que tengamos societyId y flowId
-  if (!societyId.value || !juntaId.value) {
+  if (!societyId.value || !flowId.value) {
     throw new Error("No se pudo identificar la sociedad o la junta. Por favor, recarga la página.");
   }
 
@@ -58,7 +61,7 @@ useJuntasFlowNext(async () => {
   const payload = AgendaItemsMapper.frontendIdsToDTO(selectedPuntos);
 
   // Guardar en el backend
-  const flowIdNumber = parseInt(juntaId.value, 10);
+  const flowIdNumber = parseInt(flowId.value, 10);
   if (Number.isNaN(flowIdNumber)) {
     throw new Error("ID de junta inválido.");
   }
@@ -79,7 +82,7 @@ useJuntasFlowNext(async () => {
       </p>
     </div>
 
-    <SeleccionPuntosAgenda :society-id="societyId" :flow-id="juntaId" />
+    <SeleccionPuntosAgenda :society-id="societyId" :flow-id="flowId" />
   </section>
 </template>
 

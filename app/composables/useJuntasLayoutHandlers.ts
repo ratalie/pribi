@@ -30,7 +30,14 @@ export function useJuntasLayoutHandlers(
 
   // Manejar botón "Salir"
   const handleBack = () => {
-    router.push("/operaciones/junta-accionistas");
+    const route = useRoute();
+    // Intentar obtener societyId de la ruta actual
+    const societyId = route.params.societyId;
+    if (societyId) {
+      router.push(`/operaciones/sociedades/${societyId}/junta-accionistas/historial`);
+    } else {
+      router.push("/operaciones/sociedades/junta-accionistas/historial");
+    }
   };
 
   // Manejar botón "Guardar"

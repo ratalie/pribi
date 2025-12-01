@@ -126,8 +126,9 @@
     if (!Number.isNaN(societyIdNumber)) {
       // Guardar el societyId en el store para que esté disponible en la página de edición
       juntaHistorialStore.setSelectedSocietyId(societyIdNumber);
+      // Navegar con ambos IDs
+      router.push(`/operaciones/sociedades/${societyIdNumber}/junta-accionistas/${flowId}/seleccion-agenda`);
     }
-    router.push(`/operaciones/junta-accionistas/${flowId}/seleccion-agenda`);
   };
 
   const handleDelete = async (flowId: string) => {

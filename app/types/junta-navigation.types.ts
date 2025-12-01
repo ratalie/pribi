@@ -4,6 +4,9 @@
 
 export interface JuntaNavigationContext {
   base: "operaciones";
+  societyId?: string | number;
+  flowId?: string | number;
+  /** @deprecated Usar flowId en su lugar */
   juntaId?: string;
   flow?: "crear" | "editar";
 }

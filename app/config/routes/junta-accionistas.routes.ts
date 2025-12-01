@@ -13,26 +13,26 @@ export enum JuntaRoutes {
   // ============================================
 
   /** Selección de puntos de agenda para la junta */
-  SELECCION_AGENDA = "/operaciones/junta-accionistas/seleccion-agenda",
+  SELECCION_AGENDA = "/operaciones/sociedades/:societyId/junta-accionistas/seleccion-agenda",
 
   /** Detalles de la junta (tipo, modo, fecha) */
-  DETALLES = "/operaciones/junta-accionistas/detalles",
+  DETALLES = "/operaciones/sociedades/:societyId/junta-accionistas/detalles",
   /** Resumen de detalles de la junta */
-  DETALLES_RESUMEN = "/operaciones/junta-accionistas/detalles/resumen",
+  DETALLES_RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/detalles/resumen",
 
   /** Instalación de la junta (convocatoria, asistencia, mesa) */
-  INSTALACION = "/operaciones/junta-accionistas/instalacion",
+  INSTALACION = "/operaciones/sociedades/:societyId/junta-accionistas/instalacion",
   /** Resumen de instalación de la junta */
-  INSTALACION_RESUMEN = "/operaciones/junta-accionistas/instalacion/resumen",
+  INSTALACION_RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/instalacion/resumen",
 
   /** Puntos de acuerdo (padre complejo) */
-  PUNTOS_ACUERDO = "/operaciones/junta-accionistas/puntos-acuerdo",
+  PUNTOS_ACUERDO = "/operaciones/sociedades/:societyId/junta-accionistas/puntos-acuerdo",
 
   /** Resumen de la junta */
-  RESUMEN = "/operaciones/junta-accionistas/resumen",
+  RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/resumen",
 
   /** Descarga de documentos */
-  DESCARGAR = "/operaciones/junta-accionistas/descargar",
+  DESCARGAR = "/operaciones/sociedades/:societyId/junta-accionistas/descargar",
 
   // ============================================
   // NIVEL 2: Aumento de Capital (8 rutas)
@@ -41,34 +41,34 @@ export enum JuntaRoutes {
   // -- Aporte Dinerario --
 
   /** Página principal: Aporte Dinerario */
-  APORTE_DINERARIO = "/operaciones/junta-accionistas/aporte-dinerario",
+  APORTE_DINERARIO = "/operaciones/sociedades/:societyId/junta-accionistas/aporte-dinerario",
 
   /** Sub-página: Aportantes */
-  APORTE_DINERARIO_APORTANTES = "/operaciones/junta-accionistas/aporte-dinerario/aportantes",
+  APORTE_DINERARIO_APORTANTES = "/operaciones/sociedades/:societyId/junta-accionistas/aporte-dinerario/aportantes",
 
   /** Sub-página: Aportes */
-  APORTE_DINERARIO_APORTES = "/operaciones/junta-accionistas/aporte-dinerario/aportes",
+  APORTE_DINERARIO_APORTES = "/operaciones/sociedades/:societyId/junta-accionistas/aporte-dinerario/aportes",
 
   /** Sub-página: Votación */
-  APORTE_DINERARIO_VOTACION = "/operaciones/junta-accionistas/aporte-dinerario/votacion",
+  APORTE_DINERARIO_VOTACION = "/operaciones/sociedades/:societyId/junta-accionistas/aporte-dinerario/votacion",
   /** Sub-página: Resumen */
-  APORTE_DINERARIO_RESUMEN = "/operaciones/junta-accionistas/aporte-dinerario/resumen",
+  APORTE_DINERARIO_RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/aporte-dinerario/resumen",
 
   // -- Capitalización de Créditos --
 
   /** Página principal: Capitalización de Créditos */
-  CAPITALIZACION_CREDITOS = "/operaciones/junta-accionistas/capitalizacion-creditos",
+  CAPITALIZACION_CREDITOS = "/operaciones/sociedades/:societyId/junta-accionistas/capitalizacion-creditos",
 
   /** Sub-página: Acreedores */
-  CAPITALIZACION_ACREEDORES = "/operaciones/junta-accionistas/capitalizacion-creditos/acreedores",
+  CAPITALIZACION_ACREEDORES = "/operaciones/sociedades/:societyId/junta-accionistas/capitalizacion-creditos/acreedores",
 
   /** Sub-página: Créditos */
-  CAPITALIZACION_CREDITOS_DETALLE = "/operaciones/junta-accionistas/capitalizacion-creditos/creditos",
+  CAPITALIZACION_CREDITOS_DETALLE = "/operaciones/sociedades/:societyId/junta-accionistas/capitalizacion-creditos/creditos",
 
   /** Sub-página: Votación */
-  CAPITALIZACION_VOTACION = "/operaciones/junta-accionistas/capitalizacion-creditos/votacion",
+  CAPITALIZACION_VOTACION = "/operaciones/sociedades/:societyId/junta-accionistas/capitalizacion-creditos/votacion",
   /** Sub-página: Resumen */
-  CAPITALIZACION_CREDITOS_RESUMEN = "/operaciones/junta-accionistas/capitalizacion-creditos/resumen",
+  CAPITALIZACION_CREDITOS_RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/capitalizacion-creditos/resumen",
 
   // ============================================
   // NIVEL 2: Nombramiento (15 rutas)
@@ -77,73 +77,73 @@ export enum JuntaRoutes {
   // -- Nombramiento de Apoderados --
 
   /** Página principal: Nombramiento de Apoderados */
-  NOMBRAMIENTO_APODERADOS = "/operaciones/junta-accionistas/nombramiento-apoderados",
+  NOMBRAMIENTO_APODERADOS = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-apoderados",
 
   /** Sub-página: Nombramiento */
-  NOMBRAMIENTO_APODERADOS_DETALLE = "/operaciones/junta-accionistas/nombramiento-apoderados/nombramiento",
+  NOMBRAMIENTO_APODERADOS_DETALLE = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-apoderados/nombramiento",
 
   /** Sub-página: Otorgamiento de Poderes (con scroll anchors nivel 4) */
-  NOMBRAMIENTO_APODERADOS_OTORGAMIENTO = "/operaciones/junta-accionistas/nombramiento-apoderados/otorgamiento-poderes",
+  NOMBRAMIENTO_APODERADOS_OTORGAMIENTO = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-apoderados/otorgamiento-poderes",
 
   /** Sub-página: Votación */
-  NOMBRAMIENTO_APODERADOS_VOTACION = "/operaciones/junta-accionistas/nombramiento-apoderados/votacion",
+  NOMBRAMIENTO_APODERADOS_VOTACION = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-apoderados/votacion",
   /** Sub-página: Resumen */
-  NOMBRAMIENTO_APODERADOS_RESUMEN = "/operaciones/junta-accionistas/nombramiento-apoderados/resumen",
+  NOMBRAMIENTO_APODERADOS_RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-apoderados/resumen",
 
   // -- Nombramiento de Gerente --
 
   /** Página principal: Nombramiento de Gerente */
-  NOMBRAMIENTO_GERENTE = "/operaciones/junta-accionistas/nombramiento-gerente",
+  NOMBRAMIENTO_GERENTE = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-gerente",
 
   /** Sub-página: Nombramiento */
-  NOMBRAMIENTO_GERENTE_DETALLE = "/operaciones/junta-accionistas/nombramiento-gerente/nombramiento",
+  NOMBRAMIENTO_GERENTE_DETALLE = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-gerente/nombramiento",
   /** Sub-página: Otorgamiento de Poderes */
-  NOMBRAMIENTO_GERENTE_OTORGAMIENTO = "/operaciones/junta-accionistas/nombramiento-gerente/otorgamiento",
+  NOMBRAMIENTO_GERENTE_OTORGAMIENTO = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-gerente/otorgamiento",
   /** Sub-página: Votación */
-  NOMBRAMIENTO_GERENTE_VOTACION = "/operaciones/junta-accionistas/nombramiento-gerente/votacion",
+  NOMBRAMIENTO_GERENTE_VOTACION = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-gerente/votacion",
   /** Sub-página: Resumen */
-  NOMBRAMIENTO_GERENTE_RESUMEN = "/operaciones/junta-accionistas/nombramiento-gerente/resumen",
+  NOMBRAMIENTO_GERENTE_RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-gerente/resumen",
 
   // -- Nombramiento de Directores --
 
   /** Página principal: Nombramiento de Directores */
-  NOMBRAMIENTO_DIRECTORES = "/operaciones/junta-accionistas/nombramiento-directores",
+  NOMBRAMIENTO_DIRECTORES = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-directores",
 
   /** Sub-página: Nombramiento */
-  NOMBRAMIENTO_DIRECTORES_DETALLE = "/operaciones/junta-accionistas/nombramiento-directores/nombramiento",
+  NOMBRAMIENTO_DIRECTORES_DETALLE = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-directores/nombramiento",
   /** Sub-página: Cantidad de Directores */
-  NOMBRAMIENTO_DIRECTORES_CANTIDAD = "/operaciones/junta-accionistas/nombramiento-directores/cantidad",
+  NOMBRAMIENTO_DIRECTORES_CANTIDAD = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-directores/cantidad",
   /** Sub-página: Votación */
-  NOMBRAMIENTO_DIRECTORES_VOTACION = "/operaciones/junta-accionistas/nombramiento-directores/votacion",
+  NOMBRAMIENTO_DIRECTORES_VOTACION = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-directores/votacion",
   /** Sub-página: Resumen */
-  NOMBRAMIENTO_DIRECTORES_RESUMEN = "/operaciones/junta-accionistas/nombramiento-directores/resumen",
+  NOMBRAMIENTO_DIRECTORES_RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-directores/resumen",
 
   // -- Nombramiento de Directorio --
 
   /** Página principal: Nombramiento de Directorio */
-  NOMBRAMIENTO_DIRECTORIO = "/operaciones/junta-accionistas/nombramiento-directorio",
+  NOMBRAMIENTO_DIRECTORIO = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-directorio",
 
   /** Sub-página: Nombramiento */
-  NOMBRAMIENTO_DIRECTORIO_DETALLE = "/operaciones/junta-accionistas/nombramiento-directorio/nombramiento",
+  NOMBRAMIENTO_DIRECTORIO_DETALLE = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-directorio/nombramiento",
   /** Sub-página: Cantidad de Directores */
-  NOMBRAMIENTO_DIRECTORIO_CANTIDAD = "/operaciones/junta-accionistas/nombramiento-directorio/cantidad",
+  NOMBRAMIENTO_DIRECTORIO_CANTIDAD = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-directorio/cantidad",
   /** Sub-página: Votación */
-  NOMBRAMIENTO_DIRECTORIO_VOTACION = "/operaciones/junta-accionistas/nombramiento-directorio/votacion",
+  NOMBRAMIENTO_DIRECTORIO_VOTACION = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-directorio/votacion",
   /** Sub-página: Resumen */
-  NOMBRAMIENTO_DIRECTORIO_RESUMEN = "/operaciones/junta-accionistas/nombramiento-directorio/resumen",
+  NOMBRAMIENTO_DIRECTORIO_RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-directorio/resumen",
 
   // -- Nombramiento de Auditores --
 
   /** Página principal: Nombramiento de Auditores */
-  NOMBRAMIENTO_AUDITORES = "/operaciones/junta-accionistas/nombramiento-auditores",
+  NOMBRAMIENTO_AUDITORES = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-auditores",
 
   /** Sub-página: Nombramiento */
-  NOMBRAMIENTO_AUDITORES_DETALLE = "/operaciones/junta-accionistas/nombramiento-auditores/nombramiento",
+  NOMBRAMIENTO_AUDITORES_DETALLE = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-auditores/nombramiento",
 
   /** Sub-página: Votación */
-  NOMBRAMIENTO_AUDITORES_VOTACION = "/operaciones/junta-accionistas/nombramiento-auditores/votacion",
+  NOMBRAMIENTO_AUDITORES_VOTACION = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-auditores/votacion",
   /** Sub-página: Resumen */
-  NOMBRAMIENTO_AUDITORES_RESUMEN = "/operaciones/junta-accionistas/nombramiento-auditores/resumen",
+  NOMBRAMIENTO_AUDITORES_RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/nombramiento-auditores/resumen",
 
   // ============================================
   // NIVEL 2: Remociones (9 rutas)
@@ -152,41 +152,41 @@ export enum JuntaRoutes {
   // -- Remoción de Apoderados --
 
   /** Página principal: Remoción de Apoderados */
-  REMOCION_APODERADOS = "/operaciones/junta-accionistas/remocion-apoderados",
+  REMOCION_APODERADOS = "/operaciones/sociedades/:societyId/junta-accionistas/remocion-apoderados",
 
   /** Sub-página: Remoción */
-  REMOCION_APODERADOS_DETALLE = "/operaciones/junta-accionistas/remocion-apoderados/remocion",
+  REMOCION_APODERADOS_DETALLE = "/operaciones/sociedades/:societyId/junta-accionistas/remocion-apoderados/remocion",
 
   /** Sub-página: Votación */
-  REMOCION_APODERADOS_VOTACION = "/operaciones/junta-accionistas/remocion-apoderados/votacion",
+  REMOCION_APODERADOS_VOTACION = "/operaciones/sociedades/:societyId/junta-accionistas/remocion-apoderados/votacion",
   /** Sub-página: Resumen */
-  REMOCION_APODERADOS_RESUMEN = "/operaciones/junta-accionistas/remocion-apoderados/resumen",
+  REMOCION_APODERADOS_RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/remocion-apoderados/resumen",
 
   // -- Remoción de Gerente --
 
   /** Página principal: Remoción de Gerente */
-  REMOCION_GERENTE = "/operaciones/junta-accionistas/remocion-gerente",
+  REMOCION_GERENTE = "/operaciones/sociedades/:societyId/junta-accionistas/remocion-gerente",
 
   /** Sub-página: Remoción */
-  REMOCION_GERENTE_DETALLE = "/operaciones/junta-accionistas/remocion-gerente/remocion",
+  REMOCION_GERENTE_DETALLE = "/operaciones/sociedades/:societyId/junta-accionistas/remocion-gerente/remocion",
 
   /** Sub-página: Votación */
-  REMOCION_GERENTE_VOTACION = "/operaciones/junta-accionistas/remocion-gerente/votacion",
+  REMOCION_GERENTE_VOTACION = "/operaciones/sociedades/:societyId/junta-accionistas/remocion-gerente/votacion",
   /** Sub-página: Resumen */
-  REMOCION_GERENTE_RESUMEN = "/operaciones/junta-accionistas/remocion-gerente/resumen",
+  REMOCION_GERENTE_RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/remocion-gerente/resumen",
 
   // -- Remoción de Directores --
 
   /** Página principal: Remoción de Directores */
-  REMOCION_DIRECTORES = "/operaciones/junta-accionistas/remocion-directores",
+  REMOCION_DIRECTORES = "/operaciones/sociedades/:societyId/junta-accionistas/remocion-directores",
 
   /** Sub-página: Remoción */
-  REMOCION_DIRECTORES_DETALLE = "/operaciones/junta-accionistas/remocion-directores/remocion",
+  REMOCION_DIRECTORES_DETALLE = "/operaciones/sociedades/:societyId/junta-accionistas/remocion-directores/remocion",
 
   /** Sub-página: Votación */
-  REMOCION_DIRECTORES_VOTACION = "/operaciones/junta-accionistas/remocion-directores/votacion",
+  REMOCION_DIRECTORES_VOTACION = "/operaciones/sociedades/:societyId/junta-accionistas/remocion-directores/votacion",
   /** Sub-página: Resumen */
-  REMOCION_DIRECTORES_RESUMEN = "/operaciones/junta-accionistas/remocion-directores/resumen",
+  REMOCION_DIRECTORES_RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/remocion-directores/resumen",
 
   // ============================================
   // NIVEL 2: Gestión Social (12 rutas)
@@ -195,54 +195,54 @@ export enum JuntaRoutes {
   // -- Pronunciamiento sobre Gestión --
 
   /** Página principal: Pronunciamiento sobre Gestión */
-  PRONUNCIAMIENTO_GESTION = "/operaciones/junta-accionistas/pronunciamiento-gestion",
+  PRONUNCIAMIENTO_GESTION = "/operaciones/sociedades/:societyId/junta-accionistas/pronunciamiento-gestion",
 
   /** Sub-página: Pronunciamiento */
-  PRONUNCIAMIENTO_DETALLE = "/operaciones/junta-accionistas/pronunciamiento-gestion/pronunciamiento",
+  PRONUNCIAMIENTO_DETALLE = "/operaciones/sociedades/:societyId/junta-accionistas/pronunciamiento-gestion/pronunciamiento",
 
   /** Sub-página: Votación */
-  PRONUNCIAMIENTO_VOTACION = "/operaciones/junta-accionistas/pronunciamiento-gestion/votacion",
+  PRONUNCIAMIENTO_VOTACION = "/operaciones/sociedades/:societyId/junta-accionistas/pronunciamiento-gestion/votacion",
   /** Sub-página: Resumen */
-  PRONUNCIAMIENTO_GESTION_RESUMEN = "/operaciones/junta-accionistas/pronunciamiento-gestion/resumen",
+  PRONUNCIAMIENTO_GESTION_RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/pronunciamiento-gestion/resumen",
 
   // -- Aplicación de Resultados --
 
   /** Página principal: Aplicación de Resultados */
-  APLICACION_RESULTADOS = "/operaciones/junta-accionistas/aplicacion-resultados",
+  APLICACION_RESULTADOS = "/operaciones/sociedades/:societyId/junta-accionistas/aplicacion-resultados",
 
   /** Sub-página: Aplicación */
-  APLICACION_DETALLE = "/operaciones/junta-accionistas/aplicacion-resultados/aplicacion",
+  APLICACION_DETALLE = "/operaciones/sociedades/:societyId/junta-accionistas/aplicacion-resultados/aplicacion",
 
   /** Sub-página: Votación */
-  APLICACION_VOTACION = "/operaciones/junta-accionistas/aplicacion-resultados/votacion",
+  APLICACION_VOTACION = "/operaciones/sociedades/:societyId/junta-accionistas/aplicacion-resultados/votacion",
   /** Sub-página: Resumen */
-  APLICACION_RESULTADOS_RESUMEN = "/operaciones/junta-accionistas/aplicacion-resultados/resumen",
+  APLICACION_RESULTADOS_RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/aplicacion-resultados/resumen",
 
   // -- Estados Financieros --
 
   /** Página principal: Estados Financieros */
-  ESTADOS_FINANCIEROS = "/operaciones/junta-accionistas/estados-financieros",
+  ESTADOS_FINANCIEROS = "/operaciones/sociedades/:societyId/junta-accionistas/estados-financieros",
 
   /** Sub-página: Estados */
-  ESTADOS_DETALLE = "/operaciones/junta-accionistas/estados-financieros/estados",
+  ESTADOS_DETALLE = "/operaciones/sociedades/:societyId/junta-accionistas/estados-financieros/estados",
 
   /** Sub-página: Votación */
-  ESTADOS_VOTACION = "/operaciones/junta-accionistas/estados-financieros/votacion",
+  ESTADOS_VOTACION = "/operaciones/sociedades/:societyId/junta-accionistas/estados-financieros/votacion",
   /** Sub-página: Resumen */
-  ESTADOS_FINANCIEROS_RESUMEN = "/operaciones/junta-accionistas/estados-financieros/resumen",
+  ESTADOS_FINANCIEROS_RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/estados-financieros/resumen",
 
   // -- Reparto de Dividendos --
 
   /** Página principal: Reparto de Dividendos */
-  REPARTO_DIVIDENDOS = "/operaciones/junta-accionistas/reparto-dividendos",
+  REPARTO_DIVIDENDOS = "/operaciones/sociedades/:societyId/junta-accionistas/reparto-dividendos",
 
   /** Sub-página: Reparto */
-  REPARTO_DETALLE = "/operaciones/junta-accionistas/reparto-dividendos/reparto",
+  REPARTO_DETALLE = "/operaciones/sociedades/:societyId/junta-accionistas/reparto-dividendos/reparto",
 
   /** Sub-página: Votación */
-  REPARTO_VOTACION = "/operaciones/junta-accionistas/reparto-dividendos/votacion",
+  REPARTO_VOTACION = "/operaciones/sociedades/:societyId/junta-accionistas/reparto-dividendos/votacion",
   /** Sub-página: Resumen */
-  REPARTO_DIVIDENDOS_RESUMEN = "/operaciones/junta-accionistas/reparto-dividendos/resumen",
+  REPARTO_DIVIDENDOS_RESUMEN = "/operaciones/sociedades/:societyId/junta-accionistas/reparto-dividendos/resumen",
 }
 
 /**

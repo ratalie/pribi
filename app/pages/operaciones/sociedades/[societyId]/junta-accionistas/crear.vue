@@ -102,8 +102,8 @@
         return;
       }
 
-      // Redirigir al primer paso del flujo de junta con el ID
-      await router.push(`/operaciones/junta-accionistas/${flowId}/seleccion-agenda`);
+      // Redirigir al primer paso del flujo de junta con ambos IDs
+      await router.push(`/operaciones/sociedades/${societyIdNumber}/junta-accionistas/${flowId}/seleccion-agenda`);
     } catch (error) {
       errorMessage.value = "No fue posible iniciar el flujo de junta. Inténtalo nuevamente.";
       console.error("Error al iniciar flujo de junta:", error);

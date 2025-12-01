@@ -2,7 +2,9 @@ import { societyRegisterNavigation } from "./society-register-navigation";
 import { juntaNavigation } from "./junta-navigation";
 
 export interface ProgressNavigationContext {
-  societyId?: string;
+  societyId?: string | number;
+  flowId?: string | number;
+  /** @deprecated Usar flowId en su lugar */
   juntaId?: string;
   flow?: "crear" | "editar";
 }
@@ -36,11 +38,12 @@ export const routeMap: RouteRule[] = [
       }),
   },
   {
-    match: (path: string) => path.includes("/operaciones/junta-accionistas"),
+    match: (path: string) => path.includes("/operaciones/sociedades") && path.includes("/junta-accionistas"),
     getSteps: (context) =>
       juntaNavigation({
         base: "operaciones",
-        juntaId: context.juntaId,
+        societyId: context.societyId,
+        flowId: context.flowId || context.juntaId, // Compatibilidad hacia atrás
         flow: context.flow,
       }),
   },

@@ -82,10 +82,13 @@ const rutas = [
 const navigateToRuta = (rutaId: string) => {
   const ruta = rutas.find((r) => r.id === rutaId);
   if (ruta) {
-    const juntaId = route.params.id;
-    const fullPath = juntaId
-      ? `/operaciones/junta-accionistas/${juntaId}${ruta.route}`
-      : `/operaciones/junta-accionistas${ruta.route}`;
+    const societyId = route.params.societyId;
+    const flowId = route.params.flowId;
+    const fullPath = societyId && flowId
+      ? `/operaciones/sociedades/${societyId}/junta-accionistas/${flowId}${ruta.route}`
+      : societyId
+        ? `/operaciones/sociedades/${societyId}/junta-accionistas${ruta.route}`
+        : `/operaciones/sociedades/:societyId/junta-accionistas${ruta.route}`;
     router.push(fullPath);
   }
 };

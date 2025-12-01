@@ -146,8 +146,8 @@ const BASE_SUB_STEPS: Array<
 /**
  * Construye la ruta para un paso principal
  *
- * Si hay juntaId, incluye el ID en la ruta.
- * Si no hay juntaId, usa la ruta sin ID (para flujos nuevos).
+ * Si hay societyId y flowId, incluye ambos IDs en la ruta.
+ * Si no hay IDs, usa la ruta sin IDs (para flujos nuevos).
  */
 const buildRoute = (slug: string, context: JuntaNavigationContext): string => {
   // Mapear slug a JuntaRoute
@@ -162,20 +162,23 @@ const buildRoute = (slug: string, context: JuntaNavigationContext): string => {
 
   const route = slugToRoute[slug];
   if (route) {
-    return buildJuntaRoute(route, context.juntaId);
+    return buildJuntaRoute(route, context.societyId, context.flowId);
   }
 
   // Fallback: construir manualmente si no está en el mapeo
-  if (context.juntaId) {
-    return `/operaciones/junta-accionistas/${context.juntaId}/${slug}`;
+  if (context.societyId && context.flowId) {
+    return `/operaciones/sociedades/${context.societyId}/junta-accionistas/${context.flowId}/${slug}`;
   }
-  return `/operaciones/junta-accionistas/${slug}`;
+  if (context.societyId) {
+    return `/operaciones/sociedades/${context.societyId}/junta-accionistas/${slug}`;
+  }
+  return `/operaciones/sociedades/:societyId/junta-accionistas/${slug}`;
 };
 
 /**
  * Construye la ruta para un sub-step
  *
- * Usa buildJuntaRoute para construir rutas con o sin ID según el contexto.
+ * Usa buildJuntaRoute para construir rutas con societyId y flowId según el contexto.
  */
 const buildSubStepRoute = (subStepId: string, context: JuntaNavigationContext): string => {
   // Mapeo de IDs de sub-steps a JuntaRoutes
@@ -197,7 +200,7 @@ const buildSubStepRoute = (subStepId: string, context: JuntaNavigationContext): 
 
   const route = subStepRouteMap[subStepId];
   if (route) {
-    return buildJuntaRoute(route, context.juntaId);
+    return buildJuntaRoute(route, context.societyId, context.flowId);
   }
 
   // Fallback: construir manualmente si no está en el mapeo
@@ -219,10 +222,13 @@ const buildSubStepRoute = (subStepId: string, context: JuntaNavigationContext): 
 
   const slug = subStepSlugMap[subStepId] || subStepId;
 
-  if (context.juntaId) {
-    return `/operaciones/junta-accionistas/${context.juntaId}/${slug}`;
+  if (context.societyId && context.flowId) {
+    return `/operaciones/sociedades/${context.societyId}/junta-accionistas/${context.flowId}/${slug}`;
   }
-  return `/operaciones/junta-accionistas/${slug}`;
+  if (context.societyId) {
+    return `/operaciones/sociedades/${context.societyId}/junta-accionistas/${slug}`;
+  }
+  return `/operaciones/sociedades/:societyId/junta-accionistas/${slug}`;
 };
 
 /**

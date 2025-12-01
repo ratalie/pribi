@@ -15,10 +15,10 @@ export const useJuntasNavbarRoutes = () => {
   const juntasFlowStore = useJuntasFlowStore();
 
   /**
-   * Extrae el ID de la junta de los parámetros de la ruta
+   * Extrae el societyId de los parámetros de la ruta
    */
-  const extractJuntaId = (): string | undefined => {
-    const param = route.params.id;
+  const extractSocietyId = (): string | undefined => {
+    const param = route.params.societyId;
     if (typeof param === "string" && param.length > 0) return param;
     if (Array.isArray(param) && param.length > 0 && typeof param[0] === "string") {
       return param[0];
@@ -27,7 +27,27 @@ export const useJuntasNavbarRoutes = () => {
   };
 
   /**
-   * Resuelve el contexto de navegación (juntaId, flow)
+   * Extrae el flowId de los parámetros de la ruta
+   */
+  const extractFlowId = (): string | undefined => {
+    const param = route.params.flowId;
+    if (typeof param === "string" && param.length > 0) return param;
+    if (Array.isArray(param) && param.length > 0 && typeof param[0] === "string") {
+      return param[0];
+    }
+    return undefined;
+  };
+
+  /**
+   * Extrae el ID de la junta de los parámetros de la ruta (compatibilidad hacia atrás)
+   * @deprecated Usar extractFlowId() en su lugar
+   */
+  const extractJuntaId = (): string | undefined => {
+    return extractFlowId();
+  };
+
+  /**
+   * Resuelve el contexto de navegación (societyId, flowId, flow)
    */
   const resolveContext = (): ProgressNavigationContext => {
     const path = route.path;
@@ -37,7 +57,8 @@ export const useJuntasNavbarRoutes = () => {
         ? "editar"
         : undefined;
     return {
-      juntaId: extractJuntaId(),
+      societyId: extractSocietyId(),
+      flowId: extractFlowId(),
       flow,
     };
   };
@@ -45,9 +66,9 @@ export const useJuntasNavbarRoutes = () => {
   /**
    * Extrae el slug del paso actual desde la ruta
    * Ejemplos:
-   * - /operaciones/junta-accionistas/123/seleccion-agenda -> "seleccion-agenda"
-   * - /operaciones/junta-accionistas/seleccion-agenda -> "seleccion-agenda"
-   * - /operaciones/junta-accionistas/123/detalles -> "detalles"
+   * - /operaciones/sociedades/30/junta-accionistas/7/seleccion-agenda -> "seleccion-agenda"
+   * - /operaciones/sociedades/30/junta-accionistas/seleccion-agenda -> "seleccion-agenda"
+   * - /operaciones/sociedades/30/junta-accionistas/7/detalles -> "detalles"
    */
   const extractCurrentStepSlug = (): string | undefined => {
     const path = route.path;
@@ -79,8 +100,8 @@ export const useJuntasNavbarRoutes = () => {
       "nombramiento-auditores",
     ];
 
-    // Patrón 1: Con ID: /operaciones/junta-accionistas/[id]/[slug]
-    let match = path.match(/\/operaciones\/junta-accionistas\/[^/]+\/([^/]+)(?:\/|$)/);
+    // Patrón 1: Con ambos IDs: /operaciones/sociedades/[societyId]/junta-accionistas/[flowId]/[slug]
+    let match = path.match(/\/operaciones\/sociedades\/[^/]+\/junta-accionistas\/[^/]+\/([^/]+)(?:\/|$)/);
     if (match && match[1]) {
       const slug = match[1];
       // Si es un paso principal y no es un sub-step, retornarlo
@@ -89,8 +110,18 @@ export const useJuntasNavbarRoutes = () => {
       }
     }
     
-    // Patrón 2: Sin ID: /operaciones/junta-accionistas/[slug]
-    match = path.match(/\/operaciones\/junta-accionistas\/([^/]+)(?:\/|$)/);
+    // Patrón 2: Con solo societyId: /operaciones/sociedades/[societyId]/junta-accionistas/[slug]
+    match = path.match(/\/operaciones\/sociedades\/[^/]+\/junta-accionistas\/([^/]+)(?:\/|$)/);
+    if (match && match[1]) {
+      const slug = match[1];
+      // Si es un paso principal y no es un sub-step, retornarlo
+      if (mainStepSlugs.includes(slug) && !subStepSlugs.includes(slug)) {
+        return slug;
+      }
+    }
+    
+    // Patrón 3: Sin IDs: /operaciones/sociedades/junta-accionistas/[slug] (raro, pero lo soportamos)
+    match = path.match(/\/operaciones\/sociedades\/junta-accionistas\/([^/]+)(?:\/|$)/);
     if (match && match[1]) {
       const slug = match[1];
       // Si es un paso principal y no es un sub-step, retornarlo
@@ -105,10 +136,10 @@ export const useJuntasNavbarRoutes = () => {
   /**
    * Extrae el ID del sub-step actual desde la ruta
    * 
-   * NOTA: La estructura actual tiene los sub-steps directamente bajo /operaciones/junta-accionistas/
+   * NOTA: La estructura actual tiene los sub-steps bajo /operaciones/junta-accionistas/[societyId]/[flowId]/
    * Ejemplos:
-   * - /operaciones/junta-accionistas/123/aporte-dinerario -> "aporte-dinerarios"
-   * - /operaciones/junta-accionistas/aporte-dinerario -> "aporte-dinerarios"
+   * - /operaciones/junta-accionistas/30/7/aporte-dinerario -> "aporte-dinerarios"
+   * - /operaciones/junta-accionistas/30/7/aporte-dinerario -> "aporte-dinerarios"
    * 
    * Mapeo de slugs a IDs de sub-steps
    */
@@ -151,13 +182,18 @@ export const useJuntasNavbarRoutes = () => {
 
     // Buscar si la ruta contiene algún slug de sub-step
     for (const slug of subStepSlugs) {
-      // Patrón 1: Con ID: /operaciones/junta-accionistas/[id]/[slug]
-      let match = path.match(new RegExp(`/operaciones/junta-accionistas/[^/]+/${slug}(?:/|$)`));
+      // Patrón 1: Con ambos IDs: /operaciones/sociedades/[societyId]/junta-accionistas/[flowId]/[slug]
+      let match = path.match(new RegExp(`/operaciones/sociedades/[^/]+/junta-accionistas/[^/]+/${slug}(?:/|$)`));
       if (match) {
         return slugToIdMap[slug];
       }
-      // Patrón 2: Sin ID: /operaciones/junta-accionistas/[slug]
-      match = path.match(new RegExp(`/operaciones/junta-accionistas/${slug}(?:/|$)`));
+      // Patrón 2: Con solo societyId: /operaciones/sociedades/[societyId]/junta-accionistas/[slug]
+      match = path.match(new RegExp(`/operaciones/sociedades/[^/]+/junta-accionistas/${slug}(?:/|$)`));
+      if (match) {
+        return slugToIdMap[slug];
+      }
+      // Patrón 3: Sin IDs: /operaciones/sociedades/junta-accionistas/[slug] (raro)
+      match = path.match(new RegExp(`/operaciones/sociedades/junta-accionistas/${slug}(?:/|$)`));
       if (match) {
         return slugToIdMap[slug];
       }
@@ -168,7 +204,7 @@ export const useJuntasNavbarRoutes = () => {
 
   /**
    * Extrae el ID de la sección actual desde el hash de la ruta
-   * Ejemplo: /operaciones/junta-accionistas/123/puntos-acuerdo/aporte-dinerarios#aportes -> "aportes"
+   * Ejemplo: /operaciones/sociedades/30/junta-accionistas/7/puntos-acuerdo/aporte-dinerarios#aportes -> "aportes"
    */
   const extractCurrentSectionId = (): string | undefined => {
     const hash = route.hash;
