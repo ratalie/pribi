@@ -338,8 +338,8 @@
             presidentePreside: config.preside, // true = presidente del directorio preside la junta
             presidenteDesempata: true,
             periodo: "1", // El mapper convierte "1" -> "ONE_YEAR", "2" -> "TWO_YEARS", "3" -> "THREE_YEARS"
-            // presidenteId se omitirá del payload si no hay valor (el mapper lo maneja)
-            presidenteId: null, // null se omitirá del payload por el mapper
+            // presidenteId se asignará después de crear los directores (usando el primer director titular)
+            presidenteId: null, // Se actualizará con el ID del primer director titular en el paso 7
           } as DirectorioDTO,
 
           // Directores - Crear según la cantidad configurada
@@ -513,31 +513,52 @@
       );
       if (!steps.quorums.completed) throw new Error(steps.quorums.error);
 
-      // Paso 6: Configurar directorio (PUT según el backend)
-      currentStep.value = `[Sociedad ${index + 1}] Paso 6/9: Configuración del directorio...`;
+      // Paso 6: Crear directores PRIMERO (cantidad según configuración)
+      // Necesitamos crear los directores antes de configurar el directorio para poder usar uno como presidente
+      currentStep.value = `[Sociedad ${index + 1}] Paso 6/9: Creando ${
+        testData.directores.length
+      } directores...`;
+      let primerDirectorId: string | null = null;
+      steps.directores = await executeStep("directores", "directores", async () => {
+        const directoresCreados: string[] = [];
+        for (const director of testData.directores) {
+          const directorCreado = await directorUseCase.execute(societyId, director);
+          directoresCreados.push(directorCreado.id);
+          // Guardar el ID del primer director titular como presidente
+          if (!primerDirectorId && directorCreado.rolDirector === TipoDirector.TITULAR) {
+            primerDirectorId = directorCreado.id;
+            console.debug(`[Seeds] Primer director titular encontrado, ID: ${primerDirectorId}`);
+          }
+        }
+        // Guardar IDs de directores creados
+        (testData as any).directoresIds = directoresCreados;
+        console.debug(`[Seeds] Directores creados: ${directoresCreados.length}, IDs:`, directoresCreados);
+      });
+      if (!steps.directores.completed) throw new Error(steps.directores.error);
+
+      // Paso 7: Configurar directorio (PUT según el backend)
+      // Ahora que tenemos los directores creados, podemos usar el primero como presidente
+      currentStep.value = `[Sociedad ${index + 1}] Paso 7/9: Configuración del directorio...`;
       steps.directorio = await executeStep("directorio", "directorio", async () => {
+        // Actualizar el directorio con el presidenteId del primer director titular
+        const directorioConPresidente: DirectorioDTO = {
+          ...testData.directorio,
+          presidenteId: primerDirectorId, // Usar el ID del primer director titular como presidente
+        };
         console.debug(
           `[Seeds] Configurando directorio para sociedad ${societyId}`,
-          testData.directorio
+          {
+            ...directorioConPresidente,
+            presidenteId: primerDirectorId,
+          }
         );
-        await directorioUseCase.execute(societyId, testData.directorio);
-        console.debug(`[Seeds] Directorio configurado exitosamente`);
+        await directorioUseCase.execute(societyId, directorioConPresidente);
+        console.debug(`[Seeds] Directorio configurado exitosamente con presidenteId: ${primerDirectorId}`);
       });
       if (!steps.directorio.completed) {
         console.error(`[Seeds] Error configurando directorio: ${steps.directorio.error}`);
-        // Continuar de todas formas para intentar crear directores
+        // Continuar de todas formas
       }
-
-      // Paso 7: Crear directores (cantidad según configuración)
-      currentStep.value = `[Sociedad ${index + 1}] Paso 7/9: Creando ${
-        testData.directores.length
-      } directores...`;
-      steps.directores = await executeStep("directores", "directores", async () => {
-        for (const director of testData.directores) {
-          await directorUseCase.execute(societyId, director);
-        }
-      });
-      if (!steps.directores.completed) throw new Error(steps.directores.error);
 
       // Paso 8: Crear clase de apoderado (Gerente General)
       currentStep.value = `[Sociedad ${index + 1}] Paso 8/9: Clase de apoderado...`;
