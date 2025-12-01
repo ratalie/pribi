@@ -1,26 +1,29 @@
 /**
  * Helpers compartidos para tests basados en seeds-sociedades.vue
- * 
+ *
  * Estos helpers replican exactamente la lógica del seed para garantizar
  * que los payloads de los tests coincidan con los del seed que funciona.
  */
 
-import type { DatosSociedadDTO } from "~/core/hexag/registros/sociedades/pasos/datos-sociedad/application/dtos/datos-sociedad.dto";
-import type { AccionistaDTO } from "~/core/hexag/registros/sociedades/pasos/accionistas/application/dtos/accionista.dto";
 import type { AccionPayload } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
-import type { QuorumDTO } from "~/core/hexag/registros/sociedades/pasos/quorum-mayorias/application/dtos/quorum.dto";
-import type { DirectorioDTO } from "~/core/hexag/registros/sociedades/pasos/directorio/application/dtos/directorio.dto";
-import type { DirectorDTO } from "~/core/hexag/registros/sociedades/pasos/directorio/application/dtos/director.dto";
-import type { ClaseApoderadoDTO } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/dtos/clase-apoderado.dto";
-import type { ApoderadoDTO } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/dtos/apoderado.dto";
-import type { Persona } from "~/core/hexag/registros/sociedades/pasos/accionistas/domain/entities/persona.entity";
 import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/enums/tipo-accion.enum";
+import type { AccionistaDTO } from "~/core/hexag/registros/sociedades/pasos/accionistas/application/dtos/accionista.dto";
+import type { Persona } from "~/core/hexag/registros/sociedades/pasos/accionistas/domain/entities/persona.entity";
+import type { ApoderadoDTO } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/dtos/apoderado.dto";
+import type { ClaseApoderadoDTO } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/dtos/clase-apoderado.dto";
+import type { DatosSociedadDTO } from "~/core/hexag/registros/sociedades/pasos/datos-sociedad/application/dtos/datos-sociedad.dto";
+import type { DirectorDTO } from "~/core/hexag/registros/sociedades/pasos/directorio/application/dtos/director.dto";
+import type { DirectorioDTO } from "~/core/hexag/registros/sociedades/pasos/directorio/application/dtos/directorio.dto";
 import { TipoDirector } from "~/core/hexag/registros/sociedades/pasos/directorio/domain/enums/director-tipo.enum";
+import type { QuorumDTO } from "~/core/hexag/registros/sociedades/pasos/quorum-mayorias/application/dtos/quorum.dto";
 import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
 
 // Importar y re-exportar desde utils para mantener compatibilidad
-import { generateUUID as _generateUUID, ensureUUID as _ensureUUID } from "@tests/utils/uuid-generator";
-export { generateUUID, ensureUUID } from "@tests/utils/uuid-generator";
+import {
+  ensureUUID as _ensureUUID,
+  generateUUID as _generateUUID,
+} from "@tests/utils/uuid-generator";
+export { ensureUUID, generateUUID } from "@tests/utils/uuid-generator";
 
 // Aliases locales para uso interno
 const generateUUID = _generateUUID;
@@ -34,7 +37,10 @@ export function generateTestData(index: number) {
   const baseName = `Empresa Test ${index + 1}`;
   // Generar RUC único usando timestamp + índice para evitar duplicados
   const timestamp = Date.now();
-  const ruc = `20${String(timestamp % 10000000).padStart(7, "0")}${String(index).padStart(2, "0")}`;
+  const ruc = `20${String(timestamp % 10000000).padStart(7, "0")}${String(index).padStart(
+    2,
+    "0"
+  )}`;
 
   return {
     datosSociedad: {
@@ -96,6 +102,11 @@ export function generateTestData(index: number) {
         participacionPorcentual: 40,
       },
     ] as AccionistaDTO[],
+
+    // Valor nominal (debe crearse ANTES de las acciones)
+    valorNominal: {
+      valorNominal: 1.0, // Valor nominal por defecto para todas las sociedades de prueba
+    },
 
     accion: {
       id: generateUUID(),
@@ -244,7 +255,7 @@ export function createTestAccion(
   // Para acciones preferenciales (SIN_DERECHO_A_VOTO), el derechoVoto debe ser false
   // Para acciones comunes, el derechoVoto debe ser true
   const derechoVoto = tipo === TipoAccionEnum.COMUN;
-  
+
   return {
     id: generateUUID(),
     tipo,
@@ -339,34 +350,42 @@ export function createTestApoderado(
 
 /**
  * Limpia todas las sociedades del backend antes de ejecutar tests
- * 
+ *
  * ⚠️ IMPORTANTE: Esta función debe ejecutarse en el beforeAll de cada test suite
  * para garantizar un estado limpio antes de comenzar los tests.
  */
 export async function clearAllSocieties(): Promise<void> {
-  const { SociedadHttpRepository } = await import("~/core/hexag/registros/sociedades/infrastructure/repositories/sociedad.http.repository");
+  const { SociedadHttpRepository } = await import(
+    "~/core/hexag/registros/sociedades/infrastructure/repositories/sociedad.http.repository"
+  );
   const sociedadRepository = new SociedadHttpRepository();
-  
+
   console.log("🧹 Limpiando todas las sociedades del backend...");
   try {
     const allSocieties = await sociedadRepository.list();
     console.log(`   Encontradas ${allSocieties.length} sociedades para eliminar`);
-    
+
     for (const sociedad of allSocieties) {
       try {
         await sociedadRepository.delete(sociedad.idSociety);
-        console.log(`   ✅ Eliminada sociedad ${sociedad.idSociety} (${sociedad.razonSocial || 'sin nombre'})`);
+        console.log(
+          `   ✅ Eliminada sociedad ${sociedad.idSociety} (${
+            sociedad.razonSocial || "sin nombre"
+          })`
+        );
       } catch (error: any) {
         // Si la sociedad ya fue eliminada por otro test (404), ignorar silenciosamente
         const statusCode = error?.statusCode ?? error?.response?.status ?? null;
         if (statusCode === 404) {
-          console.log(`   ℹ️  Sociedad ${sociedad.idSociety} ya fue eliminada (probablemente por otro test)`);
+          console.log(
+            `   ℹ️  Sociedad ${sociedad.idSociety} ya fue eliminada (probablemente por otro test)`
+          );
         } else {
           console.warn(`   ⚠️ No se pudo eliminar sociedad ${sociedad.idSociety}:`, error);
         }
       }
     }
-    
+
     console.log("✅ Limpieza completada\n");
   } catch (error: any) {
     // Si no hay sociedades (404), es normal, no es un error
@@ -378,4 +397,3 @@ export async function clearAllSocieties(): Promise<void> {
     }
   }
 }
-

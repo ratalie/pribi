@@ -18,6 +18,8 @@ import { AsignacionAccionesHttpRepository } from "../asignacion-acciones.http.re
 import { SociedadHttpRepository } from "~/core/hexag/registros/sociedades/infrastructure/repositories/sociedad.http.repository";
 import { AccionistasHttpRepository } from "../../../../accionistas/infrastructure/repositories/accionistas.http.repository";
 import { AccionesHttpRepository } from "../../../../acciones/infrastructure/repositories/acciones.http.repository";
+import { UpdateValorNominalUseCase } from "~/core/hexag/registros/sociedades/application/use-cases/update-valor-nominal.use-case";
+import { ValorNominalHttpRepository } from "~/core/hexag/registros/sociedades/infrastructure/repositories/valor-nominal.http.repository";
 import { getTestConfig } from "@tests/config/test-config";
 import { TestLogger } from "@tests/utils/test-logger";
 import { clearAllSocieties } from "@tests/helpers/seed-helpers";
@@ -44,6 +46,8 @@ function generateUUID(): string {
   let sociedadRepository: SociedadHttpRepository;
   let accionistasRepository: AccionistasHttpRepository;
   let accionesRepository: AccionesHttpRepository;
+  let valorNominalRepository: ValorNominalHttpRepository;
+  let valorNominalUseCase: UpdateValorNominalUseCase;
   const createdSocietyIds: string[] = [];
   let logger: TestLogger;
   const testResults: { total: number; passed: number; failed: number } = {
@@ -60,6 +64,8 @@ function generateUUID(): string {
     sociedadRepository = new SociedadHttpRepository();
     accionistasRepository = new AccionistasHttpRepository();
     accionesRepository = new AccionesHttpRepository();
+    valorNominalRepository = new ValorNominalHttpRepository();
+    valorNominalUseCase = new UpdateValorNominalUseCase(valorNominalRepository);
 
     // Inicializar logger
     logger = new TestLogger("AsignacionAccionesHttpRepository - Backend Real", {
@@ -133,6 +139,10 @@ function generateUUID(): string {
       participacionPorcentual: 60,
     };
     const accionista = await accionistasRepository.create(societyId, accionistaDTO);
+
+    // ⚠️ IMPORTANTE: Crear valor nominal ANTES de crear acciones
+    await valorNominalUseCase.execute(societyId, { valorNominal: 1.0 });
+    console.log("[Test] Valor nominal creado: 1.0");
 
     // Crear acción
     const accionPayload: AccionPayload = {

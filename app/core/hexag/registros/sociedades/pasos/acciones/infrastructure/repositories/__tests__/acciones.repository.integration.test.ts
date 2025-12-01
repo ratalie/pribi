@@ -21,7 +21,9 @@ import {
 } from "@tests/helpers/seed-helpers";
 import { TestLogger } from "@tests/utils/test-logger";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { UpdateValorNominalUseCase } from "~/core/hexag/registros/sociedades/application/use-cases/update-valor-nominal.use-case";
 import { SociedadHttpRepository } from "~/core/hexag/registros/sociedades/infrastructure/repositories/sociedad.http.repository";
+import { ValorNominalHttpRepository } from "~/core/hexag/registros/sociedades/infrastructure/repositories/valor-nominal.http.repository";
 import type { AccionPayload } from "../../../domain/entities/accion-payload.entity";
 import { TipoAccionEnum } from "../../../domain/enums/tipo-accion.enum";
 import { AccionesHttpRepository } from "../acciones.http.repository";
@@ -31,17 +33,11 @@ const testConfig = getTestConfig();
 // ⚠️ Solo ejecutar si NO estamos usando MSW
 const shouldRun = !testConfig.useMsw;
 
-// Helper para generar UUID
-function generateUUID(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
-  }
-  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-}
-
 (shouldRun ? describe : describe.skip)("AccionesHttpRepository - Backend Real", () => {
   let repository: AccionesHttpRepository;
   let sociedadRepository: SociedadHttpRepository;
+  let valorNominalRepository: ValorNominalHttpRepository;
+  let valorNominalUseCase: UpdateValorNominalUseCase;
   const createdSocietyIds: string[] = [];
   let logger: TestLogger;
   const testResults: { total: number; passed: number; failed: number } = {
@@ -56,6 +52,8 @@ function generateUUID(): string {
     }
     repository = new AccionesHttpRepository();
     sociedadRepository = new SociedadHttpRepository();
+    valorNominalRepository = new ValorNominalHttpRepository();
+    valorNominalUseCase = new UpdateValorNominalUseCase(valorNominalRepository);
 
     // Inicializar logger
     logger = new TestLogger("AccionesHttpRepository - Backend Real", {
@@ -104,6 +102,14 @@ function generateUUID(): string {
     return societyId;
   }
 
+  /**
+   * Helper para crear valor nominal antes de crear acciones
+   */
+  async function createValorNominal(societyId: string, valor: number = 1.0): Promise<void> {
+    await valorNominalUseCase.execute(societyId, { valorNominal: valor });
+    console.log(`[Test] Valor nominal creado: ${valor}`);
+  }
+
   // Usar directamente los helpers del seed (que ya funcionan)
   // No crear helpers nuevos, usar generateTestData() y createTestAccion() directamente
 
@@ -120,6 +126,9 @@ function generateUUID(): string {
           "[Test] Creando acción con datos del seed:",
           JSON.stringify(accionPayload, null, 2)
         );
+
+        // ⚠️ IMPORTANTE: Crear valor nominal ANTES de crear acciones
+        await createValorNominal(societyId, testData.valorNominal.valorNominal);
 
         // Crear acción
         await repository.create(societyId, accionPayload);
@@ -156,6 +165,9 @@ function generateUUID(): string {
           "[Test] Creando acción preferencial con datos del seed:",
           JSON.stringify(accionPayload, null, 2)
         );
+
+        // ⚠️ IMPORTANTE: Crear valor nominal ANTES de crear acciones
+        await createValorNominal(societyId);
 
         // Crear acción
         await repository.create(societyId, accionPayload);
@@ -241,6 +253,9 @@ function generateUUID(): string {
           JSON.stringify(accionPayload, null, 2)
         );
 
+        // ⚠️ IMPORTANTE: Crear valor nominal ANTES de crear acciones
+        await createValorNominal(societyId, testData.valorNominal.valorNominal);
+
         // Crear acción
         await repository.create(societyId, accionPayload);
 
@@ -301,6 +316,9 @@ function generateUUID(): string {
           "[Test] Creando acción con datos del seed:",
           JSON.stringify(accionPayload, null, 2)
         );
+
+        // ⚠️ IMPORTANTE: Crear valor nominal ANTES de crear acciones
+        await createValorNominal(societyId, testData.valorNominal.valorNominal);
 
         // Crear acción
         await repository.create(societyId, accionPayload);
@@ -370,6 +388,9 @@ function generateUUID(): string {
           JSON.stringify(accionPayload, null, 2)
         );
 
+        // ⚠️ IMPORTANTE: Crear valor nominal ANTES de crear acciones
+        await createValorNominal(societyId, testData.valorNominal.valorNominal);
+
         // Crear acción
         await repository.create(societyId, accionPayload);
 
@@ -423,6 +444,9 @@ function generateUUID(): string {
         console.log("[Test] Acción 1 (común):", JSON.stringify(accion1, null, 2));
         console.log("[Test] Acción 2 (preferencial):", JSON.stringify(accion2, null, 2));
 
+        // ⚠️ IMPORTANTE: Crear valor nominal ANTES de crear acciones
+        await createValorNominal(societyId, testData.valorNominal.valorNominal);
+
         // Crear ambas acciones
         await repository.create(societyId, accion1);
         await repository.create(societyId, accion2);
@@ -474,6 +498,9 @@ function generateUUID(): string {
           "[Test] Flujo completo - Creando acción con datos del seed:",
           JSON.stringify(accionPayload, null, 2)
         );
+
+        // ⚠️ IMPORTANTE: Crear valor nominal ANTES de crear acciones
+        await createValorNominal(societyId, testData.valorNominal.valorNominal);
 
         // CREATE
         await repository.create(societyId, accionPayload);

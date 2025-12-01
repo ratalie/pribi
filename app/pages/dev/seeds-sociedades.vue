@@ -54,6 +54,10 @@
   import { CreateClaseApoderadoUseCase } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/create-clase-apoderado.use-case";
   import { ApoderadosHttpRepository } from "~/core/hexag/registros/sociedades/pasos/apoderados/infrastructure/repositories/apoderados.http.repository";
 
+  // Valor Nominal
+  import { UpdateValorNominalUseCase } from "~/core/hexag/registros/sociedades/application/use-cases/update-valor-nominal.use-case";
+  import { ValorNominalHttpRepository } from "~/core/hexag/registros/sociedades/infrastructure/repositories/valor-nominal.http.repository";
+
   // Asignación de Acciones - Usamos $fetch directamente para no depender del código de producción
   // (su compañero está desarrollando este módulo, así que lo aislamos)
 
@@ -96,6 +100,9 @@
   const apoderadosRepo = new ApoderadosHttpRepository();
   const claseApoderadoUseCase = new CreateClaseApoderadoUseCase(apoderadosRepo);
   const apoderadoUseCase = new CreateApoderadoUseCase(apoderadosRepo);
+
+  const valorNominalRepo = new ValorNominalHttpRepository();
+  const valorNominalUseCase = new UpdateValorNominalUseCase(valorNominalRepo);
 
   // Helper para crear asignación de acciones directamente (aislado del código de producción)
   // Esto evita depender de los use cases que su compañero está desarrollando
@@ -242,6 +249,11 @@
           participacionPorcentual: 40,
         },
       ] as AccionistaDTO[],
+
+      // Valor nominal (debe crearse ANTES de las acciones)
+      valorNominal: {
+        valorNominal: 1.0, // Valor nominal por defecto para todas las sociedades de prueba
+      },
 
       // Acción común (500 acciones)
       accion: {
@@ -436,7 +448,7 @@
       if (!steps.datosSociedad.completed) throw new Error(steps.datosSociedad.error);
 
       // Paso 2: Crear 2 accionistas naturales
-      currentStep.value = `[Sociedad ${index + 1}] Paso 2/9: Accionistas...`;
+      currentStep.value = `[Sociedad ${index + 1}] Paso 2/10: Accionistas...`;
       steps.accionistas = await executeStep("accionistas", "accionistas", async () => {
         const accionistasCreados: string[] = [];
         for (const accionista of testData.accionistas) {
@@ -448,8 +460,15 @@
       });
       if (!steps.accionistas.completed) throw new Error(steps.accionistas.error);
 
+      // Paso 2.5: Crear valor nominal (ANTES de las acciones)
+      currentStep.value = `[Sociedad ${index + 1}] Paso 3/10: Valor nominal...`;
+      steps.valorNominal = await executeStep("valorNominal", "valorNominal", async () => {
+        await valorNominalUseCase.execute(societyId, testData.valorNominal);
+      });
+      if (!steps.valorNominal.completed) throw new Error(steps.valorNominal.error);
+
       // Paso 3: Crear 500 acciones comunes
-      currentStep.value = `[Sociedad ${index + 1}] Paso 3/9: Acciones...`;
+      currentStep.value = `[Sociedad ${index + 1}] Paso 4/10: Acciones...`;
       let accionCreadaId: string | null = null;
       steps.acciones = await executeStep("acciones", "acciones", async () => {
         await accionesUseCase.execute(societyId, testData.accion);
@@ -465,7 +484,7 @@
       if (!steps.acciones.completed) throw new Error(steps.acciones.error);
 
       // Paso 3.5: Asignar acciones a accionistas (300 para el primero, 200 para el segundo)
-      currentStep.value = `[Sociedad ${index + 1}] Paso 4/9: Asignación de acciones...`;
+      currentStep.value = `[Sociedad ${index + 1}] Paso 5/10: Asignación de acciones...`;
       steps.asignacionAcciones = await executeStep(
         "asignacionAcciones",
         "asignacionAcciones",
@@ -510,7 +529,7 @@
       }
 
       // Paso 5: Quórums y mayorías
-      currentStep.value = `[Sociedad ${index + 1}] Paso 5/9: Quórums y mayorías...`;
+      currentStep.value = `[Sociedad ${index + 1}] Paso 6/10: Quórums y mayorías...`;
       steps.quorums = await executeStep("quorums", "quorums", async () => {
         await quorumUseCase.execute(societyId, testData.quorum);
       });
@@ -518,7 +537,7 @@
 
       // Paso 6: Crear directores PRIMERO (cantidad según configuración)
       // Necesitamos crear los directores antes de configurar el directorio para poder usar uno como presidente
-      currentStep.value = `[Sociedad ${index + 1}] Paso 6/9: Creando ${
+      currentStep.value = `[Sociedad ${index + 1}] Paso 7/10: Creando ${
         testData.directores.length
       } directores...`;
       let primerDirectorId: string | null = null;
@@ -546,7 +565,7 @@
 
       // Paso 7: Configurar directorio (PUT según el backend)
       // Ahora que tenemos los directores creados, podemos usar el primero como presidente
-      currentStep.value = `[Sociedad ${index + 1}] Paso 7/9: Configuración del directorio...`;
+      currentStep.value = `[Sociedad ${index + 1}] Paso 8/10: Configuración del directorio...`;
       steps.directorio = await executeStep("directorio", "directorio", async () => {
         // Actualizar el directorio con el presidenteId del primer director titular
         const directorioConPresidente: DirectorioDTO = {
@@ -568,7 +587,7 @@
       }
 
       // Paso 8: Crear clase de apoderado (Gerente General)
-      currentStep.value = `[Sociedad ${index + 1}] Paso 8/9: Clase de apoderado...`;
+      currentStep.value = `[Sociedad ${index + 1}] Paso 9/10: Clase de apoderado...`;
       let claseApoderado: any = null;
       const result8 = await executeStep("claseApoderado", "claseApoderado", async () => {
         console.debug(
@@ -588,7 +607,7 @@
       }
 
       // Paso 9: Crear apoderado (Gerente)
-      currentStep.value = `[Sociedad ${index + 1}] Paso 9/9: Gerente...`;
+      currentStep.value = `[Sociedad ${index + 1}] Paso 10/10: Gerente...`;
       if (claseApoderado?.id) {
         testData.apoderado.claseApoderadoId = claseApoderado.id;
         steps.apoderado = await executeStep("apoderado", "apoderado", async () => {
