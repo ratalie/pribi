@@ -45,6 +45,8 @@
     handleCloseModalApoderadoFacultad: handleCloseModalOtroApoderadoFacultad,
     handleSubmitApoderadoFacultad: handleSubmitOtroApoderadoFacultad,
   } = useOtrosApoderadosFacultades();
+
+  useFlowLayoutNext(() => {});
 </script>
 
 <template>

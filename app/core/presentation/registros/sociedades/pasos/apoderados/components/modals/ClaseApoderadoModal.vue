@@ -1,55 +1,43 @@
 <script setup lang="ts">
   import { useVModel } from "@vueuse/core";
-  import { computed, ref, watch } from "vue";
-
+  import { computed } from "vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+  import CardTitle from "~/components/base/cards/CardTitle.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
-  import {
-    claseApoderadoSchema,
-    type ClaseApoderadoForm,
-  } from "../../schemas/claseApoderado.schema";
+  import { claseApoderadoSchema } from "../../schemas/claseApoderado.schema";
 
   interface Props {
     modelValue: boolean;
-    mode?: "create" | "edit";
+    mode?: "crear" | "editar";
     isSaving?: boolean;
-    initialValue?: ClaseApoderadoForm | null;
+    initialValue?: string;
   }
 
   const props = withDefaults(defineProps<Props>(), {
-    mode: "create",
+    mode: "crear",
     isSaving: false,
-    initialValue: null,
+    initialValue: "",
   });
 
   const emit = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
-    (e: "submit", payload: ClaseApoderadoForm): void;
+    (e: "submit", payload: string): void;
     (e: "close"): void;
   }>();
 
   const isOpen = useVModel(props, "modelValue", emit);
-  const formModel = ref<ClaseApoderadoForm>({
-    nombre: "",
+
+  const nombreClase = useVModel(props, "initialValue", emit, {
+    passive: true,
   });
 
-  watch(
-    () => props.initialValue,
-    (value) => {
-      formModel.value = {
-        nombre: value?.nombre ?? "",
-      };
-    },
-    { immediate: true }
-  );
-
   const title = computed(() =>
-    props.mode === "create" ? "Agregar clase de apoderado" : "Editar clase de apoderado"
+    props.mode === "crear" ? "Agregar clase de apoderado" : "Editar clase de apoderado"
   );
 
   const handleSubmit = () => {
-    emit("submit", { ...formModel.value });
+    emit("submit", nombreClase.value);
   };
 
   const handleClose = () => {
@@ -64,7 +52,7 @@
       <CardTitle :title="title" body="Ingresa el nombre de la nueva clase de apoderados." />
 
       <TextInputZod
-        v-model="formModel.nombre"
+        v-model="nombreClase"
         name="clase_nombre"
         label="Nombre de la clase"
         placeholder="Ej. Gerente General"
@@ -81,7 +69,7 @@
           @click="handleClose"
         />
         <ActionButton
-          :label="mode === 'create' ? 'Guardar' : 'Actualizar'"
+          :label="props.mode === 'crear' ? 'Guardar' : 'Actualizar'"
           size="md"
           :is-loading="isSaving"
           type="submit"

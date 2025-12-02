@@ -7,12 +7,10 @@
     TableHeader,
     TableRow,
   } from "@/components/ui/table";
-
-  import { ClasesApoderadoEspecialesEnum } from "../types/enums/ClasesApoderadoEspecialesEnum";
-  import type { ClaseApoderadoRow } from "../types/types";
+  import type { GerenteGeneralRow } from "../types/types";
 
   interface Props {
-    items: ClaseApoderadoRow[];
+    items: GerenteGeneralRow[];
     titleMenu?: string;
     actions: {
       label: string;
@@ -22,7 +20,7 @@
     }[];
   }
 
-  const props = withDefaults(defineProps<Props>(), {
+  withDefaults(defineProps<Props>(), {
     titleMenu: undefined,
   });
 </script>
@@ -35,29 +33,24 @@
           <TableHead
             class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
           >
-            ID
+            Nombre / Razón Social
           </TableHead>
           <TableHead
             class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
           >
-            Clase de Apoderado
+            Tipo de Documento
           </TableHead>
           <TableHead
             class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
           >
-            N.° de apoderados
+            Nº de Documento
           </TableHead>
           <TableHead v-if="actions" class="w-12" />
         </TableRow>
       </TableHeader>
       <TableBody>
         <template v-if="items.length > 0">
-          <TableRow v-for="(item, index) in items" :key="item.id">
-            <TableCell
-              class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
-            >
-              {{ index + 1 }}
-            </TableCell>
+          <TableRow v-for="item in items" :key="item.id">
             <TableCell
               class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
             >
@@ -66,26 +59,27 @@
             <TableCell
               class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
             >
-              {{ item.numeroApoderados }}
+              {{ item.tipoDocumento }}
             </TableCell>
+            <TableCell
+              class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
+            >
+              {{ item.numeroDocumento }}
+            </TableCell>
+
             <!-- Celda de acciones -->
-            <TableCell v-if="props.actions" class="w-auto">
+            <TableCell v-if="actions" class="w-auto">
               <DataTableDropDown
-                v-if="
-                  item.nombre !== ClasesApoderadoEspecialesEnum.GERENTE_GENERAL &&
-                  item.nombre !== ClasesApoderadoEspecialesEnum.OTROS_APODERADOS
-                "
                 :item-id="item.id"
-                :title-menu="props.titleMenu"
-                :actions="props.actions"
+                :title-menu="titleMenu"
+                :actions="actions"
               />
             </TableCell>
           </TableRow>
         </template>
-
         <template v-else>
           <TableRow>
-            <TableCell :colspan="3 + (props.actions ? 1 : 0)" class="h-24">
+            <TableCell :colspan="3 + (actions ? 1 : 0)" class="h-24">
               <EmptyTableMessage />
             </TableCell>
           </TableRow>
