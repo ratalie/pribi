@@ -133,7 +133,13 @@ const primeraModo = computed({
   set: (value: ModoReunion) => {
     ensureConvocatoria('primera');
     if (store.meetingDetails?.primeraConvocatoria) {
-      store.meetingDetails.primeraConvocatoria.modo = value;
+      // ⚠️ Usar patchMeetingDetails para mantener reactividad
+      store.patchMeetingDetails({
+        primeraConvocatoria: {
+          ...store.meetingDetails.primeraConvocatoria,
+          modo: value,
+        },
+      });
     }
   },
 });
@@ -146,7 +152,12 @@ const primeraDireccion = computed({
   set: (value: string) => {
     ensureConvocatoria('primera');
     if (store.meetingDetails?.primeraConvocatoria) {
-      store.meetingDetails.primeraConvocatoria.direccion = value;
+      store.patchMeetingDetails({
+        primeraConvocatoria: {
+          ...store.meetingDetails.primeraConvocatoria,
+          direccion: value,
+        },
+      });
     }
   },
 });
@@ -163,7 +174,12 @@ const primeraFecha = computed({
     if (!value) return;
     ensureConvocatoria('primera');
     if (store.meetingDetails?.primeraConvocatoria) {
-      store.meetingDetails.primeraConvocatoria.fecha = new Date(value);
+      store.patchMeetingDetails({
+        primeraConvocatoria: {
+          ...store.meetingDetails.primeraConvocatoria,
+          fecha: new Date(value),
+        },
+      });
     }
   },
 });
@@ -186,7 +202,12 @@ const primeraHora = computed({
 
     ensureConvocatoria('primera');
     if (store.meetingDetails?.primeraConvocatoria) {
-      store.meetingDetails.primeraConvocatoria.hora = date;
+      store.patchMeetingDetails({
+        primeraConvocatoria: {
+          ...store.meetingDetails.primeraConvocatoria,
+          hora: date,
+        },
+      });
     }
   },
 });
@@ -200,7 +221,12 @@ const segundaModo = computed({
   set: (value: ModoReunion) => {
     ensureConvocatoria('segunda');
     if (store.meetingDetails?.segundaConvocatoria) {
-      store.meetingDetails.segundaConvocatoria.modo = value;
+      store.patchMeetingDetails({
+        segundaConvocatoria: {
+          ...store.meetingDetails.segundaConvocatoria,
+          modo: value,
+        },
+      });
     }
   },
 });
@@ -213,7 +239,12 @@ const segundaDireccion = computed({
   set: (value: string) => {
     ensureConvocatoria('segunda');
     if (store.meetingDetails?.segundaConvocatoria) {
-      store.meetingDetails.segundaConvocatoria.direccion = value;
+      store.patchMeetingDetails({
+        segundaConvocatoria: {
+          ...store.meetingDetails.segundaConvocatoria,
+          direccion: value,
+        },
+      });
     }
   },
 });
@@ -229,7 +260,12 @@ const segundaFecha = computed({
     if (!value) return;
     ensureConvocatoria('segunda');
     if (store.meetingDetails?.segundaConvocatoria) {
-      store.meetingDetails.segundaConvocatoria.fecha = new Date(value);
+      store.patchMeetingDetails({
+        segundaConvocatoria: {
+          ...store.meetingDetails.segundaConvocatoria,
+          fecha: new Date(value),
+        },
+      });
     }
   },
 });
@@ -251,7 +287,12 @@ const segundaHora = computed({
 
     ensureConvocatoria('segunda');
     if (store.meetingDetails?.segundaConvocatoria) {
-      store.meetingDetails.segundaConvocatoria.hora = date;
+      store.patchMeetingDetails({
+        segundaConvocatoria: {
+          ...store.meetingDetails.segundaConvocatoria,
+          hora: date,
+        },
+      });
     }
   },
 });
@@ -265,7 +306,12 @@ const detalleModo = computed({
   set: (value: ModoReunion) => {
     ensureConvocatoria('detalle');
     if (store.meetingDetails?.primeraConvocatoria) {
-      store.meetingDetails.primeraConvocatoria.modo = value;
+      store.patchMeetingDetails({
+        primeraConvocatoria: {
+          ...store.meetingDetails.primeraConvocatoria,
+          modo: value,
+        },
+      });
     }
   },
 });
@@ -278,7 +324,12 @@ const detalleDireccion = computed({
   set: (value: string) => {
     ensureConvocatoria('detalle');
     if (store.meetingDetails?.primeraConvocatoria) {
-      store.meetingDetails.primeraConvocatoria.direccion = value;
+      store.patchMeetingDetails({
+        primeraConvocatoria: {
+          ...store.meetingDetails.primeraConvocatoria,
+          direccion: value,
+        },
+      });
     }
   },
 });
@@ -294,7 +345,12 @@ const detalleFecha = computed({
     if (!value) return;
     ensureConvocatoria('detalle');
     if (store.meetingDetails?.primeraConvocatoria) {
-      store.meetingDetails.primeraConvocatoria.fecha = new Date(value);
+      store.patchMeetingDetails({
+        primeraConvocatoria: {
+          ...store.meetingDetails.primeraConvocatoria,
+          fecha: new Date(value),
+        },
+      });
     }
   },
 });
@@ -316,7 +372,12 @@ const detalleHora = computed({
 
     ensureConvocatoria('detalle');
     if (store.meetingDetails?.primeraConvocatoria) {
-      store.meetingDetails.primeraConvocatoria.hora = date;
+      store.patchMeetingDetails({
+        primeraConvocatoria: {
+          ...store.meetingDetails.primeraConvocatoria,
+          hora: date,
+        },
+      });
     }
   },
 });

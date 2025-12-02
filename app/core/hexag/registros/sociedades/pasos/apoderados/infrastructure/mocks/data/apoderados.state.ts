@@ -117,9 +117,18 @@ export async function updateApoderadoMock(profileId: string, payload: ApoderadoD
 }
 
 export async function deleteApoderadoMock(profileId: string, apoderadoId: string): Promise<void> {
+  console.log('[MSW][ApoderadosState] deleteApoderadoMock', { profileId, apoderadoId });
   const record = await getRecord<StoredApoderado>(APODERADOS_STORE, apoderadoId);
+  console.log('[MSW][ApoderadosState] deleteApoderadoMock:record', record);
+  
   if (record && record.societyProfileId === profileId) {
     await deleteRecord(APODERADOS_STORE, apoderadoId);
+    console.log('[MSW][ApoderadosState] deleteApoderadoMock:deleted', { apoderadoId });
+  } else {
+    console.warn('[MSW][ApoderadosState] deleteApoderadoMock:no-match', { 
+      recordProfileId: record?.societyProfileId, 
+      providedProfileId: profileId 
+    });
   }
 }
 

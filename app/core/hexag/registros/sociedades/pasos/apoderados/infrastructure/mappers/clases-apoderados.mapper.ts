@@ -2,11 +2,22 @@ import type { ClaseApoderadoDTO, ClaseApoderadoResponseDTO } from "../../applica
 import type { ClaseApoderado, ClaseApoderadoPayload } from "../../domain";
 
 export class ClasesApoderadosMapper {
+  /**
+   * Mapea un solo item de respuesta a entidad de dominio
+   */
+  static deRespuestaADominio(response: ClaseApoderadoResponseDTO): ClaseApoderado {
+    return {
+      id: response.id,
+      nombre: response.nombre,
+      apoderados: [], // Los apoderados se cargan por separado
+    };
+  }
+
+  /**
+   * Mapea un array de respuestas a entidades de dominio
+   */
   static deListaRespuestaADominio(response: ClaseApoderadoResponseDTO[]): ClaseApoderado[] {
-    return response.map((item) => ({
-      id: item.id,
-      nombre: item.nombre,
-    }));
+    return response.map((item) => this.deRespuestaADominio(item));
   }
 
   static deEntityAPayload(entity: ClaseApoderado): ClaseApoderadoPayload {

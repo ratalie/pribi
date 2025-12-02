@@ -21,6 +21,7 @@ import LabeledCardSwitch from '~/components/base/Switch/LabeledCardSwitch.vue';
 import Titles from '~/types/enums/Titles.enum';
 import { TipoJunta } from '~/core/hexag/juntas/domain/enums/tipo-junta.enum';
 import { useMeetingDetailsStore } from '~/core/presentation/juntas/stores/meeting-details.store';
+import type { MeetingDetails } from '~/core/hexag/juntas/domain/entities';
 
 const store = useMeetingDetailsStore();
 
@@ -42,15 +43,16 @@ const tipoJuntaValue = computed({
       };
     } else {
       const tipoAnterior = store.meetingDetails.tipoJunta;
-      store.meetingDetails.tipoJunta = value;
+      
+      // ⚠️ IMPORTANTE: Usar patchMeetingDetails para mantener reactividad
+      const updates: Partial<MeetingDetails> = { tipoJunta: value };
 
-      // ⚠️ IMPORTANTE: Si cambia de GENERAL a UNIVERSAL, limpiar segundaConvocatoria
+      // Si cambia de GENERAL a UNIVERSAL, limpiar segundaConvocatoria
       // El backend rechaza segundaConvocatoria para Universal
       if (tipoAnterior === TipoJunta.GENERAL && value === TipoJunta.UNIVERSAL) {
         console.log("🧹 [TipoJuntaSection] Limpiando segundaConvocatoria al cambiar a Universal");
-        store.meetingDetails.segundaConvocatoria = undefined;
-        // También limpiar instaladaEnConvocatoria (solo aplica para General)
-        store.meetingDetails.instaladaEnConvocatoria = undefined;
+        updates.segundaConvocatoria = undefined;
+        updates.instaladaEnConvocatoria = undefined;
       }
 
       // Si cambia de UNIVERSAL a GENERAL, asegurar que no haya segundaConvocatoria inicialmente
@@ -58,6 +60,8 @@ const tipoJuntaValue = computed({
         console.log("🔄 [TipoJuntaSection] Cambiando de Universal a General");
         // No limpiar primeraConvocatoria, puede reutilizarse como primera convocatoria
       }
+
+      store.patchMeetingDetails(updates);
     }
   },
 });

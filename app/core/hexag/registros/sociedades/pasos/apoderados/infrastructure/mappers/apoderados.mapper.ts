@@ -3,12 +3,22 @@ import type { ApoderadoResponseDTO } from "../../application/dtos/apoderado-resp
 import type { Apoderado, ApoderadoPayload } from "../../domain";
 
 export class ApoderadosMapper {
+  /**
+   * Mapea un solo item de respuesta a entidad de dominio
+   */
+  static deRespuestaADominio(response: ApoderadoResponseDTO): Apoderado {
+    return {
+      id: response.id,
+      claseApoderadoId: response.claseApoderadoId,
+      persona: response.persona,
+    };
+  }
+
+  /**
+   * Mapea un array de respuestas a entidades de dominio
+   */
   static deListaRespuestaADominio(response: ApoderadoResponseDTO[]): Apoderado[] {
-    return response.map((item) => ({
-      id: item.id,
-      claseApoderadoId: item.claseApoderadoId,
-      persona: item.persona,
-    }));
+    return response.map((item) => this.deRespuestaADominio(item));
   }
 
   static deEntityAPayload(entity: Apoderado): ApoderadoPayload {

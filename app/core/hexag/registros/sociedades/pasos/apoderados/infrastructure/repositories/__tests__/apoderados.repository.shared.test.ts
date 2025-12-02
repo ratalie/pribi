@@ -88,15 +88,17 @@ describe.each([
       it("debe crear una clase de apoderado", async () => {
         const claseDTO = createClaseApoderadoDTO();
 
-        const result = await repository.createClase(societyId, claseDTO);
+        // Crear (no retorna nada, solo confirma éxito)
+        await repository.createClase(societyId, claseDTO);
 
-        expect(result).toBeDefined();
-        expect(result.nombre).toBe(claseDTO.nombre);
-        // El HTTP repository puede no incluir apoderados en la respuesta inicial
-        // Verificamos que al menos tenga el nombre correcto
-        if (result.apoderados !== undefined) {
-          expect(result.apoderados).toEqual([]);
-        }
+        // Verificar que se creó correctamente obteniendo la lista
+        const clases = await repository.listClases(societyId);
+        expect(clases.length).toBeGreaterThan(0);
+        
+        const claseCreada = clases.find((c) => c.nombre === claseDTO.nombre);
+        expect(claseCreada).toBeDefined();
+        expect(claseCreada!.nombre).toBe(claseDTO.nombre);
+        expect(claseCreada!.apoderados).toEqual([]);
       });
     });
 
@@ -104,17 +106,28 @@ describe.each([
       it("debe actualizar una clase de apoderado existente", async () => {
         const claseDTO = createClaseApoderadoDTO();
 
-        const created = await repository.createClase(societyId, claseDTO);
+        // Crear
+        await repository.createClase(societyId, claseDTO);
+
+        // Obtener la clase creada para tener su ID
+        let clases = await repository.listClases(societyId);
+        const created = clases.find((c) => c.nombre === claseDTO.nombre);
+        expect(created).toBeDefined();
 
         // Actualizar
         const updatedDTO: ClaseApoderadoDTO = {
           ...claseDTO,
-          id: created.id,
+          id: created!.id,
           nombre: "Gerente General Actualizado",
         };
 
-        const updated = await repository.updateClase(societyId, updatedDTO);
-        expect(updated.nombre).toBe("Gerente General Actualizado");
+        await repository.updateClase(societyId, updatedDTO);
+
+        // Verificar actualización
+        clases = await repository.listClases(societyId);
+        const updated = clases.find((c) => c.id === created!.id);
+        expect(updated).toBeDefined();
+        expect(updated?.nombre).toBe("Gerente General Actualizado");
       });
     });
 
@@ -122,18 +135,20 @@ describe.each([
       it("debe eliminar una clase de apoderado", async () => {
         const claseDTO = createClaseApoderadoDTO();
 
-        const created = await repository.createClase(societyId, claseDTO);
+        // Crear
+        await repository.createClase(societyId, claseDTO);
 
-        // Verificar que existe
+        // Obtener la clase creada para tener su ID
         let clases = await repository.listClases(societyId);
-        expect(clases.find((c) => c.id === created.id)).toBeDefined();
+        const created = clases.find((c) => c.nombre === claseDTO.nombre);
+        expect(created).toBeDefined();
 
         // Eliminar
-        await repository.deleteClase(societyId, created.id);
+        await repository.deleteClase(societyId, created!.id);
 
         // Verificar eliminación
         clases = await repository.listClases(societyId);
-        expect(clases.find((c) => c.id === created.id)).toBeUndefined();
+        expect(clases.find((c) => c.id === created!.id)).toBeUndefined();
       });
     });
   });
@@ -151,15 +166,25 @@ describe.each([
       it("debe crear un apoderado", async () => {
         // Crear clase primero
         const claseDTO = createClaseApoderadoDTO();
-        const clase = await repository.createClase(societyId, claseDTO);
+        await repository.createClase(societyId, claseDTO);
+
+        // Obtener la clase creada para tener su ID
+        const clases = await repository.listClases(societyId);
+        const clase = clases.find((c) => c.nombre === claseDTO.nombre);
+        expect(clase).toBeDefined();
 
         // Crear apoderado
-        const apoderadoDTO = createApoderadoDTO(clase.id);
-        const result = await repository.createApoderado(societyId, apoderadoDTO);
+        const apoderadoDTO = createApoderadoDTO(clase!.id);
+        await repository.createApoderado(societyId, apoderadoDTO);
 
+        // Verificar que se creó correctamente
+        const apoderados = await repository.listApoderados(societyId);
+        expect(apoderados.length).toBeGreaterThan(0);
+        
+        const result = apoderados[0];
         expect(result).toBeDefined();
         expect(result.id).toBeDefined();
-        expect(result.claseApoderadoId).toBe(clase.id);
+        expect(result.claseApoderadoId).toBe(clase!.id);
         if (isPersonaNatural(result.persona) && isPersonaNatural(apoderadoDTO.persona)) {
           expect(result.persona.nombre).toBe(apoderadoDTO.persona.nombre);
           expect(result.persona.apellidoPaterno).toBe(apoderadoDTO.persona.apellidoPaterno);
@@ -171,9 +196,21 @@ describe.each([
       it("debe actualizar un apoderado existente", async () => {
         // Crear clase y apoderado
         const claseDTO = createClaseApoderadoDTO();
-        const clase = await repository.createClase(societyId, claseDTO);
-        const apoderadoDTO = createApoderadoDTO(clase.id);
-        const created = await repository.createApoderado(societyId, apoderadoDTO);
+        await repository.createClase(societyId, claseDTO);
+
+        // Obtener la clase creada
+        const clases = await repository.listClases(societyId);
+        const clase = clases.find((c) => c.nombre === claseDTO.nombre);
+        expect(clase).toBeDefined();
+
+        // Crear apoderado
+        const apoderadoDTO = createApoderadoDTO(clase!.id);
+        await repository.createApoderado(societyId, apoderadoDTO);
+
+        // Obtener el apoderado creado
+        let apoderados = await repository.listApoderados(societyId);
+        const created = apoderados[0];
+        expect(created).toBeDefined();
 
         // Actualizar
         const updatedDTO: ApoderadoDTO = {
@@ -185,9 +222,14 @@ describe.each([
           } as any,
         };
 
-        const updated = await repository.updateApoderado(societyId, updatedDTO);
-        if (isPersonaNatural(updated.persona)) {
-          expect(updated.persona.nombre).toBe("Roberto Actualizado");
+        await repository.updateApoderado(societyId, updatedDTO);
+
+        // Verificar actualización
+        apoderados = await repository.listApoderados(societyId);
+        const updated = apoderados.find((a) => a.id === created.id);
+        expect(updated).toBeDefined();
+        if (isPersonaNatural(updated!.persona)) {
+          expect(updated!.persona.nombre).toBe("Roberto Actualizado");
         }
       });
     });
@@ -196,16 +238,24 @@ describe.each([
       it("debe eliminar un apoderado", async () => {
         // Crear clase y apoderado
         const claseDTO = createClaseApoderadoDTO();
-        const clase = await repository.createClase(societyId, claseDTO);
-        const apoderadoDTO = createApoderadoDTO(clase.id);
-        const created = await repository.createApoderado(societyId, apoderadoDTO);
+        await repository.createClase(societyId, claseDTO);
 
-        // Verificar que existe
+        // Obtener la clase creada
+        const clases = await repository.listClases(societyId);
+        const clase = clases.find((c) => c.nombre === claseDTO.nombre);
+        expect(clase).toBeDefined();
+
+        // Crear apoderado
+        const apoderadoDTO = createApoderadoDTO(clase!.id);
+        await repository.createApoderado(societyId, apoderadoDTO);
+
+        // Obtener el apoderado creado
         let apoderados = await repository.listApoderados(societyId);
-        expect(apoderados.find((a) => a.id === created.id)).toBeDefined();
+        const created = apoderados[0];
+        expect(created).toBeDefined();
 
         // Eliminar
-        await repository.deleteApoderado(societyId, clase.id, created.id);
+        await repository.deleteApoderado(societyId, created.id);
 
         // Verificar eliminación
         apoderados = await repository.listApoderados(societyId);
@@ -218,19 +268,21 @@ describe.each([
     it("debe permitir crear, listar, actualizar y eliminar clases y apoderados", async () => {
       // Crear clase
       const claseDTO = createClaseApoderadoDTO();
-      const clase = await repository.createClase(societyId, claseDTO);
+      await repository.createClase(societyId, claseDTO);
 
       // Listar clases
       let clases = await repository.listClases(societyId);
       expect(clases.length).toBe(1);
+      const clase = clases[0];
 
       // Crear apoderado
       const apoderadoDTO = createApoderadoDTO(clase.id);
-      const apoderado = await repository.createApoderado(societyId, apoderadoDTO);
+      await repository.createApoderado(societyId, apoderadoDTO);
 
       // Listar apoderados
       let apoderados = await repository.listApoderados(societyId);
       expect(apoderados.length).toBe(1);
+      const apoderado = apoderados[0];
 
       // Actualizar apoderado
       const updatedDTO: ApoderadoDTO = {
@@ -241,13 +293,18 @@ describe.each([
           nombre: "Roberto Actualizado",
         } as any,
       };
-      const updated = await repository.updateApoderado(societyId, updatedDTO);
-      if (isPersonaNatural(updated.persona)) {
-        expect(updated.persona.nombre).toBe("Roberto Actualizado");
+      await repository.updateApoderado(societyId, updatedDTO);
+
+      // Verificar actualización
+      apoderados = await repository.listApoderados(societyId);
+      const updated = apoderados.find((a) => a.id === apoderado.id);
+      expect(updated).toBeDefined();
+      if (isPersonaNatural(updated!.persona)) {
+        expect(updated!.persona.nombre).toBe("Roberto Actualizado");
       }
 
       // Eliminar apoderado
-      await repository.deleteApoderado(societyId, clase.id, apoderado.id);
+      await repository.deleteApoderado(societyId, apoderado.id);
       apoderados = await repository.listApoderados(societyId);
       expect(apoderados.length).toBe(0);
 

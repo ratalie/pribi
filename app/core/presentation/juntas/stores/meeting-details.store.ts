@@ -106,6 +106,20 @@ export const useMeetingDetailsStore = defineStore('meeting-details', {
     },
 
     /**
+     * Actualiza parcialmente los detalles de la junta de forma reactiva
+     * Esto mantiene la reactividad de Pinia cuando navegas entre páginas
+     */
+    patchMeetingDetails(updates: Partial<MeetingDetails>) {
+      if (!this.meetingDetails) {
+        console.warn('[Store][MeetingDetails] No hay meetingDetails para actualizar');
+        return;
+      }
+      
+      // Usar Object.assign para mantener la reactividad
+      Object.assign(this.meetingDetails, updates);
+    },
+
+    /**
      * Limpia el estado del store
      */
     clear() {

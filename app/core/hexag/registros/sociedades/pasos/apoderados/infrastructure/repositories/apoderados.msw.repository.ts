@@ -26,12 +26,14 @@ export class ApoderadosMswRepository implements ApoderadosRepository {
     return await listClasesMock(profileId);
   }
 
-  async createClase(profileId: string, payload: ClaseApoderadoDTO): Promise<ClaseApoderado> {
-    return await createClaseMock(profileId, payload);
+  async createClase(profileId: string, payload: ClaseApoderadoDTO): Promise<void> {
+    await createClaseMock(profileId, payload);
+    // ⚠️ HTTP repository no retorna la clase creada, solo confirma éxito
   }
 
-  async updateClase(profileId: string, payload: ClaseApoderadoDTO): Promise<ClaseApoderado> {
-    return await updateClaseMock(profileId, payload);
+  async updateClase(profileId: string, payload: ClaseApoderadoDTO): Promise<void> {
+    await updateClaseMock(profileId, payload);
+    // ⚠️ HTTP repository no retorna nada, solo confirma éxito
   }
 
   async deleteClase(profileId: string, claseId: string): Promise<void> {
@@ -42,15 +44,17 @@ export class ApoderadosMswRepository implements ApoderadosRepository {
     return await listApoderadosMock(profileId);
   }
 
-  async createApoderado(profileId: string, payload: ApoderadoDTO): Promise<Apoderado> {
-    return await createApoderadoMock(profileId, payload);
+  async createApoderado(profileId: string, payload: ApoderadoDTO): Promise<void> {
+    await createApoderadoMock(profileId, payload);
+    // ⚠️ HTTP repository no retorna el apoderado creado, solo confirma éxito
   }
 
-  async updateApoderado(profileId: string, payload: ApoderadoDTO): Promise<Apoderado> {
-    return await updateApoderadoMock(profileId, payload);
+  async updateApoderado(profileId: string, payload: ApoderadoDTO): Promise<void> {
+    await updateApoderadoMock(profileId, payload);
+    // ⚠️ HTTP repository no retorna nada, solo confirma éxito
   }
 
-  async deleteApoderado(profileId: string, claseId: string, apoderadoId: string): Promise<void> {
+  async deleteApoderado(profileId: string, apoderadoId: string): Promise<void> {
     await deleteApoderadoMock(profileId, apoderadoId);
   }
 }
