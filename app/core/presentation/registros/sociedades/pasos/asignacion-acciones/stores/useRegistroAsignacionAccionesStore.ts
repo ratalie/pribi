@@ -1,25 +1,35 @@
 import { defineStore } from "pinia";
 import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
+import {
+  CreateAsignacionAccionUseCase,
+  DeleteAsignacionAccionUseCase,
+  GetAsignacionAccionUseCase,
+  UpdateAsignacionAccionUseCase,
+} from "~/core/hexag/registros/sociedades/pasos/asignacion-acciones/application";
+import { AsignacionAccionHttpRepository } from "~/core/hexag/registros/sociedades/pasos/asignacion-acciones/infrastructure";
 import { useRegistroAccionistasStore } from "../../../../../../../modules/registro-sociedades/stores/useRegistroAccionistasStore";
 import { useRegistroAccionesStore } from "../../acciones/stores/useRegistroAccionesStore";
 import { useValorNominalStore } from "../../acciones/stores/useValorNominalStore";
+import { AsignacionAccionPresentationMapper } from "../mappers/asignacion-accion-presentation.mapper";
 import type {
   AccionDisponible,
   AsignacionAccionista,
   AsignacionAccionistaTableRow,
 } from "../types/asignacion-acciones";
 
+// Instancias de repository y use cases
+const repository = new AsignacionAccionHttpRepository();
+const getUseCase = new GetAsignacionAccionUseCase(repository);
+const createUseCase = new CreateAsignacionAccionUseCase(repository);
+const updateUseCase = new UpdateAsignacionAccionUseCase(repository);
+const deleteUseCase = new DeleteAsignacionAccionUseCase(repository);
+
 interface State {
   asignaciones: AsignacionAccionista[];
+  // Mapa para guardar accionId cuando el backend no lo devuelve
+  // Key: asignacionId, Value: accionId
+  asignacionAccionIdMap: Map<string, string>;
 }
-
-const generateId = () => {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
-  }
-
-  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-};
 
 /**
  * Obtiene el nombre de la acción para mostrar en la UI según su tipo
@@ -40,36 +50,10 @@ const getNombreAccionParaUI = (tipo: TipoAccionEnum, nombreAccion: string): stri
   }
 };
 
-/**
- * Obtiene posibles nombres que puede tener una acción en las asignaciones
- * Esto ayuda a buscar las acciones asignadas correctamente
- */
-const getNombresPosiblesParaBusqueda = (
-  tipo: TipoAccionEnum,
-  nombreAccion: string
-): string[] => {
-  const nombres: string[] = [nombreAccion]; // Siempre incluir el nombre original
-
-  switch (tipo) {
-    case TipoAccionEnum.COMUN:
-      // Las acciones comunes pueden estar guardadas como "Comunes" o "Acciones comunes"
-      nombres.push("Comunes", "Acciones comunes", "comunes");
-      break;
-    case TipoAccionEnum.SIN_DERECHO_A_VOTO:
-      // Las preferentes sin voto pueden estar guardadas de varias formas
-      nombres.push("Preferentes sin voto", "Preferentes", "Sin derecho a voto");
-      break;
-    case TipoAccionEnum.CLASES:
-      // Para clases, solo usar el nombre original (ej: "Clase A")
-      break;
-  }
-
-  return nombres;
-};
-
 export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacionAcciones", {
   state: (): State => ({
     asignaciones: [],
+    asignacionAccionIdMap: new Map<string, string>(),
   }),
 
   getters: {
@@ -117,12 +101,10 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
           accionista: asignacion.accionista,
           tipos: tiposText,
           acciones: asignacion.acciones.map((accion) => {
-            // Buscar la acción registrada que coincida con el nombre
-            const accionRegistrada = accionesRegistradas.find(
-              (a) => a.nombreAccion === accion.tipoAccion
-            );
+            // Buscar la acción registrada que coincida con el ID
+            const accionRegistrada = accionesRegistradas.find((a) => a.id === accion.accionId);
 
-            let claseFormateada = accion.tipoAccion;
+            let claseFormateada = "Acción desconocida";
 
             // Si encontramos la acción registrada, usar su tipo para formatear
             if (accionRegistrada) {
@@ -130,26 +112,12 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
                 accionRegistrada.tipo,
                 accionRegistrada.nombreAccion
               );
-            } else {
-              // Si no encontramos la acción registrada, intentar inferir el tipo por el nombre
-              // Esto es útil para datos legacy o hardcodeados
-              const nombreLower = accion.tipoAccion.toLowerCase();
-
-              if (nombreLower.includes("comun") || nombreLower === "comunes") {
-                claseFormateada = "Comunes";
-              } else if (
-                nombreLower.includes("preferente") ||
-                nombreLower.includes("sin derecho") ||
-                nombreLower.includes("no voto")
-              ) {
-                claseFormateada = "Preferentes sin voto";
-              }
-              // Si empieza con "Clase" o parece ser una clase, mantener el nombre original
             }
 
             return {
+              id: accion.id, // ID de la asignación necesario para editar/eliminar
               clase: claseFormateada,
-              acciones: accion.cantidadAcciones,
+              acciones: accion.cantidadSuscrita,
               porcentaje: accion.porcentaje,
             };
           }),
@@ -166,8 +134,8 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
       const accionesAsignadasPorTipo = new Map<string, number>();
       state.asignaciones.forEach((asignacion) => {
         asignacion.acciones.forEach((accion) => {
-          const actual = accionesAsignadasPorTipo.get(accion.tipoAccion) || 0;
-          accionesAsignadasPorTipo.set(accion.tipoAccion, actual + accion.cantidadAcciones);
+          const actual = accionesAsignadasPorTipo.get(accion.accionId) || 0;
+          accionesAsignadasPorTipo.set(accion.accionId, actual + accion.cantidadSuscrita);
         });
       });
 
@@ -176,20 +144,7 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
         return accionesRegistradas.map((accion) => {
           // Obtener el nombre correcto según el tipo de acción
           const nombreParaUI = getNombreAccionParaUI(accion.tipo, accion.nombreAccion);
-
-          // Buscar acciones asignadas por todos los nombres posibles
-          const nombresPosibles = getNombresPosiblesParaBusqueda(
-            accion.tipo,
-            accion.nombreAccion
-          );
-          let accionesAsignadas = 0;
-
-          for (const nombre of nombresPosibles) {
-            const encontradas = accionesAsignadasPorTipo.get(nombre);
-            if (encontradas !== undefined) {
-              accionesAsignadas += encontradas;
-            }
-          }
+          const accionesAsignadas = accionesAsignadasPorTipo.get(accion.id) || 0;
 
           return {
             id: accion.id,
@@ -242,7 +197,7 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
       let total = 0;
       state.asignaciones.forEach((asignacion) => {
         asignacion.acciones.forEach((accion) => {
-          total += accion.cantidadAcciones;
+          total += accion.cantidadSuscrita;
         });
       });
       return total;
@@ -259,7 +214,7 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
       let totalAsignadas = 0;
       state.asignaciones.forEach((asignacion) => {
         asignacion.acciones.forEach((accion) => {
-          totalAsignadas += accion.cantidadAcciones;
+          totalAsignadas += accion.cantidadSuscrita;
         });
       });
       return totalAsignadas * (valorNominalStore.valor || 0);
@@ -267,15 +222,122 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
   },
 
   actions: {
-    // Agregar una asignación de acción a un accionista
-    addAsignacionAccion(
-      accionistaId: string,
-      payload: Omit<AsignacionAccionista["acciones"][0], "id" | "accionistaId" | "accionista">
-    ) {
-      const asignacion = this.asignaciones.find((a) => a.id === accionistaId);
+    /**
+     * Carga las asignaciones desde el backend
+     */
+    async loadAsignaciones(societyProfileId: string) {
+      try {
+        const entities = await getUseCase.execute(societyProfileId);
+        if (!entities || entities.length === 0) {
+          this.asignaciones = [];
+          return;
+        }
 
-      if (!asignacion) {
-        // Si el accionista no existe, obtener el nombre desde el store de accionistas
+        // Obtener nombres de accionistas
+        const registroAccionistasStore = useRegistroAccionistasStore();
+        const accionistaNombreMap = new Map<string, string>();
+
+        registroAccionistasStore.accionistas.forEach((accionista) => {
+          let nombre = "Accionista desconocido";
+          if (accionista.tipoAccionista === "natural") {
+            nombre = `${accionista.nombre} ${accionista.apellidoPaterno} ${accionista.apellidoMaterno}`;
+          } else if (accionista.tipoAccionista === "juridica") {
+            nombre = accionista.razonSocial;
+          } else if (accionista.tipoAccionista === "sucursal") {
+            nombre = accionista.nombreSucursal;
+          } else if (accionista.tipoAccionista === "fideicomisos") {
+            nombre = accionista.identificacionFideicomiso;
+          } else {
+            nombre = accionista.razonSocial || "Accionista desconocido";
+          }
+          accionistaNombreMap.set(accionista.id, nombre);
+        });
+
+        // Convertir entities a formato del store
+        const asignacionesStore = AsignacionAccionPresentationMapper.domainListToStore(
+          entities,
+          accionistaNombreMap
+        );
+
+        // Si alguna asignación no tiene accionId, intentar obtenerlo del mapa local
+        asignacionesStore.forEach((asignacion) => {
+          if (!asignacion.accionId || asignacion.accionId.trim() === "") {
+            const accionIdFromMap = this.asignacionAccionIdMap.get(asignacion.id);
+            if (accionIdFromMap) {
+              asignacion.accionId = accionIdFromMap;
+              console.log(
+                `[loadAsignaciones] ✅ Recuperado accionId del mapa local para asignación ${asignacion.id}: ${accionIdFromMap}`
+              );
+            } else {
+              console.warn(
+                `[loadAsignaciones] ⚠️ Asignación ${asignacion.id} no tiene accionId y no está en el mapa local`,
+                asignacion
+              );
+            }
+          } else {
+            // Si tiene accionId, guardarlo en el mapa para futuras referencias
+            this.asignacionAccionIdMap.set(asignacion.id, asignacion.accionId);
+          }
+        });
+
+        // Agrupar por accionista
+        const asignacionesPorAccionista = new Map<string, AsignacionAccionista>();
+
+        asignacionesStore.forEach((accion) => {
+          let asignacion = asignacionesPorAccionista.get(accion.accionistaId);
+          if (!asignacion) {
+            asignacion = {
+              id: accion.accionistaId,
+              accionista: accion.accionista,
+              acciones: [],
+            };
+            asignacionesPorAccionista.set(accion.accionistaId, asignacion);
+          }
+          asignacion.acciones.push(accion);
+        });
+
+        // Convertir Map a Array
+        this.asignaciones = Array.from(asignacionesPorAccionista.values());
+
+        // Recalcular porcentajes
+        this.recalculatePorcentajes();
+      } catch (error) {
+        console.error(
+          "[useRegistroAsignacionAccionesStore] Error al cargar asignaciones:",
+          error
+        );
+        this.asignaciones = [];
+        throw error;
+      }
+    },
+
+    /**
+     * Crea una nueva asignación de acción en el backend y la agrega al estado local
+     */
+    async addAsignacionAccion(
+      societyProfileId: string,
+      accionistaId: string,
+      payload: Omit<
+        AsignacionAccionista["acciones"][0],
+        "id" | "accionistaId" | "accionista" | "porcentaje"
+      >
+    ) {
+      try {
+        // Validar que accionId esté presente
+        if (!payload.accionId || payload.accionId.trim() === "") {
+          throw new Error("El accionId es requerido para crear una asignación");
+        }
+
+        // Convertir payload del store a DTO
+        const dto = AsignacionAccionPresentationMapper.storeToDTOCreate({
+          ...payload,
+          accionistaId,
+        });
+
+        // Crear en el backend
+        const entity = await createUseCase.execute(societyProfileId, dto);
+
+        // Obtener nombre del accionista
         const registroAccionistasStore = useRegistroAccionistasStore();
         const accionista = registroAccionistasStore.accionistas.find(
           (a) => a.id === accionistaId
@@ -283,7 +345,6 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
         let accionistaNombre = "Accionista desconocido";
 
         if (accionista) {
-          // Obtener el nombre según el tipo de accionista
           if (accionista.tipoAccionista === "natural") {
             accionistaNombre = `${accionista.nombre} ${accionista.apellidoPaterno} ${accionista.apellidoMaterno}`;
           } else if (accionista.tipoAccionista === "juridica") {
@@ -297,128 +358,149 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
           }
         }
 
-        const nuevoAccionista: AsignacionAccionista = {
-          id: accionistaId,
-          accionista: accionistaNombre,
-          acciones: [
-            {
-              id: generateId(),
-              accionistaId,
-              accionista: accionistaNombre,
-              tipoAccion: payload.tipoAccion,
-              cantidadAcciones: payload.cantidadAcciones,
-              porcentaje: payload.porcentaje,
-              precioAccion: payload.precioAccion ?? 0,
-              capitalSocial: payload.capitalSocial ?? 0,
-              prima: payload.prima ?? 0,
-              totalmentePagado: payload.totalmentePagado ?? false,
-              porcentajePagado: payload.porcentajePagado ?? 0,
-              dividendoPasivo: payload.dividendoPasivo ?? 0,
-            },
-          ],
+        // Guardar el accionId en el mapa local (el backend no lo devuelve)
+        if (payload.accionId) {
+          this.asignacionAccionIdMap.set(entity.id, payload.accionId);
+        }
+
+        // Convertir entity a formato del store
+        // Si el backend no devolvió accionId, usar el del payload
+        const entityWithAccionId = {
+          ...entity,
+          accionId:
+            entity.accionId ||
+            payload.accionId ||
+            this.asignacionAccionIdMap.get(entity.id) ||
+            "",
         };
-        this.asignaciones.push(nuevoAccionista);
+        const accionStore = AsignacionAccionPresentationMapper.domainToStore(
+          entityWithAccionId,
+          accionistaNombre
+        );
+
+        // Buscar o crear asignación del accionista
+        let asignacion = this.asignaciones.find((a) => a.id === accionistaId);
+        if (!asignacion) {
+          asignacion = {
+            id: accionistaId,
+            accionista: accionistaNombre,
+            acciones: [],
+          };
+          this.asignaciones.push(asignacion);
+        }
+
+        // Verificar si ya existe una asignación de este tipo de acción
+        const accionExistente = asignacion.acciones.find(
+          (a) => a.accionId === payload.accionId
+        );
+
+        if (accionExistente) {
+          // Actualizar la asignación existente con los datos del backend
+          Object.assign(accionExistente, accionStore);
+        } else {
+          // Agregar nueva asignación
+          asignacion.acciones.push(accionStore);
+        }
+
+        // Recalcular porcentajes
         this.recalculatePorcentajes();
-        return;
+      } catch (error) {
+        console.error(
+          "[useRegistroAsignacionAccionesStore] Error al crear asignación:",
+          error
+        );
+        throw error;
       }
-
-      // Verificar si ya existe una asignación de este tipo de acción
-      const accionExistente = asignacion.acciones.find(
-        (a) => a.tipoAccion === payload.tipoAccion
-      );
-
-      if (accionExistente) {
-        // Actualizar la asignación existente
-        accionExistente.cantidadAcciones = payload.cantidadAcciones;
-        accionExistente.porcentaje = payload.porcentaje;
-        if (payload.precioAccion !== undefined)
-          accionExistente.precioAccion = payload.precioAccion;
-        if (payload.capitalSocial !== undefined)
-          accionExistente.capitalSocial = payload.capitalSocial;
-        if (payload.prima !== undefined) accionExistente.prima = payload.prima;
-        if (payload.totalmentePagado !== undefined)
-          accionExistente.totalmentePagado = payload.totalmentePagado;
-        if (payload.porcentajePagado !== undefined)
-          accionExistente.porcentajePagado = payload.porcentajePagado;
-        if (payload.dividendoPasivo !== undefined)
-          accionExistente.dividendoPasivo = payload.dividendoPasivo;
-      } else {
-        // Agregar nueva asignación
-        asignacion.acciones.push({
-          id: generateId(),
-          accionistaId,
-          accionista: asignacion.accionista,
-          tipoAccion: payload.tipoAccion,
-          cantidadAcciones: payload.cantidadAcciones,
-          porcentaje: payload.porcentaje,
-          precioAccion: payload.precioAccion ?? 0,
-          capitalSocial: payload.capitalSocial ?? 0,
-          prima: payload.prima ?? 0,
-          totalmentePagado: payload.totalmentePagado ?? false,
-          porcentajePagado: payload.porcentajePagado ?? 0,
-          dividendoPasivo: payload.dividendoPasivo ?? 0,
-        });
-      }
-
-      this.recalculatePorcentajes();
     },
 
-    // Actualizar una asignación de acción específica
-    updateAsignacionAccion(
+    /**
+     * Actualiza una asignación de acción en el backend y en el estado local
+     */
+    async updateAsignacionAccion(
+      societyProfileId: string,
       accionistaId: string,
       accionId: string,
       payload: Partial<
-        Omit<AsignacionAccionista["acciones"][0], "id" | "accionistaId" | "accionista">
+        Omit<
+          AsignacionAccionista["acciones"][0],
+          "id" | "accionistaId" | "accionista" | "porcentaje"
+        >
       >
     ) {
-      const asignacion = this.asignaciones.find((a) => a.id === accionistaId);
+      try {
+        const asignacion = this.asignaciones.find((a) => a.id === accionistaId);
+        if (!asignacion) {
+          throw new Error(`No se encontró la asignación para el accionista ${accionistaId}`);
+        }
 
-      if (!asignacion) {
-        return;
+        const accion = asignacion.acciones.find((a) => a.id === accionId);
+        if (!accion) {
+          throw new Error(
+            `No se encontró la acción ${accionId} para el accionista ${accionistaId}`
+          );
+        }
+
+        // Combinar datos existentes con los nuevos
+        const accionActualizada = {
+          ...accion,
+          ...payload,
+        };
+
+        // Convertir a DTO
+        const dto = AsignacionAccionPresentationMapper.storeToDTO(accionActualizada);
+
+        // Actualizar en el backend
+        const entity = await updateUseCase.execute(societyProfileId, accionId, dto);
+
+        // Actualizar en el estado local con los datos del backend
+        Object.assign(
+          accion,
+          AsignacionAccionPresentationMapper.domainToStore(entity, accion.accionista)
+        );
+
+        // Recalcular porcentajes
+        this.recalculatePorcentajes();
+      } catch (error) {
+        console.error(
+          "[useRegistroAsignacionAccionesStore] Error al actualizar asignación:",
+          error
+        );
+        throw error;
       }
-
-      const accion = asignacion.acciones.find((a) => a.id === accionId);
-
-      if (!accion) {
-        return;
-      }
-
-      // Actualizar solo los campos proporcionados
-      if (payload.tipoAccion !== undefined) accion.tipoAccion = payload.tipoAccion;
-      if (payload.cantidadAcciones !== undefined)
-        accion.cantidadAcciones = payload.cantidadAcciones;
-      if (payload.precioAccion !== undefined) accion.precioAccion = payload.precioAccion;
-      if (payload.capitalSocial !== undefined) accion.capitalSocial = payload.capitalSocial;
-      if (payload.prima !== undefined) accion.prima = payload.prima;
-      if (payload.totalmentePagado !== undefined)
-        accion.totalmentePagado = payload.totalmentePagado;
-      if (payload.porcentajePagado !== undefined)
-        accion.porcentajePagado = payload.porcentajePagado;
-      if (payload.dividendoPasivo !== undefined)
-        accion.dividendoPasivo = payload.dividendoPasivo;
-      // El porcentaje se recalcula automáticamente, pero si se proporciona, usarlo
-      if (payload.porcentaje !== undefined) accion.porcentaje = payload.porcentaje;
-
-      // Recalcular porcentajes después de actualizar (esto sobrescribirá el porcentaje si se proporcionó)
-      this.recalculatePorcentajes();
     },
 
-    // Eliminar una asignación de acción específica
-    removeAsignacionAccion(accionistaId: string, accionId: string) {
-      const asignacion = this.asignaciones.find((a) => a.id === accionistaId);
+    /**
+     * Elimina una asignación de acción del backend y del estado local
+     */
+    async removeAsignacionAccion(
+      societyProfileId: string,
+      accionistaId: string,
+      accionId: string
+    ) {
+      try {
+        // Eliminar en el backend
+        await deleteUseCase.execute(societyProfileId, accionId);
 
-      if (!asignacion) {
-        return;
+        // Eliminar del estado local
+        const asignacion = this.asignaciones.find((a) => a.id === accionistaId);
+        if (asignacion) {
+          asignacion.acciones = asignacion.acciones.filter((a) => a.id !== accionId);
+
+          // Si el accionista ya no tiene acciones, eliminarlo
+          if (asignacion.acciones.length === 0) {
+            this.asignaciones = this.asignaciones.filter((a) => a.id !== accionistaId);
+          }
+        }
+
+        // Recalcular porcentajes
+        this.recalculatePorcentajes();
+      } catch (error) {
+        console.error(
+          "[useRegistroAsignacionAccionesStore] Error al eliminar asignación:",
+          error
+        );
+        throw error;
       }
-
-      asignacion.acciones = asignacion.acciones.filter((a) => a.id !== accionId);
-
-      // Si el accionista ya no tiene acciones, eliminarlo
-      if (asignacion.acciones.length === 0) {
-        this.asignaciones = this.asignaciones.filter((a) => a.id !== accionistaId);
-      }
-
-      this.recalculatePorcentajes();
     },
 
     // Obtener asignación por ID de accionista
@@ -473,8 +555,11 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
       // Recalcular porcentajes para cada asignación
       this.asignaciones.forEach((asignacion) => {
         asignacion.acciones.forEach((accion) => {
-          const totalTipo = totalesPorTipo.get(accion.tipoAccion) || 1;
-          accion.porcentaje = (accion.cantidadAcciones / totalTipo) * 100;
+          const accionRegistrada = accionesRegistradas.find((a) => a.id === accion.accionId);
+          const totalTipo = accionRegistrada
+            ? accionRegistrada.accionesSuscritas
+            : totalesPorTipo.get(accion.accionId) || 1;
+          accion.porcentaje = (accion.cantidadSuscrita / totalTipo) * 100;
         });
       });
     },

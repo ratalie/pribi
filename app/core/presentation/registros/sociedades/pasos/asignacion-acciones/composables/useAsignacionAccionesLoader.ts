@@ -32,13 +32,19 @@ export const useAsignacionAccionesLoader = (options: Options = {}) => {
   const isLoadingAcciones = ref(false);
   const isLoadingAccionistas = ref(false);
   const isLoadingValorNominal = ref(false);
+  const isLoadingAsignaciones = ref(false);
   const errorAcciones = ref<Error | null>(null);
   const errorAccionistas = ref<Error | null>(null);
   const errorValorNominal = ref<Error | null>(null);
+  const errorAsignaciones = ref<Error | null>(null);
 
   // Estado general de carga
   const isLoading = computed(
-    () => isLoadingAcciones.value || isLoadingAccionistas.value || isLoadingValorNominal.value
+    () =>
+      isLoadingAcciones.value ||
+      isLoadingAccionistas.value ||
+      isLoadingValorNominal.value ||
+      isLoadingAsignaciones.value
   );
 
   // Función para cargar todas las datos
@@ -49,12 +55,15 @@ export const useAsignacionAccionesLoader = (options: Options = {}) => {
       return;
     }
 
-    // Cargar en paralelo
+    // Cargar en paralelo (primero acciones y accionistas, luego asignaciones)
     await Promise.all([
       loadAcciones(profileId),
       loadAccionistas(profileId),
       loadValorNominal(profileId),
     ]);
+
+    // Cargar asignaciones después de cargar acciones y accionistas
+    await loadAsignaciones(profileId);
   };
 
   // Función para cargar acciones
@@ -110,6 +119,25 @@ export const useAsignacionAccionesLoader = (options: Options = {}) => {
     }
   };
 
+  // Función para cargar asignaciones
+  const loadAsignaciones = async (profileId: string) => {
+    if (!profileId) return;
+
+    isLoadingAsignaciones.value = true;
+    errorAsignaciones.value = null;
+
+    try {
+      await registroAsignacionAccionesStore.loadAsignaciones(profileId);
+    } catch (error) {
+      console.error("[useAsignacionAccionesLoader] Error al cargar asignaciones:", error);
+      errorAsignaciones.value = error instanceof Error ? error : new Error(String(error));
+      // Si falla, inicializar con accionistas vacíos
+      registroAsignacionAccionesStore.initializeFromAccionistas();
+    } finally {
+      isLoadingAsignaciones.value = false;
+    }
+  };
+
   // Cargar datos cuando se monta el componente
   onMounted(() => {
     if (societyId.value) {
@@ -131,14 +159,17 @@ export const useAsignacionAccionesLoader = (options: Options = {}) => {
     isLoadingAcciones,
     isLoadingAccionistas,
     isLoadingValorNominal,
+    isLoadingAsignaciones,
     errorAcciones,
     errorAccionistas,
     errorValorNominal,
+    errorAsignaciones,
     // Funciones
     loadAll,
     loadAcciones,
     loadAccionistas,
     loadValorNominal,
+    loadAsignaciones,
     // Stores (para acceso directo si es necesario)
     registroAccionesStore,
     registroAccionistasStore,

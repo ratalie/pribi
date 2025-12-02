@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { useVModel } from "@vueuse/core";
   import { computed, nextTick, watch } from "vue";
+  import { useRoute } from "vue-router";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
@@ -13,6 +14,7 @@
     mode?: "crear" | "editar";
     accionistaId?: string | null;
     accionId?: string | null;
+    societyProfileId?: string;
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -30,15 +32,21 @@
     passive: true,
   });
 
+  const route = useRoute();
   const asignacionAccionesStore = useRegistroAsignacionAccionesStore();
   const asignacionAccionesFormStore = useAsignacionAccionesStore();
+
+  // Obtener societyProfileId de props o route
+  const societyProfileId = computed(() => {
+    return props.societyProfileId || (route.params.id as string | undefined) || "";
+  });
 
   const submitLabel = computed(() => (props.mode === "editar" ? "Editar" : "Guardar"));
 
   const isSubmitDisabled = computed(() => {
     return (
-      !asignacionAccionesFormStore.tipoAccion ||
-      asignacionAccionesFormStore.cantidadAccionesSuscritas <= 0
+      !asignacionAccionesFormStore.accionId ||
+      asignacionAccionesFormStore.cantidadSuscrita <= 0
     );
   });
 
@@ -58,14 +66,14 @@
     }
 
     const formData = {
-      tipoAccion: asignacionAccion.tipoAccion,
-      cantidadAccionesSuscritas: asignacionAccion.cantidadAcciones,
-      precioAccion: asignacionAccion.precioAccion ?? 0,
+      accionId: asignacionAccion.accionId,
+      cantidadSuscrita: asignacionAccion.cantidadSuscrita,
+      precioPorAccion: asignacionAccion.precioPorAccion ?? 0,
+      porcentajePagadoPorAccion: asignacionAccion.porcentajePagadoPorAccion ?? 0,
+      totalDividendosPendientes: asignacionAccion.totalDividendosPendientes ?? 0,
+      pagadoCompletamente: asignacionAccion.pagadoCompletamente ?? false,
       capitalSocial: asignacionAccion.capitalSocial ?? 0,
       prima: asignacionAccion.prima ?? 0,
-      totalmentePagado: asignacionAccion.totalmentePagado ?? false,
-      porcentajePagado: asignacionAccion.porcentajePagado ?? 0,
-      dividendoPasivo: asignacionAccion.dividendoPasivo ?? 0,
     };
 
     // Usar $patch para actualizar el store
@@ -131,45 +139,56 @@
     }
 
     // Obtener datos directamente del store en lugar de usar getFormData()
-    const tipoAccion = asignacionAccionesFormStore.tipoAccion;
-    const cantidadAcciones = asignacionAccionesFormStore.cantidadAccionesSuscritas;
-    const precioAccion = asignacionAccionesFormStore.precioAccion;
+    const accionId = asignacionAccionesFormStore.accionId;
+    const cantidadSuscrita = asignacionAccionesFormStore.cantidadSuscrita;
+    const precioPorAccion = asignacionAccionesFormStore.precioPorAccion;
+    const porcentajePagadoPorAccion = asignacionAccionesFormStore.porcentajePagadoPorAccion;
+    const totalDividendosPendientes = asignacionAccionesFormStore.totalDividendosPendientes;
+    const pagadoCompletamente = asignacionAccionesFormStore.pagadoCompletamente;
     const capitalSocial = asignacionAccionesFormStore.capitalSocial;
     const prima = asignacionAccionesFormStore.prima;
-    const totalmentePagado = asignacionAccionesFormStore.totalmentePagado;
-    const porcentajePagado = asignacionAccionesFormStore.porcentajePagado;
-    const dividendoPasivo = asignacionAccionesFormStore.dividendoPasivo;
 
-    if (!tipoAccion || cantidadAcciones <= 0) {
+    if (!accionId || cantidadSuscrita <= 0) {
       console.error("Datos del formulario inválidos", {
-        tipoAccion,
-        cantidadAcciones,
+        accionId,
+        cantidadSuscrita,
       });
       return;
     }
 
     const payload = {
-      tipoAccion,
-      cantidadAcciones,
+      accionId,
+      cantidadSuscrita,
       porcentaje: 0, // Se recalculará automáticamente
-      precioAccion,
+      precioPorAccion,
+      porcentajePagadoPorAccion,
+      totalDividendosPendientes,
+      pagadoCompletamente,
       capitalSocial,
       prima,
-      totalmentePagado,
-      porcentajePagado,
-      dividendoPasivo,
     };
+
+    const profileId = societyProfileId.value;
+    if (!profileId) {
+      console.error("No hay societyProfileId disponible");
+      return;
+    }
 
     if (props.mode === "editar" && props.accionId && props.accionistaId) {
       // Actualizar asignación existente
-      asignacionAccionesStore.updateAsignacionAccion(
+      await asignacionAccionesStore.updateAsignacionAccion(
+        profileId,
         props.accionistaId,
         props.accionId,
         payload
       );
     } else if (props.accionistaId) {
       // Crear nueva asignación
-      asignacionAccionesStore.addAsignacionAccion(props.accionistaId, payload);
+      await asignacionAccionesStore.addAsignacionAccion(
+        profileId,
+        props.accionistaId,
+        payload
+      );
     }
 
     resetForm();

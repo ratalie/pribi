@@ -2,15 +2,16 @@ export interface AsignacionAccion {
   id: string;
   accionistaId: string;
   accionista: string; // Nombre del accionista
-  tipoAccion: string; // Tipo de acción (Comunes, Clase A, etc.)
-  cantidadAcciones: number;
+  accionId: string; // ID de la acción (UUID)
+  cantidadSuscrita: number;
   porcentaje: number; // Porcentaje de participación por clase
-  precioAccion: number;
-  capitalSocial: number;
-  prima: number;
-  totalmentePagado: boolean;
-  porcentajePagado: number;
-  dividendoPasivo: number;
+  precioPorAccion: number;
+  porcentajePagadoPorAccion: number;
+  totalDividendosPendientes: number;
+  pagadoCompletamente: boolean;
+  // Campos calculados/UI (no van al backend)
+  capitalSocial?: number;
+  prima?: number;
 }
 
 export interface AsignacionAccionista {
@@ -24,6 +25,7 @@ export interface AsignacionAccionistaTableRow {
   accionista: string;
   tipos: string; // "1 tipo", "2 tipos", etc.
   acciones: {
+    id: string; // ID de la asignación (necesario para editar/eliminar)
     clase: string;
     acciones: number;
     porcentaje: number;
