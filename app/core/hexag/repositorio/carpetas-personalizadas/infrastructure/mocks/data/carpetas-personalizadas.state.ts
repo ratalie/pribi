@@ -116,7 +116,7 @@ initMockData();
 /**
  * Lista todas las carpetas personalizadas de una sociedad
  */
-export async function listCarpetasMock(sociedadId: string): Promise<CarpetaPersonalizada[]> {
+export async function listCarpetasMock(_sociedadId: string): Promise<CarpetaPersonalizada[]> {
   await new Promise((resolve) => setTimeout(resolve, 100));
   return Array.from(carpetasMock.values());
 }

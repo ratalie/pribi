@@ -1,8 +1,8 @@
 <script setup lang="ts">
   import { useJuntasHeaderNavigation } from "~/composables/useJuntasHeaderNavigation";
   import type { NavigationStep } from "~/types/navigationSteps";
-  import { getIcon } from "~/utils/iconMapper";
-  import BaseButton from "../base/buttons/BaseButton.vue";
+  // import { getIcon } from "~/utils/iconMapper"; // No usado
+  // import BaseButton from "../base/buttons/BaseButton.vue"; // No usado
   import HeaderActions from "./HeaderActions.vue";
   import HeaderTitle from "./HeaderTitle.vue";
 
@@ -17,7 +17,7 @@
   const props = defineProps<Props>();
 
   // Usar composable para navegación
-  const { goBackStep, currentStep } = useJuntasHeaderNavigation(
+  const { currentStep } = useJuntasHeaderNavigation(
     computed(() => props.steps),
     computed(() => props.currentStepIndex),
     props.onBack

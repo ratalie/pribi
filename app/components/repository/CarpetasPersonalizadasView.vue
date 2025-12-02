@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import {
-  Folder,
+  // Folder, // No usado
   FolderOpen,
   FileText,
   Grid,
   List,
   MoreVertical,
   Eye,
-  Download,
+  // Download, // No usado
   Trash2,
   Plus,
   ChevronRight,
   ArrowLeft,
   X,
-  Users,
-  Globe,
-  Lock,
+  // Users, // No usado
+  // Globe, // No usado
+  // Lock, // No usado
 } from "lucide-vue-next";
 import {
   DropdownMenu,
@@ -162,7 +162,7 @@ const formatDate = (date: Date) => {
   return `Hace ${Math.floor(days / 30)} meses`;
 };
 
-const formatSize = (bytes?: number) => {
+  const _formatSize = (bytes?: number) => {
   if (!bytes) return "";
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;

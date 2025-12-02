@@ -21,7 +21,7 @@ export async function getSnapshotMock(
   });
 
   // Obtener datos de la sociedad desde los stores mock
-  const datosSociedad = await getRecord<any>("datosSociedad", societyIdStr);
+  const _datosSociedad = await getRecord<any>("datosSociedad", societyIdStr);
   const accionistas = (await getAllRecords<any>("accionistas")) ?? [];
   const acciones = (await getAllRecords<any>("acciones")) ?? [];
   const asignaciones = (await getAllRecords<any>("asignacionAcciones")) ?? [];
@@ -140,7 +140,7 @@ export async function getSnapshotMock(
       reemplazaId: director.reemplazaId || undefined,
     })),
 
-    // Apoderados
+    // Apoderados (siempre array, nunca undefined)
     attorneys:
       apoderadosFiltrados.length > 0
         ? apoderadosFiltrados.map((apoderado: any) => ({
@@ -149,7 +149,7 @@ export async function getSnapshotMock(
             persona: apoderado.persona,
             poderId: apoderado.poderId || null,
           }))
-        : undefined,
+        : [],
 
     // Poderes (por ahora null, se implementará después)
     powers: null,

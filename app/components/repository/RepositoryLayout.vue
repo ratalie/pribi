@@ -7,7 +7,7 @@ interface Props {
   searchPlaceholder?: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   showSearch: true,
   searchPlaceholder: "Buscar...",
 });

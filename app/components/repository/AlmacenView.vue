@@ -12,7 +12,7 @@ import {
   Plus,
   Upload,
   ChevronRight,
-  ArrowLeft,
+  // ArrowLeft, // No usado
 } from "lucide-vue-next";
 import {
   DropdownMenu,
@@ -23,7 +23,7 @@ import {
 import AdvancedSearchBar from "./AdvancedSearchBar.vue";
 import type { AdvancedFilters } from "./types";
 import PreviewModal from "./PreviewModal.vue";
-import DocumentCard from "./DocumentCard.vue";
+// import DocumentCard from "./DocumentCard.vue"; // No usado
 import { useAlmacenamiento } from "~/core/presentation/repositorio/composables/useAlmacenamiento";
 import { useRepositorioDashboardStore } from "~/core/presentation/repositorio/stores/repositorio-dashboard.store";
 
@@ -33,11 +33,11 @@ const {
   breadcrumb,
   vista,
   isLoading,
-  carpetas,
-  archivos,
+  carpetas: _carpetas,
+  archivos: _archivos,
   cargarDocumentos,
   navegarACarpeta,
-  navegarAtras,
+  navegarAtras: _navegarAtras,
   obtenerDocumento,
   eliminarDocumento,
 } = useAlmacenamiento();

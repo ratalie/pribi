@@ -1,5 +1,5 @@
 import type { User } from '../../domain/entities/user.entity';
-import type { UserResponseDto } from '../../application/dtos/user.dto';
+// import type { UserResponseDto } from '../../application/dtos/user.dto'; // No usado
 
 /**
  * Mapper para transformar DTOs a Entidades

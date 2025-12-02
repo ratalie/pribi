@@ -14,11 +14,11 @@
     folder: Folder;
   }
 
-  const props = defineProps<Props>();
+  defineProps<Props>(); // Props usado en template
 
-  const emits = defineEmits<{
+  defineEmits<{
     (e: "click"): void;
-  }>();
+  }>(); // Emits usado en template
 
   const formatDate = (date?: Date) => {
     if (!date) return "Nunca";

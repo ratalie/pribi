@@ -38,15 +38,17 @@ export class JuntaMswRepository implements JuntaRepository {
     );
   }
 
-  async delete(societyId: number, flowId: number): Promise<void> {
-    const deleted = await deleteJuntaMock(societyId, String(flowId));
+  async delete(societyId: number, flowId: number | string): Promise<void> {
+    const flowIdStr = typeof flowId === 'string' ? flowId : String(flowId);
+    const deleted = await deleteJuntaMock(societyId, flowIdStr);
     if (!deleted) {
       throw new Error(`Junta con id ${flowId} no encontrada`);
     }
   }
 
-  async getSnapshot(societyId: number, flowId: number): Promise<SnapshotCompleteDTO> {
-    return await getSnapshotMock(societyId, flowId);
+  async getSnapshot(societyId: number, flowId: number | string): Promise<SnapshotCompleteDTO> {
+    const flowIdNum = typeof flowId === 'string' ? parseInt(flowId, 10) : flowId;
+    return await getSnapshotMock(societyId, flowIdNum);
   }
 }
 

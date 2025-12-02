@@ -1,7 +1,7 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import { useJuntasSummarySections } from "~/modules/junta-accionistas/summaries";
-import type { SummarySection } from "~/modules/junta-accionistas/summaries/types";
+import { useJuntasSummarySections } from "~/core/hexag/juntas/summaries";
+import type { SummarySection } from "~/core/hexag/juntas/summaries/types";
 import { useJuntasFlowStore } from "~/stores/useJuntasFlowStore";
 import type { SectionItem } from "~/types/junta-navigation.types";
 

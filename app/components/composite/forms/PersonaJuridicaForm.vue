@@ -9,7 +9,7 @@
     numeroRucSchema,
     provinciaSchema,
     razonSocialSchema,
-  } from "~/modules/registro-sociedades/schemas/modalPersonaJuridica";
+  } from "~/schemas/registro-sociedades/modalPersonaJuridica";
   import { usePersonaJuridicaStore } from "~/stores/usePersonaJuridicaStore";
   const personaJuridicaStore = usePersonaJuridicaStore();
 

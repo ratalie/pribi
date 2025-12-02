@@ -3,11 +3,11 @@ import {
   Search,
   SlidersHorizontal,
   Filter,
-  X,
+  // X, // No usado
   Calendar,
   FileText,
   Tag,
-  Building2,
+  // Building2, // No usado
   Globe,
   Lock,
   Check,

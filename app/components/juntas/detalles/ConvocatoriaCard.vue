@@ -24,8 +24,8 @@
       <TextInputZod
         v-model="direccionValue"
         :name="`${prefix}-direccion`"
-        :label="modoValue === ModoReunion.PRESENCIAL ? 'Dirección' : 'Link de la reunión'"
-        :placeholder="modoValue === ModoReunion.PRESENCIAL ? 'Ingrese la dirección' : 'Ingrese el link'"
+        :label="modoValue === ModoReunion.IN_PERSON ? 'Dirección' : 'Link de la reunión'"
+        :placeholder="modoValue === ModoReunion.IN_PERSON ? 'Ingrese la dirección' : 'Ingrese el link'"
         :schema="direccionSchema"
       />
     </div>
@@ -104,7 +104,7 @@ const emit = defineEmits<{
 const modalidadOptions = [
   {
     label: 'Presencial',
-    value: ModoReunion.PRESENCIAL,
+    value: ModoReunion.IN_PERSON,
     description: 'Reunión física en un lugar determinado',
   },
   {

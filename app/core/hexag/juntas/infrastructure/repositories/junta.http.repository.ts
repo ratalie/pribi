@@ -32,7 +32,8 @@ export class JuntaHttpRepository implements JuntaRepository {
     return `${this.basePath}/${societyId}/register-assembly${path}`;
   }
 
-  private resolveSnapshotUrl(societyId: number, flowId: number): string {
+  private resolveSnapshotUrl(societyId: number, flowId: number | string): string {
+    const flowIdStr = typeof flowId === 'string' ? flowId : String(flowId);
     const config = useRuntimeConfig();
     const apiBase = (config.public?.apiBase as string | undefined) || "";
     const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -45,7 +46,7 @@ export class JuntaHttpRepository implements JuntaRepository {
         const baseUrl = new URL(base, origin || "http://localhost:3000");
         const basePath = this.basePath.startsWith("/") ? this.basePath : `/${this.basePath}`;
         // Construir la ruta: /api/v2/society-profile/:societyId/register-assembly/:flowId/snapshot/complete
-        const fullPath = `${basePath}/${societyId}/register-assembly/${flowId}/snapshot/complete`;
+        const fullPath = `${basePath}/${societyId}/register-assembly/${flowIdStr}/snapshot/complete`;
         return new URL(fullPath, baseUrl.origin).toString();
       } catch {
         continue;
@@ -53,7 +54,7 @@ export class JuntaHttpRepository implements JuntaRepository {
     }
 
     // Fallback: construir URL relativa
-    return `${this.basePath}/${societyId}/register-assembly/${flowId}/snapshot/complete`;
+    return `${this.basePath}/${societyId}/register-assembly/${flowIdStr}/snapshot/complete`;
   }
 
   async create(societyId: number): Promise<string> {
@@ -158,8 +159,9 @@ export class JuntaHttpRepository implements JuntaRepository {
     }
   }
 
-  async delete(societyId: number, flowId: number): Promise<void> {
-    const url = this.resolveUrl(societyId, `/${flowId}`);
+  async delete(societyId: number, flowId: number | string): Promise<void> {
+    const flowIdStr = typeof flowId === 'string' ? flowId : String(flowId);
+    const url = this.resolveUrl(societyId, `/${flowIdStr}`);
     const authConfig = withAuthHeaders() as FetchOptions & {
       headers?: Record<string, string>;
     };
@@ -195,7 +197,7 @@ export class JuntaHttpRepository implements JuntaRepository {
     }
   }
 
-  async getSnapshot(societyId: number, flowId: number): Promise<SnapshotCompleteDTO> {
+  async getSnapshot(societyId: number, flowId: number | string): Promise<SnapshotCompleteDTO> {
     const url = this.resolveSnapshotUrl(societyId, flowId);
     const authConfig = withAuthHeaders() as FetchOptions & {
       headers?: Record<string, string>;

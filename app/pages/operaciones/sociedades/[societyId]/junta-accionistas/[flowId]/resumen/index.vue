@@ -64,7 +64,7 @@
   import { computed } from "vue";
   import SummarySectionRenderer from "~/components/juntas/SummarySectionRenderer.vue";
   import ResumenAporteDinerario from "~/components/juntas/ResumenAporteDinerario.vue";
-  import { usePuntosAcuerdoSummary } from "~/modules/junta-accionistas/summaries/puntos-acuerdo";
+  import { usePuntosAcuerdoSummary } from "~/core/hexag/juntas/summaries/puntos-acuerdo";
   import { useJuntasFlowStore } from "~/stores/useJuntasFlowStore";
   import { mapStoreIdToSectionId } from "~/composables/useJuntasResumenSections";
   import Titles from "~/types/enums/Titles.enum";

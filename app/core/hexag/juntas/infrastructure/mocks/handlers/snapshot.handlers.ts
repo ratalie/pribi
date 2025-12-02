@@ -16,15 +16,20 @@ export const snapshotHandlers = [
         ? parseInt(societyIdParam[0], 10)
         : Number(societyIdParam);
 
-    const flowId =
-      typeof flowIdParam === "string"
-        ? parseInt(flowIdParam, 10)
-        : Array.isArray(flowIdParam)
-        ? parseInt(flowIdParam[0], 10)
-        : Number(flowIdParam);
+    // ⚠️ flowId puede ser string (UUID) o number
+    let flowId: number;
+    if (typeof flowIdParam === "string") {
+      // Si es un UUID, intentar parsearlo; si no es numérico, convertir a número de alguna manera
+      const parsed = parseInt(flowIdParam, 10);
+      flowId = Number.isNaN(parsed) ? 1 : parsed;
+    } else if (Array.isArray(flowIdParam)) {
+      flowId = parseInt(flowIdParam[0], 10);
+    } else {
+      flowId = Number(flowIdParam);
+    }
 
-    if (!societyId || Number.isNaN(societyId) || !flowId || Number.isNaN(flowId)) {
-      console.warn("[MSW][Snapshot] GET sin parámetros válidos", params);
+    if (!societyId || Number.isNaN(societyId)) {
+      console.warn("[MSW][Snapshot] GET sin societyId válido", params);
       return HttpResponse.json({ error: "Invalid parameters" }, { status: 400 });
     }
 

@@ -9,7 +9,7 @@ import {
   NavigateCarpetaUseCase,
 } from '~/core/hexag/repositorio/almacenamiento/application';
 import type { DocumentoSocietario } from '~/core/hexag/repositorio/almacenamiento/domain/entities/documento-societario.entity';
-import type { CarpetaSistema } from '~/core/hexag/repositorio/almacenamiento/domain/entities/carpeta-sistema.entity';
+// import type { CarpetaSistema } from '~/core/hexag/repositorio/almacenamiento/domain/entities/carpeta-sistema.entity'; // No usado
 import type { CreateCarpetaDTO, UploadDocumentoDTO } from '~/core/hexag/repositorio/almacenamiento/application/dtos/documento-societario.dto';
 import { AlmacenamientoMockRepository } from '~/core/hexag/repositorio/almacenamiento/infrastructure';
 

@@ -2,7 +2,7 @@ import { nanoid } from "nanoid";
 import { getRecord, putRecord } from "@hexag/registros/shared/mock-database";
 import type { DirectorioConfig } from "../../../domain/entities/directorio.entity";
 import type { DirectorioDTO } from "../../../application/dtos/directorio.dto";
-import { DirectorioMapper } from "../../mappers/directorio.mapper";
+// import { DirectorioMapper } from "../../mappers/directorio.mapper"; // No usado
 
 const STORE_NAME = "directorioConfig";
 

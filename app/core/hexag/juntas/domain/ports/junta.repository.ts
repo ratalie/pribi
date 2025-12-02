@@ -4,7 +4,7 @@ import type { SnapshotCompleteDTO } from "../../application/dtos/snapshot-comple
 export interface JuntaRepository {
   create(societyId: number): Promise<string>;
   list(societyId: number): Promise<JuntaResumenDTO[]>;
-  delete(societyId: number, flowId: number): Promise<void>;
-  getSnapshot(societyId: number, flowId: number): Promise<SnapshotCompleteDTO>;
+  delete(societyId: number, flowId: number | string): Promise<void>;
+  getSnapshot(societyId: number, flowId: number | string): Promise<SnapshotCompleteDTO>;
 }
 

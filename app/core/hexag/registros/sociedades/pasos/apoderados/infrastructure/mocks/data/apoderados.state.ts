@@ -35,7 +35,7 @@ type StoredApoderado = Apoderado & {
 
 export async function listClasesMock(profileId: string): Promise<ClaseApoderado[]> {
   const clases = (await getAllRecords<StoredClase>(CLASES_STORE)) ?? [];
-  const apoderados = await listApoderadosMock(profileId);
+  const _apoderados = await listApoderadosMock(profileId);
 
   return clases
     .filter((item) => item.societyProfileId === profileId)

@@ -22,7 +22,9 @@
     "test:registros": "TEST_USE_MSW=false vitest run datos-sociedad.repository.integration.test.ts accionistas.repository.integration.test.ts acciones.repository.integration.test.ts asignacion-acciones.repository.integration.test.ts quorum.repository.integration.test.ts director.repository.integration.test.ts apoderados.repository.integration.test.ts",
     "test:registros:all": "TEST_USE_MSW=false vitest run sociedad.repository.integration.test.ts datos-sociedad.repository.integration.test.ts accionistas.repository.integration.test.ts acciones.repository.integration.test.ts asignacion-acciones.repository.integration.test.ts quorum.repository.integration.test.ts director.repository.integration.test.ts apoderados.repository.integration.test.ts",
     "test:shared": "vitest run sociedad.repository.shared.test.ts datos-sociedad.repository.shared.test.ts accionistas.repository.shared.test.ts acciones.repository.shared.test.ts asignacion-acciones.repository.shared.test.ts quorum.repository.shared.test.ts director.repository.shared.test.ts apoderados.repository.shared.test.ts",
-    "test:shared:watch": "vitest watch sociedad.repository.shared.test.ts datos-sociedad.repository.shared.test.ts accionistas.repository.shared.test.ts acciones.repository.shared.test.ts asignacion-acciones.repository.shared.test.ts quorum.repository.shared.test.ts director.repository.shared.test.ts apoderados.repository.shared.test.ts"
+    "test:shared:watch": "vitest watch sociedad.repository.shared.test.ts datos-sociedad.repository.shared.test.ts accionistas.repository.shared.test.ts acciones.repository.shared.test.ts asignacion-acciones.repository.shared.test.ts quorum.repository.shared.test.ts director.repository.shared.test.ts apoderados.repository.shared.test.ts",
+    "test:juntas:shared": "vitest run junta.repository.shared.test.ts agenda-items.repository.shared.test.ts meeting-details.repository.shared.test.ts",
+    "test:juntas:watch": "vitest watch junta.repository.shared.test.ts agenda-items.repository.shared.test.ts meeting-details.repository.shared.test.ts"
   },
   "dependencies": {
     "@googlemaps/markerclusterer": "^2.6.2",

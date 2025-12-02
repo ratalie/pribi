@@ -1,7 +1,7 @@
 import type { MeetingDetailsRepository } from '../../domain/ports/meeting-details.repository';
 import type { MeetingDetails } from '../../domain/entities/meeting-details.entity';
 import type {
-  DetallesJuntaDto,
+  // DetallesJuntaDto, // No usado actualmente
   GeneralMeetingConfigDto,
 } from '../../application/dtos/meeting-details.dto';
 import { MeetingDetailsMapper } from '../mappers/meeting-details.mapper';
@@ -12,18 +12,29 @@ import type { BackendApiResponse } from '~/core/shared/http/api-response.types';
  * Implementación HTTP del repositorio de detalles de junta
  */
 export class MeetingDetailsHttpRepository implements MeetingDetailsRepository {
+  private readonly basePath = "/api/v2/society-profile";
+
   private getUrl(societyId: number, flowId: number): string {
     const config = useRuntimeConfig();
-    const apiBase = config.public?.apiBase as string | undefined;
+    const apiBase = (config.public?.apiBase as string | undefined) || "";
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
 
-    if (!apiBase) {
-      console.error(
-        '[MeetingDetailsHttpRepository] apiBase no está configurado en runtimeConfig.public.apiBase'
-      );
-      throw new Error('apiBase no está configurado');
+    const candidates = [apiBase, origin, "http://localhost:3000"];
+
+    for (const base of candidates) {
+      if (!base) continue;
+      try {
+        const baseUrl = new URL(base, origin || "http://localhost:3000");
+        const basePath = this.basePath.startsWith("/") ? this.basePath : `/${this.basePath}`;
+        const fullPath = `${basePath}/${societyId}/register-assembly/${flowId}/meeting-details`;
+        return new URL(fullPath, baseUrl.origin).toString();
+      } catch {
+        continue;
+      }
     }
 
-    return `${apiBase}/society-profile/${societyId}/register-assembly/${flowId}/meeting-details`;
+    // Fallback: construir URL relativa
+    return `${this.basePath}/${societyId}/register-assembly/${flowId}/meeting-details`;
   }
 
   async get(societyId: number, flowId: number): Promise<MeetingDetails | null> {

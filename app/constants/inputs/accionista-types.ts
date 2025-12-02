@@ -1,5 +1,5 @@
 import type { CascadeSelectOption } from "~/components/base/inputs/text/BaseCascadeSelect.vue";
-import { TipoAccionistaEnum } from "~/modules/registro-sociedades/types/enums/TipoAccionistaEnum";
+import { TipoAccionistaEnum } from "~/schemas/enums/TipoAccionistaEnum";
 
 export const accionistaTypes: CascadeSelectOption[] = [
   {

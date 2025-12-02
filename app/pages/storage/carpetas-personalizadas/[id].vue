@@ -6,7 +6,7 @@
   import CarpetaDetailView from "~/components/repository/CarpetaDetailView.vue";
 
   const route = useRoute();
-  const carpetaId = computed(() => route.params.id as string);
+  const _carpetaId = computed(() => route.params.id as string);
 
   useHead({
     title: `Carpeta - Repositorio - PROBO`,

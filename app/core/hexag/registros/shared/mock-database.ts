@@ -13,7 +13,8 @@ const STORE_SCHEMAS = {
   apoderadosClases: { keyPath: "id" },
   apoderadosRegistro: { keyPath: "id" },
   juntas: { keyPath: "id" },
-  "agenda-items": { keyPath: "id" },
+  "agenda-items": { keyPath: "key" },
+  "meeting-details": { keyPath: "key" },
 } as const;
 
 type StoreName = keyof typeof STORE_SCHEMAS;

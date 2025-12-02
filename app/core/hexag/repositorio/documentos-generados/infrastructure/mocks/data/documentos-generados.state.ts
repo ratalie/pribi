@@ -9,7 +9,7 @@ import type { DocumentoGenerado } from '../../../domain/entities/documento-gener
 /**
  * Obtiene la estructura completa de documentos generados
  */
-export async function getDocumentosGeneradosMock(sociedadId: string): Promise<DocumentosGenerados> {
+export async function getDocumentosGeneradosMock(_sociedadId: string): Promise<DocumentosGenerados> {
   await new Promise((resolve) => setTimeout(resolve, 150));
 
   return {

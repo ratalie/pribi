@@ -50,7 +50,7 @@ export const sociedadesMock: Sociedad[] = [
 /**
  * Obtiene las estadísticas del repositorio para una sociedad
  */
-export async function getRepositorioStatsMock(sociedadId: string): Promise<RepositorioStats> {
+export async function getRepositorioStatsMock(_sociedadId: string): Promise<RepositorioStats> {
   // Simular delay de red
   await new Promise((resolve) => setTimeout(resolve, 100));
 
@@ -77,7 +77,7 @@ export async function getRepositorioStatsMock(sociedadId: string): Promise<Repos
 /**
  * Obtiene las métricas del dashboard
  */
-export async function getMetricasMock(sociedadId: string): Promise<Metricas> {
+export async function getMetricasMock(_sociedadId: string): Promise<Metricas> {
   // Simular delay de red
   await new Promise((resolve) => setTimeout(resolve, 100));
 

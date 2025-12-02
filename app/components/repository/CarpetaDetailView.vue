@@ -28,7 +28,7 @@ const carpetaId = computed(() => props.carpetaId || (route.params.id as string))
 const {
   carpetaActual,
   enlacesActuales,
-  isLoading,
+  isLoading: _isLoading,
   cargarDetalleCarpeta,
   eliminarEnlace,
 } = useCarpetasPersonalizadas();

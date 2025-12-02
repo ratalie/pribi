@@ -116,7 +116,7 @@ export const accionesHandlers = [
 
     const body = (await request.json()) as AccionDTO;
     const payload = toAccionPayload(body);
-    const entity = await updateAccionMock(id, payload);
+    const _entity = await updateAccionMock(id, payload);
 
     const responsePayload = {
       success: true,

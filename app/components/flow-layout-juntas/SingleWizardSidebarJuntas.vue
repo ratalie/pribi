@@ -15,7 +15,7 @@
     progress: { current: number; total: number };
   }
 
-  const props = defineProps<Props>();
+  defineProps<Props>(); // Props usado en template
 </script>
 
 <template>

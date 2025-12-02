@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useSummarySection } from "@/modules/junta-accionistas/summaries";
-import type { SummarySection } from "@/modules/junta-accionistas/summaries/types";
+import { useSummarySection } from "~/core/hexag/juntas/summaries";
+import type { SummarySection } from "~/core/hexag/juntas/summaries/types";
 
 interface Props {
   sectionId: string;

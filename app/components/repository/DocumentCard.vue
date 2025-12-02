@@ -21,15 +21,12 @@ interface Props {
   showActions?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   showActions: true,
 });
 
 const emits = defineEmits<{
-  (e: "click"): void;
-  (e: "preview"): void;
-  (e: "download"): void;
-  (e: "delete"): void;
+  (e: "click" | "preview" | "download" | "delete"): void;
 }>();
 
 const formatDate = (date: Date) => {

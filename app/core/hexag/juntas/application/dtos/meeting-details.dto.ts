@@ -7,8 +7,8 @@
 // ============================================
 
 export interface ConvocatoriaDto {
-  direccion: string; // Dirección física si es PRESENCIAL, o link si es VIRTUAL
-  modo: 'PRESENCIAL' | 'VIRTUAL';
+  direccion: string; // Dirección física si es IN_PERSON, o link si es VIRTUAL
+  modo: 'IN_PERSON' | 'VIRTUAL';  // ⚠️ Mismo formato que el backend
   fecha: string; // ISO Date string (ej: "2025-01-15T00:00:00.000Z")
   hora: string; // ISO Date string (ej: "2025-01-15T14:00:00.000Z")
 }

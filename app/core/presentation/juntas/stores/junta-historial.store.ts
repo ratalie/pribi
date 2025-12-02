@@ -6,7 +6,8 @@ import {
   ListJuntasUseCase,
   GetSnapshotUseCase,
 } from "~/core/hexag/juntas/application/use-cases";
-import type { JuntaResumenDTO, SnapshotCompleteDTO } from "~/core/hexag/juntas/application/dtos";
+import type { JuntaResumenDTO } from "~/core/hexag/juntas/application/dtos";
+// import type { SnapshotCompleteDTO } from "~/core/hexag/juntas/application/dtos"; // No usado
 import { JuntaHttpRepository } from "~/core/hexag/juntas/infrastructure/repositories";
 
 type Status = "idle" | "loading" | "error";

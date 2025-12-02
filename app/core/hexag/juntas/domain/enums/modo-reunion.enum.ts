@@ -1,8 +1,9 @@
 /**
  * Enum para el modo de realización de la reunión
+ * ⚠️ IMPORTANTE: Usa los mismos valores que el backend para evitar conversiones
  */
 export enum ModoReunion {
-  PRESENCIAL = 'PRESENCIAL',
-  VIRTUAL = 'VIRTUAL',
+  IN_PERSON = 'IN_PERSON',  // Presencial
+  VIRTUAL = 'VIRTUAL',      // Virtual
 }
 

@@ -2,7 +2,7 @@ import { computed, ref, onMounted } from 'vue';
 import { useUserManagementStore } from '../stores/user-management.store';
 import type { RoleName } from '~/core/hexag/panel-administrativo/domain/entities/role.entity';
 import type { UserFlowAccess } from '~/core/hexag/panel-administrativo/domain/entities/permission.entity';
-import { getUserPermissions } from '~/data/mockDataAdmin';
+// import { getUserPermissions } from '~/data/mockDataAdmin'; // No usado
 
 /**
  * Composable para gestión de usuarios

@@ -84,6 +84,14 @@ export class MeetingDetailsMapper {
    * Convierte DTO de salida (GET) a Entidad de dominio
    */
   static fromResponseDto(dto: GeneralMeetingConfigDto): MeetingDetails {
+    // Convertir heldAtCall de formato backend a OrdenConvocatoria
+    let instaladaEnConvocatoria: OrdenConvocatoria | undefined;
+    if (dto.heldAtCall === 'FIRST') {
+      instaladaEnConvocatoria = OrdenConvocatoria.PRIMERA;
+    } else if (dto.heldAtCall === 'SECOND') {
+      instaladaEnConvocatoria = OrdenConvocatoria.SEGUNDA;
+    }
+
     return {
       id: dto.id,
       tipoJunta: dto.meetingType as TipoJunta,
@@ -94,7 +102,7 @@ export class MeetingDetailsMapper {
       segundaConvocatoria: dto.secondCall
         ? this.meetingCallDtoToEntity(dto.secondCall)
         : undefined,
-      instaladaEnConvocatoria: dto.heldAtCall as OrdenConvocatoria,
+      instaladaEnConvocatoria,
       presidenteId: dto.presidentId,
       secretarioId: dto.secretaryId,
       presidenteAsistio: dto.presidentAttended,
@@ -134,13 +142,34 @@ export class MeetingDetailsMapper {
 
   /**
    * Convierte MeetingCallDto (Response) a Convocatoria (Entity)
+   * 
+   * ⚠️ WORKAROUND: El backend devuelve propiedades en PascalCase (Address, Mode, etc.)
+   * pero nuestro DTO espera camelCase. Este método maneja ambos casos.
    */
-  private static meetingCallDtoToEntity(dto: MeetingCallDto): Convocatoria {
+  private static meetingCallDtoToEntity(dto: MeetingCallDto | any): Convocatoria {
+    // Manejar PascalCase del backend
+    const address = dto.address || dto.Address || '';
+    const mode = dto.mode || dto.Mode || 'IN_PERSON';
+    const date = dto.date || dto.Date;
+    const time = dto.time || dto.Time;
+
+    // ⚠️ Ahora NO convertimos: usamos IN_PERSON/VIRTUAL directo del backend
+    const modoFinal = mode as ModoReunion;
+
+    console.log('[Mapper] meetingCallDtoToEntity', {
+      dto,
+      address,
+      mode,
+      modoFinal,
+      date,
+      time,
+    });
+
     return {
-      direccion: dto.address,
-      modo: dto.mode === 'IN_PERSON' ? ModoReunion.PRESENCIAL : ModoReunion.VIRTUAL,
-      fecha: new Date(dto.date),
-      hora: new Date(dto.time),
+      direccion: address,
+      modo: modoFinal,
+      fecha: date ? new Date(date) : new Date(),
+      hora: time ? new Date(time) : new Date(),
     };
   }
 }

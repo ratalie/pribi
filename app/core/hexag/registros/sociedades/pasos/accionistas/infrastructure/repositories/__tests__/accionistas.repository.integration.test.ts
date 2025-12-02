@@ -32,7 +32,7 @@ const testConfig = getTestConfig();
 const shouldRun = !testConfig.useMsw;
 
 // Helper para generar UUID
-function generateUUID(): string {
+function _generateUUID(): string {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
     return crypto.randomUUID();
   }

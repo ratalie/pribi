@@ -34,8 +34,8 @@
 import { computed } from "vue";
 import Titles from "~/types/enums/Titles.enum";
 import ResumenAporteDinerario from "~/components/juntas/ResumenAporteDinerario.vue";
-import { usePuntosAcuerdoSummary } from "@/modules/junta-accionistas/summaries";
-import type { SummarySection } from "@/modules/junta-accionistas/summaries/types";
+import { usePuntosAcuerdoSummary } from "~/core/hexag/juntas/summaries";
+import type { SummarySection } from "~/core/hexag/juntas/summaries/types";
 
 const puntosSummary = usePuntosAcuerdoSummary();
 

@@ -97,7 +97,7 @@ const ensureConvocatoria = (tipo: 'primera' | 'segunda' | 'detalle') => {
   if (tipo === 'primera' && !store.meetingDetails.primeraConvocatoria) {
     store.meetingDetails.primeraConvocatoria = {
       direccion: '',
-      modo: ModoReunion.PRESENCIAL,
+      modo: ModoReunion.IN_PERSON,
       fecha: new Date(),
       hora: new Date(),
     };
@@ -107,7 +107,7 @@ const ensureConvocatoria = (tipo: 'primera' | 'segunda' | 'detalle') => {
   if (tipo === 'segunda' && tipoJunta.value === TipoJunta.GENERAL && !store.meetingDetails.segundaConvocatoria) {
     store.meetingDetails.segundaConvocatoria = {
       direccion: '',
-      modo: ModoReunion.PRESENCIAL,
+      modo: ModoReunion.IN_PERSON,
       fecha: new Date(),
       hora: new Date(),
     };
@@ -117,7 +117,7 @@ const ensureConvocatoria = (tipo: 'primera' | 'segunda' | 'detalle') => {
   if (tipo === 'detalle' && tipoJunta.value === TipoJunta.UNIVERSAL && !store.meetingDetails.primeraConvocatoria) {
     store.meetingDetails.primeraConvocatoria = {
       direccion: '',
-      modo: ModoReunion.PRESENCIAL,
+      modo: ModoReunion.IN_PERSON,
       fecha: new Date(),
       hora: new Date(),
     };
@@ -128,7 +128,13 @@ const ensureConvocatoria = (tipo: 'primera' | 'segunda' | 'detalle') => {
 const primeraModo = computed({
   get: () => {
     ensureConvocatoria('primera');
-    return store.meetingDetails?.primeraConvocatoria?.modo || ModoReunion.PRESENCIAL;
+    const modo = store.meetingDetails?.primeraConvocatoria?.modo || ModoReunion.IN_PERSON;
+    console.log('[ConvocatoriaSection] primeraModo.get()', {
+      stored: store.meetingDetails?.primeraConvocatoria?.modo,
+      returned: modo,
+      primeraConvocatoria: store.meetingDetails?.primeraConvocatoria,
+    });
+    return modo;
   },
   set: (value: ModoReunion) => {
     ensureConvocatoria('primera');
@@ -167,8 +173,14 @@ const primeraFecha = computed({
     ensureConvocatoria('primera');
     const fecha = store.meetingDetails?.primeraConvocatoria?.fecha;
     if (!fecha) return '';
-    // Convertir Date a string formato YYYY-MM-DD para input type="date"
-    return fecha.toISOString().split('T')[0];
+    // Validar que sea una fecha válida antes de convertir
+    try {
+      const date = fecha instanceof Date ? fecha : new Date(fecha);
+      if (isNaN(date.getTime())) return '';
+      return date.toISOString().split('T')[0];
+    } catch {
+      return '';
+    }
   },
   set: (value: string) => {
     if (!value) return;
@@ -189,10 +201,16 @@ const primeraHora = computed({
     ensureConvocatoria('primera');
     const hora = store.meetingDetails?.primeraConvocatoria?.hora;
     if (!hora) return '';
-    // Convertir Date a string formato HH:mm para input type="time"
-    const hours = hora.getHours().toString().padStart(2, '0');
-    const minutes = hora.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+    // Validar que sea una fecha válida antes de convertir
+    try {
+      const date = hora instanceof Date ? hora : new Date(hora);
+      if (isNaN(date.getTime())) return '';
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    } catch {
+      return '';
+    }
   },
   set: (value: string) => {
     if (!value) return;
@@ -216,7 +234,7 @@ const primeraHora = computed({
 const segundaModo = computed({
   get: () => {
     ensureConvocatoria('segunda');
-    return store.meetingDetails?.segundaConvocatoria?.modo || ModoReunion.PRESENCIAL;
+    return store.meetingDetails?.segundaConvocatoria?.modo || ModoReunion.IN_PERSON;
   },
   set: (value: ModoReunion) => {
     ensureConvocatoria('segunda');
@@ -254,7 +272,13 @@ const segundaFecha = computed({
     ensureConvocatoria('segunda');
     const fecha = store.meetingDetails?.segundaConvocatoria?.fecha;
     if (!fecha) return '';
-    return fecha.toISOString().split('T')[0];
+    try {
+      const date = fecha instanceof Date ? fecha : new Date(fecha);
+      if (isNaN(date.getTime())) return '';
+      return date.toISOString().split('T')[0];
+    } catch {
+      return '';
+    }
   },
   set: (value: string) => {
     if (!value) return;
@@ -275,9 +299,15 @@ const segundaHora = computed({
     ensureConvocatoria('segunda');
     const hora = store.meetingDetails?.segundaConvocatoria?.hora;
     if (!hora) return '';
-    const hours = hora.getHours().toString().padStart(2, '0');
-    const minutes = hora.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+    try {
+      const date = hora instanceof Date ? hora : new Date(hora);
+      if (isNaN(date.getTime())) return '';
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    } catch {
+      return '';
+    }
   },
   set: (value: string) => {
     if (!value) return;
@@ -301,7 +331,13 @@ const segundaHora = computed({
 const detalleModo = computed({
   get: () => {
     ensureConvocatoria('detalle');
-    return store.meetingDetails?.primeraConvocatoria?.modo || ModoReunion.PRESENCIAL;
+    const modo = store.meetingDetails?.primeraConvocatoria?.modo || ModoReunion.IN_PERSON;
+    console.log('[ConvocatoriaSection] detalleModo.get()', {
+      stored: store.meetingDetails?.primeraConvocatoria?.modo,
+      returned: modo,
+      primeraConvocatoria: store.meetingDetails?.primeraConvocatoria,
+    });
+    return modo;
   },
   set: (value: ModoReunion) => {
     ensureConvocatoria('detalle');
@@ -339,7 +375,13 @@ const detalleFecha = computed({
     ensureConvocatoria('detalle');
     const fecha = store.meetingDetails?.primeraConvocatoria?.fecha;
     if (!fecha) return '';
-    return fecha.toISOString().split('T')[0];
+    try {
+      const date = fecha instanceof Date ? fecha : new Date(fecha);
+      if (isNaN(date.getTime())) return '';
+      return date.toISOString().split('T')[0];
+    } catch {
+      return '';
+    }
   },
   set: (value: string) => {
     if (!value) return;
@@ -360,9 +402,15 @@ const detalleHora = computed({
     ensureConvocatoria('detalle');
     const hora = store.meetingDetails?.primeraConvocatoria?.hora;
     if (!hora) return '';
-    const hours = hora.getHours().toString().padStart(2, '0');
-    const minutes = hora.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+    try {
+      const date = hora instanceof Date ? hora : new Date(hora);
+      if (isNaN(date.getTime())) return '';
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    } catch {
+      return '';
+    }
   },
   set: (value: string) => {
     if (!value) return;

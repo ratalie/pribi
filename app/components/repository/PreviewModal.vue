@@ -14,7 +14,7 @@ interface Props {
   document: Document | null;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>(); // Props usado en template
 
 const emits = defineEmits<{
   (e: "close"): void;

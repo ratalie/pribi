@@ -1,12 +1,17 @@
+import {
+  deleteRecord,
+  getAllRecords,
+  getRecord,
+  putRecord,
+} from "@hexag/registros/shared/mock-database";
 import { nanoid } from "nanoid";
-import { getAllRecords, getRecord, putRecord, deleteRecord } from "@hexag/registros/shared/mock-database";
-import type { Accion } from "../../../domain/entities/accion.entity";
 import type { AccionPayload } from "../../../domain/entities/accion-payload.entity";
-import { AccionesMapper } from "../../mappers/acciones.mapper";
+import type { Accion } from "../../../domain/entities/accion.entity";
+// import { AccionesMapper } from "../../mappers/acciones.mapper"; // No usado
 
 const STORE_NAME = "acciones";
 
-const now = () => new Date().toISOString();
+const _now = () => new Date().toISOString();
 
 function ensureId(value?: string): string {
   if (value && value.length > 0) return value;
@@ -29,7 +34,10 @@ export async function listAccionesMock(profileId: string): Promise<Accion[]> {
 /**
  * Obtiene una acción específica
  */
-export async function getAccionMock(profileId: string, accionId: string): Promise<Accion | null> {
+export async function getAccionMock(
+  profileId: string,
+  accionId: string
+): Promise<Accion | null> {
   const record = await getRecord<StoredAccion>(STORE_NAME, accionId);
   if (!record) return null;
   return record.societyProfileId === profileId ? record : null;
@@ -38,9 +46,12 @@ export async function getAccionMock(profileId: string, accionId: string): Promis
 /**
  * Crea una nueva acción
  */
-export async function createAccionMock(profileId: string, payload: AccionPayload): Promise<Accion> {
+export async function createAccionMock(
+  profileId: string,
+  payload: AccionPayload
+): Promise<Accion> {
   const id = ensureId(payload.id);
-  
+
   // Convertir payload a entidad
   const entity: Accion = {
     id,
@@ -50,21 +61,23 @@ export async function createAccionMock(profileId: string, payload: AccionPayload
     derechoVoto: payload.derechoVoto,
     redimibles: payload.redimible,
     otrosDerechosEspeciales: payload.otrosDerechosEspeciales,
-    metadataDerechosEspeciales: payload.archivosOtrosDerechos?.map((fileId) => ({
-      archivoId: fileId,
-      tipoMino: "application/pdf",
-      nombreOriginal: "archivo.pdf",
-      tamaño: 0,
-      version: 1,
-    })) || [],
+    metadataDerechosEspeciales:
+      payload.archivosOtrosDerechos?.map((fileId) => ({
+        archivoId: fileId,
+        tipoMino: "application/pdf",
+        nombreOriginal: "archivo.pdf",
+        tamaño: 0,
+        version: 1,
+      })) || [],
     obligacionesAdicionales: payload.obligacionesAdicionales,
-    metadataObligaciones: payload.archivosObligaciones?.map((fileId) => ({
-      archivoId: fileId,
-      tipoMino: "application/pdf",
-      nombreOriginal: "archivo.pdf",
-      tamaño: 0,
-      version: 1,
-    })) || [],
+    metadataObligaciones:
+      payload.archivosObligaciones?.map((fileId) => ({
+        archivoId: fileId,
+        tipoMino: "application/pdf",
+        nombreOriginal: "archivo.pdf",
+        tamaño: 0,
+        version: 1,
+      })) || [],
     comentariosAdicionales: payload.comentariosAdicionales,
     comentariosAdicionalesTexto: payload.comentariosAdicionalesTexto || "",
   };
@@ -80,7 +93,10 @@ export async function createAccionMock(profileId: string, payload: AccionPayload
 /**
  * Actualiza una acción existente
  */
-export async function updateAccionMock(profileId: string, payload: AccionPayload): Promise<Accion> {
+export async function updateAccionMock(
+  profileId: string,
+  payload: AccionPayload
+): Promise<Accion> {
   if (!payload.id) {
     throw new Error("El payload de actualización de acción requiere un id.");
   }
@@ -100,21 +116,23 @@ export async function updateAccionMock(profileId: string, payload: AccionPayload
     derechoVoto: payload.derechoVoto,
     redimibles: payload.redimible,
     otrosDerechosEspeciales: payload.otrosDerechosEspeciales,
-    metadataDerechosEspeciales: payload.archivosOtrosDerechos?.map((fileId) => ({
-      archivoId: fileId,
-      tipoMino: "application/pdf",
-      nombreOriginal: "archivo.pdf",
-      tamaño: 0,
-      version: 1,
-    })) || [],
+    metadataDerechosEspeciales:
+      payload.archivosOtrosDerechos?.map((fileId) => ({
+        archivoId: fileId,
+        tipoMino: "application/pdf",
+        nombreOriginal: "archivo.pdf",
+        tamaño: 0,
+        version: 1,
+      })) || [],
     obligacionesAdicionales: payload.obligacionesAdicionales,
-    metadataObligaciones: payload.archivosObligaciones?.map((fileId) => ({
-      archivoId: fileId,
-      tipoMino: "application/pdf",
-      nombreOriginal: "archivo.pdf",
-      tamaño: 0,
-      version: 1,
-    })) || [],
+    metadataObligaciones:
+      payload.archivosObligaciones?.map((fileId) => ({
+        archivoId: fileId,
+        tipoMino: "application/pdf",
+        nombreOriginal: "archivo.pdf",
+        tamaño: 0,
+        version: 1,
+      })) || [],
     comentariosAdicionales: payload.comentariosAdicionales,
     comentariosAdicionalesTexto: payload.comentariosAdicionalesTexto || "",
   };
@@ -130,9 +148,12 @@ export async function updateAccionMock(profileId: string, payload: AccionPayload
 /**
  * Elimina una o más acciones
  */
-export async function deleteAccionesMock(profileId: string, accionIds: string[]): Promise<boolean> {
+export async function deleteAccionesMock(
+  profileId: string,
+  accionIds: string[]
+): Promise<boolean> {
   let deletedCount = 0;
-  
+
   for (const accionId of accionIds) {
     const existing = await getAccionMock(profileId, accionId);
     if (existing) {
@@ -143,5 +164,3 @@ export async function deleteAccionesMock(profileId: string, accionIds: string[])
 
   return deletedCount > 0;
 }
-
-

@@ -6,7 +6,7 @@ import { DirectorMapper } from "../../mappers/director.mapper";
 
 const STORE_NAME = "directores";
 
-const now = () => new Date().toISOString();
+const _now = () => new Date().toISOString();
 
 function ensureId(value?: string): string {
   if (value && value.length > 0) return value;
@@ -42,7 +42,7 @@ export async function createDirectorMock(profileId: string, payload: DirectorDTO
   const id = ensureId(payload.id);
   
   // Asegurar que el payload tenga ID
-  const payloadWithId: DirectorDTO = {
+  const _payloadWithId: DirectorDTO = {
     ...payload,
     id,
   };
@@ -82,7 +82,7 @@ export async function updateDirectorMock(
   }
 
   // Asegurar que el payload tenga el ID correcto
-  const payloadWithId: DirectorDTO = {
+  const _payloadWithId2: DirectorDTO = {
     ...payload,
     id: directorId,
   };
