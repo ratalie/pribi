@@ -5,18 +5,18 @@ import {
   ListTiposFacultadesUseCase,
   UpdateTiposFacultadesUseCase,
 } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/application";
-import type { TipoFacultad } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
+import {
+  EntityCoinUIEnum,
+  TiempoVigenciaUIEnum,
+  TipoFirmasUIEnum,
+  TipoMontoUIEnum,
+  type ApoderadoFacultad,
+  type Facultad,
+  type TipoFacultad,
+} from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
 import { TiposFacultadesMapper } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/infrastructure/mappers/tipos-facultades.mapper";
 import { RegimenFacultadesHttpRepository } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/infrastructure/repository/regimen-facultades.http.repository";
-import { TipoFirmasEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoFirmasEnum";
-import { TipoMontoEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoMontoEnum";
-import { EntityCoinEnum } from "~/types/enums/EntityCoinEnum";
-import { TiemposVigenciaEnum } from "~/types/enums/TiemposVigenciaEnum";
-import type {
-  ApoderadoFacultad,
-  ApoderadoFacultadRow,
-  Facultad,
-} from "../types/apoderadosFacultades";
+import type { ApoderadoFacultadRow } from "../types/apoderadosFacultades";
 import type { TipoFacultadRow } from "../types/facultades";
 
 const repository = new RegimenFacultadesHttpRepository();
@@ -39,7 +39,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             id: "f1",
             nombre: "Facultades Administrativas",
             esIrrevocable: false,
-            vigencia: TiemposVigenciaEnum.INDEFINIDO,
+            vigencia: TiempoVigenciaUIEnum.INDEFINIDO,
             reglasYLimites: false,
           },
           // Indefinido + Con reglas (Sola firma)
@@ -47,16 +47,16 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             id: "f2",
             nombre: "Facultades Bancarias",
             esIrrevocable: false,
-            vigencia: TiemposVigenciaEnum.INDEFINIDO,
+            vigencia: TiempoVigenciaUIEnum.INDEFINIDO,
             reglasYLimites: true,
-            tipoMoneda: EntityCoinEnum.SOLES,
+            tipoMoneda: EntityCoinUIEnum.SOLES,
             limiteMonetario: [
               {
                 id: "l1",
                 desde: 0,
-                tipoMonto: TipoMontoEnum.MONTO,
+                tipoMonto: TipoMontoUIEnum.MONTO,
                 hasta: 50000,
-                tipoFirma: TipoFirmasEnum.SOLA_FIRMA,
+                tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA,
               },
             ],
           },
@@ -71,18 +71,18 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             id: "f3",
             nombre: "Facultades Comerciales",
             esIrrevocable: true,
-            vigencia: TiemposVigenciaEnum.DETERMIADO,
+            vigencia: TiempoVigenciaUIEnum.DETERMIADO,
             fecha_inicio: "2024-01-01",
             fecha_fin: "2024-12-31",
             reglasYLimites: true,
-            tipoMoneda: EntityCoinEnum.DOLARES,
+            tipoMoneda: EntityCoinUIEnum.DOLARES,
             limiteMonetario: [
               {
                 id: "l2",
                 desde: 10000,
-                tipoMonto: TipoMontoEnum.MONTO,
+                tipoMonto: TipoMontoUIEnum.MONTO,
                 hasta: 50000,
-                tipoFirma: TipoFirmasEnum.FIRMA_CONJUNTA,
+                tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
                 firmantes: [
                   { id: "f1", cantidad: 1, grupo: "Apoderado Grupo A" },
                   { id: "f2", cantidad: 2, grupo: "Apoderado Grupo B" },
@@ -91,9 +91,9 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
               {
                 id: "l3",
                 desde: 50000,
-                tipoMonto: TipoMontoEnum.SIN_LIMITE,
+                tipoMonto: TipoMontoUIEnum.SIN_LIMITE,
                 hasta: 0,
-                tipoFirma: TipoFirmasEnum.FIRMA_CONJUNTA,
+                tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
                 firmantes: [
                   { id: "f3", cantidad: 2, grupo: "Apoderado Grupo A" },
                   { id: "f4", cantidad: 1, grupo: "Gerente General" },
@@ -112,7 +112,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             id: "f4",
             nombre: "Facultades Industriales",
             esIrrevocable: true,
-            vigencia: TiemposVigenciaEnum.DETERMIADO,
+            vigencia: TiempoVigenciaUIEnum.DETERMIADO,
             fecha_inicio: "2024-06-01",
             fecha_fin: "2025-06-01",
             reglasYLimites: false,
@@ -122,23 +122,23 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             id: "f5",
             nombre: "Facultades Mineras",
             esIrrevocable: false,
-            vigencia: TiemposVigenciaEnum.INDEFINIDO,
+            vigencia: TiempoVigenciaUIEnum.INDEFINIDO,
             reglasYLimites: true,
-            tipoMoneda: EntityCoinEnum.SOLES,
+            tipoMoneda: EntityCoinUIEnum.SOLES,
             limiteMonetario: [
               {
                 id: "l4",
                 desde: 0,
-                tipoMonto: TipoMontoEnum.MONTO,
+                tipoMonto: TipoMontoUIEnum.MONTO,
                 hasta: 100000,
-                tipoFirma: TipoFirmasEnum.SOLA_FIRMA,
+                tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA,
               },
               {
                 id: "l5",
                 desde: 100000,
-                tipoMonto: TipoMontoEnum.MONTO,
+                tipoMonto: TipoMontoUIEnum.MONTO,
                 hasta: 500000,
-                tipoFirma: TipoFirmasEnum.FIRMA_CONJUNTA,
+                tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
                 firmantes: [{ id: "f5", cantidad: 1, grupo: "Apoderado Grupo A" }],
               },
             ],
@@ -154,33 +154,33 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             id: "f6",
             nombre: "Facultades Forestales",
             esIrrevocable: true,
-            vigencia: TiemposVigenciaEnum.DETERMIADO,
+            vigencia: TiempoVigenciaUIEnum.DETERMIADO,
             fecha_inicio: "2024-03-15",
             fecha_fin: "2026-03-15",
             reglasYLimites: true,
-            tipoMoneda: EntityCoinEnum.DOLARES,
+            tipoMoneda: EntityCoinUIEnum.DOLARES,
             limiteMonetario: [
               {
                 id: "l6",
                 desde: 0,
-                tipoMonto: TipoMontoEnum.MONTO,
+                tipoMonto: TipoMontoUIEnum.MONTO,
                 hasta: 5000,
-                tipoFirma: TipoFirmasEnum.SOLA_FIRMA,
+                tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA,
               },
               {
                 id: "l7",
                 desde: 5000,
-                tipoMonto: TipoMontoEnum.MONTO,
+                tipoMonto: TipoMontoUIEnum.MONTO,
                 hasta: 25000,
-                tipoFirma: TipoFirmasEnum.FIRMA_CONJUNTA,
+                tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
                 firmantes: [{ id: "f6", cantidad: 2, grupo: "Apoderado Grupo B" }],
               },
               {
                 id: "l8",
                 desde: 25000,
-                tipoMonto: TipoMontoEnum.SIN_LIMITE,
+                tipoMonto: TipoMontoUIEnum.SIN_LIMITE,
                 hasta: 0,
-                tipoFirma: TipoFirmasEnum.FIRMA_CONJUNTA,
+                tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
                 firmantes: [
                   { id: "f7", cantidad: 1, grupo: "Gerente General" },
                   { id: "f8", cantidad: 2, grupo: "Apoderado Grupo A" },
@@ -195,7 +195,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             id: "f7",
             nombre: "Facultades Agrícolas",
             esIrrevocable: false,
-            vigencia: TiemposVigenciaEnum.INDEFINIDO,
+            vigencia: TiempoVigenciaUIEnum.INDEFINIDO,
             reglasYLimites: false,
           },
         ],
@@ -210,7 +210,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             id: "fo1",
             nombre: "Facultades Administrativas",
             esIrrevocable: false,
-            vigencia: TiemposVigenciaEnum.INDEFINIDO,
+            vigencia: TiempoVigenciaUIEnum.INDEFINIDO,
             reglasYLimites: false,
           },
         ],
@@ -223,25 +223,25 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             id: "fo2",
             nombre: "Facultades Bancarias",
             esIrrevocable: true,
-            vigencia: TiemposVigenciaEnum.DETERMIADO,
+            vigencia: TiempoVigenciaUIEnum.DETERMIADO,
             fecha_inicio: "2024-01-15",
             fecha_fin: "2025-01-15",
             reglasYLimites: true,
-            tipoMoneda: EntityCoinEnum.SOLES,
+            tipoMoneda: EntityCoinUIEnum.SOLES,
             limiteMonetario: [
               {
                 id: "lo1",
                 desde: 0,
-                tipoMonto: TipoMontoEnum.MONTO,
+                tipoMonto: TipoMontoUIEnum.MONTO,
                 hasta: 30000,
-                tipoFirma: TipoFirmasEnum.SOLA_FIRMA,
+                tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA,
               },
               {
                 id: "lo2",
                 desde: 30000,
-                tipoMonto: TipoMontoEnum.SIN_LIMITE,
+                tipoMonto: TipoMontoUIEnum.SIN_LIMITE,
                 hasta: 0,
-                tipoFirma: TipoFirmasEnum.FIRMA_CONJUNTA,
+                tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
                 firmantes: [{ id: "fo1", cantidad: 1, grupo: "Gerente General" }],
               },
             ],
@@ -256,18 +256,18 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             id: "fo3",
             nombre: "Facultades Comerciales",
             esIrrevocable: true,
-            vigencia: TiemposVigenciaEnum.DETERMIADO,
+            vigencia: TiempoVigenciaUIEnum.DETERMIADO,
             fecha_inicio: "2024-06-01",
             fecha_fin: "2024-12-31",
             reglasYLimites: true,
-            tipoMoneda: EntityCoinEnum.DOLARES,
+            tipoMoneda: EntityCoinUIEnum.DOLARES,
             limiteMonetario: [
               {
                 id: "lo3",
                 desde: 0,
-                tipoMonto: TipoMontoEnum.MONTO,
+                tipoMonto: TipoMontoUIEnum.MONTO,
                 hasta: 10000,
-                tipoFirma: TipoFirmasEnum.SOLA_FIRMA,
+                tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA,
               },
             ],
           },
@@ -275,7 +275,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             id: "fo4",
             nombre: "Facultades Administrativas",
             esIrrevocable: false,
-            vigencia: TiemposVigenciaEnum.INDEFINIDO,
+            vigencia: TiempoVigenciaUIEnum.INDEFINIDO,
             reglasYLimites: false,
           },
         ],
@@ -300,7 +300,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
         facultades: apoderado.facultades.map((facultad) => {
           // Vigencia
           const vigencia =
-            facultad.vigencia === TiemposVigenciaEnum.INDEFINIDO
+            facultad.vigencia === TiempoVigenciaUIEnum.INDEFINIDO
               ? "Indefinido"
               : `${facultad.fecha_inicio} - ${facultad.fecha_fin}`;
 
@@ -314,12 +314,12 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
                 table_id: index + 1,
                 desde: String(limite.desde),
                 hasta:
-                  limite.tipoMonto === TipoMontoEnum.SIN_LIMITE
+                  limite.tipoMonto === TipoMontoUIEnum.SIN_LIMITE
                     ? "Sin límite"
                     : String(limite.hasta),
                 tipo_firma: limite.tipoFirma,
                 firmantes:
-                  limite.tipoFirma === TipoFirmasEnum.FIRMA_CONJUNTA ? limite.firmantes : [],
+                  limite.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA ? limite.firmantes : [],
               }))
             : [];
 
@@ -340,7 +340,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
         nombre: apoderado.nombre,
         facultades: apoderado.facultades.map((facultad) => {
           const vigencia =
-            facultad.vigencia === TiemposVigenciaEnum.INDEFINIDO
+            facultad.vigencia === TiempoVigenciaUIEnum.INDEFINIDO
               ? "Indefinido"
               : `${facultad.fecha_inicio} - ${facultad.fecha_fin}`;
 
@@ -352,12 +352,12 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
                 table_id: index + 1,
                 desde: String(limite.desde),
                 hasta:
-                  limite.tipoMonto === TipoMontoEnum.SIN_LIMITE
+                  limite.tipoMonto === TipoMontoUIEnum.SIN_LIMITE
                     ? "Sin límite"
                     : String(limite.hasta),
                 tipo_firma: limite.tipoFirma,
                 firmantes:
-                  limite.tipoFirma === TipoFirmasEnum.FIRMA_CONJUNTA ? limite.firmantes : [],
+                  limite.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA ? limite.firmantes : [],
               }))
             : [];
 

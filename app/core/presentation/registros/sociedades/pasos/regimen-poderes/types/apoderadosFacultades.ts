@@ -1,73 +1,9 @@
-import type { TipoFirmasEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoFirmasEnum";
-import type { TipoMontoEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoMontoEnum";
-import type { EntityCoinEnum } from "~/types/enums/EntityCoinEnum";
-import type { TiemposVigenciaEnum } from "~/types/enums/TiemposVigenciaEnum";
-
-export interface ApoderadoFacultad {
-  id: string;
-  nombre: string;
-  facultades: Facultad[];
-}
-
-export type Facultad = BaseFacultad & TipoVigencia & TipoReglas;
-
-interface BaseFacultad {
-  id: string;
-  nombre: string;
-}
-
-type TipoVigencia = VigenciaIndefinida | VigenciaDeterminada;
-
-interface VigenciaIndefinida {
-  esIrrevocable: false;
-  vigencia: TiemposVigenciaEnum.INDEFINIDO;
-}
-
-interface VigenciaDeterminada {
-  esIrrevocable: true;
-  vigencia: TiemposVigenciaEnum.DETERMIADO;
-  fecha_inicio: string;
-  fecha_fin: string;
-}
-
-type TipoReglas = SinReglasYLimites | ConReglasYLimites;
-
-interface SinReglasYLimites {
-  reglasYLimites: false;
-}
-
-interface ConReglasYLimites {
-  reglasYLimites: true;
-  tipoMoneda: EntityCoinEnum;
-  limiteMonetario: LimiteMonetario[];
-}
-
-type LimiteMonetario = BaseLimiteMonetario & (SolaFirma | FirmaConjunta);
-
-interface BaseLimiteMonetario {
-  id: string;
-  desde: number;
-  tipoMonto: TipoMontoEnum;
-  hasta: number;
-}
-
-interface SolaFirma {
-  tipoFirma: TipoFirmasEnum.SOLA_FIRMA;
-}
-
-interface FirmaConjunta {
-  tipoFirma: TipoFirmasEnum.FIRMA_CONJUNTA;
-  firmantes: Firmante[];
-}
-
-interface Firmante {
-  id: string;
-  cantidad: number;
-  grupo: string;
-}
+import type {
+  Firmante,
+  TipoFirmasUIEnum,
+} from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
 
 // Tabla de Apoderados Facultades
-
 export interface ApoderadoFacultadRow {
   id: string;
   nombre: string;
@@ -87,6 +23,6 @@ interface ReglasYLimitesRow {
   table_id: number;
   desde: string;
   hasta: string;
-  tipo_firma: TipoFirmasEnum;
+  tipo_firma: TipoFirmasUIEnum;
   firmantes: Firmante[];
 }
