@@ -1,4 +1,5 @@
 import type { BaseSelectOption } from "~/components/base/inputs/text/BaseInputSelect.vue";
+import type { TipoFacultad } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
 import { TipoFirmasEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoFirmasEnum";
 import { TipoMontoEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoMontoEnum";
 import { EntityCoinEnum } from "~/types/enums/EntityCoinEnum";
@@ -8,7 +9,7 @@ import type {
   ApoderadoFacultadRow,
   Facultad,
 } from "../types/apoderadosFacultades";
-import type { TipoFacultad, TipoFacultadRow } from "../types/facultades";
+import type { TipoFacultadRow } from "../types/facultades";
 
 export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
   state: (): State => ({
