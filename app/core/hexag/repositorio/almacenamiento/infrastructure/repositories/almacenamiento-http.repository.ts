@@ -13,6 +13,7 @@ export class AlmacenamientoHttpRepository implements AlmacenamientoRepository {
       `/api/v2/repositorio/${sociedadId}/almacenamiento/documentos`,
       {
         ...withAuthHeaders(),
+        method: 'GET' as const,
         params,
       }
     );
@@ -25,6 +26,7 @@ export class AlmacenamientoHttpRepository implements AlmacenamientoRepository {
       `/api/v2/repositorio/${sociedadId}/almacenamiento/documentos/${documentoId}`,
       {
         ...withAuthHeaders(),
+        method: 'GET' as const,
       }
     );
     return response.data ? (response.data as DocumentoSocietario) : null;
@@ -35,7 +37,7 @@ export class AlmacenamientoHttpRepository implements AlmacenamientoRepository {
       `/api/v2/repositorio/${sociedadId}/almacenamiento/carpetas`,
       {
         ...withAuthHeaders(),
-        method: 'POST',
+        method: 'POST' as const,
         body: { nombre, parentId },
       }
     );
@@ -53,7 +55,7 @@ export class AlmacenamientoHttpRepository implements AlmacenamientoRepository {
       `/api/v2/repositorio/${sociedadId}/almacenamiento/documentos/upload`,
       {
         ...withAuthHeaders(),
-        method: 'POST',
+        method: 'POST' as const,
         body: formData,
       }
     );
@@ -73,7 +75,7 @@ export class AlmacenamientoHttpRepository implements AlmacenamientoRepository {
   async deleteDocumento(sociedadId: string, documentoId: string): Promise<void> {
     await $fetch(`/api/v2/repositorio/${sociedadId}/almacenamiento/documentos/${documentoId}`, {
       ...withAuthHeaders(),
-      method: 'DELETE',
+      method: 'DELETE' as const,
     });
   }
 

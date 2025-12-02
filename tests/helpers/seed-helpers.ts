@@ -17,17 +17,16 @@ import type { DirectorioDTO } from "~/core/hexag/registros/sociedades/pasos/dire
 import { TipoDirector } from "~/core/hexag/registros/sociedades/pasos/directorio/domain/enums/director-tipo.enum";
 import type { QuorumDTO } from "~/core/hexag/registros/sociedades/pasos/quorum-mayorias/application/dtos/quorum.dto";
 import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
+import type { PersonTypeEnum } from "~/core/hexag/registros/sociedades/pasos/apoderados/domain";
 
 // Importar y re-exportar desde utils para mantener compatibilidad
 import {
-  ensureUUID as _ensureUUID,
   generateUUID as _generateUUID,
 } from "@tests/utils/uuid-generator";
 export { ensureUUID, generateUUID } from "@tests/utils/uuid-generator";
 
 // Aliases locales para uso interno
 const generateUUID = _generateUUID;
-const ensureUUID = _ensureUUID;
 
 /**
  * Genera datos de prueba para una sociedad
@@ -331,7 +330,7 @@ export function createTestApoderado(
     claseApoderadoId,
     persona: {
       id: generateUUID(),
-      tipo: "NATURAL",
+      tipo: "NATURAL" as PersonTypeEnum,
       nombre: "Roberto",
       apellidoPaterno: "Silva",
       apellidoMaterno: "Mendoza",
@@ -344,7 +343,7 @@ export function createTestApoderado(
       distrito: "San Isidro",
       provincia: "Lima",
       departamento: "Lima",
-    } as Persona,
+    } as any,
   };
 }
 

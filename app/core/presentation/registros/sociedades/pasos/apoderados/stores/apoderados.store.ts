@@ -121,10 +121,10 @@ export const useApoderadosStore = defineStore("registros-apoderados", {
       this.clasesStatus = "saving";
       this.errorMessage = null;
       try {
-        const result = await createClaseUseCase.execute(profileId, payload);
-        this.clases.push({ ...result, apoderados: [] });
+        await createClaseUseCase.execute(profileId, payload);
+        // Refrescar lista para obtener la clase creada con su ID del backend
+        await this.listClases(profileId, "internal");
         this.clasesStatus = "idle";
-        return result;
       } catch (error) {
         console.error("[ApoderadosStore] createClase error", error);
         this.clasesStatus = "error";
@@ -138,17 +138,10 @@ export const useApoderadosStore = defineStore("registros-apoderados", {
       this.clasesStatus = "saving";
       this.errorMessage = null;
       try {
-        const result = await updateClaseUseCase.execute(profileId, payload);
-        const index = this.clases.findIndex((item) => item.id === result.id);
-        if (index === -1) {
-          this.clases.push(result);
-        } else {
-          const current = this.clases[index];
-          const apoderados = current?.apoderados;
-          this.clases.splice(index, 1, { ...result, apoderados });
-        }
+        await updateClaseUseCase.execute(profileId, payload);
+        // Refrescar lista para obtener la clase actualizada
+        await this.listClases(profileId, "internal");
         this.clasesStatus = "idle";
-        return result;
       } catch (error) {
         console.error("[ApoderadosStore] updateClase error", error);
         this.clasesStatus = "error";
@@ -177,10 +170,10 @@ export const useApoderadosStore = defineStore("registros-apoderados", {
       this.apoderadosStatus = "saving";
       this.errorMessage = null;
       try {
-        const result = await createApoderadoUseCase.execute(profileId, payload);
-        this.apoderados.push(result);
+        await createApoderadoUseCase.execute(profileId, payload);
+        // Refrescar lista para obtener el apoderado creado con su ID del backend
+        await this.listApoderados(profileId, "internal");
         this.apoderadosStatus = "idle";
-        return result;
       } catch (error) {
         console.error("[ApoderadosStore] createApoderado error", error);
         this.apoderadosStatus = "error";
@@ -194,15 +187,10 @@ export const useApoderadosStore = defineStore("registros-apoderados", {
       this.apoderadosStatus = "saving";
       this.errorMessage = null;
       try {
-        const result = await updateApoderadoUseCase.execute(profileId, payload);
-        const index = this.apoderados.findIndex((item) => item.id === result.id);
-        if (index === -1) {
-          this.apoderados.push(result);
-        } else {
-          this.apoderados.splice(index, 1, result);
-        }
+        await updateApoderadoUseCase.execute(profileId, payload);
+        // Refrescar lista para obtener el apoderado actualizado
+        await this.listApoderados(profileId, "internal");
         this.apoderadosStatus = "idle";
-        return result;
       } catch (error) {
         console.error("[ApoderadosStore] updateApoderado error", error);
         this.apoderadosStatus = "error";
@@ -215,7 +203,7 @@ export const useApoderadosStore = defineStore("registros-apoderados", {
       this.apoderadosStatus = "saving";
       this.errorMessage = null;
       try {
-        await deleteApoderadoUseCase.execute(profileId, claseId, apoderadoId);
+        await deleteApoderadoUseCase.execute(profileId, apoderadoId);
         this.apoderados = this.apoderados.filter((item) => item.id !== apoderadoId);
         this.apoderadosStatus = "idle";
       } catch (error) {

@@ -39,7 +39,6 @@ const searchValue = computed({
       }"
       @focus="
         ($event.target as HTMLInputElement).style.borderColor = 'var(--primary-700)';
-        ($event.target as HTMLInputElement).style.ringColor = 'var(--primary-700)';
       "
       @blur="
         ($event.target as HTMLInputElement).style.borderColor = 'var(--border-light)';

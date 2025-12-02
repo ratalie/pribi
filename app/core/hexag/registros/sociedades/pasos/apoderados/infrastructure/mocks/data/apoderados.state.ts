@@ -22,8 +22,16 @@ const ensureId = (value?: string) => {
 
 const now = () => new Date().toISOString();
 
-type StoredClase = ClaseApoderado & { societyProfileId: string };
-type StoredApoderado = Apoderado & { societyProfileId: string };
+type StoredClase = ClaseApoderado & { 
+  societyProfileId: string;
+  createdAt: string;
+  updatedAt: string;
+};
+type StoredApoderado = Apoderado & { 
+  societyProfileId: string;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export async function listClasesMock(profileId: string): Promise<ClaseApoderado[]> {
   const clases = (await getAllRecords<StoredClase>(CLASES_STORE)) ?? [];
@@ -32,8 +40,8 @@ export async function listClasesMock(profileId: string): Promise<ClaseApoderado[
   return clases
     .filter((item) => item.societyProfileId === profileId)
     .map((item) => ({
-      ...item,
-      apoderados: apoderados.filter((apoderado) => apoderado.claseApoderadoId === item.id),
+      id: item.id,
+      nombre: item.nombre,
     }));
 }
 
@@ -47,7 +55,10 @@ export async function createClaseMock(profileId: string, payload: ClaseApoderado
   };
 
   await putRecord(CLASES_STORE, entity);
-  return { ...entity, apoderados: [] };
+  return {
+    id: entity.id,
+    nombre: entity.nombre,
+  };
 }
 
 export async function updateClaseMock(profileId: string, payload: ClaseApoderadoDTO): Promise<ClaseApoderado> {
@@ -61,8 +72,10 @@ export async function updateClaseMock(profileId: string, payload: ClaseApoderado
   };
 
   await putRecord(CLASES_STORE, entity);
-  const apoderados = await listApoderadosMock(profileId);
-  return { ...entity, apoderados: apoderados.filter((item) => item.claseApoderadoId === entity.id) };
+  return {
+    id: entity.id,
+    nombre: entity.nombre,
+  };
 }
 
 export async function deleteClaseMock(profileId: string, claseId: string): Promise<void> {
@@ -77,7 +90,13 @@ export async function deleteClaseMock(profileId: string, claseId: string): Promi
 
 export async function listApoderadosMock(profileId: string): Promise<Apoderado[]> {
   const apoderados = (await getAllRecords<StoredApoderado>(APODERADOS_STORE)) ?? [];
-  return apoderados.filter((item) => item.societyProfileId === profileId);
+  return apoderados
+    .filter((item) => item.societyProfileId === profileId)
+    .map((item) => ({
+      id: item.id,
+      claseApoderadoId: item.claseApoderadoId,
+      persona: item.persona,
+    }));
 }
 
 export async function createApoderadoMock(profileId: string, payload: ApoderadoDTO): Promise<Apoderado> {
@@ -94,7 +113,11 @@ export async function createApoderadoMock(profileId: string, payload: ApoderadoD
   };
 
   await putRecord(APODERADOS_STORE, entity);
-  return entity;
+  return {
+    id: entity.id,
+    claseApoderadoId: entity.claseApoderadoId,
+    persona: entity.persona,
+  };
 }
 
 export async function updateApoderadoMock(profileId: string, payload: ApoderadoDTO): Promise<Apoderado> {
@@ -113,7 +136,11 @@ export async function updateApoderadoMock(profileId: string, payload: ApoderadoD
   };
 
   await putRecord(APODERADOS_STORE, entity);
-  return entity;
+  return {
+    id: entity.id,
+    claseApoderadoId: entity.claseApoderadoId,
+    persona: entity.persona,
+  };
 }
 
 export async function deleteApoderadoMock(profileId: string, apoderadoId: string): Promise<void> {

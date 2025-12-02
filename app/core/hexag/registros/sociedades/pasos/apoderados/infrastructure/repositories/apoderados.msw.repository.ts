@@ -9,7 +9,7 @@
  * @pattern Repository Pattern - MSW Implementation
  */
 import type { ApoderadosRepository, Apoderado, ClaseApoderado } from "~/core/hexag/registros/sociedades/pasos/apoderados/domain";
-import type { ApoderadoDTO, ClaseApoderadoDTO } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/dtos";
+import type { ApoderadoDTO, ClaseApoderadoDTO } from "../../application";
 import {
   listClasesMock,
   createClaseMock,
@@ -56,6 +56,14 @@ export class ApoderadosMswRepository implements ApoderadosRepository {
 
   async deleteApoderado(profileId: string, apoderadoId: string): Promise<void> {
     await deleteApoderadoMock(profileId, apoderadoId);
+  }
+
+  async createGerenteGeneral(profileId: string, payload: ApoderadoDTO): Promise<void> {
+    await createApoderadoMock(profileId, payload);
+  }
+
+  async updateGerenteGeneral(profileId: string, payload: ApoderadoDTO): Promise<void> {
+    await updateApoderadoMock(profileId, payload);
   }
 }
 

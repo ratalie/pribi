@@ -12,9 +12,36 @@ import { ApoderadosMapper } from "../mappers/apoderados.mapper";
 import { ClasesApoderadosMapper } from "../mappers/clases-apoderados.mapper";
 
 export class ApoderadosHttpRepository implements ApoderadosRepository {
+  private readonly basePath = (() => {
+    const config = useRuntimeConfig();
+    const override = config.public?.societyProfileEndpoint as string | undefined;
+    return override && override.length > 0 ? override : "/api/v2/society-profile";
+  })();
+
+  private resolveBase(path: string = ""): string {
+    const config = useRuntimeConfig();
+    const apiBase = (config.public?.apiBase as string | undefined) || "";
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+
+    const candidates = [apiBase, origin, "http://localhost:3000"];
+
+    for (const base of candidates) {
+      if (!base) continue;
+      try {
+        const baseUrl = new URL(base, origin || "http://localhost:3000");
+        const basePath = this.basePath.startsWith("/") ? this.basePath : `/${this.basePath}`;
+        return new URL(`${basePath}${path}`, baseUrl.origin).toString();
+      } catch {
+        continue;
+      }
+    }
+
+    return `${this.basePath}${path}`;
+  }
+
   private getUrl(profileId: string, suffix?: string): string {
     const useSuffix = suffix ? `/${suffix}` : "";
-    return `/api/v2/society-profile/${profileId}/attorney-register${useSuffix}`;
+    return this.resolveBase(`/${profileId}/attorney-register${useSuffix}`);
   }
 
   //clases de apoderado
@@ -46,7 +73,7 @@ export class ApoderadosHttpRepository implements ApoderadosRepository {
     if (!response.success) {
       throw new Error(response.message || "Error al crear la clase de apoderado");
     }
-    
+
     // ⚠️ El backend NO retorna la clase creada, solo confirma éxito
     // Para obtener el ID, debes hacer un GET después
   }
@@ -102,7 +129,7 @@ export class ApoderadosHttpRepository implements ApoderadosRepository {
     if (!response.success) {
       throw new Error(response.message || "Error al crear el apoderado");
     }
-    
+
     // ⚠️ El backend NO retorna el apoderado creado, solo confirma éxito
     // Para obtener el ID, debes hacer un GET después
   }

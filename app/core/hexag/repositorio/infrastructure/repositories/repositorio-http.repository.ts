@@ -15,6 +15,7 @@ export class RepositorioHttpRepository implements RepositorioRepository {
       `/api/v2/repositorio/${sociedadId}/stats`,
       {
         ...withAuthHeaders(),
+        method: 'GET' as const,
       }
     );
     return response.data;
@@ -25,6 +26,7 @@ export class RepositorioHttpRepository implements RepositorioRepository {
       `/api/v2/repositorio/${sociedadId}/metricas`,
       {
         ...withAuthHeaders(),
+        method: 'GET' as const,
       }
     );
     return response.data;
@@ -33,6 +35,7 @@ export class RepositorioHttpRepository implements RepositorioRepository {
   async listSociedades(): Promise<Sociedad[]> {
     const response = await $fetch<{ data: Sociedad[] }>('/api/v2/repositorio/sociedades', {
       ...withAuthHeaders(),
+      method: 'GET' as const,
     });
     return response.data;
   }
@@ -42,7 +45,7 @@ export class RepositorioHttpRepository implements RepositorioRepository {
       `/api/v2/repositorio/${sociedadId}/search`,
       {
         ...withAuthHeaders(),
-        method: 'POST',
+        method: 'POST' as const,
         body: { query },
       }
     );

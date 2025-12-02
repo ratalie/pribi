@@ -52,7 +52,7 @@ export const useAccionesComunesStore = defineStore("accionesComunesModal", {
     },
 
     removeDerechosEspecialesMetadata(fileId: string) {
-      const index = this.metadataDerechosEspeciales.findIndex((m) => m.fileId === fileId);
+      const index = this.metadataDerechosEspeciales.findIndex((m) => m.archivoId === fileId);
       if (index !== -1) {
         this.metadataDerechosEspeciales.splice(index, 1);
       }
@@ -63,7 +63,7 @@ export const useAccionesComunesStore = defineStore("accionesComunesModal", {
     },
 
     removeObligacionesMetadata(fileId: string) {
-      const index = this.metadataObligaciones.findIndex((m) => m.fileId === fileId);
+      const index = this.metadataObligaciones.findIndex((m) => m.archivoId === fileId);
       if (index !== -1) {
         this.metadataObligaciones.splice(index, 1);
       }

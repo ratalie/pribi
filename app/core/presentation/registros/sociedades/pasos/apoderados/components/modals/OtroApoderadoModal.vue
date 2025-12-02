@@ -168,7 +168,7 @@
     const payload: ApoderadoDTO = {
       id: apoderadoId,
       claseApoderadoId: props.otrosClassId, // ← Usa la clase "Otros Apoderados"
-      persona,
+      persona: persona as any,
     };
 
     console.log("[OtroApoderadoModal] handleSubmit success", { payload });

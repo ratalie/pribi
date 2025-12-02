@@ -216,7 +216,7 @@ export async function findDocumentoGeneradoMock(
 
   // Buscar en Operaciones (juntas)
   const juntaCarpeta = estructura.operaciones.carpetas.juntaAccionistas;
-  if (juntaCarpeta.juntas) {
+  if (juntaCarpeta && juntaCarpeta.juntas) {
     for (const junta of juntaCarpeta.juntas) {
       const found = junta.documentos.find((d) => d.id === documentoId);
       if (found) return found;

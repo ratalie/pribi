@@ -35,10 +35,15 @@ const {
 
 const activeTab = ref<"documentos" | "chat" | "permisos">("documentos");
 const inputMessage = ref("");
-const messages = ref([
+const messages = ref<Array<{
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  timestamp: Date;
+}>>([
   {
     id: "1",
-    role: "assistant" as const,
+    role: "assistant",
     content:
       "¡Hola! Soy tu asistente de IA. ¿En qué puedo ayudarte con los documentos de esta carpeta?",
     timestamp: new Date(),

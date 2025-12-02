@@ -201,16 +201,14 @@ const computedPlaceholder = computed(() => {
           borderColor: 'var(--border-light)',
           fontFamily: 'var(--font-secondary)',
         }"
-        @focus="
-          ($event.target as HTMLInputElement).style.borderColor =
-            'var(--primary-700)';
-          ($event.target as HTMLInputElement).style.ringColor =
-            'var(--primary-700)';
-        "
-        @blur="
-          ($event.target as HTMLInputElement).style.borderColor =
-            'var(--border-light)';
-        "
+      @focus="
+        ($event.target as HTMLInputElement).style.borderColor =
+          'var(--primary-700)';
+      "
+      @blur="
+        ($event.target as HTMLInputElement).style.borderColor =
+          'var(--border-light)';
+      "
       />
 
       <!-- Botones de acción -->

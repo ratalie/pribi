@@ -136,7 +136,9 @@ export const useAlmacenamientoStore = defineStore('almacenamiento', {
       // Si hay breadcrumb, navegar a la carpeta padre
       if (nuevoBreadcrumb.length > 0) {
         const carpetaPadre = nuevoBreadcrumb[nuevoBreadcrumb.length - 1];
-        await this.navegarACarpeta(carpetaPadre.id, sociedadId);
+        if (carpetaPadre) {
+          await this.navegarACarpeta(carpetaPadre.id, sociedadId);
+        }
       } else {
         // Volver a raíz
         await this.cargarDocumentos(null, sociedadId);

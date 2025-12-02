@@ -9,7 +9,7 @@ export class ClasesApoderadosMapper {
     return {
       id: response.id,
       nombre: response.nombre,
-      apoderados: [], // Los apoderados se cargan por separado
+      // apoderados se obtiene con listApoderados(), no forma parte de ClaseApoderado
     };
   }
 

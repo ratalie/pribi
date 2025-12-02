@@ -12,6 +12,7 @@ export class DocumentosGeneradosHttpRepository implements DocumentosGeneradosRep
       `/api/v2/repositorio/${sociedadId}/documentos-generados`,
       {
         ...withAuthHeaders(),
+        method: 'GET' as const,
       }
     );
     // TODO: Agregar mapper cuando esté definido
@@ -23,6 +24,7 @@ export class DocumentosGeneradosHttpRepository implements DocumentosGeneradosRep
       `/api/v2/repositorio/${sociedadId}/documentos-generados/${documentoId}`,
       {
         ...withAuthHeaders(),
+        method: 'GET' as const,
       }
     );
     return response.data ? (response.data as DocumentoGenerado) : null;

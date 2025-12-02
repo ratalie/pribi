@@ -13,6 +13,7 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
       `/api/v2/repositorio/${sociedadId}/carpetas-personalizadas`,
       {
         ...withAuthHeaders(),
+        method: 'GET' as const,
       }
     );
     return response.data.map((dto) => CarpetasPersonalizadasMapper.dtoToEntity(dto));
@@ -23,6 +24,7 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
       `/api/v2/repositorio/${sociedadId}/carpetas-personalizadas/${carpetaId}`,
       {
         ...withAuthHeaders(),
+        method: 'GET' as const,
       }
     );
     return response.data ? CarpetasPersonalizadasMapper.dtoToEntity(response.data) : null;
@@ -33,7 +35,7 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
       `/api/v2/repositorio/${sociedadId}/carpetas-personalizadas`,
       {
         ...withAuthHeaders(),
-        method: 'POST',
+        method: 'POST' as const,
         body: { nombre, descripcion },
       }
     );
@@ -45,7 +47,7 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
       `/api/v2/repositorio/${sociedadId}/carpetas-personalizadas/${carpetaId}`,
       {
         ...withAuthHeaders(),
-        method: 'PUT',
+        method: 'PUT' as const,
         body: { nombre, descripcion },
       }
     );
@@ -55,7 +57,7 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
   async delete(sociedadId: string, carpetaId: string): Promise<void> {
     await $fetch(`/api/v2/repositorio/${sociedadId}/carpetas-personalizadas/${carpetaId}`, {
       ...withAuthHeaders(),
-      method: 'DELETE',
+      method: 'DELETE' as const,
     });
   }
 
@@ -64,6 +66,7 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
       `/api/v2/repositorio/${sociedadId}/carpetas-personalizadas/${carpetaId}/enlaces`,
       {
         ...withAuthHeaders(),
+        method: 'GET' as const,
       }
     );
     return response.data.map((dto) => CarpetasPersonalizadasMapper.enlaceDtoToEntity(dto));
@@ -74,7 +77,7 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
       `/api/v2/repositorio/${sociedadId}/carpetas-personalizadas/${carpetaId}/enlaces`,
       {
         ...withAuthHeaders(),
-        method: 'POST',
+        method: 'POST' as const,
         body: { documentoId, tipo, origen },
       }
     );
@@ -86,7 +89,7 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
       `/api/v2/repositorio/${sociedadId}/carpetas-personalizadas/${carpetaId}/enlaces/${enlaceId}`,
       {
         ...withAuthHeaders(),
-        method: 'DELETE',
+        method: 'DELETE' as const,
       }
     );
   }

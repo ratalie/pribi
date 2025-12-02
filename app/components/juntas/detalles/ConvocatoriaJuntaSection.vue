@@ -198,7 +198,7 @@ const primeraHora = computed({
     if (!value) return;
     const [hours, minutes] = value.split(':').map(Number);
     const date = new Date();
-    date.setHours(hours, minutes);
+    date.setHours(hours || 0, minutes || 0);
 
     ensureConvocatoria('primera');
     if (store.meetingDetails?.primeraConvocatoria) {
@@ -283,7 +283,7 @@ const segundaHora = computed({
     if (!value) return;
     const [hours, minutes] = value.split(':').map(Number);
     const date = new Date();
-    date.setHours(hours, minutes);
+    date.setHours(hours || 0, minutes || 0);
 
     ensureConvocatoria('segunda');
     if (store.meetingDetails?.segundaConvocatoria) {
@@ -368,7 +368,7 @@ const detalleHora = computed({
     if (!value) return;
     const [hours, minutes] = value.split(':').map(Number);
     const date = new Date();
-    date.setHours(hours, minutes);
+    date.setHours(hours || 0, minutes || 0);
 
     ensureConvocatoria('detalle');
     if (store.meetingDetails?.primeraConvocatoria) {

@@ -165,7 +165,7 @@ const lineChartConfig = {
 
 const totalEnlaces = computed(() => {
   return carpetasStore.carpetas.reduce(
-    (acc, carpeta) => acc + (carpeta.enlaces?.length ?? 0),
+    (acc, carpeta) => acc + (carpeta.totalEnlaces ?? 0),
     0
   );
 });

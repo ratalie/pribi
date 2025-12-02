@@ -126,16 +126,19 @@ export const useRegistroApoderados = () => {
 
     if (tipoPersona === "juridica") {
       const personaData: PersonaJuridicaState = {
+        seConstituyoEnPeru: personaJuridicaStore.seConstituyoEnPeru,
         jurisdiccion: personaJuridicaStore.jurisdiccion,
         tipoDocumento: personaJuridicaStore.tipoDocumento,
         numeroDocumento: personaJuridicaStore.numeroDocumento,
         nombreComercial: personaJuridicaStore.nombreComercial,
         razonSocial: personaJuridicaStore.razonSocial,
         pais: personaJuridicaStore.pais,
+        paisOrigen: personaJuridicaStore.paisOrigen,
         direccion: personaJuridicaStore.direccion,
         provincia: personaJuridicaStore.provincia,
         distrito: personaJuridicaStore.distrito,
         departamento: personaJuridicaStore.departamento,
+        tieneRepresentante: personaJuridicaStore.tieneRepresentante,
         representadoPor: personaJuridicaStore.representadoPor
           ? { ...personaJuridicaStore.representadoPor }
           : null,

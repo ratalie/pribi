@@ -11,15 +11,15 @@
  * y producen los mismos resultados para las mismas operaciones.
  */
 
-import { beforeEach, describe, expect, it } from "vitest";
 import { clearAllMockData } from "@hexag/registros/shared/mock-database";
+import { generateUUID } from "@tests/utils/uuid-generator";
+import { beforeEach, describe, expect, it } from "vitest";
+import { isPersonaNatural } from "~/core/hexag/registros/sociedades/pasos/accionistas/domain/entities/persona.entity";
+import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
+import type { ApoderadoDTO, ClaseApoderadoDTO } from "../../../application";
 import type { ApoderadosRepository } from "../../../domain/ports/apoderados.repository";
-import type { ClaseApoderadoDTO, ApoderadoDTO } from "../../../application/dtos";
 import { ApoderadosHttpRepository } from "../apoderados.http.repository";
 import { ApoderadosMswRepository } from "../apoderados.msw.repository";
-import { isPersonaNatural } from "~/core/hexag/registros/sociedades/pasos/accionistas/domain/entities/persona.entity";
-import { generateUUID } from "@tests/utils/uuid-generator";
-import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
 
 /**
  * Helper para crear una clase de apoderado
@@ -94,11 +94,11 @@ describe.each([
         // Verificar que se creó correctamente obteniendo la lista
         const clases = await repository.listClases(societyId);
         expect(clases.length).toBeGreaterThan(0);
-        
+
         const claseCreada = clases.find((c) => c.nombre === claseDTO.nombre);
         expect(claseCreada).toBeDefined();
         expect(claseCreada!.nombre).toBe(claseDTO.nombre);
-        expect(claseCreada!.apoderados).toEqual([]);
+        // ClaseApoderado no tiene campo apoderados (se obtienen con listApoderados)
       });
     });
 
@@ -180,12 +180,16 @@ describe.each([
         // Verificar que se creó correctamente
         const apoderados = await repository.listApoderados(societyId);
         expect(apoderados.length).toBeGreaterThan(0);
-        
+
         const result = apoderados[0];
         expect(result).toBeDefined();
-        expect(result.id).toBeDefined();
-        expect(result.claseApoderadoId).toBe(clase!.id);
-        if (isPersonaNatural(result.persona) && isPersonaNatural(apoderadoDTO.persona)) {
+        expect(result!.id).toBeDefined();
+        expect(result!.claseApoderadoId).toBe(clase!.id);
+        if (
+          result &&
+          isPersonaNatural(result.persona) &&
+          isPersonaNatural(apoderadoDTO.persona)
+        ) {
           expect(result.persona.nombre).toBe(apoderadoDTO.persona.nombre);
           expect(result.persona.apellidoPaterno).toBe(apoderadoDTO.persona.apellidoPaterno);
         }
@@ -215,7 +219,7 @@ describe.each([
         // Actualizar
         const updatedDTO: ApoderadoDTO = {
           ...apoderadoDTO,
-          id: created.id,
+          id: created!.id,
           persona: {
             ...apoderadoDTO.persona,
             nombre: "Roberto Actualizado",
@@ -226,7 +230,7 @@ describe.each([
 
         // Verificar actualización
         apoderados = await repository.listApoderados(societyId);
-        const updated = apoderados.find((a) => a.id === created.id);
+        const updated = apoderados.find((a) => a.id === created!.id);
         expect(updated).toBeDefined();
         if (isPersonaNatural(updated!.persona)) {
           expect(updated!.persona.nombre).toBe("Roberto Actualizado");
@@ -255,11 +259,11 @@ describe.each([
         expect(created).toBeDefined();
 
         // Eliminar
-        await repository.deleteApoderado(societyId, created.id);
+        await repository.deleteApoderado(societyId, created!.id);
 
         // Verificar eliminación
         apoderados = await repository.listApoderados(societyId);
-        expect(apoderados.find((a) => a.id === created.id)).toBeUndefined();
+        expect(apoderados.find((a) => a.id === created!.id)).toBeUndefined();
       });
     });
   });
@@ -276,7 +280,7 @@ describe.each([
       const clase = clases[0];
 
       // Crear apoderado
-      const apoderadoDTO = createApoderadoDTO(clase.id);
+      const apoderadoDTO = createApoderadoDTO(clase!.id);
       await repository.createApoderado(societyId, apoderadoDTO);
 
       // Listar apoderados
@@ -287,7 +291,7 @@ describe.each([
       // Actualizar apoderado
       const updatedDTO: ApoderadoDTO = {
         ...apoderadoDTO,
-        id: apoderado.id,
+        id: apoderado!.id,
         persona: {
           ...apoderadoDTO.persona,
           nombre: "Roberto Actualizado",
@@ -297,22 +301,21 @@ describe.each([
 
       // Verificar actualización
       apoderados = await repository.listApoderados(societyId);
-      const updated = apoderados.find((a) => a.id === apoderado.id);
+      const updated = apoderados.find((a) => a.id === apoderado!.id);
       expect(updated).toBeDefined();
       if (isPersonaNatural(updated!.persona)) {
         expect(updated!.persona.nombre).toBe("Roberto Actualizado");
       }
 
       // Eliminar apoderado
-      await repository.deleteApoderado(societyId, apoderado.id);
+      await repository.deleteApoderado(societyId, apoderado!.id);
       apoderados = await repository.listApoderados(societyId);
       expect(apoderados.length).toBe(0);
 
       // Eliminar clase
-      await repository.deleteClase(societyId, clase.id);
+      await repository.deleteClase(societyId, clase!.id);
       clases = await repository.listClases(societyId);
       expect(clases.length).toBe(0);
     });
   });
 });
-

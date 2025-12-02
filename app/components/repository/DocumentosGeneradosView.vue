@@ -117,6 +117,7 @@
 
     // Nivel 2: Carpeta principal
     const carpetaKey = currentPath.value[1];
+    if (!carpetaKey) return { folders, files };
     const carpeta = categoriaData.carpetas[carpetaKey];
 
     if (!carpeta) return { folders, files };
@@ -125,7 +126,7 @@
     if (currentPath.value.length === 2) {
       // Caso especial: Juntas
       if (carpeta.juntas && carpeta.juntas.length > 0) {
-        carpeta.juntas.forEach((junta) => {
+        carpeta.juntas.forEach((junta: any) => {
           folders.push({
             id: `${categoria}-${carpetaKey}-${junta.id}`,
             nombre: junta.nombre,
@@ -136,7 +137,7 @@
       }
       // Subcarpetas normales
       if (carpeta.subcarpetas && carpeta.subcarpetas.length > 0) {
-        carpeta.subcarpetas.forEach((subcarpeta) => {
+        carpeta.subcarpetas.forEach((subcarpeta: any) => {
           folders.push({
             id: `${categoria}-${carpetaKey}-${subcarpeta.id}`,
             nombre: subcarpeta.nombre,
@@ -147,7 +148,7 @@
       }
       // Documentos directos
       if (carpeta.documentos && carpeta.documentos.length > 0) {
-        carpeta.documentos.forEach((doc) => {
+        carpeta.documentos.forEach((doc: any) => {
           files.push({
             id: doc.id,
             nombre: doc.nombre,
@@ -214,41 +215,44 @@
         ? documentosGenerados.value?.registros
         : documentosGenerados.value?.operaciones;
 
-    if (categoriaData) {
+    if (categoriaData && categoria) {
       items.push({ id: categoria, nombre: categoriaData.nombre });
     }
 
     // Carpeta principal
     if (currentPath.value.length > 1) {
       const carpetaKey = currentPath.value[1];
-      const carpeta = categoriaData?.carpetas[carpetaKey];
-      if (carpeta) {
-        items.push({ id: `${categoria}-${carpetaKey}`, nombre: carpeta.nombre });
+      if (categoriaData && carpetaKey) {
+        const carpeta = categoriaData.carpetas[carpetaKey];
+        if (carpeta) {
+          items.push({ id: `${categoria}-${carpetaKey}`, nombre: carpeta.nombre });
+        }
       }
     }
 
     // Subcarpeta o Junta
     if (currentPath.value.length > 2) {
       const carpetaKey = currentPath.value[1];
-      const carpeta = categoriaData?.carpetas[carpetaKey];
       const subcarpetaId = currentPath.value[2];
-
-      if (carpeta) {
-        // Buscar en subcarpetas
-        const subcarpeta = carpeta.subcarpetas?.find((s) => s.id === subcarpetaId);
-        if (subcarpeta) {
-          items.push({
-            id: `${categoria}-${carpetaKey}-${subcarpetaId}`,
-            nombre: subcarpeta.nombre,
-          });
-        }
-        // Buscar en juntas
-        const junta = carpeta.juntas?.find((j) => j.id === subcarpetaId);
-        if (junta) {
-          items.push({
-            id: `${categoria}-${carpetaKey}-${subcarpetaId}`,
-            nombre: junta.nombre,
-          });
+      if (categoriaData && carpetaKey && subcarpetaId) {
+        const carpeta = categoriaData.carpetas[carpetaKey];
+        if (carpeta) {
+          // Buscar en subcarpetas
+          const subcarpeta = carpeta.subcarpetas?.find((s: any) => s.id === subcarpetaId);
+          if (subcarpeta) {
+            items.push({
+              id: `${categoria}-${carpetaKey}-${subcarpetaId}`,
+              nombre: subcarpeta.nombre,
+            });
+          }
+          // Buscar en juntas
+          const junta = carpeta.juntas?.find((j: any) => j.id === subcarpetaId);
+          if (junta) {
+            items.push({
+              id: `${categoria}-${carpetaKey}-${subcarpetaId}`,
+              nombre: junta.nombre,
+            });
+          }
         }
       }
     }
@@ -274,17 +278,19 @@
     // Necesitamos extraer solo la parte relevante según el nivel actual
     const parts = folderId.split("-");
 
-    if (currentPath.value.length === 0) {
+    if (currentPath.value.length === 0 && parts[0]) {
       // Nivel raíz: agregar categoría (registros u operaciones)
       currentPath.value = [parts[0]];
-    } else if (currentPath.value.length === 1) {
+    } else if (currentPath.value.length === 1 && parts[1]) {
       // Nivel categoría: agregar carpeta principal (sociedades, sucursales, etc.)
       currentPath.value = [...currentPath.value, parts[1]];
     } else if (currentPath.value.length === 2) {
       // Nivel carpeta principal: agregar subcarpeta o junta
       // El ID completo es "categoria-carpeta-subcarpeta", necesitamos solo la subcarpeta
       const subcarpetaId = parts.slice(2).join("-");
-      currentPath.value = [...currentPath.value, subcarpetaId];
+      if (subcarpetaId) {
+        currentPath.value = [...currentPath.value, subcarpetaId];
+      }
     }
   };
 
@@ -306,7 +312,7 @@
         name: doc.nombre,
         type: doc.tipo || "documento",
         owner: "Sistema",
-        dateModified: doc.fechaCreacion || new Date(),
+        dateModified: doc.fecha || new Date(),
         size: doc.tamaño,
       };
       previewModalOpen.value = true;
@@ -331,19 +337,23 @@
         categoria === "registros"
           ? documentosGenerados.value?.registros
           : documentosGenerados.value?.operaciones;
-      const carpeta = categoriaData?.carpetas[carpetaKey];
-      const junta = carpeta?.juntas?.find((j) => j.id === file.juntaId);
+      if (categoriaData && carpetaKey) {
+        const carpeta = categoriaData.carpetas[carpetaKey];
+        const junta = carpeta?.juntas?.find((j: any) => j.id === file.juntaId);
 
-      if (junta) {
-        juntaInfo.value = {
-          nombre: junta.nombre,
-          fecha: new Intl.DateTimeFormat("es-ES", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }).format(junta.fecha),
-          sociedad: dashboardStore.sociedadSeleccionada?.nombre || "N/A",
-        };
+        if (junta) {
+          juntaInfo.value = {
+            nombre: junta.nombre,
+            fecha: new Intl.DateTimeFormat("es-ES", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }).format(junta.fecha),
+            sociedad: dashboardStore.sociedadSeleccionada?.nombre || "N/A",
+          };
+        } else {
+          juntaInfo.value = null;
+        }
       }
     } else {
       juntaInfo.value = null;

@@ -17,7 +17,7 @@
 <template>
   <div class="grid grid-cols-2 gap-12">
     <SelectInputZod
-      v-model="personaJuridicaStore.pais"
+      v-model="(personaJuridicaStore as any).pais"
       name="pais"
       label="País"
       :schema="paisSchema"

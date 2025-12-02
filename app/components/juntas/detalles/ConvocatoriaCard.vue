@@ -79,8 +79,8 @@ interface Props {
   prefix: string; // 'primera' o 'segunda' o 'detalle'
   modo: ModoReunion;
   direccion: string;
-  fecha: string;
-  hora: string;
+  fecha?: string;
+  hora?: string;
   showInfoBanner?: boolean;
   infoBannerText?: string;
   isPrimeraConvocatoria?: boolean;
@@ -126,12 +126,12 @@ const direccionValue = computed({
 });
 
 const fechaValue = computed({
-  get: () => props.fecha,
+  get: () => props.fecha || '',
   set: (value) => emit('update:fecha', value),
 });
 
 const horaValue = computed({
-  get: () => props.hora,
+  get: () => props.hora || '',
   set: (value) => emit('update:hora', value),
 });
 
