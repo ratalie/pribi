@@ -8,6 +8,8 @@ export interface AsignacionAccion {
   accionistaId: string;
   cantidadAccionesSuscritas: number;
   precioPorAccion: number;
+  capitalSocial: number;
+  prima: number;
   porcentajePagadoPorAccion: number;
   totalDividendosPendientes: number;
   pagadoCompletamente: boolean;

@@ -4,14 +4,16 @@ import type { AsignacionAccion } from "../../domain/entities/asignacion-accion.e
 type BackendAsignacionAccionResponse =
   | (Record<string, unknown> & {
       id?: string;
-      allocationStructureId?: string;
-      actionId?: string;
-      shareholderId?: string;
-      subscribedSharesQuantity?: number;
-      pricePerShare?: number;
-      percentagePaidPerShare?: number;
-      unpaidDividendTotal?: number;
-      fullyPaid?: boolean;
+      estructuraAsignacionId?: string;
+      accionId?: string;
+      accionistaId?: string;
+      cantidadSuscrita?: number;
+      precioPorAccion?: number;
+      capitalSocial?: number;
+      prima?: number;
+      porcentajePagadoPorAccion?: number;
+      totalDividendosPendientes?: number;
+      pagadoCompletamente?: boolean;
     })
   | null
   | undefined;
@@ -45,36 +47,40 @@ const normalizeBoolean = (value: unknown, fallback = false): boolean => {
 export const AsignacionAccionMapper = {
   /**
    * Convierte la respuesta del backend a la entidad de dominio.
-   * El backend devuelve campos en inglés, los convertimos a español.
+   * El backend devuelve todos los campos en español.
    */
   toDomain(response: BackendAsignacionAccionResponse): AsignacionAccion | null {
     if (!response) {
       return null;
     }
 
-    return {
+    const entity: AsignacionAccion = {
       id: normalizeString(response.id),
-      estructuraAsignacionId: normalizeString(
-        response.allocationStructureId || response.estructuraAsignacionId
-      ),
-      accionId: normalizeString(response.actionId || response.accionId),
-      accionistaId: normalizeString(response.shareholderId || response.accionistaId),
-      cantidadAccionesSuscritas: normalizeNumber(
-        response.subscribedSharesQuantity ||
-          response.cantidadSuscrita ||
-          response.cantidadAccionesSuscritas
-      ),
-      precioPorAccion: normalizeNumber(response.pricePerShare || response.precioPorAccion),
-      porcentajePagadoPorAccion: normalizeNumber(
-        response.percentagePaidPerShare || response.porcentajePagadoPorAccion
-      ),
-      totalDividendosPendientes: normalizeNumber(
-        response.unpaidDividendTotal || response.totalDividendosPendientes
-      ),
-      pagadoCompletamente: normalizeBoolean(
-        response.fullyPaid !== undefined ? response.fullyPaid : response.pagadoCompletamente
-      ),
+      estructuraAsignacionId: normalizeString(response.estructuraAsignacionId),
+      accionId: normalizeString(response.accionId),
+      accionistaId: normalizeString(response.accionistaId),
+      cantidadAccionesSuscritas: normalizeNumber(response.cantidadSuscrita),
+      precioPorAccion: normalizeNumber(response.precioPorAccion),
+      capitalSocial: normalizeNumber(response.capitalSocial || 0),
+      prima: normalizeNumber(response.prima || 0),
+      porcentajePagadoPorAccion: normalizeNumber(response.porcentajePagadoPorAccion),
+      totalDividendosPendientes: normalizeNumber(response.totalDividendosPendientes),
+      pagadoCompletamente: normalizeBoolean(response.pagadoCompletamente),
     };
+
+    // Log para verificar que accionId se está extrayendo correctamente
+    if (!entity.accionId || entity.accionId.trim() === "") {
+      console.warn("[AsignacionAccionMapper] ⚠️ accionId está vacío después de mapear:", {
+        response,
+        accionId: entity.accionId,
+      });
+    } else {
+      console.log("[AsignacionAccionMapper] ✅ accionId extraído correctamente:", {
+        accionId: entity.accionId,
+      });
+    }
+
+    return entity;
   },
 
   /**
@@ -95,20 +101,51 @@ export const AsignacionAccionMapper = {
    * El payload del backend usa los mismos nombres que el DTO (en español).
    */
   toPayload(dto: AsignacionAccionDTO): Record<string, unknown> {
+    // Validar que accionId esté presente
+    const accionId = normalizeString(dto.accionId);
+    if (!accionId || accionId.trim() === "") {
+      console.error("[AsignacionAccionMapper] ⚠️ accionId está vacío en el DTO:", dto);
+      throw new Error("El accionId es requerido para crear o actualizar una asignación");
+    }
+
+    const pagadoCompletamente = normalizeBoolean(dto.pagadoCompletamente);
+
     const payload: Record<string, unknown> = {
-      accionId: normalizeString(dto.accionId),
+      id: normalizeString(dto.id), // Requerido por el backend
+      accionId: accionId, // Asegurar que siempre se envíe
       accionistaId: normalizeString(dto.accionistaId),
       cantidadSuscrita: normalizeNumber(dto.cantidadSuscrita),
       precioPorAccion: normalizeNumber(dto.precioPorAccion),
-      porcentajePagadoPorAccion: normalizeNumber(dto.porcentajePagadoPorAccion),
-      totalDividendosPendientes: normalizeNumber(dto.totalDividendosPendientes),
-      pagadoCompletamente: normalizeBoolean(dto.pagadoCompletamente),
+      capitalSocial: normalizeNumber(dto.capitalSocial),
+      prima: normalizeNumber(dto.prima),
+      pagadoCompletamente: pagadoCompletamente,
     };
 
-    // Solo incluir id si está presente (requerido para update, no para create)
-    if (dto.id && dto.id.trim().length > 0) {
-      payload.id = dto.id;
+    // Solo incluir porcentajePagadoPorAccion y totalDividendosPendientes
+    // cuando pagadoCompletamente es false
+    if (!pagadoCompletamente) {
+      payload.porcentajePagadoPorAccion = normalizeNumber(dto.porcentajePagadoPorAccion);
+      payload.totalDividendosPendientes = normalizeNumber(dto.totalDividendosPendientes);
     }
+
+    // Log para verificar que accionId se está enviando
+    console.log("[AsignacionAccionMapper] ✅ Payload generado con accionId:", {
+      accionId: payload.accionId,
+      accionistaId: payload.accionistaId,
+      tieneId: !!payload.id,
+    });
+
+    // Log para verificar capitalSocial y prima
+    console.log("[AsignacionAccionMapper] 📊 Campos capitalSocial y prima:", {
+      capitalSocial: payload.capitalSocial,
+      prima: payload.prima,
+      capitalSocialTipo: typeof payload.capitalSocial,
+      primaTipo: typeof payload.prima,
+      pagadoCompletamente: payload.pagadoCompletamente,
+      incluyePorcentaje: "porcentajePagadoPorAccion" in payload,
+      incluyeDividendos: "totalDividendosPendientes" in payload,
+      payloadCompleto: payload,
+    });
 
     return payload;
   },

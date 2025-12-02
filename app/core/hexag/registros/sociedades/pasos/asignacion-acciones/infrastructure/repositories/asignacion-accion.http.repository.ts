@@ -44,7 +44,7 @@ export class AsignacionAccionHttpRepository implements AsignacionAccionRepositor
     asignacionAccionId?: string
   ): string {
     const sanitizedId = String(societyProfileId).replace(/^\//, "");
-    const base = this.resolveBase(`/${sanitizedId}/asignacion-acciones`);
+    const base = this.resolveBase(`/${sanitizedId}/share-assignment`);
     return asignacionAccionId ? `${base}/${asignacionAccionId.replace(/^\//, "")}` : base;
   }
 
@@ -78,15 +78,37 @@ export class AsignacionAccionHttpRepository implements AsignacionAccionRepositor
         fullResponse: JSON.stringify(response, null, 2),
       });
 
-      // El backend puede devolver data como array o como objeto con datos
-      const data = response?.data?.datos ?? response?.data ?? [];
+      // El backend puede devolver data como array, objeto con items, o objeto con datos
+      // Según la documentación: response.data.items o response.data o directamente array
+      const data = response?.data?.items ?? response?.data?.datos ?? response?.data ?? [];
       const list = Array.isArray(data) ? data : [];
 
-      this.log("get:processing", { listLength: list.length, firstItem: list[0] });
+      this.log("get:processing", {
+        listLength: list.length,
+        firstItem: list[0],
+        firstItemKeys: list[0] ? Object.keys(list[0]) : [],
+        hasAccionId: list[0]?.accionId || list[0]?.actionId,
+      });
 
       const result = AsignacionAccionMapper.toDomainList(list);
 
-      this.log("get:success", { count: result.length });
+      // Log para verificar si las entidades tienen accionId
+      result.forEach((entity, index) => {
+        if (!entity.accionId || entity.accionId.trim() === "") {
+          this.log("get:warning-no-accionId", {
+            index,
+            entityId: entity.id,
+            accionistaId: entity.accionistaId,
+            rawData: list[index],
+          });
+        }
+      });
+
+      this.log("get:success", {
+        count: result.length,
+        entitiesWithAccionId: result.filter((e) => e.accionId && e.accionId.trim() !== "")
+          .length,
+      });
       return result;
     } catch (error: any) {
       // Si el backend devuelve 404, significa que no hay datos aún
@@ -133,7 +155,13 @@ export class AsignacionAccionHttpRepository implements AsignacionAccionRepositor
 
       // Intentar mapear la respuesta directa
       if (response?.data) {
-        const asignacionAccion = AsignacionAccionMapper.toDomain(response.data);
+        // Si el backend no devuelve accionId, agregarlo desde el payload
+        const responseData = {
+          ...response.data,
+          accionId: response.data.accionId || payload.accionId,
+          actionId: response.data.actionId || payload.accionId,
+        };
+        const asignacionAccion = AsignacionAccionMapper.toDomain(responseData);
         if (asignacionAccion) {
           this.log("create:success", { asignacionAccionId: asignacionAccion.id });
           return asignacionAccion;
@@ -149,6 +177,10 @@ export class AsignacionAccionHttpRepository implements AsignacionAccionRepositor
         );
 
         if (fallback) {
+          // Asegurar que el accionId esté presente
+          if (!fallback.accionId) {
+            fallback.accionId = payload.accionId;
+          }
           this.log("create:success-fallback", { asignacionAccionId: fallback.id });
           return fallback;
         }
@@ -161,6 +193,8 @@ export class AsignacionAccionHttpRepository implements AsignacionAccionRepositor
           accionistaId: payload.accionistaId,
           subscribedSharesQuantity: payload.cantidadSuscrita,
           pricePerShare: payload.precioPorAccion,
+          capitalSocial: payload.capitalSocial,
+          prima: payload.prima,
           percentagePaidPerShare: payload.porcentajePagadoPorAccion,
           unpaidDividendTotal: payload.totalDividendosPendientes,
           fullyPaid: payload.pagadoCompletamente,
@@ -233,7 +267,13 @@ export class AsignacionAccionHttpRepository implements AsignacionAccionRepositor
       const response = await $fetch<ApiResponse<any>>(url, config);
 
       if (response?.data) {
-        const asignacionAccion = AsignacionAccionMapper.toDomain(response.data);
+        // Si el backend no devuelve accionId, agregarlo desde el payload
+        const responseData = {
+          ...response.data,
+          accionId: response.data.accionId || payload.accionId,
+          actionId: response.data.actionId || payload.accionId,
+        };
+        const asignacionAccion = AsignacionAccionMapper.toDomain(responseData);
         if (asignacionAccion) {
           this.log("update:success", { asignacionAccionId: asignacionAccion.id });
           return asignacionAccion;
@@ -245,6 +285,10 @@ export class AsignacionAccionHttpRepository implements AsignacionAccionRepositor
       const existing = list.find((item) => item.id === asignacionAccionId);
 
       if (existing) {
+        // Asegurar que el accionId esté presente
+        if (!existing.accionId) {
+          existing.accionId = payload.accionId;
+        }
         this.log("update:success-fallback", { asignacionAccionId: existing.id });
         return existing;
       }
@@ -262,20 +306,17 @@ export class AsignacionAccionHttpRepository implements AsignacionAccionRepositor
       throw new Error("El ID de la asignación de acción es requerido para eliminar");
     }
 
-    // Construir la URL (misma ruta que update, sin asignacionAccionId en el path)
-    const url = this.resolveAsignacionAccionesPath(societyProfileId);
+    // Construir la URL con el assignmentId en la ruta: /api/v2/society-profile/{id}/share-assignment/{assignmentId}
+    const url = this.resolveAsignacionAccionesPath(societyProfileId, asignacionAccionId);
 
-    // El backend espera un array con los IDs a eliminar
     const config = withAuthHeaders({
       method: "DELETE" as const,
-      body: [asignacionAccionId],
     });
 
     this.log("delete:request", {
       url,
       asignacionAccionId,
       societyProfileId,
-      body: [asignacionAccionId],
     });
 
     try {

@@ -3,11 +3,13 @@
  * Este es el formato que espera el backend.
  */
 export interface AsignacionAccionDTO {
-  id?: string;
+  id: string; // Requerido por el backend
   accionId: string;
   accionistaId: string;
   cantidadSuscrita: number;
   precioPorAccion: number;
+  capitalSocial: number; // Requerido por el backend
+  prima: number; // Requerido por el backend
   porcentajePagadoPorAccion: number;
   totalDividendosPendientes: number;
   pagadoCompletamente: boolean;
