@@ -66,10 +66,11 @@ export class RegimenFacultadesHttpRepository implements RegimenFacultadesReposit
     }
   }
 
-  async deleteTipoFacultad(profileId: string, tipoFacultadId: string): Promise<void> {
-    const url = this.getUrl(profileId, `powers/${tipoFacultadId}`);
+  async deleteTipoFacultad(profileId: string, ids: string[]): Promise<void> {
+    const url = this.getUrl(profileId, `powers`);
     const config = withAuthHeaders({
       method: "DELETE" as const,
+      body: ids,
     });
 
     const response = await $fetch<BackendApiResponse>(url, config);

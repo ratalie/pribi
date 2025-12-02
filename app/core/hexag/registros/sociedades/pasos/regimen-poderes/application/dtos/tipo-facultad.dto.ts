@@ -1,5 +1,5 @@
 export interface TipoFacultadDTO {
   id: string;
-  tipoFacultades: string;
+  nombre: string;
   archivoId?: string;
 }

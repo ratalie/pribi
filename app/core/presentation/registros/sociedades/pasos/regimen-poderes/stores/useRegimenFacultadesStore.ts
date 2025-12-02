@@ -1,5 +1,13 @@
 import type { BaseSelectOption } from "~/components/base/inputs/text/BaseInputSelect.vue";
+import {
+  CreateTiposFacultadesUseCase,
+  DeleteTiposFacultadesUseCase,
+  ListTiposFacultadesUseCase,
+  UpdateTiposFacultadesUseCase,
+} from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/application";
 import type { TipoFacultad } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
+import { TiposFacultadesMapper } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/infrastructure/mappers/tipos-facultades.mapper";
+import { RegimenFacultadesHttpRepository } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/infrastructure/repository/regimen-facultades.http.repository";
 import { TipoFirmasEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoFirmasEnum";
 import { TipoMontoEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoMontoEnum";
 import { EntityCoinEnum } from "~/types/enums/EntityCoinEnum";
@@ -11,12 +19,16 @@ import type {
 } from "../types/apoderadosFacultades";
 import type { TipoFacultadRow } from "../types/facultades";
 
+const repository = new RegimenFacultadesHttpRepository();
+
+const listTipoFacultadesUseCase = new ListTiposFacultadesUseCase(repository);
+const createTipoFacultadUseCase = new CreateTiposFacultadesUseCase(repository);
+const updateTipoFacultadUseCase = new UpdateTiposFacultadesUseCase(repository);
+const deleteTipoFacultadUseCase = new DeleteTiposFacultadesUseCase(repository);
+
 export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
   state: (): State => ({
-    tipoFacultades: [
-      { id: "1", tipoFacultades: "Facultades Administrativas" },
-      { id: "2", tipoFacultades: "Facultades Bancarias" },
-    ],
+    tipoFacultades: [],
     apoderadosFacultades: [
       {
         id: "1",
@@ -370,23 +382,59 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
   },
 
   actions: {
-    //tipo facultad
-    agregarTipoFacultad(tipoFacultad: TipoFacultad) {
-      this.tipoFacultades.push(tipoFacultad);
-    },
+    //tipo
+    async loadTipoFacultades(profileId: string) {
+      try {
+        const tiposFacultades = await listTipoFacultadesUseCase.execute(profileId);
 
-    editarTipoFacultad(tipoFacultad: TipoFacultad) {
-      const index = this.tipoFacultades.findIndex(
-        (facultad) => facultad.id === tipoFacultad.id
-      );
-
-      if (index !== -1) {
-        this.tipoFacultades[index] = tipoFacultad;
+        this.tipoFacultades = tiposFacultades;
+      } catch (error) {
+        console.error(error);
+        throw error;
       }
     },
 
-    eliminarTipoFacultad(id: string) {
-      this.tipoFacultades = this.tipoFacultades.filter((facultad) => facultad.id !== id);
+    async agregarTipoFacultad(profileId: string, tipoFacultad: TipoFacultad) {
+      try {
+        const payload = TiposFacultadesMapper.deEntityAPayload(tipoFacultad);
+
+        await createTipoFacultadUseCase.execute(profileId, payload);
+
+        this.tipoFacultades.push(tipoFacultad);
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+
+    async editarTipoFacultad(profileId: string, tipoFacultad: TipoFacultad) {
+      try {
+        const payload = TiposFacultadesMapper.deEntityAPayload(tipoFacultad);
+
+        await updateTipoFacultadUseCase.execute(profileId, payload);
+
+        const index = this.tipoFacultades.findIndex(
+          (facultad) => facultad.id === tipoFacultad.id
+        );
+
+        if (index !== -1) {
+          this.tipoFacultades[index] = tipoFacultad;
+        }
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+
+    async eliminarTipoFacultad(profileId: string, id: string) {
+      try {
+        await deleteTipoFacultadUseCase.execute(profileId, [id]);
+
+        this.tipoFacultades = this.tipoFacultades.filter((facultad) => facultad.id !== id);
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
     },
 
     //apoderado facultad

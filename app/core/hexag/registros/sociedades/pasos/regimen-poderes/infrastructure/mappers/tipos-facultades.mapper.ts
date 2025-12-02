@@ -5,7 +5,7 @@ export class TiposFacultadesMapper {
   static deListaRespuestaADominio(response: TipoFacultadResponseDTO[]): TipoFacultad[] {
     return response.map((item) => ({
       id: item.id,
-      tipoFacultades: item.tipoFacultades,
+      tipoFacultades: item.nombre,
     }));
   }
 
@@ -19,7 +19,7 @@ export class TiposFacultadesMapper {
   static dePayloadABackend(payload: TipoFacultadPayload): TipoFacultadDTO {
     return {
       id: payload.id,
-      tipoFacultades: payload.tipoFacultades,
+      nombre: payload.tipoFacultades,
     };
   }
 }
