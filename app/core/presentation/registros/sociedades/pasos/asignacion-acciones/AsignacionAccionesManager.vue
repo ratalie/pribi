@@ -50,7 +50,7 @@
       </template>
     </CardTitle>
 
-    <div class="flex gap-6 overflow-y-auto">
+    <div v-if="accionesDisponibles.length > 0" class="flex gap-6 overflow-y-auto">
       <SharesCard
         v-for="accion in accionesDisponibles"
         :key="accion.id"
@@ -58,6 +58,15 @@
         :acciones-asignadas="accion.accionesAsignadas.toLocaleString('es-PE')"
         :acciones-suscritas="accion.accionesSuscritas.toLocaleString('es-PE')"
       />
+    </div>
+    <div
+      v-else
+      class="flex items-center justify-center p-8 bg-gray-50 rounded-lg border border-gray-200"
+    >
+      <p class="text-gray-500 text-center">
+        No hay tipos de acciones creados. Por favor, crea al menos un tipo de acción para
+        continuar.
+      </p>
     </div>
 
     <!-- cards de resumen -->
