@@ -15,25 +15,33 @@
 
   interface Props {
     titleMenu?: string;
+    societyProfileId?: string;
   }
 
   const props = withDefaults(defineProps<Props>(), {
     titleMenu: "Acciones",
+    societyProfileId: undefined,
   });
 
+  const route = useRoute();
   const asignacionAccionesStore = useRegistroAsignacionAccionesStore();
+
+  // Obtener societyProfileId de props o route
+  const societyProfileId = computed(() => {
+    return props.societyProfileId || (route.params.id as string | undefined) || "";
+  });
 
   // Obtener datos desde el store
   const data = computed(() => asignacionAccionesStore.tablaAsignaciones);
 
   const getQuantityShares = (
-    shares: { clase: string; acciones: number; porcentaje: number }[]
+    shares: { id: string; clase: string; acciones: number; porcentaje: number }[]
   ) => {
     return shares.reduce((total, share) => total + share.acciones, 0);
   };
 
   const getPercentage = (
-    shares: { clase: string; acciones: number; porcentaje: number }[]
+    shares: { id: string; clase: string; acciones: number; porcentaje: number }[]
   ) => {
     return shares.reduce((sum, share) => sum + share.porcentaje, 0);
   };
@@ -74,17 +82,19 @@
     openModal(accionistaId, accionId);
   }
 
-  function handleDelete(accionistaId: string, accionId: string) {
-    asignacionAccionesStore.removeAsignacionAccion(accionistaId, accionId);
+  async function handleDelete(accionistaId: string, accionId: string) {
+    const profileId = societyProfileId.value;
+    if (!profileId) {
+      console.error("No hay societyProfileId disponible");
+      return;
+    }
+    await asignacionAccionesStore.removeAsignacionAccion(profileId, accionistaId, accionId);
   }
 
-  // Obtener acciones para la fila expandida
-  function getAccionIdForRow(accionistaId: string, clase: string): string | null {
-    const asignacion = asignacionAccionesStore.getAsignacionByAccionistaId(accionistaId);
-    if (!asignacion) return null;
-
-    const accion = asignacion.acciones.find((a) => a.tipoAccion === clase);
-    return accion?.id || null;
+  // Obtener el ID de la asignación directamente desde la fila
+  // Ya no necesitamos buscar por nombre, el ID viene en la estructura de datos
+  function getAccionIdForRow(accion: { id: string; clase: string }): string {
+    return accion.id;
   }
 
   // Obtener acciones para el dropdown de una fila específica
@@ -180,7 +190,7 @@
         </TableRow>
         <!-- Filas hijas (acciones) -->
         <template v-if="expanded.includes(row.id)">
-          <TableRow v-for="accion in row.acciones" :key="accion.clase">
+          <TableRow v-for="accion in row.acciones" :key="accion.id">
             <TableCell />
             <TableCell />
             <TableCell
@@ -201,7 +211,7 @@
             <!-- Celda de acciones -->
             <TableCell class="w-12">
               <DataTableDropDown
-                :item-id="getAccionIdForRow(row.id, accion.clase) || ''"
+                :item-id="getAccionIdForRow(accion)"
                 :title-menu="props.titleMenu"
                 :actions="getActionsForRow(row.id)"
               />
@@ -217,6 +227,7 @@
     :mode="modalMode"
     :accionista-id="selectedAccionistaId"
     :accion-id="selectedAccionId"
+    :society-profile-id="societyProfileId"
     @close="closeModal"
     @submit="closeModal"
   />
