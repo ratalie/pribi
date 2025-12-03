@@ -18,18 +18,29 @@
     "test:run": "vitest run",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
-    "test:integration": "TEST_USE_MSW=false vitest run",
-    "test:msw": "TEST_USE_MSW=true vitest",
-    "test:sociedades:paso0": "TEST_USE_MSW=false vitest run paso-0-crear-sociedad.test.ts",
-    "test:sociedades:flujo-completo": "TEST_USE_MSW=false vitest run flujo-completo-sociedades.test.ts",
-    "test:sociedades:msw": "vitest run sociedad.repository.shared.test.ts datos-sociedad.repository.shared.test.ts accionistas.repository.shared.test.ts acciones.repository.shared.test.ts asignacion-acciones.repository.shared.test.ts quorum.repository.shared.test.ts director.repository.shared.test.ts apoderados.repository.shared.test.ts",
-    "test:sociedades:backend": "TEST_USE_MSW=false vitest run sociedad.repository.shared.test.ts datos-sociedad.repository.shared.test.ts accionistas.repository.shared.test.ts acciones.repository.shared.test.ts asignacion-acciones.repository.shared.test.ts quorum.repository.shared.test.ts director.repository.shared.test.ts apoderados.repository.shared.test.ts",
-    "test:sociedades:watch": "vitest watch sociedad.repository.shared.test.ts datos-sociedad.repository.shared.test.ts accionistas.repository.shared.test.ts acciones.repository.shared.test.ts asignacion-acciones.repository.shared.test.ts quorum.repository.shared.test.ts director.repository.shared.test.ts apoderados.repository.shared.test.ts",
-    "test:juntas:msw": "vitest run junta.repository.shared.test.ts agenda-items.repository.shared.test.ts meeting-details.repository.shared.test.ts",
-    "test:juntas:backend": "TEST_USE_MSW=false vitest run junta.repository.shared.test.ts agenda-items.repository.shared.test.ts meeting-details.repository.shared.test.ts",
-    "test:juntas:watch": "vitest watch junta.repository.shared.test.ts agenda-items.repository.shared.test.ts meeting-details.repository.shared.test.ts",
-    "test:all:msw": "vitest run",
-    "test:all:backend": "TEST_USE_MSW=false vitest run"
+    
+    "// ===== SISTEMA 1: SUITE MAESTRA (tests/) =====": "",
+    "test:suite:flujo-completo": "TEST_USE_MSW=false vitest run tests/sociedades/flujo-completo",
+    "test:suite:paso0": "TEST_USE_MSW=false vitest run tests/sociedades/paso-0",
+    
+    "// ===== SISTEMA 2: TESTS POR PASO (core/) =====": "",
+    "test:core:sociedad": "TEST_USE_MSW=false vitest run core/hexag/registros/sociedades/infrastructure/repositories/__tests__/",
+    "test:core:datos-sociedad": "TEST_USE_MSW=false vitest run core/hexag/registros/sociedades/pasos/datos-sociedad",
+    "test:core:accionistas": "TEST_USE_MSW=false vitest run core/hexag/registros/sociedades/pasos/accionistas",
+    "test:core:acciones": "TEST_USE_MSW=false vitest run core/hexag/registros/sociedades/pasos/acciones",
+    "test:core:asignacion": "TEST_USE_MSW=false vitest run core/hexag/registros/sociedades/pasos/asignacion-acciones",
+    "test:core:quorum": "TEST_USE_MSW=false vitest run core/hexag/registros/sociedades/pasos/quorum-mayorias",
+    "test:core:directorio": "TEST_USE_MSW=false vitest run core/hexag/registros/sociedades/pasos/directorio",
+    "test:core:apoderados": "TEST_USE_MSW=false vitest run core/hexag/registros/sociedades/pasos/apoderados",
+    "test:core:all": "TEST_USE_MSW=false vitest run core/hexag/registros/sociedades",
+    
+    "// ===== UTILS =====": "",
+    "test:cleanup": "TEST_USE_MSW=false vitest run cleanup.test.ts",
+    "test:all": "npm run test:suite:flujo-completo && npm run test:core:all",
+    
+    "// ===== LEGACY (compatibilidad) =====": "",
+    "test:sociedades:flujo-completo": "npm run test:suite:flujo-completo",
+    "test:sociedades:backend": "npm run test:suite:flujo-completo"
   },
   "dependencies": {
     "@googlemaps/markerclusterer": "^2.6.2",

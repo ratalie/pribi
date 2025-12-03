@@ -50,7 +50,15 @@ export async function getRealBackendToken(
   backendUrl: string,
   credentials: { email: string; password: string }
 ): Promise<string> {
-  const response = await fetch(`${backendUrl}/api/v2/auth`, {
+  const url = `${backendUrl}/api/v2/auth`;  // ✅ Ruta correcta (sin /login)
+  
+  console.log("🔐 [Test Config] Intentando login:", {
+    url,
+    email: credentials.email,
+    passwordLength: credentials.password.length,
+  });
+  
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -58,11 +66,23 @@ export async function getRealBackendToken(
     body: JSON.stringify(credentials),
   });
 
+  console.log("🔐 [Test Config] Respuesta:", {
+    status: response.status,
+    ok: response.ok,
+  });
+
   if (!response.ok) {
+    const errorText = await response.text();
+    console.error("🔐 [Test Config] Error response:", errorText);
     throw new Error(`Login failed: ${response.status} ${response.statusText}`);
   }
 
   const data = await response.json();
+  
+  console.log("🔐 [Test Config] Data recibida:", {
+    success: data.success,
+    hasToken: !!data.data?.token,
+  });
   
   if (!data.success || !data.data?.token) {
     throw new Error(`Login failed: ${data.message || "No token received"}`);

@@ -48,7 +48,7 @@ import {
   createQuorumPayload,
   createDirectorPayload,
   createClaseApoderadoPayload,
-} from "./data/test-data-sociedades";
+} from "../data/sociedades/test-data-sociedades";
 
 describe("🏢 FLUJO COMPLETO: Registro de Sociedades", () => {
   // ========================================
