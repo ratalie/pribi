@@ -13,13 +13,15 @@
 
 import { clearAllMockData } from "@hexag/registros/shared/mock-database";
 import { generateUUID } from "@tests/utils/uuid-generator";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeAll, afterAll, describe, expect, it } from "vitest";
 import { isPersonaNatural } from "~/core/hexag/registros/sociedades/pasos/accionistas/domain/entities/persona.entity";
 import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
 import type { ApoderadoDTO, ClaseApoderadoDTO } from "../../../application";
 import type { ApoderadosRepository } from "../../../domain/ports/apoderados.repository";
 import { ApoderadosHttpRepository } from "../apoderados.http.repository";
 import { ApoderadosMswRepository } from "../apoderados.msw.repository";
+import { SociedadHttpRepository } from "~/core/hexag/registros/sociedades/infrastructure/repositories/sociedad.http.repository";
+import { SociedadMswRepository } from "~/core/hexag/registros/sociedades/infrastructure/repositories/sociedad.msw.repository";
 
 /**
  * Helper para crear una clase de apoderado
@@ -61,18 +63,37 @@ function createApoderadoDTO(claseApoderadoId: string): ApoderadoDTO {
  * Suite de tests compartidos
  */
 describe.each([
-  { name: "ApoderadosHttpRepository", factory: () => new ApoderadosHttpRepository() },
-  { name: "ApoderadosMswRepository", factory: () => new ApoderadosMswRepository() },
-])("$name - Tests Compartidos", ({ name: _name, factory }) => {
+  { 
+    name: "ApoderadosHttpRepository", 
+    factory: () => new ApoderadosHttpRepository(),
+    sociedadFactory: () => new SociedadHttpRepository(),
+  },
+  { 
+    name: "ApoderadosMswRepository", 
+    factory: () => new ApoderadosMswRepository(),
+    sociedadFactory: () => new SociedadMswRepository(),
+  },
+])("$name - Tests Compartidos", ({ name: _name, factory, sociedadFactory }) => {
   let repository: ApoderadosRepository;
   let societyId: string;
+  let sociedadRepo: any;
 
-  beforeEach(async () => {
+  beforeAll(async () => {  // ✅ UNA VEZ
     repository = factory();
-    // Limpiar datos mock antes de cada test
+    sociedadRepo = sociedadFactory();
     await clearAllMockData();
-    // Generar un ID de sociedad de prueba
-    societyId = generateUUID();
+    
+    societyId = await sociedadRepo.create();
+  });
+
+  afterAll(async () => {  // ✅ UNA VEZ
+    if (societyId) {
+      try {
+        await sociedadRepo.delete(societyId);
+      } catch (error) {
+        console.warn(`[Tests] No se pudo eliminar sociedad ${societyId}`);
+      }
+    }
   });
 
   describe("Clases de Apoderados", () => {

@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
-import { TipoFirmasEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoFirmasEnum";
+import { TipoFirmasUIEnum as TipoFirmasEnum } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain/enums/TipoFirmasUIEnum";
 import { EntityCoinEnum } from "~/types/enums/EntityCoinEnum";
 import { TiemposVigenciaEnum } from "~/types/enums/TiemposVigenciaEnum";
 import type { useApoderadoFacultadStore } from "../stores/modal/useApoderadoFacultadStore";
 import type { useRegimenFacultadesStore } from "../stores/useRegimenFacultadesStore";
-import type { Facultad } from "../types/apoderadosFacultades";
+import type { Facultad } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain/entities/otorgamiento-poderes.entity";
 
 export const transformarModalAFacultad = (
   modalStore: ReturnType<typeof useApoderadoFacultadStore>,
@@ -32,7 +32,7 @@ export const transformarModalAFacultad = (
       }
     : {
         esIrrevocable: true as const,
-        vigencia: TiemposVigenciaEnum.DETERMIADO,
+        vigencia: TiemposVigenciaEnum.DETERMINADO,  // ✅ Corregido typo
         fecha_inicio: modalStore.fechaInicio,
         fecha_fin: modalStore.fechaFin,
       };
@@ -66,7 +66,7 @@ export const transformarModalAFacultad = (
     ...baseFacultad,
     ...tipoVigencia,
     ...tipoReglas,
-  } as Facultad;
+  } as unknown as Facultad;
 };
 
 export const transformarFacultadAModal = (
@@ -94,7 +94,7 @@ export const transformarFacultadAModal = (
     ? {
         reglasYLimites: true,
         tipoMoneda: facultad.tipoMoneda,
-        limiteMonetario: facultad.limiteMonetario.map((limite) => ({
+        limiteMonetario: facultad.limiteMonetario.map((limite: any) => ({
           id: limite.id,
           desde: limite.desde,
           tipoMonto: limite.tipoMonto,
@@ -102,7 +102,7 @@ export const transformarFacultadAModal = (
           tipoFirma: limite.tipoFirma,
           firmantes:
             limite.tipoFirma === TipoFirmasEnum.FIRMA_CONJUNTA
-              ? limite.firmantes.map((firmante) => ({
+              ? limite.firmantes.map((firmante: any) => ({
                   id: firmante.id,
                   cantidad: String(firmante.cantidad),
                   grupo: firmante.grupo,

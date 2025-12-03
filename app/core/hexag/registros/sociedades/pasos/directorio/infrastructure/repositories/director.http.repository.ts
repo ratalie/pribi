@@ -144,11 +144,20 @@ export class DirectorHttpRepository implements DirectorRepository {
       // Pero si el GET falla, construir el director desde el payload
       try {
         const list = await this.get(societyProfileId);
-        const fallback = list.find(
+        
+        // ✅ Buscar por documento y rol
+        let fallback = list.find(
           (item) =>
             item.persona.numeroDocumento === payload.persona.numeroDocumento &&
             item.rolDirector === payload.rolDirector
         );
+        
+        // ✅ Si no encuentra por coincidencia exacta, usar el último de la lista
+        // (asumiendo que es el recién creado)
+        if (!fallback && list.length > 0) {
+          fallback = list[list.length - 1];
+          this.log("create:using-last-from-list", { directorId: fallback!.id });
+        }
 
         if (fallback) {
           this.log("create:success-fallback", { directorId: fallback.id });

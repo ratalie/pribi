@@ -71,7 +71,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             id: "f3",
             nombre: "Facultades Comerciales",
             esIrrevocable: true,
-            vigencia: TiempoVigenciaUIEnum.DETERMIADO,
+            vigencia: TiempoVigenciaUIEnum.DETERMINADO,  // ✅ Typo corregido
             fecha_inicio: "2024-01-01",
             fecha_fin: "2024-12-31",
             reglasYLimites: true,
@@ -112,7 +112,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             id: "f4",
             nombre: "Facultades Industriales",
             esIrrevocable: true,
-            vigencia: TiempoVigenciaUIEnum.DETERMIADO,
+            vigencia: TiempoVigenciaUIEnum.DETERMINADO,  // ✅ Typo corregido
             fecha_inicio: "2024-06-01",
             fecha_fin: "2025-06-01",
             reglasYLimites: false,
@@ -154,7 +154,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             id: "f6",
             nombre: "Facultades Forestales",
             esIrrevocable: true,
-            vigencia: TiempoVigenciaUIEnum.DETERMIADO,
+            vigencia: TiempoVigenciaUIEnum.DETERMINADO,  // ✅ Typo corregido
             fecha_inicio: "2024-03-15",
             fecha_fin: "2026-03-15",
             reglasYLimites: true,
@@ -223,7 +223,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             id: "fo2",
             nombre: "Facultades Bancarias",
             esIrrevocable: true,
-            vigencia: TiempoVigenciaUIEnum.DETERMIADO,
+            vigencia: TiempoVigenciaUIEnum.DETERMINADO,  // ✅ Typo corregido
             fecha_inicio: "2024-01-15",
             fecha_fin: "2025-01-15",
             reglasYLimites: true,
@@ -256,7 +256,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             id: "fo3",
             nombre: "Facultades Comerciales",
             esIrrevocable: true,
-            vigencia: TiempoVigenciaUIEnum.DETERMIADO,
+            vigencia: TiempoVigenciaUIEnum.DETERMINADO,  // ✅ Typo corregido
             fecha_inicio: "2024-06-01",
             fecha_fin: "2024-12-31",
             reglasYLimites: true,

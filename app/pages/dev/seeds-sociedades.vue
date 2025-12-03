@@ -117,6 +117,8 @@
       porcentajePagadoPorAccion: number;
       totalDividendosPendientes: number;
       pagadoCompletamente: boolean;
+      capitalSocial: number;  // ✅ Agregado
+      prima: number;  // ✅ Agregado
     }
   ): Promise<void> => {
     const config = useRuntimeConfig();
@@ -148,7 +150,7 @@
 
     const authHeaders = withAuthHeaders({
       method: "POST" as const,
-      body: payload,
+      body: payload,  // ✅ El payload ya incluye capitalSocial y prima
     });
 
     await $fetch(url, authHeaders);
@@ -377,7 +379,7 @@
       // Apoderado (Gerente)
       claseApoderado: {
         id: generateUUID(),
-        nombre: "Gerente General",
+        nombre: `Gerente-${index}-${Date.now()}`,  // ✅ Nombre único con index y timestamp
       } as ClaseApoderadoDTO,
 
       apoderado: {
@@ -502,10 +504,12 @@
             accionId,
             accionistaId: accionistasIds[0],
             cantidadSuscrita: 300,
-            precioPorAccion: 1.0, // Precio por defecto
+            precioPorAccion: 1.0,
             porcentajePagadoPorAccion: 100,
             totalDividendosPendientes: 0,
             pagadoCompletamente: true,
+            capitalSocial: 300 * 1.0,  // ✅ Campo requerido por backend
+            prima: 0,  // ✅ Campo requerido por backend
           });
 
           // Asignar 200 acciones al segundo accionista (40%)
@@ -514,10 +518,12 @@
             accionId,
             accionistaId: accionistasIds[1],
             cantidadSuscrita: 200,
-            precioPorAccion: 1.0, // Precio por defecto
+            precioPorAccion: 1.0,
             porcentajePagadoPorAccion: 100,
             totalDividendosPendientes: 0,
             pagadoCompletamente: true,
+            capitalSocial: 200 * 1.0,  // ✅ Campo requerido por backend
+            prima: 0,  // ✅ Campo requerido por backend
           });
         }
       );

@@ -11,13 +11,14 @@
  * y producen los mismos resultados para las mismas operaciones.
  */
 
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeAll, afterAll, describe, expect, it } from "vitest";
 import { clearAllMockData } from "@hexag/registros/shared/mock-database";
 import type { DatosSociedadRepository } from "../../../domain/ports/datos-sociedad.repository";
 import type { DatosSociedadDTO } from "../../../application/dtos/datos-sociedad.dto";
 import { DatosSociedadHttpRepository } from "../datos-sociedad.http.repository";
 import { DatosSociedadMswRepository } from "../datos-sociedad.msw.repository";
-import { generateUUID } from "@tests/utils/uuid-generator";
+import { SociedadHttpRepository } from "~/core/hexag/registros/sociedades/infrastructure/repositories/sociedad.http.repository";
+import { SociedadMswRepository } from "~/core/hexag/registros/sociedades/infrastructure/repositories/sociedad.msw.repository";
 
 /**
  * Helper para crear un DTO de datos sociedad válido
@@ -46,18 +47,37 @@ function createDatosSociedadDTO(): DatosSociedadDTO {
  * Suite de tests compartidos
  */
 describe.each([
-  { name: "DatosSociedadHttpRepository", factory: () => new DatosSociedadHttpRepository() },
-  { name: "DatosSociedadMswRepository", factory: () => new DatosSociedadMswRepository() },
-])("$name - Tests Compartidos", ({ name: _name, factory }) => {
+  { 
+    name: "DatosSociedadHttpRepository", 
+    factory: () => new DatosSociedadHttpRepository(),
+    sociedadFactory: () => new SociedadHttpRepository(),
+  },
+  { 
+    name: "DatosSociedadMswRepository", 
+    factory: () => new DatosSociedadMswRepository(),
+    sociedadFactory: () => new SociedadMswRepository(),
+  },
+])("$name - Tests Compartidos", ({ name: _name, factory, sociedadFactory }) => {
   let repository: DatosSociedadRepository;
   let societyId: string;
+  let sociedadRepo: any;
 
-  beforeEach(async () => {
+  beforeAll(async () => {  // ✅ UNA VEZ
     repository = factory();
-    // Limpiar datos mock antes de cada test
+    sociedadRepo = sociedadFactory();
     await clearAllMockData();
-    // Generar un ID de sociedad de prueba
-    societyId = generateUUID();
+    
+    societyId = await sociedadRepo.create();
+  });
+
+  afterAll(async () => {  // ✅ UNA VEZ
+    if (societyId) {
+      try {
+        await sociedadRepo.delete(societyId);
+      } catch (error) {
+        console.warn(`[Tests] No se pudo eliminar sociedad ${societyId}`);
+      }
+    }
   });
 
   describe("get() - GET /api/v2/society-profile/:id/society", () => {

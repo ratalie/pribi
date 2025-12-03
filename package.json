@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "typecheck": "nuxi typecheck",
+    "typecheck:tests": "vue-tsc --noEmit --project tsconfig.tests.json",
+    "typecheck:all": "npm run typecheck && npm run typecheck:tests",
     "type-check": "vue-tsc --noEmit",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx,.vue",
     "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx,.vue --fix",
@@ -18,13 +20,16 @@
     "test:coverage": "vitest run --coverage",
     "test:integration": "TEST_USE_MSW=false vitest run",
     "test:msw": "TEST_USE_MSW=true vitest",
-    "test:sociedades": "TEST_USE_MSW=false vitest run sociedad.repository.integration.test.ts",
-    "test:registros": "TEST_USE_MSW=false vitest run datos-sociedad.repository.integration.test.ts accionistas.repository.integration.test.ts acciones.repository.integration.test.ts asignacion-acciones.repository.integration.test.ts quorum.repository.integration.test.ts director.repository.integration.test.ts apoderados.repository.integration.test.ts",
-    "test:registros:all": "TEST_USE_MSW=false vitest run sociedad.repository.integration.test.ts datos-sociedad.repository.integration.test.ts accionistas.repository.integration.test.ts acciones.repository.integration.test.ts asignacion-acciones.repository.integration.test.ts quorum.repository.integration.test.ts director.repository.integration.test.ts apoderados.repository.integration.test.ts",
-    "test:shared": "vitest run sociedad.repository.shared.test.ts datos-sociedad.repository.shared.test.ts accionistas.repository.shared.test.ts acciones.repository.shared.test.ts asignacion-acciones.repository.shared.test.ts quorum.repository.shared.test.ts director.repository.shared.test.ts apoderados.repository.shared.test.ts",
-    "test:shared:watch": "vitest watch sociedad.repository.shared.test.ts datos-sociedad.repository.shared.test.ts accionistas.repository.shared.test.ts acciones.repository.shared.test.ts asignacion-acciones.repository.shared.test.ts quorum.repository.shared.test.ts director.repository.shared.test.ts apoderados.repository.shared.test.ts",
-    "test:juntas:shared": "vitest run junta.repository.shared.test.ts agenda-items.repository.shared.test.ts meeting-details.repository.shared.test.ts",
-    "test:juntas:watch": "vitest watch junta.repository.shared.test.ts agenda-items.repository.shared.test.ts meeting-details.repository.shared.test.ts"
+    "test:sociedades:paso0": "TEST_USE_MSW=false vitest run paso-0-crear-sociedad.test.ts",
+    "test:sociedades:flujo-completo": "TEST_USE_MSW=false vitest run flujo-completo-sociedades.test.ts",
+    "test:sociedades:msw": "vitest run sociedad.repository.shared.test.ts datos-sociedad.repository.shared.test.ts accionistas.repository.shared.test.ts acciones.repository.shared.test.ts asignacion-acciones.repository.shared.test.ts quorum.repository.shared.test.ts director.repository.shared.test.ts apoderados.repository.shared.test.ts",
+    "test:sociedades:backend": "TEST_USE_MSW=false vitest run sociedad.repository.shared.test.ts datos-sociedad.repository.shared.test.ts accionistas.repository.shared.test.ts acciones.repository.shared.test.ts asignacion-acciones.repository.shared.test.ts quorum.repository.shared.test.ts director.repository.shared.test.ts apoderados.repository.shared.test.ts",
+    "test:sociedades:watch": "vitest watch sociedad.repository.shared.test.ts datos-sociedad.repository.shared.test.ts accionistas.repository.shared.test.ts acciones.repository.shared.test.ts asignacion-acciones.repository.shared.test.ts quorum.repository.shared.test.ts director.repository.shared.test.ts apoderados.repository.shared.test.ts",
+    "test:juntas:msw": "vitest run junta.repository.shared.test.ts agenda-items.repository.shared.test.ts meeting-details.repository.shared.test.ts",
+    "test:juntas:backend": "TEST_USE_MSW=false vitest run junta.repository.shared.test.ts agenda-items.repository.shared.test.ts meeting-details.repository.shared.test.ts",
+    "test:juntas:watch": "vitest watch junta.repository.shared.test.ts agenda-items.repository.shared.test.ts meeting-details.repository.shared.test.ts",
+    "test:all:msw": "vitest run",
+    "test:all:backend": "TEST_USE_MSW=false vitest run"
   },
   "dependencies": {
     "@googlemaps/markerclusterer": "^2.6.2",

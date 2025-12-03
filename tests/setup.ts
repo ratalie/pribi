@@ -107,10 +107,17 @@ vi.mock("#app", () => ({
   }
   
   const fetchFn = typeof fetch !== "undefined" ? fetch : globalThis.fetch;
+  
+  // ✅ Convertir Headers a objeto plano (compatible con TypeScript)
+  const headersObj: Record<string, string> = {};
+  headers.forEach((value, key) => {
+    headersObj[key] = value;
+  });
+  
   const response = await fetchFn(url, {
     ...options,
     method: options?.method || "GET",
-    headers: Object.fromEntries(headers.entries()),
+    headers: headersObj,
     body: body,
   });
   

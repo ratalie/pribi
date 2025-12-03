@@ -11,7 +11,7 @@
  * y producen los mismos resultados para las mismas operaciones.
  */
 
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeAll, afterAll, describe, expect, it } from "vitest";
 import { clearAllMockData } from "@hexag/registros/shared/mock-database";
 import type { AccionistasRepository } from "../../../domain/ports/accionistas.repository";
 import type { AccionistaDTO } from "../../../application/dtos/accionista.dto";
@@ -20,6 +20,8 @@ import { AccionistasMswRepository } from "../accionistas.msw.repository";
 import { isPersonaNatural, isPersonaJuridica } from "../../../domain/entities/persona.entity";
 import { generateUUID } from "@tests/utils/uuid-generator";
 import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
+import { SociedadHttpRepository } from "~/core/hexag/registros/sociedades/infrastructure/repositories/sociedad.http.repository";
+import { SociedadMswRepository } from "~/core/hexag/registros/sociedades/infrastructure/repositories/sociedad.msw.repository";
 
 /**
  * Helper para crear un DTO de accionista natural
@@ -74,18 +76,38 @@ function createAccionistaJuridicoDTO(): AccionistaDTO {
  * Suite de tests compartidos
  */
 describe.each([
-  { name: "AccionistasHttpRepository", factory: () => new AccionistasHttpRepository() },
-  { name: "AccionistasMswRepository", factory: () => new AccionistasMswRepository() },
-])("$name - Tests Compartidos", ({ name: _name, factory }) => {
+  { 
+    name: "AccionistasHttpRepository", 
+    factory: () => new AccionistasHttpRepository(),
+    sociedadFactory: () => new SociedadHttpRepository(),
+  },
+  { 
+    name: "AccionistasMswRepository", 
+    factory: () => new AccionistasMswRepository(),
+    sociedadFactory: () => new SociedadMswRepository(),
+  },
+])("$name - Tests Compartidos", ({ name: _name, factory, sociedadFactory }) => {
   let repository: AccionistasRepository;
   let societyId: string;
+  let sociedadRepo: any;
 
-  beforeEach(async () => {
+  beforeAll(async () => {  // ✅ UNA VEZ
     repository = factory();
-    // Limpiar datos mock antes de cada test
+    sociedadRepo = sociedadFactory();
     await clearAllMockData();
-    // Generar un ID de sociedad de prueba
-    societyId = generateUUID();
+    
+    // Crear UNA sociedad para todos los tests
+    societyId = await sociedadRepo.create();
+  });
+
+  afterAll(async () => {  // ✅ UNA VEZ
+    if (societyId) {
+      try {
+        await sociedadRepo.delete(societyId);
+      } catch (error) {
+        console.warn(`[Tests] No se pudo eliminar sociedad ${societyId}`);
+      }
+    }
   });
 
   describe("list() - GET /api/v2/society-profile/:id/shareholder", () => {

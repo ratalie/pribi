@@ -7,8 +7,8 @@
   import SimpleCardDropDown from "~/components/base/cards/SimpleCardDropDown.vue";
   import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
-  import { TipoFirmasEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoFirmasEnum";
-  import { TipoMontoEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoMontoEnum";
+  import { TipoFirmasUIEnum as TipoFirmasEnum } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain/enums/TipoFirmasUIEnum";
+  import { TipoMontoUIEnum as TipoMontoEnum } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain/enums/TipoMontoUIEnum";
   import { EntityCoinEnum } from "~/types/enums/EntityCoinEnum";
   import {
     montoDesdeSchema,
