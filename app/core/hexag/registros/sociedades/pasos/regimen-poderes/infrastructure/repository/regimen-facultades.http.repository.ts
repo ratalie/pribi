@@ -70,7 +70,7 @@ export class RegimenFacultadesHttpRepository implements RegimenFacultadesReposit
     const url = this.getUrl(profileId, `powers`);
     const config = withAuthHeaders({
       method: "DELETE" as const,
-      body: ids,
+      body: { powerIds: ids },
     });
 
     const response = await $fetch<BackendApiResponse>(url, config);

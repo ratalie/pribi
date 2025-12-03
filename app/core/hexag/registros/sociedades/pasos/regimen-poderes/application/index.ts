@@ -1,5 +1,10 @@
-export type { TipoFacultadResponseDTO } from "./dtos/tipo-facultad-response.dto";
-export type { TipoFacultadDTO } from "./dtos/tipo-facultad.dto";
+export type {
+  CreateOtorgamientoPoderDTO,
+  OtorgamientoPoderResponseDTO,
+  TipoFacultadDTO,
+  TipoFacultadResponseDTO,
+  UpdateOtorgamientoPoderDTO,
+} from "./dtos";
 export { TipoFirmaEnum } from "./enums/tipo-firma.enum";
 export { TipoLimiteEnum } from "./enums/tipo-limite.enum";
 export { TipoMonedaEnum } from "./enums/tipo-moneda.enum";

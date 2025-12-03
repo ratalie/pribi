@@ -1,4 +1,4 @@
-import type { TipoFirmaEnum, TipoLimiteEnum, TipoMonedaEnum } from "..";
+import type { TipoFirmaEnum, TipoLimiteEnum, TipoMonedaEnum } from "../..";
 
 export interface OtorgamientoPoderResponseDTO {
   id: string;
