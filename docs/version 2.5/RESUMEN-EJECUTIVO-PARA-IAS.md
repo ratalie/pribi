@@ -294,3 +294,4 @@ Este resumen es solo orientación inicial.
 
 **Última actualización**: 2 de Diciembre 2025  
 **Versión**: 1.0.0
+

@@ -1581,3 +1581,4 @@ export interface AportanteResponseDto {
 **Estado**: Documento Maestro de Coordinación
 
 **Este documento es la FUENTE DE VERDAD para coordinación entre las 3 IAs.**
+

@@ -1869,3 +1869,4 @@ export const useAportantesStore = defineStore("aportantes", {
 **Última actualización**: 2 de Diciembre 2025  
 **Versión**: 1.0.0  
 **Estado**: En Desarrollo Activo 🚀
+

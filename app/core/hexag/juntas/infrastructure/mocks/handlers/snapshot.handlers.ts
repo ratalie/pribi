@@ -1,5 +1,6 @@
 import { http, HttpResponse } from "msw";
 import { getSnapshotMock } from "../data/snapshot.state";
+import { initAsistenciasMockFromSnapshot } from "../data/asistencia.state";
 
 const baseUrl = "*/api/v2/society-profile/:societyId/register-assembly/:flowId/snapshot/complete";
 
@@ -34,6 +35,9 @@ export const snapshotHandlers = [
     }
 
     const snapshot = await getSnapshotMock(societyId, flowId);
+    
+    // 🎯 Inicializar asistencias automáticamente si no existen
+    await initAsistenciasMockFromSnapshot(societyId, flowId, snapshot);
 
     const responsePayload = {
       success: true,

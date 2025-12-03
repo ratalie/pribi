@@ -1,5 +1,5 @@
 const DB_NAME = "probo-registros-msw";
-const DB_VERSION = 2; // Incrementado para agregar directorioConfig store
+const DB_VERSION = 3; // Incrementado para agregar asistencias store
 
 const STORE_SCHEMAS = {
   sociedades: { keyPath: "idSociety" },
@@ -15,6 +15,7 @@ const STORE_SCHEMAS = {
   juntas: { keyPath: "id" },
   "agenda-items": { keyPath: "key" },
   "meeting-details": { keyPath: "key" },
+  "asistencias": { keyPath: "key" },
 } as const;
 
 type StoreName = keyof typeof STORE_SCHEMAS;
