@@ -16,17 +16,18 @@
     societyId?: string;
   }
 
-  defineProps<Props>();
+  const props = defineProps<Props>();
 
   const {
     regimenFacultadesStore,
     modeModal,
+    isLoadingTipoFacultad,
     tipoFacultadesHeaders,
     tipoFacultadesActions,
     isTipoFacultadesModalOpen,
     handleSubmitTipoFacultad,
     handleCloseModal,
-  } = useTiposFacultades();
+  } = useTiposFacultades(props.societyId ?? "");
 
   const {
     facultadActions,
@@ -111,6 +112,7 @@
     <TipoFacultadesModal
       v-model="isTipoFacultadesModalOpen"
       :mode="modeModal"
+      :is-loading="isLoadingTipoFacultad"
       @close="handleCloseModal"
       @submit="handleSubmitTipoFacultad"
     />
