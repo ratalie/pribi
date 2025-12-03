@@ -70,7 +70,7 @@
       cantidadSuscrita: asignacionAccion.cantidadSuscrita,
       precioPorAccion: asignacionAccion.precioPorAccion ?? 0,
       porcentajePagadoPorAccion: asignacionAccion.porcentajePagadoPorAccion ?? 0,
-      totalDividendosPendientes: asignacionAccion.totalDividendosPendientes ?? 0,
+      dividendoPasivoTotal: asignacionAccion.dividendoPasivoTotal ?? 0,
       pagadoCompletamente: asignacionAccion.pagadoCompletamente ?? false,
       capitalSocial: asignacionAccion.capitalSocial ?? 0,
       prima: asignacionAccion.prima ?? 0,
@@ -143,7 +143,7 @@
     const cantidadSuscrita = asignacionAccionesFormStore.cantidadSuscrita;
     const precioPorAccion = asignacionAccionesFormStore.precioPorAccion;
     const porcentajePagadoPorAccion = asignacionAccionesFormStore.porcentajePagadoPorAccion;
-    const totalDividendosPendientes = asignacionAccionesFormStore.totalDividendosPendientes;
+    const dividendoPasivoTotal = asignacionAccionesFormStore.dividendoPasivoTotal;
     const pagadoCompletamente = asignacionAccionesFormStore.pagadoCompletamente;
     const capitalSocial = asignacionAccionesFormStore.capitalSocial;
     const prima = asignacionAccionesFormStore.prima;
@@ -162,7 +162,7 @@
       porcentaje: 0, // Se recalculará automáticamente
       precioPorAccion,
       porcentajePagadoPorAccion,
-      totalDividendosPendientes,
+      dividendoPasivoTotal,
       pagadoCompletamente,
       capitalSocial,
       prima,
@@ -216,7 +216,11 @@
         title="Asignar Acciones"
         body="Define la cantidad de acciones para cada accionista."
       />
-      <AsignaAccionesForm />
+      <AsignaAccionesForm
+        :mode="props.mode"
+        :accionista-id="props.accionistaId"
+        :accion-id="props.accionId"
+      />
     </div>
 
     <template #footer>

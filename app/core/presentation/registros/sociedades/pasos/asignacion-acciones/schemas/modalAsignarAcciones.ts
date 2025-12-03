@@ -26,7 +26,7 @@ export const porcentajePagadoPorAccionSchema = z
   .min(0, "El porcentaje pagado no puede ser negativo")
   .max(100, "El porcentaje pagado no puede ser mayor a 100");
 
-export const totalDividendosPendientesSchema = z
+export const dividendoPasivoTotalSchema = z
   .number()
   .min(0, "El dividendo pasivo no puede ser negativo");
 
@@ -38,5 +38,5 @@ export const datosAsignacionAccionesSchema = z.object({
   prima: primaSchema,
   pagado_completamente: pagadoCompletamenteSchema,
   porcentaje_pagado_por_accion: porcentajePagadoPorAccionSchema,
-  total_dividendos_pendientes: totalDividendosPendientesSchema,
+  total_dividendos_pendientes: dividendoPasivoTotalSchema,
 });

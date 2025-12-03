@@ -1,5 +1,6 @@
 <script setup lang="ts">
-  import { computed } from "vue";
+  import { computed, watch } from "vue";
+  import { z } from "zod";
   import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
   import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
@@ -7,17 +8,42 @@
   import { useRegistroAccionesStore } from "../../../acciones/stores/useRegistroAccionesStore";
   import {
     accionIdSchema,
-    cantidadSuscritaSchema,
     capitalSocialSchema,
+    dividendoPasivoTotalSchema,
     porcentajePagadoPorAccionSchema,
     precioPorAccionSchema,
     primaSchema,
-    totalDividendosPendientesSchema,
   } from "../../schemas/modalAsignarAcciones";
   import { useAsignacionAccionesStore } from "../../stores/useAsignacionAccionesStore";
+  import { useRegistroAsignacionAccionesStore } from "../../stores/useRegistroAsignacionAccionesStore";
+
+  interface Props {
+    mode?: "crear" | "editar";
+    accionistaId?: string | null;
+    accionId?: string | null;
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    mode: "crear",
+    accionistaId: null,
+    accionId: null,
+  });
 
   const asignacionAccionesStore = useAsignacionAccionesStore();
   const registroAccionesStore = useRegistroAccionesStore();
+  const registroAsignacionAccionesStore = useRegistroAsignacionAccionesStore();
+
+  // Watcher para resetear porcentajePagadoPorAccion y dividendoPasivoTotal
+  // cuando pagadoCompletamente cambia a true
+  watch(
+    () => asignacionAccionesStore.pagadoCompletamente,
+    (newValue) => {
+      if (newValue === true) {
+        asignacionAccionesStore.porcentajePagadoPorAccion = 0;
+        asignacionAccionesStore.dividendoPasivoTotal = 0;
+      }
+    }
+  );
 
   /**
    * Obtiene el nombre de la acción para mostrar en la UI según su tipo
@@ -58,6 +84,78 @@
       label: getNombreAccionParaUI(accion.tipo, accion.nombreAccion),
     }));
   });
+
+  // Calcular acciones disponibles para la acción seleccionada
+  // Considera si estamos editando una asignación existente (suma las acciones ya asignadas)
+  const accionesDisponiblesParaAccion = computed(() => {
+    const accionId = asignacionAccionesStore.accionId;
+    if (!accionId) return 0;
+
+    // Obtener acciones disponibles desde el store
+    const accionesDisponibles = registroAsignacionAccionesStore.accionesDisponibles;
+    const accionDisponible = accionesDisponibles.find((a) => a.id === accionId);
+
+    let accionesDisponiblesCalculadas = 0;
+
+    if (!accionDisponible) {
+      // Si no encontramos la acción en las disponibles, buscar en las acciones registradas
+      const accionesRegistradas = registroAccionesStore.acciones;
+      const accionRegistrada = accionesRegistradas.find((a) => a.id === accionId);
+      if (accionRegistrada) {
+        // Calcular acciones asignadas para esta acción
+        let accionesAsignadas = 0;
+        registroAsignacionAccionesStore.asignaciones.forEach((asignacion) => {
+          asignacion.acciones.forEach((accion) => {
+            if (accion.accionId === accionId) {
+              accionesAsignadas += accion.cantidadSuscrita;
+            }
+          });
+        });
+        accionesDisponiblesCalculadas = accionRegistrada.accionesSuscritas - accionesAsignadas;
+      } else {
+        return 0;
+      }
+    } else {
+      // Calcular acciones disponibles: accionesSuscritas - accionesAsignadas
+      accionesDisponiblesCalculadas =
+        accionDisponible.accionesSuscritas - accionDisponible.accionesAsignadas;
+    }
+
+    // Si estamos editando una asignación existente, sumar las acciones ya asignadas
+    // en esa asignación específica (porque se "liberan" al editar)
+    if (props.mode === "editar" && props.accionistaId && props.accionId) {
+      const asignacionActual = registroAsignacionAccionesStore.getAsignacionAccionById(
+        props.accionistaId,
+        props.accionId
+      );
+      // Si la asignación actual es del mismo tipo de acción que estamos editando,
+      // sumar sus acciones a las disponibles (porque se "liberan" al editar)
+      if (asignacionActual && asignacionActual.accionId === accionId) {
+        accionesDisponiblesCalculadas += asignacionActual.cantidadSuscrita;
+      }
+    }
+
+    return accionesDisponiblesCalculadas;
+  });
+
+  // Schema dinámico para cantidadSuscrita que valida contra acciones disponibles
+  const cantidadSuscritaSchemaDinamico = computed(() => {
+    const disponibles = accionesDisponiblesParaAccion.value;
+    return z
+      .number({
+        required_error: "La cantidad de acciones es requerida",
+        invalid_type_error: "Debe ser un número válido",
+      })
+      .min(1, "La cantidad de acciones suscritas debe ser mayor a 0")
+      .max(
+        disponibles > 0 ? disponibles : Infinity,
+        disponibles > 0
+          ? `Solo quedan ${disponibles.toLocaleString(
+              "es-PE"
+            )} acciones disponibles para este tipo`
+          : "No hay acciones disponibles para este tipo"
+      );
+  });
 </script>
 
 <template>
@@ -75,7 +173,7 @@
       name="cantidad_suscrita"
       label="Cantidad Suscritas de Acciones"
       placeholder="Ingrese cantidad aquí"
-      :schema="cantidadSuscritaSchema"
+      :schema="cantidadSuscritaSchemaDinamico"
     />
 
     <NumberInputZod
@@ -130,11 +228,11 @@
     />
     <NumberInputZod
       v-if="!asignacionAccionesStore.pagadoCompletamente"
-      v-model="asignacionAccionesStore.totalDividendosPendientes"
+      v-model="asignacionAccionesStore.dividendoPasivoTotal"
       name="total_dividendos_pendientes"
       label="Dividendo Pasivo Total"
       placeholder="% Dividendo pasivo total"
-      :schema="totalDividendosPendientesSchema"
+      :schema="dividendoPasivoTotalSchema"
     />
   </div>
 </template>

@@ -7,7 +7,7 @@ export interface AsignacionAccion {
   porcentaje: number; // Porcentaje de participación por clase
   precioPorAccion: number;
   porcentajePagadoPorAccion: number;
-  totalDividendosPendientes: number;
+  dividendoPasivoTotal: number;
   pagadoCompletamente: boolean;
   // Campos calculados/UI (no van al backend)
   capitalSocial?: number;

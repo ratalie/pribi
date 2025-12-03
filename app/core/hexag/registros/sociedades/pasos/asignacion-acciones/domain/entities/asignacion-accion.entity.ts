@@ -11,6 +11,6 @@ export interface AsignacionAccion {
   capitalSocial: number;
   prima: number;
   porcentajePagadoPorAccion: number;
-  totalDividendosPendientes: number;
+  dividendoPasivoTotal: number;
   pagadoCompletamente: boolean;
 }

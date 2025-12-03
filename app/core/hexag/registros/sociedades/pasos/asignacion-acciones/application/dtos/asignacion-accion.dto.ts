@@ -11,6 +11,6 @@ export interface AsignacionAccionDTO {
   capitalSocial: number; // Requerido por el backend
   prima: number; // Requerido por el backend
   porcentajePagadoPorAccion: number;
-  totalDividendosPendientes: number;
+  dividendoPasivoTotal: number;
   pagadoCompletamente: boolean;
 }

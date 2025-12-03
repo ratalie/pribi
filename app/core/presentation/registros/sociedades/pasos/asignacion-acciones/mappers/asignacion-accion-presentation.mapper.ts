@@ -37,7 +37,7 @@ export const AsignacionAccionPresentationMapper = {
       capitalSocial: entity.capitalSocial,
       prima: entity.prima,
       porcentajePagadoPorAccion: entity.porcentajePagadoPorAccion,
-      totalDividendosPendientes: entity.totalDividendosPendientes,
+      dividendoPasivoTotal: entity.dividendoPasivoTotal,
       pagadoCompletamente: entity.pagadoCompletamente,
     };
   },
@@ -70,7 +70,7 @@ export const AsignacionAccionPresentationMapper = {
       capitalSocial: store.capitalSocial ?? 0,
       prima: store.prima ?? 0,
       porcentajePagadoPorAccion: store.porcentajePagadoPorAccion,
-      totalDividendosPendientes: store.totalDividendosPendientes,
+      dividendoPasivoTotal: store.dividendoPasivoTotal,
       pagadoCompletamente: store.pagadoCompletamente,
     };
   },
@@ -90,7 +90,7 @@ export const AsignacionAccionPresentationMapper = {
       capitalSocial: store.capitalSocial ?? 0,
       prima: store.prima ?? 0,
       porcentajePagadoPorAccion: store.porcentajePagadoPorAccion,
-      totalDividendosPendientes: store.totalDividendosPendientes,
+      dividendoPasivoTotal: store.dividendoPasivoTotal,
       pagadoCompletamente: store.pagadoCompletamente,
     };
 

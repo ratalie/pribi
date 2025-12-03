@@ -196,7 +196,7 @@ export class AsignacionAccionHttpRepository implements AsignacionAccionRepositor
           capitalSocial: payload.capitalSocial,
           prima: payload.prima,
           percentagePaidPerShare: payload.porcentajePagadoPorAccion,
-          unpaidDividendTotal: payload.totalDividendosPendientes,
+          unpaidDividendTotal: payload.dividendoPasivoTotal,
           fullyPaid: payload.pagadoCompletamente,
         });
 

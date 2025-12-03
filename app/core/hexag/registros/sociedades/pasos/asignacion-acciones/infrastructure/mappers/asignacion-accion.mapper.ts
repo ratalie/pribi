@@ -12,7 +12,7 @@ type BackendAsignacionAccionResponse =
       capitalSocial?: number;
       prima?: number;
       porcentajePagadoPorAccion?: number;
-      totalDividendosPendientes?: number;
+      dividendoPasivoTotal?: number;
       pagadoCompletamente?: boolean;
     })
   | null
@@ -64,7 +64,7 @@ export const AsignacionAccionMapper = {
       capitalSocial: normalizeNumber(response.capitalSocial || 0),
       prima: normalizeNumber(response.prima || 0),
       porcentajePagadoPorAccion: normalizeNumber(response.porcentajePagadoPorAccion),
-      totalDividendosPendientes: normalizeNumber(response.totalDividendosPendientes),
+      dividendoPasivoTotal: normalizeNumber(response.dividendoPasivoTotal),
       pagadoCompletamente: normalizeBoolean(response.pagadoCompletamente),
     };
 
@@ -121,11 +121,14 @@ export const AsignacionAccionMapper = {
       pagadoCompletamente: pagadoCompletamente,
     };
 
-    // Solo incluir porcentajePagadoPorAccion y totalDividendosPendientes
-    // cuando pagadoCompletamente es false
-    if (!pagadoCompletamente) {
+    // Si pagadoCompletamente es true, enviar porcentajePagadoPorAccion y dividendoPasivoTotal como 0
+    // Si es false, enviar los valores del DTO
+    if (pagadoCompletamente) {
+      payload.porcentajePagadoPorAccion = 0;
+      payload.dividendoPasivoTotal = 0;
+    } else {
       payload.porcentajePagadoPorAccion = normalizeNumber(dto.porcentajePagadoPorAccion);
-      payload.totalDividendosPendientes = normalizeNumber(dto.totalDividendosPendientes);
+      payload.dividendoPasivoTotal = normalizeNumber(dto.dividendoPasivoTotal);
     }
 
     // Log para verificar que accionId se está enviando
@@ -143,7 +146,7 @@ export const AsignacionAccionMapper = {
       primaTipo: typeof payload.prima,
       pagadoCompletamente: payload.pagadoCompletamente,
       incluyePorcentaje: "porcentajePagadoPorAccion" in payload,
-      incluyeDividendos: "totalDividendosPendientes" in payload,
+      incluyeDividendos: "dividendoPasivoTotal" in payload,
       payloadCompleto: payload,
     });
 
