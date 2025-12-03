@@ -129,34 +129,98 @@ export async function setupAccion(societyId: string): Promise<string> {
 }
 
 // ========================================
-// PASO 5: QUÓRUM
+// PASO 5: DIRECTORIO
 // ========================================
 
 /**
- * Crea quórum por defecto (si no existe)
+ * Crea config de directorio + 3 directores TITULAR
+ * ⚠️ IMPORTANTE: Orden correcto:
+ *   1. Crear directores primero
+ *   2. Config directorio (con presidenteId del primer director)
+ * 
+ * @param societyId ID de la sociedad
+ * @returns Object con directorioId y array de directoresIds
  */
-export async function setupQuorum(societyId: string): Promise<void> {
-  const repo = new QuorumHttpRepository();
-  // El backend crea quórum por defecto, solo verificamos que exista
-  const quorum = await repo.get(societyId);
-  if (quorum) {
-    console.log(`  ✅ [Setup] Quórum ya existe`);
+export async function setupDirectorio(societyId: string): Promise<{
+  directorioId: string;
+  directoresIds: string[];
+  presidenteId: string;
+}> {
+  console.log(`  📝 [Setup] Creando directorio para sociedad ${societyId}...`);
+  
+  const directorRepo = new DirectorHttpRepository();
+  const directorioRepo = new DirectorioHttpRepository();
+  
+  // 1️⃣ PRIMERO: Crear 3 directores TITULAR
+  const directores = [
+    createTestDirector(0, TipoDirector.TITULAR, null),
+    createTestDirector(1, TipoDirector.TITULAR, null),
+    createTestDirector(2, TipoDirector.TITULAR, null),
+  ];
+  
+  const directoresIds: string[] = [];
+  
+  for (const director of directores) {
+    const { CreateDirectorUseCase } = await import(
+      "~/core/hexag/registros/sociedades/pasos/directorio/application/use-cases/director/create-director.use-case"
+    );
+    const useCase = new CreateDirectorUseCase(directorRepo);
+    const result = await useCase.execute(societyId, director);
+    directoresIds.push(result.id);
+    console.log(`    ✅ Director creado: ${result.id}`);
   }
+  
+  // 2️⃣ SEGUNDO: Config directorio (con presidenteId = primer director)
+  const presidenteId = directoresIds[0]; // ✅ UUID del director, NO de la persona
+  
+  const directorioPayload: DirectorioDTO = {
+    cantidadDirectores: 3,
+    conteoPersonalizado: false,
+    minimoDirectores: null,
+    maximoDirectores: null,
+    inicioMandato: "01-01-2025", // dd-mm-aaaa
+    finMandato: "01-01-2026", // dd-mm-aaaa
+    quorumMinimo: 2,
+    mayoria: 2,
+    presidenteDesignado: true,
+    secretarioAsignado: true,
+    reeleccionPermitida: true,
+    presidentePreside: true,
+    presidenteDesempata: true,
+    periodo: "1", // "1" = ONE_YEAR
+    presidenteId, // ✅ UUID del director
+  };
+  
+  const directorio = await directorioRepo.update(societyId, directorioPayload);
+  
+  console.log(`  📝 [Setup] Directorio configurado: ${directorio.id}`);
+  console.log(`  👑 [Setup] Presidente: ${presidenteId}`);
+  
+  return {
+    directorioId: directorio.id,
+    directoresIds,
+    presidenteId,
+  };
 }
 
-// ========================================
-// PASO 6: DIRECTORIO
-// ========================================
-
 /**
- * Crea un director de prueba
+ * Crea UN director individual (útil para tests específicos de directores)
+ * ⚠️ Para setup completo de directorio, usa setupDirectorio()
+ * 
  * @param societyId ID de la sociedad
- * @returns directorId
+ * @param index Índice para datos únicos
+ * @param rolDirector Tipo de director
+ * @param reemplazaId ID del director que reemplaza (solo ALTERNO)
+ * @returns directorId (UUID del director)
  */
-export async function setupDirector(societyId: string): Promise<string> {
+export async function setupDirector(
+  societyId: string,
+  index: number = 0,
+  rolDirector: TipoDirector = TipoDirector.TITULAR,
+  reemplazaId: string | null = null
+): Promise<string> {
   const repo = new DirectorHttpRepository();
-  const { createTestDirector } = await import("./seed-helpers");
-  const director = createTestDirector(1);
+  const director = createTestDirector(index, rolDirector, reemplazaId);
 
   const { CreateDirectorUseCase } = await import(
     "~/core/hexag/registros/sociedades/pasos/directorio/application/use-cases/director/create-director.use-case"
@@ -166,6 +230,85 @@ export async function setupDirector(societyId: string): Promise<string> {
 
   console.log(`  📝 [Setup] Director creado: ${result.id}`);
   return result.id;
+}
+
+// ========================================
+// PASO 6: APODERADOS
+// ========================================
+
+/**
+ * Crea clase de apoderado + 2 apoderados
+ * 
+ * @param societyId ID de la sociedad
+ * @returns Object con claseId y array de apoderadosIds
+ */
+export async function setupApoderados(societyId: string): Promise<{
+  claseId: string;
+  apoderadosIds: string[];
+}> {
+  console.log(`  📝 [Setup] Creando apoderados para sociedad ${societyId}...`);
+  
+  const repo = new (await import("~/core/hexag/registros/sociedades/pasos/apoderados/infrastructure/repositories/apoderados.http.repository")).ApoderadosHttpRepository();
+  
+  // 1️⃣ Crear clase de apoderado
+  const { CreateClaseApoderadoUseCase } = await import(
+    "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/create-clase-apoderado.use-case"
+  );
+  const { createTestClaseApoderado } = await import("./seed-helpers");
+  
+  const clase = createTestClaseApoderado(1);
+  const claseUseCase = new CreateClaseApoderadoUseCase(repo);
+  await claseUseCase.execute(societyId, clase);
+  
+  console.log(`    ✅ Clase creada: ${clase.id}`);
+  
+  // 2️⃣ Crear 2 apoderados en esa clase
+  const { CreateApoderadoUseCase } = await import(
+    "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/create-apoderado.use-case"
+  );
+  const { createTestApoderado } = await import("./seed-helpers");
+  
+  const apoderado1 = createTestApoderado(clase.id, 1);
+  const apoderado2 = createTestApoderado(clase.id, 2);
+  
+  const apoderadoUseCase = new CreateApoderadoUseCase(repo);
+  await apoderadoUseCase.execute(societyId, apoderado1);
+  await apoderadoUseCase.execute(societyId, apoderado2);
+  
+  console.log(`    ✅ Apoderado 1 creado: ${apoderado1.id}`);
+  console.log(`    ✅ Apoderado 2 creado: ${apoderado2.id}`);
+  
+  return {
+    claseId: clase.id,
+    apoderadosIds: [apoderado1.id, apoderado2.id],
+  };
+}
+
+// ========================================
+// PASO 8: QUÓRUM
+// ========================================
+
+/**
+ * Configura quorum con valores estándar (según norma legal >= 50%)
+ * ⚠️ IMPORTANTE: En la vida real, no puede haber valores < 50%
+ * 
+ * @param societyId ID de la sociedad
+ */
+export async function setupQuorum(societyId: string): Promise<void> {
+  const repo = new QuorumHttpRepository();
+  
+  // ✅ Valores realistas según seeds (siempre >= 50)
+  const payload = {
+    quorumMinimoSimple: 50,
+    quorumMinimoCalificado: 60,
+    primeraConvocatoriaSimple: 60,
+    primeraConvocatoriaCalificada: 70,
+    segundaConvocatoriaSimple: 66,
+    segundaConvocatoriaCalificada: 80,
+  };
+  
+  await repo.update(societyId, payload);
+  console.log(`  📝 [Setup] Quorum configurado (valores legales >= 50%)`);
 }
 
 // ========================================

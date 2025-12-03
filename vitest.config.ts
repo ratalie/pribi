@@ -1,6 +1,7 @@
 import { defineConfig } from "vitest/config";
 import { resolve } from "path";
 import vue from "@vitejs/plugin-vue";
+import { VitestLoggerReporter } from "./tests/utils/vitest-logger-plugin";
 
 export default defineConfig({
   plugins: [vue()],
@@ -8,6 +9,7 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     setupFiles: ["./tests/setup.ts"],
+    reporters: ["default", new VitestLoggerReporter()],  // ✅ Logging automático
     // ⭐ Permitir que MSW funcione en Node.js
     pool: "threads",
     poolOptions: {

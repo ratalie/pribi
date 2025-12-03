@@ -295,26 +295,29 @@ export function createTestDirector(
 }
 
 /**
- * Crea un quorum de prueba
+ * Crea un quorum de prueba con valores legales (>= 50%)
+ * ⚠️ IMPORTANTE: En la vida real, por norma legal no puede haber valores < 50%
  */
 export function createTestQuorum(): QuorumDTO {
   return {
     quorumMinimoSimple: 50,
     quorumMinimoCalificado: 60,
     primeraConvocatoriaSimple: 60,
-    primeraConvocatoriaCalificada: 60,
-    segundaConvocatoriaSimple: 66,
-    segundaConvocatoriaCalificada: 66,
+    primeraConvocatoriaCalificada: 70,  // ✅ >= 60
+    segundaConvocatoriaSimple: 66,      // ✅ >= 60
+    segundaConvocatoriaCalificada: 80,  // ✅ >= 70
   };
 }
 
 /**
  * Crea una clase de apoderado de prueba
+ * Genera nombre único para evitar conflictos con el backend
  */
-export function createTestClaseApoderado(): ClaseApoderadoDTO {
+export function createTestClaseApoderado(index: number = 0): ClaseApoderadoDTO {
+  const timestamp = Date.now();
   return {
     id: generateUUID(),
-    nombre: "Gerente General",
+    nombre: `Gerente-${index}-${timestamp}`, // ✅ Nombre único
   };
 }
 

@@ -76,7 +76,7 @@ describe("PASO 5: Directorio - Backend Real", () => {
     expect(result).toBeDefined();
     expect(result.id).toBeDefined();
     expect(result.rolDirector).toBe(TipoDirector.TITULAR);
-    expect(result.persona.nombre).toBe("Roberto");
+    expect(result.persona.nombre).toBe("Ana"); // ✅ Index 1 = "Ana"
 
     testDirectoresIds.push(result.id);
     console.log(`✅ Director 2 creado: ${result.id}`);
