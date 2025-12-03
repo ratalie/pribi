@@ -1,9 +1,9 @@
 /**
  * HELPERS REUTILIZABLES PARA SETUP DE TESTS
- * 
+ *
  * Estos helpers permiten que cada test cree fácilmente
  * los datos previos que necesita (sociedad, accionistas, acciones, etc.)
- * 
+ *
  * Uso:
  * ```typescript
  * beforeAll(async () => {
@@ -15,15 +15,16 @@
  */
 
 import { SociedadHttpRepository } from "~/core/hexag/registros/sociedades/infrastructure/repositories/sociedad.http.repository";
-import { DatosSociedadHttpRepository } from "~/core/hexag/registros/sociedades/pasos/datos-sociedad/infrastructure/repositories/datos-sociedad.http.repository";
-import { AccionistasHttpRepository } from "~/core/hexag/registros/sociedades/pasos/accionistas/infrastructure/repositories/accionistas.http.repository";
+import { ValorNominalHttpRepository } from "~/core/hexag/registros/sociedades/infrastructure/repositories/valor-nominal.http.repository";
 import { AccionesHttpRepository } from "~/core/hexag/registros/sociedades/pasos/acciones/infrastructure/repositories/acciones.http.repository";
-import { QuorumHttpRepository } from "~/core/hexag/registros/sociedades/pasos/quorum-mayorias/infrastructure/repositories/quorum.http.repository";
+import { AccionistasHttpRepository } from "~/core/hexag/registros/sociedades/pasos/accionistas/infrastructure/repositories/accionistas.http.repository";
+import { DatosSociedadHttpRepository } from "~/core/hexag/registros/sociedades/pasos/datos-sociedad/infrastructure/repositories/datos-sociedad.http.repository";
 import { DirectorHttpRepository } from "~/core/hexag/registros/sociedades/pasos/directorio/infrastructure/repositories/director.http.repository";
+import { QuorumHttpRepository } from "~/core/hexag/registros/sociedades/pasos/quorum-mayorias/infrastructure/repositories/quorum.http.repository";
 
-import { createTestAccionistaNatural, createTestAccion } from "./seed-helpers";
-import { createDatosSociedadPayload } from "../data/sociedades/test-data-sociedades";
 import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain/enums/tipo-accion.enum";
+import { createDatosSociedadPayload } from "../data/sociedades/test-data-sociedades";
+import { createTestAccion, createTestAccionistaNatural } from "./seed-helpers";
 
 // ========================================
 // PASO 0: SOCIEDAD
@@ -86,23 +87,42 @@ export async function setupAccionista(societyId: string): Promise<string> {
 }
 
 // ========================================
+// PASO 2.5: VALOR NOMINAL (ANTES DE ACCIONES)
+// ========================================
+
+/**
+ * Crea valor nominal (requerido ANTES de crear acciones)
+ * @param societyId ID de la sociedad
+ */
+export async function setupValorNominal(societyId: string): Promise<void> {
+  const repo = new ValorNominalHttpRepository();
+  await repo.update(societyId, { valorNominal: 1.0 });
+  console.log(`  📝 [Setup] Valor nominal creado: 1.0`);
+}
+
+// ========================================
 // PASO 3: ACCIONES
 // ========================================
 
 /**
  * Crea una acción de prueba
+ * ⚠️ IMPORTANTE: Requiere que el valor nominal esté creado primero
+ *
  * @param societyId ID de la sociedad
  * @returns accionId (UUID generado en frontend)
  */
 export async function setupAccion(societyId: string): Promise<string> {
+  // ✅ Crear valor nominal ANTES de la acción
+  await setupValorNominal(societyId);
+
   const repo = new AccionesHttpRepository();
   const accion = createTestAccion(TipoAccionEnum.COMUN, 500);
-  
+
   // ✅ El UUID ya está en accion.id (generado en frontend)
   await repo.create(societyId, accion);
-  
+
   console.log(`  📝 [Setup] Acción creada: ${accion.id}`);
-  return accion.id;  // ✅ Retornar el UUID que ya generamos
+  return accion.id; // ✅ Retornar el UUID que ya generamos
 }
 
 // ========================================
@@ -134,13 +154,13 @@ export async function setupDirector(societyId: string): Promise<string> {
   const repo = new DirectorHttpRepository();
   const { createTestDirector } = await import("./seed-helpers");
   const director = createTestDirector(1);
-  
+
   const { CreateDirectorUseCase } = await import(
     "~/core/hexag/registros/sociedades/pasos/directorio/application/use-cases/director/create-director.use-case"
   );
   const useCase = new CreateDirectorUseCase(repo);
   const result = await useCase.execute(societyId, director);
-  
+
   console.log(`  📝 [Setup] Director creado: ${result.id}`);
   return result.id;
 }
@@ -158,11 +178,10 @@ export async function setupCompleto() {
   await setupDatosSociedad(societyId);
   const accionistaId = await setupAccionista(societyId);
   const accionId = await setupAccion(societyId);
-  
+
   return {
     societyId,
     accionistaId,
     accionId,
   };
 }
-
