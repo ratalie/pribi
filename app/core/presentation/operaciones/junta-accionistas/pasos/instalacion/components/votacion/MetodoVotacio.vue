@@ -1,8 +1,9 @@
 <script setup lang="ts">
   import { computed } from "vue";
-  import BlankContainer from "~/components/containers/BlankContainer.vue";
   import SlotWrapper from "~/components/containers/SlotWrapper.vue";
   import TitleH2 from "~/components/titles/TitleH2.vue";
+  import MayoriaVotacion from "./MayoriaVotacion.vue";
+  import UnanimidadVotacion from "./UnanimidadVotacion.vue";
 
   interface Props {
     modelValue?: string;
@@ -44,7 +45,7 @@
       subtitle="Votación para aprobar el aumento capital realizado mediante aportes dinerarios."
     />
 
-    <p class="t-h6 text-gray-800 font-primary">Método de votación</p>
+    <p class="t-h5 text-gray-800 font-primary">Método de votación</p>
     <div class="flex gap-8">
       <div
         v-for="method in methods"
@@ -115,6 +116,12 @@
         </div>
       </div>
     </div>
-    <BlankContainer />
+
+    <!-- Contenido condicional según el método seleccionado -->
+    <div class="mt-10">
+      <UnanimidadVotacion v-if="selectedMethod === 'unanimidad'" />
+      <MayoriaVotacion v-if="selectedMethod === 'mayoria'" />
+    </div>
+
   </SlotWrapper>
 </template>
