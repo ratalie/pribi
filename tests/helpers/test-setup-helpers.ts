@@ -250,37 +250,41 @@ export async function setupApoderados(societyId: string): Promise<{
   
   const repo = new (await import("~/core/hexag/registros/sociedades/pasos/apoderados/infrastructure/repositories/apoderados.http.repository")).ApoderadosHttpRepository();
   
-  // 1️⃣ Crear clase de apoderado
+  // 1️⃣ Crear clase de apoderado "Gerente General"
   const { CreateClaseApoderadoUseCase } = await import(
     "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/create-clase-apoderado.use-case"
   );
-  const { createTestClaseApoderado } = await import("./seed-helpers");
+  const { ClasesApoderadoEspecialesEnum } = await import(
+    "~/core/presentation/registros/sociedades/pasos/apoderados/types/enums/ClasesApoderadoEspecialesEnum"
+  );
+  const { generateUUID } = await import("@tests/utils/uuid-generator");
   
-  const clase = createTestClaseApoderado(1);
+  const claseGerenteGeneral = {
+    id: generateUUID(),
+    nombre: ClasesApoderadoEspecialesEnum.GERENTE_GENERAL, // ✅ "Gerente General"
+  };
+  
   const claseUseCase = new CreateClaseApoderadoUseCase(repo);
-  await claseUseCase.execute(societyId, clase);
+  await claseUseCase.execute(societyId, claseGerenteGeneral);
   
-  console.log(`    ✅ Clase creada: ${clase.id}`);
+  console.log(`    ✅ Clase 'Gerente General' creada: ${claseGerenteGeneral.id}`);
   
-  // 2️⃣ Crear 2 apoderados en esa clase
+  // 2️⃣ Crear GERENTE GENERAL (Roberto Silva Mendoza)
   const { CreateApoderadoUseCase } = await import(
     "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/create-apoderado.use-case"
   );
   const { createTestApoderado } = await import("./seed-helpers");
   
-  const apoderado1 = createTestApoderado(clase.id, 1);
-  const apoderado2 = createTestApoderado(clase.id, 2);
+  const gerenteGeneral = createTestApoderado(claseGerenteGeneral.id, 0); // índice 0 = Roberto Silva Mendoza
   
   const apoderadoUseCase = new CreateApoderadoUseCase(repo);
-  await apoderadoUseCase.execute(societyId, apoderado1);
-  await apoderadoUseCase.execute(societyId, apoderado2);
+  await apoderadoUseCase.execute(societyId, gerenteGeneral);
   
-  console.log(`    ✅ Apoderado 1 creado: ${apoderado1.id}`);
-  console.log(`    ✅ Apoderado 2 creado: ${apoderado2.id}`);
+  console.log(`    ✅ Gerente General creado: ${gerenteGeneral.id} (${gerenteGeneral.persona.nombre} ${gerenteGeneral.persona.apellidoPaterno})`);
   
   return {
-    claseId: clase.id,
-    apoderadosIds: [apoderado1.id, apoderado2.id],
+    claseId: claseGerenteGeneral.id,
+    apoderadosIds: [gerenteGeneral.id],
   };
 }
 

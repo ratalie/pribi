@@ -105,8 +105,9 @@ export class MeetingDetailsMapper {
       instaladaEnConvocatoria,
       presidenteId: dto.presidentId,
       secretarioId: dto.secretaryId,
-      presidenteAsistio: dto.presidentAttended,
-      secretarioAsistio: dto.secretaryAttended,
+      // ⚠️ IMPORTANTE: Backend NO envía estos campos en GET, usar default TRUE
+      presidenteAsistio: dto.presidentAttended ?? true,
+      secretarioAsistio: dto.secretaryAttended ?? true,
       nombreOtroPresidente: dto.otherPresidentName,
       nombreOtroSecretario: dto.otherSecretaryName,
     };

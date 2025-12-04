@@ -59,9 +59,24 @@ const tipoDocumentoOptions = [
 /**
  * Guardar representante
  */
-function handleSave() {
-  emit("save", { ...formData.value });
-  resetForm();
+async function handleSave() {
+  console.log("[RepresentanteModal] Guardando representante:", {
+    accionistaId: props.accionistaId,
+    formData: formData.value,
+  });
+
+  try {
+    // TODO: Implementar guardado en backend
+    // 1. Crear persona en backend
+    // 2. Actualizar attendance con representedById
+    
+    emit("save", { ...formData.value });
+    handleCancel();
+    
+    console.log("✅ [RepresentanteModal] Representante guardado");
+  } catch (error) {
+    console.error("❌ [RepresentanteModal] Error:", error);
+  }
 }
 
 /**
@@ -101,7 +116,7 @@ watch(() => props.isOpen, (isOpen) => {
           Agregar Representante
         </DialogTitle>
         <DialogDescription class="t-t1 font-secondary text-gray-600">
-          Complete los datos del representante de este accionista.
+          Registra quién será el representante.
         </DialogDescription>
       </DialogHeader>
 
@@ -155,8 +170,8 @@ watch(() => props.isOpen, (isOpen) => {
         <Button variant="outline" @click="handleCancel">
           Cancelar
         </Button>
-        <Button @click="handleSave">
-          Guardar
+        <Button type="button" @click="handleSave">
+          Agregar
         </Button>
       </DialogFooter>
     </DialogContent>

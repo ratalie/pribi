@@ -138,12 +138,12 @@ export function generateTestData(index: number) {
       quorumMinimo: 2,
       mayoria: 2,
       presidenteDesignado: true,
-      secretarioAsignado: true,
+      secretarioAsignado: true, // ✅ TRUE = Gerente General es secretario
       reeleccionPermitida: true,
-      presidentePreside: true,
+      presidentePreside: true, // ✅ TRUE = Presidente del directorio preside la junta
       presidenteDesempata: true,
       periodo: "1",
-      presidenteId: null,
+      presidenteId: null, // ⚠️ Se asigna después de crear directores
     } as DirectorioDTO,
 
     directores: Array.from({ length: 3 }, (_, i) => ({

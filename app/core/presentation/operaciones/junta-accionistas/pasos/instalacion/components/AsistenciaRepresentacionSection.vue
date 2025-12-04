@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import CardTitle from "~/components/base/cards/CardTitle.vue";
 import SimpleCard from "~/components/base/cards/SimpleCard.vue";
@@ -10,7 +10,9 @@ import TableRow from "~/components/ui/table/TableRow.vue";
 import TableHead from "~/components/ui/table/TableHead.vue";
 import TableCell from "~/components/ui/table/TableCell.vue";
 import Checkbox from "~/components/ui/checkbox/Checkbox.vue";
+import { Button } from "~/components/ui/button";
 import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+import DataTableDropDown from "~/components/base/tables/DataTableDropDown.vue";
 import { TipoJunta } from "~/core/hexag/juntas/domain/enums/tipo-junta.enum";
 import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
 import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
@@ -36,6 +38,20 @@ const { asistenciasEnriquecidas, totalAcciones, accionesPresentes } = storeToRef
 // ========================================
 const isRepresentanteModalOpen = ref(false);
 const selectedAccionistaId = ref<string | null>(null);
+
+// Acciones para el menú de representante (DataTableDropDown)
+const representanteActions = computed(() => [
+  {
+    label: "Editar",
+    icon: "SquarePen",
+    onClick: (id: string) => openRepresentanteModal(id),
+  },
+  {
+    label: "Eliminar",
+    icon: "Trash2",
+    onClick: (id: string) => removeRepresentante(id),
+  },
+]);
 
 // ========================================
 // COMPUTED
@@ -96,22 +112,45 @@ function closeRepresentanteModal() {
 /**
  * Guardar representante
  */
-function saveRepresentante(representanteData: any) {
+async function saveRepresentante(representanteData: any) {
   if (!selectedAccionistaId.value) return;
 
-  // TODO: Guardar en store
-  console.log("[AsistenciaSection] Guardar representante:", representanteData);
+  console.log("[AsistenciaSection] Guardando representante:", {
+    accionistaId: selectedAccionistaId.value,
+    representanteData,
+  });
 
-  closeRepresentanteModal();
+  try {
+    // TODO: Aquí debería:
+    // 1. Crear la persona representante en el backend
+    // 2. Actualizar la asistencia con representadoPorId
+    // Por ahora, solo cerramos el modal
+    
+    console.log("✅ [AsistenciaSection] Representante guardado (mock)");
+    closeRepresentanteModal();
+  } catch (error) {
+    console.error("❌ [AsistenciaSection] Error al guardar representante:", error);
+  }
 }
 
 /**
  * Remover representante
  */
-function removeRepresentante(accionistaId: string) {
-  console.log("[AsistenciaSection] Remover representante:", accionistaId);
-  // TODO: Implementar
+async function removeRepresentante(accionistaId: string) {
+  console.log("[AsistenciaSection] Removiendo representante:", accionistaId);
+  
+  try {
+    await asistenciaStore.eliminarRepresentante(
+      props.societyId,
+      Number(props.flowId),
+      accionistaId
+    );
+    console.log("✅ [AsistenciaSection] Representante removido");
+  } catch (error) {
+    console.error("❌ [AsistenciaSection] Error al remover representante:", error);
+  }
 }
+
 
 /**
  * Obtener clases CSS para el tipo de accionista (mismo estilo que Sociedades)
@@ -126,6 +165,34 @@ function getTipoClasses(tipo: string): string {
   };
   return variants[tipo] || "px-3 py-1 bg-gray-50 text-gray-700 rounded-full text-sm font-medium";
 }
+
+/**
+ * Tipos que requieren representante obligatorio cuando asistio=true
+ */
+const TIPOS_CON_REPRESENTANTE_OBLIGATORIO = [
+  "JURIDICA",
+  "SUCURSAL",
+  "FONDO_INVERSION",
+  "FIDEICOMISO",
+  "SUCESION_INDIVISA",
+] as const;
+
+/**
+ * ¿Requiere representante obligatorio? (cuando asistio=true)
+ */
+function requiereRepresentanteObligatorio(tipo: string): boolean {
+  return TIPOS_CON_REPRESENTANTE_OBLIGATORIO.includes(tipo as any);
+}
+
+/**
+ * ¿Requiere representante? (FIDEICOMISOS, SUCESIONES_INDIVISAS) - Legacy
+ * @deprecated Usar requiereRepresentanteObligatorio
+ */
+function requiereRepresentante(tipo: string): boolean {
+  return requiereRepresentanteObligatorio(tipo);
+}
+
+// Acciones del menú de representante (DataTableDropDown con 3 puntos)
 </script>
 
 <template>
@@ -138,37 +205,40 @@ function getTipoClasses(tipo: string): string {
     <!-- TABLA DE ASISTENCIA -->
     <div class="overflow-hidden bg-white">
       <Table>
-        <TableHeader>
-          <TableRow>
-            <!-- Checkbox header (vacío) -->
-            <TableHead class="w-12" />
-            
-            <TableHead class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16">
-              Nombre Apellido / Razón Social
-            </TableHead>
-            
-            <TableHead class="font-primary text-center text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16">
-              Tipo de Accionista
-            </TableHead>
-            
-            <TableHead class="font-primary text-center text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16">
-              Acciones con derecho a voto
-            </TableHead>
-            
-            <TableHead class="font-primary text-center text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16">
-              Porcentaje de Participación
-            </TableHead>
-            
-            <TableHead class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16">
-              Representado por
-            </TableHead>
-          </TableRow>
-        </TableHeader>
+      <TableHeader>
+        <TableRow>
+          <!-- Checkbox header (vacío) -->
+          <TableHead class="w-12" />
+          
+          <TableHead class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16">
+            Nombre Apellido / Razón Social
+          </TableHead>
+          
+          <TableHead class="font-primary text-center text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16">
+            Tipo de Accionista
+          </TableHead>
+          
+          <TableHead class="font-primary text-center text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16">
+            Acciones con derecho a voto
+          </TableHead>
+          
+          <TableHead class="font-primary text-center text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16">
+            Porcentaje de Participación
+          </TableHead>
+          
+          <TableHead class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16">
+            Representado por
+          </TableHead>
+          
+          <!-- Nueva columna para botones -->
+          <TableHead class="w-12 h-16" />
+        </TableRow>
+      </TableHeader>
         
         <TableBody>
           <!-- Mensaje si no hay datos -->
           <TableRow v-if="asistenciasEnriquecidas.length === 0">
-            <TableCell colspan="6" class="text-center py-6 text-slate-500">
+            <TableCell colspan="7" class="text-center py-6 text-slate-500">
               Aún no se ha registrado ninguna asistencia
             </TableCell>
           </TableRow>
@@ -206,18 +276,60 @@ function getTipoClasses(tipo: string): string {
               {{ asistencia.porcentajeParticipacion.toFixed(2) }}%
             </TableCell>
             
-            <!-- Representado por -->
+            <!-- Representado por (Columna 1: Nombre o mensaje) -->
             <TableCell class="h-16">
-              <!-- TODO: Implementar representantes -->
-              <div class="flex items-center gap-2">
+              <!-- CASO 1: Asistió -->
+              <template v-if="asistencia.asistio">
+                <template v-if="asistencia.representadoPorId">
+                  <!-- Ya tiene representante: mostrar nombre -->
+                  <RepresentanteInfo
+                    :accionista-id="asistencia.id"
+                    :representante-id="asistencia.representadoPorId"
+                  />
+                </template>
+                <template v-else-if="requiereRepresentanteObligatorio(asistencia.tipoPersona)">
+                  <!-- Requiere representante obligatorio -->
+                  <span class="t-b2 font-secondary text-red-600 italic font-semibold">
+                    ⚠️ Requiere representante
+                  </span>
+                </template>
+                <template v-else>
+                  <!-- No requiere -->
+                  <span class="t-t2 font-secondary text-gray-500">—</span>
+                </template>
+              </template>
+              
+              <!-- CASO 2: NO Asistió - Mostrar mensaje -->
+              <template v-else>
                 <span class="t-t2 font-secondary text-gray-500">—</span>
-                <ActionButton
-                  variant="ghost"
-                  size="sm"
-                  label="Agregar"
-                  icon="Plus"
-                  @click="openRepresentanteModal(asistencia.id)"
-                />
+              </template>
+            </TableCell>
+            
+            <!-- Acciones (Columna 2: Botón Agregar o DataTableDropDown) -->
+            <TableCell class="h-16 text-right">
+              <div class="flex justify-end">
+                <!-- Si tiene representante: mostrar DataTableDropDown (3 puntos) -->
+                <template v-if="asistencia.representadoPorId">
+                  <DataTableDropDown
+                    :item-id="asistencia.id"
+                    title-menu="Acciones"
+                    :actions="representanteActions"
+                    icon-type="vertical"
+                  />
+                </template>
+                
+                <!-- Si NO tiene representante Y asistió: mostrar botón Agregar -->
+                <template v-else-if="asistencia.asistio">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    @click="openRepresentanteModal(asistencia.id)"
+                  >
+                    Agregar
+                  </Button>
+                </template>
+                
+                <!-- Si NO asistió: no mostrar nada -->
               </div>
             </TableCell>
           </TableRow>
@@ -235,6 +347,7 @@ function getTipoClasses(tipo: string): string {
             <TableCell class="font-secondary text-gray-800 text-center t-t2 font-bold h-16">
               {{ porcentajeTotal.toFixed(2) }}%
             </TableCell>
+            <TableCell />
             <TableCell />
           </TableRow>
         </TableBody>

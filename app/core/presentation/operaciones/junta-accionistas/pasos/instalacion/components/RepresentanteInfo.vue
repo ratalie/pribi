@@ -1,64 +1,60 @@
 <script setup lang="ts">
-import { Info, MoreVertical } from "lucide-vue-next";
-import { Button } from "~/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
+import { computed } from "vue";
+import { Info } from "lucide-vue-next";
+import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
+import { storeToRefs } from "pinia";
 
 interface Props {
-  representante: {
-    nombre: string;
-    apellidoPaterno?: string;
-    apellidoMaterno?: string;
-    numeroDocumento?: string;
-  };
+  accionistaId: string;
+  representanteId: string;
 }
 
 const props = defineProps<Props>();
 
-const emit = defineEmits<{
-  edit: [];
-  remove: [];
-}>();
+const asistenciaStore = useAsistenciaStore();
+const { asistenciasEnriquecidas } = storeToRefs(asistenciaStore);
 
-const nombreCompleto = computed(() => {
-  if (!props.representante) return "";
-  const { nombre, apellidoPaterno, apellidoMaterno } = props.representante;
-  return `${nombre} ${apellidoPaterno || ""} ${apellidoMaterno || ""}`.trim();
+/**
+ * Buscar info del representante en asistencias
+ */
+const representanteInfo = computed(() => {
+  const rep = asistenciasEnriquecidas.value.find(a => a.id === props.representanteId);
+  
+  console.log('🔍 [RepresentanteInfo] Buscando representante:', {
+    representanteId: props.representanteId,
+    encontrado: !!rep,
+    asistencias: asistenciasEnriquecidas.value.length,
+  });
+  
+  if (rep) {
+    return { 
+      nombre: rep.nombreCompleto, 
+      documento: rep.accionista.person.numeroDocumento 
+    };
+  }
+  
+  console.warn('⚠️ [RepresentanteInfo] Representante no encontrado');
+  return { nombre: 'Desconocido', documento: 'N/A' };
 });
+
+const representanteNombre = computed(() => representanteInfo.value.nombre);
+const representanteDocumento = computed(() => representanteInfo.value.documento);
 </script>
 
 <template>
   <div class="flex items-center gap-2">
     <!-- Nombre del representante -->
-    <span class="t-t2 font-secondary text-gray-700 font-medium">
-      {{ nombreCompleto }}
+    <span class="t-b2 font-secondary text-gray-700">
+      {{ representanteNombre }}
     </span>
     
-    <!-- Botón de info (opcional) -->
-    <Button variant="ghost" size="xs" class="h-6 w-6 p-0">
-      <Info class="h-4 w-4 text-gray-500" />
-    </Button>
-    
-    <!-- Menú de acciones -->
-    <DropdownMenu>
-      <DropdownMenuTrigger as-child>
-        <Button variant="ghost" size="xs" class="h-6 w-6 p-0">
-          <MoreVertical class="h-4 w-4 text-gray-500" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem @click="emit('edit')">
-          Editar
-        </DropdownMenuItem>
-        <DropdownMenuItem @click="emit('remove')" class="text-red-600">
-          Eliminar
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <!-- Icono de info (sin dropdown por ahora) -->
+    <button 
+      type="button"
+      class="inline-flex items-center justify-center rounded-full p-1 hover:bg-gray-100 transition-colors"
+      :title="`Documento: ${representanteDocumento}`"
+    >
+      <Info class="w-4 h-4 text-gray-500" />
+    </button>
   </div>
 </template>
-
