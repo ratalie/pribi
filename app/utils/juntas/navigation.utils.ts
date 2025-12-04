@@ -20,11 +20,12 @@ export type NavigationInfo = {
 export function getSectionNavigation(
   sectionId: string,
   subStepId: string | undefined,
-  juntaId?: string | null
+  societyId?: string | null,
+  flowId?: string | null
 ): NavigationInfo | null {
   if (!subStepId) return null;
 
-  const basePath = buildBasePath(juntaId);
+  const basePath = buildBasePath(societyId, flowId);
   const sectionRoutes = getSectionRoutesForSubStep(subStepId, basePath);
 
   if (sectionRoutes) {
@@ -52,11 +53,12 @@ export function getSectionNavigation(
 export function findParentSectionForAnchor(
   anchorId: string,
   subStepId: string | undefined,
-  juntaId?: string | null
+  societyId?: string | null,
+  flowId?: string | null
 ): { parentId: string; parentRoute: string } | null {
   if (!subStepId) return null;
 
-  const basePath = buildBasePath(juntaId);
+  const basePath = buildBasePath(societyId, flowId);
   const sections = getBaseSectionsForSubStep(subStepId);
   
   return getParentSectionForAnchor(anchorId, subStepId, basePath, sections);
@@ -78,13 +80,6 @@ export function detectCurrentSection(
   if (subStepId === "aporte-dinerarios") {
     if (path.includes("/aporte-dinerario/aportantes")) return "seleccion-aportantes";
     if (path.includes("/aporte-dinerario/aportes")) return "aportes-dinerarios";
-    if (path.includes("/aporte-dinerario/test-rutas/ruta-1")) return "ruta-1";
-    if (path.includes("/aporte-dinerario/test-rutas/ruta-2")) return "ruta-2";
-    if (path.includes("/aporte-dinerario/test-rutas/ruta-3")) return "ruta-3";
-    if (path.includes("/aporte-dinerario/test-rutas")) return "test-rutas";
-    if (path.includes("/aporte-dinerario/test-anclas")) {
-      return hash || "test-anclas";
-    }
     if (path.includes("/aporte-dinerario/votacion")) return "votacion";
     if (path.includes("/aporte-dinerario/resumen")) return "resumen";
     if (path.includes("/aporte-dinerario") && !path.includes("/aporte-dinerario/")) {

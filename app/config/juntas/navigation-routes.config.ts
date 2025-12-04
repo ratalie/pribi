@@ -14,11 +14,6 @@ export function getAporteDinerarioRoutes(basePath: string): Record<string, strin
     "aporte-dinerario": `${basePath}/aporte-dinerario`,
     "seleccion-aportantes": `${basePath}/aporte-dinerario/aportantes`,
     "aportes-dinerarios": `${basePath}/aporte-dinerario/aportes`,
-    "test-anclas": `${basePath}/aporte-dinerario/test-anclas`,
-    "test-rutas": `${basePath}/aporte-dinerario/test-rutas`,
-    "ruta-1": `${basePath}/aporte-dinerario/test-rutas/ruta-1`,
-    "ruta-2": `${basePath}/aporte-dinerario/test-rutas/ruta-2`,
-    "ruta-3": `${basePath}/aporte-dinerario/test-rutas/ruta-3`,
     votacion: `${basePath}/aporte-dinerario/votacion`,
     resumen: `${basePath}/aporte-dinerario/resumen`,
   };
@@ -63,7 +58,6 @@ export function getParentSectionForAnchor(
   sections: Array<{ id: string; subSections?: Array<{ id: string }> }>
 ): { parentId: string; parentRoute: string } | null {
   const parentRouteMap: Record<string, string> = {
-    "test-anclas": `${basePath}/aporte-dinerario/test-anclas`,
     "utilidades-montos": `${basePath}/aplicacion-resultados`,
   };
 

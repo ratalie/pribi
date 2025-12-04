@@ -12,8 +12,8 @@ import TableCell from "~/components/ui/table/TableCell.vue";
 import Checkbox from "~/components/ui/checkbox/Checkbox.vue";
 import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
 import { TipoJunta } from "~/core/hexag/juntas/domain/enums/tipo-junta.enum";
-import { useMeetingDetailsStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/detalles/stores/meeting-details.store";
-import { useAsistenciaStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/stores/asistencia.store";
+import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
+import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
 import RepresentanteModal from "./RepresentanteModal.vue";
 import RepresentanteInfo from "./RepresentanteInfo.vue";
 
@@ -25,11 +25,11 @@ interface Props {
 const props = defineProps<Props>();
 
 // ========================================
-// STORES
+// STORES (ORIGINALES que funcionaban)
 // ========================================
 const meetingDetailsStore = useMeetingDetailsStore();
 const asistenciaStore = useAsistenciaStore();
-const { asistentes, representantes } = storeToRefs(asistenciaStore);
+const { asistenciasEnriquecidas, totalAcciones, accionesPresentes } = storeToRefs(asistenciaStore);
 
 // ========================================
 // STATE
@@ -44,7 +44,7 @@ const selectedAccionistaId = ref<string | null>(null);
 /**
  * Tipo de junta (para checkbox behavior)
  */
-const tipoJunta = computed(() => meetingDetailsStore.tipoJunta);
+const tipoJunta = computed(() => meetingDetailsStore.meetingDetails?.tipoJunta);
 
 /**
  * Si es universal, todos asisten automáticamente
@@ -52,81 +52,11 @@ const tipoJunta = computed(() => meetingDetailsStore.tipoJunta);
 const isUniversal = computed(() => tipoJunta.value === TipoJunta.UNIVERSAL);
 
 /**
- * Accionistas enriquecidos con asistencia y representación
- */
-const accionistasEnriquecidos = computed(() => {
-  // TODO: Obtener del snapshot/store de accionistas
-  // Por ahora, datos mock para estructura
-  return [
-    {
-      id: "acc-1",
-      nombre: "Ana María Gómez Torres",
-      tipo: "NATURAL",
-      acciones: 100,
-      porcentaje: 20.0,
-      requiereRepresentante: false,
-    },
-    {
-      id: "acc-2",
-      nombre: "Inversiones del Sur S.A.C.",
-      tipo: "JURIDICA",
-      acciones: 200,
-      porcentaje: 40.0,
-      requiereRepresentante: false,
-    },
-    {
-      id: "acc-3",
-      nombre: "Sucursal Arequipa - Inversiones del Sur S.A.C.",
-      tipo: "SUCURSAL",
-      acciones: 50,
-      porcentaje: 10.0,
-      requiereRepresentante: false,
-    },
-    {
-      id: "acc-4",
-      nombre: "Sucesión Indivisa de María Torres Vega",
-      tipo: "SUCESIONES INDIVISAS",
-      acciones: 50,
-      porcentaje: 10.0,
-      requiereRepresentante: true,
-    },
-    {
-      id: "acc-5",
-      nombre: 'Fideicomiso "Inversión Inmobiliaria Los Álamos"',
-      tipo: "FIDEICOMISOS",
-      acciones: 100,
-      porcentaje: 20.0,
-      requiereRepresentante: true,
-    },
-  ].map((acc) => ({
-    ...acc,
-    asistio: isUniversal.value ? true : (asistentes.value.some((a: any) => a.accionistaId === acc.id)),
-    representante: representantes.value.find((r: any) => r.accionistaId === acc.id),
-  }));
-});
-
-/**
- * Total de acciones presentes
- */
-const totalAccionesPresentes = computed(() => {
-  return accionistasEnriquecidos.value
-    .filter((a) => a.asistio)
-    .reduce((sum, a) => sum + a.acciones, 0);
-});
-
-/**
- * Total de acciones
- */
-const totalAcciones = computed(() => {
-  return accionistasEnriquecidos.value.reduce((sum, a) => sum + a.acciones, 0);
-});
-
-/**
  * Porcentaje de participación total
  */
 const porcentajeTotal = computed(() => {
   if (totalAcciones.value === 0) return 0;
-  return (totalAccionesPresentes.value / totalAcciones.value) * 100;
+  return (accionesPresentes.value / totalAcciones.value) * 100;
 });
 
 // ========================================
@@ -136,11 +66,15 @@ const porcentajeTotal = computed(() => {
 /**
  * Toggle asistencia de un accionista
  */
-function toggleAsistencia(accionistaId: string) {
+async function toggleAsistencia(registroId: string) {
   // Si es universal, no permitir toggle
   if (isUniversal.value) return;
 
-  asistenciaStore.markAsistente(accionistaId, {});
+  try {
+    await asistenciaStore.toggleAsistencia(props.societyId, Number(props.flowId), registroId);
+  } catch (error) {
+    console.error("[AsistenciaSection] Error al toggle asistencia:", error);
+  }
 }
 
 /**
@@ -165,10 +99,8 @@ function closeRepresentanteModal() {
 function saveRepresentante(representanteData: any) {
   if (!selectedAccionistaId.value) return;
 
-  // Guardar en store
-  asistenciaStore.markAsistente(selectedAccionistaId.value, {
-    representante: representanteData,
-  });
+  // TODO: Guardar en store
+  console.log("[AsistenciaSection] Guardar representante:", representanteData);
 
   closeRepresentanteModal();
 }
@@ -177,7 +109,8 @@ function saveRepresentante(representanteData: any) {
  * Remover representante
  */
 function removeRepresentante(accionistaId: string) {
-  asistenciaStore.removeAsistente(accionistaId);
+  console.log("[AsistenciaSection] Remover representante:", accionistaId);
+  // TODO: Implementar
 }
 
 /**
@@ -188,7 +121,7 @@ function getTipoClasses(tipo: string): string {
     NATURAL: "px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium",
     JURIDICA: "px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm font-medium",
     SUCURSAL: "px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm font-medium",
-    "SUCESIONES INDIVISAS": "px-3 py-1 bg-orange-50 text-orange-700 rounded-full text-sm font-medium",
+    SUCESIONES_INDIVISAS: "px-3 py-1 bg-orange-50 text-orange-700 rounded-full text-sm font-medium",
     FIDEICOMISOS: "px-3 py-1 bg-pink-50 text-pink-700 rounded-full text-sm font-medium",
   };
   return variants[tipo] || "px-3 py-1 bg-gray-50 text-gray-700 rounded-full text-sm font-medium";
@@ -233,86 +166,71 @@ function getTipoClasses(tipo: string): string {
         </TableHeader>
         
         <TableBody>
+          <!-- Mensaje si no hay datos -->
+          <TableRow v-if="asistenciasEnriquecidas.length === 0">
+            <TableCell colspan="6" class="text-center py-6 text-slate-500">
+              Aún no se ha registrado ninguna asistencia
+            </TableCell>
+          </TableRow>
+
           <!-- Filas de accionistas -->
-          <TableRow v-for="accionista in accionistasEnriquecidos" :key="accionista.id">
+          <TableRow v-for="asistencia in asistenciasEnriquecidas" :key="asistencia.id">
             <!-- Checkbox de asistencia -->
             <TableCell class="text-center">
               <Checkbox
-                :checked="accionista.asistio"
+                :checked="asistencia.asistio"
                 :disabled="isUniversal"
-                @update:checked="toggleAsistencia(accionista.id)"
+                @update:checked="toggleAsistencia(asistencia.id)"
               />
             </TableCell>
             
             <!-- Nombre -->
             <TableCell class="font-secondary text-gray-700 dark:text-gray-900 t-t2 font-medium h-16">
-              {{ accionista.nombre }}
+              {{ asistencia.nombreCompleto }}
             </TableCell>
             
             <!-- Tipo (Badge style como Sociedades) -->
             <TableCell class="text-center h-16">
-              <span :class="getTipoClasses(accionista.tipo)">
-                {{ accionista.tipo }}
+              <span :class="getTipoClasses(asistencia.tipoPersona)">
+                {{ asistencia.tipoPersona }}
               </span>
             </TableCell>
             
             <!-- Acciones -->
             <TableCell class="font-secondary text-gray-700 text-center dark:text-gray-900 t-t2 font-medium h-16">
-              {{ accionista.acciones }}
+              {{ asistencia.accionesConDerechoVoto }}
             </TableCell>
             
             <!-- Porcentaje -->
             <TableCell class="font-secondary text-gray-700 text-center dark:text-gray-900 t-t2 font-medium h-16">
-              {{ accionista.porcentaje.toFixed(2) }}%
+              {{ asistencia.porcentajeParticipacion.toFixed(2) }}%
             </TableCell>
             
             <!-- Representado por -->
             <TableCell class="h-16">
-              <!-- Si tiene representante -->
-              <RepresentanteInfo
-                v-if="accionista.representante"
-                :representante="accionista.representante"
-                @edit="openRepresentanteModal(accionista.id)"
-                @remove="removeRepresentante(accionista.id)"
-              />
-              
-              <!-- Si requiere representante pero no tiene -->
-              <div v-else-if="accionista.requiereRepresentante" class="flex items-center gap-2">
-                <span class="t-t2 font-secondary text-purple-600 font-medium">
-                  Requiere representante
-                </span>
-                <ActionButton
-                  variant="secondary"
-                  size="sm"
-                  label="Agregar"
-                  icon="Plus"
-                  @click="openRepresentanteModal(accionista.id)"
-                />
-              </div>
-              
-              <!-- Si NO requiere representante (es Natural, etc.) -->
-              <div v-else class="flex items-center gap-2">
+              <!-- TODO: Implementar representantes -->
+              <div class="flex items-center gap-2">
                 <span class="t-t2 font-secondary text-gray-500">—</span>
                 <ActionButton
                   variant="ghost"
                   size="sm"
                   label="Agregar"
                   icon="Plus"
-                  @click="openRepresentanteModal(accionista.id)"
+                  @click="openRepresentanteModal(asistencia.id)"
                 />
               </div>
             </TableCell>
           </TableRow>
           
           <!-- Fila de totales -->
-          <TableRow class="bg-gray-50 border-t-2 border-gray-300">
+          <TableRow v-if="asistenciasEnriquecidas.length > 0" class="bg-gray-50 border-t-2 border-gray-300">
             <TableCell />
             <TableCell class="font-secondary text-gray-800 t-t2 font-bold h-16">
               Total de acciones presentes
             </TableCell>
             <TableCell />
             <TableCell class="font-secondary text-gray-800 text-center t-t2 font-bold h-16">
-              {{ totalAccionesPresentes }}
+              {{ accionesPresentes }}
             </TableCell>
             <TableCell class="font-secondary text-gray-800 text-center t-t2 font-bold h-16">
               {{ porcentajeTotal.toFixed(2) }}%
@@ -332,4 +250,3 @@ function getTipoClasses(tipo: string): string {
     />
   </SimpleCard>
 </template>
-

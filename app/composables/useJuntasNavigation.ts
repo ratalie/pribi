@@ -41,8 +41,10 @@ export function useJuntasNavigation(
       return;
     }
 
-    const juntaId = route.params.id as string | undefined;
-    const navigation = getSectionNavigation(sectionId, currentSubStepId.value, juntaId);
+    // ⭐ Extraer societyId y flowId de los parámetros de la ruta
+    const societyId = route.params.societyId as string | undefined;
+    const flowId = route.params.flowId as string | undefined;
+    const navigation = getSectionNavigation(sectionId, currentSubStepId.value, societyId, flowId);
     const currentPath = route.path;
 
     if (navigation) {
@@ -57,7 +59,8 @@ export function useJuntasNavigation(
         const parentInfo = findParentSectionForAnchor(
           sectionId,
           currentSubStepId.value,
-          juntaId
+          societyId,
+          flowId
         );
 
         if (parentInfo) {

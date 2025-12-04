@@ -39,14 +39,14 @@ const nombreCompleto = computed(() => {
     </span>
     
     <!-- Botón de info (opcional) -->
-    <Button variant="ghost" size="icon" class="h-6 w-6">
+    <Button variant="ghost" size="xs" class="h-6 w-6 p-0">
       <Info class="h-4 w-4 text-gray-500" />
     </Button>
     
     <!-- Menú de acciones -->
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
-        <Button variant="ghost" size="icon" class="h-6 w-6">
+        <Button variant="ghost" size="xs" class="h-6 w-6 p-0">
           <MoreVertical class="h-4 w-4 text-gray-500" />
         </Button>
       </DropdownMenuTrigger>

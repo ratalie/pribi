@@ -49,7 +49,7 @@ const tipoDocumentoOptions = [
   { id: 1, value: TipoDocumentosEnum.DNI, label: "DNI" },
   { id: 2, value: TipoDocumentosEnum.RUC, label: "RUC" },
   { id: 3, value: TipoDocumentosEnum.PASAPORTE, label: "Pasaporte" },
-  { id: 4, value: TipoDocumentosEnum.CARNET_EXTRANJERIA, label: "Carnet de Extranjería" },
+  { id: 4, value: TipoDocumentosEnum.CARNET_DE_EXTRANJERIA, label: "Carnet de Extranjería" },
 ];
 
 // ========================================

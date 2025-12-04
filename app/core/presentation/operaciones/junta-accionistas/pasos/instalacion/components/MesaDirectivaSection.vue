@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { storeToRefs } from "pinia";
+import { computed, ref, watch } from "vue";
 import CardTitle from "~/components/base/cards/CardTitle.vue";
 import SimpleCard from "~/components/base/cards/SimpleCard.vue";
 import { Switch } from "~/components/ui/switch";
@@ -8,8 +7,9 @@ import { Label } from "~/components/ui/label";
 import { Input } from "~/components/ui/input";
 import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
 import { z } from "zod";
-import { useMeetingDetailsStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/detalles/stores/meeting-details.store";
-import { useAsistenciaStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/stores/asistencia.store";
+import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
+import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
+import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 
 interface Props {
   societyId: number;
@@ -19,11 +19,11 @@ interface Props {
 const props = defineProps<Props>();
 
 // ========================================
-// STORES
+// STORES (ORIGINALES)
 // ========================================
 const meetingDetailsStore = useMeetingDetailsStore();
 const asistenciaStore = useAsistenciaStore();
-const { asistentes } = storeToRefs(asistenciaStore);
+const snapshotStore = useSnapshotStore();
 
 // ========================================
 // STATE
@@ -31,26 +31,39 @@ const { asistentes } = storeToRefs(asistenciaStore);
 const presidenteAsistio = ref(true);
 const secretarioAsistio = ref(true);
 
-const presidenteNombre = ref("Cristian Robert Huamán García"); // Desde directorio
-const secretarioNombre = ref("");
-
-const presidenteReemplazo = ref("");
-const secretarioReemplazo = ref("");
-
 // ========================================
 // COMPUTED
 // ========================================
 
 /**
+ * Presidente y secretario desde meeting details
+ */
+const presidenteId = computed(() => meetingDetailsStore.meetingDetails?.presidenteId || "");
+const secretarioId = computed(() => meetingDetailsStore.meetingDetails?.secretarioId || "");
+
+/**
+ * Nombres desde el directorio (si existe)
+ */
+const presidenteNombre = computed(() => {
+  // TODO: Buscar en snapshot.directorio por presidenteId
+  return presidenteId.value || "Cristian Robert Huamán García";
+});
+
+const secretarioNombre = computed(() => {
+  // TODO: Buscar en snapshot.directorio por secretarioId
+  return secretarioId.value || "";
+});
+
+/**
  * Opciones de asistentes presentes (para reemplazo)
  */
 const asistentesOptions = computed(() => {
-  return asistentes.value
-    .filter((a: any) => a.asistio)
-    .map((a: any, index: number) => ({
+  return asistenciaStore.asistenciasEnriquecidas
+    .filter((a) => a.asistio)
+    .map((a, index) => ({
       id: index + 1,
       value: a.id,
-      label: a.nombre || `Accionista ${index + 1}`,
+      label: a.nombreCompleto,
     }));
 });
 
@@ -58,30 +71,44 @@ const asistentesOptions = computed(() => {
  * ¿Tiene directorio configurado?
  */
 const tieneDirectorio = computed(() => {
-  // TODO: Obtener del snapshot
-  return true; // Mock por ahora
+  return !!snapshotStore.directorio;
 });
+
+// ========================================
+// REFS PARA REEMPLAZOS
+// ========================================
+const presidenteReemplazo = ref("");
+const secretarioReemplazo = ref("");
 
 // ========================================
 // METHODS
 // ========================================
 
 /**
- * Actualizar mesa directiva en el store
+ * Actualizar mesa directiva en meeting details
  */
-function updateMesaDirectiva() {
-  asistenciaStore.setMesaDirectiva({
-    presidenteId: presidenteAsistio.value ? "presidente-default-id" : presidenteReemplazo.value,
-    presidenteAsistio: presidenteAsistio.value,
-    secretarioId: secretarioAsistio.value ? "secretario-default-id" : secretarioReemplazo.value,
-    secretarioAsistio: secretarioAsistio.value,
-  });
+async function updateMesaDirectiva() {
+  try {
+    // Actualizar en el store
+    await meetingDetailsStore.patchMeetingDetails({
+      presidenteAsistio: presidenteAsistio.value,
+      secretarioAsistio: secretarioAsistio.value,
+      // TODO: Agregar IDs de reemplazos si no asistieron
+    });
+    
+    console.log("[MesaDirectiva] Actualizado:", {
+      presidenteAsistio: presidenteAsistio.value,
+      secretarioAsistio: secretarioAsistio.value,
+    });
+  } catch (error) {
+    console.error("[MesaDirectiva] Error al actualizar:", error);
+  }
 }
 
 /**
  * Watch changes para auto-save
  */
-watch([presidenteAsistio, secretarioAsistio, presidenteReemplazo, secretarioReemplazo], () => {
+watch([presidenteAsistio, secretarioAsistio], () => {
   updateMesaDirectiva();
 });
 </script>
@@ -172,13 +199,13 @@ watch([presidenteAsistio, secretarioAsistio, presidenteReemplazo, secretarioReem
           </div>
         </div>
 
-        <!-- Si asistió: Mostrar nombre o input -->
+        <!-- Si asistió: Mostrar nombre o selector -->
         <div v-if="secretarioAsistio" class="flex flex-col gap-2">
           <Label class="t-t2 font-secondary text-gray-700">
             Nombre completo
           </Label>
           
-          <!-- Si tiene directorio y secretario definido -->
+          <!-- Si tiene secretario del directorio -->
           <Input
             v-if="tieneDirectorio && secretarioNombre"
             :value="secretarioNombre"
@@ -186,11 +213,11 @@ watch([presidenteAsistio, secretarioAsistio, presidenteReemplazo, secretarioReem
             class="bg-white"
           />
           
-          <!-- Si NO tiene secretario definido, selector manual -->
+          <!-- Si NO tiene secretario, selector manual -->
           <SelectInputZod
             v-else
-            v-model="secretarioNombre"
-            name="secretario_nombre"
+            v-model="secretarioId"
+            name="secretario_id"
             label=""
             placeholder="Seleccionar accionista o representante"
             :options="asistentesOptions"
@@ -220,4 +247,3 @@ watch([presidenteAsistio, secretarioAsistio, presidenteReemplazo, secretarioReem
     </div>
   </SimpleCard>
 </template>
-
