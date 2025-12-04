@@ -11,6 +11,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   ssr: false,
+  devServer: {
+    port: 5173,
+  },
 
   alias: {
     "@hexag": fileURLToPath(new URL("./app/core/hexag", import.meta.url)),
