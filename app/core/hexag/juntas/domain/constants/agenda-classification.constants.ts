@@ -4,7 +4,11 @@
  * Los puntos de agenda se clasifican en:
  * - SIMPLE: Requieren mayoría simple para aprobarse
  * - CALIFICADO: Requieren mayoría calificada para aprobarse
+ * 
+ * @see puntos-agenda.constants.ts - Para el catálogo completo de puntos
  */
+
+import { getPuntoAgendaById } from './puntos-agenda.constants';
 
 export enum TipoAcuerdo {
   SIMPLE = 'SIMPLE',

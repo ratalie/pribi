@@ -31,8 +31,8 @@
     <RightSidebarHeader :title="title" />
 
     <!-- Sections List -->
-    <div class="flex-1 p-6">
-      <div class="space-y-1">
+    <div class="flex-1 px-6 py-4">
+      <div class="space-y-0.5">
         <div v-for="section in sections" :key="section.id" class="relative">
           <!-- Sección Principal -->
           <RightSidebarSectionItem
@@ -52,7 +52,7 @@
               section.subSections.length > 0 &&
               isSectionExpanded(section)
             "
-            class="ml-6 mt-[8px] space-y-0.5 border-l-2 pl-4"
+            class="ml-6 mt-1 space-y-0.5 border-l-2 pl-4"
             :class="[
               isSectionActive(section, currentSectionId) ||
               expandedSections.includes(section.id)

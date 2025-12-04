@@ -48,9 +48,22 @@
     "test:core:quorum:msw": "TEST_USE_MSW=true vitest run app/core/hexag/registros/sociedades/pasos/quorum-mayorias/infrastructure/repositories/__tests__/quorum.test.ts",
     "test:core:all:msw": "TEST_USE_MSW=true vitest run app/core/hexag/registros/sociedades",
     
+    "// ===== SISTEMA 3: TESTS JUNTAS =====": "",
+    "test:juntas:all": "TEST_USE_MSW=false vitest run app/core/hexag/juntas",
+    "test:juntas:all:msw": "TEST_USE_MSW=true vitest run app/core/hexag/juntas",
+    "test:juntas:seleccion-agenda": "TEST_USE_MSW=false vitest run app/core/hexag/juntas/infrastructure/repositories/__tests__/*agenda*.test.ts",
+    "test:juntas:seleccion-agenda:msw": "TEST_USE_MSW=true vitest run app/core/hexag/juntas/infrastructure/repositories/__tests__/*agenda*.test.ts",
+    "test:juntas:detalles": "TEST_USE_MSW=false vitest run app/core/hexag/juntas/infrastructure/repositories/__tests__/*meeting*.test.ts",
+    "test:juntas:detalles:msw": "TEST_USE_MSW=true vitest run app/core/hexag/juntas/infrastructure/repositories/__tests__/*meeting*.test.ts",
+    "test:juntas:instalacion": "TEST_USE_MSW=false vitest run app/core/hexag/juntas/infrastructure/repositories/__tests__/*asistencia*.test.ts",
+    "test:juntas:instalacion:msw": "TEST_USE_MSW=true vitest run app/core/hexag/juntas/infrastructure/repositories/__tests__/*asistencia*.test.ts",
+    "test:juntas:watch": "vitest watch app/core/hexag/juntas",
+    
     "// ===== UTILS =====": "",
     "test:cleanup": "TEST_USE_MSW=false vitest run cleanup.test.ts",
-    "test:all": "npm run test:suite:flujo-completo && npm run test:core:all",
+    "test:all:sociedades": "npm run test:suite:flujo-completo && npm run test:core:all",
+    "test:all:juntas": "npm run test:juntas:all",
+    "test:all": "npm run test:all:sociedades && npm run test:all:juntas",
     
     "// ===== LEGACY (compatibilidad) =====": "",
     "test:sociedades:flujo-completo": "npm run test:suite:flujo-completo",

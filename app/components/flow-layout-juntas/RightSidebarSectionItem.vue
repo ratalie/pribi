@@ -37,7 +37,7 @@
           : onSectionClick(section.id)
       "
       :class="[
-        'w-full flex items-start gap-3 text-left group relative pl-4 pr-3 py-3 rounded-lg transition-colors',
+        'w-full flex items-center gap-3 text-left group relative pl-4 pr-3 py-2.5 rounded-lg transition-colors',
         sectionActive ? 'bg-primary-50/50' : 'hover:bg-gray-50',
       ]"
     >
@@ -45,7 +45,7 @@
       <div class="flex-1 min-w-0">
         <h4
           :class="[
-            'text-base mb-0.5 font-primary transition-colors',
+            'text-sm font-primary transition-colors leading-relaxed',
             sectionActive
               ? 'text-primary-800 font-semibold'
               : sectionStatus === 'completed'
@@ -55,15 +55,6 @@
         >
           {{ section.title }}
         </h4>
-        <p
-          v-if="section.description"
-          :class="[
-            'text-sm font-secondary',
-            sectionActive ? 'text-primary-700' : 'text-gray-600',
-          ]"
-        >
-          {{ section.description }}
-        </p>
       </div>
       <!-- Chevron para secciones con hijos -->
       <div
