@@ -424,3 +424,4 @@ const isCollapsed = ref(stored === "true");
 
 **Última actualización:** Diciembre 3, 2025
 
+

@@ -105,7 +105,7 @@ describe("Directorio Repository", () => {
   });
 
   it("debe crear un nuevo director", async () => {
-    const nuevoDirector = createTestDirector(10, TipoDirector.SUPLENTE, null);
+    const nuevoDirector = createTestDirector(10, TipoDirector.SUPLENTE);
 
     const useCase = new CreateDirectorUseCase(directorRepo);
     const created = await useCase.execute(societyId, nuevoDirector);
@@ -122,7 +122,7 @@ describe("Directorio Repository", () => {
 
   it("debe eliminar un director", async () => {
     // Crear director temporal
-    const temporal = createTestDirector(99, TipoDirector.TITULAR, null);
+    const temporal = createTestDirector(99, TipoDirector.TITULAR);
     const useCase = new CreateDirectorUseCase(directorRepo);
     const created = await useCase.execute(societyId, temporal);
 
@@ -139,7 +139,7 @@ describe("Directorio Repository", () => {
 
   it("debe cambiar el presidente del directorio", async () => {
     // Cambiar presidente al segundo director
-    const nuevoPresidenteId = directoresIds[1];
+    const nuevoPresidenteId = directoresIds[1]!;
 
     const updatePayload: DirectorioDTO = {
       id: directorioId,

@@ -48,3 +48,4 @@ El frontend v3 usa endpoints de v2 temporalmente hasta que v3 esté completo.
 
 **Última actualización:** Diciembre 3, 2025
 
+

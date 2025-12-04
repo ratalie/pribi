@@ -1256,3 +1256,4 @@ No hay NINGÚN campo, variable o endpoint inventado. Todo está basado en el bac
 **Verificado por**: Análisis completo del backend en `/home/yull23/legal-factory/backend`
 
 
+

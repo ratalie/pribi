@@ -1582,3 +1582,4 @@ export interface AportanteResponseDto {
 
 **Este documento es la FUENTE DE VERDAD para coordinación entre las 3 IAs.**
 
+

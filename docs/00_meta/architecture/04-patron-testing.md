@@ -467,3 +467,4 @@ npm run test tests/sociedades/paso-1-datos-principales.test.ts
 
 **Última actualización:** Diciembre 3, 2025
 
+

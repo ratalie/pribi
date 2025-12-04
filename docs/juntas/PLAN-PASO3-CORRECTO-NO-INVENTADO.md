@@ -1287,3 +1287,4 @@ O prefieres que primero confirme los campos de presidente/secretario en `/meetin
 **¡LISTO PARA IMPLEMENTAR, MI REY!** 🚀💪
 
 
+

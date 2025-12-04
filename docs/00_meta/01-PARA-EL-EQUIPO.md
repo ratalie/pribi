@@ -336,3 +336,4 @@ Si tienes dudas sobre:
 **Última actualización:** Diciembre 3, 2025  
 **Rama de referencia:** `feat/flujo-juntas`
 
+

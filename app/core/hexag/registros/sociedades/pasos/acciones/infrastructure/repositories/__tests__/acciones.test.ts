@@ -56,7 +56,7 @@ describe("Acciones Repository", () => {
     const acciones = await repository.list(societyId);
 
     expect(acciones.length).toBe(1);
-    expect(acciones[0].id).toBe(createdAccionId);
+    expect(acciones[0]!.id).toBe(createdAccionId);
   });
 });
 

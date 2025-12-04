@@ -51,7 +51,7 @@ describe("Accionistas Repository", () => {
     const accionistas = await repository.list(societyId);
 
     expect(accionistas.length).toBe(1);
-    expect(accionistas[0].id).toBe(createdAccionistaId);
+    expect(accionistas[0]!.id).toBe(createdAccionistaId);
   });
 });
 

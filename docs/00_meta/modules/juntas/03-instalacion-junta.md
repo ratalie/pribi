@@ -93,3 +93,4 @@ GET /api/v2/juntas/[juntaId]/instalacion
 
 **Última actualización:** Diciembre 3, 2025
 
+

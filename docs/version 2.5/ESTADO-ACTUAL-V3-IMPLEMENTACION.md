@@ -1870,3 +1870,4 @@ export const useAportantesStore = defineStore("aportantes", {
 **Versión**: 1.0.0  
 **Estado**: En Desarrollo Activo 🚀
 
+

@@ -153,9 +153,9 @@ export async function setupDirectorio(societyId: string): Promise<{
   
   // 1️⃣ PRIMERO: Crear 3 directores TITULAR
   const directores = [
-    createTestDirector(0, TipoDirector.TITULAR, null),
-    createTestDirector(1, TipoDirector.TITULAR, null),
-    createTestDirector(2, TipoDirector.TITULAR, null),
+    createTestDirector(0, TipoDirector.TITULAR),
+    createTestDirector(1, TipoDirector.TITULAR),
+    createTestDirector(2, TipoDirector.TITULAR),
   ];
   
   const directoresIds: string[] = [];
@@ -171,7 +171,7 @@ export async function setupDirectorio(societyId: string): Promise<{
   }
   
   // 2️⃣ SEGUNDO: Config directorio (con presidenteId = primer director)
-  const presidenteId = directoresIds[0]; // ✅ UUID del director, NO de la persona
+  const presidenteId = directoresIds[0]!; // ✅ UUID del director, NO de la persona
   
   const directorioPayload: DirectorioDTO = {
     cantidadDirectores: 3,
@@ -220,7 +220,7 @@ export async function setupDirector(
   reemplazaId: string | null = null
 ): Promise<string> {
   const repo = new DirectorHttpRepository();
-  const director = createTestDirector(index, rolDirector, reemplazaId);
+  const director = createTestDirector(index, rolDirector);
 
   const { CreateDirectorUseCase } = await import(
     "~/core/hexag/registros/sociedades/pasos/directorio/application/use-cases/director/create-director.use-case"

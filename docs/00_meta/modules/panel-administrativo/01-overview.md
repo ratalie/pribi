@@ -41,3 +41,4 @@ Panel de administración para gestionar:
 
 **Última actualización:** Diciembre 3, 2025
 
+
