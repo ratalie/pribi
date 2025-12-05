@@ -85,35 +85,25 @@ export const useApoderadosFacultades = () => {
       return;
     }
 
+    const entity = transformarModalAFacultad(
+      apoderadoFacultadStore,
+      regimenFacultadesStore,
+      idFacultad.value ?? undefined
+    );
+
+    if (!entity) {
+      console.error("Error al transformar los datos del modal");
+      return;
+    }
+
     if (modeModalApoderadoFacultad.value === "editar" && idFacultad.value) {
-      const facultadActualizada = transformarModalAFacultad(
-        apoderadoFacultadStore,
-        regimenFacultadesStore,
-        idFacultad.value
-      );
-
-      if (!facultadActualizada) {
-        console.error("Error al transformar los datos del modal");
-        return;
-      }
-
       regimenFacultadesStore.editarFacultadApoderado(
         idApoderado.value,
         idFacultad.value,
-        facultadActualizada
+        entity
       );
     } else {
-      const nuevaFacultad = transformarModalAFacultad(
-        apoderadoFacultadStore,
-        regimenFacultadesStore
-      );
-
-      if (!nuevaFacultad) {
-        console.error("Error al transformar los datos del modal");
-        return;
-      }
-
-      regimenFacultadesStore.agregarFacultadApoderado(idApoderado.value, nuevaFacultad);
+      regimenFacultadesStore.agregarFacultadApoderado(idApoderado.value, entity);
     }
 
     handleCloseModalApoderadoFacultad();

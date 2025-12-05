@@ -1,24 +1,26 @@
 import type { BaseSelectOption } from "~/components/base/inputs/text/BaseInputSelect.vue";
-import { TipoFirmasEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoFirmasEnum";
-import { TipoMontoEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoMontoEnum";
-import { EntityCoinEnum } from "~/types/enums/EntityCoinEnum";
-import { TiemposVigenciaEnum } from "~/types/enums/TiemposVigenciaEnum";
+import {
+  EntityCoinUIEnum,
+  TiempoVigenciaUIEnum,
+  TipoFirmasUIEnum,
+  TipoMontoUIEnum,
+} from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
 
 export const useApoderadoFacultadStore = defineStore("apoderadoFacultad", {
   state: (): State => ({
     tipoFacultad: "",
     reglasYLimites: false,
     esIrrevocable: false,
-    vigencia: TiemposVigenciaEnum.INDEFINIDO,
+    vigencia: TiempoVigenciaUIEnum.INDEFINIDO,
     fechaInicio: "",
     fechaFin: "",
-    tipoMoneda: EntityCoinEnum.SOLES,
+    tipoMoneda: EntityCoinUIEnum.SOLES,
     limiteMonetario: [],
   }),
 
   getters: {
     monedaOptions(): BaseSelectOption[] {
-      return Object.values(EntityCoinEnum).map((moneda) => ({
+      return Object.values(EntityCoinUIEnum).map((moneda) => ({
         id: moneda,
         label: moneda,
         value: moneda,
@@ -26,7 +28,7 @@ export const useApoderadoFacultadStore = defineStore("apoderadoFacultad", {
     },
 
     tipoMontoOptions(): BaseSelectOption[] {
-      return Object.values(TipoMontoEnum).map((tipoMonto) => ({
+      return Object.values(TipoMontoUIEnum).map((tipoMonto) => ({
         id: tipoMonto,
         label: tipoMonto,
         value: tipoMonto,
@@ -34,7 +36,7 @@ export const useApoderadoFacultadStore = defineStore("apoderadoFacultad", {
     },
 
     tipoFirmaOptions(): BaseSelectOption[] {
-      return Object.values(TipoFirmasEnum).map((tipoFirma) => ({
+      return Object.values(TipoFirmasUIEnum).map((tipoFirma) => ({
         id: tipoFirma,
         label: tipoFirma,
         value: tipoFirma,
@@ -65,23 +67,23 @@ interface State {
   tipoFacultad: string;
   reglasYLimites: boolean;
   esIrrevocable: boolean;
-  vigencia: TiemposVigenciaEnum;
+  vigencia: TiempoVigenciaUIEnum;
   fechaInicio: string;
   fechaFin: string;
-  tipoMoneda: EntityCoinEnum;
+  tipoMoneda: EntityCoinUIEnum;
   limiteMonetario: LimiteMonetarioModal[];
 }
 
 export interface LimiteMonetarioModal {
   id: string;
   desde: number;
-  tipoMonto: TipoMontoEnum;
+  tipoMonto: TipoMontoUIEnum;
   hasta: number;
-  tipoFirma: TipoFirmasEnum;
-  firmantes: Firmante[];
+  tipoFirma: TipoFirmasUIEnum;
+  firmantes: FirmanteModal[];
 }
 
-interface Firmante {
+interface FirmanteModal {
   id: string;
   cantidad: string;
   grupo: string;
