@@ -1,12 +1,17 @@
 import type { BaseSelectOption } from "~/components/base/inputs/text/BaseInputSelect.vue";
 import {
+  ListApoderadosUseCase,
+  ListClasesApoderadoUseCase,
+} from "~/core/hexag/registros/sociedades/pasos/apoderados/application";
+import { PersonTypeEnum } from "~/core/hexag/registros/sociedades/pasos/apoderados/domain";
+import { ApoderadosHttpRepository } from "~/core/hexag/registros/sociedades/pasos/apoderados/infrastructure/repositories/apoderados.http.repository";
+import {
   CreateTiposFacultadesUseCase,
   DeleteTiposFacultadesUseCase,
   ListTiposFacultadesUseCase,
   UpdateTiposFacultadesUseCase,
 } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/application";
 import {
-  EntityCoinUIEnum,
   TiempoVigenciaUIEnum,
   TipoFirmasUIEnum,
   TipoMontoUIEnum,
@@ -16,271 +21,26 @@ import {
 } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
 import { TiposFacultadesMapper } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/infrastructure/mappers/tipos-facultades.mapper";
 import { RegimenFacultadesHttpRepository } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/infrastructure/repository/regimen-facultades.http.repository";
+import { ClasesApoderadoEspecialesEnum } from "~/core/presentation/registros/sociedades/pasos/apoderados/types/enums/ClasesApoderadoEspecialesEnum";
 import type { ApoderadoFacultadRow } from "../types/apoderadosFacultades";
 import type { TipoFacultadRow } from "../types/facultades";
 
 const repository = new RegimenFacultadesHttpRepository();
+const apoderadosRepository = new ApoderadosHttpRepository();
 
 const listTipoFacultadesUseCase = new ListTiposFacultadesUseCase(repository);
 const createTipoFacultadUseCase = new CreateTiposFacultadesUseCase(repository);
 const updateTipoFacultadUseCase = new UpdateTiposFacultadesUseCase(repository);
 const deleteTipoFacultadUseCase = new DeleteTiposFacultadesUseCase(repository);
 
+const listApoderadosUseCase = new ListApoderadosUseCase(apoderadosRepository);
+const listClasesApoderadoUseCase = new ListClasesApoderadoUseCase(apoderadosRepository);
+
 export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
   state: (): State => ({
     tipoFacultades: [],
-    apoderadosFacultades: [
-      {
-        id: "1",
-        nombre: "Gerente General",
-        facultades: [
-          // Indefinido + Sin reglas
-          {
-            id: "f1",
-            nombre: "Facultades Administrativas",
-            esIrrevocable: false,
-            vigencia: TiempoVigenciaUIEnum.INDEFINIDO,
-            reglasYLimites: false,
-          },
-          // Indefinido + Con reglas (Sola firma)
-          {
-            id: "f2",
-            nombre: "Facultades Bancarias",
-            esIrrevocable: false,
-            vigencia: TiempoVigenciaUIEnum.INDEFINIDO,
-            reglasYLimites: true,
-            tipoMoneda: EntityCoinUIEnum.SOLES,
-            limiteMonetario: [
-              {
-                id: "l1",
-                desde: 0,
-                tipoMonto: TipoMontoUIEnum.MONTO,
-                hasta: 50000,
-                tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA,
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: "2",
-        nombre: "Apoderado de Grupo A",
-        facultades: [
-          // Determinado + Con reglas (Firma conjunta)
-          {
-            id: "f3",
-            nombre: "Facultades Comerciales",
-            esIrrevocable: true,
-            vigencia: TiempoVigenciaUIEnum.DETERMIADO,
-            fecha_inicio: "2024-01-01",
-            fecha_fin: "2024-12-31",
-            reglasYLimites: true,
-            tipoMoneda: EntityCoinUIEnum.DOLARES,
-            limiteMonetario: [
-              {
-                id: "l2",
-                desde: 10000,
-                tipoMonto: TipoMontoUIEnum.MONTO,
-                hasta: 50000,
-                tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
-                firmantes: [
-                  { id: "f1", cantidad: 1, grupo: "Apoderado Grupo A" },
-                  { id: "f2", cantidad: 2, grupo: "Apoderado Grupo B" },
-                ],
-              },
-              {
-                id: "l3",
-                desde: 50000,
-                tipoMonto: TipoMontoUIEnum.SIN_LIMITE,
-                hasta: 0,
-                tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
-                firmantes: [
-                  { id: "f3", cantidad: 2, grupo: "Apoderado Grupo A" },
-                  { id: "f4", cantidad: 1, grupo: "Gerente General" },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: "3",
-        nombre: "Apoderado de Grupo B",
-        facultades: [
-          // Determinado + Sin reglas
-          {
-            id: "f4",
-            nombre: "Facultades Industriales",
-            esIrrevocable: true,
-            vigencia: TiempoVigenciaUIEnum.DETERMIADO,
-            fecha_inicio: "2024-06-01",
-            fecha_fin: "2025-06-01",
-            reglasYLimites: false,
-          },
-          // Indefinido + Con reglas complejas
-          {
-            id: "f5",
-            nombre: "Facultades Mineras",
-            esIrrevocable: false,
-            vigencia: TiempoVigenciaUIEnum.INDEFINIDO,
-            reglasYLimites: true,
-            tipoMoneda: EntityCoinUIEnum.SOLES,
-            limiteMonetario: [
-              {
-                id: "l4",
-                desde: 0,
-                tipoMonto: TipoMontoUIEnum.MONTO,
-                hasta: 100000,
-                tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA,
-              },
-              {
-                id: "l5",
-                desde: 100000,
-                tipoMonto: TipoMontoUIEnum.MONTO,
-                hasta: 500000,
-                tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
-                firmantes: [{ id: "f5", cantidad: 1, grupo: "Apoderado Grupo A" }],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: "4",
-        nombre: "Apoderado de Grupo C",
-        facultades: [
-          // Determinado + Con reglas (múltiples escalas)
-          {
-            id: "f6",
-            nombre: "Facultades Forestales",
-            esIrrevocable: true,
-            vigencia: TiempoVigenciaUIEnum.DETERMIADO,
-            fecha_inicio: "2024-03-15",
-            fecha_fin: "2026-03-15",
-            reglasYLimites: true,
-            tipoMoneda: EntityCoinUIEnum.DOLARES,
-            limiteMonetario: [
-              {
-                id: "l6",
-                desde: 0,
-                tipoMonto: TipoMontoUIEnum.MONTO,
-                hasta: 5000,
-                tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA,
-              },
-              {
-                id: "l7",
-                desde: 5000,
-                tipoMonto: TipoMontoUIEnum.MONTO,
-                hasta: 25000,
-                tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
-                firmantes: [{ id: "f6", cantidad: 2, grupo: "Apoderado Grupo B" }],
-              },
-              {
-                id: "l8",
-                desde: 25000,
-                tipoMonto: TipoMontoUIEnum.SIN_LIMITE,
-                hasta: 0,
-                tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
-                firmantes: [
-                  { id: "f7", cantidad: 1, grupo: "Gerente General" },
-                  { id: "f8", cantidad: 2, grupo: "Apoderado Grupo A" },
-                  { id: "f9", cantidad: 1, grupo: "Apoderado Grupo B" },
-                  { id: "f10", cantidad: 1, grupo: "Apoderado Grupo B" },
-                ],
-              },
-            ],
-          },
-          // Indefinido + Sin reglas
-          {
-            id: "f7",
-            nombre: "Facultades Agrícolas",
-            esIrrevocable: false,
-            vigencia: TiempoVigenciaUIEnum.INDEFINIDO,
-            reglasYLimites: false,
-          },
-        ],
-      },
-    ],
-    otrosApoderados: [
-      {
-        id: "o1",
-        nombre: "María Elena Rodríguez López",
-        facultades: [
-          {
-            id: "fo1",
-            nombre: "Facultades Administrativas",
-            esIrrevocable: false,
-            vigencia: TiempoVigenciaUIEnum.INDEFINIDO,
-            reglasYLimites: false,
-          },
-        ],
-      },
-      {
-        id: "o2",
-        nombre: "Carlos Alberto Mendoza Quispe",
-        facultades: [
-          {
-            id: "fo2",
-            nombre: "Facultades Bancarias",
-            esIrrevocable: true,
-            vigencia: TiempoVigenciaUIEnum.DETERMIADO,
-            fecha_inicio: "2024-01-15",
-            fecha_fin: "2025-01-15",
-            reglasYLimites: true,
-            tipoMoneda: EntityCoinUIEnum.SOLES,
-            limiteMonetario: [
-              {
-                id: "lo1",
-                desde: 0,
-                tipoMonto: TipoMontoUIEnum.MONTO,
-                hasta: 30000,
-                tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA,
-              },
-              {
-                id: "lo2",
-                desde: 30000,
-                tipoMonto: TipoMontoUIEnum.SIN_LIMITE,
-                hasta: 0,
-                tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
-                firmantes: [{ id: "fo1", cantidad: 1, grupo: "Gerente General" }],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: "o3",
-        nombre: "Ana Patricia Flores Vargas",
-        facultades: [
-          {
-            id: "fo3",
-            nombre: "Facultades Comerciales",
-            esIrrevocable: true,
-            vigencia: TiempoVigenciaUIEnum.DETERMIADO,
-            fecha_inicio: "2024-06-01",
-            fecha_fin: "2024-12-31",
-            reglasYLimites: true,
-            tipoMoneda: EntityCoinUIEnum.DOLARES,
-            limiteMonetario: [
-              {
-                id: "lo3",
-                desde: 0,
-                tipoMonto: TipoMontoUIEnum.MONTO,
-                hasta: 10000,
-                tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA,
-              },
-            ],
-          },
-          {
-            id: "fo4",
-            nombre: "Facultades Administrativas",
-            esIrrevocable: false,
-            vigencia: TiempoVigenciaUIEnum.INDEFINIDO,
-            reglasYLimites: false,
-          },
-        ],
-      },
-    ],
+    apoderadosFacultades: [],
+    otrosApoderados: [],
   }),
 
   getters: {
@@ -382,6 +142,89 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
   },
 
   actions: {
+    //apoderados
+    async loadApoderados(profileId: string) {
+      try {
+        // Obtener todas las clases de apoderados
+        const clases = await listClasesApoderadoUseCase.execute(profileId);
+
+        // Obtener todos los apoderados
+        const apoderados = await listApoderadosUseCase.execute(profileId);
+
+        // Crear un mapa de clases por ID para búsqueda rápida
+        const clasesMap = new Map(clases.map((clase) => [clase.id, clase]));
+
+        // Inicializar arrays
+        const apoderadosFacultadesList: ApoderadoFacultad[] = [];
+        const otrosApoderadosList: ApoderadoFacultad[] = [];
+
+        // Clasificar apoderados
+        for (const apoderado of apoderados) {
+          const clase = clasesMap.get(apoderado.claseApoderadoId);
+
+          if (!clase) {
+            // Si no tiene clase, va a otros apoderados
+            const nombreCompleto = this.obtenerNombrePersona(apoderado.persona);
+            otrosApoderadosList.push({
+              id: apoderado.id,
+              nombre: nombreCompleto,
+              facultades: [],
+            });
+            continue;
+          }
+
+          // Si es "Otros Apoderados", agregar individualmente
+          if (clase.nombre === ClasesApoderadoEspecialesEnum.OTROS_APODERADOS) {
+            const nombreCompleto = this.obtenerNombrePersona(apoderado.persona);
+            otrosApoderadosList.push({
+              id: apoderado.id,
+              nombre: nombreCompleto,
+              facultades: [],
+            });
+          } else {
+            // Para otras clases (incluyendo "Gerente General"), verificar si ya existe en la lista
+            const claseExistente = apoderadosFacultadesList.find(
+              (item) => item.id === clase.id
+            );
+
+            if (!claseExistente) {
+              // Si no existe, agregar la clase
+              apoderadosFacultadesList.push({
+                id: clase.id,
+                nombre: clase.nombre,
+                facultades: [],
+              });
+            }
+          }
+        }
+
+        // Actualizar el estado
+        this.apoderadosFacultades = apoderadosFacultadesList;
+        this.otrosApoderados = otrosApoderadosList;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+
+    /**
+     * Obtiene el nombre completo de una persona (Natural o Jurídica)
+     */
+    obtenerNombrePersona(persona: { tipo: PersonTypeEnum; [key: string]: any }): string {
+      if (persona.tipo === PersonTypeEnum.NATURAL) {
+        const parts = [persona.nombre, persona.apellidoPaterno, persona.apellidoMaterno]
+          .map((part) => part?.trim())
+          .filter((part) => !!part);
+
+        return parts.join(" ").trim() || "Sin nombre";
+      } else {
+        // Persona Jurídica
+        return (
+          persona.razonSocial?.trim() || persona.nombreComercial?.trim() || "Sin razón social"
+        );
+      }
+    },
+
     //tipo
     async loadTipoFacultades(profileId: string) {
       try {

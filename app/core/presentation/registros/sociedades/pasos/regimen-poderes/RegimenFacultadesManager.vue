@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { onMounted } from "vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
@@ -28,6 +29,16 @@
     handleSubmitTipoFacultad,
     handleCloseModal,
   } = useTiposFacultades(props.societyId ?? "");
+
+  onMounted(async () => {
+    if (props.societyId) {
+      try {
+        await regimenFacultadesStore.loadApoderados(props.societyId);
+      } catch (error) {
+        console.error("Error al cargar apoderados:", error);
+      }
+    }
+  });
 
   const {
     facultadActions,
