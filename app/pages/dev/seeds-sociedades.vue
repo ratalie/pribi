@@ -53,6 +53,7 @@
   import { CreateApoderadoUseCase } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/create-apoderado.use-case";
   import { CreateClaseApoderadoUseCase } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/create-clase-apoderado.use-case";
   import { ApoderadosHttpRepository } from "~/core/hexag/registros/sociedades/pasos/apoderados/infrastructure/repositories/apoderados.http.repository";
+  import { ClasesApoderadoEspecialesEnum } from "~/core/presentation/registros/sociedades/pasos/apoderados/types/enums/ClasesApoderadoEspecialesEnum";
 
   // Valor Nominal
   import { UpdateValorNominalUseCase } from "~/core/hexag/registros/sociedades/application/use-cases/update-valor-nominal.use-case";
@@ -379,7 +380,7 @@
       // Apoderado (Gerente)
       claseApoderado: {
         id: generateUUID(),
-        nombre: `Gerente-${index}-${Date.now()}`,  // ✅ Nombre único con index y timestamp
+        nombre: ClasesApoderadoEspecialesEnum.GERENTE_GENERAL, // ✅ Usar enum correcto: "Gerente General"
       } as ClaseApoderadoDTO,
 
       apoderado: {
