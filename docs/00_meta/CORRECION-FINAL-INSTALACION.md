@@ -66,3 +66,4 @@ if (snapshot.directory.secretarioAsignado === true) {
 
 
 
+

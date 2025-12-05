@@ -244,14 +244,23 @@ function requiereRepresentante(tipo: string): boolean {
           </TableRow>
 
           <!-- Filas de accionistas -->
-          <TableRow v-for="asistencia in asistenciasEnriquecidas" :key="asistencia.id">
+          <TableRow 
+            v-for="asistencia in asistenciasEnriquecidas" 
+            :key="asistencia.id"
+            :class="asistencia.asistio ? 'bg-primary-50/30' : ''"
+          >
             <!-- Checkbox de asistencia -->
             <TableCell class="text-center">
               <Checkbox
+                :model-value="asistencia.asistio"
                 :checked="asistencia.asistio"
                 :disabled="isUniversal"
-                @update:checked="toggleAsistencia(asistencia.id)"
+                @update:checked="() => toggleAsistencia(asistencia.id)"
               />
+              <!-- DEBUG -->
+              <span class="text-xs text-gray-400 ml-2">
+                {{ asistencia.asistio ? "✓" : "○" }}
+              </span>
             </TableCell>
             
             <!-- Nombre -->
