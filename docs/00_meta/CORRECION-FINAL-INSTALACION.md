@@ -63,3 +63,4 @@ if (snapshot.directory.secretarioAsignado === true) {
 
 ## 🎯 **AHORA VOY A CORREGIR TODO**
 
+

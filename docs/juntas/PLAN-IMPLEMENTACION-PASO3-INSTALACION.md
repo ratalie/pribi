@@ -1380,3 +1380,4 @@ Te muestro cómo quedaría `AsistenciaRepresentacionSection.vue`
 **¿Qué opción prefieres?** 🎯
 
 
+

@@ -9,8 +9,7 @@
    * Página: Selección de Puntos de Agenda
    *
    * Paso 1 del flujo de Juntas de Accionistas.
-   * Permite seleccionar los puntos de agenda que se tratarán en la junta.
-   * Los puntos seleccionados determinan qué sub-steps aparecerán en el Paso 4.
+   * Usa arquitectura hexagonal que YA funciona.
    *
    * Ruta: /operaciones/sociedades/[societyId]/junta-accionistas/[flowId]/seleccion-agenda
    */
@@ -41,7 +40,7 @@
   const juntasFlowStore = useJuntasFlowStore();
   const agendaItemsStore = useAgendaItemsStore();
 
-  // Configurar el botón "Siguiente"
+  // Configurar el botón "Siguiente" (USANDO ARQUITECTURA QUE YA FUNCIONA)
   useJuntasFlowNext(async () => {
     // Validar que al menos un punto esté seleccionado
     const selectedPuntos = juntasFlowStore.getDynamicSubSteps;
@@ -60,7 +59,7 @@
     // Convertir IDs del frontend a estructura del backend
     const payload = AgendaItemsMapper.frontendIdsToDTO(selectedPuntos);
 
-    // Guardar en el backend
+    // Guardar en el backend usando arquitectura hexagonal que YA funciona
     const flowIdNumber = parseInt(flowId.value, 10);
     if (Number.isNaN(flowIdNumber)) {
       throw new Error("ID de junta inválido.");

@@ -118,3 +118,4 @@ Ambos frontends usan el **mismo backend** (`probo-backend`):
 **Última actualización:** Diciembre 3, 2025
 
 
+

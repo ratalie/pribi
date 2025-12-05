@@ -836,3 +836,4 @@ const handleModalSubmit = async (payload) => {
 **📅 Última actualización:** Diciembre 4, 2025  
 **👤 Creado para:** Implementación del paso de Instalación de Juntas de Accionistas
 
+

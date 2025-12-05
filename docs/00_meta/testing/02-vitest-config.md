@@ -59,3 +59,4 @@ npm run test:coverage # Cobertura
 **Última actualización:** Diciembre 3, 2025
 
 
+
