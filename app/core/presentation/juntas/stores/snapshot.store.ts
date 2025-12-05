@@ -18,6 +18,12 @@ import { JuntaHttpRepository } from '~/core/hexag/juntas/infrastructure/reposito
  * - Se carga una vez al crear la junta
  */
 export const useSnapshotStore = defineStore('snapshot', {
+  // ✅ PERSISTENCIA: Guardar en localStorage para debug
+  persist: {
+    storage: typeof window !== 'undefined' ? localStorage : undefined,
+    key: 'probo-snapshot',
+  },
+  
   state: () => ({
     snapshot: null as SnapshotCompleteDTO | null,
     status: 'idle' as 'idle' | 'loading' | 'error',

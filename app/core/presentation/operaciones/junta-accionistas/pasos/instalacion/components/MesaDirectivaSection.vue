@@ -250,8 +250,28 @@
 
   /**
    * PRESIDENTE: ID del reemplazo (cuando NO asistió)
+   * ✅ Se inicializa con el valor del store si:
+   *    - presidenteAsistio === false
+   *    - Y hay un presidenteId que NO es el del directorio
    */
   const presidenteReemplazoId = ref("");
+  
+  // ✅ INICIALIZAR reemplazo desde el backend
+  console.log("🔍 [presidenteReemplazoId] Verificando inicialización:", {
+    presidenteAsistio: meetingDetailsStore.meetingDetails?.presidenteAsistio,
+    presidenteId: meetingDetailsStore.meetingDetails?.presidenteId,
+    presidenteDirectorioId: directorio.value?.presidenteId,
+    sonDiferentes: meetingDetailsStore.meetingDetails?.presidenteId !== directorio.value?.presidenteId,
+  });
+  
+  if (
+    meetingDetailsStore.meetingDetails?.presidenteAsistio === false &&
+    meetingDetailsStore.meetingDetails?.presidenteId &&
+    meetingDetailsStore.meetingDetails.presidenteId !== directorio.value?.presidenteId
+  ) {
+    presidenteReemplazoId.value = meetingDetailsStore.meetingDetails.presidenteId;
+    console.log("✅ [presidenteReemplazoId] Inicializado desde backend:", presidenteReemplazoId.value);
+  }
 
   // Función para manejar el cambio del switch
   const handlePresidenteAsistioChange = (newValue: boolean) => {
@@ -282,6 +302,30 @@
       });
     }
   });
+  
+  // ✅ Watch para sincronizar reemplazo cuando el store cambie (después de cargar backend)
+  watch(
+    () => [
+      meetingDetailsStore.meetingDetails?.presidenteId,
+      meetingDetailsStore.meetingDetails?.presidenteAsistio,
+      directorio.value?.presidenteId,
+    ],
+    ([presidenteIdStore, presidenteAsistioStore, presidenteDirectorioId]) => {
+      // Si NO asistió Y el ID es diferente al del directorio, es un reemplazo
+      if (
+        presidenteAsistioStore === false &&
+        typeof presidenteIdStore === 'string' &&
+        presidenteIdStore !== presidenteDirectorioId
+      ) {
+        presidenteReemplazoId.value = presidenteIdStore;
+        console.log("🔄 [presidenteReemplazoId] Sincronizado desde store:", presidenteIdStore);
+      } else if (presidenteAsistioStore === true) {
+        // Si asistió, limpiar reemplazo
+        presidenteReemplazoId.value = "";
+      }
+    },
+    { immediate: true }
+  );
 
   // ========================================
   // COMPUTED - SECRETARIO
@@ -431,8 +475,28 @@
 
   /**
    * SECRETARIO: ID del reemplazo (cuando NO asistió)
+   * ✅ Se inicializa con el valor del store si:
+   *    - secretarioAsistio === false
+   *    - Y hay un secretarioId que NO es el del gerente general
    */
   const secretarioReemplazoId = ref("");
+  
+  // ✅ INICIALIZAR reemplazo desde el backend
+  console.log("🔍 [secretarioReemplazoId] Verificando inicialización:", {
+    secretarioAsistio: meetingDetailsStore.meetingDetails?.secretarioAsistio,
+    secretarioId: meetingDetailsStore.meetingDetails?.secretarioId,
+    secretarioGerenteId: gerenteGeneral.value?.persona?.id,
+    sonDiferentes: meetingDetailsStore.meetingDetails?.secretarioId !== gerenteGeneral.value?.persona?.id,
+  });
+  
+  if (
+    meetingDetailsStore.meetingDetails?.secretarioAsistio === false &&
+    meetingDetailsStore.meetingDetails?.secretarioId &&
+    meetingDetailsStore.meetingDetails.secretarioId !== gerenteGeneral.value?.persona?.id
+  ) {
+    secretarioReemplazoId.value = meetingDetailsStore.meetingDetails.secretarioId;
+    console.log("✅ [secretarioReemplazoId] Inicializado desde backend:", secretarioReemplazoId.value);
+  }
 
   // Función para manejar el cambio del switch
   const handleSecretarioAsistioChange = (newValue: boolean) => {
@@ -463,6 +527,30 @@
       });
     }
   });
+  
+  // ✅ Watch para sincronizar reemplazo cuando el store cambie (después de cargar backend)
+  watch(
+    () => [
+      meetingDetailsStore.meetingDetails?.secretarioId,
+      meetingDetailsStore.meetingDetails?.secretarioAsistio,
+      gerenteGeneral.value?.persona?.id,
+    ],
+    ([secretarioIdStore, secretarioAsistioStore, secretarioGerenteId]) => {
+      // Si NO asistió Y el ID es diferente al del gerente general, es un reemplazo
+      if (
+        secretarioAsistioStore === false &&
+        typeof secretarioIdStore === 'string' &&
+        secretarioIdStore !== secretarioGerenteId
+      ) {
+        secretarioReemplazoId.value = secretarioIdStore;
+        console.log("🔄 [secretarioReemplazoId] Sincronizado desde store:", secretarioIdStore);
+      } else if (secretarioAsistioStore === true) {
+        // Si asistió, limpiar reemplazo
+        secretarioReemplazoId.value = "";
+      }
+    },
+    { immediate: true }
+  );
 
   // ========================================
   // LIFECYCLE

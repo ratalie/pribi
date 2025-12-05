@@ -71,30 +71,56 @@
         secretarioAsistio: meetingDetailsStore.meetingDetails?.secretarioAsistio,
       });
 
-      // 3. Inicializar presidenteId y secretarioId según configuración del directorio
+      // 3. Inicializar presidenteId y secretarioId SOLO SI NO EXISTEN EN BACKEND
       const directorio = snapshotStore.snapshot?.directory;
       const gerenteGeneral = snapshotStore.snapshot?.attorneys?.[0];
       
-      // Solo inicializar si es READONLY (presidentePreside o secretarioAsignado)
+      // ✅ IMPORTANTE: Solo inicializar si es READONLY Y no hay valor previo en el backend
       const updates: any = {};
       
+      // Presidente: Solo inicializar si NO hay valor en el backend
       if (directorio?.presidentePreside === true && directorio.presidenteId) {
-        updates.presidenteId = directorio.presidenteId;
-        updates.presidenteAsistio = true; // Por defecto asiste
-        console.log("✅ [Instalacion] Inicializando presidenteId (READONLY):", directorio.presidenteId);
+        const presidenteYaAsignado = meetingDetailsStore.meetingDetails?.presidenteId;
+        const presidenteAsistioYaDefinido = meetingDetailsStore.meetingDetails?.presidenteAsistio !== undefined;
+        
+        if (!presidenteYaAsignado) {
+          updates.presidenteId = directorio.presidenteId;
+          console.log("✅ [Instalacion] Inicializando presidenteId (primera vez):", directorio.presidenteId);
+        }
+        
+        // ✅ CLAVE: NO sobrescribir si ya tiene un valor (true o false)
+        if (!presidenteAsistioYaDefinido) {
+          updates.presidenteAsistio = true; // Solo inicializar si no existe
+          console.log("✅ [Instalacion] Inicializando presidenteAsistio (primera vez): true");
+        } else {
+          console.log("ℹ️ [Instalacion] presidenteAsistio YA definido en backend:", meetingDetailsStore.meetingDetails?.presidenteAsistio, "- NO se sobrescribe");
+        }
       }
       
+      // Secretario: Solo inicializar si NO hay valor en el backend
       if (directorio?.secretarioAsignado === true && gerenteGeneral?.id) {
-        updates.secretarioId = gerenteGeneral.id;
-        updates.secretarioAsistio = true; // Por defecto asiste
-        console.log("✅ [Instalacion] Inicializando secretarioId (READONLY):", gerenteGeneral.id);
+        const secretarioYaAsignado = meetingDetailsStore.meetingDetails?.secretarioId;
+        const secretarioAsistioYaDefinido = meetingDetailsStore.meetingDetails?.secretarioAsistio !== undefined;
+        
+        if (!secretarioYaAsignado) {
+          updates.secretarioId = gerenteGeneral.id;
+          console.log("✅ [Instalacion] Inicializando secretarioId (primera vez):", gerenteGeneral.id);
+        }
+        
+        // ✅ CLAVE: NO sobrescribir si ya tiene un valor (true o false)
+        if (!secretarioAsistioYaDefinido) {
+          updates.secretarioAsistio = true; // Solo inicializar si no existe
+          console.log("✅ [Instalacion] Inicializando secretarioAsistio (primera vez): true");
+        } else {
+          console.log("ℹ️ [Instalacion] secretarioAsistio YA definido en backend:", meetingDetailsStore.meetingDetails?.secretarioAsistio, "- NO se sobrescribe");
+        }
       }
       
       if (Object.keys(updates).length > 0) {
         await meetingDetailsStore.patchMeetingDetails(updates);
-        console.log("✅ [Instalacion] Meeting details inicializado:", updates);
+        console.log("✅ [Instalacion] Meeting details inicializado (solo valores nuevos):", updates);
       } else {
-        console.log("ℹ️ [Instalacion] No hay configuración READONLY, se usará SELECTOR");
+        console.log("ℹ️ [Instalacion] No hay valores nuevos para inicializar - Backend ya tiene datos");
       }
 
       // 4. Cargar asistencias (registros de attendance)
@@ -246,8 +272,9 @@
       ...meetingDetailsStore.meetingDetails,
       presidenteId: presidenteId || undefined,
       secretarioId: secretarioId || undefined,
-      presidenteAsistio: presidenteAsistio ?? true,
-      secretarioAsistio: secretarioAsistio ?? true,
+      // ✅ RESPETAR valores del store (pueden ser true o false)
+      presidenteAsistio: presidenteAsistio ?? false,
+      secretarioAsistio: secretarioAsistio ?? false,
       // TODO: Agregar instaladaEnConvocatoria (Primera/Segunda)
       // instaladaEnConvocatoria: OrdenConvocatoria.PRIMERA,
     };
