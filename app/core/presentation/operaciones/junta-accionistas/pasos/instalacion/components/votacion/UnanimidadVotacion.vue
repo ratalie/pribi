@@ -24,9 +24,7 @@
 
       <!-- Texto -->
       <p class="text-gray-700 t-2 font-secondary">
-        Confirmo que todos los accionistas están de acuerdo con realizar el aumento de capital
-        mediante Aportes Dinerarios por la suma de S/ 2,000.00 (Dos Mil y 00/100 Soles), con la
-        emisión de 2,000 nuevas acciones con un valor nominal de S/ 1.00. (Un Sol).
+        {{ props.mensajeConfirmacion }}
       </p>
     </div>
   </div>
@@ -34,6 +32,15 @@
 
 <script setup lang="ts">
   import { ref } from "vue";
+
+  interface Props {
+    mensajeConfirmacion?: string;
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    mensajeConfirmacion:
+      "Confirmo que todos los accionistas están de acuerdo con realizar el aumento de capital mediante Aportes Dinerarios por la suma de S/ 2,000.00 (Dos Mil y 00/100 Soles), con la emisión de 2,000 nuevas acciones con un valor nominal de S/ 1.00. (Un Sol).",
+  });
 
   const isConfirmed = ref(false);
 </script>

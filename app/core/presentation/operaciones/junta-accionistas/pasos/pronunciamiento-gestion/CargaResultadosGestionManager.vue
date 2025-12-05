@@ -101,7 +101,7 @@
             :key="estado.id"
             class="flex flex-col gap-4"
           >
-            <p class="t-h6 text-gray-800 font-secondary">{{ estado.nombre }}</p>
+            <p class="t-h6 text-gray-800 font-secondary font-bold">{{ estado.nombre }}</p>
             <SimpleCardDropDown variant="sm">
               <template #title>
                 <div class="flex justify-between gap-2 items-center">

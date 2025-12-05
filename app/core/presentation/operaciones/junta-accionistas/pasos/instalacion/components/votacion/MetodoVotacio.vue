@@ -7,10 +7,24 @@
 
   interface Props {
     modelValue?: string;
+    title?: string;
+    subtitle?: string;
+    titleColor?: string;
+    mensajeUnanimidad?: string;
+    preguntas?: string[];
+    accionistas?: string[];
   }
 
   const props = withDefaults(defineProps<Props>(), {
     modelValue: "unanimidad",
+    title: "Votación del aumento de capital",
+    subtitle:
+      "Votación para aprobar el aumento capital realizado mediante aportes dinerarios.",
+    titleColor: "text-gray-900",
+    mensajeUnanimidad:
+      "Confirmo que todos los accionistas están de acuerdo con realizar el aumento de capital mediante Aportes Dinerarios por la suma de S/ 2,000.00 (Dos Mil y 00/100 Soles), con la emisión de 2,000 nuevas acciones con un valor nominal de S/ 1.00. (Un Sol).",
+    preguntas: () => [],
+    accionistas: () => [],
   });
 
   const emit = defineEmits<{
@@ -40,10 +54,7 @@
 
 <template>
   <SlotWrapper>
-    <TitleH2
-      title="Votación del aumento de capital"
-      subtitle="Votación para aprobar el aumento capital realizado mediante aportes dinerarios."
-    />
+    <TitleH2 :title="props.title" :subtitle="props.subtitle" :title-color="props.titleColor" />
 
     <p class="t-h5 text-gray-800 font-primary">Método de votación</p>
     <div class="flex gap-8">
@@ -119,9 +130,15 @@
 
     <!-- Contenido condicional según el método seleccionado -->
     <div class="mt-10">
-      <UnanimidadVotacion v-if="selectedMethod === 'unanimidad'" />
-      <MayoriaVotacion v-if="selectedMethod === 'mayoria'" />
+      <UnanimidadVotacion
+        v-if="selectedMethod === 'unanimidad'"
+        :mensaje-confirmacion="props.mensajeUnanimidad"
+      />
+      <MayoriaVotacion
+        v-if="selectedMethod === 'mayoria'"
+        :preguntas="props.preguntas"
+        :accionistas="props.accionistas"
+      />
     </div>
-
   </SlotWrapper>
 </template>
