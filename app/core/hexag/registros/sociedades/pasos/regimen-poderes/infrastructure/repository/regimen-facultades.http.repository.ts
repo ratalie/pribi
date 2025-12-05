@@ -2,10 +2,13 @@ import type { BackendApiResponse } from "~/core/shared/http/api-response.types";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
 import type { TipoFacultadResponseDTO } from "../../application";
 import type {
+  CreateOtorgamientoPoderPayload,
   RegimenFacultadesRepository,
   TipoFacultad,
   TipoFacultadPayload,
+  UpdateOtorgamientoPoderPayload,
 } from "../../domain";
+import { OtorgamientoPoderesMapper } from "../mappers/otorgamiento-poderes.mapper";
 import { TiposFacultadesMapper } from "../mappers/tipos-facultades.mapper";
 
 export class RegimenFacultadesHttpRepository implements RegimenFacultadesRepository {
@@ -77,6 +80,42 @@ export class RegimenFacultadesHttpRepository implements RegimenFacultadesReposit
 
     if (!response.success) {
       throw new Error(response.message || "Error al eliminar el tipo de facultad");
+    }
+  }
+
+  async createOtorgamientoPoder(
+    profileId: string,
+    payload: CreateOtorgamientoPoderPayload
+  ): Promise<void> {
+    const url = this.getUrl(profileId, "powers-grants");
+    const dto = OtorgamientoPoderesMapper.dePayloadACreateDTO(payload);
+    const config = withAuthHeaders({
+      method: "POST" as const,
+      body: dto,
+    });
+
+    const response = await $fetch<BackendApiResponse>(url, config);
+
+    if (!response.success) {
+      throw new Error(response.message || "Error al crear el otorgamiento de poder");
+    }
+  }
+
+  async updateOtorgamientoPoder(
+    profileId: string,
+    payload: UpdateOtorgamientoPoderPayload
+  ): Promise<void> {
+    const url = this.getUrl(profileId, "powers-grants");
+    const dto = OtorgamientoPoderesMapper.dePayloadAUpdateDTO(payload);
+    const config = withAuthHeaders({
+      method: "PUT" as const,
+      body: dto,
+    });
+
+    const response = await $fetch<BackendApiResponse>(url, config);
+
+    if (!response.success) {
+      throw new Error(response.message || "Error al actualizar el otorgamiento de poder");
     }
   }
 }

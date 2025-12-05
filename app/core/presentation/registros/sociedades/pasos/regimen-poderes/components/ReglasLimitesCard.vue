@@ -7,9 +7,11 @@
   import SimpleCardDropDown from "~/components/base/cards/SimpleCardDropDown.vue";
   import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
-  import { TipoFirmasEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoFirmasEnum";
-  import { TipoMontoEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoMontoEnum";
-  import { EntityCoinEnum } from "~/types/enums/EntityCoinEnum";
+  import {
+    EntityCoinUIEnum,
+    TipoFirmasUIEnum,
+    TipoMontoUIEnum,
+  } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
   import {
     montoDesdeSchema,
     montoHastaSchema,
@@ -26,9 +28,9 @@
   const crearLimiteVacio = () => ({
     id: uuidv4(),
     desde: 0,
-    tipoMonto: TipoMontoEnum.MONTO,
+    tipoMonto: TipoMontoUIEnum.MONTO,
     hasta: 0,
-    tipoFirma: TipoFirmasEnum.SOLA_FIRMA,
+    tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA,
     firmantes: [],
   });
 
@@ -38,7 +40,7 @@
     grupo: "",
   });
 
-  const handleTipoFirmaChange = (newVal: TipoFirmasEnum, limiteId: string) => {
+  const handleTipoFirmaChange = (newVal: TipoFirmasUIEnum, limiteId: string) => {
     const limite = apoderadoFacultadStore.limiteMonetario.find(
       (limite) => limite.id === limiteId
     );
@@ -47,7 +49,7 @@
 
     limite.tipoFirma = newVal;
 
-    if (newVal === TipoFirmasEnum.FIRMA_CONJUNTA) {
+    if (newVal === TipoFirmasUIEnum.FIRMA_CONJUNTA) {
       if (limite.firmantes.length === 0) {
         limite.firmantes.push(crearFirmanteVacio());
       }
@@ -143,7 +145,7 @@
               :name="`desde-${limite.id}`"
               placeholder="Ingrese el monto desde"
               :currency="
-                apoderadoFacultadStore.tipoMoneda === EntityCoinEnum.SOLES ? 'PEN' : 'USD'
+                apoderadoFacultadStore.tipoMoneda === EntityCoinUIEnum.SOLES ? 'PEN' : 'USD'
               "
               format="decimal"
               :schema="montoDesdeSchema"
@@ -151,7 +153,7 @@
             <span class="t-t2 font-secondary text-gray-700 font-medium">Hasta</span>
 
             <!-- Si el tipo de monto es monto, mostrar el select y el input -->
-            <template v-if="limite.tipoMonto === TipoMontoEnum.MONTO">
+            <template v-if="limite.tipoMonto === TipoMontoUIEnum.MONTO">
               <SelectInputZod
                 v-model="limite.tipoMonto"
                 :name="`tipo-monto-${limite.id}`"
@@ -164,7 +166,7 @@
                 :name="`hasta-${limite.id}`"
                 placeholder="Ingrese el monto hasta"
                 :currency="
-                  apoderadoFacultadStore.tipoMoneda === EntityCoinEnum.SOLES ? 'PEN' : 'USD'
+                  apoderadoFacultadStore.tipoMoneda === EntityCoinUIEnum.SOLES ? 'PEN' : 'USD'
                 "
                 format="decimal"
                 :schema="montoHastaSchema"
@@ -182,7 +184,7 @@
                 <button
                   type="button"
                   class="size-[18px] shrink-0 text-primary-500 hover:text-primary-600 transition-colors cursor-pointer"
-                  @click="limite.tipoMonto = TipoMontoEnum.MONTO"
+                  @click="limite.tipoMonto = TipoMontoUIEnum.MONTO"
                 >
                   <X :size="18" />
                 </button>
@@ -196,13 +198,13 @@
               placeholder="Selecciona un tipo de firma"
               :options="apoderadoFacultadStore.tipoFirmaOptions"
               :schema="selectTipoFirmaSchema"
-              @update:model-value="(newVal: string) => handleTipoFirmaChange(newVal as TipoFirmasEnum, limite.id)"
+              @update:model-value="(newVal: string) => handleTipoFirmaChange(newVal as TipoFirmasUIEnum, limite.id)"
             />
           </div>
 
           <!-- Firmantes -->
           <div
-            v-if="limite.tipoFirma === TipoFirmasEnum.FIRMA_CONJUNTA"
+            v-if="limite.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA"
             class="flex flex-col gap-3 px-6"
           >
             <div
