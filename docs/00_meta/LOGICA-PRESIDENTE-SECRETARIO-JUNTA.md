@@ -212,3 +212,9 @@ PUT /api/v2/society-profile/:societyId/register-assembly/:flowId/meeting-details
 5. **Si no asistió**, siempre selector de reemplazo
 6. **Guardar** presidenteId y secretarioId en meeting-details
 
+
+
+
+
+
+

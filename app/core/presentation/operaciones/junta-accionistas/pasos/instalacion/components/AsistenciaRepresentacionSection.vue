@@ -65,7 +65,11 @@ const tipoJunta = computed(() => meetingDetailsStore.meetingDetails?.tipoJunta);
 /**
  * Si es universal, todos asisten automáticamente
  */
-const isUniversal = computed(() => tipoJunta.value === TipoJunta.UNIVERSAL);
+const isUniversal = computed(() => {
+  const esUniversal = tipoJunta.value === TipoJunta.UNIVERSAL;
+  console.log("🔍 [isUniversal] Tipo junta:", tipoJunta.value, "→ Es universal:", esUniversal);
+  return esUniversal;
+});
 
 /**
  * Porcentaje de participación total
@@ -83,13 +87,21 @@ const porcentajeTotal = computed(() => {
  * Toggle asistencia de un accionista
  */
 async function toggleAsistencia(registroId: string) {
+  console.log("🔵 [toggleAsistencia] Click detectado en:", registroId);
+  console.log("🔍 [toggleAsistencia] isUniversal:", isUniversal.value);
+  
   // Si es universal, no permitir toggle
-  if (isUniversal.value) return;
+  if (isUniversal.value) {
+    console.log("⚠️ [toggleAsistencia] Bloqueado por UNIVERSAL");
+    return;
+  }
 
   try {
+    console.log("✅ [toggleAsistencia] Ejecutando store.toggleAsistencia...");
     await asistenciaStore.toggleAsistencia(props.societyId, Number(props.flowId), registroId);
+    console.log("✅ [toggleAsistencia] Toggle completado");
   } catch (error) {
-    console.error("[AsistenciaSection] Error al toggle asistencia:", error);
+    console.error("❌ [toggleAsistencia] Error:", error);
   }
 }
 
@@ -244,13 +256,19 @@ function requiereRepresentante(tipo: string): boolean {
           </TableRow>
 
           <!-- Filas de accionistas -->
-          <TableRow v-for="asistencia in asistenciasEnriquecidas" :key="asistencia.id">
+          <TableRow 
+            v-for="asistencia in asistenciasEnriquecidas" 
+            :key="asistencia.id"
+            :class="asistencia.asistio ? 'bg-primary-50/30' : ''"
+          >
             <!-- Checkbox de asistencia -->
             <TableCell class="text-center">
-              <Checkbox
+              <input
+                type="checkbox"
                 :checked="asistencia.asistio"
                 :disabled="isUniversal"
-                @update:checked="toggleAsistencia(asistencia.id)"
+                @change="toggleAsistencia(asistencia.id)"
+                class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
               />
             </TableCell>
             

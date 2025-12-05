@@ -65,3 +65,4 @@ http://localhost:4000/api/v2
 **Última actualización:** Diciembre 3, 2025
 
 
+

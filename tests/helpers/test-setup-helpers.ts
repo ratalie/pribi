@@ -280,7 +280,10 @@ export async function setupApoderados(societyId: string): Promise<{
   const apoderadoUseCase = new CreateApoderadoUseCase(repo);
   await apoderadoUseCase.execute(societyId, gerenteGeneral);
   
-  console.log(`    ✅ Gerente General creado: ${gerenteGeneral.id} (${gerenteGeneral.persona.nombre} ${gerenteGeneral.persona.apellidoPaterno})`);
+  const nombreGerente = 'nombre' in gerenteGeneral.persona 
+    ? `${gerenteGeneral.persona.nombre} ${gerenteGeneral.persona.apellidoPaterno}` 
+    : gerenteGeneral.persona.razonSocial;
+  console.log(`    ✅ Gerente General creado: ${gerenteGeneral.id} (${nombreGerente})`);
   
   return {
     claseId: claseGerenteGeneral.id,

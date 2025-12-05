@@ -238,3 +238,11 @@ Las 3 IAs tienen toda la información para trabajar coordinadamente y avanzar r�
 **Estado**: Lista para usar 🚀
 
 
+
+
+
+
+
+
+
+

@@ -80,3 +80,11 @@ const cumpleCalificado = computed(() => props.quorum.cumpleQuorumCalificado);
 
 
 
+
+
+
+
+
+
+
+

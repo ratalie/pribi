@@ -381,3 +381,4 @@ Agrega la ruta a la tabla correspondiente.
 **Última actualización:** Diciembre 3, 2025
 
 
+

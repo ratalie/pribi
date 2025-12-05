@@ -178,3 +178,9 @@ const TIPOS_CON_REPRESENTANTE_OBLIGATORIO = [
 - Relación con Presidente/Secretario: `docs/version 2.5/RELACION-ASISTENCIA-PRESIDENTE-SECRETARIO.md`
 - Catálogo de componentes: `docs/general/CATALOGO-COMPONENTES-REGISTRO-SOCIEDADES.md`
 
+
+
+
+
+
+

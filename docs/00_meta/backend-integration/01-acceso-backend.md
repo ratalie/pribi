@@ -73,3 +73,4 @@ Ver: [02-endpoints-disponibles.md](./02-endpoints-disponibles.md)
 **Última actualización:** Diciembre 3, 2025
 
 
+

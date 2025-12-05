@@ -65,3 +65,11 @@ export class QuorumCalculatorService {
 
 
 
+
+
+
+
+
+
+
+

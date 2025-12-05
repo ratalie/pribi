@@ -51,7 +51,7 @@ export const SUB_STEP_SECTIONS_MAP: Record<
       id: "utilidades-montos",
       title: "Utilidades y Montos a Distribuir",
       description: "Cálculos y valores",
-      navigationType: "anchor",
+      navigationType: "route",
       subSections: [
         {
           id: "valores-preliminares",
@@ -74,6 +74,58 @@ export const SUB_STEP_SECTIONS_MAP: Record<
           navigationType: "anchor",
         },
       ],
+    },
+    {
+      id: "votacion",
+      title: "Votación",
+      description: "Registra la votación",
+      navigationType: "route",
+    },
+    {
+      id: "resumen",
+      title: "Resumen",
+      description: "Revisa el resumen",
+      navigationType: "route",
+    },
+  ],
+  "pronunciamiento-gestion": [
+    {
+      id: "pronunciamiento-gestion",
+      title: "Pronunciamiento de Gestión",
+      description: "Vista general",
+      navigationType: "route",
+    },
+    {
+      id: "pronunciamiento",
+      title: "Pronunciamiento",
+      description: "Registro del informe",
+      navigationType: "route",
+    },
+    {
+      id: "votacion",
+      title: "Votación",
+      description: "Registra la votación",
+      navigationType: "route",
+    },
+    {
+      id: "resumen",
+      title: "Resumen",
+      description: "Revisa el resumen",
+      navigationType: "route",
+    },
+  ],
+  "delegacion-auditores": [
+    {
+      id: "nombramiento-auditores",
+      title: "Nombramiento de Auditores",
+      description: "Vista general",
+      navigationType: "route",
+    },
+    {
+      id: "nombramiento",
+      title: "Designación",
+      description: "Registra los auditores propuestos",
+      navigationType: "route",
     },
     {
       id: "votacion",

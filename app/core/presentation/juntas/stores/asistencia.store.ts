@@ -20,6 +20,12 @@ import { OrdenConvocatoria } from '~/core/hexag/juntas/domain/enums/orden-convoc
  * - Calcular quórum en tiempo real
  */
 export const useAsistenciaStore = defineStore('asistencia', {
+  // ✅ PERSISTENCIA: Guardar en localStorage para debug
+  persist: {
+    storage: typeof window !== 'undefined' ? localStorage : undefined,
+    key: 'probo-asistencia',
+  },
+  
   state: () => ({
     asistencias: [] as Asistencia[],
     quorumEstado: null as QuorumEstado | null,

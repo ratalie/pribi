@@ -11,7 +11,8 @@
 </template>
 
 <script setup lang="ts">
-  definePageMeta({
-    layout: "default",
-  });
+definePageMeta({
+  layout: "registros",
+  flowLayoutJuntas: true,
+});
 </script>

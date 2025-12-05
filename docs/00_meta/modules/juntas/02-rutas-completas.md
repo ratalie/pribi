@@ -31,3 +31,4 @@ Ver documentación completa en: [../../../architecture/03-routing-completo.md](.
 **Última actualización:** Diciembre 3, 2025
 
 
+

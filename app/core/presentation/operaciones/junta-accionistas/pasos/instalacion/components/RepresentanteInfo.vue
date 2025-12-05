@@ -29,7 +29,7 @@ const representanteInfo = computed(() => {
   if (rep) {
     return { 
       nombre: rep.nombreCompleto, 
-      documento: rep.accionista.person.numeroDocumento 
+      documento: 'numeroDocumento' in rep.accionista.person ? rep.accionista.person.numeroDocumento : 'N/A'
     };
   }
   

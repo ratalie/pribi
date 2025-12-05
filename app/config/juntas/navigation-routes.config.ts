@@ -1,6 +1,6 @@
 /**
  * Configuración de rutas de navegación para secciones
- * 
+ *
  * Mapea IDs de secciones a sus rutas correspondientes
  */
 
@@ -25,9 +25,33 @@ export function getAporteDinerarioRoutes(basePath: string): Record<string, strin
 export function getAplicacionResultadosRoutes(basePath: string): Record<string, string> {
   return {
     "aplicacion-resultados": `${basePath}/aplicacion-resultados`,
-    "utilidades-montos": `${basePath}/aplicacion-resultados`,
+    "utilidades-montos": `${basePath}/aplicacion-resultados/utilidades-montos`,
     votacion: `${basePath}/aplicacion-resultados/votacion`,
     resumen: `${basePath}/aplicacion-resultados/resumen`,
+  };
+}
+
+/**
+ * Mapeo de secciones a rutas para "pronunciamiento-gestion"
+ */
+export function getPronunciamientoGestionRoutes(basePath: string): Record<string, string> {
+  return {
+    "pronunciamiento-gestion": `${basePath}/pronunciamiento-gestion`,
+    pronunciamiento: `${basePath}/pronunciamiento-gestion/pronunciamiento`,
+    votacion: `${basePath}/pronunciamiento-gestion/votacion`,
+    resumen: `${basePath}/pronunciamiento-gestion/resumen`,
+  };
+}
+
+/**
+ * Mapeo de secciones a rutas para "delegacion-auditores"
+ */
+export function getDelegacionAuditoresRoutes(basePath: string): Record<string, string> {
+  return {
+    "nombramiento-auditores": `${basePath}/nombramiento-auditores`,
+    nombramiento: `${basePath}/nombramiento-auditores/nombramiento`,
+    votacion: `${basePath}/nombramiento-auditores/votacion`,
+    resumen: `${basePath}/nombramiento-auditores/resumen`,
   };
 }
 
@@ -43,6 +67,10 @@ export function getSectionRoutesForSubStep(
       return getAporteDinerarioRoutes(basePath);
     case "aplicacion-resultados":
       return getAplicacionResultadosRoutes(basePath);
+    case "pronunciamiento-gestion":
+      return getPronunciamientoGestionRoutes(basePath);
+    case "delegacion-auditores":
+      return getDelegacionAuditoresRoutes(basePath);
     default:
       return null;
   }
@@ -58,7 +86,7 @@ export function getParentSectionForAnchor(
   sections: Array<{ id: string; subSections?: Array<{ id: string }> }>
 ): { parentId: string; parentRoute: string } | null {
   const parentRouteMap: Record<string, string> = {
-    "utilidades-montos": `${basePath}/aplicacion-resultados`,
+    "utilidades-montos": `${basePath}/aplicacion-resultados/utilidades-montos`,
   };
 
   for (const section of sections) {
@@ -71,6 +99,19 @@ export function getParentSectionForAnchor(
     }
   }
 
+  // Si el anchorId es una sub-sección de utilidades-montos, retornar la ruta padre
+  const utilidadesMontosAnchors = [
+    "valores-preliminares",
+    "calculo-utilidad-antes-reserva",
+    "calculo-reserva-legal",
+    "valores-utilidad-distribuible",
+  ];
+  if (utilidadesMontosAnchors.includes(anchorId)) {
+    return {
+      parentId: "utilidades-montos",
+      parentRoute: `${basePath}/aplicacion-resultados/utilidades-montos`,
+    };
+  }
+
   return null;
 }
-

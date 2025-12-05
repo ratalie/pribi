@@ -528,3 +528,4 @@ export class UpdateQuorumUseCase {
 **Última actualización:** Diciembre 3, 2025
 
 
+

@@ -79,3 +79,9 @@ Faltaban varias cosas que no implementé correctamente.
 
 Ahora voy a corregir TODO paso a paso.
 
+
+
+
+
+
+

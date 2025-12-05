@@ -14,6 +14,12 @@ type Status = 'idle' | 'loading' | 'error';
  * Usa Option API de Pinia (NO Composition API)
  */
 export const useMeetingDetailsStore = defineStore('meeting-details', {
+  // ✅ PERSISTENCIA: Guardar en localStorage para debug
+  persist: {
+    storage: typeof window !== 'undefined' ? localStorage : undefined,
+    key: 'probo-meeting-details',
+  },
+  
   state: () => ({
     // Datos actuales de meeting details
     meetingDetails: null as MeetingDetails | null,

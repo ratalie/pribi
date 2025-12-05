@@ -47,3 +47,4 @@ app/core/hexag/mocks/
 **Última actualización:** Diciembre 3, 2025
 
 
+

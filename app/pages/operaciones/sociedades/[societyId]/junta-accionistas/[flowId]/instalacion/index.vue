@@ -71,23 +71,57 @@
         secretarioAsistio: meetingDetailsStore.meetingDetails?.secretarioAsistio,
       });
 
-      // 3. SIEMPRE inicializar a true (por defecto asisten)
-      console.log(
-        "🔄 [Instalacion] Inicializando presidenteAsistio y secretarioAsistio a TRUE"
-      );
-      await meetingDetailsStore.patchMeetingDetails({
-        presidenteAsistio: true,
-        secretarioAsistio: true,
-        presidenteId: snapshotStore.snapshot?.directory?.presidenteId || undefined,
-        secretarioId: snapshotStore.snapshot?.attorneys?.[0]?.id || undefined,
-      });
-
-      console.log("✅ [Instalacion] Meeting details inicializado (DESPUÉS):", {
-        presidenteAsistio: meetingDetailsStore.meetingDetails?.presidenteAsistio,
-        secretarioAsistio: meetingDetailsStore.meetingDetails?.secretarioAsistio,
-        presidenteId: meetingDetailsStore.meetingDetails?.presidenteId,
-        secretarioId: meetingDetailsStore.meetingDetails?.secretarioId,
-      });
+      // 3. Inicializar presidenteId y secretarioId SOLO SI NO EXISTEN EN BACKEND
+      const directorio = snapshotStore.snapshot?.directory;
+      const gerenteGeneral = snapshotStore.snapshot?.attorneys?.[0];
+      
+      // ✅ IMPORTANTE: Solo inicializar si es READONLY Y no hay valor previo en el backend
+      const updates: any = {};
+      
+      // Presidente: Solo inicializar si NO hay valor en el backend
+      if (directorio?.presidentePreside === true && directorio.presidenteId) {
+        const presidenteYaAsignado = meetingDetailsStore.meetingDetails?.presidenteId;
+        const presidenteAsistioYaDefinido = meetingDetailsStore.meetingDetails?.presidenteAsistio !== undefined;
+        
+        if (!presidenteYaAsignado) {
+          updates.presidenteId = directorio.presidenteId;
+          console.log("✅ [Instalacion] Inicializando presidenteId (primera vez):", directorio.presidenteId);
+        }
+        
+        // ✅ CLAVE: NO sobrescribir si ya tiene un valor (true o false)
+        if (!presidenteAsistioYaDefinido) {
+          updates.presidenteAsistio = true; // Solo inicializar si no existe
+          console.log("✅ [Instalacion] Inicializando presidenteAsistio (primera vez): true");
+        } else {
+          console.log("ℹ️ [Instalacion] presidenteAsistio YA definido en backend:", meetingDetailsStore.meetingDetails?.presidenteAsistio, "- NO se sobrescribe");
+        }
+      }
+      
+      // Secretario: Solo inicializar si NO hay valor en el backend
+      if (directorio?.secretarioAsignado === true && gerenteGeneral?.id) {
+        const secretarioYaAsignado = meetingDetailsStore.meetingDetails?.secretarioId;
+        const secretarioAsistioYaDefinido = meetingDetailsStore.meetingDetails?.secretarioAsistio !== undefined;
+        
+        if (!secretarioYaAsignado) {
+          updates.secretarioId = gerenteGeneral.id;
+          console.log("✅ [Instalacion] Inicializando secretarioId (primera vez):", gerenteGeneral.id);
+        }
+        
+        // ✅ CLAVE: NO sobrescribir si ya tiene un valor (true o false)
+        if (!secretarioAsistioYaDefinido) {
+          updates.secretarioAsistio = true; // Solo inicializar si no existe
+          console.log("✅ [Instalacion] Inicializando secretarioAsistio (primera vez): true");
+        } else {
+          console.log("ℹ️ [Instalacion] secretarioAsistio YA definido en backend:", meetingDetailsStore.meetingDetails?.secretarioAsistio, "- NO se sobrescribe");
+        }
+      }
+      
+      if (Object.keys(updates).length > 0) {
+        await meetingDetailsStore.patchMeetingDetails(updates);
+        console.log("✅ [Instalacion] Meeting details inicializado (solo valores nuevos):", updates);
+      } else {
+        console.log("ℹ️ [Instalacion] No hay valores nuevos para inicializar - Backend ya tiene datos");
+      }
 
       // 4. Cargar asistencias (registros de attendance)
       console.log("👥 [Instalacion] Cargando asistencias...");
@@ -96,12 +130,21 @@
         "✅ [Instalacion] Asistencias cargadas:",
         asistenciaStore.asistencias.length
       );
+      console.log(
+        "📊 [Instalacion] Estado inicial de asistencias:",
+        asistenciaStore.asistencias.map((a) => ({
+          id: a.id,
+          asistio: a.asistio,
+          nombre: asistenciaStore.asistenciasEnriquecidas.find((e) => e.id === a.id)?.nombreCompleto,
+        }))
+      );
 
       // 5. Si es Junta Universal, marcar TODOS como presentes automáticamente
       if (meetingDetailsStore.meetingDetails?.tipoJunta === TipoJunta.UNIVERSAL) {
         console.log(
           "🌍 [Instalacion] Junta Universal detectada - Marcando todos como presentes..."
         );
+        let marcados = 0;
         for (const asistencia of asistenciaStore.asistencias) {
           if (!asistencia.asistio) {
             console.log(`  ✓ Marcando como presente: ${asistencia.id}`);
@@ -110,9 +153,33 @@
               flowId.value,
               asistencia.id
             );
+            marcados++;
           }
         }
-        console.log("✅ [Instalacion] Todos marcados como presentes (Junta Universal)");
+        console.log(`✅ [Instalacion] ${marcados} accionistas marcados como presentes (Junta Universal)`);
+        
+        // Verificar después de marcar
+        const presentes = asistenciaStore.asistenciasEnriquecidas.filter((a) => a.asistio);
+        console.log(
+          "📊 [Instalacion] Estado DESPUÉS de marcar:",
+          presentes.length,
+          "presentes de",
+          asistenciaStore.asistencias.length,
+          "total"
+        );
+        console.log(
+          "📊 [Instalacion] Detalle presentes:",
+          presentes.map((a) => ({ id: a.id, nombre: a.nombreCompleto }))
+        );
+      } else {
+        // Si NO es Universal, verificar cuántos están presentes
+        const presentes = asistenciaStore.asistenciasEnriquecidas.filter((a) => a.asistio);
+        console.log(
+          "📊 [Instalacion] Junta NO Universal - Presentes:",
+          presentes.length,
+          "de",
+          asistenciaStore.asistencias.length
+        );
       }
     } catch (error) {
       console.error("❌ [Instalacion] Error al cargar datos:", error);
@@ -128,12 +195,24 @@
     // ========================================
 
     // 1. Validar que haya al menos un asistente
-    const totalAsistentes = asistenciaStore.asistenciasEnriquecidas.filter(
-      (a) => a.asistio
-    ).length;
-    if (totalAsistentes === 0) {
-      throw new Error("Debe haber al menos un asistente en la junta");
+    console.log("🔍 [Validación] Verificando asistentes...");
+    console.log("🔍 [Validación] Total asistencias:", asistenciaStore.asistencias.length);
+    console.log("🔍 [Validación] Asistencias enriquecidas:", asistenciaStore.asistenciasEnriquecidas.length);
+    
+    const asistentes = asistenciaStore.asistenciasEnriquecidas.filter((a) => a.asistio);
+    console.log("🔍 [Validación] Asistentes marcados como presentes:", asistentes.length);
+    console.log("🔍 [Validación] Detalle asistentes:", asistentes.map(a => ({
+      id: a.id,
+      nombre: a.nombreCompleto,
+      asistio: a.asistio
+    })));
+    
+    if (asistentes.length === 0) {
+      console.error("❌ [Validación] No hay asistentes marcados");
+      throw new Error("Debe haber al menos un asistente en la junta. Por favor, marque la asistencia de al menos un accionista.");
     }
+    
+    console.log("✅ [Validación] Hay", asistentes.length, "asistentes");
 
     // 2. Validar que personas jurídicas/sucursales/etc tengan representante obligatorio
     const TIPOS_CON_REPRESENTANTE_OBLIGATORIO = [
@@ -193,8 +272,9 @@
       ...meetingDetailsStore.meetingDetails,
       presidenteId: presidenteId || undefined,
       secretarioId: secretarioId || undefined,
-      presidenteAsistio: presidenteAsistio ?? true,
-      secretarioAsistio: secretarioAsistio ?? true,
+      // ✅ RESPETAR valores del store (pueden ser true o false)
+      presidenteAsistio: presidenteAsistio ?? false,
+      secretarioAsistio: secretarioAsistio ?? false,
       // TODO: Agregar instaladaEnConvocatoria (Primera/Segunda)
       // instaladaEnConvocatoria: OrdenConvocatoria.PRIMERA,
     };

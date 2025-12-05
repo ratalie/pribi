@@ -250,3 +250,4 @@ enum SociedadEstado {
 **Última actualización:** Diciembre 3, 2025
 
 
+

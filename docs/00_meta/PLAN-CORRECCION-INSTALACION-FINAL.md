@@ -183,3 +183,9 @@ if (snapshot.directorio) {
 2. Crear plan completo ✅
 3. Implementar correcciones paso a paso ⏳
 
+
+
+
+
+
+
