@@ -33,6 +33,7 @@
   onMounted(async () => {
     if (props.societyId) {
       try {
+        await regimenFacultadesStore.loadTipoFacultades(props.societyId);
         await regimenFacultadesStore.loadApoderados(props.societyId);
       } catch (error) {
         console.error("Error al cargar apoderados:", error);

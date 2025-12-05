@@ -3,12 +3,17 @@ import type { TipoFirmaEnum, TipoLimiteEnum, TipoMonedaEnum } from "../..";
 export interface OtorgamientoPoderResponseDTO {
   id: string;
   poderId: string;
+  claseApoderadoId: string;
+  apoderadoId?: string; // ID del apoderado individual (solo para "Otros Apoderados")
   poder: {
     id: string;
     nombre: string;
     archivoId: string | null;
     archivo: ArchivoInfo | null;
   };
+  esIrrevocable: boolean;
+  fechaInicio: Date;
+  fechaFin?: Date;
   tieneReglasFirma: boolean;
   reglasMonetarias: ReglaMonetariaResponseDto[];
 }

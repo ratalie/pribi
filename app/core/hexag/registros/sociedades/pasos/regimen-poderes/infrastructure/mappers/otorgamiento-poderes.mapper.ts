@@ -7,6 +7,7 @@ import type {
   CreateOtorgamientoPoderDTO,
   CreateReglaMonetariaDTO,
 } from "../../application/dtos/otorgamiento-poderes/create.dto";
+import type { OtorgamientoPoderResponseDTO } from "../../application/dtos/otorgamiento-poderes/response.dto";
 import type { UpdateOtorgamientoPoderDTO } from "../../application/dtos/otorgamiento-poderes/update.dto";
 import { TipoFirmaEnum } from "../../application/enums/tipo-firma.enum";
 import { TipoLimiteEnum } from "../../application/enums/tipo-limite.enum";
@@ -15,9 +16,10 @@ import type {
   CreateOtorgamientoPoderPayload,
   CreateReglaMonetariaPayload,
 } from "../../domain/entities/create-otorgamiento-poder.payload";
-import type { Firmante } from "../../domain/entities/otorgamiento-poderes.entity";
+import type { Facultad, Firmante } from "../../domain/entities/otorgamiento-poderes.entity";
 import type { UpdateOtorgamientoPoderPayload } from "../../domain/entities/update-otorgamiento-poder.payload";
 import { EntityCoinUIEnum } from "../../domain/enums/EntityCoinUIEnum";
+import { TiempoVigenciaUIEnum } from "../../domain/enums/TiempoVigenciaUIEnum";
 import { TipoFirmasUIEnum } from "../../domain/enums/TipoFirmasUIEnum";
 import { TipoMontoUIEnum } from "../../domain/enums/TipoMontoUIEnum";
 
@@ -222,5 +224,129 @@ export class OtorgamientoPoderesMapper {
         cantidadMiembros: firmante.cantidad, // cantidad → cantidadMiembros
       })),
     };
+  }
+
+  /**
+   * Convierte un ResponseDTO a Facultad (entidad de dominio)
+   */
+  static deResponseDTOAFacultad(response: OtorgamientoPoderResponseDTO): Facultad {
+    const baseFacultad = {
+      id: response.id,
+      nombre: response.poder.nombre,
+    };
+
+    // Construir tipo de vigencia
+    const tieneFechaFin = !!response.fechaFin;
+    const tipoVigencia = tieneFechaFin
+      ? {
+          esIrrevocable: response.esIrrevocable as true,
+          vigencia: TiempoVigenciaUIEnum.DETERMIADO,
+          fecha_inicio: this.formatearFecha(response.fechaInicio),
+          fecha_fin: this.formatearFecha(response.fechaFin!),
+        }
+      : {
+          esIrrevocable: response.esIrrevocable as false,
+          vigencia: TiempoVigenciaUIEnum.INDEFINIDO,
+        };
+
+    // Si no tiene reglas, retornar sin reglas
+    if (!response.tieneReglasFirma || response.reglasMonetarias.length === 0) {
+      return {
+        ...baseFacultad,
+        ...tipoVigencia,
+        reglasYLimites: false,
+      } as Facultad;
+    }
+
+    // Obtener la primera regla monetaria para el tipoMoneda (todas deberían tener el mismo)
+    const primeraRegla = response.reglasMonetarias[0];
+    if (!primeraRegla) {
+      // Si no hay reglas, retornar sin reglas
+      return {
+        ...baseFacultad,
+        ...tipoVigencia,
+        reglasYLimites: false,
+      } as Facultad;
+    }
+
+    const tipoMoneda = this.mapearTipoMonedaDesdeDTO(primeraRegla.tipoMoneda);
+
+    // Convertir todas las reglas monetarias a LimiteMonetario
+    const limiteMonetario = response.reglasMonetarias.map((regla) =>
+      this.deReglaMonetariaResponseADominio(regla)
+    );
+
+    return {
+      ...baseFacultad,
+      ...tipoVigencia,
+      reglasYLimites: true,
+      tipoMoneda,
+      limiteMonetario,
+    } as Facultad;
+  }
+
+  /**
+   * Convierte una regla monetaria de ResponseDTO a LimiteMonetario (Domain)
+   */
+  private static deReglaMonetariaResponseADominio(
+    regla: OtorgamientoPoderResponseDTO["reglasMonetarias"][number]
+  ): Extract<Facultad, { reglasYLimites: true }>["limiteMonetario"][number] {
+    type LimiteMonetarioType = Extract<
+      Facultad,
+      { reglasYLimites: true }
+    >["limiteMonetario"][number];
+    const base: Omit<LimiteMonetarioType, "tipoFirma"> = {
+      id: regla.id,
+      desde: regla.montoDesde,
+      tipoMonto:
+        regla.tipoLimite === TipoLimiteEnum.MONTO
+          ? TipoMontoUIEnum.MONTO
+          : TipoMontoUIEnum.SIN_LIMITE,
+      hasta: regla.montoHasta ?? 0,
+    };
+
+    if (regla.tipoFirma === TipoFirmaEnum.SOLA_FIRMA) {
+      return {
+        ...base,
+        tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA,
+      };
+    }
+
+    return {
+      ...base,
+      tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
+      firmantes: regla.signers.map((signer) => ({
+        id: signer.id,
+        cantidad: signer.cantidadMiembros,
+        grupo: signer.claseApoderado.nombre, // nombre de la clase → grupo
+      })),
+    };
+  }
+
+  /**
+   * Mapea TipoMonedaEnum (Application) a EntityCoinUIEnum (Domain)
+   */
+  private static mapearTipoMonedaDesdeDTO(moneda: TipoMonedaEnum): EntityCoinUIEnum {
+    switch (moneda) {
+      case TipoMonedaEnum.PEN:
+        return EntityCoinUIEnum.SOLES;
+      case TipoMonedaEnum.USD:
+        return EntityCoinUIEnum.DOLARES;
+      default:
+        throw new Error(`Tipo de moneda no soportado: ${moneda}`);
+    }
+  }
+
+  /**
+   * Formatea una fecha Date a string YYYY-MM-DD
+   */
+  private static formatearFecha(fecha: Date): string {
+    if (typeof fecha === "string") {
+      return fecha;
+    }
+    const year = fecha.getFullYear();
+    const month = String(fecha.getMonth() + 1).padStart(2, "0");
+    const day = String(fecha.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   }
 }

@@ -1,6 +1,6 @@
 import type { BackendApiResponse } from "~/core/shared/http/api-response.types";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
-import type { TipoFacultadResponseDTO } from "../../application";
+import type { OtorgamientoPoderResponseDTO, TipoFacultadResponseDTO } from "../../application";
 import type {
   CreateOtorgamientoPoderPayload,
   RegimenFacultadesRepository,
@@ -117,5 +117,21 @@ export class RegimenFacultadesHttpRepository implements RegimenFacultadesReposit
     if (!response.success) {
       throw new Error(response.message || "Error al actualizar el otorgamiento de poder");
     }
+  }
+
+  async listOtorgamientosPoder(profileId: string): Promise<OtorgamientoPoderResponseDTO[]> {
+    const url = this.getUrl(profileId, "powers-grants");
+    const config = withAuthHeaders({ method: "GET" as const });
+
+    const response = await $fetch<BackendApiResponse<OtorgamientoPoderResponseDTO[]>>(
+      url,
+      config
+    );
+
+    if (!response.success || !response?.data) {
+      throw new Error("No se encontraron otorgamientos de poder");
+    }
+
+    return response.data;
   }
 }

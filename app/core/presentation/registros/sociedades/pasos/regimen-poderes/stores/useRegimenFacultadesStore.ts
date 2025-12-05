@@ -8,6 +8,7 @@ import { ApoderadosHttpRepository } from "~/core/hexag/registros/sociedades/paso
 import {
   CreateTiposFacultadesUseCase,
   DeleteTiposFacultadesUseCase,
+  ListOtorgamientosPoderUseCase,
   ListTiposFacultadesUseCase,
   UpdateTiposFacultadesUseCase,
 } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/application";
@@ -19,6 +20,7 @@ import {
   type Facultad,
   type TipoFacultad,
 } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
+import { OtorgamientoPoderesMapper } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/infrastructure/mappers/otorgamiento-poderes.mapper";
 import { TiposFacultadesMapper } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/infrastructure/mappers/tipos-facultades.mapper";
 import { RegimenFacultadesHttpRepository } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/infrastructure/repository/regimen-facultades.http.repository";
 import { ClasesApoderadoEspecialesEnum } from "~/core/presentation/registros/sociedades/pasos/apoderados/types/enums/ClasesApoderadoEspecialesEnum";
@@ -32,6 +34,7 @@ const listTipoFacultadesUseCase = new ListTiposFacultadesUseCase(repository);
 const createTipoFacultadUseCase = new CreateTiposFacultadesUseCase(repository);
 const updateTipoFacultadUseCase = new UpdateTiposFacultadesUseCase(repository);
 const deleteTipoFacultadUseCase = new DeleteTiposFacultadesUseCase(repository);
+const listOtorgamientosPoderUseCase = new ListOtorgamientosPoderUseCase(repository);
 
 const listApoderadosUseCase = new ListApoderadosUseCase(apoderadosRepository);
 const listClasesApoderadoUseCase = new ListClasesApoderadoUseCase(apoderadosRepository);
@@ -151,6 +154,9 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
         // Obtener todos los apoderados
         const apoderados = await listApoderadosUseCase.execute(profileId);
 
+        // Obtener todos los otorgamientos de poder
+        const otorgamientos = await listOtorgamientosPoderUseCase.execute(profileId);
+
         // Crear un mapa de clases por ID para búsqueda rápida
         const clasesMap = new Map(clases.map((clase) => [clase.id, clase]));
 
@@ -196,6 +202,45 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
               });
             }
           }
+        }
+
+        // Combinar otorgamientos con apoderados
+        // Agrupar otorgamientos por claseApoderadoId (para clases normales)
+        const otorgamientosPorClase = new Map<string, Facultad[]>();
+        // Agrupar otorgamientos por apoderadoId (para "Otros Apoderados")
+        const otorgamientosPorApoderado = new Map<string, Facultad[]>();
+
+        for (const otorgamiento of otorgamientos) {
+          const facultad = OtorgamientoPoderesMapper.deResponseDTOAFacultad(otorgamiento);
+
+          // Si es "Otros Apoderados", buscar por apoderadoId individual
+          const clase = clasesMap.get(otorgamiento.claseApoderadoId);
+          if (clase?.nombre === ClasesApoderadoEspecialesEnum.OTROS_APODERADOS) {
+            // Para "Otros Apoderados", usar apoderadoId si está disponible
+            const apoderadoId = otorgamiento.apoderadoId || otorgamiento.claseApoderadoId;
+            if (!otorgamientosPorApoderado.has(apoderadoId)) {
+              otorgamientosPorApoderado.set(apoderadoId, []);
+            }
+            otorgamientosPorApoderado.get(apoderadoId)!.push(facultad);
+          } else {
+            // Para otras clases, agrupar por claseApoderadoId
+            if (!otorgamientosPorClase.has(otorgamiento.claseApoderadoId)) {
+              otorgamientosPorClase.set(otorgamiento.claseApoderadoId, []);
+            }
+            otorgamientosPorClase.get(otorgamiento.claseApoderadoId)!.push(facultad);
+          }
+        }
+
+        // Asignar facultades a apoderadosFacultades (por clase)
+        for (const apoderadoFacultad of apoderadosFacultadesList) {
+          const facultades = otorgamientosPorClase.get(apoderadoFacultad.id) || [];
+          apoderadoFacultad.facultades = facultades;
+        }
+
+        // Asignar facultades a otrosApoderados (individuales)
+        for (const otroApoderado of otrosApoderadosList) {
+          const facultades = otorgamientosPorApoderado.get(otroApoderado.id) || [];
+          otroApoderado.facultades = facultades;
         }
 
         // Actualizar el estado

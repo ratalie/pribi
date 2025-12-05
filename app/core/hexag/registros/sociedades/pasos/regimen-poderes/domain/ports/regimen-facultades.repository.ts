@@ -4,6 +4,7 @@ import type {
   TipoFacultadPayload,
   UpdateOtorgamientoPoderPayload,
 } from "..";
+import type { OtorgamientoPoderResponseDTO } from "../../application/dtos/otorgamiento-poderes/response.dto";
 
 export interface RegimenFacultadesRepository {
   listTipoFacultades(profileId: string): Promise<TipoFacultad[]>;
@@ -30,4 +31,11 @@ export interface RegimenFacultadesRepository {
     profileId: string,
     payload: UpdateOtorgamientoPoderPayload
   ): Promise<void>;
+
+  /**
+   * Lista todos los otorgamientos de poder para un perfil de sociedad.
+   * @param profileId ID del perfil de la sociedad
+   * @returns Lista de otorgamientos de poder (ResponseDTO)
+   */
+  listOtorgamientosPoder(profileId: string): Promise<OtorgamientoPoderResponseDTO[]>;
 }
