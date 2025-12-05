@@ -92,6 +92,24 @@ export class MeetingDetailsMapper {
       instaladaEnConvocatoria = OrdenConvocatoria.SEGUNDA;
     }
 
+    // ✅ Extraer IDs de objetos { value: "..." } si vienen así
+    const presidenteId = typeof dto.presidentId === 'object' && dto.presidentId !== null
+      ? (dto.presidentId as any).value
+      : dto.presidentId;
+      
+    const secretarioId = typeof dto.secretaryId === 'object' && dto.secretaryId !== null
+      ? (dto.secretaryId as any).value
+      : dto.secretaryId;
+
+    console.log('🔍 [Mapper] fromResponseDto - IDs extraídos:', {
+      presidentIdRaw: dto.presidentId,
+      presidentIdParsed: presidenteId,
+      secretaryIdRaw: dto.secretaryId,
+      secretaryIdParsed: secretarioId,
+      presidentAttended: dto.presidentAttended,
+      secretaryAttended: dto.secretaryAttended,
+    });
+
     return {
       id: dto.id,
       tipoJunta: dto.meetingType as TipoJunta,
@@ -103,11 +121,12 @@ export class MeetingDetailsMapper {
         ? this.meetingCallDtoToEntity(dto.secondCall)
         : undefined,
       instaladaEnConvocatoria,
-      presidenteId: dto.presidentId,
-      secretarioId: dto.secretaryId,
-      // ⚠️ IMPORTANTE: Backend NO envía estos campos en GET, usar default TRUE
-      presidenteAsistio: dto.presidentAttended ?? true,
-      secretarioAsistio: dto.secretaryAttended ?? true,
+      presidenteId: presidenteId,
+      secretarioId: secretarioId,
+      // ✅ Respetar valores del backend (false, true, undefined)
+      // Si no viene definido, usar false por defecto
+      presidenteAsistio: dto.presidentAttended !== undefined ? dto.presidentAttended : false,
+      secretarioAsistio: dto.secretaryAttended !== undefined ? dto.secretaryAttended : false,
       nombreOtroPresidente: dto.otherPresidentName,
       nombreOtroSecretario: dto.otherSecretaryName,
     };

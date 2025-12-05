@@ -73,30 +73,31 @@
 
   /**
    * Opciones de asistentes presentes (para selector)
+   * ✅ IMPORTANTE: value debe ser el ID de la PERSONA (person.id), no el ID del registro de asistencia
    */
   const asistentesOptions = computed(() => {
     console.log(
       "🔍 [asistentesOptions] Total asistencias:",
       asistenciaStore.asistencias.length
     );
-    console.log(
-      "🔍 [asistentesOptions] Asistencias enriquecidas:",
-      asistenciaStore.asistenciasEnriquecidas.length
-    );
-    console.log(
-      "🔍 [asistentesOptions] Primera asistencia:",
-      asistenciaStore.asistenciasEnriquecidas[0]
-    );
 
     const presentes = asistenciaStore.asistenciasEnriquecidas.filter((a) => a.asistio);
     console.log("🔍 [asistentesOptions] Presentes (asistio=true):", presentes.length);
-    console.log("🔍 [asistentesOptions] Presentes:", presentes);
 
-    const options = presentes.map((a) => ({
-      id: a.id,
-      value: a.id,
-      label: a.nombreCompleto,
-    }));
+    const options = presentes.map((a) => {
+      const personId = a.accionista.person.id;
+      console.log("🔍 [asistentesOptions] Mapeando:", {
+        registroId: a.id,
+        personId: personId,
+        nombre: a.nombreCompleto,
+      });
+      
+      return {
+        id: personId,  // ✅ ID de la persona (lo que espera el backend)
+        value: personId,  // ✅ ID de la persona (lo que espera el backend)
+        label: a.nombreCompleto,
+      };
+    });
 
     console.log("✅ [asistentesOptions] Opciones generadas:", options);
     return options;
@@ -176,15 +177,28 @@
 
   /**
    * PRESIDENTE: ID seleccionado
+   * ✅ IMPORTANTE: Debe devolver el ID de la PERSONA, no el ID del director/registro
    */
   const presidenteId = computed({
     get: () => {
-      // Si es readonly, devolver presidenteId del directorio
+      // Si es readonly, buscar el director y devolver su persona.id
       if (presidenteMode.value === "readonly" && directorio.value) {
-        const id = directorio.value.presidenteId || "";
-        console.log("🔍 [presidenteId.get] READONLY mode, usando directorio:", id);
-        return id;
+        const directorId = directorio.value.presidenteId || "";
+        const director = directores.value.find((d) => d.id === directorId);
+        
+        if (director && director.persona) {
+          const personId = director.persona.id;
+          console.log("🔍 [presidenteId.get] READONLY mode:", {
+            directorId,
+            personId: personId,
+          });
+          return personId;  // ✅ Devolver ID de la persona
+        }
+        
+        console.warn("⚠️ [presidenteId.get] READONLY pero director no encontrado");
+        return "";
       }
+      
       // Si es selector, devolver del meeting-details
       const id = meetingDetailsStore.meetingDetails?.presidenteId || "";
       console.log("🔍 [presidenteId.get] SELECTOR mode, usando meeting-details:", id);
@@ -199,7 +213,7 @@
       );
       // Solo actualizar si es selector
       if (presidenteMode.value === "selector") {
-        console.log("✅ [presidenteId.set] Guardando en meeting-details");
+        console.log("✅ [presidenteId.set] Guardando en meeting-details (personId):", value);
         meetingDetailsStore.patchMeetingDetails({ presidenteId: value });
       } else {
         console.log("⚠️ [presidenteId.set] READONLY mode, no se actualiza");
@@ -210,15 +224,25 @@
   /**
    * PRESIDENTE: ¿Asistió?
    * ✅ Solo se usa cuando es READONLY para cambiar si asistió o no
+   * ✅ Default FALSE para respetar valor del backend
    */
-  const presidenteAsistio = ref(meetingDetailsStore.meetingDetails?.presidenteAsistio ?? true);
+  const presidenteAsistio = ref(meetingDetailsStore.meetingDetails?.presidenteAsistio ?? false);
 
   // Sincronizar con el store cuando cambie
   watch(
     () => meetingDetailsStore.meetingDetails?.presidenteAsistio,
     (newValue) => {
+      console.log("🔵 [presidenteAsistio] Watch activado:", {
+        newValue,
+        isUndefined: newValue === undefined,
+        valorAnterior: presidenteAsistio.value,
+      });
+      
       if (newValue !== undefined) {
         presidenteAsistio.value = newValue;
+        console.log("✅ [presidenteAsistio] Actualizado a:", newValue);
+      } else {
+        console.log("⚠️ [presidenteAsistio] No se actualiza (undefined)");
       }
     },
     { immediate: true }
@@ -337,15 +361,25 @@
 
   /**
    * SECRETARIO: ID seleccionado
+   * ✅ IMPORTANTE: Debe devolver el ID de la PERSONA, no el ID del apoderado
    */
   const secretarioId = computed({
     get: () => {
-      // Si es readonly, devolver ID del gerente general
+      // Si es readonly, devolver gerenteGeneral.persona.id
       if (secretarioMode.value === "readonly" && gerenteGeneral.value) {
-        const id = gerenteGeneral.value.id || "";
-        console.log("🔍 [secretarioId.get] READONLY mode, usando gerente:", id);
-        return id;
+        if (gerenteGeneral.value.persona) {
+          const personId = gerenteGeneral.value.persona.id;
+          console.log("🔍 [secretarioId.get] READONLY mode:", {
+            apoderadoId: gerenteGeneral.value.id,
+            personId: personId,
+          });
+          return personId;  // ✅ Devolver ID de la persona
+        }
+        
+        console.warn("⚠️ [secretarioId.get] READONLY pero gerente no tiene persona");
+        return "";
       }
+      
       // Si es selector, devolver del meeting-details
       const id = meetingDetailsStore.meetingDetails?.secretarioId || "";
       console.log("🔍 [secretarioId.get] SELECTOR mode, usando meeting-details:", id);
@@ -360,7 +394,7 @@
       );
       // Solo actualizar si es selector
       if (secretarioMode.value === "selector") {
-        console.log("✅ [secretarioId.set] Guardando en meeting-details");
+        console.log("✅ [secretarioId.set] Guardando en meeting-details (personId):", value);
         meetingDetailsStore.patchMeetingDetails({ secretarioId: value });
       } else {
         console.log("⚠️ [secretarioId.set] READONLY mode, no se actualiza");
@@ -371,15 +405,25 @@
   /**
    * SECRETARIO: ¿Asistió?
    * ✅ REF sincronizado con el store
+   * ✅ Default FALSE para respetar valor del backend
    */
-  const secretarioAsistio = ref(meetingDetailsStore.meetingDetails?.secretarioAsistio ?? true);
+  const secretarioAsistio = ref(meetingDetailsStore.meetingDetails?.secretarioAsistio ?? false);
 
   // Sincronizar con el store cuando cambie
   watch(
     () => meetingDetailsStore.meetingDetails?.secretarioAsistio,
     (newValue) => {
+      console.log("🟢 [secretarioAsistio] Watch activado:", {
+        newValue,
+        isUndefined: newValue === undefined,
+        valorAnterior: secretarioAsistio.value,
+      });
+      
       if (newValue !== undefined) {
         secretarioAsistio.value = newValue;
+        console.log("✅ [secretarioAsistio] Actualizado a:", newValue);
+      } else {
+        console.log("⚠️ [secretarioAsistio] No se actualiza (undefined)");
       }
     },
     { immediate: true }

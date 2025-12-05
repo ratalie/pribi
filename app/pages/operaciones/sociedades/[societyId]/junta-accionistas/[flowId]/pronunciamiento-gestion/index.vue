@@ -15,7 +15,25 @@
 </template>
 
 <script setup lang="ts">
-  definePageMeta({
-    layout: "default",
-  });
+import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
+
+/**
+ * Página: Pronunciamiento sobre Gestión
+ * 
+ * Sub-step del Paso 4 (Puntos de Acuerdo).
+ * Este sub-step tiene secciones que se muestran en el sidebar derecho.
+ * 
+ * Ruta: /operaciones/junta-accionistas/[id]/pronunciamiento-gestion
+ */
+
+definePageMeta({
+  layout: "registros",
+  flowLayoutJuntas: true,
+});
+
+// Configurar el botón "Siguiente"
+useJuntasFlowNext(async () => {
+  // TODO: Agregar validación y guardado de datos
+  // Por ahora, solo permite navegar al siguiente paso
+});
 </script>

@@ -45,8 +45,9 @@ export interface GeneralMeetingConfigDto {
   firstCall?: MeetingCallDto;
   secondCall?: MeetingCallDto;
   heldAtCall?: 'FIRST' | 'SECOND';
-  presidentId?: string;
-  secretaryId?: string;
+  // ✅ Backend puede devolver string O { value: string }
+  presidentId?: string | { value: string };
+  secretaryId?: string | { value: string };
   presidentAttended: boolean;
   secretaryAttended: boolean;
   otherPresidentName?: string;
