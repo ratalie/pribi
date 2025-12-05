@@ -179,3 +179,5 @@ const TIPOS_CON_REPRESENTANTE_OBLIGATORIO = [
 - Catálogo de componentes: `docs/general/CATALOGO-COMPONENTES-REGISTRO-SOCIEDADES.md`
 
 
+
+

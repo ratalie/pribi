@@ -213,3 +213,5 @@ PUT /api/v2/society-profile/:societyId/register-assembly/:flowId/meeting-details
 6. **Guardar** presidenteId y secretarioId en meeting-details
 
 
+
+

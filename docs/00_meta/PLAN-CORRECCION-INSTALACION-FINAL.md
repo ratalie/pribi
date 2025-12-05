@@ -184,3 +184,5 @@ if (snapshot.directorio) {
 3. Implementar correcciones paso a paso ⏳
 
 
+
+

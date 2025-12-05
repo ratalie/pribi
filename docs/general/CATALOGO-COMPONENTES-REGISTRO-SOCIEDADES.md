@@ -837,3 +837,5 @@ const handleModalSubmit = async (payload) => {
 **👤 Creado para:** Implementación del paso de Instalación de Juntas de Accionistas
 
 
+
+

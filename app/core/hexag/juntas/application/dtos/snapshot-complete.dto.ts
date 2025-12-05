@@ -325,6 +325,10 @@ export interface SnapshotCompleteDTO {
 
   // Apoderados
   attorneys?: Apoderado[];
+  attorneyClasses?: Array<{ id: string; name: string }>;
+
+  // Gerente General (extraído de attorneys)
+  gerenteGeneral?: Apoderado | null;
 
   // Poderes
   powers?: RegimenPoderes | null;
@@ -334,6 +338,23 @@ export interface SnapshotCompleteDTO {
 
   // Acuerdos Societarios
   specialAgreements?: AcuerdoEspecial | null;
+
+  // Datos de la sociedad
+  societyData?: {
+    ruc: string;
+    reasonSocial: string;
+    typeSociety: string;
+    commercialName: string;
+    address: string;
+    district: string;
+    province: string;
+    department: string;
+    registrationDate: string;
+    foreignActivity: string;
+    publicDeedDate: string;
+    registryOffice: string;
+    registrationRecord: string;
+  };
 
   // Configuración de junta
   meetingConfig: MeetingConfig;
