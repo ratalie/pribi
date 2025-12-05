@@ -30,19 +30,17 @@
     />
 
     <!-- Botón de Sección Principal -->
-    <button
-      @click="
-        section.subSections && section.subSections.length > 0
-          ? onToggle
-          : onSectionClick(section.id)
-      "
+    <div
       :class="[
         'w-full flex items-center gap-3 text-left group relative pl-4 pr-3 py-2.5 rounded-lg transition-colors',
         sectionActive ? 'bg-primary-50/50' : 'hover:bg-gray-50',
       ]"
     >
-      <!-- Contenido Principal -->
-      <div class="flex-1 min-w-0">
+      <!-- Área clickeable del título (navega siempre) -->
+      <button
+        @click="onSectionClick(section.id)"
+        class="flex-1 min-w-0 text-left"
+      >
         <h4
           :class="[
             'text-sm font-primary transition-colors leading-relaxed',
@@ -55,18 +53,19 @@
         >
           {{ section.title }}
         </h4>
-      </div>
-      <!-- Chevron para secciones con hijos -->
-      <div
+      </button>
+      <!-- Chevron para secciones con hijos (solo toggle) -->
+      <button
         v-if="section.subSections && section.subSections.length > 0"
-        class="flex items-center justify-center w-4 h-4 shrink-0"
+        @click.stop="onToggle"
+        class="flex items-center justify-center w-4 h-4 shrink-0 hover:bg-gray-100 rounded p-0.5 transition-colors"
       >
         <component
           :is="getIcon(isExpanded ? 'ChevronDown' : 'ChevronRight')"
           v-if="getIcon('ChevronDown') && getIcon('ChevronRight')"
           class="w-3 h-3 text-gray-600"
         />
-      </div>
-    </button>
+      </button>
+    </div>
   </div>
 </template>

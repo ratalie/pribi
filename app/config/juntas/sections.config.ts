@@ -51,7 +51,7 @@ export const SUB_STEP_SECTIONS_MAP: Record<
       id: "utilidades-montos",
       title: "Utilidades y Montos a Distribuir",
       description: "Cálculos y valores",
-      navigationType: "anchor",
+      navigationType: "route",
       subSections: [
         {
           id: "valores-preliminares",
