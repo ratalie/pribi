@@ -1,96 +1,211 @@
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
-import SlotWrapper from "~/components/containers/SlotWrapper.vue";
-import TitleH2 from "~/components/titles/TitleH2.vue";
-import DetallesCelebracionSection from "~/components/juntas/instalacion/DetallesCelebracionSection.vue";
-import QuorumSection from "~/components/juntas/instalacion/QuorumSection.vue";
-import AsistenciaRepresentacionSection from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/components/AsistenciaRepresentacionSection.vue";
-import MesaDirectivaSection from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/components/MesaDirectivaSection.vue";
-import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
-import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
-import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
-import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
+  import { computed, onMounted } from "vue";
+  import SlotWrapper from "~/components/containers/SlotWrapper.vue";
+  import DetallesCelebracionSection from "~/components/juntas/instalacion/DetallesCelebracionSection.vue";
+  import QuorumSection from "~/components/juntas/instalacion/QuorumSection.vue";
+  import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
+  import { TipoJunta } from "~/core/hexag/juntas/domain/enums/tipo-junta.enum";
+  import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
+  import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
+  import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
+  import AsistenciaRepresentacionSection from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/components/AsistenciaRepresentacionSection.vue";
+  import MesaDirectivaSection from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/components/MesaDirectivaSection.vue";
 
-/**
- * Página: Instalación de la Junta
- * 
- * Paso 3 del flujo de Juntas de Accionistas.
- * Registra la asistencia, representación, quorum y mesa directiva.
- * 
- * Ruta: /operaciones/sociedades/[societyId]/junta-accionistas/[flowId]/instalacion
- */
+  /**
+   * Página: Instalación de la Junta
+   *
+   * Paso 3 del flujo de Juntas de Accionistas.
+   * Registra la asistencia, representación, quorum y mesa directiva.
+   *
+   * Ruta: /operaciones/sociedades/[societyId]/junta-accionistas/[flowId]/instalacion
+   */
 
-// ========================================
-// PAGE META
-// ========================================
-definePageMeta({
-  layout: "registros",
-  flowLayoutJuntas: true, // ← CLAVE PARA EL SIDEBAR
-});
-
-// ========================================
-// ROUTE PARAMS
-// ========================================
-const route = useRoute();
-const societyId = computed(() => parseInt(route.params.societyId as string, 10));
-const flowId = computed(() => parseInt(route.params.flowId as string, 10));
-
-// ========================================
-// STORES
-// ========================================
-const snapshotStore = useSnapshotStore();
-const meetingDetailsStore = useMeetingDetailsStore();
-const asistenciaStore = useAsistenciaStore();
-
-// ========================================
-// LIFECYCLE
-// ========================================
-onMounted(async () => {
-  console.log('🚀 [Instalacion] Página montada', {
-    societyId: societyId.value,
-    flowId: flowId.value,
+  // ========================================
+  // PAGE META
+  // ========================================
+  definePageMeta({
+    layout: "registros",
+    flowLayoutJuntas: true, // ← CLAVE PARA EL SIDEBAR
   });
-  
-  try {
-    // 1. Cargar snapshot (accionistas, quórums, directorio)
-    console.log('📦 [Instalacion] Cargando snapshot...');
-    await snapshotStore.loadSnapshot(societyId.value, flowId.value);
-    console.log('✅ [Instalacion] Snapshot cargado');
-    
-    // 2. Cargar meeting details (tipo junta, convocatoria)
-    if (!meetingDetailsStore.meetingDetails) {
-      console.log('📄 [Instalacion] Cargando meeting details...');
+
+  // ========================================
+  // ROUTE PARAMS
+  // ========================================
+  const route = useRoute();
+  const societyId = computed(() => parseInt(route.params.societyId as string, 10));
+  const flowId = computed(() => parseInt(route.params.flowId as string, 10));
+
+  // ========================================
+  // STORES
+  // ========================================
+  const snapshotStore = useSnapshotStore();
+  const meetingDetailsStore = useMeetingDetailsStore();
+  const asistenciaStore = useAsistenciaStore();
+
+  // ========================================
+  // LIFECYCLE
+  // ========================================
+  onMounted(async () => {
+    console.log("🚀 [Instalacion] Página montada", {
+      societyId: societyId.value,
+      flowId: flowId.value,
+    });
+
+    try {
+      // 1. Cargar snapshot (accionistas, quórums, directorio)
+      console.log("📦 [Instalacion] Cargando snapshot...");
+      await snapshotStore.loadSnapshot(societyId.value, flowId.value);
+      console.log("✅ [Instalacion] Snapshot cargado");
+      console.log("📊 [Instalacion] Snapshot.directory:", snapshotStore.snapshot?.directory);
+      console.log(
+        "📊 [Instalacion] Snapshot.presidenteDirectorio:",
+        snapshotStore.presidenteDirectorio
+      );
+      console.log("📊 [Instalacion] Snapshot.attorneys:", snapshotStore.snapshot?.attorneys);
+
+      // 2. Cargar meeting details (tipo junta, convocatoria)
+      console.log("📄 [Instalacion] Cargando meeting details...");
       await meetingDetailsStore.loadMeetingDetails(societyId.value, flowId.value);
-      console.log('✅ [Instalacion] Meeting details cargado');
-    }
-    
-    // 3. Cargar asistencias (registros de attendance)
-    console.log('👥 [Instalacion] Cargando asistencias...');
-    await asistenciaStore.loadAsistencias(societyId.value, flowId.value);
-    console.log('✅ [Instalacion] Asistencias cargadas:', asistenciaStore.asistencias.length);
-    
-  } catch (error) {
-    console.error('❌ [Instalacion] Error al cargar datos:', error);
-  }
-});
+      console.log("✅ [Instalacion] Meeting details cargado (ANTES de inicializar):", {
+        presidenteAsistio: meetingDetailsStore.meetingDetails?.presidenteAsistio,
+        secretarioAsistio: meetingDetailsStore.meetingDetails?.secretarioAsistio,
+      });
 
-// Configurar el botón "Siguiente"
-useJuntasFlowNext(async () => {
-  console.log('🎯 [Instalacion] Handler de Siguiente ejecutado');
-  
-  // TODO: Validaciones antes de continuar
-  // - Validar que haya al menos un asistente
-  // - Validar que los que requieren representante lo tengan
-  // - Validar que haya presidente y secretario
-  
-  // TODO: Guardar mesa directiva en meeting-details
-  await meetingDetailsStore.patchMeetingDetails({
-    presidenteAsistio: true, // TODO: Obtener del componente
-    secretarioAsistio: true, // TODO: Obtener del componente
+      // 3. SIEMPRE inicializar a true (por defecto asisten)
+      console.log(
+        "🔄 [Instalacion] Inicializando presidenteAsistio y secretarioAsistio a TRUE"
+      );
+      await meetingDetailsStore.patchMeetingDetails({
+        presidenteAsistio: true,
+        secretarioAsistio: true,
+        presidenteId: snapshotStore.snapshot?.directory?.presidenteId || undefined,
+        secretarioId: snapshotStore.snapshot?.attorneys?.[0]?.id || undefined,
+      });
+
+      console.log("✅ [Instalacion] Meeting details inicializado (DESPUÉS):", {
+        presidenteAsistio: meetingDetailsStore.meetingDetails?.presidenteAsistio,
+        secretarioAsistio: meetingDetailsStore.meetingDetails?.secretarioAsistio,
+        presidenteId: meetingDetailsStore.meetingDetails?.presidenteId,
+        secretarioId: meetingDetailsStore.meetingDetails?.secretarioId,
+      });
+
+      // 4. Cargar asistencias (registros de attendance)
+      console.log("👥 [Instalacion] Cargando asistencias...");
+      await asistenciaStore.loadAsistencias(societyId.value, flowId.value);
+      console.log(
+        "✅ [Instalacion] Asistencias cargadas:",
+        asistenciaStore.asistencias.length
+      );
+
+      // 5. Si es Junta Universal, marcar TODOS como presentes automáticamente
+      if (meetingDetailsStore.meetingDetails?.tipoJunta === TipoJunta.UNIVERSAL) {
+        console.log(
+          "🌍 [Instalacion] Junta Universal detectada - Marcando todos como presentes..."
+        );
+        for (const asistencia of asistenciaStore.asistencias) {
+          if (!asistencia.asistio) {
+            console.log(`  ✓ Marcando como presente: ${asistencia.id}`);
+            await asistenciaStore.toggleAsistencia(
+              societyId.value,
+              flowId.value,
+              asistencia.id
+            );
+          }
+        }
+        console.log("✅ [Instalacion] Todos marcados como presentes (Junta Universal)");
+      }
+    } catch (error) {
+      console.error("❌ [Instalacion] Error al cargar datos:", error);
+    }
   });
-  
-  console.log('✅ [Instalacion] Validaciones pasadas, continuando...');
-});
+
+  // Configurar el botón "Siguiente"
+  useJuntasFlowNext(async () => {
+    console.log("🎯 [Instalacion] Handler de Siguiente ejecutado");
+
+    // ========================================
+    // VALIDACIONES
+    // ========================================
+
+    // 1. Validar que haya al menos un asistente
+    const totalAsistentes = asistenciaStore.asistenciasEnriquecidas.filter(
+      (a) => a.asistio
+    ).length;
+    if (totalAsistentes === 0) {
+      throw new Error("Debe haber al menos un asistente en la junta");
+    }
+
+    // 2. Validar que personas jurídicas/sucursales/etc tengan representante obligatorio
+    const TIPOS_CON_REPRESENTANTE_OBLIGATORIO = [
+      "JURIDICA",
+      "SUCURSAL",
+      "FONDO_INVERSION",
+      "FIDEICOMISO",
+      "SUCESION_INDIVISA",
+    ] as const;
+
+    const juridicasSinRepresentante = asistenciaStore.asistenciasEnriquecidas.filter(
+      (a) =>
+        a.asistio &&
+        TIPOS_CON_REPRESENTANTE_OBLIGATORIO.includes(a.tipoPersona as any) &&
+        !a.representadoPorId
+    );
+
+    if (juridicasSinRepresentante.length > 0) {
+      const nombres = juridicasSinRepresentante.map((a) => a.nombreCompleto).join(", ");
+      throw new Error(
+        `Las siguientes personas jurídicas/sucursales deben tener representante asignado: ${nombres}`
+      );
+    }
+
+    // 2. Validar que haya presidente
+    const presidenteId = meetingDetailsStore.meetingDetails?.presidenteId;
+    const presidenteAsistio = meetingDetailsStore.meetingDetails?.presidenteAsistio;
+    if (!presidenteId && presidenteAsistio) {
+      throw new Error("Debe designar un presidente de la junta");
+    }
+
+    // 3. Validar que haya secretario
+    const secretarioId = meetingDetailsStore.meetingDetails?.secretarioId;
+    const secretarioAsistio = meetingDetailsStore.meetingDetails?.secretarioAsistio;
+    if (!secretarioId && secretarioAsistio) {
+      throw new Error("Debe designar un secretario de la junta");
+    }
+
+    console.log("✅ [Instalacion] Validaciones pasadas");
+    console.log("📦 [Instalacion] Meeting Details a guardar:", {
+      presidenteId,
+      secretarioId,
+      presidenteAsistio,
+      secretarioAsistio,
+    });
+
+    // ========================================
+    // GUARDAR EN BACKEND
+    // ========================================
+
+    // Preparar datos finales a guardar
+    if (!meetingDetailsStore.meetingDetails) {
+      throw new Error("No hay meeting details para guardar");
+    }
+
+    const finalMeetingDetails = {
+      ...meetingDetailsStore.meetingDetails,
+      presidenteId: presidenteId || undefined,
+      secretarioId: secretarioId || undefined,
+      presidenteAsistio: presidenteAsistio ?? true,
+      secretarioAsistio: secretarioAsistio ?? true,
+      // TODO: Agregar instaladaEnConvocatoria (Primera/Segunda)
+      // instaladaEnConvocatoria: OrdenConvocatoria.PRIMERA,
+    };
+
+    console.log("📤 [Instalacion] Guardando meeting details:", finalMeetingDetails);
+
+    await meetingDetailsStore.updateMeetingDetails(finalMeetingDetails);
+    console.log("✅ [Instalacion] Mesa directiva guardada en backend");
+
+    console.log("✅ [Instalacion] Proceso completado, continuando al siguiente paso...");
+  });
 </script>
 
 <template>
@@ -100,7 +215,18 @@ useJuntasFlowNext(async () => {
       subtitle="Registra la asistencia de accionistas, representación y designación de la mesa directiva."
     />
 
-    <div class="flex flex-col gap-10">
+    <!-- Esperar a que el snapshot esté cargado -->
+    <div
+      v-if="snapshotStore.status === 'loading'"
+      class="flex justify-center items-center py-12"
+    >
+      <span class="text-slate-500">Cargando datos de la junta...</span>
+    </div>
+
+    <div
+      v-else-if="snapshotStore.snapshot && meetingDetailsStore.meetingDetails"
+      class="flex flex-col gap-10"
+    >
       <!-- ========================================
            SECCIÓN 1: Detalles de la Celebración
            ======================================== -->
@@ -112,18 +238,16 @@ useJuntasFlowNext(async () => {
       <!-- ========================================
            SECCIÓN 2: Asistencia y Representación
            ======================================== -->
-      <AsistenciaRepresentacionSection 
-        :society-id="societyId" 
-        :flow-id="String(flowId)" 
-      />
+      <AsistenciaRepresentacionSection :society-id="societyId" :flow-id="String(flowId)" />
 
       <!-- ========================================
            SECCIÓN 3: Mesa Directiva (Presidente y Secretario)
            ======================================== -->
-      <MesaDirectivaSection 
-        :society-id="societyId" 
-        :flow-id="String(flowId)" 
-      />
+      <MesaDirectivaSection :society-id="societyId" :flow-id="String(flowId)" />
+    </div>
+
+    <div v-else class="flex justify-center items-center py-12">
+      <span class="text-red-500">Error al cargar el snapshot</span>
     </div>
   </SlotWrapper>
 </template>

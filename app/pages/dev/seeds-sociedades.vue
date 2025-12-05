@@ -290,7 +290,7 @@
       // Empresa 1: cantidad fija (3), secretarioAsignado: false (gerente general), presidentePreside: true
       // Empresa 2: cantidad personalizada (min: 3, max: 5), secretarioAsignado: true, presidentePreside: false
       // Empresa 3: cantidad personalizada (min: 3, max: 7), secretarioAsignado: false, presidentePreside: false
-      // Empresa 4: cantidad fija (5), secretarioAsignado: true, presidentePreside: false
+      // Empresa 4: cantidad fija (5), secretarioAsignado: true, presidentePreside: true
       ...(() => {
         const configs = [
           { cantidad: 3, personalizado: false, secretario: true, preside: true },
@@ -311,7 +311,7 @@
             secretario: false,
             preside: false,
           },
-          { cantidad: 5, personalizado: false, secretario: true, preside: false },
+          { cantidad: 5, personalizado: false, secretario: true, preside: true }, // ✅ EMPRESA 5: preside=true
         ];
         const config = configs[index % configs.length];
         if (!config) {
