@@ -11,12 +11,14 @@
 ### 1. **Roles vs Permisos**
 
 **Roles** = Permisos de usuario (qué puede hacer)
+
 - `lector` - Solo lectura
 - `editor` - Puede editar
 - `admin` - Administrador completo
 - `user` - Usuario normal
 
 **Permisos** = Acceso a rutas específicas (dónde puede ir)
+
 - Lista de rutas con checkboxes
 - Control granular de acceso
 
@@ -71,6 +73,7 @@
 **Descripción:** Configurar el rol general del usuario
 
 **Opciones:**
+
 - `lector` - Solo lectura
 - `editor` - Puede editar
 - `admin` - Administrador completo
@@ -85,6 +88,7 @@
 **Descripción:** Configurar qué rutas puede acceder el usuario
 
 **Rutas disponibles:**
+
 ```
 ☑️ /registros/sociedades
 ☑️ /registros/sociedades/dashboard
@@ -113,11 +117,13 @@
 **Comportamiento según Rol:**
 
 **3.1. Usuario LECTOR:**
+
 - Por defecto: **DESACTIVADO** (no puede asignar sociedades)
 - Solo muestra: **Selector de sociedades** (dropdown/select)
 - Puede seleccionar UNA sociedad
 
 **3.2. Usuario NO-LECTOR (editor, admin, user):**
+
 - Muestra: **Checkbox para asignar a varias sociedades**
 - Puede seleccionar MÚLTIPLES sociedades
 - Cada sociedad tiene un checkbox
@@ -146,6 +152,7 @@
 ### NO será Granular por Sociedad
 
 **Ejemplo de lo que NO haremos:**
+
 ```
 ❌ En Sociedad A: Usuario es LECTOR
 ❌ En Sociedad B: Usuario es EDITOR
@@ -153,6 +160,7 @@
 ```
 
 **Lo que SÍ haremos:**
+
 ```
 ✅ Usuario tiene rol general: EDITOR
 ✅ Usuario tiene acceso a rutas: [lista de rutas]
@@ -352,6 +360,3 @@ interface SocietyAssignment {
 **¿Todo claro?** ✅
 
 **¿Empezamos con la implementación?** 🚀
-
-
-

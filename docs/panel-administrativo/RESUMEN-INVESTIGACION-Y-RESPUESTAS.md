@@ -47,12 +47,14 @@
 ### ⚠️ PROBLEMA IDENTIFICADO
 
 **El login NO devuelve:**
+
 - ❌ Permisos completos
 - ❌ Sociedades asignadas
 - ❌ Rutas permitidas
 - ❌ Carpetas con acceso
 
 **Código actual:**
+
 - `useUser.ts` usa datos **MOCK** (no viene del backend)
 - `usePermissions.ts` tiene modo degradado (permite todo si no hay permisos)
 - No hay endpoint para obtener usuario completo
@@ -60,6 +62,7 @@
 ### ✅ SOLUCIÓN PROPUESTA
 
 **Opción 1: Endpoint separado (RECOMENDADO)**
+
 ```
 Después del login:
 GET /api/v2/users/me
@@ -76,12 +79,14 @@ Response: {
 ```
 
 **Opción 2: Token JWT con toda la info**
+
 ```
 Decodificar token y extraer permisos
 (Requiere que backend incluya permisos en el token)
 ```
 
 **Opción 3: Endpoint específico de permisos**
+
 ```
 GET /api/v2/users/:userId/permissions
 Response: {
@@ -129,12 +134,14 @@ app/core/presentation/panel-administrativo/
 ```
 
 **✅ Lo que ya funciona:**
+
 - Estructura hexagonal completa
 - Stores con Option API
 - Componentes básicos
 - Casos de uso implementados
 
 **⚠️ Lo que falta:**
+
 - Permisos por ruta (solo tiene permisos por módulo/flujo)
 - Permisos por sociedad (solo tiene permisos globales)
 - Vista visual con checkboxes para rutas
@@ -145,6 +152,7 @@ app/core/presentation/panel-administrativo/
 **Archivo:** `app/composables/usePermissions.ts`
 
 **Características:**
+
 - ✅ Modo degradado (permite todo si no hay permisos)
 - ✅ Verifica permisos por módulo
 - ✅ Verifica permisos de repositorio
@@ -154,6 +162,7 @@ app/core/presentation/panel-administrativo/
 **Archivo:** `app/core/shared/mappers/permissions.mapper.ts`
 
 **Características:**
+
 - ✅ Mapea permisos del backend (accessMap) a frontend
 - ✅ Soporta acciones genéricas (read, write, delete)
 - ✅ Soporta acciones específicas (dashboard, crear, historial)
@@ -245,6 +254,7 @@ app/core/hexag/panel-administrativo/
 ### Por Dónde Empezar
 
 #### **Paso 1: Investigar Backend (1 día)**
+
 1. Preguntar al equipo backend:
    - ¿Existe `GET /api/v2/users/me`?
    - ¿Cómo se estructuran permisos en BD?
@@ -253,11 +263,13 @@ app/core/hexag/panel-administrativo/
    - ¿Cómo se manejan wildcards en rutas?
 
 #### **Paso 2: Crear Mapeo de Rutas (1 día)**
+
 1. Crear `app/config/routes/permissions-map.ts`
 2. Mapear todas las rutas de la app
 3. Definir estructura de permisos por ruta
 
 #### **Paso 3: Expandir Domain (2 días)**
+
 1. Crear entidades nuevas:
    - `society-permission.entity.ts`
    - `route-permission.entity.ts`
@@ -266,6 +278,7 @@ app/core/hexag/panel-administrativo/
    - Agregar métodos a `permission.repository.ts`
 
 #### **Paso 4: Expandir Application (2 días)**
+
 1. Crear DTOs nuevos
 2. Crear casos de uso nuevos:
    - `get-user-route-permissions.use-case.ts`
@@ -274,16 +287,19 @@ app/core/hexag/panel-administrativo/
    - `verify-route-access.use-case.ts`
 
 #### **Paso 5: Expandir Infrastructure (2 días)**
+
 1. Crear repositorios HTTP
 2. Crear mappers nuevos
 3. Actualizar repositorios mock
 
 #### **Paso 6: Crear Componentes (5-7 días)**
+
 1. Crear wrappers (auto-gestionados)
 2. Crear componentes presentacionales
 3. Integrar con stores
 
 #### **Paso 7: Integración y Testing (3-4 días)**
+
 1. Conectar todo
 2. Testing manual
 3. Verificar permisos en rutas
@@ -316,17 +332,20 @@ app/core/hexag/panel-administrativo/
 ## 💡 CONCLUSIÓN
 
 **✅ Tengo claro:**
+
 - Patrones a seguir (flow-layout-juntas, sociedades)
 - Arquitectura hexagonal completa
 - Stores con Option API
 - Estructura actual del proyecto
 
 **⚠️ Necesito resolver con backend:**
+
 - Endpoints para obtener usuario completo
 - Estructura de permisos en BD
 - Cómo se manejan permisos por sociedad y ruta
 
 **🎯 Próximo paso:**
+
 1. Comunicar con backend sobre endpoints
 2. Crear mapeo de rutas
 3. Empezar con Domain layer
@@ -334,6 +353,3 @@ app/core/hexag/panel-administrativo/
 ---
 
 **¿Estás listo para empezar?** 🚀
-
-
-

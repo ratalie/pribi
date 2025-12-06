@@ -25,10 +25,11 @@
 #### 1. **Patrón de Componentes (flow-layout-juntas)**
 
 **Estructura:**
+
 ```
 app/layouts/flow-layout-juntas.vue (60 líneas)
   └── Solo orquestación visual, sin lógica
-  
+
 app/components/flow-layout-juntas/
   ├── FlowLayoutJuntasSidebar.vue (50 líneas) ← Auto-gestionado
   ├── FlowLayoutJuntasHeader.vue (40 líneas) ← Auto-gestionado
@@ -38,12 +39,14 @@ app/components/flow-layout-juntas/
 ```
 
 **Características:**
+
 - ✅ Componentes **auto-gestionados** (no reciben props, importan composables internamente)
 - ✅ Separación clara: **wrappers** (lógica) vs **presentacionales** (UI)
 - ✅ Layout minimalista: solo estructura visual
 - ✅ Cada componente encapsula su lógica
 
 **Ejemplo:**
+
 ```vue
 <!-- FlowLayoutJuntasSidebar.vue -->
 <script setup lang="ts">
@@ -54,16 +57,14 @@ app/components/flow-layout-juntas/
 
 <template>
   <!-- Solo pasa props al componente presentacional -->
-  <SingleWizardSidebarJuntas
-    :steps="steps"
-    :on-step-click="handleStepClick"
-  />
+  <SingleWizardSidebarJuntas :steps="steps" :on-step-click="handleStepClick" />
 </template>
 ```
 
 #### 2. **Arquitectura Hexagonal (sociedades)**
 
 **Estructura:**
+
 ```
 app/core/hexag/registros/sociedades/
 ├── domain/
@@ -83,6 +84,7 @@ app/core/presentation/registros/sociedades/
 ```
 
 **Características:**
+
 - ✅ Domain NO depende de nada (puro TypeScript)
 - ✅ Application depende solo de Domain
 - ✅ Infrastructure implementa los ports de Domain
@@ -91,9 +93,11 @@ app/core/presentation/registros/sociedades/
 #### 3. **Flujo de Login Actual**
 
 **Endpoints:**
+
 - `POST /api/v2/auth` → Devuelve token, studyName, roleName
 
 **Respuesta:**
+
 ```json
 {
   "success": true,
@@ -106,12 +110,14 @@ app/core/presentation/registros/sociedades/
 ```
 
 **Flujo:**
+
 1. Usuario hace login → `POST /api/v2/auth`
 2. Backend devuelve token + roleName básico
 3. Frontend guarda token en `auth.store` (persist: true)
 4. Token se usa en headers: `Authorization: Bearer <token>`
 
 **⚠️ PROBLEMA IDENTIFICADO:**
+
 - El login solo devuelve `roleName` básico
 - **NO devuelve permisos completos** (sociedades, rutas, carpetas)
 - **NO hay endpoint para obtener usuario completo** después del login
@@ -191,16 +197,19 @@ export const useMyStore = defineStore("myStore", () => {
 **Duda:** ¿Cómo se obtiene la información completa del usuario después del login?
 
 **Estado Actual:**
+
 - Login devuelve: `token`, `studyName`, `roleName`
 - **NO devuelve:** permisos completos, sociedades asignadas, rutas permitidas
 
 **Preguntas:**
+
 1. ¿Existe un endpoint `GET /api/v2/users/me` o similar?
 2. ¿El token JWT contiene toda la info de permisos?
 3. ¿Necesitamos hacer una llamada adicional después del login?
 4. ¿Cómo se manejan los permisos por sociedad? ¿Vienen en el token o en un endpoint separado?
 
 **Respuesta Necesaria del Backend:**
+
 ```typescript
 // Opción 1: Endpoint separado
 GET /api/v2/users/me
@@ -224,6 +233,7 @@ GET /api/v2/users/:userId/permissions
 ### 2. **Estructura de Permisos en Backend**
 
 **Dudas:**
+
 1. ¿Cómo está estructurada la tabla de permisos en backend?
 2. ¿Los permisos por ruta se guardan por usuario o por rol?
 3. ¿Los permisos por sociedad se guardan en una tabla separada?
@@ -232,12 +242,14 @@ GET /api/v2/users/:userId/permissions
 ### 3. **Integración con Carpetas Personalizadas**
 
 **Dudas:**
+
 1. ¿Los permisos de carpetas están en la misma tabla que permisos de rutas?
 2. ¿Cómo se relacionan los permisos de carpeta con los permisos de ruta `/storage/carpetas-personalizadas`?
 
 ### 4. **Verificación de Permisos en Rutas**
 
 **Dudas:**
+
 1. ¿El backend valida permisos en cada request?
 2. ¿Necesitamos middleware en frontend para verificar permisos antes de navegar?
 3. ¿Cómo manejamos rutas dinámicas (`/operaciones/sociedades/:societyId/...`)?
@@ -345,6 +357,7 @@ Response: {
 ### Fase 1: Investigar Backend (1 día)
 
 **Tareas:**
+
 1. ✅ Revisar documentación de backend sobre autenticación
 2. ❓ Preguntar al equipo backend:
    - ¿Existe endpoint para obtener usuario completo?
@@ -354,6 +367,7 @@ Response: {
    - ¿Cómo se manejan wildcards en rutas?
 
 **Archivos a revisar:**
+
 - `docs/backend/00-autenticacion.md` ✅ (ya revisado)
 - Documentación de endpoints de usuarios (buscar)
 - Documentación de permisos (buscar)
@@ -361,12 +375,14 @@ Response: {
 ### Fase 2: Analizar Código Existente (1 día)
 
 **Tareas:**
+
 1. ✅ Revisar `app/composables/useUser.ts` (usa mock)
 2. ✅ Revisar `app/composables/usePermissions.ts` (revisar lógica)
 3. ✅ Revisar `app/core/hexag/panel-administrativo/` (estructura existente)
 4. ❓ Revisar cómo se manejan permisos en otros módulos
 
 **Archivos a revisar:**
+
 - `app/composables/usePermissions.ts` (leer completo)
 - `app/core/shared/mappers/permissions.mapper.ts` (leer completo)
 - `app/core/hexag/panel-administrativo/` (explorar estructura)
@@ -374,12 +390,14 @@ Response: {
 ### Fase 3: Diseñar Estructura (1 día)
 
 **Tareas:**
+
 1. Diseñar estructura hexagonal para permisos
 2. Diseñar componentes siguiendo patrón flow-layout-juntas
 3. Diseñar stores con Option API
 4. Crear mapeo completo de rutas
 
 **Entregables:**
+
 - Diagrama de arquitectura
 - Estructura de carpetas
 - Tipos TypeScript
@@ -447,15 +465,10 @@ app/core/presentation/panel-administrativo/
 ```vue
 <!-- PermissionsEditor.vue (Wrapper - Auto-gestionado) -->
 <script setup lang="ts">
-  import { usePermissionsEditor } from './composables/usePermissionsEditor';
-  
+  import { usePermissionsEditor } from "./composables/usePermissionsEditor";
+
   // Auto-gestiona: importa composables internamente
-  const { 
-    user, 
-    permissions, 
-    selectedTab,
-    savePermissions 
-  } = usePermissionsEditor();
+  const { user, permissions, selectedTab, savePermissions } = usePermissionsEditor();
 </script>
 
 <template>
@@ -472,14 +485,10 @@ app/core/presentation/panel-administrativo/
 ```vue
 <!-- RoutePermissionsTab.vue (Wrapper - Auto-gestionado) -->
 <script setup lang="ts">
-  import { useRoutePermissions } from './composables/useRoutePermissions';
-  
+  import { useRoutePermissions } from "./composables/useRoutePermissions";
+
   // Auto-gestiona: importa composables internamente
-  const { 
-    routes, 
-    selectedSociety,
-    togglePermission 
-  } = useRoutePermissions();
+  const { routes, selectedSociety, togglePermission } = useRoutePermissions();
 </script>
 
 <template>
@@ -503,7 +512,7 @@ export const useUserManagementStore = defineStore("userManagement", {
     loading: false,
     error: null as string | null,
   }),
-  
+
   actions: {
     async loadUsers() {
       this.loading = true;
@@ -516,7 +525,7 @@ export const useUserManagementStore = defineStore("userManagement", {
         this.loading = false;
       }
     },
-    
+
     async updateUserPermissions(userId: string, permissions: Permission[]) {
       // ...
     },
@@ -531,18 +540,21 @@ export const useUserManagementStore = defineStore("userManagement", {
 ### Fase 1: Investigación y Diseño (2-3 días)
 
 **Día 1: Investigar Backend**
+
 - [ ] Revisar documentación de backend
 - [ ] Preguntar al equipo backend sobre endpoints
 - [ ] Entender estructura de permisos en BD
 - [ ] Documentar endpoints necesarios
 
 **Día 2: Analizar Código Existente**
+
 - [ ] Revisar `usePermissions.ts` completo
 - [ ] Revisar `permissions.mapper.ts` completo
 - [ ] Revisar estructura de `panel-administrativo`
 - [ ] Identificar qué reutilizar y qué crear nuevo
 
 **Día 3: Diseñar Estructura**
+
 - [ ] Crear diagrama de arquitectura
 - [ ] Definir estructura de carpetas
 - [ ] Crear tipos TypeScript
@@ -551,11 +563,13 @@ export const useUserManagementStore = defineStore("userManagement", {
 ### Fase 2: Domain y Application (3-4 días)
 
 **Día 4-5: Domain Layer**
+
 - [ ] Crear entidades (User, Role, Permission, etc.)
 - [ ] Crear ports (UserRepository, PermissionRepository)
 - [ ] Crear value objects si es necesario
 
 **Día 6-7: Application Layer**
+
 - [ ] Crear DTOs (UserDTO, PermissionDTO, RoutePermissionDTO)
 - [ ] Crear casos de uso:
   - GetUserPermissionsUseCase
@@ -566,29 +580,34 @@ export const useUserManagementStore = defineStore("userManagement", {
 ### Fase 3: Infrastructure (2-3 días)
 
 **Día 8-9: Repositories**
+
 - [ ] Crear UserHttpRepository
 - [ ] Crear UserMockRepository
 - [ ] Crear PermissionHttpRepository
 - [ ] Crear PermissionMockRepository
 
 **Día 10: Mappers**
+
 - [ ] Crear PermissionMapper (DTO ↔ Entidad)
 - [ ] Crear RoutePermissionMapper
 
 ### Fase 4: Presentation (5-7 días)
 
 **Día 11-12: Stores**
+
 - [ ] Crear UserManagementStore (Option API)
 - [ ] Crear PermissionsStore (Option API)
 - [ ] Integrar con casos de uso
 
 **Día 13-14: Composables/Controllers**
+
 - [ ] Crear useUserManagement
 - [ ] Crear usePermissions
 - [ ] Crear useRoutePermissions
 - [ ] Crear useSocietyPermissions
 
 **Día 15-17: Componentes**
+
 - [ ] Crear PermissionsEditor.vue (Wrapper)
 - [ ] Crear PermissionsEditorTabs.vue (Presentacional)
 - [ ] Crear SocietyPermissionsTab.vue (Wrapper)
@@ -601,12 +620,14 @@ export const useUserManagementStore = defineStore("userManagement", {
 ### Fase 5: Integración y Testing (3-4 días)
 
 **Día 18-19: Integración**
+
 - [ ] Conectar componentes con stores
 - [ ] Conectar stores con casos de uso
 - [ ] Integrar con backend (o mock)
 - [ ] Crear middleware de verificación de rutas
 
 **Día 20-21: Testing**
+
 - [ ] Testing manual de flujos
 - [ ] Verificar permisos en rutas
 - [ ] Verificar permisos en carpetas
@@ -615,6 +636,7 @@ export const useUserManagementStore = defineStore("userManagement", {
 ### Fase 6: Documentación (1-2 días)
 
 **Día 22-23: Documentación**
+
 - [ ] Documentar arquitectura
 - [ ] Documentar componentes
 - [ ] Crear guía de uso para admins
@@ -654,11 +676,13 @@ export const useUserManagementStore = defineStore("userManagement", {
 ## 📝 PRÓXIMOS PASOS INMEDIATOS
 
 1. **Comunicar con Backend:**
+
    - Preguntar sobre endpoints de usuarios y permisos
    - Entender estructura de permisos en BD
    - Confirmar cómo se manejan permisos por sociedad
 
 2. **Revisar Código Existente:**
+
    - Leer `usePermissions.ts` completo
    - Leer `permissions.mapper.ts` completo
    - Explorar estructura de `panel-administrativo`
@@ -672,6 +696,3 @@ export const useUserManagementStore = defineStore("userManagement", {
 
 **Última actualización:** Diciembre 2024  
 **Estado:** 🔍 INVESTIGACIÓN COMPLETA - LISTO PARA COMENZAR IMPLEMENTACIÓN
-
-
-

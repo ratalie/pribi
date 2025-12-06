@@ -10,15 +10,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "~/components/ui/dialog";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
+import AportanteModal from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/aportantes/components/AportanteModal.vue";
 
 /**
  * VISTA: Aportantes para Aporte Dinerario
@@ -28,10 +21,10 @@ import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
  * - NUEVOS: Se pueden editar/eliminar
  * 
  * Endpoints:
- * - GET /api/v2/society-profile/:societyId/assembly/:flowId/participants
- * - PUT /api/v2/society-profile/:societyId/assembly/:flowId/participants/:id/contributor
- * - POST /api/v2/society-profile/:societyId/assembly/:flowId/participants
- * - DELETE /api/v2/society-profile/:societyId/assembly/:flowId/participants/:id
+ * - GET /api/v2/society-profile/:societyId/register-assembly/:flowId/participants
+ * - PUT /api/v2/society-profile/:societyId/register-assembly/:flowId/participants/:id/contributor
+ * - POST /api/v2/society-profile/:societyId/register-assembly/:flowId/participants
+ * - DELETE /api/v2/society-profile/:societyId/register-assembly/:flowId/participants/:id
  */
 
 definePageMeta({
@@ -43,53 +36,47 @@ definePageMeta({
 // TIPOS
 // ========================================
 
-type PersonType = "NATURAL" | "JURIDICA" | "SUCURSAL" | "FONDO_INVERSION" | "FIDEICOMISO" | "SUCESION_INDIVISA";
 type ContributorType = "ACCIONISTA" | "NUEVO_APORTANTE";
 
-interface PersonaNatural {
-  type: "NATURAL";
-  firstName: string;
-  lastNamePaternal: string;
-  lastNameMaternal: string;
-  typeDocument: string;
-  documentNumber: string;
-}
-
-interface PersonaJuridica {
-  type: "JURIDICA";
-  ruc: string;
-  legalName: string;
-  commercialName?: string;
-  address: string;
-}
-
-interface AllocationShare {
+interface Person {
   id: string;
-  action: {
-    id: string;
-    name: string;
-    type: string;
-  };
-  subscribedSharesQuantity: number;
-  percentagePaidPerShare: number;
+  tipo: "NATURAL" | "JURIDICA" | "SUCURSAL" | "FONDO_INVERSION" | "FIDEICOMISO" | "SUCESION_INDIVISA";
+  nombre?: string;
+  apellidoPaterno?: string;
+  apellidoMaterno?: string;
+  tipoDocumento: string;
+  numeroDocumento: string;
+  paisEmision?: string;
+  razonSocial?: string;
+  nombreComercial?: string;
+  direccion?: string;
+  [key: string]: any; // Para otros campos de otros tipos
 }
 
 interface Aportante {
   id: string;
-  contributorType: ContributorType;
+  personId?: string;
+  typeShareholder: ContributorType;
   isContributor: boolean;
-  isPresent: boolean;
-  contributor: PersonaNatural | PersonaJuridica | any;
-  allocationShare: AllocationShare[];
+  status?: boolean;
+  person: Person;
+  allocationShare?: Array<{
+    id: string;
+    action: {
+      id: string;
+      name: string;
+      type: string;
+    };
+    subscribedSharesQuantity: number;
+    percentagePaidPerShare: number;
+  }>;
 }
 
 interface ApiResponse {
   success: boolean;
   message: string;
-  data: {
-    id: number;
-    contributors: Aportante[];
-  };
+  code: number;
+  data: Aportante[]; // ✅ El backend devuelve array directamente
 }
 
 // ========================================
@@ -107,29 +94,14 @@ const error = ref<string | null>(null);
 
 // Modal para agregar/editar
 const isModalOpen = ref(false);
-const isEditMode = ref(false);
-const editingId = ref<string | null>(null);
-const formData = ref({
-  type: "NATURAL" as PersonType,
-  // Persona Natural
-  firstName: "",
-  lastNamePaternal: "",
-  lastNameMaternal: "",
-  typeDocument: "DNI",
-  documentNumber: "",
-  // Persona Jurídica
-  ruc: "",
-  legalName: "",
-  commercialName: "",
-  address: "",
-});
+const isSaving = ref(false);
 
 // ========================================
 // API HELPERS
 // ========================================
 
 const API_BASE = computed(
-  () => `/api/v2/society-profile/${societyId.value}/assembly/${flowId.value}`
+  () => `/api/v2/society-profile/${societyId.value}/register-assembly/${flowId.value}`
 );
 
 function resolveBaseUrl(): string {
@@ -164,88 +136,108 @@ async function fetchAportantes() {
       method: "GET",
     });
 
-    console.debug("[Aportantes] GET response", { count: response.data.contributors.length });
+    console.debug("[Aportantes] GET response RAW:", response);
+    console.debug("[Aportantes] GET response type:", typeof response);
+    console.debug("[Aportantes] GET response.data:", response.data);
+    console.debug("[Aportantes] GET response.data type:", typeof response.data);
+    console.debug("[Aportantes] GET response.data isArray:", Array.isArray(response.data));
 
-    aportantes.value = response.data.contributors;
+    // ✅ El backend devuelve: { success: true, message: "...", code: 200, data: [...] }
+    // $fetch ya parsea el JSON, así que response.data es el array directamente
+    if (!response.data || !Array.isArray(response.data)) {
+      console.error("[Aportantes] Response.data no es un array:", response.data);
+      throw new Error("Formato de respuesta inválido del backend");
+    }
+
+    console.debug("[Aportantes] GET response", { count: response.data.length });
+
+    // ✅ El backend ya devuelve solo los participantes (que asistieron)
+    // No necesitamos filtrar por isPresent porque el endpoint ya lo hace
+    aportantes.value = response.data.map((a: Aportante) => {
+      // ✅ NUEVO_APORTANTE siempre debe tener isContributor: true
+      if (a.typeShareholder === "NUEVO_APORTANTE") {
+        return { ...a, isContributor: true };
+      }
+      return a;
+    });
   } catch (err: any) {
     console.error("[Aportantes] Error al cargar:", err);
-    error.value = "Error al cargar aportantes";
+    console.error("[Aportantes] Error details:", {
+      message: err.message,
+      statusCode: err.statusCode,
+      status: err.status,
+      data: err.data,
+      response: err.response,
+    });
+    error.value = err.message || err.data?.message || "Error al cargar aportantes";
   } finally {
     isLoading.value = false;
   }
 }
 
 async function toggleAportante(aportante: Aportante) {
+  // ✅ NUEVO_APORTANTE siempre es contribuidor y no se puede cambiar
+  if (aportante.typeShareholder === "NUEVO_APORTANTE") {
+    console.debug("[Aportantes] NUEVO_APORTANTE no se puede desmarcar");
+    return;
+  }
+
   try {
     const baseUrl = resolveBaseUrl();
-    const url = `${baseUrl}${API_BASE.value}/participants/${aportante.id}/contributor`;
+    // ✅ CORRECTO: PATCH /participants (sin UUID en URL, sin /contributor)
+    const url = `${baseUrl}${API_BASE.value}/participants`;
     
-    const newValue = !aportante.isContributor;
+    // ✅ CORRECTO: Body es array de UUIDs (hace toggle automático)
+    const body = [aportante.id];
 
-    console.debug("[Aportantes] Toggle", { id: aportante.id, newValue });
+    console.debug("[Aportantes] Toggle", { id: aportante.id, url, body });
 
     await $fetch(url, {
       ...withAuthHeaders(),
-      method: "PUT",
-      body: { isContributor: newValue },
+      method: "PATCH", // ✅ PATCH, no PUT
+      body, // ✅ Array de UUIDs, no objeto
     });
 
-    // Actualizar localmente
-    aportante.isContributor = newValue;
+    // ✅ Recargar datos del backend después del PATCH
+    await fetchAportantes();
   } catch (err: any) {
     console.error("[Aportantes] Error al toggle:", err);
-    error.value = "Error al actualizar aportante";
+    error.value = err.message || "Error al actualizar aportante";
   }
 }
 
-async function agregarNuevoAportante() {
+async function agregarNuevoAportante(payload: { contributor: any }) {
   try {
     const baseUrl = resolveBaseUrl();
     const url = `${baseUrl}${API_BASE.value}/participants`;
 
-    const contributorData =
-      formData.value.type === "NATURAL"
-        ? {
-            type: "NATURAL",
-            typeDocument: formData.value.typeDocument,
-            documentNumber: formData.value.documentNumber,
-            firstName: formData.value.firstName,
-            lastNamePaternal: formData.value.lastNamePaternal,
-            lastNameMaternal: formData.value.lastNameMaternal,
-          }
-        : {
-            type: "JURIDICA",
-            ruc: formData.value.ruc,
-            legalName: formData.value.legalName,
-            commercialName: formData.value.commercialName,
-            address: formData.value.address,
-          };
-
-    const payload = {
-      contributors: [
-        {
-          contributorType: "NUEVO_APORTANTE",
-          isContributor: true,
-          contributor: contributorData,
-        },
-      ],
+    // ✅ El backend espera: { id: string, persona: {...} }
+    const generateUuid = () => {
+      if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+        return crypto.randomUUID();
+      }
+      return Math.random().toString(36).slice(2) + Date.now().toString(36);
     };
 
-    console.debug("[Aportantes] POST nuevo", { payload });
+    const requestPayload = {
+      id: generateUuid(),
+      persona: payload.contributor, // ✅ El backend espera "persona", no "contributor"
+    };
+
+    console.debug("[Aportantes] POST nuevo", { requestPayload });
 
     await $fetch(url, {
       ...withAuthHeaders(),
       method: "POST",
-      body: payload,
+      body: requestPayload,
     });
 
     // Cerrar modal y recargar
     isModalOpen.value = false;
-    resetForm();
     await fetchAportantes();
   } catch (err: any) {
     console.error("[Aportantes] Error al agregar:", err);
-    error.value = "Error al agregar aportante";
+    error.value = err.message || "Error al agregar aportante";
   }
 }
 
@@ -254,57 +246,45 @@ async function eliminarAportante(id: string) {
 
   try {
     const baseUrl = resolveBaseUrl();
-    const url = `${baseUrl}${API_BASE.value}/participants/${id}`;
+    // ✅ CORRECTO: DELETE /participants (sin UUID en URL)
+    const url = `${baseUrl}${API_BASE.value}/participants`;
+    
+    // ✅ CORRECTO: Body es array de UUIDs
+    const body = [id];
 
-    console.debug("[Aportantes] DELETE", { id });
+    console.debug("[Aportantes] DELETE participante", { id, url, body });
 
     await $fetch(url, {
       ...withAuthHeaders(),
       method: "DELETE",
+      body, // ✅ Array de UUIDs en el body
     });
 
     // Recargar lista
     await fetchAportantes();
   } catch (err: any) {
     console.error("[Aportantes] Error al eliminar:", err);
-    error.value = "Error al eliminar aportante";
+    error.value = err.message || err.data?.message || "Error al eliminar aportante";
   }
 }
 
-function resetForm() {
-  formData.value = {
-    type: "NATURAL",
-    firstName: "",
-    lastNamePaternal: "",
-    lastNameMaternal: "",
-    typeDocument: "DNI",
-    documentNumber: "",
-    ruc: "",
-    legalName: "",
-    commercialName: "",
-    address: "",
-  };
-  isEditMode.value = false;
-  editingId.value = null;
-}
 
 // ========================================
 // COMPUTED - FORMATEO DE DATOS
 // ========================================
 
 function getNombre(aportante: Aportante): string {
-  const contributor = aportante.contributor;
+  const person = aportante.person;
   
-  if (contributor.type === "NATURAL") {
-    return `${contributor.firstName} ${contributor.lastNamePaternal} ${contributor.lastNameMaternal}`;
+  if (person.tipo === "NATURAL") {
+    return `${person.nombre || ""} ${person.apellidoPaterno || ""} ${person.apellidoMaterno || ""}`.trim();
   }
   
-  if (contributor.type === "JURIDICA") {
-    return contributor.legalName;
+  if (person.tipo === "JURIDICA" || person.tipo === "SUCURSAL" || person.tipo === "SUCESION_INDIVISA" || person.tipo === "FIDEICOMISO" || person.tipo === "FONDO_INVERSION") {
+    return person.razonSocial || person.nombreComercial || "Sin nombre";
   }
 
-  // Otros tipos
-  return contributor.legalName || contributor.firstName || "Sin nombre";
+  return "Sin nombre";
 }
 
 function getTotalAcciones(aportante: Aportante): number {
@@ -313,7 +293,7 @@ function getTotalAcciones(aportante: Aportante): number {
   }
 
   return aportante.allocationShare.reduce(
-    (total, allocation) => total + allocation.subscribedSharesQuantity,
+    (total, allocation) => total + (allocation.subscribedSharesQuantity || 0),
     0
   );
 }
@@ -414,8 +394,18 @@ onMounted(async () => {
             <!-- Checkbox -->
             <td class="px-6 py-4">
               <Checkbox
-                :checked="aportante.isContributor"
-                @update:checked="toggleAportante(aportante)"
+                :model-value="aportante.isContributor"
+                :disabled="aportante.typeShareholder === 'NUEVO_APORTANTE'"
+                @update:model-value="(value: boolean) => {
+                  // Solo permitir toggle si NO es NUEVO_APORTANTE
+                  if (aportante.typeShareholder !== 'NUEVO_APORTANTE') {
+                    aportante.isContributor = value;
+                    toggleAportante(aportante);
+                  } else {
+                    // Forzar a true si es NUEVO_APORTANTE (no debería llegar aquí por disabled)
+                    aportante.isContributor = true;
+                  }
+                }"
               />
             </td>
 
@@ -425,8 +415,8 @@ onMounted(async () => {
                 {{ getNombre(aportante) }}
               </div>
               <div class="text-xs text-gray-500">
-                {{ aportante.contributor.typeDocument || "RUC" }}:
-                {{ aportante.contributor.documentNumber || aportante.contributor.ruc }}
+                {{ aportante.person.tipoDocumento || "RUC" }}:
+                {{ aportante.person.numeroDocumento }}
               </div>
             </td>
 
@@ -435,10 +425,10 @@ onMounted(async () => {
               <span
                 :class="[
                   'inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium',
-                  getTipoBadgeClass(aportante.contributorType),
+                  getTipoBadgeClass(aportante.typeShareholder),
                 ]"
               >
-                {{ aportante.contributorType }}
+                {{ aportante.typeShareholder === 'NUEVO_APORTANTE' ? 'NUEVO APORTANTE' : 'ACCIONISTA' }}
               </span>
             </td>
 
@@ -454,7 +444,7 @@ onMounted(async () => {
 
             <!-- Acciones (solo para NUEVOS) -->
             <td class="px-6 py-4">
-              <DropdownMenu v-if="aportante.contributorType === 'NUEVO_APORTANTE'">
+              <DropdownMenu v-if="aportante.typeShareholder === 'NUEVO_APORTANTE'">
                 <DropdownMenuTrigger as-child>
                   <Button variant="ghost" size="sm" class="h-8 w-8 p-0">
                     <span class="sr-only">Abrir menú</span>
@@ -521,155 +511,13 @@ onMounted(async () => {
     </div>
 
     <!-- Modal: Agregar Nuevo Aportante -->
-    <Dialog v-model:open="isModalOpen">
-      <DialogContent class="max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>
-            {{ isEditMode ? "Editar" : "Agregar" }} Aportante
-          </DialogTitle>
-          <DialogDescription>
-            Completa la información del nuevo aportante
-          </DialogDescription>
-        </DialogHeader>
-
-        <div class="space-y-4">
-          <!-- Selector de Tipo de Persona -->
-          <div class="space-y-2">
-            <label class="text-sm font-medium">Tipo de Persona</label>
-            <div class="flex gap-4">
-              <label class="flex items-center gap-2">
-                <input
-                  v-model="formData.type"
-                  type="radio"
-                  value="NATURAL"
-                  class="h-4 w-4 text-primary-600"
-                />
-                <span class="text-sm">Persona Natural</span>
-              </label>
-              <label class="flex items-center gap-2">
-                <input
-                  v-model="formData.type"
-                  type="radio"
-                  value="JURIDICA"
-                  class="h-4 w-4 text-primary-600"
-                />
-                <span class="text-sm">Persona Jurídica</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Formulario Persona Natural -->
-          <div v-if="formData.type === 'NATURAL'" class="space-y-3">
-            <div class="grid grid-cols-2 gap-3">
-              <div class="space-y-1">
-                <label class="text-sm font-medium">Tipo de Documento</label>
-                <select
-                  v-model="formData.typeDocument"
-                  class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-                >
-                  <option value="DNI">DNI</option>
-                  <option value="CE">Carné de Extranjería</option>
-                  <option value="PASAPORTE">Pasaporte</option>
-                </select>
-              </div>
-              <div class="space-y-1">
-                <label class="text-sm font-medium">N.º de Documento</label>
-                <input
-                  v-model="formData.documentNumber"
-                  type="text"
-                  class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-                  placeholder="12345678"
-                />
-              </div>
-            </div>
-
-            <div class="space-y-1">
-              <label class="text-sm font-medium">Nombres</label>
-              <input
-                v-model="formData.firstName"
-                type="text"
-                class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-                placeholder="Juan Carlos"
-              />
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-              <div class="space-y-1">
-                <label class="text-sm font-medium">Apellido Paterno</label>
-                <input
-                  v-model="formData.lastNamePaternal"
-                  type="text"
-                  class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-                  placeholder="Pérez"
-                />
-              </div>
-              <div class="space-y-1">
-                <label class="text-sm font-medium">Apellido Materno</label>
-                <input
-                  v-model="formData.lastNameMaternal"
-                  type="text"
-                  class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-                  placeholder="García"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- Formulario Persona Jurídica -->
-          <div v-else class="space-y-3">
-            <div class="space-y-1">
-              <label class="text-sm font-medium">RUC</label>
-              <input
-                v-model="formData.ruc"
-                type="text"
-                class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-                placeholder="20123456789"
-                maxlength="11"
-              />
-            </div>
-
-            <div class="space-y-1">
-              <label class="text-sm font-medium">Razón Social</label>
-              <input
-                v-model="formData.legalName"
-                type="text"
-                class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-                placeholder="Inversiones del Sur S.A.C."
-              />
-            </div>
-
-            <div class="space-y-1">
-              <label class="text-sm font-medium">Nombre Comercial (opcional)</label>
-              <input
-                v-model="formData.commercialName"
-                type="text"
-                class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-                placeholder="Inversiones del Sur"
-              />
-            </div>
-
-            <div class="space-y-1">
-              <label class="text-sm font-medium">Dirección</label>
-              <input
-                v-model="formData.address"
-                type="text"
-                class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-                placeholder="Av. Principal 123, San Isidro"
-              />
-            </div>
-          </div>
-        </div>
-
-        <DialogFooter>
-          <Button variant="outline" @click="isModalOpen = false">
-            Cancelar
-          </Button>
-          <Button variant="primary" @click="agregarNuevoAportante">
-            {{ isEditMode ? "Guardar Cambios" : "Agregar Aportante" }}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <AportanteModal
+      v-model="isModalOpen"
+      mode="create"
+      :is-saving="isSaving"
+      @submit="agregarNuevoAportante"
+      @close="isModalOpen = false"
+    />
   </div>
 </template>
 

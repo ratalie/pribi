@@ -1,4 +1,4 @@
-import type { User } from '../../domain/entities/user.entity';
+import type { User } from "../../domain/entities/user.entity";
 // import type { UserResponseDto } from '../../application/dtos/user.dto'; // No usado
 
 /**
@@ -12,10 +12,14 @@ export class UserMapper {
     return {
       id: dto.id,
       email: dto.email,
+      name: dto.name || dto.email.split("@")[0] || "Usuario",
       roleId: dto.roleId,
       studyId: dto.studyId,
       status: dto.status,
       createdAt: new Date(dto.createdAt),
+      updatedAt: dto.updatedAt ? new Date(dto.updatedAt) : new Date(dto.createdAt),
+      routePermissions: dto.routePermissions || [],
+      assignedSocieties: dto.assignedSocieties || [],
       role: dto.role,
       study: dto.study,
     };
@@ -28,4 +32,3 @@ export class UserMapper {
     return dtos.map((dto) => this.toEntity(dto));
   }
 }
-
