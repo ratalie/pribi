@@ -24,7 +24,8 @@ export const transformarModalAFacultad = (
 
   const baseFacultad = {
     id: idFacultad || uuidv4(),
-    nombre: tipoFacultadEncontrada.tipoFacultades,
+    tipoFacultadId: tipoFacultadEncontrada.id,
+    tipoFacultadNombre: tipoFacultadEncontrada.tipoFacultades,
   };
 
   const tipoVigencia = !modalStore.esIrrevocable
@@ -44,7 +45,8 @@ export const transformarModalAFacultad = (
         reglasYLimites: true as const,
         tipoMoneda: modalStore.tipoMoneda,
         limiteMonetario: modalStore.limiteMonetario.map((limite) => ({
-          id: uuidv4(),
+          // Preservar el ID original si existe (edición), generar nuevo si no (creación)
+          id: limite.id && limite.id.trim() !== "" ? limite.id : uuidv4(),
           desde: limite.desde,
           tipoMonto: limite.tipoMonto,
           hasta: limite.hasta,
@@ -76,11 +78,11 @@ export const transformarFacultadAModal = (
   regimenStore: ReturnType<typeof useRegimenFacultadesStore>
 ): ReturnType<typeof useApoderadoFacultadStore>["$state"] | null => {
   const tipoFacultadEncontrada = regimenStore.tipoFacultades.find(
-    (f) => f.tipoFacultades === facultad.nombre
+    (f) => f.tipoFacultades === facultad.tipoFacultadNombre
   );
 
   if (!tipoFacultadEncontrada) {
-    console.error(`No se encontró el tipo de facultad: ${facultad.nombre}`);
+    console.error(`No se encontró el tipo de facultad: ${facultad.tipoFacultadNombre}`);
     return null;
   }
 

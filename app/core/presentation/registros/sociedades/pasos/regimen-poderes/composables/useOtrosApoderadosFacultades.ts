@@ -5,7 +5,7 @@ import {
   transformarModalAFacultad,
 } from "../utils/transformFacultadModal";
 
-export const useOtrosApoderadosFacultades = () => {
+export const useOtrosApoderadosFacultades = (profileId: string) => {
   const regimenFacultadesStore = useRegimenFacultadesStore();
   const apoderadoFacultadStore = useApoderadoFacultadStore();
 
@@ -13,6 +13,7 @@ export const useOtrosApoderadosFacultades = () => {
   const idApoderado = ref<string | null>(null);
   const idFacultad = ref<string | null>(null);
   const modeModalApoderadoFacultad = ref<"crear" | "editar">("crear");
+  const isLoading = ref(false);
 
   const cargarFacultadParaEditar = (idApod: string, idFac: string) => {
     const apoderado = regimenFacultadesStore.otrosApoderados.find((a) => a.id === idApod);
@@ -28,6 +29,9 @@ export const useOtrosApoderadosFacultades = () => {
       console.error(`No se encontró la facultad con id: ${idFac}`);
       return;
     }
+
+    // Guardar estado original antes de editar
+    regimenFacultadesStore.guardarEstadoOriginal("otro", idApod);
 
     const modalData = transformarFacultadAModal(facultad, regimenFacultadesStore);
 
@@ -72,6 +76,8 @@ export const useOtrosApoderadosFacultades = () => {
   };
 
   const handleCloseModalApoderadoFacultad = () => {
+    // Limpiar estado original si se cancela la edición
+    regimenFacultadesStore.limpiarEstadoOriginal();
     apoderadoFacultadStore.$reset();
     isApoderadoFacultadesModalOpen.value = false;
     idApoderado.value = null;
@@ -79,44 +85,53 @@ export const useOtrosApoderadosFacultades = () => {
     modeModalApoderadoFacultad.value = "crear";
   };
 
-  const handleSubmitApoderadoFacultad = () => {
+  const handleSubmitApoderadoFacultad = async () => {
     if (!idApoderado.value) {
       console.error("No se encontró el id del otro apoderado");
       return;
     }
 
-    if (modeModalApoderadoFacultad.value === "editar" && idFacultad.value) {
-      const facultadActualizada = transformarModalAFacultad(
+    isLoading.value = true;
+
+    try {
+      const entity = transformarModalAFacultad(
         apoderadoFacultadStore,
         regimenFacultadesStore,
-        idFacultad.value
+        idFacultad.value ?? undefined
       );
 
-      if (!facultadActualizada) {
-        console.error("Error al transformar los datos del modal");
-        return;
+      if (!entity) {
+        throw new Error("Error al transformar los datos del modal");
       }
 
-      regimenFacultadesStore.editarFacultadOtroApoderado(
-        idApoderado.value,
-        idFacultad.value,
-        facultadActualizada
-      );
-    } else {
-      const nuevaFacultad = transformarModalAFacultad(
-        apoderadoFacultadStore,
-        regimenFacultadesStore
-      );
-
-      if (!nuevaFacultad) {
-        console.error("Error al transformar los datos del modal");
-        return;
+      if (modeModalApoderadoFacultad.value === "editar" && idFacultad.value) {
+        // Actualizar otorgamiento existente
+        // Pasar la entity transformada para que la detección de cambios use los datos del modal
+        await regimenFacultadesStore.updateOtorgamientoPoder(
+          profileId,
+          "otro",
+          idApoderado.value,
+          idFacultad.value,
+          entity
+        );
+      } else {
+        // Crear nuevo otorgamiento
+        // Para "Otros Apoderados", el apoderadoId individual se usa como claseApoderadoId
+        await regimenFacultadesStore.createOtorgamientoPoder(
+          profileId,
+          "otro",
+          idApoderado.value,
+          entity,
+          entity.tipoFacultadId
+        );
       }
 
-      regimenFacultadesStore.agregarFacultadOtroApoderado(idApoderado.value, nuevaFacultad);
+      handleCloseModalApoderadoFacultad();
+    } catch (err) {
+      console.error("Error al guardar otorgamiento de poder:", err);
+    } finally {
+      isLoading.value = false;
     }
-
-    handleCloseModalApoderadoFacultad();
   };
 
   return {
@@ -126,6 +141,6 @@ export const useOtrosApoderadosFacultades = () => {
     openModalFacultadApoderado,
     handleCloseModalApoderadoFacultad,
     handleSubmitApoderadoFacultad,
+    isLoading,
   };
 };
-

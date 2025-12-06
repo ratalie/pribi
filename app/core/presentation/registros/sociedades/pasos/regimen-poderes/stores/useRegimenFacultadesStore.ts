@@ -1,15 +1,14 @@
+import { v4 as uuidv4 } from "uuid";
 import type { BaseSelectOption } from "~/components/base/inputs/text/BaseInputSelect.vue";
-import {
-  ListApoderadosUseCase,
-  ListClasesApoderadoUseCase,
-} from "~/core/hexag/registros/sociedades/pasos/apoderados/application";
+import type { ClaseApoderadoResponseDTO } from "~/core/hexag/registros/sociedades/pasos/apoderados/application";
 import { PersonTypeEnum } from "~/core/hexag/registros/sociedades/pasos/apoderados/domain";
-import { ApoderadosHttpRepository } from "~/core/hexag/registros/sociedades/pasos/apoderados/infrastructure/repositories/apoderados.http.repository";
 import {
+  CreateOtorgamientoPoderUseCase,
   CreateTiposFacultadesUseCase,
   DeleteTiposFacultadesUseCase,
   ListOtorgamientosPoderUseCase,
   ListTiposFacultadesUseCase,
+  UpdateOtorgamientoPoderUseCase,
   UpdateTiposFacultadesUseCase,
 } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/application";
 import {
@@ -17,33 +16,40 @@ import {
   TipoFirmasUIEnum,
   TipoMontoUIEnum,
   type ApoderadoFacultad,
+  type CreateOtorgamientoPoderPayload,
+  type EntityCoinUIEnum,
   type Facultad,
+  type Firmante,
   type TipoFacultad,
+  type UpdateOtorgamientoPoderPayload,
 } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
 import { OtorgamientoPoderesMapper } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/infrastructure/mappers/otorgamiento-poderes.mapper";
 import { TiposFacultadesMapper } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/infrastructure/mappers/tipos-facultades.mapper";
 import { RegimenFacultadesHttpRepository } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/infrastructure/repository/regimen-facultades.http.repository";
-import { ClasesApoderadoEspecialesEnum } from "~/core/presentation/registros/sociedades/pasos/apoderados/types/enums/ClasesApoderadoEspecialesEnum";
+import type { BackendApiResponse } from "~/core/shared/http/api-response.types";
+import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
+import { ClasesApoderadoEspecialesEnum } from "../../apoderados/types/enums/ClasesApoderadoEspecialesEnum";
 import type { ApoderadoFacultadRow } from "../types/apoderadosFacultades";
 import type { TipoFacultadRow } from "../types/facultades";
 
 const repository = new RegimenFacultadesHttpRepository();
-const apoderadosRepository = new ApoderadosHttpRepository();
 
 const listTipoFacultadesUseCase = new ListTiposFacultadesUseCase(repository);
 const createTipoFacultadUseCase = new CreateTiposFacultadesUseCase(repository);
 const updateTipoFacultadUseCase = new UpdateTiposFacultadesUseCase(repository);
 const deleteTipoFacultadUseCase = new DeleteTiposFacultadesUseCase(repository);
-const listOtorgamientosPoderUseCase = new ListOtorgamientosPoderUseCase(repository);
 
-const listApoderadosUseCase = new ListApoderadosUseCase(apoderadosRepository);
-const listClasesApoderadoUseCase = new ListClasesApoderadoUseCase(apoderadosRepository);
+const listOtorgamientosPoderUseCase = new ListOtorgamientosPoderUseCase(repository);
+const createOtorgamientoPoderUseCase = new CreateOtorgamientoPoderUseCase(repository);
+const updateOtorgamientoPoderUseCase = new UpdateOtorgamientoPoderUseCase(repository);
 
 export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
   state: (): State => ({
     tipoFacultades: [],
     apoderadosFacultades: [],
     otrosApoderados: [],
+    apoderadosFacultadesOriginal: null,
+    otrosApoderadosOriginal: null,
   }),
 
   getters: {
@@ -59,7 +65,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
     tablaApoderadosFacultades(): ApoderadoFacultadRow[] {
       return this.apoderadosFacultades.map((apoderado) => ({
         id: apoderado.id,
-        nombre: apoderado.nombre,
+        nombre: apoderado.claseApoderadoNombre,
         facultades: apoderado.facultades.map((facultad) => {
           // Vigencia
           const vigencia =
@@ -88,7 +94,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
 
           return {
             id: facultad.id,
-            facultad: facultad.nombre,
+            facultad: facultad.tipoFacultadNombre,
             vigencia: vigencia,
             reglas_firma: reglas_firma,
             reglas_y_limites: reglas_y_limites,
@@ -100,7 +106,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
     tablaOtrosApoderadosFacultades(): ApoderadoFacultadRow[] {
       return this.otrosApoderados.map((apoderado) => ({
         id: apoderado.id,
-        nombre: apoderado.nombre,
+        nombre: apoderado.claseApoderadoNombre,
         facultades: apoderado.facultades.map((facultad) => {
           const vigencia =
             facultad.vigencia === TiempoVigenciaUIEnum.INDEFINIDO
@@ -126,7 +132,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
 
           return {
             id: facultad.id,
-            facultad: facultad.nombre,
+            facultad: facultad.tipoFacultadNombre,
             vigencia: vigencia,
             reglas_firma: reglas_firma,
             reglas_y_limites: reglas_y_limites,
@@ -145,113 +151,6 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
   },
 
   actions: {
-    //apoderados
-    async loadApoderados(profileId: string) {
-      try {
-        // Obtener todas las clases de apoderados
-        const clases = await listClasesApoderadoUseCase.execute(profileId);
-
-        // Obtener todos los apoderados
-        const apoderados = await listApoderadosUseCase.execute(profileId);
-
-        // Obtener todos los otorgamientos de poder
-        const otorgamientos = await listOtorgamientosPoderUseCase.execute(profileId);
-
-        // Crear un mapa de clases por ID para búsqueda rápida
-        const clasesMap = new Map(clases.map((clase) => [clase.id, clase]));
-
-        // Inicializar arrays
-        const apoderadosFacultadesList: ApoderadoFacultad[] = [];
-        const otrosApoderadosList: ApoderadoFacultad[] = [];
-
-        // Clasificar apoderados
-        for (const apoderado of apoderados) {
-          const clase = clasesMap.get(apoderado.claseApoderadoId);
-
-          if (!clase) {
-            // Si no tiene clase, va a otros apoderados
-            const nombreCompleto = this.obtenerNombrePersona(apoderado.persona);
-            otrosApoderadosList.push({
-              id: apoderado.id,
-              nombre: nombreCompleto,
-              facultades: [],
-            });
-            continue;
-          }
-
-          // Si es "Otros Apoderados", agregar individualmente
-          if (clase.nombre === ClasesApoderadoEspecialesEnum.OTROS_APODERADOS) {
-            const nombreCompleto = this.obtenerNombrePersona(apoderado.persona);
-            otrosApoderadosList.push({
-              id: apoderado.id,
-              nombre: nombreCompleto,
-              facultades: [],
-            });
-          } else {
-            // Para otras clases (incluyendo "Gerente General"), verificar si ya existe en la lista
-            const claseExistente = apoderadosFacultadesList.find(
-              (item) => item.id === clase.id
-            );
-
-            if (!claseExistente) {
-              // Si no existe, agregar la clase
-              apoderadosFacultadesList.push({
-                id: clase.id,
-                nombre: clase.nombre,
-                facultades: [],
-              });
-            }
-          }
-        }
-
-        // Combinar otorgamientos con apoderados
-        // Agrupar otorgamientos por claseApoderadoId (para clases normales)
-        const otorgamientosPorClase = new Map<string, Facultad[]>();
-        // Agrupar otorgamientos por apoderadoId (para "Otros Apoderados")
-        const otorgamientosPorApoderado = new Map<string, Facultad[]>();
-
-        for (const otorgamiento of otorgamientos) {
-          const facultad = OtorgamientoPoderesMapper.deResponseDTOAFacultad(otorgamiento);
-
-          // Si es "Otros Apoderados", buscar por apoderadoId individual
-          const clase = clasesMap.get(otorgamiento.claseApoderadoId);
-          if (clase?.nombre === ClasesApoderadoEspecialesEnum.OTROS_APODERADOS) {
-            // Para "Otros Apoderados", usar apoderadoId si está disponible
-            const apoderadoId = otorgamiento.apoderadoId || otorgamiento.claseApoderadoId;
-            if (!otorgamientosPorApoderado.has(apoderadoId)) {
-              otorgamientosPorApoderado.set(apoderadoId, []);
-            }
-            otorgamientosPorApoderado.get(apoderadoId)!.push(facultad);
-          } else {
-            // Para otras clases, agrupar por claseApoderadoId
-            if (!otorgamientosPorClase.has(otorgamiento.claseApoderadoId)) {
-              otorgamientosPorClase.set(otorgamiento.claseApoderadoId, []);
-            }
-            otorgamientosPorClase.get(otorgamiento.claseApoderadoId)!.push(facultad);
-          }
-        }
-
-        // Asignar facultades a apoderadosFacultades (por clase)
-        for (const apoderadoFacultad of apoderadosFacultadesList) {
-          const facultades = otorgamientosPorClase.get(apoderadoFacultad.id) || [];
-          apoderadoFacultad.facultades = facultades;
-        }
-
-        // Asignar facultades a otrosApoderados (individuales)
-        for (const otroApoderado of otrosApoderadosList) {
-          const facultades = otorgamientosPorApoderado.get(otroApoderado.id) || [];
-          otroApoderado.facultades = facultades;
-        }
-
-        // Actualizar el estado
-        this.apoderadosFacultades = apoderadosFacultadesList;
-        this.otrosApoderados = otrosApoderadosList;
-      } catch (error) {
-        console.error(error);
-        throw error;
-      }
-    },
-
     /**
      * Obtiene el nombre completo de una persona (Natural o Jurídica)
      */
@@ -267,6 +166,123 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
         return (
           persona.razonSocial?.trim() || persona.nombreComercial?.trim() || "Sin razón social"
         );
+      }
+    },
+
+    //apoderados
+    async loadOtorgamientosPoderes(profileId: string) {
+      try {
+        // Obtener datos
+        const otorgamientosPoder = await listOtorgamientosPoderUseCase.execute(profileId);
+
+        // Obtener ResponseDTO con apoderados anidados (necesario para "Otros Apoderados")
+        const config = useRuntimeConfig();
+        const apiBase = config.public?.apiBase as string | undefined;
+
+        if (!apiBase) {
+          throw new Error("apiBase no está configurado");
+        }
+
+        const url = `${apiBase}/society-profile/${profileId}/attorney-register/classes`;
+        const fetchConfig = withAuthHeaders({ method: "GET" as const });
+        const response = await $fetch<BackendApiResponse<ClaseApoderadoResponseDTO[]>>(
+          url,
+          fetchConfig
+        );
+
+        if (!response.success || !response?.data) {
+          throw new Error("No se encontraron clases de apoderado");
+        }
+
+        const clasesApoderadoResponse: ClaseApoderadoResponseDTO[] = response.data;
+
+        // Crear Map de clases por ID para búsqueda rápida
+        const clasesMap = new Map(clasesApoderadoResponse.map((clase) => [clase.id, clase]));
+
+        // Separar apoderados: clases normales vs "Otros Apoderados"
+        const apoderadosClasesNormales: ApoderadoFacultad[] = [];
+        const otrosApoderadosList: ApoderadoFacultad[] = [];
+
+        // Agrupar otorgamientos por claseApoderadoId (para clases normales)
+        const otorgamientosPorClase = new Map<string, Facultad[]>();
+        // Agrupar otorgamientos por apoderadoId (para "Otros Apoderados")
+        const otorgamientosPorApoderado = new Map<string, Facultad[]>();
+
+        // Procesar otorgamientos y convertirlos a Facultad
+        otorgamientosPoder.forEach((otorgamiento) => {
+          const facultad = OtorgamientoPoderesMapper.deResponseDTOAFacultad(otorgamiento);
+          const claseApoderadoId = otorgamiento.claseApoderado.id;
+          const clase = clasesMap.get(claseApoderadoId);
+
+          // Si es "Otros Apoderados", usar apoderadoId individual
+          if (clase?.nombre === ClasesApoderadoEspecialesEnum.OTROS_APODERADOS) {
+            // Para "Otros Apoderados", usar apoderadoId si está disponible
+            const apoderadoId = otorgamiento.apoderadoId || claseApoderadoId;
+
+            if (!otorgamientosPorApoderado.has(apoderadoId)) {
+              otorgamientosPorApoderado.set(apoderadoId, []);
+            }
+            otorgamientosPorApoderado.get(apoderadoId)!.push(facultad);
+          } else {
+            // Para otras clases, agrupar por claseApoderadoId
+            if (!otorgamientosPorClase.has(claseApoderadoId)) {
+              otorgamientosPorClase.set(claseApoderadoId, []);
+            }
+            otorgamientosPorClase.get(claseApoderadoId)!.push(facultad);
+          }
+        });
+
+        // Construir apoderadosFacultades (clases normales)
+        clasesApoderadoResponse
+          .filter((clase) => clase.nombre !== ClasesApoderadoEspecialesEnum.OTROS_APODERADOS)
+          .forEach((clase) => {
+            const facultades = otorgamientosPorClase.get(clase.id) || [];
+
+            // Si tiene otorgamientos, usar el claseApoderadoId del otorgamiento
+            // Si no tiene otorgamientos, generar UUID temporal para la UI
+            const claseIdFinal = facultades.length > 0 ? clase.id : uuidv4();
+
+            apoderadosClasesNormales.push({
+              id: claseIdFinal, // ID de la clase (si tiene otorgamientos) o UUID temporal
+              claseApoderadoId: clase.id, // Siempre el ID real de la clase
+              claseApoderadoNombre: clase.nombre,
+              facultades: facultades,
+            });
+          });
+
+        // Construir otrosApoderados (apoderados individuales)
+        // Filtrar solo los apoderados que pertenecen a "Otros Apoderados"
+        const claseOtrosApoderados = clasesApoderadoResponse.find(
+          (clase) => clase.nombre === ClasesApoderadoEspecialesEnum.OTROS_APODERADOS
+        );
+
+        if (claseOtrosApoderados && claseOtrosApoderados.apoderados) {
+          claseOtrosApoderados.apoderados.forEach((apoderado) => {
+            const nombreCompleto = this.obtenerNombrePersona(apoderado.persona);
+
+            // Buscar si este apoderado tiene otorgamientos
+            // El Map usa otorgamiento.apoderadoId como clave
+            const facultades = otorgamientosPorApoderado.get(apoderado.id) || [];
+
+            // Si tiene otorgamientos, usar el apoderadoId del otorgamiento (que es la clave del Map)
+            // Si no tiene otorgamientos, generar UUID temporal para la UI
+            const apoderadoIdFinal = facultades.length > 0 ? apoderado.id : uuidv4();
+
+            otrosApoderadosList.push({
+              id: apoderadoIdFinal, // ID del apoderado del otorgamiento (si existe) o UUID temporal
+              claseApoderadoId: apoderado.claseApoderadoId, // ID de la clase "Otros Apoderados"
+              claseApoderadoNombre: nombreCompleto, // Nombre de la persona
+              facultades: facultades,
+            });
+          });
+        }
+
+        // Actualizar el estado
+        this.apoderadosFacultades = apoderadosClasesNormales;
+        this.otrosApoderados = otrosApoderadosList;
+      } catch (error) {
+        console.error(error);
+        throw error;
       }
     },
 
@@ -414,6 +430,714 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
 
       apoderado.facultades = apoderado.facultades.filter((f) => f.id !== idFacultad);
     },
+
+    // ========== Sección 6: Estado Original/Actual ==========
+
+    /**
+     * Guarda una copia profunda del estado original del apoderado/clase que se va a editar.
+     * @param tipo "clase" para apoderadosFacultades, "otro" para otrosApoderados
+     * @param apoderadoId ID del apoderado o clase que se va a editar
+     */
+    guardarEstadoOriginal(tipo: "clase" | "otro", apoderadoId: string) {
+      if (tipo === "clase") {
+        const apoderado = this.apoderadosFacultades.find((a) => a.id === apoderadoId);
+        if (apoderado) {
+          this.apoderadosFacultadesOriginal = this.clonarProfundoApoderadosFacultades([
+            apoderado,
+          ]);
+        }
+      } else {
+        const apoderado = this.otrosApoderados.find((a) => a.id === apoderadoId);
+        if (apoderado) {
+          this.otrosApoderadosOriginal = this.clonarProfundoApoderadosFacultades([apoderado]);
+        }
+      }
+    },
+
+    /**
+     * Limpia los estados originales después de guardar o cancelar.
+     */
+    limpiarEstadoOriginal() {
+      this.apoderadosFacultadesOriginal = null;
+      this.otrosApoderadosOriginal = null;
+    },
+
+    /**
+     * Obtiene el estado original de un apoderado específico.
+     * @param apoderadoId ID del apoderado
+     * @returns El estado original del apoderado o null si no existe
+     */
+    obtenerEstadoOriginalApoderado(apoderadoId: string): ApoderadoFacultad | null {
+      // Buscar en apoderadosFacultadesOriginal
+      if (this.apoderadosFacultadesOriginal) {
+        const apoderado = this.apoderadosFacultadesOriginal.find((a) => a.id === apoderadoId);
+        if (apoderado) {
+          return apoderado;
+        }
+      }
+
+      // Buscar en otrosApoderadosOriginal
+      if (this.otrosApoderadosOriginal) {
+        const apoderado = this.otrosApoderadosOriginal.find((a) => a.id === apoderadoId);
+        if (apoderado) {
+          return apoderado;
+        }
+      }
+
+      return null;
+    },
+
+    /**
+     * Obtiene el estado original de una facultad específica.
+     * @param apoderadoId ID del apoderado que contiene la facultad
+     * @param facultadId ID de la facultad
+     * @returns El estado original de la facultad o null si no existe
+     */
+    obtenerEstadoOriginalFacultad(apoderadoId: string, facultadId: string): Facultad | null {
+      const apoderadoOriginal = this.obtenerEstadoOriginalApoderado(apoderadoId);
+      if (!apoderadoOriginal) {
+        return null;
+      }
+
+      const facultad = apoderadoOriginal.facultades.find((f) => f.id === facultadId);
+      return facultad || null;
+    },
+
+    /**
+     * Realiza una clonación profunda de un array de ApoderadoFacultad.
+     * @param apoderados Array de apoderados a clonar
+     * @returns Array clonado profundamente
+     */
+    clonarProfundoApoderadosFacultades(apoderados: ApoderadoFacultad[]): ApoderadoFacultad[] {
+      return apoderados.map((apoderado) => ({
+        ...apoderado,
+        facultades: apoderado.facultades.map((facultad) => {
+          // Clonar facultad base
+          const facultadClonada: Facultad = {
+            ...facultad,
+          };
+
+          // Si tiene reglasYLimites, clonar también limiteMonetario
+          if (facultad.reglasYLimites && "limiteMonetario" in facultad) {
+            const limiteMonetario = (facultad as Extract<Facultad, { reglasYLimites: true }>)
+              .limiteMonetario;
+            (facultadClonada as Extract<Facultad, { reglasYLimites: true }>).limiteMonetario =
+              limiteMonetario.map((limite) => {
+                // Clonar según el tipo de firma
+                if (limite.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA) {
+                  // Para firma conjunta, incluir firmantes
+                  return {
+                    ...limite,
+                    firmantes: limite.firmantes.map((firmante) => ({ ...firmante })),
+                  };
+                } else {
+                  // Para sola firma, no incluir firmantes
+                  return {
+                    ...limite,
+                  };
+                }
+              });
+          }
+
+          return facultadClonada;
+        }),
+      }));
+    },
+
+    // ========== Sección 7: Detección de Cambios ==========
+
+    /**
+     * Detecta cambios en una facultad comparando el estado original con el actual.
+     * @param apoderadoId ID del apoderado que contiene la facultad
+     * @param facultadId ID de la facultad a comparar
+     * @param facultadActual Opcional: Facultad actual transformada del modal. Si no se proporciona, se lee del store.
+     * @returns Objeto con los cambios detectados o null si no hay cambios
+     */
+    detectarCambiosFacultad(
+      apoderadoId: string,
+      facultadId: string,
+      facultadActual?: Facultad
+    ): {
+      hayCambios: boolean;
+      cambiosBase?: {
+        esIrrevocable?: boolean;
+        fechaInicio?: string;
+        fechaFin?: string;
+      };
+    } | null {
+      const facultadOriginal = this.obtenerEstadoOriginalFacultad(apoderadoId, facultadId);
+      if (!facultadOriginal) {
+        return null; // No existe en el original, es nueva
+      }
+
+      // Si no se proporciona facultadActual, leerla del store
+      let facultadActualParaComparar: Facultad | undefined = facultadActual;
+      if (!facultadActualParaComparar) {
+        const apoderadoActual =
+          this.apoderadosFacultades.find((a) => a.id === apoderadoId) ||
+          this.otrosApoderados.find((a) => a.id === apoderadoId);
+        if (!apoderadoActual) {
+          return null;
+        }
+        facultadActualParaComparar = apoderadoActual.facultades.find(
+          (f) => f.id === facultadId
+        );
+        if (!facultadActualParaComparar) {
+          return null; // Fue eliminada
+        }
+      }
+
+      const cambiosBase: {
+        esIrrevocable?: boolean;
+        fechaInicio?: string;
+        fechaFin?: string;
+      } = {};
+
+      // Comparar esIrrevocable
+      if (facultadOriginal.esIrrevocable !== facultadActualParaComparar.esIrrevocable) {
+        cambiosBase.esIrrevocable = facultadActualParaComparar.esIrrevocable;
+      }
+
+      // Comparar fechas (solo si es vigencia determinada)
+      if (
+        facultadOriginal.vigencia === TiempoVigenciaUIEnum.DETERMIADO &&
+        facultadActualParaComparar.vigencia === TiempoVigenciaUIEnum.DETERMIADO
+      ) {
+        if (facultadOriginal.fecha_inicio !== facultadActualParaComparar.fecha_inicio) {
+          cambiosBase.fechaInicio = facultadActualParaComparar.fecha_inicio;
+        }
+        if (facultadOriginal.fecha_fin !== facultadActualParaComparar.fecha_fin) {
+          cambiosBase.fechaFin = facultadActualParaComparar.fecha_fin;
+        }
+      }
+
+      const hayCambios = Object.keys(cambiosBase).length > 0;
+      return hayCambios ? { hayCambios: true, cambiosBase } : null;
+    },
+
+    /**
+     * Detecta cambios en las reglas monetarias de una facultad.
+     * @param apoderadoId ID del apoderado que contiene la facultad
+     * @param facultadId ID de la facultad
+     * @param facultadActual Opcional: Facultad actual transformada del modal. Si no se proporciona, se lee del store.
+     * @returns Array con las acciones detectadas (add, update, remove, updateSigners)
+     */
+    detectarCambiosReglasMonetarias(
+      apoderadoId: string,
+      facultadId: string,
+      facultadActual?: Facultad
+    ): Extract<
+      UpdateOtorgamientoPoderPayload,
+      { tieneReglasFirma: true }
+    >["reglasMonetarias"] {
+      const facultadOriginal = this.obtenerEstadoOriginalFacultad(apoderadoId, facultadId);
+
+      // Si no se proporciona facultadActual, leerla del store
+      let facultadActualParaComparar: Facultad | undefined = facultadActual;
+      if (!facultadActualParaComparar) {
+        const apoderadoActual =
+          this.apoderadosFacultades.find((a) => a.id === apoderadoId) ||
+          this.otrosApoderados.find((a) => a.id === apoderadoId);
+        if (!apoderadoActual) {
+          return [];
+        }
+        facultadActualParaComparar = apoderadoActual.facultades.find(
+          (f) => f.id === facultadId
+        );
+        if (!facultadActualParaComparar) {
+          return [];
+        }
+      }
+
+      // Si no tiene reglas en ninguno de los dos estados, no hay cambios
+      if (!facultadOriginal?.reglasYLimites && !facultadActualParaComparar.reglasYLimites) {
+        return [];
+      }
+
+      // Si tenía reglas y ahora no, todas se eliminaron
+      if (facultadOriginal?.reglasYLimites && !facultadActualParaComparar.reglasYLimites) {
+        return facultadOriginal.limiteMonetario.map((regla) => ({
+          accion: "remove" as const,
+          reglaId: regla.id,
+        }));
+      }
+
+      // Si no tenía reglas y ahora sí, todas se agregaron
+      if (!facultadOriginal?.reglasYLimites && facultadActualParaComparar.reglasYLimites) {
+        const facultadConReglas = facultadActualParaComparar as Extract<
+          Facultad,
+          { reglasYLimites: true }
+        >;
+        return facultadConReglas.limiteMonetario.map((regla) => ({
+          accion: "add" as const,
+          id: regla.id,
+          tipoMoneda: facultadConReglas.tipoMoneda,
+          montoDesde: regla.desde,
+          ...(regla.tipoMonto === TipoMontoUIEnum.MONTO
+            ? { tipoLimite: TipoMontoUIEnum.MONTO, montoHasta: regla.hasta }
+            : { tipoLimite: TipoMontoUIEnum.SIN_LIMITE }),
+          ...(regla.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA
+            ? {
+                tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
+                firmantes: regla.firmantes.map((f) => ({
+                  id: f.id,
+                  cantidad: f.cantidad,
+                  grupo: f.grupo,
+                })),
+              }
+            : { tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA }),
+        }));
+      }
+
+      // Ambos tienen reglas, comparar
+      if (facultadOriginal?.reglasYLimites && facultadActualParaComparar.reglasYLimites) {
+        const facultadOriginalConReglas = facultadOriginal as Extract<
+          Facultad,
+          { reglasYLimites: true }
+        >;
+        const facultadActualConReglas = facultadActualParaComparar as Extract<
+          Facultad,
+          { reglasYLimites: true }
+        >;
+        const reglasOriginales = facultadOriginalConReglas.limiteMonetario;
+        const reglasActuales = facultadActualConReglas.limiteMonetario;
+        const acciones: Extract<
+          UpdateOtorgamientoPoderPayload,
+          { tieneReglasFirma: true }
+        >["reglasMonetarias"] = [];
+
+        // Crear Maps para búsqueda rápida
+        const reglasOriginalesMap = new Map(reglasOriginales.map((r) => [r.id, r]));
+        const reglasActualesMap = new Map(reglasActuales.map((r) => [r.id, r]));
+
+        // Detectar reglas eliminadas (están en original pero no en actual)
+        reglasOriginales.forEach((reglaOriginal) => {
+          if (!reglasActualesMap.has(reglaOriginal.id)) {
+            acciones.push({
+              accion: "remove",
+              reglaId: reglaOriginal.id,
+            });
+          }
+        });
+
+        // Detectar reglas agregadas o actualizadas
+        reglasActuales.forEach((reglaActual) => {
+          const reglaOriginal = reglasOriginalesMap.get(reglaActual.id);
+
+          if (!reglaOriginal) {
+            // Nueva regla (add)
+            acciones.push({
+              accion: "add",
+              id: reglaActual.id,
+              tipoMoneda: facultadActualConReglas.tipoMoneda,
+              montoDesde: reglaActual.desde,
+              ...(reglaActual.tipoMonto === TipoMontoUIEnum.MONTO
+                ? { tipoLimite: TipoMontoUIEnum.MONTO, montoHasta: reglaActual.hasta }
+                : { tipoLimite: TipoMontoUIEnum.SIN_LIMITE }),
+              ...(reglaActual.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA
+                ? {
+                    tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
+                    firmantes: reglaActual.firmantes.map((f) => ({
+                      id: f.id,
+                      cantidad: f.cantidad,
+                      grupo: f.grupo,
+                    })),
+                  }
+                : { tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA }),
+            });
+          } else {
+            // Regla existente, verificar si cambió
+            // Puede retornar múltiples acciones (update y/o updateSigners)
+            const cambiosRegla = this.detectarCambiosEnRegla(
+              reglaOriginal,
+              reglaActual,
+              facultadActualConReglas.tipoMoneda
+            );
+            acciones.push(...cambiosRegla);
+          }
+        });
+
+        return acciones;
+      }
+
+      return [];
+    },
+
+    /**
+     * Detecta cambios en una regla monetaria específica.
+     * Puede retornar múltiples acciones si hay cambios tanto en la regla como en los firmantes.
+     * @param reglaOriginal Regla original
+     * @param reglaActual Regla actual
+     * @param tipoMoneda Tipo de moneda de la facultad (necesario para la acción update)
+     * @returns Array de acciones (update y/o updateSigners) o array vacío si no hay cambios
+     */
+    detectarCambiosEnRegla(
+      reglaOriginal: Extract<Facultad, { reglasYLimites: true }>["limiteMonetario"][number],
+      reglaActual: Extract<Facultad, { reglasYLimites: true }>["limiteMonetario"][number],
+      tipoMoneda: EntityCoinUIEnum
+    ): Extract<
+      UpdateOtorgamientoPoderPayload,
+      { tieneReglasFirma: true }
+    >["reglasMonetarias"] {
+      const acciones: Extract<
+        UpdateOtorgamientoPoderPayload,
+        { tieneReglasFirma: true }
+      >["reglasMonetarias"] = [];
+
+      // Comparar campos base
+      const cambioDesde = reglaOriginal.desde !== reglaActual.desde;
+      const cambioTipoMonto = reglaOriginal.tipoMonto !== reglaActual.tipoMonto;
+      const cambioHasta =
+        reglaOriginal.tipoMonto === TipoMontoUIEnum.MONTO &&
+        reglaActual.tipoMonto === TipoMontoUIEnum.MONTO &&
+        reglaOriginal.hasta !== reglaActual.hasta;
+      const cambioTipoFirma = reglaOriginal.tipoFirma !== reglaActual.tipoFirma;
+
+      // Si cambió el tipo de firma o hay cambios en campos base, agregar acción update
+      if (cambioDesde || cambioTipoMonto || cambioHasta || cambioTipoFirma) {
+        acciones.push({
+          accion: "update",
+          id: reglaActual.id,
+          tipoMoneda: tipoMoneda,
+          montoDesde: reglaActual.desde,
+          ...(reglaActual.tipoMonto === TipoMontoUIEnum.MONTO
+            ? { tipoLimite: TipoMontoUIEnum.MONTO, montoHasta: reglaActual.hasta }
+            : { tipoLimite: TipoMontoUIEnum.SIN_LIMITE }),
+        });
+      }
+
+      // Si es firma conjunta, verificar cambios en firmantes (independientemente de si hubo cambios en la regla)
+      if (
+        reglaOriginal.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA &&
+        reglaActual.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA
+      ) {
+        const cambiosFirmantes = this.detectarCambiosFirmantes(
+          reglaOriginal.firmantes,
+          reglaActual.firmantes
+        );
+        if (cambiosFirmantes.length > 0) {
+          acciones.push({
+            accion: "updateSigners",
+            reglaId: reglaActual.id,
+            firmantes: cambiosFirmantes,
+          });
+        }
+      }
+
+      return acciones; // Puede contener 0, 1 o 2 acciones
+    },
+
+    /**
+     * Detecta cambios en los firmantes de una regla.
+     * @param firmantesOriginales Firmantes originales
+     * @param firmantesActuales Firmantes actuales
+     * @returns Array con las acciones de firmantes (add, update, remove)
+     */
+    detectarCambiosFirmantes(
+      firmantesOriginales: Firmante[],
+      firmantesActuales: Firmante[]
+    ): Array<
+      | (Firmante & { accion: "add" })
+      | (Firmante & { accion: "update" })
+      | { accion: "remove"; signerId: string }
+    > {
+      const acciones: Array<
+        | (Firmante & { accion: "add" })
+        | (Firmante & { accion: "update" })
+        | { accion: "remove"; signerId: string }
+      > = [];
+
+      // Crear Maps para búsqueda rápida
+      const firmantesOriginalesMap = new Map(firmantesOriginales.map((f) => [f.id, f]));
+      const firmantesActualesMap = new Map(firmantesActuales.map((f) => [f.id, f]));
+
+      // Detectar firmantes eliminados
+      firmantesOriginales.forEach((firmanteOriginal) => {
+        if (!firmantesActualesMap.has(firmanteOriginal.id)) {
+          acciones.push({
+            accion: "remove",
+            signerId: firmanteOriginal.id,
+          });
+        }
+      });
+
+      // Detectar firmantes agregados o actualizados
+      firmantesActuales.forEach((firmanteActual) => {
+        const firmanteOriginal = firmantesOriginalesMap.get(firmanteActual.id);
+
+        if (!firmanteOriginal) {
+          // Nuevo firmante (add)
+          acciones.push({
+            accion: "add",
+            id: firmanteActual.id,
+            cantidad: firmanteActual.cantidad,
+            grupo: firmanteActual.grupo,
+          });
+        } else {
+          // Firmante existente, verificar si cambió
+          if (
+            firmanteOriginal.cantidad !== firmanteActual.cantidad ||
+            firmanteOriginal.grupo !== firmanteActual.grupo
+          ) {
+            acciones.push({
+              accion: "update",
+              id: firmanteActual.id,
+              cantidad: firmanteActual.cantidad,
+              grupo: firmanteActual.grupo,
+            });
+          }
+        }
+      });
+
+      return acciones;
+    },
+
+    // ========== Sección 8: Store (Métodos Create/Update) ==========
+
+    /**
+     * Convierte una Facultad (entidad) a CreateOtorgamientoPoderPayload
+     */
+    construirCreatePayload(
+      facultad: Facultad,
+      claseApoderadoId: string
+    ): CreateOtorgamientoPoderPayload {
+      const basePayload = {
+        id: facultad.id,
+        poderId: facultad.tipoFacultadId,
+        claseApoderadoId: claseApoderadoId,
+        esIrrevocable: facultad.esIrrevocable,
+        fechaInicio: new Date(
+          facultad.vigencia === TiempoVigenciaUIEnum.DETERMIADO
+            ? facultad.fecha_inicio
+            : new Date()
+        ),
+        fechaFin:
+          facultad.vigencia === TiempoVigenciaUIEnum.DETERMIADO
+            ? new Date(facultad.fecha_fin)
+            : undefined,
+      };
+
+      if (!facultad.reglasYLimites) {
+        return {
+          ...basePayload,
+          tieneReglasFirma: false,
+        };
+      }
+
+      return {
+        ...basePayload,
+        tieneReglasFirma: true,
+        reglasMonetarias: facultad.limiteMonetario.map((regla) => ({
+          id: regla.id,
+          tipoMoneda: facultad.tipoMoneda,
+          montoDesde: regla.desde,
+          ...(regla.tipoMonto === TipoMontoUIEnum.MONTO
+            ? { tipoLimite: TipoMontoUIEnum.MONTO, montoHasta: regla.hasta }
+            : { tipoLimite: TipoMontoUIEnum.SIN_LIMITE }),
+          ...(regla.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA
+            ? {
+                tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
+                firmantes: regla.firmantes.map((f) => ({
+                  id: f.id,
+                  cantidad: f.cantidad,
+                  grupo: f.grupo,
+                })),
+              }
+            : { tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA }),
+        })),
+      };
+    },
+
+    /**
+     * Construye el UpdateOtorgamientoPoderPayload a partir de los cambios detectados
+     */
+    construirUpdatePayload(
+      facultadId: string,
+      apoderadoId: string,
+      cambiosBase: {
+        esIrrevocable?: boolean;
+        fechaInicio?: string;
+        fechaFin?: string;
+      } | null,
+      cambiosReglas: Extract<
+        UpdateOtorgamientoPoderPayload,
+        { tieneReglasFirma: true }
+      >["reglasMonetarias"],
+      facultadActual: Facultad
+    ): UpdateOtorgamientoPoderPayload {
+      const basePayload = {
+        id: facultadId,
+        esIrrevocable: cambiosBase?.esIrrevocable ?? facultadActual.esIrrevocable,
+        fechaInicio: cambiosBase?.fechaInicio
+          ? new Date(cambiosBase.fechaInicio)
+          : facultadActual.vigencia === TiempoVigenciaUIEnum.DETERMIADO
+          ? new Date(facultadActual.fecha_inicio)
+          : new Date(),
+        fechaFin: cambiosBase?.fechaFin
+          ? new Date(cambiosBase.fechaFin)
+          : facultadActual.vigencia === TiempoVigenciaUIEnum.DETERMIADO
+          ? new Date(facultadActual.fecha_fin)
+          : undefined,
+      };
+
+      // Si hay cambios en reglas o si la facultad tiene reglas, incluir reglasMonetarias
+      if (cambiosReglas.length > 0 || facultadActual.reglasYLimites) {
+        return {
+          ...basePayload,
+          tieneReglasFirma: true,
+          reglasMonetarias: cambiosReglas,
+        };
+      }
+
+      return {
+        ...basePayload,
+        tieneReglasFirma: false,
+      };
+    },
+
+    /**
+     * Crea un nuevo otorgamiento de poder
+     * @param profileId ID del perfil de la sociedad
+     * @param tipo "clase" para apoderadosFacultades, "otro" para otrosApoderados
+     * @param apoderadoId ID del apoderado o clase
+     * @param facultad Facultad (entidad) a crear
+     * @param poderId ID del poder (tipo de facultad)
+     */
+    async createOtorgamientoPoder(
+      profileId: string,
+      tipo: "clase" | "otro",
+      apoderadoId: string,
+      facultad: Facultad,
+      poderId: string
+    ): Promise<void> {
+      try {
+        // Determinar claseApoderadoId según el tipo
+        let claseApoderadoId: string;
+        if (tipo === "otro") {
+          // Para "Otros Apoderados", usar el apoderadoId individual
+          claseApoderadoId = apoderadoId;
+        } else {
+          // Para clases normales, usar el claseApoderadoId del apoderado
+          const apoderado = this.apoderadosFacultades.find((a) => a.id === apoderadoId);
+          if (!apoderado) {
+            throw new Error(`Apoderado con ID ${apoderadoId} no encontrado`);
+          }
+          claseApoderadoId = apoderado.claseApoderadoId;
+        }
+
+        // Construir payload
+        const payload = this.construirCreatePayload(facultad, claseApoderadoId);
+        // Asegurar que el poderId sea el correcto
+        payload.poderId = poderId;
+
+        // Llamar al use case
+        await createOtorgamientoPoderUseCase.execute(profileId, payload);
+
+        // Actualizar estado local: agregar la nueva facultad al apoderado correspondiente
+        const apoderado =
+          tipo === "clase"
+            ? this.apoderadosFacultades.find((a) => a.id === apoderadoId)
+            : this.otrosApoderados.find((a) => a.id === apoderadoId);
+
+        if (apoderado) {
+          apoderado.facultades.push(facultad);
+        } else {
+          // Si no existe el apoderado, es un caso inesperado
+          console.warn(
+            `Apoderado con ID ${apoderadoId} no encontrado en el estado local después de crear otorgamiento`
+          );
+        }
+      } catch (error) {
+        console.error("Error al crear otorgamiento de poder:", error);
+        throw error;
+      }
+    },
+
+    /**
+     * Actualiza un otorgamiento de poder existente
+     * @param profileId ID del perfil de la sociedad
+     * @param tipo "clase" para apoderadosFacultades, "otro" para otrosApoderados
+     * @param apoderadoId ID del apoderado o clase
+     * @param facultadId ID de la facultad a actualizar
+     * @param facultadActual Opcional: Facultad actual transformada del modal. Si no se proporciona, se lee del store.
+     */
+    async updateOtorgamientoPoder(
+      profileId: string,
+      tipo: "clase" | "otro",
+      apoderadoId: string,
+      facultadId: string,
+      facultadActual?: Facultad
+    ): Promise<void> {
+      try {
+        // Detectar cambios usando la facultad actual del modal si se proporciona
+        const cambiosBase = this.detectarCambiosFacultad(
+          apoderadoId,
+          facultadId,
+          facultadActual
+        );
+        const cambiosReglas = this.detectarCambiosReglasMonetarias(
+          apoderadoId,
+          facultadId,
+          facultadActual
+        );
+
+        // Si no hay cambios, no hacer nada
+        if (!cambiosBase && cambiosReglas.length === 0) {
+          console.warn("No se detectaron cambios para actualizar");
+          return;
+        }
+
+        // Construir payload
+        // Si se proporciona facultadActual, usarla para obtener valores base; si no, leer del store
+        const facultadParaPayload =
+          facultadActual ||
+          (tipo === "clase"
+            ? this.apoderadosFacultades
+                .find((a) => a.id === apoderadoId)
+                ?.facultades.find((f) => f.id === facultadId)
+            : this.otrosApoderados
+                .find((a) => a.id === apoderadoId)
+                ?.facultades.find((f) => f.id === facultadId));
+
+        if (!facultadParaPayload) {
+          throw new Error(`Facultad con ID ${facultadId} no encontrada`);
+        }
+
+        const payload = this.construirUpdatePayload(
+          facultadId,
+          apoderadoId,
+          cambiosBase?.cambiosBase ?? null,
+          cambiosReglas,
+          facultadParaPayload
+        );
+
+        // Llamar al use case
+        await updateOtorgamientoPoderUseCase.execute(profileId, payload);
+
+        // Actualizar estado local directamente con los cambios
+        const apoderado =
+          tipo === "clase"
+            ? this.apoderadosFacultades.find((a) => a.id === apoderadoId)
+            : this.otrosApoderados.find((a) => a.id === apoderadoId);
+
+        if (apoderado && facultadActual) {
+          // Buscar la facultad en el estado local y reemplazarla con la versión actualizada
+          const indexFacultad = apoderado.facultades.findIndex((f) => f.id === facultadId);
+          if (indexFacultad !== -1) {
+            apoderado.facultades[indexFacultad] = facultadActual;
+          } else {
+            // Si no existe, agregarla (caso poco probable pero por seguridad)
+            apoderado.facultades.push(facultadActual);
+          }
+        }
+
+        // Limpiar estado original después de guardar exitosamente
+        this.limpiarEstadoOriginal();
+      } catch (error) {
+        console.error("Error al actualizar otorgamiento de poder:", error);
+        throw error;
+      }
+    },
   },
 });
 
@@ -421,4 +1145,6 @@ interface State {
   tipoFacultades: TipoFacultad[];
   apoderadosFacultades: ApoderadoFacultad[];
   otrosApoderados: ApoderadoFacultad[];
+  apoderadosFacultadesOriginal: ApoderadoFacultad[] | null;
+  otrosApoderadosOriginal: ApoderadoFacultad[] | null;
 }

@@ -7,7 +7,8 @@ import type {
 
 export interface ApoderadoFacultad {
   id: string;
-  nombre: string;
+  claseApoderadoId: string;
+  claseApoderadoNombre: string;
   facultades: Facultad[];
 }
 
@@ -15,7 +16,8 @@ export type Facultad = BaseFacultad & TipoVigencia & TipoReglas;
 
 interface BaseFacultad {
   id: string;
-  nombre: string;
+  tipoFacultadId: string;
+  tipoFacultadNombre: string;
 }
 
 type TipoVigencia = VigenciaIndefinida | VigenciaDeterminada;

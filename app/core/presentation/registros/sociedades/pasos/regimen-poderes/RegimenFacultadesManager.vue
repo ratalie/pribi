@@ -30,17 +30,6 @@
     handleCloseModal,
   } = useTiposFacultades(props.societyId ?? "");
 
-  onMounted(async () => {
-    if (props.societyId) {
-      try {
-        await regimenFacultadesStore.loadTipoFacultades(props.societyId);
-        await regimenFacultadesStore.loadApoderados(props.societyId);
-      } catch (error) {
-        console.error("Error al cargar apoderados:", error);
-      }
-    }
-  });
-
   const {
     facultadActions,
     isApoderadoFacultadesModalOpen,
@@ -48,7 +37,7 @@
     openModalFacultadApoderado,
     handleCloseModalApoderadoFacultad,
     handleSubmitApoderadoFacultad,
-  } = useApoderadosFacultades();
+  } = useApoderadosFacultades(props.societyId ?? "");
 
   const {
     facultadActions: facultadActionsOtros,
@@ -57,7 +46,18 @@
     openModalFacultadApoderado: openModalFacultadOtroApoderado,
     handleCloseModalApoderadoFacultad: handleCloseModalOtroApoderadoFacultad,
     handleSubmitApoderadoFacultad: handleSubmitOtroApoderadoFacultad,
-  } = useOtrosApoderadosFacultades();
+  } = useOtrosApoderadosFacultades(props.societyId ?? "");
+
+  onMounted(async () => {
+    if (props.societyId) {
+      try {
+        await regimenFacultadesStore.loadTipoFacultades(props.societyId);
+        await regimenFacultadesStore.loadOtorgamientosPoderes(props.societyId);
+      } catch (error) {
+        console.error("Error al cargar otorgamientos de poderes:", error);
+      }
+    }
+  });
 
   useFlowLayoutNext(() => {});
 </script>

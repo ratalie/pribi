@@ -2,18 +2,20 @@ import type { TipoFirmaEnum, TipoLimiteEnum, TipoMonedaEnum } from "../..";
 
 export interface OtorgamientoPoderResponseDTO {
   id: string;
-  poderId: string;
-  claseApoderadoId: string;
   apoderadoId?: string; // ID del apoderado individual (solo para "Otros Apoderados")
   poder: {
     id: string;
-    nombre: string;
-    archivoId: string | null;
-    archivo: ArchivoInfo | null;
+    name: string;
+    archivoId?: string | null;
+    archivo?: ArchivoInfo | null;
+  };
+  claseApoderado: {
+    id: string;
+    name: string;
   };
   esIrrevocable: boolean;
-  fechaInicio: Date;
-  fechaFin?: Date;
+  fechaInicio: string; // ISO string
+  fechaFin?: string; // ISO string
   tieneReglasFirma: boolean;
   reglasMonetarias: ReglaMonetariaResponseDto[];
 }
@@ -25,7 +27,7 @@ interface ReglaMonetariaResponseDto {
   tipoLimite: TipoLimiteEnum;
   montoHasta: number | null;
   tipoFirma: TipoFirmaEnum;
-  signers: FirmantesResponseDto[];
+  firmantes: FirmantesResponseDto[];
 }
 
 interface FirmantesResponseDto {
@@ -33,7 +35,7 @@ interface FirmantesResponseDto {
   claseApoderadoId: string;
   claseApoderado: {
     id: string;
-    nombre: string;
+    name: string;
   };
   cantidadMiembros: number;
 }

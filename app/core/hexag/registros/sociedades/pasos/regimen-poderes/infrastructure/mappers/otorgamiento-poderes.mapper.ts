@@ -232,7 +232,8 @@ export class OtorgamientoPoderesMapper {
   static deResponseDTOAFacultad(response: OtorgamientoPoderResponseDTO): Facultad {
     const baseFacultad = {
       id: response.id,
-      nombre: response.poder.nombre,
+      tipoFacultadId: response.poder.id,
+      tipoFacultadNombre: response.poder.name,
     };
 
     // Construir tipo de vigencia
@@ -315,10 +316,10 @@ export class OtorgamientoPoderesMapper {
     return {
       ...base,
       tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
-      firmantes: regla.signers.map((signer) => ({
+      firmantes: regla.firmantes.map((signer) => ({
         id: signer.id,
         cantidad: signer.cantidadMiembros,
-        grupo: signer.claseApoderado.nombre, // nombre de la clase → grupo
+        grupo: signer.claseApoderado.name, // name de la clase → grupo
       })),
     };
   }
@@ -338,11 +339,16 @@ export class OtorgamientoPoderesMapper {
   }
 
   /**
-   * Formatea una fecha Date a string YYYY-MM-DD
+   * Formatea una fecha Date o string ISO a string YYYY-MM-DD
    */
-  private static formatearFecha(fecha: Date): string {
+  private static formatearFecha(fecha: Date | string): string {
     if (typeof fecha === "string") {
-      return fecha;
+      // Si es string ISO, extraer solo la parte de fecha (YYYY-MM-DD)
+      const dateObj = new Date(fecha);
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const day = String(dateObj.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
     }
     const year = fecha.getFullYear();
     const month = String(fecha.getMonth() + 1).padStart(2, "0");
