@@ -35,13 +35,16 @@ export const useAsistenciaStore = defineStore('asistencia', {
   
   getters: {
     /**
-     * Asistencias enriquecidas con nombre completo
+     * Asistencias enriquecidas con nombre completo y representante
      */
     asistenciasEnriquecidas(): AsistenciaEnriquecida[] {
       return this.asistencias.map((asist) => ({
         ...asist,
         nombreCompleto: getNombreCompletoShareholder(asist.accionista),
         tipoPersona: asist.accionista.person.tipo,
+        nombreRepresentante: asist.representante
+          ? `${asist.representante.nombre} ${asist.representante.apellidoPaterno} ${asist.representante.apellidoMaterno || ''}`.trim()
+          : null,
       }));
     },
     
@@ -260,7 +263,7 @@ export const useAsistenciaStore = defineStore('asistencia', {
       console.debug('[Store][Asistencia] Eliminando representante', { registroId });
       
       try {
-        // Actualizar en backend
+        // Actualizar en backend (enviar sin representante)
         const repository = new AsistenciaHttpRepository();
         const useCase = new UpdateAsistenciaUseCase(repository);
         await useCase.execute(
@@ -271,11 +274,8 @@ export const useAsistenciaStore = defineStore('asistencia', {
           undefined // Sin representante
         );
         
-        // Actualizar en store
-        asistencia.representadoPorId = null;
-        
-        // Recalcular quórum
-        this.calcularQuorum();
+        // Recargar asistencias para obtener datos actualizados del backend
+        await this.loadAsistencias(societyId, flowId);
         
         console.debug('[Store][Asistencia] Representante eliminado', { registroId });
       } catch (error: any) {
@@ -339,6 +339,7 @@ export const useAsistenciaStore = defineStore('asistencia', {
 export interface AsistenciaEnriquecida extends Asistencia {
   nombreCompleto: string;
   tipoPersona: string;
+  nombreRepresentante: string | null;
 }
 
 /**
