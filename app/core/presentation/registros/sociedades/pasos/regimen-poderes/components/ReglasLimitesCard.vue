@@ -141,6 +141,13 @@
   const agregarLimite = () => {
     apoderadoFacultadStore.limiteMonetario.push(crearLimiteVacio());
   };
+
+  const eliminarLimite = (limiteId: string) => {
+    const index = apoderadoFacultadStore.limiteMonetario.findIndex((l) => l.id === limiteId);
+    if (index > -1 && apoderadoFacultadStore.limiteMonetario.length > 1) {
+      apoderadoFacultadStore.limiteMonetario.splice(index, 1);
+    }
+  };
 </script>
 
 <template>
@@ -176,7 +183,7 @@
         </div>
 
         <div
-          v-for="limite in apoderadoFacultadStore.limiteMonetario"
+          v-for="(limite, index) in apoderadoFacultadStore.limiteMonetario"
           :key="limite.id"
           class="flex flex-col gap-4 border p-4 rounded-md bg-gray-25"
         >
@@ -242,6 +249,16 @@
               :schema="selectTipoFirmaSchema"
               @update:model-value="(newVal: string) => handleTipoFirmaChange(newVal as TipoFirmasUIEnum, limite.id)"
             />
+
+            <BaseButton
+              v-if="index > 0"
+              type="button"
+              variant="ghost"
+              class="w-4 h-4"
+              @click="eliminarLimite(limite.id)"
+            >
+              <component :is="X" class="w-4 h-4" />
+            </BaseButton>
           </div>
 
           <!-- Firmantes -->
