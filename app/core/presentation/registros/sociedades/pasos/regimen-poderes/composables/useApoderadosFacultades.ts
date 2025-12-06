@@ -33,6 +33,10 @@ export const useApoderadosFacultades = (profileId: string) => {
     // Guardar estado original antes de editar
     regimenFacultadesStore.guardarEstadoOriginal("clase", idApod);
 
+    // Configurar información de la clase seleccionada
+    apoderadoFacultadStore.claseApoderadoIdSeleccionada = apoderado.claseApoderadoId;
+    apoderadoFacultadStore.esOtrosApoderados = false;
+
     const modalData = transformarFacultadAModal(facultad, regimenFacultadesStore);
 
     if (!modalData) {
@@ -70,6 +74,13 @@ export const useApoderadosFacultades = (profileId: string) => {
   ];
 
   const openModalFacultadApoderado = (id: string) => {
+    const apoderado = regimenFacultadesStore.apoderadosFacultades.find((a) => a.id === id);
+
+    if (apoderado) {
+      apoderadoFacultadStore.claseApoderadoIdSeleccionada = apoderado.claseApoderadoId;
+      apoderadoFacultadStore.esOtrosApoderados = false;
+    }
+
     idApoderado.value = id;
     modeModalApoderadoFacultad.value = "crear";
     isApoderadoFacultadesModalOpen.value = true;
@@ -79,6 +90,10 @@ export const useApoderadosFacultades = (profileId: string) => {
     // Limpiar estado original si se cancela la edición
     regimenFacultadesStore.limpiarEstadoOriginal();
     apoderadoFacultadStore.$reset();
+    // Limpiar estados adicionales
+    apoderadoFacultadStore.claseApoderadoIdSeleccionada = null;
+    apoderadoFacultadStore.claseFirmanteSeleccionada = null;
+    apoderadoFacultadStore.esOtrosApoderados = false;
     isApoderadoFacultadesModalOpen.value = false;
     idApoderado.value = null;
     idFacultad.value = null;

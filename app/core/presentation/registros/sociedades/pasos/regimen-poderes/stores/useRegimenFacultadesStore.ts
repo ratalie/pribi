@@ -50,6 +50,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
     otrosApoderados: [],
     apoderadosFacultadesOriginal: null,
     otrosApoderadosOriginal: null,
+    clasesApoderadosDisponibles: [],
   }),
 
   getters: {
@@ -276,6 +277,15 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             });
           });
         }
+
+        // Guardar clases disponibles con cantidad de apoderados (excluyendo "Otros Apoderados")
+        this.clasesApoderadosDisponibles = clasesApoderadoResponse
+          .filter((clase) => clase.nombre !== ClasesApoderadoEspecialesEnum.OTROS_APODERADOS)
+          .map((clase) => ({
+            id: clase.id,
+            nombre: clase.nombre,
+            cantidadApoderados: clase.apoderados?.length || 0,
+          }));
 
         // Actualizar el estado
         this.apoderadosFacultades = apoderadosClasesNormales;
@@ -795,26 +805,81 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
 
       // Si cambió el tipo de firma o hay cambios en campos base, agregar acción update
       if (cambioDesde || cambioTipoMonto || cambioHasta || cambioTipoFirma) {
-        acciones.push({
-          accion: "update",
-          id: reglaActual.id,
-          tipoMoneda: tipoMoneda,
-          montoDesde: reglaActual.desde,
-          ...(reglaActual.tipoMonto === TipoMontoUIEnum.MONTO
-            ? { tipoLimite: TipoMontoUIEnum.MONTO, montoHasta: reglaActual.hasta }
-            : { tipoLimite: TipoMontoUIEnum.SIN_LIMITE }),
-        });
+        // Solo incluir tipoFirma, NO los firmantes (se manejan en updateSigners)
+        if (reglaActual.tipoMonto === TipoMontoUIEnum.MONTO) {
+          // Con límite
+          if (reglaActual.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA) {
+            acciones.push({
+              accion: "update",
+              id: reglaActual.id,
+              tipoMoneda: tipoMoneda,
+              montoDesde: reglaActual.desde,
+              tipoLimite: TipoMontoUIEnum.MONTO,
+              montoHasta: reglaActual.hasta,
+              tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
+            });
+          } else {
+            acciones.push({
+              accion: "update",
+              id: reglaActual.id,
+              tipoMoneda: tipoMoneda,
+              montoDesde: reglaActual.desde,
+              tipoLimite: TipoMontoUIEnum.MONTO,
+              montoHasta: reglaActual.hasta,
+              tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA,
+            });
+          }
+        } else {
+          // Sin límite
+          if (reglaActual.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA) {
+            acciones.push({
+              accion: "update",
+              id: reglaActual.id,
+              tipoMoneda: tipoMoneda,
+              montoDesde: reglaActual.desde,
+              tipoLimite: TipoMontoUIEnum.SIN_LIMITE,
+              tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
+            });
+          } else {
+            acciones.push({
+              accion: "update",
+              id: reglaActual.id,
+              tipoMoneda: tipoMoneda,
+              montoDesde: reglaActual.desde,
+              tipoLimite: TipoMontoUIEnum.SIN_LIMITE,
+              tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA,
+            });
+          }
+        }
       }
 
-      // Si es firma conjunta, verificar cambios en firmantes (independientemente de si hubo cambios en la regla)
-      if (
-        reglaOriginal.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA &&
-        reglaActual.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA
-      ) {
-        const cambiosFirmantes = this.detectarCambiosFirmantes(
-          reglaOriginal.firmantes,
-          reglaActual.firmantes
-        );
+      // Si la regla actual es firma conjunta, verificar cambios en firmantes
+      // (independientemente de si hubo cambios en la regla o si la original era SOLA_FIRMA)
+      if (reglaActual.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA) {
+        let cambiosFirmantes: Array<
+          | (Firmante & { accion: "add" })
+          | (Firmante & { accion: "update" })
+          | { accion: "remove"; signerId: string }
+        >;
+
+        // Si la original era SOLA_FIRMA y la actual es FIRMA_CONJUNTA,
+        // todos los firmantes actuales son "add"
+        if (reglaOriginal.tipoFirma === TipoFirmasUIEnum.SOLA_FIRMA) {
+          cambiosFirmantes = reglaActual.firmantes.map((firmante) => ({
+            accion: "add" as const,
+            id: firmante.id,
+            cantidad: firmante.cantidad,
+            grupo: firmante.grupo,
+          }));
+        } else {
+          // Ambas son FIRMA_CONJUNTA, usar la lógica normal de detección
+          cambiosFirmantes = this.detectarCambiosFirmantes(
+            reglaOriginal.firmantes,
+            reglaActual.firmantes
+          );
+        }
+
+        // Solo agregar updateSigners si hay cambios en los firmantes
         if (cambiosFirmantes.length > 0) {
           acciones.push({
             accion: "updateSigners",
@@ -1147,4 +1212,9 @@ interface State {
   otrosApoderados: ApoderadoFacultad[];
   apoderadosFacultadesOriginal: ApoderadoFacultad[] | null;
   otrosApoderadosOriginal: ApoderadoFacultad[] | null;
+  clasesApoderadosDisponibles: Array<{
+    id: string;
+    nombre: string;
+    cantidadApoderados: number;
+  }>;
 }

@@ -1,3 +1,4 @@
+import type { TipoFirmaEnum } from "../../enums/tipo-firma.enum";
 import type {
   BaseOtorgamientoPoder,
   BaseReglaMonetaria,
@@ -51,7 +52,24 @@ type ActualizarFirmantesPorRegla = {
 
 //tipos complemtarios para las acciones
 type AgregarNuevaReglaMonetariaDTO = BaseReglaMonetaria & LimiteMonetarioDTO & TipoFirmaDTO;
-type ActualizarReglaMonetariaDTO = BaseReglaMonetaria & LimiteMonetarioDTO;
+
+// Para ActualizarReglaMonetariaDTO, el tipoFirma no incluye firmantes
+// porque los firmantes se manejan en una acción separada (updateSigners)
+type ActualizarReglaMonetariaDTO = BaseReglaMonetaria &
+  LimiteMonetarioDTO &
+  TipoFirmaActualizarDTO;
+
+// Tipo de firma para actualizar (sin firmantes, se manejan en updateSigners)
+type TipoFirmaActualizarDTO = SolaFirmaActualizar | FirmaConjuntaActualizar;
+
+interface SolaFirmaActualizar {
+  tipoFirma: TipoFirmaEnum.SOLA_FIRMA;
+}
+
+interface FirmaConjuntaActualizar {
+  tipoFirma: TipoFirmaEnum.FIRMA_CONJUNTA;
+  // No incluye firmantes porque se manejan en updateSigners
+}
 
 type UpdateFirmantesPorRegla = AgregarNuevoFirmante | ActualizarFirmante | EliminarFirmante;
 

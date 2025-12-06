@@ -22,8 +22,35 @@
     selectTipoMontoSchema,
   } from "../schemas/FacultadApoderado";
   import { useApoderadoFacultadStore } from "../stores/modal/useApoderadoFacultadStore";
+  import { useRegimenFacultadesStore } from "../stores/useRegimenFacultadesStore";
 
   const apoderadoFacultadStore = useApoderadoFacultadStore();
+  const regimenFacultadesStore = useRegimenFacultadesStore();
+
+  // Computed para obtener opciones de cantidad basadas en el grupo del firmante
+  const getCantidadFirmantesOptions = (grupoId: string | null | undefined) => {
+    if (!grupoId) {
+      return Array.from({ length: 10 }, (_, index) => ({
+        id: index + 1,
+        label: String(index + 1),
+        value: index + 1,
+      }));
+    }
+
+    const clase = regimenFacultadesStore.clasesApoderadosDisponibles.find(
+      (c) => c.id === grupoId
+    );
+
+    if (!clase || clase.cantidadApoderados === 0) {
+      return [];
+    }
+
+    return Array.from({ length: clase.cantidadApoderados }, (_, index) => ({
+      id: index + 1,
+      label: String(index + 1),
+      value: index + 1,
+    }));
+  };
 
   const crearLimiteVacio = () => ({
     id: uuidv4(),
@@ -39,6 +66,21 @@
     cantidad: "",
     grupo: "",
   });
+
+  const handleGrupoFirmanteChange = (newVal: string, limiteId: string, firmanteId: string) => {
+    const limite = apoderadoFacultadStore.limiteMonetario.find(
+      (limite) => limite.id === limiteId
+    );
+
+    if (!limite) return;
+
+    const firmante = limite.firmantes.find((f) => f.id === firmanteId);
+    if (firmante) {
+      firmante.grupo = newVal;
+      // Actualizar claseFirmanteSeleccionada para que el getter cantidadFirmantesOptions se actualice
+      apoderadoFacultadStore.claseFirmanteSeleccionada = newVal;
+    }
+  };
 
   const handleTipoFirmaChange = (newVal: TipoFirmasUIEnum, limiteId: string) => {
     const limite = apoderadoFacultadStore.limiteMonetario.find(
@@ -219,7 +261,7 @@
                     v-model="firmante.cantidad"
                     :name="`cantidad-firmantes-${limite.id}-${firmante.id}`"
                     placeholder="0"
-                    :options="apoderadoFacultadStore.cantidadFirmantesOptions"
+                    :options="getCantidadFirmantesOptions(firmante.grupo)"
                     :schema="selectCantidadFirmantesSchema"
                   />
                 </div>
@@ -229,7 +271,8 @@
                 </span>
                 <div>
                   <SelectInputZod
-                    v-model="firmante.grupo"
+                    :model-value="firmante.grupo"
+                    @update:model-value="(newVal: string) => handleGrupoFirmanteChange(newVal, limite.id, firmante.id)"
                     :name="`grupo-firmantes-${limite.id}-${firmante.id}`"
                     placeholder="Selecciona el grupo de firmantes"
                     :options="apoderadoFacultadStore.grupoFirmantesOptions"

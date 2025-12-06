@@ -17,7 +17,11 @@ import type {
   CreateReglaMonetariaPayload,
 } from "../../domain/entities/create-otorgamiento-poder.payload";
 import type { Facultad, Firmante } from "../../domain/entities/otorgamiento-poderes.entity";
-import type { UpdateOtorgamientoPoderPayload } from "../../domain/entities/update-otorgamiento-poder.payload";
+import type {
+  ActualizarReglaMonetariaPayload,
+  UpdateOtorgamientoPoderPayload,
+} from "../../domain/entities/update-otorgamiento-poder.payload";
+
 import { EntityCoinUIEnum } from "../../domain/enums/EntityCoinUIEnum";
 import { TiempoVigenciaUIEnum } from "../../domain/enums/TiempoVigenciaUIEnum";
 import { TipoFirmasUIEnum } from "../../domain/enums/TipoFirmasUIEnum";
@@ -129,6 +133,8 @@ export class OtorgamientoPoderesMapper {
         tipoMoneda: this.mapearTipoMoneda(regla.tipoMoneda),
         montoDesde: regla.montoDesde,
         ...this.mapearLimiteMonetario(regla),
+        // Para update, solo mapear tipoFirma sin firmantes (se manejan en updateSigners)
+        ...this.mapearTipoFirmaActualizar(regla),
       };
     }
 
@@ -203,7 +209,9 @@ export class OtorgamientoPoderesMapper {
   }
 
   /**
-   * Mapea TipoFirmasUIEnum a TipoFirmaDTO
+   * Mapea TipoFirmasUIEnum a TipoFirmaDTO (con firmantes)
+   * NOTA: No acepta ActualizarReglaMonetariaPayload porque ese tipo no incluye firmantes.
+   * Para actualizar, usar mapearTipoFirmaActualizar.
    */
   private static mapearTipoFirma(
     regla:
@@ -216,13 +224,38 @@ export class OtorgamientoPoderesMapper {
       };
     }
 
+    // TypeScript sabe que aquí regla.tipoFirma es FIRMA_CONJUNTA
+    // y que el tipo incluye firmantes (CreateReglaMonetariaPayload o el objeto con firmantes)
+    const reglaConFirmantes = regla as {
+      tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA;
+      firmantes?: Firmante[];
+    };
+
     return {
       tipoFirma: TipoFirmaEnum.FIRMA_CONJUNTA,
-      firmantes: (regla.firmantes ?? []).map((firmante) => ({
+      firmantes: (reglaConFirmantes.firmantes ?? []).map((firmante: Firmante) => ({
         id: firmante.id,
         claseApoderadoId: firmante.grupo, // grupo → claseApoderadoId
         cantidadMiembros: firmante.cantidad, // cantidad → cantidadMiembros
       })),
+    };
+  }
+
+  /**
+   * Mapea TipoFirmasUIEnum a TipoFirmaActualizarDTO (sin firmantes, para acción update)
+   */
+  private static mapearTipoFirmaActualizar(regla: ActualizarReglaMonetariaPayload): {
+    tipoFirma: TipoFirmaEnum;
+  } {
+    if (regla.tipoFirma === TipoFirmasUIEnum.SOLA_FIRMA) {
+      return {
+        tipoFirma: TipoFirmaEnum.SOLA_FIRMA,
+      };
+    }
+
+    // Para FIRMA_CONJUNTA en update, solo retornar tipoFirma sin firmantes
+    return {
+      tipoFirma: TipoFirmaEnum.FIRMA_CONJUNTA,
     };
   }
 

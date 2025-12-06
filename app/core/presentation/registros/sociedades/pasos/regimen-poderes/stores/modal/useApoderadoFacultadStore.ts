@@ -5,6 +5,7 @@ import {
   TipoFirmasUIEnum,
   TipoMontoUIEnum,
 } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
+import { useRegimenFacultadesStore } from "../useRegimenFacultadesStore";
 
 export const useApoderadoFacultadStore = defineStore("apoderadoFacultad", {
   state: (): State => ({
@@ -16,6 +17,9 @@ export const useApoderadoFacultadStore = defineStore("apoderadoFacultad", {
     fechaFin: "",
     tipoMoneda: EntityCoinUIEnum.SOLES,
     limiteMonetario: [],
+    claseApoderadoIdSeleccionada: null,
+    claseFirmanteSeleccionada: null,
+    esOtrosApoderados: false,
   }),
 
   getters: {
@@ -44,8 +48,26 @@ export const useApoderadoFacultadStore = defineStore("apoderadoFacultad", {
     },
 
     cantidadFirmantesOptions(): BaseSelectOption[] {
-      //por ahora solo se muestran las cantidades de 1 a 10
-      return Array.from({ length: 10 }, (_, index) => ({
+      // Si no hay clase de firmante seleccionada, retornar opciones por defecto (1-10)
+      if (!this.claseFirmanteSeleccionada) {
+        return Array.from({ length: 10 }, (_, index) => ({
+          id: index + 1,
+          label: String(index + 1),
+          value: index + 1,
+        }));
+      }
+
+      const regimenStore = useRegimenFacultadesStore();
+      const clase = regimenStore.clasesApoderadosDisponibles.find(
+        (c) => c.id === this.claseFirmanteSeleccionada
+      );
+
+      if (!clase || clase.cantidadApoderados === 0) {
+        return [];
+      }
+
+      // Generar opciones desde 1 hasta la cantidad de apoderados de la clase
+      return Array.from({ length: clase.cantidadApoderados }, (_, index) => ({
         id: index + 1,
         label: String(index + 1),
         value: index + 1,
@@ -53,12 +75,25 @@ export const useApoderadoFacultadStore = defineStore("apoderadoFacultad", {
     },
 
     grupoFirmantesOptions(): BaseSelectOption[] {
-      //por ahora solo se muestran los grupos de ejemplo
-      return [
-        { id: "1", label: "Gerente General", value: "Gerente General" },
-        { id: "2", label: "Apoderado de Grupo A", value: "Apoderado de Grupo A" },
-        { id: "3", label: "Apoderado de Grupo B", value: "Apoderado de Grupo B" },
-      ];
+      const regimenStore = useRegimenFacultadesStore();
+
+      // Si es "Otros Apoderados", mostrar TODAS las clases disponibles (sin filtrar)
+      if (this.esOtrosApoderados) {
+        return regimenStore.clasesApoderadosDisponibles.map((clase) => ({
+          id: clase.id,
+          label: clase.nombre,
+          value: clase.id,
+        }));
+      }
+
+      // Para clases normales, excluir la clase seleccionada
+      return regimenStore.clasesApoderadosDisponibles
+        .filter((clase) => clase.id !== this.claseApoderadoIdSeleccionada)
+        .map((clase) => ({
+          id: clase.id,
+          label: clase.nombre,
+          value: clase.id,
+        }));
     },
   },
 });
@@ -72,6 +107,9 @@ interface State {
   fechaFin: string;
   tipoMoneda: EntityCoinUIEnum;
   limiteMonetario: LimiteMonetarioModal[];
+  claseApoderadoIdSeleccionada: string | null;
+  claseFirmanteSeleccionada: string | null;
+  esOtrosApoderados: boolean;
 }
 
 export interface LimiteMonetarioModal {

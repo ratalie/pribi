@@ -1,4 +1,4 @@
-import type { Firmante } from "..";
+import type { Firmante, TipoFirmasUIEnum } from "..";
 import type {
   BaseOtorgamientoPoderPayload,
   BaseReglaMonetariaPayload,
@@ -54,7 +54,23 @@ type AgregarNuevaReglaMonetariaPayload = BaseReglaMonetariaPayload &
   LimiteMonetarioPayload &
   TipoFirmaPayload;
 
-type ActualizarReglaMonetariaPayload = BaseReglaMonetariaPayload & LimiteMonetarioPayload;
+// Para ActualizarReglaMonetariaPayload, el tipoFirma no incluye firmantes
+// porque los firmantes se manejan en una acción separada (updateSigners)
+export type ActualizarReglaMonetariaPayload = BaseReglaMonetariaPayload &
+  LimiteMonetarioPayload &
+  TipoFirmaActualizarPayload;
+
+// Tipo de firma para actualizar (sin firmantes, se manejan en updateSigners)
+type TipoFirmaActualizarPayload = SolaFirmaActualizarPayload | FirmaConjuntaActualizarPayload;
+
+interface SolaFirmaActualizarPayload {
+  tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA;
+}
+
+interface FirmaConjuntaActualizarPayload {
+  tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA;
+  // No incluye firmantes porque se manejan en updateSigners
+}
 
 type UpdateFirmantesPorRegla = AgregarNuevoFirmante | ActualizarFirmante | EliminarFirmante;
 
