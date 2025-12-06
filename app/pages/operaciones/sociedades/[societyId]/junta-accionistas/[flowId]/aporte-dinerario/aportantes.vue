@@ -396,9 +396,9 @@ onMounted(async () => {
               <Checkbox
                 :model-value="aportante.isContributor"
                 :disabled="aportante.typeShareholder === 'NUEVO_APORTANTE'"
-                @update:model-value="(value: boolean) => {
+                @update:model-value="(value: boolean | 'indeterminate') => {
                   // Solo permitir toggle si NO es NUEVO_APORTANTE
-                  if (aportante.typeShareholder !== 'NUEVO_APORTANTE') {
+                  if (aportante.typeShareholder !== 'NUEVO_APORTANTE' && typeof value === 'boolean') {
                     aportante.isContributor = value;
                     toggleAportante(aportante);
                   } else {

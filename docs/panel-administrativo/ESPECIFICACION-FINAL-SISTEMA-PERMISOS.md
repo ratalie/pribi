@@ -360,3 +360,5 @@ interface SocietyAssignment {
 **¿Todo claro?** ✅
 
 **¿Empezamos con la implementación?** 🚀
+
+
