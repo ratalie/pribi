@@ -2,7 +2,7 @@ import type { Shareholder } from './snapshot-complete.dto';
 
 /**
  * DTO para actualizar un registro de asistencia (PUT Request)
- * Basado en: FRONTEND_ATTENDANCE_GUIDE.md
+ * Basado en: FRONTEND_ATTENDANCE_GUIDE.md + REPRESENTANTES-IMPLEMENTACION-COMPLETA.md
  */
 export interface RegistroAsistenciaDto {
   /** UUID del registro de asistencia a actualizar */
@@ -11,8 +11,18 @@ export interface RegistroAsistenciaDto {
   /** Si el accionista asistió */
   attended: boolean;
   
-  /** UUID del accionista que lo representa (opcional) */
+  /** UUID del accionista que lo representa (opcional) - Opción 1 */
   representedById?: string;
+  
+  /** Datos completos del representante (opcional) - Opción 2 (NUEVO) */
+  representante?: {
+    nombre: string;
+    apellidoPaterno: string;
+    apellidoMaterno?: string;
+    tipoDocumento: string;
+    numeroDocumento: string;
+    paisEmision?: string;
+  };
   
   /** Si este accionista está representando a otro */
   isRepresentative: boolean;

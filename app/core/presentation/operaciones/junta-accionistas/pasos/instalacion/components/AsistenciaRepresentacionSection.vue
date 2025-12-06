@@ -133,12 +133,15 @@ async function saveRepresentante(representanteData: any) {
   });
 
   try {
-    // TODO: Aquí debería:
-    // 1. Crear la persona representante en el backend
-    // 2. Actualizar la asistencia con representadoPorId
-    // Por ahora, solo cerramos el modal
+    // ✅ Llamar al store con el objeto completo (backend crea PersonV2 automáticamente)
+    await asistenciaStore.asignarRepresentante(
+      props.societyId,
+      Number(props.flowId),
+      selectedAccionistaId.value,
+      representanteData
+    );
     
-    console.log("✅ [AsistenciaSection] Representante guardado (mock)");
+    console.log("✅ [AsistenciaSection] Representante asignado correctamente");
     closeRepresentanteModal();
   } catch (error) {
     console.error("❌ [AsistenciaSection] Error al guardar representante:", error);

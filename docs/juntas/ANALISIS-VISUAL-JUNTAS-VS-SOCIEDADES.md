@@ -414,3 +414,5 @@ app/core/presentation/operaciones/junta-accionistas/pasos/instalacion/
 
 **¿Procedemos con la implementación de Fase 1?** 🚀
 
+
+
