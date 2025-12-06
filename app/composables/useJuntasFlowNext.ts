@@ -1,5 +1,9 @@
 import { useJuntasFlowStore } from "~/stores/useJuntasFlowStore";
 import { useJuntasNavbarStore } from "~/stores/useJuntasNavbarStore";
+import { getBaseSectionsForSubStep } from "~/config/juntas/sections.config";
+import { getSectionRoutesForSubStep } from "~/config/juntas/navigation-routes.config";
+import { detectCurrentSection } from "~/utils/juntas/navigation.utils";
+import { buildBasePath } from "~/utils/juntas/route-detection.utils";
 
 type FlowNextHandler = (() => void) | (() => Promise<void>);
 
@@ -46,8 +50,52 @@ export const useJuntasFlowNext = (handleNext: FlowNextHandler) => {
       await handleNext();
       console.log("✅ [useJuntasFlowNext] handleNext completado exitosamente");
 
-      // Navegar al siguiente paso
-      console.log("🔍 [useJuntasFlowNext] Buscando siguiente paso para:", route.path);
+      // Intentar navegar entre secciones del sub-step actual primero
+      const currentSubStepId = juntasFlowStore.currentSubStepId;
+      console.log("🔍 [useJuntasFlowNext] Sub-step actual:", currentSubStepId);
+      
+      if (currentSubStepId) {
+        // Obtener las secciones del sub-step
+        const sections = getBaseSectionsForSubStep(currentSubStepId);
+        console.log("🔍 [useJuntasFlowNext] Secciones disponibles:", sections.map(s => s.id));
+        
+        if (sections.length > 0) {
+          // Detectar la sección actual
+          const path = route.path;
+          const hash = route.hash?.replace("#", "") || "";
+          const currentSectionId = detectCurrentSection(path, hash, currentSubStepId);
+          console.log("🔍 [useJuntasFlowNext] Sección actual detectada:", currentSectionId);
+          
+          // Encontrar el índice de la sección actual
+          const currentSectionIndex = sections.findIndex(s => s.id === currentSectionId);
+          console.log("🔍 [useJuntasFlowNext] Índice de sección actual:", currentSectionIndex);
+          
+          // Si hay una sección siguiente dentro del sub-step
+          if (currentSectionIndex >= 0 && currentSectionIndex < sections.length - 1) {
+            const nextSection = sections[currentSectionIndex + 1];
+            console.log("🔍 [useJuntasFlowNext] Siguiente sección encontrada:", nextSection.id);
+            
+            // Obtener la ruta de la siguiente sección
+            const societyId = route.params.societyId as string;
+            const flowId = route.params.flowId as string;
+            const basePath = buildBasePath(societyId, flowId);
+            const sectionRoutes = getSectionRoutesForSubStep(currentSubStepId, basePath);
+            
+            if (sectionRoutes && sectionRoutes[nextSection.id]) {
+              const nextRoute = sectionRoutes[nextSection.id];
+              console.log("🚀 [useJuntasFlowNext] Navegando a siguiente sección:", nextRoute);
+              await router.push(nextRoute);
+              console.log("✅ [useJuntasFlowNext] Navegación a sección completada");
+              return; // Salir temprano, ya navegamos
+            }
+          } else {
+            console.log("ℹ️ [useJuntasFlowNext] No hay más secciones en el sub-step, buscando siguiente paso principal");
+          }
+        }
+      }
+
+      // Si no hay más secciones en el sub-step, navegar al siguiente paso principal
+      console.log("🔍 [useJuntasFlowNext] Buscando siguiente paso principal para:", route.path);
       const nextStep = juntasNavbarStore.getNextStepByCurrentStep(route.path);
       console.log("🔍 [useJuntasFlowNext] Siguiente paso encontrado:", nextStep);
 

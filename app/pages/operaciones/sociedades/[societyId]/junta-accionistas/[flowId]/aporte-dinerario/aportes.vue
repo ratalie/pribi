@@ -2,8 +2,9 @@
 import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
+import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
-import { useAportesManagerStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/aportes/stores/useAportesManagerStore";
+import { useAportesManagerStore, type Aportante as AportanteFromStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/aportes/stores/useAportesManagerStore";
 import { useAportesStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/aportes/stores/useAportesStore";
 import AportesTable from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/aportes/components/tables/AportesTable.vue";
 import AporteModal from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/aportes/components/modals/AporteModal.vue";
@@ -44,26 +45,8 @@ interface Person {
   [key: string]: any;
 }
 
-interface Aportante {
-  id: string;
-  personId?: string;
-  typeShareholder: "ACCIONISTA" | "NUEVO_APORTANTE";
-  isContributor: boolean;
-  person: Person;
-  aportes?: Array<{
-    id: string;
-    accionistaId: string;
-    accion: { id: string; tipo: string; nombre?: string };
-    tipoMoneda: "PEN" | "USD";
-    monto: number;
-    montoConvertido?: number;
-    fechaContribucion: string;
-    accionesPorRecibir: number;
-    precioPorAccion: number;
-    capitalSocial: number;
-    premium: number;
-  }>;
-}
+// Usar el tipo Aportante del store para mantener consistencia
+type Aportante = AportanteFromStore;
 
 interface ApiResponse {
   success: boolean;
@@ -315,12 +298,48 @@ const totalAcciones = computed(() => {
 
 // Aportantes con sus aportes agrupados
 const aportantesConAportes = computed(() => {
-  // Agregar propiedad aportes vacía a cada aportante si no existe
-  const aportantesConAportesProp = aportantes.value.map((a) => ({
-    ...a,
-    aportes: a.aportes || [],
+  // Convertir aportantes locales a formato del store (con aportes vacíos si no existen)
+  const aportantesParaStore: Aportante[] = aportantes.value.map((a) => ({
+    id: a.id,
+    personId: a.personId,
+    typeShareholder: a.typeShareholder,
+    isContributor: a.isContributor,
+    person: {
+      id: a.person.id,
+      tipo: a.person.tipo,
+      nombre: a.person.nombre,
+      apellidoPaterno: a.person.apellidoPaterno,
+      apellidoMaterno: a.person.apellidoMaterno,
+      razonSocial: a.person.razonSocial,
+      tipoDocumento: a.person.tipoDocumento,
+      numeroDocumento: a.person.numeroDocumento,
+    },
+    aportes: [], // Se llenará desde el store
   }));
-  return aportesManagerStore.tablaAportes(aportantesConAportesProp);
+  
+  // El store agrupa los aportes por aportante
+  return aportesManagerStore.tablaAportes(aportantesParaStore);
+});
+
+// ========================================
+// NAVEGACIÓN
+// ========================================
+
+// Configurar el botón "Siguiente"
+useJuntasFlowNext(async () => {
+  console.log("🎯 [Aportes] Handler de Siguiente ejecutado");
+  
+  // Validar que haya al menos un aporte registrado
+  const totalAportes = aportesManagerStore.aportes.length;
+  
+  if (totalAportes === 0) {
+    const error = new Error("Debe registrar al menos un aporte para continuar");
+    console.error("❌ [Aportes] Error de validación:", error.message);
+    throw error;
+  }
+  
+  console.log("✅ [Aportes] Validación exitosa:", totalAportes, "aportes registrados");
+  // No es necesario guardar nada aquí, los datos ya están en el backend
 });
 
 // ========================================

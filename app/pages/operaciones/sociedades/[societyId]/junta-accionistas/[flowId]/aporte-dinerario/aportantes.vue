@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
+import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
 import AportanteModal from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/aportantes/components/AportanteModal.vue";
 
 /**
@@ -318,6 +319,27 @@ function getTipoBadgeClass(type: ContributorType): string {
     ? "bg-primary-100 text-primary-700 border-primary-300"
     : "bg-purple-100 text-purple-700 border-purple-300";
 }
+
+// ========================================
+// NAVEGACIÓN
+// ========================================
+
+// Configurar el botón "Siguiente"
+useJuntasFlowNext(async () => {
+  console.log("🎯 [Aportantes] Handler de Siguiente ejecutado");
+  
+  // Validar que haya al menos un aportante seleccionado
+  const aportantesSeleccionados = aportantes.value.filter((a) => a.isContributor);
+  
+  if (aportantesSeleccionados.length === 0) {
+    const error = new Error("Debe seleccionar al menos un aportante para continuar");
+    console.error("❌ [Aportantes] Error de validación:", error.message);
+    throw error;
+  }
+  
+  console.log("✅ [Aportantes] Validación exitosa:", aportantesSeleccionados.length, "aportantes seleccionados");
+  // No es necesario guardar nada aquí, los datos ya están en el backend
+});
 
 // ========================================
 // LIFECYCLE

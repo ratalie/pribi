@@ -3,68 +3,66 @@
  mswDisabled true
  <Suspense> is an experimental feature and its API will likely change.
  ✨ Nuxt DevTools  Press Shift + Alt + D to open DevTools 
- 🔵 [puntos-acuerdo] Acuerdos individuales encontrados: Array(14)
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/92/junta-accionistas/383/instalacion
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
+ 🔵 [puntos-acuerdo] Acuerdos individuales encontrados: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
  🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
  🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: instalacion
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
  🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
  🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
  🔴 [useJuntasSidebarExpansion] Old steps count: 0
  🔴 [useJuntasSidebarExpansion] New steps count: 6
  🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: instalacion
- 🔴 [useJuntasSidebarExpansion] Watch currentStepId cambiaron: instalacion
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
+ 🔴 [useJuntasSidebarExpansion] Watch currentStepId cambiaron: 
  🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: instalacion
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/92/junta-accionistas/383/instalacion
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
  🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
  🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: instalacion
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
  🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/92/junta-accionistas/383/instalacion
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
  🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
  🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: instalacion
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🟪 [useJuntasContentSidebar] hasRightSidebar (normal): Object
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
+ 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes', isResumenGeneral: false}
+ 🟦 [useJuntasSections] sections computed (normal): {currentSubStepId: 'aporte-dinerarios', detectedCurrentSection: 'seleccion-aportantes', sectionsCount: 5, sections: Array(5)}
+ 🟪 [useJuntasContentSidebar] hasRightSidebar (normal): {hasSubStep: true, hasSections: true, currentSubStepId: 'aporte-dinerarios', sectionsCount: 5, result: true}
  🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
  ✅ [useJuntasFlowNext] Handler configurado inmediatamente
- ✅ [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/92/junta-accionistas/383/instalacion
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/92/junta-accionistas/383/instalacion
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
+ ✅ [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
  🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
  🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: instalacion
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
  🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
+ 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes', isResumenGeneral: false}
+ 🟦 [useJuntasSections] sections computed (normal): {currentSubStepId: 'aporte-dinerarios', detectedCurrentSection: 'seleccion-aportantes', sectionsCount: 5, sections: Array(5)}
  🍍 "juntasNavbar" store installed 🆕
  🍍 "juntasFlow" store installed 🆕
  🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
  🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
  🔴 [useJuntasSidebarExpansion] Old steps count: 6
  🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
+ 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
  🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: instalacion
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
  🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
  🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -88,16 +86,16 @@
    📄 tagName: HTML
    📊 ESTADO ANTES:
      - className: ""
-     - classList: Array(0)
+     - classList: []
      - style.colorScheme: 
    🧹 Limpiando clases...
-     - Después de remove: Array(0)
+     - Después de remove: []
    ➕ Agregando clase: light
-     - Después de add: Array(1)
+     - Después de add: ['light']
    ✔️ Verificación classList.contains('light'): true
    📊 ESTADO DESPUÉS:
      - className: "light"
-     - classList: Array(1)
+     - classList: ['light']
    🎨 Actualizando color-scheme a: light
      - style.colorScheme: light
    🔍 Verificando variables CSS:
@@ -109,467 +107,407 @@
    💾 Configurando watcher de currentTheme...
  ✅ [onMounted] CONFIGURACIÓN COMPLETA
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- 🚀 [Instalacion] Página montada Object
- 📦 [Instalacion] Cargando snapshot...
- [Store][Snapshot] Cargando snapshot Object
- [withAuthHeaders] Token aplicado Object
- [Repository][JuntaHttp] getSnapshot() request Object
- 🍍 "snapshot" store installed 🆕
- 🍍 "meeting-details" store installed 🆕
- 🍍 "asistencia" store installed 🆕
+ [Aportantes] GET request {url: 'http://localhost:3000/api/v2/society-profile/5/register-assembly/1/participants'}
+ [withAuthHeaders] Token aplicado {hasSessionToken: true, usingFallbackToken: false, preview: 'eyJhbG…fJ5Y'}
+ 🍍 "accionistas-natural-form" store installed 🆕
+ 🍍 "accionistaJuridicoForm" store installed 🆕
+ 🍍 "accionistaSucursalForm" store installed 🆕
+ 🍍 "accionistaSucesionesIndivisasForm" store installed 🆕
+ 🍍 "accionistaFideicomisosForm" store installed 🆕
+ 🍍 "accionistaFondosInversionForm" store installed 🆕
+ 🍍 "personaNatural" store installed 🆕
  🍍 "auth" store installed 🆕
- [Repository][JuntaHttp] getSnapshot() response Object
- [Store][Snapshot] Snapshot cargado exitosamente Object
- ✅ [Instalacion] Snapshot cargado
- 📊 [Instalacion] Snapshot.directory: null
- 📊 [Instalacion] Snapshot.presidenteDirectorio: null
- 📊 [Instalacion] Snapshot.attorneys: Proxy(Array)
- 📄 [Instalacion] Cargando meeting details...
- [withAuthHeaders] Token aplicado Object
- [Repository][MeetingDetailsHttp] get() request Object
- [Repository][MeetingDetailsHttp] get() response Object
- [Mapper] meetingCallDtoToEntity Object
- [Mapper] meetingCallDtoToEntity Object
- [Repository][MeetingDetailsHttp] get() mapped Object
- [Store][MeetingDetails] Datos cargados: Object
- 🔵 [presidenteMode] SELECTOR (no tiene presidente asignado)
- 🔍 [asistentesOptions] Total asistencias: 0
- 🔍 [asistentesOptions] Asistencias enriquecidas: 0
- 🔍 [asistentesOptions] Primera asistencia: undefined
- 🔍 [asistentesOptions] Presentes (asistio=true): 0
- 🔍 [asistentesOptions] Presentes: Array(0)
- ✅ [asistentesOptions] Opciones generadas: Array(0)
- 🔍 [presidenteId.get] SELECTOR mode, usando meeting-details: 
- 🔍 [presidenteNombre] NO asistió, retornando vacío
- 🔵 [secretarioMode] SELECTOR (sin directorio)
- 🔍 [secretarioId.get] SELECTOR mode, usando meeting-details: 
- 🔍 [secretarioNombre] NO asistió, retornando vacío
- ⚠️ [gerenteGeneral] No hay gerenteGeneral en el snapshot
-(anonymous) @ MesaDirectivaSection…?t=1764934706296:40
- ╔═══════════════════════════════════════════════════════════════╗
- ║  🏛️ [MesaDirectiva] MONTADO - INICIANDO DEBUG              ║
- ╚═══════════════════════════════════════════════════════════════╝
- 🟦 [onMounted] presidenteAsistio.value: false
- 🟦 [onMounted] secretarioAsistio.value: false
- 📦 [MesaDirectiva] Snapshot completo: Proxy(Object)
- 📦 [MesaDirectiva] Snapshot Store (computed): Object
- 🎯 [MesaDirectiva] PRESIDENTE: Object
- 🎯 [MesaDirectiva] SECRETARIO: Object
- 👥 [MesaDirectiva] Asistentes presentes: Object
- ⚠️ [MesaDirectiva] NO auto-actualiza presidenteId: Object
-(anonymous) @ MesaDirectivaSection…t=1764934706296:322
- ⚠️ [MesaDirectiva] NO auto-actualiza secretarioId: Object
-(anonymous) @ MesaDirectivaSection…t=1764934706296:341
- ╔═══════════════════════════════════════════════════════════════╗
- ║  ✅ [MesaDirectiva] DEBUG COMPLETADO                        ║
- ╚═══════════════════════════════════════════════════════════════╝
- 
- 🎯 RESULTADO FINAL:
- El nombre del presidente es: NO ASIGNADO
- El nombre del secretario es: NO ASIGNADO
- El array de presentes es: Array(0)
- 
- ✅ [Instalacion] Meeting details cargado (ANTES de inicializar): Object
- 🔄 [Instalacion] Inicializando presidenteAsistio y secretarioAsistio a TRUE
- ✅ [Instalacion] Meeting details inicializado (DESPUÉS): Object
- 👥 [Instalacion] Cargando asistencias...
- [Store][Asistencia] Cargando asistencias Object
- [withAuthHeaders] Token aplicado Object
- [Repository][AsistenciaHttp] get() request Object
- [Repository][AsistenciaHttp] get() response Object
- [Store][Asistencia] Asistencias cargadas Object
- [Store][Asistencia] Datos: Object
- [Store][Asistencia] No hay quórums en el snapshot
-calcularQuorum @ asistencia.store.ts:219
- 🔍 [asistentesOptions] Total asistencias: 2
- 🔍 [asistentesOptions] Asistencias enriquecidas: 2
- 🔍 [asistentesOptions] Primera asistencia: Object
- 🔍 [asistentesOptions] Presentes (asistio=true): 0
- 🔍 [asistentesOptions] Presentes: Array(0)
- ✅ [asistentesOptions] Opciones generadas: Array(0)
- ✅ [Instalacion] Asistencias cargadas: 2
- 🍍 "registros-sociedad-historial" store installed 🆕
- 🍍 "juntas-historial" store installed 🆕
+ [Aportantes] GET response RAW: {success: true, message: 'Participantes listados correctamente.', data: Array(2), code: 200}
+ [Aportantes] GET response type: object
+ [Aportantes] GET response.data: (2) [{…}, {…}]
+ [Aportantes] GET response.data type: object
+ [Aportantes] GET response.data isArray: true
+ [Aportantes] GET response {count: 2}
+ 🖱️ [FooterNavigationButtons] Click en botón Siguiente
+ 🖱️ [FooterNavigationButtons] onNext es: function
+ 🖱️ [FooterNavigationButtons] onNext función: async () => {
+    console.log("🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón");
+    console.log("🎯 [useJuntasFlowNext] Ruta actual:", route.path);
+    try {
+      juntasFlowStore.isLoading = true;
+      console.log("⏳ [useJuntasFlowNext] Loading activado");
+      console.log("▶️ [useJuntasFlowNext] Ejecutando handleNext...");
+      await handleNext();
+      console.log("✅ [useJuntasFlowNext] handleNext completado exitosamente");
+      console.log("🔍 [useJuntasFlowNext] Buscando siguiente paso para:", route.path);
+      const nextStep = juntasNavbarStore.getNextStepByCurrentStep(route.path);
+      console.log("🔍 [useJuntasFlowNext] Siguiente paso encontrado:", nextStep);
+      if (nextStep) {
+        console.log("🚀 [useJuntasFlowNext] Navegando a:", nextStep.route);
+        await router.push(nextStep.route);
+        console.log("✅ [useJuntasFlowNext] Navegación completada");
+      } else {
+        console.warn("⚠️ [useJuntasFlowNext] No se encontró siguiente paso");
+        console.warn("⚠️ [useJuntasFlowNext] Pasos disponibles:", juntasNavbarStore.steps.map((s) => ({ title: s.title, route: s.route })));
+      }
+    } catch (error) {
+      console.error("❌ [useJuntasFlowNext] Error:", error);
+      throw error;
+    } finally {
+      juntasFlowStore.isLoading = false;
+      console.log("⏳ [useJuntasFlowNext] Loading desactivado");
+    }
+  }
+ 🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón
+ 🎯 [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+ ⏳ [useJuntasFlowNext] Loading activado
+ ▶️ [useJuntasFlowNext] Ejecutando handleNext...
+ 🎯 [Aportantes] Handler de Siguiente ejecutado
+ ✅ [Aportantes] Validación exitosa: 2 aportantes seleccionados
+ ✅ [useJuntasFlowNext] handleNext completado exitosamente
+ 🔍 [useJuntasFlowNext] Buscando siguiente paso para: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+ 🔍 [useJuntasFlowNext] Siguiente paso encontrado: null
+ ⚠️ [useJuntasFlowNext] No se encontró siguiente paso
+handler @ useJuntasFlowNext.ts:28
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:67
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bund…r.js?v=f0b3a718:721
+ ⚠️ [useJuntasFlowNext] Pasos disponibles: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+handler @ useJuntasFlowNext.ts:29
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:67
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bund…r.js?v=f0b3a718:721
+ ⏳ [useJuntasFlowNext] Loading desactivado
+ 🟦 [useJuntasNavigation] handleSectionClick: aportes-dinerarios
+ 🟦 [useJuntasNavigation] Navegando a ruta: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportes
+ 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes', isResumenGeneral: false}
+ 🟦 [useJuntasSections] sections computed (normal): {currentSubStepId: 'aporte-dinerarios', detectedCurrentSection: 'aportes-dinerarios', sectionsCount: 5, sections: Array(5)}
+ 🟪 [useJuntasContentSidebar] hasRightSidebar (normal): {hasSubStep: true, hasSections: true, currentSubStepId: 'aporte-dinerarios', sectionsCount: 5, result: true}
+ ✅ [useJuntasFlowNext] Handler configurado inmediatamente
+ ✅ [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportes
+ 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes', isResumenGeneral: false}
+ 🟦 [useJuntasSections] sections computed (normal): {currentSubStepId: 'aporte-dinerarios', detectedCurrentSection: 'aportes-dinerarios', sectionsCount: 5, sections: Array(5)}
+ [Store][Snapshot] Cargando snapshot {societyId: 5, flowId: 1}
+ [withAuthHeaders] Token aplicado {hasSessionToken: true, usingFallbackToken: false, preview: 'eyJhbG…fJ5Y'}
+ [Repository][JuntaHttp] getSnapshot() request {url: 'http://localhost:3000/api/v2/society-profile/5/register-assembly/1/snapshot/complete', societyId: 5, flowId: 1}
+ ℹ️ [useJuntasFlowNext] Handler ya fue reemplazado, no limpiar
+ 🍍 "snapshot" store installed 🆕
+ 🍍 "aportesManager" store installed 🆕
+ 🍍 "aportesForm" store installed 🆕
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportes
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
+ 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
+ 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
+ 🔴 [useJuntasSidebarExpansion] Old steps count: 6
+ 🔴 [useJuntasSidebarExpansion] New steps count: 6
+ 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
+ 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportes
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
+ 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
+ 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
+ 🔴 [useJuntasSidebarExpansion] Old steps count: 6
+ 🔴 [useJuntasSidebarExpansion] New steps count: 6
+ 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
+ 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportes
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
+ 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
+ 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
+ 🔴 [useJuntasSidebarExpansion] Old steps count: 6
+ 🔴 [useJuntasSidebarExpansion] New steps count: 6
+ 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
+ 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportes', isResumenGeneral: false}
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportes
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
+ 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
+ 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
+ 🔴 [useJuntasSidebarExpansion] Old steps count: 6
+ 🔴 [useJuntasSidebarExpansion] New steps count: 6
+ 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
+ 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportes', isResumenGeneral: false}
+ [Repository][JuntaHttp] getSnapshot() response {hasData: true, snapshotKeys: Array(24)}
+ [Store][Snapshot] Snapshot cargado exitosamente {accionistas: 2, quorums: Proxy(Object), tieneDirectorio: true}
+ [withAuthHeaders] Token aplicado {hasSessionToken: true, usingFallbackToken: false, preview: 'eyJhbG…fJ5Y'}
+ [AportesManagerStore] GET aportes {url: 'http://localhost:3000/api/v2/society-profile/5/register-assembly/1/contributions'}
+ [withAuthHeaders] Token aplicado {hasSessionToken: true, usingFallbackToken: false, preview: 'eyJhbG…fJ5Y'}
+ 🟦 [useJuntasNavigation] handleSectionClick: votacion
+ 🟦 [useJuntasNavigation] Navegando a ruta: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/votacion
+ 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportes', isResumenGeneral: false}
+ 🟦 [useJuntasSections] sections computed (normal): {currentSubStepId: 'aporte-dinerarios', detectedCurrentSection: 'votacion', sectionsCount: 5, sections: Array(5)}
+ 🟪 [useJuntasContentSidebar] hasRightSidebar (normal): {hasSubStep: true, hasSections: true, currentSubStepId: 'aporte-dinerarios', sectionsCount: 5, result: true}
+ ✅ [useJuntasFlowNext] Handler configurado inmediatamente
+ ✅ [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/votacion
+ 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportes', isResumenGeneral: false}
+ 🟦 [useJuntasSections] sections computed (normal): {currentSubStepId: 'aporte-dinerarios', detectedCurrentSection: 'votacion', sectionsCount: 5, sections: Array(5)}
+ ℹ️ [useJuntasFlowNext] Handler ya fue reemplazado, no limpiar
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/votacion
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
+ 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
+ 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
+ 🔴 [useJuntasSidebarExpansion] Old steps count: 6
+ 🔴 [useJuntasSidebarExpansion] New steps count: 6
+ 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
+ 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/votacion
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
+ 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
+ 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
+ 🔴 [useJuntasSidebarExpansion] Old steps count: 6
+ 🔴 [useJuntasSidebarExpansion] New steps count: 6
+ 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
+ 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/votacion
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
+ 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
+ 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
+ 🔴 [useJuntasSidebarExpansion] Old steps count: 6
+ 🔴 [useJuntasSidebarExpansion] New steps count: 6
+ 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
+ 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/votacion', isResumenGeneral: false}
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/votacion
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
+ 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
+ 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
+ 🔴 [useJuntasSidebarExpansion] Old steps count: 6
+ 🔴 [useJuntasSidebarExpansion] New steps count: 6
+ 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
+ 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/votacion', isResumenGeneral: false}
+ 🟦 [useJuntasNavigation] handleSectionClick: resumen
+ 🟦 [useJuntasNavigation] Navegando a ruta: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/resumen
+ 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/votacion', isResumenGeneral: false}
+ 🟦 [useJuntasSections] sections computed (normal): {currentSubStepId: 'aporte-dinerarios', detectedCurrentSection: 'resumen', sectionsCount: 5, sections: Array(5)}
+ 🟪 [useJuntasContentSidebar] hasRightSidebar (normal): {hasSubStep: true, hasSections: true, currentSubStepId: 'aporte-dinerarios', sectionsCount: 5, result: true}
+ 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/votacion', isResumenGeneral: false}
+ 🟦 [useJuntasSections] sections computed (normal): {currentSubStepId: 'aporte-dinerarios', detectedCurrentSection: 'resumen', sectionsCount: 5, sections: Array(5)}
  🧹 [useJuntasFlowNext] Limpiando handler al desmontar
- [withAuthHeaders] Token aplicado Object
- [Repository][SociedadHttp] list():request Object
- [Repository][SociedadHttp] list():response Object
- [Store][SociedadHistorial] Sociedades obtenidas Array(5)
- [withAuthHeaders] Token aplicado Object
- [Repository][JuntaHttp] create() request Object
- [Repository][JuntaHttp] create() response Object
- [Store][JuntaHistorial] Junta creada con id 384
- [withAuthHeaders] Token aplicado Object
- [Repository][JuntaHttp] getSnapshot() request Object
- [Repository][JuntaHttp] getSnapshot() response Object
- 
-================================================================================
- 📸 SNAPSHOT COMPLETO DE JUNTA
- ================================================================================
- Sociedad ID: 92
- Flow ID: 384
- 
-📋 RESUMEN:
-   • Accionistas: 2
-   • Clases de Acciones: 1
-   • Asignaciones: 2
-   • Directores: 0
-   • Apoderados: 0
-   • Valor Nominal: $1
-   • Tiene Directorio: No
-   • Tiene Quorums: No
- 
-📦 DATOS COMPLETOS:
- {
-  "shareholderId": "019aee4e-b1b0-7408-8bf0-d4eabaa89f3b",
-  "nominalValueId": "019aee4e-b1b0-7408-8bf0-d8cb311ad842",
-  "shareAllocationId": "019aee4e-b1b0-7408-8bf0-de0e9585c395",
-  "meetingConfigId": "019aee4e-b1b0-7408-8bf0-e21ade15041f",
-  "nominalValue": 1,
-  "shareClasses": [
-    {
-      "id": "019aee4e-b1b0-7408-8bf1-083532509cc3",
-      "tipo": "COMUN",
-      "cantidadSuscrita": 500,
-      "redimible": true,
-      "conDerechoVoto": false
-    }
-  ],
-  "shareholders": [
-    {
-      "id": "019aee4e-b1b0-7408-8bf0-f94388e2c341",
-      "person": {
-        "id": "019aee4e-b1b0-7408-8bf0-ff378c882fbb",
-        "tipo": "NATURAL",
-        "nombre": "Juan",
-        "apellidoPaterno": "Pérez",
-        "apellidoMaterno": "García",
-        "tipoDocumento": "DNI",
-        "numeroDocumento": "00000009"
-      }
-    },
-    {
-      "id": "019aee4e-b1b0-7408-8bf1-028b18848e61",
-      "person": {
-        "id": "019aee4e-b1b0-7408-8bf1-07149ca17bfa",
-        "tipo": "NATURAL",
-        "nombre": "María",
-        "apellidoPaterno": "González",
-        "apellidoMaterno": "López",
-        "tipoDocumento": "DNI",
-        "numeroDocumento": "00000010"
-      }
-    }
-  ],
-  "shareAllocations": [
-    {
-      "id": "019aee4e-b1b1-77c8-97c1-78127ae938dc",
-      "accionistaId": "019aee4e-b1b0-7408-8bf0-f94388e2c341",
-      "cantidadSuscrita": 300,
-      "precioPorAccion": 1,
-      "capitalSocial": null,
-      "prima": null,
-      "pagadoCompletamente": true,
-      "porcentajePagadoPorAccion": 100,
-      "dividendoPasivoTotal": 0
-    },
-    {
-      "id": "019aee4e-b1b1-77c8-97c1-7dfcd3c8d30d",
-      "accionistaId": "019aee4e-b1b0-7408-8bf1-028b18848e61",
-      "cantidadSuscrita": 200,
-      "precioPorAccion": 1,
-      "capitalSocial": null,
-      "prima": null,
-      "pagadoCompletamente": true,
-      "porcentajePagadoPorAccion": 100,
-      "dividendoPasivoTotal": 0
-    }
-  ],
-  "directory": null,
-  "directors": [],
-  "attorneyClasses": [],
-  "attorneys": [],
-  "gerenteGeneral": null,
-  "powers": null,
-  "quorums": null,
-  "specialAgreements": null,
-  "societyData": {
-    "ruc": "20000000521",
-    "reasonSocial": "Empresa Test 5",
-    "typeSociety": "S.A.C.",
-    "commercialName": "Empresa Test 5 S.A.C.",
-    "address": "Av. Principal 5",
-    "district": "San Isidro",
-    "province": "Lima",
-    "department": "Lima",
-    "registrationDate": "2024-01-01T00:00:00.000Z",
-    "foreignActivity": "Comercio",
-    "publicDeedDate": "2024-01-01T00:00:00.000Z",
-    "registryOffice": "LIM",
-    "registrationRecord": "12344"
-  },
-  "meetingConfig": {
-    "id": "019aee4e-b1b0-7408-8bf0-e21ade15041f",
-    "meetingType": "JUNTA_UNIVERSAL",
-    "isAnnualMandatory": false
-  },
-  "flowInfo": {
-    "flowStructureId": 384,
-    "currentStep": "INIT",
-    "statusProgression": "CREATED"
-  }
-}
- ================================================================================
-
- [withAuthHeaders] Token aplicado Object
- [Repository][JuntaHttp] list() request Object
- [Repository][JuntaHttp] list() response Object
- [Store][JuntaHistorial] Juntas obtenidas Array(3)
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/92/junta-accionistas/384/seleccion-agenda
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/resumen
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
  🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
  🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
  🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
  🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 0
+ 🔴 [useJuntasSidebarExpansion] Old steps count: 6
  🔴 [useJuntasSidebarExpansion] New steps count: 6
+ 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
  🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🔴 [useJuntasSidebarExpansion] Watch currentStepId cambiaron: seleccion-agenda
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/92/junta-accionistas/384/seleccion-agenda
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/resumen
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
  🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
  🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
  🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/92/junta-accionistas/384/seleccion-agenda
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
+ 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
+ 🔴 [useJuntasSidebarExpansion] Old steps count: 6
+ 🔴 [useJuntasSidebarExpansion] New steps count: 6
+ 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
+ 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/resumen
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
  🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
  🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🟪 [useJuntasContentSidebar] hasRightSidebar (normal): Object
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
  🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
+ 🔴 [useJuntasSidebarExpansion] Old steps count: 6
+ 🔴 [useJuntasSidebarExpansion] New steps count: 6
+ 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
+ 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/resumen', isResumenGeneral: false}
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/resumen
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
+ 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
+ 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
+ 🔴 [useJuntasSidebarExpansion] Old steps count: 6
+ 🔴 [useJuntasSidebarExpansion] New steps count: 6
+ 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
+ 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/resumen', isResumenGeneral: false}
+ 🟦 [useJuntasNavigation] handleSectionClick: seleccion-aportantes
+ 🟦 [useJuntasNavigation] Navegando a ruta: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+ 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/resumen', isResumenGeneral: false}
+ 🟦 [useJuntasSections] sections computed (normal): {currentSubStepId: 'aporte-dinerarios', detectedCurrentSection: 'seleccion-aportantes', sectionsCount: 5, sections: Array(5)}
+ 🟪 [useJuntasContentSidebar] hasRightSidebar (normal): {hasSubStep: true, hasSections: true, currentSubStepId: 'aporte-dinerarios', sectionsCount: 5, result: true}
  ✅ [useJuntasFlowNext] Handler configurado inmediatamente
- ✅ [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/92/junta-accionistas/384/seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/92/junta-accionistas/384/seleccion-agenda
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
+ ✅ [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+ 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/resumen', isResumenGeneral: false}
+ 🟦 [useJuntasSections] sections computed (normal): {currentSubStepId: 'aporte-dinerarios', detectedCurrentSection: 'seleccion-aportantes', sectionsCount: 5, sections: Array(5)}
+ [Aportantes] GET request {url: 'http://localhost:3000/api/v2/society-profile/5/register-assembly/1/participants'}
+ [withAuthHeaders] Token aplicado {hasSessionToken: true, usingFallbackToken: false, preview: 'eyJhbG…fJ5Y'}
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
  🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
  🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
  🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
  🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
  🔴 [useJuntasSidebarExpansion] Old steps count: 6
  🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
+ 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
  🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- [withAuthHeaders] Token aplicado Object
- [Repository][AgendaItemsHttp] get() request Object
- 🍍 "agenda-items" store installed 🆕
- [Repository][AgendaItemsHttp] get() response Object
- [Store][AgendaItems] Agenda items cargados Object
- 🟢 [useJuntasFlowStore] updateDynamicSubSteps: Array(1)
- 🟢 [useJuntasFlowStore] selectedSubSteps actualizado: Proxy(Array)
- 🟣 [useJuntasNavbarRoutes] Sub-steps en store cambiaron: Proxy(Array)
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
  🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
  🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps: Array(6)
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
  🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
  🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
  🔴 [useJuntasSidebarExpansion] Old steps count: 6
  🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
+ 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
  🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟣 [useJuntasNavbarRoutes] Sub-steps en store cambiaron: Proxy(Array)
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+ 🔴 [useJuntasSidebarExpansion] currentStepId: 
+ 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+ 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+ 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
  🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
  🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps: Array(6)
+ 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+ 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+ 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
  🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
  🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
  🔴 [useJuntasSidebarExpansion] Old steps count: 6
  🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
+ 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
  🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟣 [useJuntasNavbarRoutes] Sub-steps en store cambiaron: Proxy(Array)
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps: Array(6)
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟣 [useJuntasNavbarRoutes] Sub-steps en store cambiaron: Proxy(Array)
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps: Array(6)
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟢 [useJuntasFlowStore] updateDynamicSubSteps: Array(1)
- 🟢 [useJuntasFlowStore] selectedSubSteps actualizado: Proxy(Array)
- 🟣 [useJuntasNavbarRoutes] Sub-steps en store cambiaron: Proxy(Array)
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] Filtrando sub-steps. Total BASE_SUB_STEPS: 13
- 🟡 [juntaNavigation] Sub-step 'aporte-dinerarios': INCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aporte-no-dinerario': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'capitalizacion-creditos': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-nuevo-directorio': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'pronunciamiento-gestion': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aplicacion-resultados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'delegacion-auditores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-steps filtrados: 1 Array(1)
- 🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps: Array(6)
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟣 [useJuntasNavbarRoutes] Sub-steps en store cambiaron: Proxy(Array)
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] Filtrando sub-steps. Total BASE_SUB_STEPS: 13
- 🟡 [juntaNavigation] Sub-step 'aporte-dinerarios': INCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aporte-no-dinerario': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'capitalizacion-creditos': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-nuevo-directorio': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'pronunciamiento-gestion': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aplicacion-resultados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'delegacion-auditores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-steps filtrados: 1 Array(1)
- 🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps: Array(6)
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟣 [useJuntasNavbarRoutes] Sub-steps en store cambiaron: Proxy(Array)
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] Filtrando sub-steps. Total BASE_SUB_STEPS: 13
- 🟡 [juntaNavigation] Sub-step 'aporte-dinerarios': INCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aporte-no-dinerario': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'capitalizacion-creditos': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-nuevo-directorio': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'pronunciamiento-gestion': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aplicacion-resultados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'delegacion-auditores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-steps filtrados: 1 Array(1)
- 🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps: Array(6)
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟣 [useJuntasNavbarRoutes] Sub-steps en store cambiaron: Proxy(Array)
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] Filtrando sub-steps. Total BASE_SUB_STEPS: 13
- 🟡 [juntaNavigation] Sub-step 'aporte-dinerarios': INCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aporte-no-dinerario': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'capitalizacion-creditos': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-nuevo-directorio': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'pronunciamiento-gestion': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aplicacion-resultados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'delegacion-auditores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-steps filtrados: 1 Array(1)
- 🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps: Array(6)
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🖱️ [FooterNavigationButtons] Click en botón Siguiente
- 🖱️ [FooterNavigationButtons] onNext es: function
- 🖱️ [FooterNavigationButtons] onNext función: async () => {
+ 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+useJuntasSidebarExpansion.ts:38 🔴 [useJuntasSidebarExpansion] currentStepId: 
+useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+useJuntasResumenDetection.ts:22 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes', isResumenGeneral: false}
+useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+useJuntasNavbarRoutes.ts:231 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+junta-navigation.ts:248 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
+junta-navigation.ts:253 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
+junta-navigation.ts:257 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
+useJuntasNavbarRoutes.ts:236 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+useJuntasNavbarRoutes.ts:252 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: aporte-dinerarios
+useJuntasNavbarRoutes.ts:258 🟠 [useJuntasNavbarRoutes] Sub-step actual establecido en store: aporte-dinerarios
+useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+useJuntasSidebarExpansion.ts:129 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
+useJuntasSidebarExpansion.ts:130 🔴 [useJuntasSidebarExpansion] Old steps count: 6
+useJuntasSidebarExpansion.ts:131 🔴 [useJuntasSidebarExpansion] New steps count: 6
+useJuntasSidebarExpansion.ts:140 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: {old: 0, new: 0}
+useJuntasSidebarExpansion.ts:36 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
+useJuntasSidebarExpansion.ts:37 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array) {0: {…}, 1: {…}, 2: {…}, 3: {…}, 4: {…}, 5: {…}}
+useJuntasSidebarExpansion.ts:38 🔴 [useJuntasSidebarExpansion] currentStepId: 
+useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
+useJuntasResumenDetection.ts:22 🟦 [useJuntasResumenDetection] isResumenPage: {path: '/operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes', isResumenGeneral: false}
+aportantes.vue:140 [Aportantes] GET response RAW: {success: true, message: 'Participantes listados correctamente.', data: Array(2), code: 200}
+aportantes.vue:141 [Aportantes] GET response type: object
+aportantes.vue:142 [Aportantes] GET response.data: (2) [{…}, {…}]
+aportantes.vue:143 [Aportantes] GET response.data type: object
+aportantes.vue:144 [Aportantes] GET response.data isArray: true
+aportantes.vue:153 [Aportantes] GET response {count: 2}
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] Click en botón Siguiente
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext es: function
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext función: async () => {
     console.log("🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón");
     console.log("🎯 [useJuntasFlowNext] Ruta actual:", route.path);
     try {
@@ -597,170 +535,33 @@ calcularQuorum @ asistencia.store.ts:219
       console.log("⏳ [useJuntasFlowNext] Loading desactivado");
     }
   }
- 🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón
- 🎯 [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/92/junta-accionistas/384/seleccion-agenda
- ⏳ [useJuntasFlowNext] Loading activado
- ▶️ [useJuntasFlowNext] Ejecutando handleNext...
- [withAuthHeaders] Token aplicado Object
- [Repository][AgendaItemsHttp] update() request Object
- [Repository][AgendaItemsHttp] update() success Object
- [Store][AgendaItems] Agenda items guardados Object
- ✅ [useJuntasFlowNext] handleNext completado exitosamente
- 🔍 [useJuntasFlowNext] Buscando siguiente paso para: /operaciones/sociedades/92/junta-accionistas/384/seleccion-agenda
- 🔍 [useJuntasFlowNext] Siguiente paso encontrado: Proxy(Object)
- 🚀 [useJuntasFlowNext] Navegando a: /operaciones/sociedades/92/junta-accionistas/384/detalles
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- ✅ [useJuntasFlowNext] Handler configurado inmediatamente
- ✅ [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/92/junta-accionistas/384/detalles
- [ConvocatoriaSection] primeraModo.get() Object
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- [withAuthHeaders] Token aplicado Object
- [Repository][MeetingDetailsHttp] get() request Object
- ℹ️ [useJuntasFlowNext] Handler ya fue reemplazado, no limpiar
- ✅ [useJuntasFlowNext] Navegación completada
- ⏳ [useJuntasFlowNext] Loading desactivado
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/92/junta-accionistas/384/detalles
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] Filtrando sub-steps. Total BASE_SUB_STEPS: 13
- 🟡 [juntaNavigation] Sub-step 'aporte-dinerarios': INCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aporte-no-dinerario': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'capitalizacion-creditos': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-nuevo-directorio': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'pronunciamiento-gestion': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aplicacion-resultados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'delegacion-auditores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-steps filtrados: 1 Array(1)
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: detalles
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: detalles
- 🔴 [useJuntasSidebarExpansion] Watch currentStepId cambiaron: detalles
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: detalles
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/92/junta-accionistas/384/detalles
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] Filtrando sub-steps. Total BASE_SUB_STEPS: 13
- 🟡 [juntaNavigation] Sub-step 'aporte-dinerarios': INCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aporte-no-dinerario': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'capitalizacion-creditos': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-nuevo-directorio': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'pronunciamiento-gestion': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aplicacion-resultados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'delegacion-auditores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-steps filtrados: 1 Array(1)
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: detalles
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: detalles
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/92/junta-accionistas/384/detalles
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] Filtrando sub-steps. Total BASE_SUB_STEPS: 13
- 🟡 [juntaNavigation] Sub-step 'aporte-dinerarios': INCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aporte-no-dinerario': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'capitalizacion-creditos': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-nuevo-directorio': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'pronunciamiento-gestion': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aplicacion-resultados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'delegacion-auditores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-steps filtrados: 1 Array(1)
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: detalles
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: detalles
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/92/junta-accionistas/384/detalles
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] Filtrando sub-steps. Total BASE_SUB_STEPS: 13
- 🟡 [juntaNavigation] Sub-step 'aporte-dinerarios': INCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aporte-no-dinerario': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'capitalizacion-creditos': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-nuevo-directorio': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'pronunciamiento-gestion': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aplicacion-resultados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'delegacion-auditores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-steps filtrados: 1 Array(1)
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: detalles
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: detalles
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- [Repository][MeetingDetailsHttp] get() response Object
- [Repository][MeetingDetailsHttp] get() mapped Object
- [Store][MeetingDetails] Datos cargados: Object
- [ConvocatoriaSection] detalleModo.get() Object
- 🔄 [TipoJuntaSection] Cambiando de Universal a General
- [ConvocatoriaSection] primeraModo.get() Object
- [ConvocatoriaSection] primeraModo.get() Object
- 🖱️ [FooterNavigationButtons] Click en botón Siguiente
- 🖱️ [FooterNavigationButtons] onNext es: function
- 🖱️ [FooterNavigationButtons] onNext función: async () => {
+useJuntasFlowNext.ts:38 🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón
+useJuntasFlowNext.ts:39 🎯 [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:42 ⏳ [useJuntasFlowNext] Loading activado
+useJuntasFlowNext.ts:45 ▶️ [useJuntasFlowNext] Ejecutando handleNext...
+aportantes.vue:329 🎯 [Aportantes] Handler de Siguiente ejecutado
+aportantes.vue:340 ✅ [Aportantes] Validación exitosa: 2 aportantes seleccionados
+useJuntasFlowNext.ts:47 ✅ [useJuntasFlowNext] handleNext completado exitosamente
+useJuntasFlowNext.ts:50 🔍 [useJuntasFlowNext] Buscando siguiente paso para: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:52 🔍 [useJuntasFlowNext] Siguiente paso encontrado: null
+useJuntasFlowNext.ts:59 ⚠️ [useJuntasFlowNext] No se encontró siguiente paso
+handler @ useJuntasFlowNext.ts:59
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:60 ⚠️ [useJuntasFlowNext] Pasos disponibles: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+handler @ useJuntasFlowNext.ts:60
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:68 ⏳ [useJuntasFlowNext] Loading desactivado
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] Click en botón Siguiente
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext es: function
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext función: async () => {
     console.log("🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón");
     console.log("🎯 [useJuntasFlowNext] Ruta actual:", route.path);
     try {
@@ -788,280 +589,513 @@ calcularQuorum @ asistencia.store.ts:219
       console.log("⏳ [useJuntasFlowNext] Loading desactivado");
     }
   }
- 🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón
- 🎯 [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/92/junta-accionistas/384/detalles
- ⏳ [useJuntasFlowNext] Loading activado
- ▶️ [useJuntasFlowNext] Ejecutando handleNext...
- 🚀 [Detalles] Handler de 'Siguiente' ejecutado
- 🚀 [Detalles] societyId: 92
- 🚀 [Detalles] flowId: 384
- 🚀 [Detalles] meetingDetails: Proxy(Object)
- 💾 [Detalles] Iniciando guardado en backend...
- [withAuthHeaders] Token aplicado Object
- [Repository][MeetingDetailsHttp] update() request Object
- [Repository][MeetingDetailsHttp] update() response Object
- [Store][MeetingDetails] Datos actualizados: Proxy(Object)
- ✅ [Detalles] Guardado exitoso
- ✅ [Detalles] Handler completado, el composable navegará al siguiente paso
- ✅ [useJuntasFlowNext] handleNext completado exitosamente
- 🔍 [useJuntasFlowNext] Buscando siguiente paso para: /operaciones/sociedades/92/junta-accionistas/384/detalles
- 🔍 [useJuntasFlowNext] Siguiente paso encontrado: Proxy(Object)
- 🚀 [useJuntasFlowNext] Navegando a: /operaciones/sociedades/92/junta-accionistas/384/instalacion
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- ✅ [useJuntasFlowNext] Handler configurado inmediatamente
- ✅ [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/92/junta-accionistas/384/instalacion
- 🔵 [presidenteMode] SELECTOR (no tiene presidente asignado)
- 🔍 [asistentesOptions] Total asistencias: 2
- 🔍 [asistentesOptions] Asistencias enriquecidas: 2
- 🔍 [asistentesOptions] Primera asistencia: Object
- 🔍 [asistentesOptions] Presentes (asistio=true): 0
- 🔍 [asistentesOptions] Presentes: Array(0)
- ✅ [asistentesOptions] Opciones generadas: Array(0)
- 🔍 [presidenteId.get] SELECTOR mode, usando meeting-details: 
- 🔍 [presidenteNombre] NO asistió, retornando vacío
- 🔵 [secretarioMode] SELECTOR (sin directorio)
- 🔍 [secretarioId.get] SELECTOR mode, usando meeting-details: 
- 🔍 [secretarioNombre] NO asistió, retornando vacío
- ⚠️ [gerenteGeneral] No hay gerenteGeneral en el snapshot
-(anonymous) @ MesaDirectivaSection…?t=1764934706296:40
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- ╔═══════════════════════════════════════════════════════════════╗
- ║  🏛️ [MesaDirectiva] MONTADO - INICIANDO DEBUG              ║
- ╚═══════════════════════════════════════════════════════════════╝
- 🟦 [onMounted] presidenteAsistio.value: false
- 🟦 [onMounted] secretarioAsistio.value: false
- 📦 [MesaDirectiva] Snapshot completo: Proxy(Object)
- 📦 [MesaDirectiva] Snapshot Store (computed): Object
- 🎯 [MesaDirectiva] PRESIDENTE: Object
- 🎯 [MesaDirectiva] SECRETARIO: Object
- 👥 [MesaDirectiva] Asistentes presentes: Object
- ⚠️ [MesaDirectiva] NO auto-actualiza presidenteId: Object
-(anonymous) @ MesaDirectivaSection…t=1764934706296:322
- ⚠️ [MesaDirectiva] NO auto-actualiza secretarioId: Object
-(anonymous) @ MesaDirectivaSection…t=1764934706296:341
- ╔═══════════════════════════════════════════════════════════════╗
- ║  ✅ [MesaDirectiva] DEBUG COMPLETADO                        ║
- ╚═══════════════════════════════════════════════════════════════╝
- 
- 🎯 RESULTADO FINAL:
- El nombre del presidente es: NO ASIGNADO
- El nombre del secretario es: NO ASIGNADO
- El array de presentes es: Array(0)
- 
- 🚀 [Instalacion] Página montada Object
- 📦 [Instalacion] Cargando snapshot...
- [Store][Snapshot] Cargando snapshot Object
- [withAuthHeaders] Token aplicado Object
- [Repository][JuntaHttp] getSnapshot() request Object
- ℹ️ [useJuntasFlowNext] Handler ya fue reemplazado, no limpiar
- ✅ [useJuntasFlowNext] Navegación completada
- ⏳ [useJuntasFlowNext] Loading desactivado
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/92/junta-accionistas/384/instalacion
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] Filtrando sub-steps. Total BASE_SUB_STEPS: 13
- 🟡 [juntaNavigation] Sub-step 'aporte-dinerarios': INCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aporte-no-dinerario': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'capitalizacion-creditos': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-nuevo-directorio': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'pronunciamiento-gestion': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aplicacion-resultados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'delegacion-auditores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-steps filtrados: 1 Array(1)
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: instalacion
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: instalacion
- 🔴 [useJuntasSidebarExpansion] Watch currentStepId cambiaron: instalacion
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: instalacion
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/92/junta-accionistas/384/instalacion
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] Filtrando sub-steps. Total BASE_SUB_STEPS: 13
- 🟡 [juntaNavigation] Sub-step 'aporte-dinerarios': INCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aporte-no-dinerario': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'capitalizacion-creditos': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-nuevo-directorio': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'pronunciamiento-gestion': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aplicacion-resultados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'delegacion-auditores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-steps filtrados: 1 Array(1)
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: instalacion
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: instalacion
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/92/junta-accionistas/384/instalacion
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] Filtrando sub-steps. Total BASE_SUB_STEPS: 13
- 🟡 [juntaNavigation] Sub-step 'aporte-dinerarios': INCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aporte-no-dinerario': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'capitalizacion-creditos': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-nuevo-directorio': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'pronunciamiento-gestion': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aplicacion-resultados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'delegacion-auditores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-steps filtrados: 1 Array(1)
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: instalacion
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: instalacion
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/92/junta-accionistas/384/instalacion
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] Filtrando sub-steps. Total BASE_SUB_STEPS: 13
- 🟡 [juntaNavigation] Sub-step 'aporte-dinerarios': INCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aporte-no-dinerario': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'capitalizacion-creditos': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'remocion-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-gerente': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-apoderados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-directores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'nombramiento-nuevo-directorio': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'pronunciamiento-gestion': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'aplicacion-resultados': EXCLUIDO
- 🟡 [juntaNavigation] Sub-step 'delegacion-auditores': EXCLUIDO
- 🟡 [juntaNavigation] Sub-steps filtrados: 1 Array(1)
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: instalacion
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
-useJuntasSidebarExpansion.ts:38 🔴 [useJuntasSidebarExpansion] currentStepId: instalacion
-useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
-useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
-useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
-useJuntasResumenDetection.ts:22 🟦 [useJuntasResumenDetection] isResumenPage: Object
-junta.http.repository.ts:224 [Repository][JuntaHttp] getSnapshot() response Object
-snapshot.store.ts:154 [Store][Snapshot] Snapshot cargado exitosamente Object
-MesaDirectivaSection.vue:113 🔵 [presidenteMode] SELECTOR (no tiene presidente asignado)
-MesaDirectivaSection.vue:72 🔍 [asistentesOptions] Total asistencias: 2
-MesaDirectivaSection.vue:76 🔍 [asistentesOptions] Asistencias enriquecidas: 2
-MesaDirectivaSection.vue:80 🔍 [asistentesOptions] Primera asistencia: Object
-MesaDirectivaSection.vue:86 🔍 [asistentesOptions] Presentes (asistio=true): 0
-MesaDirectivaSection.vue:87 🔍 [asistentesOptions] Presentes: Array(0)
-MesaDirectivaSection.vue:94 ✅ [asistentesOptions] Opciones generadas: Array(0)
-MesaDirectivaSection.vue:179 🔍 [presidenteId.get] SELECTOR mode, usando meeting-details: 
-MesaDirectivaSection.vue:123 🔍 [presidenteNombre] NO asistió, retornando vacío
-MesaDirectivaSection.vue:272 🔵 [secretarioMode] SELECTOR (sin directorio)
-MesaDirectivaSection.vue:340 🔍 [secretarioId.get] SELECTOR mode, usando meeting-details: 
-MesaDirectivaSection.vue:282 🔍 [secretarioNombre] NO asistió, retornando vacío
-MesaDirectivaSection.vue:64 ⚠️ [gerenteGeneral] No hay gerenteGeneral en el snapshot
-(anonymous) @ MesaDirectivaSection.vue:64
-MesaDirectivaSection.vue:417 ╔═══════════════════════════════════════════════════════════════╗
-MesaDirectivaSection.vue:418 ║  🏛️ [MesaDirectiva] MONTADO - INICIANDO DEBUG              ║
-MesaDirectivaSection.vue:419 ╚═══════════════════════════════════════════════════════════════╝
-MesaDirectivaSection.vue:421 🟦 [onMounted] presidenteAsistio.value: false
-MesaDirectivaSection.vue:422 🟦 [onMounted] secretarioAsistio.value: false
-MesaDirectivaSection.vue:424 📦 [MesaDirectiva] Snapshot completo: Proxy(Object)
-MesaDirectivaSection.vue:425 📦 [MesaDirectiva] Snapshot Store (computed): Object
-MesaDirectivaSection.vue:434 🎯 [MesaDirectiva] PRESIDENTE: Object
-MesaDirectivaSection.vue:443 🎯 [MesaDirectiva] SECRETARIO: Object
-MesaDirectivaSection.vue:452 👥 [MesaDirectiva] Asistentes presentes: Object
-MesaDirectivaSection.vue:475 ⚠️ [MesaDirectiva] NO auto-actualiza presidenteId: Object
-(anonymous) @ MesaDirectivaSection.vue:475
-MesaDirectivaSection.vue:496 ⚠️ [MesaDirectiva] NO auto-actualiza secretarioId: Object
-(anonymous) @ MesaDirectivaSection.vue:496
-MesaDirectivaSection.vue:503 ╔═══════════════════════════════════════════════════════════════╗
-MesaDirectivaSection.vue:504 ║  ✅ [MesaDirectiva] DEBUG COMPLETADO                        ║
-MesaDirectivaSection.vue:505 ╚═══════════════════════════════════════════════════════════════╝
-MesaDirectivaSection.vue:510 
-MesaDirectivaSection.vue:511 🎯 RESULTADO FINAL:
-MesaDirectivaSection.vue:512 El nombre del presidente es: NO ASIGNADO
-MesaDirectivaSection.vue:513 El nombre del secretario es: NO ASIGNADO
-MesaDirectivaSection.vue:514 El array de presentes es: Array(0)
-MesaDirectivaSection.vue:515 
-index.vue:58 ✅ [Instalacion] Snapshot cargado
-index.vue:59 📊 [Instalacion] Snapshot.directory: null
-index.vue:60 📊 [Instalacion] Snapshot.presidenteDirectorio: null
-index.vue:64 📊 [Instalacion] Snapshot.attorneys: Proxy(Array)
-index.vue:67 📄 [Instalacion] Cargando meeting details...
-with-auth-headers.ts:54 [withAuthHeaders] Token aplicado Object
-meeting-details.http.repository.ts:44 [Repository][MeetingDetailsHttp] get() request Object
-meeting-details.http.repository.ts:53 [Repository][MeetingDetailsHttp] get() response Object
-meeting-details.mapper.ts:160 [Mapper] meetingCallDtoToEntity Object
-meeting-details.mapper.ts:160 [Mapper] meetingCallDtoToEntity Object
-meeting-details.http.repository.ts:57 [Repository][MeetingDetailsHttp] get() mapped Object
-meeting-details.store.ts:71 [Store][MeetingDetails] Datos cargados: Object
-MesaDirectivaSection.vue:179 🔍 [presidenteId.get] SELECTOR mode, usando meeting-details: 
-MesaDirectivaSection.vue:340 🔍 [secretarioId.get] SELECTOR mode, usando meeting-details: 
-index.vue:69 ✅ [Instalacion] Meeting details cargado (ANTES de inicializar): Object
-index.vue:75 🔄 [Instalacion] Inicializando presidenteAsistio y secretarioAsistio a TRUE
-index.vue:85 ✅ [Instalacion] Meeting details inicializado (DESPUÉS): Object
-index.vue:93 👥 [Instalacion] Cargando asistencias...
-asistencia.store.ts:97 [Store][Asistencia] Cargando asistencias Object
-with-auth-headers.ts:54 [withAuthHeaders] Token aplicado Object
-asistencia.http.repository.ts:55 [Repository][AsistenciaHttp] get() request Object
-asistencia.http.repository.ts:69 [Repository][AsistenciaHttp] get() response Object
-asistencia.store.ts:107 [Store][Asistencia] Asistencias cargadas Object
-asistencia.store.ts:120 [Store][Asistencia] Datos: Object
-asistencia.store.ts:289 [Store][Asistencia] No hay quórums en el snapshot
-calcularQuorum @ asistencia.store.ts:289
-MesaDirectivaSection.vue:72 🔍 [asistentesOptions] Total asistencias: 2
-MesaDirectivaSection.vue:76 🔍 [asistentesOptions] Asistencias enriquecidas: 2
-MesaDirectivaSection.vue:80 🔍 [asistentesOptions] Primera asistencia: Object
-MesaDirectivaSection.vue:86 🔍 [asistentesOptions] Presentes (asistio=true): 0
-MesaDirectivaSection.vue:87 🔍 [asistentesOptions] Presentes: Array(0)
-MesaDirectivaSection.vue:94 ✅ [asistentesOptions] Opciones generadas: Array(0)
-index.vue:95 ✅ [Instalacion] Asistencias cargadas: 2
-client:810 [vite] hot updated: /assets/tailwind.css
-client:810 [vite] hot updated: /pages/operaciones/sociedades/[societyId]/junta-accionistas/[flowId]/aporte-dinerario/aportantes.vue?macro=true
-client:810 [vite] hot updated: /@id/virtual:nuxt:%2Fhome%2Fyull23%2Flegal-factory%2Fprobo-frontend-v3-area-2%2F.nuxt%2Froutes.mjs
-useJuntasResumenDetection.ts:22 🟦 [useJuntasResumenDetection] isResumenPage: Object
-useJuntasResumenDetection.ts:22 🟦 [useJuntasResumenDetection] isResumenPage: Object
+useJuntasFlowNext.ts:38 🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón
+useJuntasFlowNext.ts:39 🎯 [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:42 ⏳ [useJuntasFlowNext] Loading activado
+useJuntasFlowNext.ts:45 ▶️ [useJuntasFlowNext] Ejecutando handleNext...
+aportantes.vue:329 🎯 [Aportantes] Handler de Siguiente ejecutado
+aportantes.vue:340 ✅ [Aportantes] Validación exitosa: 2 aportantes seleccionados
+useJuntasFlowNext.ts:47 ✅ [useJuntasFlowNext] handleNext completado exitosamente
+useJuntasFlowNext.ts:50 🔍 [useJuntasFlowNext] Buscando siguiente paso para: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:52 🔍 [useJuntasFlowNext] Siguiente paso encontrado: null
+useJuntasFlowNext.ts:59 ⚠️ [useJuntasFlowNext] No se encontró siguiente paso
+handler @ useJuntasFlowNext.ts:59
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:60 ⚠️ [useJuntasFlowNext] Pasos disponibles: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+handler @ useJuntasFlowNext.ts:60
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:68 ⏳ [useJuntasFlowNext] Loading desactivado
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] Click en botón Siguiente
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext es: function
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext función: async () => {
+    console.log("🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón");
+    console.log("🎯 [useJuntasFlowNext] Ruta actual:", route.path);
+    try {
+      juntasFlowStore.isLoading = true;
+      console.log("⏳ [useJuntasFlowNext] Loading activado");
+      console.log("▶️ [useJuntasFlowNext] Ejecutando handleNext...");
+      await handleNext();
+      console.log("✅ [useJuntasFlowNext] handleNext completado exitosamente");
+      console.log("🔍 [useJuntasFlowNext] Buscando siguiente paso para:", route.path);
+      const nextStep = juntasNavbarStore.getNextStepByCurrentStep(route.path);
+      console.log("🔍 [useJuntasFlowNext] Siguiente paso encontrado:", nextStep);
+      if (nextStep) {
+        console.log("🚀 [useJuntasFlowNext] Navegando a:", nextStep.route);
+        await router.push(nextStep.route);
+        console.log("✅ [useJuntasFlowNext] Navegación completada");
+      } else {
+        console.warn("⚠️ [useJuntasFlowNext] No se encontró siguiente paso");
+        console.warn("⚠️ [useJuntasFlowNext] Pasos disponibles:", juntasNavbarStore.steps.map((s) => ({ title: s.title, route: s.route })));
+      }
+    } catch (error) {
+      console.error("❌ [useJuntasFlowNext] Error:", error);
+      throw error;
+    } finally {
+      juntasFlowStore.isLoading = false;
+      console.log("⏳ [useJuntasFlowNext] Loading desactivado");
+    }
+  }
+useJuntasFlowNext.ts:38 🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón
+useJuntasFlowNext.ts:39 🎯 [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:42 ⏳ [useJuntasFlowNext] Loading activado
+useJuntasFlowNext.ts:45 ▶️ [useJuntasFlowNext] Ejecutando handleNext...
+aportantes.vue:329 🎯 [Aportantes] Handler de Siguiente ejecutado
+aportantes.vue:340 ✅ [Aportantes] Validación exitosa: 2 aportantes seleccionados
+useJuntasFlowNext.ts:47 ✅ [useJuntasFlowNext] handleNext completado exitosamente
+useJuntasFlowNext.ts:50 🔍 [useJuntasFlowNext] Buscando siguiente paso para: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:52 🔍 [useJuntasFlowNext] Siguiente paso encontrado: null
+useJuntasFlowNext.ts:59 ⚠️ [useJuntasFlowNext] No se encontró siguiente paso
+handler @ useJuntasFlowNext.ts:59
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:60 ⚠️ [useJuntasFlowNext] Pasos disponibles: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+handler @ useJuntasFlowNext.ts:60
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:68 ⏳ [useJuntasFlowNext] Loading desactivado
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] Click en botón Siguiente
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext es: function
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext función: async () => {
+    console.log("🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón");
+    console.log("🎯 [useJuntasFlowNext] Ruta actual:", route.path);
+    try {
+      juntasFlowStore.isLoading = true;
+      console.log("⏳ [useJuntasFlowNext] Loading activado");
+      console.log("▶️ [useJuntasFlowNext] Ejecutando handleNext...");
+      await handleNext();
+      console.log("✅ [useJuntasFlowNext] handleNext completado exitosamente");
+      console.log("🔍 [useJuntasFlowNext] Buscando siguiente paso para:", route.path);
+      const nextStep = juntasNavbarStore.getNextStepByCurrentStep(route.path);
+      console.log("🔍 [useJuntasFlowNext] Siguiente paso encontrado:", nextStep);
+      if (nextStep) {
+        console.log("🚀 [useJuntasFlowNext] Navegando a:", nextStep.route);
+        await router.push(nextStep.route);
+        console.log("✅ [useJuntasFlowNext] Navegación completada");
+      } else {
+        console.warn("⚠️ [useJuntasFlowNext] No se encontró siguiente paso");
+        console.warn("⚠️ [useJuntasFlowNext] Pasos disponibles:", juntasNavbarStore.steps.map((s) => ({ title: s.title, route: s.route })));
+      }
+    } catch (error) {
+      console.error("❌ [useJuntasFlowNext] Error:", error);
+      throw error;
+    } finally {
+      juntasFlowStore.isLoading = false;
+      console.log("⏳ [useJuntasFlowNext] Loading desactivado");
+    }
+  }
+useJuntasFlowNext.ts:38 🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón
+useJuntasFlowNext.ts:39 🎯 [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:42 ⏳ [useJuntasFlowNext] Loading activado
+useJuntasFlowNext.ts:45 ▶️ [useJuntasFlowNext] Ejecutando handleNext...
+aportantes.vue:329 🎯 [Aportantes] Handler de Siguiente ejecutado
+aportantes.vue:340 ✅ [Aportantes] Validación exitosa: 2 aportantes seleccionados
+useJuntasFlowNext.ts:47 ✅ [useJuntasFlowNext] handleNext completado exitosamente
+useJuntasFlowNext.ts:50 🔍 [useJuntasFlowNext] Buscando siguiente paso para: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:52 🔍 [useJuntasFlowNext] Siguiente paso encontrado: null
+useJuntasFlowNext.ts:59 ⚠️ [useJuntasFlowNext] No se encontró siguiente paso
+handler @ useJuntasFlowNext.ts:59
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:60 ⚠️ [useJuntasFlowNext] Pasos disponibles: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+handler @ useJuntasFlowNext.ts:60
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:68 ⏳ [useJuntasFlowNext] Loading desactivado
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] Click en botón Siguiente
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext es: function
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext función: async () => {
+    console.log("🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón");
+    console.log("🎯 [useJuntasFlowNext] Ruta actual:", route.path);
+    try {
+      juntasFlowStore.isLoading = true;
+      console.log("⏳ [useJuntasFlowNext] Loading activado");
+      console.log("▶️ [useJuntasFlowNext] Ejecutando handleNext...");
+      await handleNext();
+      console.log("✅ [useJuntasFlowNext] handleNext completado exitosamente");
+      console.log("🔍 [useJuntasFlowNext] Buscando siguiente paso para:", route.path);
+      const nextStep = juntasNavbarStore.getNextStepByCurrentStep(route.path);
+      console.log("🔍 [useJuntasFlowNext] Siguiente paso encontrado:", nextStep);
+      if (nextStep) {
+        console.log("🚀 [useJuntasFlowNext] Navegando a:", nextStep.route);
+        await router.push(nextStep.route);
+        console.log("✅ [useJuntasFlowNext] Navegación completada");
+      } else {
+        console.warn("⚠️ [useJuntasFlowNext] No se encontró siguiente paso");
+        console.warn("⚠️ [useJuntasFlowNext] Pasos disponibles:", juntasNavbarStore.steps.map((s) => ({ title: s.title, route: s.route })));
+      }
+    } catch (error) {
+      console.error("❌ [useJuntasFlowNext] Error:", error);
+      throw error;
+    } finally {
+      juntasFlowStore.isLoading = false;
+      console.log("⏳ [useJuntasFlowNext] Loading desactivado");
+    }
+  }
+useJuntasFlowNext.ts:38 🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón
+useJuntasFlowNext.ts:39 🎯 [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:42 ⏳ [useJuntasFlowNext] Loading activado
+useJuntasFlowNext.ts:45 ▶️ [useJuntasFlowNext] Ejecutando handleNext...
+aportantes.vue:329 🎯 [Aportantes] Handler de Siguiente ejecutado
+aportantes.vue:340 ✅ [Aportantes] Validación exitosa: 2 aportantes seleccionados
+useJuntasFlowNext.ts:47 ✅ [useJuntasFlowNext] handleNext completado exitosamente
+useJuntasFlowNext.ts:50 🔍 [useJuntasFlowNext] Buscando siguiente paso para: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:52 🔍 [useJuntasFlowNext] Siguiente paso encontrado: null
+useJuntasFlowNext.ts:59 ⚠️ [useJuntasFlowNext] No se encontró siguiente paso
+handler @ useJuntasFlowNext.ts:59
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:60 ⚠️ [useJuntasFlowNext] Pasos disponibles: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+handler @ useJuntasFlowNext.ts:60
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:68 ⏳ [useJuntasFlowNext] Loading desactivado
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] Click en botón Siguiente
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext es: function
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext función: async () => {
+    console.log("🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón");
+    console.log("🎯 [useJuntasFlowNext] Ruta actual:", route.path);
+    try {
+      juntasFlowStore.isLoading = true;
+      console.log("⏳ [useJuntasFlowNext] Loading activado");
+      console.log("▶️ [useJuntasFlowNext] Ejecutando handleNext...");
+      await handleNext();
+      console.log("✅ [useJuntasFlowNext] handleNext completado exitosamente");
+      console.log("🔍 [useJuntasFlowNext] Buscando siguiente paso para:", route.path);
+      const nextStep = juntasNavbarStore.getNextStepByCurrentStep(route.path);
+      console.log("🔍 [useJuntasFlowNext] Siguiente paso encontrado:", nextStep);
+      if (nextStep) {
+        console.log("🚀 [useJuntasFlowNext] Navegando a:", nextStep.route);
+        await router.push(nextStep.route);
+        console.log("✅ [useJuntasFlowNext] Navegación completada");
+      } else {
+        console.warn("⚠️ [useJuntasFlowNext] No se encontró siguiente paso");
+        console.warn("⚠️ [useJuntasFlowNext] Pasos disponibles:", juntasNavbarStore.steps.map((s) => ({ title: s.title, route: s.route })));
+      }
+    } catch (error) {
+      console.error("❌ [useJuntasFlowNext] Error:", error);
+      throw error;
+    } finally {
+      juntasFlowStore.isLoading = false;
+      console.log("⏳ [useJuntasFlowNext] Loading desactivado");
+    }
+  }
+useJuntasFlowNext.ts:38 🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón
+useJuntasFlowNext.ts:39 🎯 [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:42 ⏳ [useJuntasFlowNext] Loading activado
+useJuntasFlowNext.ts:45 ▶️ [useJuntasFlowNext] Ejecutando handleNext...
+aportantes.vue:329 🎯 [Aportantes] Handler de Siguiente ejecutado
+aportantes.vue:340 ✅ [Aportantes] Validación exitosa: 2 aportantes seleccionados
+useJuntasFlowNext.ts:47 ✅ [useJuntasFlowNext] handleNext completado exitosamente
+useJuntasFlowNext.ts:50 🔍 [useJuntasFlowNext] Buscando siguiente paso para: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:52 🔍 [useJuntasFlowNext] Siguiente paso encontrado: null
+useJuntasFlowNext.ts:59 ⚠️ [useJuntasFlowNext] No se encontró siguiente paso
+handler @ useJuntasFlowNext.ts:59
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:60 ⚠️ [useJuntasFlowNext] Pasos disponibles: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+handler @ useJuntasFlowNext.ts:60
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:68 ⏳ [useJuntasFlowNext] Loading desactivado
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] Click en botón Siguiente
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext es: function
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext función: async () => {
+    console.log("🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón");
+    console.log("🎯 [useJuntasFlowNext] Ruta actual:", route.path);
+    try {
+      juntasFlowStore.isLoading = true;
+      console.log("⏳ [useJuntasFlowNext] Loading activado");
+      console.log("▶️ [useJuntasFlowNext] Ejecutando handleNext...");
+      await handleNext();
+      console.log("✅ [useJuntasFlowNext] handleNext completado exitosamente");
+      console.log("🔍 [useJuntasFlowNext] Buscando siguiente paso para:", route.path);
+      const nextStep = juntasNavbarStore.getNextStepByCurrentStep(route.path);
+      console.log("🔍 [useJuntasFlowNext] Siguiente paso encontrado:", nextStep);
+      if (nextStep) {
+        console.log("🚀 [useJuntasFlowNext] Navegando a:", nextStep.route);
+        await router.push(nextStep.route);
+        console.log("✅ [useJuntasFlowNext] Navegación completada");
+      } else {
+        console.warn("⚠️ [useJuntasFlowNext] No se encontró siguiente paso");
+        console.warn("⚠️ [useJuntasFlowNext] Pasos disponibles:", juntasNavbarStore.steps.map((s) => ({ title: s.title, route: s.route })));
+      }
+    } catch (error) {
+      console.error("❌ [useJuntasFlowNext] Error:", error);
+      throw error;
+    } finally {
+      juntasFlowStore.isLoading = false;
+      console.log("⏳ [useJuntasFlowNext] Loading desactivado");
+    }
+  }
+useJuntasFlowNext.ts:38 🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón
+useJuntasFlowNext.ts:39 🎯 [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:42 ⏳ [useJuntasFlowNext] Loading activado
+useJuntasFlowNext.ts:45 ▶️ [useJuntasFlowNext] Ejecutando handleNext...
+aportantes.vue:329 🎯 [Aportantes] Handler de Siguiente ejecutado
+aportantes.vue:340 ✅ [Aportantes] Validación exitosa: 2 aportantes seleccionados
+useJuntasFlowNext.ts:47 ✅ [useJuntasFlowNext] handleNext completado exitosamente
+useJuntasFlowNext.ts:50 🔍 [useJuntasFlowNext] Buscando siguiente paso para: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:52 🔍 [useJuntasFlowNext] Siguiente paso encontrado: null
+useJuntasFlowNext.ts:59 ⚠️ [useJuntasFlowNext] No se encontró siguiente paso
+handler @ useJuntasFlowNext.ts:59
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:60 ⚠️ [useJuntasFlowNext] Pasos disponibles: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+handler @ useJuntasFlowNext.ts:60
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:68 ⏳ [useJuntasFlowNext] Loading desactivado
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] Click en botón Siguiente
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext es: function
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext función: async () => {
+    console.log("🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón");
+    console.log("🎯 [useJuntasFlowNext] Ruta actual:", route.path);
+    try {
+      juntasFlowStore.isLoading = true;
+      console.log("⏳ [useJuntasFlowNext] Loading activado");
+      console.log("▶️ [useJuntasFlowNext] Ejecutando handleNext...");
+      await handleNext();
+      console.log("✅ [useJuntasFlowNext] handleNext completado exitosamente");
+      console.log("🔍 [useJuntasFlowNext] Buscando siguiente paso para:", route.path);
+      const nextStep = juntasNavbarStore.getNextStepByCurrentStep(route.path);
+      console.log("🔍 [useJuntasFlowNext] Siguiente paso encontrado:", nextStep);
+      if (nextStep) {
+        console.log("🚀 [useJuntasFlowNext] Navegando a:", nextStep.route);
+        await router.push(nextStep.route);
+        console.log("✅ [useJuntasFlowNext] Navegación completada");
+      } else {
+        console.warn("⚠️ [useJuntasFlowNext] No se encontró siguiente paso");
+        console.warn("⚠️ [useJuntasFlowNext] Pasos disponibles:", juntasNavbarStore.steps.map((s) => ({ title: s.title, route: s.route })));
+      }
+    } catch (error) {
+      console.error("❌ [useJuntasFlowNext] Error:", error);
+      throw error;
+    } finally {
+      juntasFlowStore.isLoading = false;
+      console.log("⏳ [useJuntasFlowNext] Loading desactivado");
+    }
+  }
+useJuntasFlowNext.ts:38 🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón
+useJuntasFlowNext.ts:39 🎯 [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:42 ⏳ [useJuntasFlowNext] Loading activado
+useJuntasFlowNext.ts:45 ▶️ [useJuntasFlowNext] Ejecutando handleNext...
+aportantes.vue:329 🎯 [Aportantes] Handler de Siguiente ejecutado
+aportantes.vue:340 ✅ [Aportantes] Validación exitosa: 2 aportantes seleccionados
+useJuntasFlowNext.ts:47 ✅ [useJuntasFlowNext] handleNext completado exitosamente
+useJuntasFlowNext.ts:50 🔍 [useJuntasFlowNext] Buscando siguiente paso para: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:52 🔍 [useJuntasFlowNext] Siguiente paso encontrado: null
+useJuntasFlowNext.ts:59 ⚠️ [useJuntasFlowNext] No se encontró siguiente paso
+handler @ useJuntasFlowNext.ts:59
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:60 ⚠️ [useJuntasFlowNext] Pasos disponibles: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+handler @ useJuntasFlowNext.ts:60
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:68 ⏳ [useJuntasFlowNext] Loading desactivado
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] Click en botón Siguiente
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext es: function
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext función: async () => {
+    console.log("🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón");
+    console.log("🎯 [useJuntasFlowNext] Ruta actual:", route.path);
+    try {
+      juntasFlowStore.isLoading = true;
+      console.log("⏳ [useJuntasFlowNext] Loading activado");
+      console.log("▶️ [useJuntasFlowNext] Ejecutando handleNext...");
+      await handleNext();
+      console.log("✅ [useJuntasFlowNext] handleNext completado exitosamente");
+      console.log("🔍 [useJuntasFlowNext] Buscando siguiente paso para:", route.path);
+      const nextStep = juntasNavbarStore.getNextStepByCurrentStep(route.path);
+      console.log("🔍 [useJuntasFlowNext] Siguiente paso encontrado:", nextStep);
+      if (nextStep) {
+        console.log("🚀 [useJuntasFlowNext] Navegando a:", nextStep.route);
+        await router.push(nextStep.route);
+        console.log("✅ [useJuntasFlowNext] Navegación completada");
+      } else {
+        console.warn("⚠️ [useJuntasFlowNext] No se encontró siguiente paso");
+        console.warn("⚠️ [useJuntasFlowNext] Pasos disponibles:", juntasNavbarStore.steps.map((s) => ({ title: s.title, route: s.route })));
+      }
+    } catch (error) {
+      console.error("❌ [useJuntasFlowNext] Error:", error);
+      throw error;
+    } finally {
+      juntasFlowStore.isLoading = false;
+      console.log("⏳ [useJuntasFlowNext] Loading desactivado");
+    }
+  }
+useJuntasFlowNext.ts:38 🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón
+useJuntasFlowNext.ts:39 🎯 [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:42 ⏳ [useJuntasFlowNext] Loading activado
+useJuntasFlowNext.ts:45 ▶️ [useJuntasFlowNext] Ejecutando handleNext...
+aportantes.vue:329 🎯 [Aportantes] Handler de Siguiente ejecutado
+aportantes.vue:340 ✅ [Aportantes] Validación exitosa: 2 aportantes seleccionados
+useJuntasFlowNext.ts:47 ✅ [useJuntasFlowNext] handleNext completado exitosamente
+useJuntasFlowNext.ts:50 🔍 [useJuntasFlowNext] Buscando siguiente paso para: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:52 🔍 [useJuntasFlowNext] Siguiente paso encontrado: null
+useJuntasFlowNext.ts:59 ⚠️ [useJuntasFlowNext] No se encontró siguiente paso
+handler @ useJuntasFlowNext.ts:59
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:60 ⚠️ [useJuntasFlowNext] Pasos disponibles: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+handler @ useJuntasFlowNext.ts:60
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:68 ⏳ [useJuntasFlowNext] Loading desactivado
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] Click en botón Siguiente
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext es: function
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext función: async () => {
+    console.log("🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón");
+    console.log("🎯 [useJuntasFlowNext] Ruta actual:", route.path);
+    try {
+      juntasFlowStore.isLoading = true;
+      console.log("⏳ [useJuntasFlowNext] Loading activado");
+      console.log("▶️ [useJuntasFlowNext] Ejecutando handleNext...");
+      await handleNext();
+      console.log("✅ [useJuntasFlowNext] handleNext completado exitosamente");
+      console.log("🔍 [useJuntasFlowNext] Buscando siguiente paso para:", route.path);
+      const nextStep = juntasNavbarStore.getNextStepByCurrentStep(route.path);
+      console.log("🔍 [useJuntasFlowNext] Siguiente paso encontrado:", nextStep);
+      if (nextStep) {
+        console.log("🚀 [useJuntasFlowNext] Navegando a:", nextStep.route);
+        await router.push(nextStep.route);
+        console.log("✅ [useJuntasFlowNext] Navegación completada");
+      } else {
+        console.warn("⚠️ [useJuntasFlowNext] No se encontró siguiente paso");
+        console.warn("⚠️ [useJuntasFlowNext] Pasos disponibles:", juntasNavbarStore.steps.map((s) => ({ title: s.title, route: s.route })));
+      }
+    } catch (error) {
+      console.error("❌ [useJuntasFlowNext] Error:", error);
+      throw error;
+    } finally {
+      juntasFlowStore.isLoading = false;
+      console.log("⏳ [useJuntasFlowNext] Loading desactivado");
+    }
+  }
+useJuntasFlowNext.ts:38 🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón
+useJuntasFlowNext.ts:39 🎯 [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:42 ⏳ [useJuntasFlowNext] Loading activado
+useJuntasFlowNext.ts:45 ▶️ [useJuntasFlowNext] Ejecutando handleNext...
+aportantes.vue:329 🎯 [Aportantes] Handler de Siguiente ejecutado
+aportantes.vue:340 ✅ [Aportantes] Validación exitosa: 2 aportantes seleccionados
+useJuntasFlowNext.ts:47 ✅ [useJuntasFlowNext] handleNext completado exitosamente
+useJuntasFlowNext.ts:50 🔍 [useJuntasFlowNext] Buscando siguiente paso para: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:52 🔍 [useJuntasFlowNext] Siguiente paso encontrado: null
+useJuntasFlowNext.ts:59 ⚠️ [useJuntasFlowNext] No se encontró siguiente paso
+handler @ useJuntasFlowNext.ts:59
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:60 ⚠️ [useJuntasFlowNext] Pasos disponibles: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+handler @ useJuntasFlowNext.ts:60
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:68 ⏳ [useJuntasFlowNext] Loading desactivado
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] Click en botón Siguiente
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext es: function
+FooterNavigationButtons.vue:48 🖱️ [FooterNavigationButtons] onNext función: async () => {
+    console.log("🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón");
+    console.log("🎯 [useJuntasFlowNext] Ruta actual:", route.path);
+    try {
+      juntasFlowStore.isLoading = true;
+      console.log("⏳ [useJuntasFlowNext] Loading activado");
+      console.log("▶️ [useJuntasFlowNext] Ejecutando handleNext...");
+      await handleNext();
+      console.log("✅ [useJuntasFlowNext] handleNext completado exitosamente");
+      console.log("🔍 [useJuntasFlowNext] Buscando siguiente paso para:", route.path);
+      const nextStep = juntasNavbarStore.getNextStepByCurrentStep(route.path);
+      console.log("🔍 [useJuntasFlowNext] Siguiente paso encontrado:", nextStep);
+      if (nextStep) {
+        console.log("🚀 [useJuntasFlowNext] Navegando a:", nextStep.route);
+        await router.push(nextStep.route);
+        console.log("✅ [useJuntasFlowNext] Navegación completada");
+      } else {
+        console.warn("⚠️ [useJuntasFlowNext] No se encontró siguiente paso");
+        console.warn("⚠️ [useJuntasFlowNext] Pasos disponibles:", juntasNavbarStore.steps.map((s) => ({ title: s.title, route: s.route })));
+      }
+    } catch (error) {
+      console.error("❌ [useJuntasFlowNext] Error:", error);
+      throw error;
+    } finally {
+      juntasFlowStore.isLoading = false;
+      console.log("⏳ [useJuntasFlowNext] Loading desactivado");
+    }
+  }
+useJuntasFlowNext.ts:38 🎯 [useJuntasFlowNext] onClickNext ejecutado desde el botón
+useJuntasFlowNext.ts:39 🎯 [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:42 ⏳ [useJuntasFlowNext] Loading activado
+useJuntasFlowNext.ts:45 ▶️ [useJuntasFlowNext] Ejecutando handleNext...
+aportantes.vue:329 🎯 [Aportantes] Handler de Siguiente ejecutado
+aportantes.vue:340 ✅ [Aportantes] Validación exitosa: 2 aportantes seleccionados
+useJuntasFlowNext.ts:47 ✅ [useJuntasFlowNext] handleNext completado exitosamente
+useJuntasFlowNext.ts:50 🔍 [useJuntasFlowNext] Buscando siguiente paso para: /operaciones/sociedades/5/junta-accionistas/1/aporte-dinerario/aportantes
+useJuntasFlowNext.ts:52 🔍 [useJuntasFlowNext] Siguiente paso encontrado: null
+useJuntasFlowNext.ts:59 ⚠️ [useJuntasFlowNext] No se encontró siguiente paso
+handler @ useJuntasFlowNext.ts:59
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:60 ⚠️ [useJuntasFlowNext] Pasos disponibles: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+handler @ useJuntasFlowNext.ts:60
+await in handler
+_createVNode.onClick._cache.<computed>._cache.<computed> @ FooterNavigationButtons.vue:48
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=f0b3a718:204
+invoker @ runtime-dom.esm-bundler.js?v=f0b3a718:721
+useJuntasFlowNext.ts:68 ⏳ [useJuntasFlowNext] Loading desactivado
