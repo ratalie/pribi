@@ -265,12 +265,10 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             // El Map usa otorgamiento.apoderadoId como clave
             const facultades = otorgamientosPorApoderado.get(apoderado.id) || [];
 
-            // Si tiene otorgamientos, usar el apoderadoId del otorgamiento (que es la clave del Map)
-            // Si no tiene otorgamientos, generar UUID temporal para la UI
-            const apoderadoIdFinal = facultades.length > 0 ? apoderado.id : uuidv4();
-
+            // Para "Otros Apoderados", SIEMPRE usar el ID real del apoderado (apoderado.id)
+            // Este ID se usará como claseApoderadoId cuando se cree un otorgamiento
             otrosApoderadosList.push({
-              id: apoderadoIdFinal, // ID del apoderado del otorgamiento (si existe) o UUID temporal
+              id: apoderado.id, // Siempre el ID real del apoderado del backend
               claseApoderadoId: apoderado.claseApoderadoId, // ID de la clase "Otros Apoderados"
               claseApoderadoNombre: nombreCompleto, // Nombre de la persona
               facultades: facultades,
