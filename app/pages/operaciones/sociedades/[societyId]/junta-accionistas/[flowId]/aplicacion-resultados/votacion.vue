@@ -2,7 +2,7 @@
   <MetodoVotacio
     v-model="metodoVotacion"
     title="Votación sobre la aplicacion de resultados"
-    subtitle="Votación sobre la propuestas de aplicacion de resultadosl"
+    subtitle="Votación sobre la propuestas de aplicacion de resultados"
     title-color="text-primary-800"
     mensaje-unanimidad="Se aprobó la propuesta de aplicación de los resultados del ejercicio"
     :preguntas="preguntas"

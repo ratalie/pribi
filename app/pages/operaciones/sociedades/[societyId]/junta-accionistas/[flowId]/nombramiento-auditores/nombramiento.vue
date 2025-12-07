@@ -112,15 +112,16 @@
   import BaseInput from "~/components/base/inputs/text/BaseInput.vue";
   import Switch from "~/components/ui/switch/Switch.vue";
   import VDropdownComponent from "~/components/VDropdownComponent.vue";
+  import { useAuditoresStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-auditores/composables/useAuditoresStore";
 
   definePageMeta({
     layout: "registros",
     flowLayoutJuntas: true,
   });
 
+  const { nombreAuditor } = useAuditoresStore();
   const tieneAuditores = ref(false);
   const responsableSeleccionado = ref("");
-  const nombreAuditor = ref("");
 
   const responsables = [
     {
