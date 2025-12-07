@@ -1,9 +1,34 @@
 import type { TipoFirmaEnum, TipoLimiteEnum, TipoMonedaEnum } from "../..";
+import type { ScopeEnum } from "../../enums/scope.enum";
 
-export interface BaseOtorgamientoPoder {
+// Tipo base para UPDATE (sin poderId ni claseApoderadoId porque no se pueden cambiar)
+export interface BaseOtorgamientoPoderUpdate {
+  id: string;
+  esIrrevocable: boolean;
+  fechaInicio: Date;
+  fechaFin?: Date;
+}
+
+// Tipo base para CREATE con scope (discriminated union)
+export type BaseOtorgamientoPoderCreate =
+  | BaseOtorgamientoPoderCreateClase
+  | BaseOtorgamientoPoderCreateApoderado;
+
+interface BaseOtorgamientoPoderCreateClase {
   id: string;
   poderId: string;
+  scope: ScopeEnum.CLASS;
   claseApoderadoId: string;
+  esIrrevocable: boolean;
+  fechaInicio: Date;
+  fechaFin?: Date;
+}
+
+interface BaseOtorgamientoPoderCreateApoderado {
+  id: string;
+  poderId: string;
+  scope: ScopeEnum.ATTORNEY;
+  apoderadoId: string;
   esIrrevocable: boolean;
   fechaInicio: Date;
   fechaFin?: Date;

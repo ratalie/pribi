@@ -1,11 +1,12 @@
 import type {
-  BaseOtorgamientoPoderPayload,
+  BaseOtorgamientoPoderPayloadCreate,
   BaseReglaMonetariaPayload,
   LimiteMonetarioPayload,
   TipoFirmaPayload,
 } from "./otorgamiento-poderes-payload-base";
 
-export type CreateOtorgamientoPoderPayload = BaseOtorgamientoPoderPayload & ReglaMonetaria;
+export type CreateOtorgamientoPoderPayload = BaseOtorgamientoPoderPayloadCreate &
+  ReglaMonetaria;
 
 //reglas monetarias
 type ReglaMonetaria = ConReglasMonetarias | SinReglasMonetarias;

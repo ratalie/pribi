@@ -1,15 +1,12 @@
 import type { Firmante, TipoFirmasUIEnum } from "..";
 import type {
-  BaseOtorgamientoPoderPayload,
+  BaseOtorgamientoPoderPayloadUpdate,
   BaseReglaMonetariaPayload,
   LimiteMonetarioPayload,
   TipoFirmaPayload,
 } from "./otorgamiento-poderes-payload-base";
 
-export type UpdateOtorgamientoPoderPayload = Omit<
-  BaseOtorgamientoPoderPayload,
-  "poderId" | "claseApoderadoId"
-> &
+export type UpdateOtorgamientoPoderPayload = BaseOtorgamientoPoderPayloadUpdate &
   ReglaMonetaria;
 
 type ReglaMonetaria = ConReglasMonetarias | SinReglasMonetarias;

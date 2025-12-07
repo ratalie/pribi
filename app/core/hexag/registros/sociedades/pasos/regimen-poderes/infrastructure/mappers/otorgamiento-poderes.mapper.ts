@@ -9,6 +9,7 @@ import type {
 } from "../../application/dtos/otorgamiento-poderes/create.dto";
 import type { OtorgamientoPoderResponseDTO } from "../../application/dtos/otorgamiento-poderes/response.dto";
 import type { UpdateOtorgamientoPoderDTO } from "../../application/dtos/otorgamiento-poderes/update.dto";
+import { ScopeEnum } from "../../application/enums/scope.enum";
 import { TipoFirmaEnum } from "../../application/enums/tipo-firma.enum";
 import { TipoLimiteEnum } from "../../application/enums/tipo-limite.enum";
 import { TipoMonedaEnum } from "../../application/enums/tipo-moneda.enum";
@@ -23,6 +24,7 @@ import type {
 } from "../../domain/entities/update-otorgamiento-poder.payload";
 
 import { EntityCoinUIEnum } from "../../domain/enums/EntityCoinUIEnum";
+import { ScopeUIEnum } from "../../domain/enums/ScopeUIEnum";
 import { TiempoVigenciaUIEnum } from "../../domain/enums/TiempoVigenciaUIEnum";
 import { TipoFirmasUIEnum } from "../../domain/enums/TipoFirmasUIEnum";
 import { TipoMontoUIEnum } from "../../domain/enums/TipoMontoUIEnum";
@@ -34,14 +36,43 @@ export class OtorgamientoPoderesMapper {
   static dePayloadACreateDTO(
     payload: CreateOtorgamientoPoderPayload
   ): CreateOtorgamientoPoderDTO {
+    // Construir el objeto base según el scope (discriminated union)
+    const baseProps = {
+      id: payload.id,
+      poderId: payload.poderId,
+      esIrrevocable: payload.esIrrevocable,
+      fechaInicio: payload.fechaInicio,
+      fechaFin: payload.fechaFin,
+    };
+
+    if (payload.scope === ScopeUIEnum.CLASS) {
+      // Para CLASS: incluir claseApoderadoId
+      if (payload.tieneReglasFirma) {
+        return {
+          ...baseProps,
+          scope: ScopeEnum.CLASS,
+          claseApoderadoId: payload.claseApoderadoId,
+          tieneReglasFirma: true,
+          reglasMonetarias: payload.reglasMonetarias.map((regla) =>
+            this.deReglaMonetariaPayloadADTO(regla)
+          ),
+        };
+      }
+
+      return {
+        ...baseProps,
+        scope: ScopeEnum.CLASS,
+        claseApoderadoId: payload.claseApoderadoId,
+        tieneReglasFirma: false,
+      };
+    }
+
+    // Para ATTORNEY: incluir apoderadoId
     if (payload.tieneReglasFirma) {
       return {
-        id: payload.id,
-        poderId: payload.poderId,
-        claseApoderadoId: payload.claseApoderadoId,
-        esIrrevocable: payload.esIrrevocable,
-        fechaInicio: payload.fechaInicio,
-        fechaFin: payload.fechaFin,
+        ...baseProps,
+        scope: ScopeEnum.ATTORNEY,
+        apoderadoId: payload.apoderadoId,
         tieneReglasFirma: true,
         reglasMonetarias: payload.reglasMonetarias.map((regla) =>
           this.deReglaMonetariaPayloadADTO(regla)
@@ -50,12 +81,9 @@ export class OtorgamientoPoderesMapper {
     }
 
     return {
-      id: payload.id,
-      poderId: payload.poderId,
-      claseApoderadoId: payload.claseApoderadoId,
-      esIrrevocable: payload.esIrrevocable,
-      fechaInicio: payload.fechaInicio,
-      fechaFin: payload.fechaFin,
+      ...baseProps,
+      scope: ScopeEnum.ATTORNEY,
+      apoderadoId: payload.apoderadoId,
       tieneReglasFirma: false,
     };
   }

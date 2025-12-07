@@ -5,6 +5,7 @@ export type {
   TipoFacultadResponseDTO,
   UpdateOtorgamientoPoderDTO,
 } from "./dtos";
+export { ScopeEnum } from "./enums/scope.enum";
 export { TipoFirmaEnum } from "./enums/tipo-firma.enum";
 export { TipoLimiteEnum } from "./enums/tipo-limite.enum";
 export { TipoMonedaEnum } from "./enums/tipo-moneda.enum";

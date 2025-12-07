@@ -1,10 +1,35 @@
 import type { EntityCoinUIEnum, TipoFirmasUIEnum, TipoMontoUIEnum } from "..";
+import type { ScopeUIEnum } from "../enums/ScopeUIEnum";
 import type { Firmante } from "./otorgamiento-poderes.entity";
 
-export interface BaseOtorgamientoPoderPayload {
+// Tipo base para UPDATE (sin poderId ni claseApoderadoId porque no se pueden cambiar)
+export interface BaseOtorgamientoPoderPayloadUpdate {
+  id: string;
+  esIrrevocable: boolean;
+  fechaInicio: Date;
+  fechaFin?: Date;
+}
+
+// Tipo base para CREATE con scope (discriminated union)
+export type BaseOtorgamientoPoderPayloadCreate =
+  | BaseOtorgamientoPoderPayloadCreateClase
+  | BaseOtorgamientoPoderPayloadCreateApoderado;
+
+interface BaseOtorgamientoPoderPayloadCreateClase {
   id: string;
   poderId: string;
+  scope: ScopeUIEnum.CLASS;
   claseApoderadoId: string;
+  esIrrevocable: boolean;
+  fechaInicio: Date;
+  fechaFin?: Date;
+}
+
+interface BaseOtorgamientoPoderPayloadCreateApoderado {
+  id: string;
+  poderId: string;
+  scope: ScopeUIEnum.ATTORNEY;
+  apoderadoId: string;
   esIrrevocable: boolean;
   fechaInicio: Date;
   fechaFin?: Date;

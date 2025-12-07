@@ -1,11 +1,11 @@
 import type {
-  BaseOtorgamientoPoder,
+  BaseOtorgamientoPoderCreate,
   BaseReglaMonetaria,
   LimiteMonetarioDTO,
   TipoFirmaDTO,
 } from "./base.dto";
 
-export type CreateOtorgamientoPoderDTO = BaseOtorgamientoPoder & ReglaMonetaria;
+export type CreateOtorgamientoPoderDTO = BaseOtorgamientoPoderCreate & ReglaMonetaria;
 
 //reglas monetarias
 type ReglaMonetaria = ConReglasMonetarias | SinReglasMonetarias;

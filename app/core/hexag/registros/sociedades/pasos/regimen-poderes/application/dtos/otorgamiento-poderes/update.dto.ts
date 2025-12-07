@@ -1,17 +1,13 @@
 import type { TipoFirmaEnum } from "../../enums/tipo-firma.enum";
 import type {
-  BaseOtorgamientoPoder,
+  BaseOtorgamientoPoderUpdate,
   BaseReglaMonetaria,
   FirmantesDTO,
   LimiteMonetarioDTO,
   TipoFirmaDTO,
 } from "./base.dto";
 
-export type UpdateOtorgamientoPoderDTO = Omit<
-  BaseOtorgamientoPoder,
-  "poderId" | "claseApoderadoId"
-> &
-  ReglaMonetaria;
+export type UpdateOtorgamientoPoderDTO = BaseOtorgamientoPoderUpdate & ReglaMonetaria;
 
 type ReglaMonetaria = ConReglasMonetarias | SinReglasMonetarias;
 
