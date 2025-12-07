@@ -1,25 +1,66 @@
 <script setup lang="ts">
-  import { computed } from "vue";
+  import { computed, watch } from "vue";
   import SlotWrapper from "~/components/containers/SlotWrapper.vue";
   import TitleH2 from "~/components/titles/TitleH2.vue";
   import MayoriaVotacion from "./MayoriaVotacion.vue";
   import UnanimidadVotacion from "./UnanimidadVotacion.vue";
 
+  interface Votante {
+    id: string;
+    accionista: {
+      id: string;
+      person: {
+        tipo: string;
+        nombre?: string;
+        apellidoPaterno?: string;
+        apellidoMaterno?: string;
+        razonSocial?: string;
+      };
+    };
+    nombreCompleto?: string;
+  }
+
   interface Props {
     modelValue?: string;
+    votantes?: Votante[] | any; // ✅ Aceptar también ComputedRef
+    textoVotacion?: string | any; // ✅ Aceptar también ComputedRef
   }
 
   const props = withDefaults(defineProps<Props>(), {
     modelValue: "unanimidad",
+    votantes: () => [],
+    textoVotacion: "",
+  });
+
+  // ✅ Extraer valores si son computed
+  const votantesValue = computed(() => {
+    const v = props.votantes;
+    if (!v) return [];
+    if (Array.isArray(v)) return v;
+    if (typeof v === 'object' && 'value' in v) return (v as any).value || [];
+    return [];
+  });
+
+  const textoVotacionValue = computed(() => {
+    const t = props.textoVotacion;
+    if (!t) return "";
+    if (typeof t === 'string') return t;
+    if (typeof t === 'object' && 'value' in t) return (t as any).value || "";
+    return "";
   });
 
   const emit = defineEmits<{
     "update:modelValue": [value: string];
+    "cambiar-tipo": [tipo: "unanimidad" | "mayoria"];
+    "cambiar-voto": [accionistaId: string, valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION"];
   }>();
 
   const selectedMethod = computed({
     get: () => props.modelValue,
-    set: (value) => emit("update:modelValue", value),
+    set: (value) => {
+      emit("update:modelValue", value);
+      emit("cambiar-tipo", value as "unanimidad" | "mayoria");
+    },
   });
 
   const methods = [
@@ -119,8 +160,16 @@
 
     <!-- Contenido condicional según el método seleccionado -->
     <div class="mt-10">
-      <UnanimidadVotacion v-if="selectedMethod === 'unanimidad'" />
-      <MayoriaVotacion v-if="selectedMethod === 'mayoria'" />
+      <UnanimidadVotacion
+        v-if="selectedMethod === 'unanimidad'"
+        :texto-votacion="textoVotacionValue"
+      />
+      <MayoriaVotacion
+        v-if="selectedMethod === 'mayoria'"
+        :votantes="votantesValue"
+        :texto-votacion="textoVotacionValue"
+        @cambiar-voto="(accionistaId, valor) => emit('cambiar-voto', accionistaId, valor)"
+      />
     </div>
 
   </SlotWrapper>
