@@ -12,6 +12,7 @@ import {
   UpdateTiposFacultadesUseCase,
 } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/application";
 import {
+  ScopeUIEnum,
   TiempoVigenciaUIEnum,
   TipoFirmasUIEnum,
   TipoMontoUIEnum,
@@ -197,9 +198,6 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
 
         const clasesApoderadoResponse: ClaseApoderadoResponseDTO[] = response.data;
 
-        // Crear Map de clases por ID para búsqueda rápida
-        const clasesMap = new Map(clasesApoderadoResponse.map((clase) => [clase.id, clase]));
-
         // Separar apoderados: clases normales vs "Otros Apoderados"
         const apoderadosClasesNormales: ApoderadoFacultad[] = [];
         const otrosApoderadosList: ApoderadoFacultad[] = [];
@@ -212,24 +210,27 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
         // Procesar otorgamientos y convertirlos a Facultad
         otorgamientosPoder.forEach((otorgamiento) => {
           const facultad = OtorgamientoPoderesMapper.deResponseDTOAFacultad(otorgamiento);
-          const claseApoderadoId = otorgamiento.claseApoderado.id;
-          const clase = clasesMap.get(claseApoderadoId);
 
-          // Si es "Otros Apoderados", usar apoderadoId individual
-          if (clase?.nombre === ClasesApoderadoEspecialesEnum.OTROS_APODERADOS) {
-            // Para "Otros Apoderados", usar apoderadoId si está disponible
-            const apoderadoId = otorgamiento.apoderadoId || claseApoderadoId;
+          // Detectar si es clase normal o apoderado especial usando type guard
+          if ("claseApoderado" in otorgamiento) {
+            // Caso 1: Clase normal (tiene claseApoderado)
+            const claseApoderadoId = otorgamiento.claseApoderado.id;
 
-            if (!otorgamientosPorApoderado.has(apoderadoId)) {
-              otorgamientosPorApoderado.set(apoderadoId, []);
-            }
-            otorgamientosPorApoderado.get(apoderadoId)!.push(facultad);
-          } else {
-            // Para otras clases, agrupar por claseApoderadoId
+            // Agrupar por claseApoderadoId
             if (!otorgamientosPorClase.has(claseApoderadoId)) {
               otorgamientosPorClase.set(claseApoderadoId, []);
             }
             otorgamientosPorClase.get(claseApoderadoId)!.push(facultad);
+          } else {
+            // Caso 2: Otros Apoderados (tiene apoderadoEspecial)
+            // TypeScript garantiza que si no tiene claseApoderado, tiene apoderadoEspecial
+            const apoderadoId = otorgamiento.apoderadoEspecial;
+
+            // Agrupar por apoderadoId individual
+            if (!otorgamientosPorApoderado.has(apoderadoId)) {
+              otorgamientosPorApoderado.set(apoderadoId, []);
+            }
+            otorgamientosPorApoderado.get(apoderadoId)!.push(facultad);
           }
         });
 
@@ -959,15 +960,18 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
 
     /**
      * Convierte una Facultad (entidad) a CreateOtorgamientoPoderPayload
+     * @param facultad Facultad a convertir
+     * @param scope Scope del otorgamiento (CLASS o ATTORNEY)
+     * @param id ID del apoderado o clase según el scope
      */
     construirCreatePayload(
       facultad: Facultad,
-      claseApoderadoId: string
+      scope: ScopeUIEnum,
+      id: string
     ): CreateOtorgamientoPoderPayload {
-      const basePayload = {
+      const baseProps = {
         id: facultad.id,
         poderId: facultad.tipoFacultadId,
-        claseApoderadoId: claseApoderadoId,
         esIrrevocable: facultad.esIrrevocable,
         fechaInicio: new Date(
           facultad.vigencia === TiempoVigenciaUIEnum.DETERMIADO
@@ -980,15 +984,57 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
             : undefined,
       };
 
+      // Construir payload según scope (discriminated union)
+      if (scope === ScopeUIEnum.CLASS) {
+        if (!facultad.reglasYLimites) {
+          return {
+            ...baseProps,
+            scope: ScopeUIEnum.CLASS,
+            claseApoderadoId: id,
+            tieneReglasFirma: false,
+          };
+        }
+
+        return {
+          ...baseProps,
+          scope: ScopeUIEnum.CLASS,
+          claseApoderadoId: id,
+          tieneReglasFirma: true,
+          reglasMonetarias: facultad.limiteMonetario.map((regla) => ({
+            id: regla.id,
+            tipoMoneda: facultad.tipoMoneda,
+            montoDesde: regla.desde,
+            ...(regla.tipoMonto === TipoMontoUIEnum.MONTO
+              ? { tipoLimite: TipoMontoUIEnum.MONTO, montoHasta: regla.hasta }
+              : { tipoLimite: TipoMontoUIEnum.SIN_LIMITE }),
+            ...(regla.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA
+              ? {
+                  tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
+                  firmantes: regla.firmantes.map((f) => ({
+                    id: f.id,
+                    cantidad: f.cantidad,
+                    grupo: f.grupo,
+                  })),
+                }
+              : { tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA }),
+          })),
+        };
+      }
+
+      // Para ATTORNEY
       if (!facultad.reglasYLimites) {
         return {
-          ...basePayload,
+          ...baseProps,
+          scope: ScopeUIEnum.ATTORNEY,
+          apoderadoId: id,
           tieneReglasFirma: false,
         };
       }
 
       return {
-        ...basePayload,
+        ...baseProps,
+        scope: ScopeUIEnum.ATTORNEY,
+        apoderadoId: id,
         tieneReglasFirma: true,
         reglasMonetarias: facultad.limiteMonetario.map((regla) => ({
           id: regla.id,
@@ -1074,22 +1120,26 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
       poderId: string
     ): Promise<void> {
       try {
-        // Determinar claseApoderadoId según el tipo
-        let claseApoderadoId: string;
+        // Determinar scope e id según el tipo
+        let scope: ScopeUIEnum;
+        let id: string;
+
         if (tipo === "otro") {
-          // Para "Otros Apoderados", usar el apoderadoId individual
-          claseApoderadoId = apoderadoId;
+          // Para "Otros Apoderados": scope ATTORNEY, id es el apoderadoId individual
+          scope = ScopeUIEnum.ATTORNEY;
+          id = apoderadoId;
         } else {
-          // Para clases normales, usar el claseApoderadoId del apoderado
+          // Para clases normales: scope CLASS, id es el claseApoderadoId
+          scope = ScopeUIEnum.CLASS;
           const apoderado = this.apoderadosFacultades.find((a) => a.id === apoderadoId);
           if (!apoderado) {
             throw new Error(`Apoderado con ID ${apoderadoId} no encontrado`);
           }
-          claseApoderadoId = apoderado.claseApoderadoId;
+          id = apoderado.claseApoderadoId;
         }
 
-        // Construir payload
-        const payload = this.construirCreatePayload(facultad, claseApoderadoId);
+        // Construir payload con scope e id
+        const payload = this.construirCreatePayload(facultad, scope, id);
         // Asegurar que el poderId sea el correcto
         payload.poderId = poderId;
 

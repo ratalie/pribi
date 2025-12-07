@@ -1,8 +1,12 @@
 import type { TipoFirmaEnum, TipoLimiteEnum, TipoMonedaEnum } from "../..";
 
-export interface OtorgamientoPoderResponseDTO {
+// Tipo de respuesta del backend: puede ser para clase normal o apoderado especial
+export type OtorgamientoPoderResponseDTO =
+  | OtorgamientoPoderResponseClase
+  | OtorgamientoPoderResponseApoderado;
+
+interface OtorgamientoPoderResponseClase {
   id: string;
-  apoderadoId?: string; // ID del apoderado individual (solo para "Otros Apoderados")
   poder: {
     id: string;
     name: string;
@@ -13,6 +17,22 @@ export interface OtorgamientoPoderResponseDTO {
     id: string;
     name: string;
   };
+  esIrrevocable: boolean;
+  fechaInicio: string; // ISO string
+  fechaFin?: string; // ISO string
+  tieneReglasFirma: boolean;
+  reglasMonetarias: ReglaMonetariaResponseDto[];
+}
+
+interface OtorgamientoPoderResponseApoderado {
+  id: string;
+  poder: {
+    id: string;
+    name: string;
+    archivoId?: string | null;
+    archivo?: ArchivoInfo | null;
+  };
+  apoderadoEspecial: string; // ID del apoderado individual (solo para "Otros Apoderados")
   esIrrevocable: boolean;
   fechaInicio: string; // ISO string
   fechaFin?: string; // ISO string
