@@ -74,6 +74,26 @@ export const useOtrosApoderadosFacultades = (profileId: string) => {
   ];
 
   const openModalFacultadApoderado = (id: string) => {
+    const apoderado = regimenFacultadesStore.otrosApoderados.find((a) => a.id === id);
+
+    if (!apoderado) {
+      console.warn(`No se encontró el otro apoderado con id: ${id}`);
+      return;
+    }
+
+    // Verificar si hay facultades disponibles antes de abrir el modal
+    const facultadesDisponibles = regimenFacultadesStore.obtenerFacultadesDisponibles(
+      id,
+      "otro"
+    );
+
+    if (facultadesDisponibles.length === 0) {
+      console.warn(
+        `No hay facultades disponibles para asignar al apoderado. El apoderado ya tiene todas las facultades asignadas.`
+      );
+      return;
+    }
+
     // Para "Otros Apoderados", no hay clase seleccionada y debe mostrar todas las clases
     apoderadoFacultadStore.claseApoderadoIdSeleccionada = null;
     apoderadoFacultadStore.esOtrosApoderados = true;
@@ -146,6 +166,15 @@ export const useOtrosApoderadosFacultades = (profileId: string) => {
     }
   };
 
+  // Computed para obtener las facultades disponibles (filtradas)
+  const listaFacultadesDisponibles = computed(() => {
+    return regimenFacultadesStore.obtenerFacultadesDisponibles(
+      idApoderado.value,
+      "otro",
+      modeModalApoderadoFacultad.value === "editar" ? idFacultad.value ?? undefined : undefined
+    );
+  });
+
   return {
     facultadActions,
     isApoderadoFacultadesModalOpen,
@@ -154,5 +183,6 @@ export const useOtrosApoderadosFacultades = (profileId: string) => {
     handleCloseModalApoderadoFacultad,
     handleSubmitApoderadoFacultad,
     isLoading,
+    listaFacultadesDisponibles,
   };
 };

@@ -76,10 +76,27 @@ export const useApoderadosFacultades = (profileId: string) => {
   const openModalFacultadApoderado = (id: string) => {
     const apoderado = regimenFacultadesStore.apoderadosFacultades.find((a) => a.id === id);
 
-    if (apoderado) {
-      apoderadoFacultadStore.claseApoderadoIdSeleccionada = apoderado.claseApoderadoId;
-      apoderadoFacultadStore.esOtrosApoderados = false;
+    if (!apoderado) {
+      console.warn(`No se encontró el apoderado con id: ${id}`);
+      return;
     }
+
+    // Verificar si hay facultades disponibles antes de abrir el modal
+    const facultadesDisponibles = regimenFacultadesStore.obtenerFacultadesDisponibles(
+      id,
+      "clase"
+    );
+
+    if (facultadesDisponibles.length === 0) {
+      console.warn(
+        `No hay facultades disponibles para asignar al apoderado. El apoderado ya tiene todas las facultades asignadas.`
+      );
+      return;
+    }
+
+    // Configurar información de la clase seleccionada
+    apoderadoFacultadStore.claseApoderadoIdSeleccionada = apoderado.claseApoderadoId;
+    apoderadoFacultadStore.esOtrosApoderados = false;
 
     idApoderado.value = id;
     modeModalApoderadoFacultad.value = "crear";
@@ -148,6 +165,15 @@ export const useApoderadosFacultades = (profileId: string) => {
     }
   };
 
+  // Computed para obtener las facultades disponibles (filtradas)
+  const listaFacultadesDisponibles = computed(() => {
+    return regimenFacultadesStore.obtenerFacultadesDisponibles(
+      idApoderado.value,
+      "clase",
+      modeModalApoderadoFacultad.value === "editar" ? idFacultad.value ?? undefined : undefined
+    );
+  });
+
   return {
     facultadActions,
     isApoderadoFacultadesModalOpen,
@@ -156,5 +182,6 @@ export const useApoderadosFacultades = (profileId: string) => {
     handleCloseModalApoderadoFacultad,
     handleSubmitApoderadoFacultad,
     isLoading,
+    listaFacultadesDisponibles,
   };
 };

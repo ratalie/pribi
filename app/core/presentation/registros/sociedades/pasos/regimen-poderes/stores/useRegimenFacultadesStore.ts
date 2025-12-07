@@ -154,6 +154,57 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
 
   actions: {
     /**
+     * Obtiene las facultades disponibles para un apoderado (excluyendo las ya asignadas)
+     * @param apoderadoId ID del apoderado o clase
+     * @param tipo "clase" para apoderadosFacultades, "otro" para otrosApoderados
+     * @param facultadIdActual Opcional: ID de la facultad actual (para modo editar, se incluye en la lista)
+     * @returns Array de opciones de facultades disponibles
+     */
+    obtenerFacultadesDisponibles(
+      apoderadoId: string | null,
+      tipo: "clase" | "otro",
+      facultadIdActual?: string
+    ): BaseSelectOption[] {
+      // Si no hay apoderado seleccionado, mostrar todas las facultades
+      if (!apoderadoId) {
+        return this.listaFacultadesOptions;
+      }
+
+      // Obtener el apoderado según el tipo
+      const apoderado =
+        tipo === "clase"
+          ? this.apoderadosFacultades.find((a) => a.id === apoderadoId)
+          : this.otrosApoderados.find((a) => a.id === apoderadoId);
+
+      // Si no se encuentra el apoderado, mostrar todas las facultades
+      if (!apoderado) {
+        return this.listaFacultadesOptions;
+      }
+
+      // Obtener IDs de facultades ya asignadas
+      const facultadesAsignadasIds = new Set(
+        apoderado.facultades.map((f) => f.tipoFacultadId)
+      );
+
+      // Si hay una facultad actual (modo editar), excluirla del filtro para que aparezca en la lista
+      if (facultadIdActual) {
+        const facultadActual = apoderado.facultades.find((f) => f.id === facultadIdActual);
+        if (facultadActual) {
+          facultadesAsignadasIds.delete(facultadActual.tipoFacultadId);
+        }
+      }
+
+      // Filtrar facultades que no están asignadas (o que es la actual en modo editar)
+      return this.tipoFacultades
+        .filter((facultad) => !facultadesAsignadasIds.has(facultad.id))
+        .map((facultad) => ({
+          id: facultad.id,
+          value: facultad.id,
+          label: facultad.tipoFacultades,
+        }));
+    },
+
+    /**
      * Obtiene el nombre completo de una persona (Natural o Jurídica)
      */
     obtenerNombrePersona(persona: { tipo: PersonTypeEnum; [key: string]: any }): string {

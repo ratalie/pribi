@@ -37,6 +37,7 @@
     openModalFacultadApoderado,
     handleCloseModalApoderadoFacultad,
     handleSubmitApoderadoFacultad,
+    listaFacultadesDisponibles,
   } = useApoderadosFacultades(props.societyId ?? "");
 
   const {
@@ -46,6 +47,7 @@
     openModalFacultadApoderado: openModalFacultadOtroApoderado,
     handleCloseModalApoderadoFacultad: handleCloseModalOtroApoderadoFacultad,
     handleSubmitApoderadoFacultad: handleSubmitOtroApoderadoFacultad,
+    listaFacultadesDisponibles: listaFacultadesDisponiblesOtros,
   } = useOtrosApoderadosFacultades(props.societyId ?? "");
 
   onMounted(async () => {
@@ -132,7 +134,7 @@
     <FacultadApoderadoModal
       v-model="isApoderadoFacultadesModalOpen"
       :mode="modeModalApoderadoFacultad"
-      :lista-facultades-options="regimenFacultadesStore.listaFacultadesOptions"
+      :lista-facultades-options="listaFacultadesDisponibles"
       @close="handleCloseModalApoderadoFacultad"
       @submit="handleSubmitApoderadoFacultad"
     />
@@ -140,7 +142,7 @@
     <FacultadApoderadoModal
       v-model="isOtrosApoderadosFacultadesModalOpen"
       :mode="modeModalOtroApoderadoFacultad"
-      :lista-facultades-options="regimenFacultadesStore.listaFacultadesOptions"
+      :lista-facultades-options="listaFacultadesDisponiblesOtros"
       @close="handleCloseModalOtroApoderadoFacultad"
       @submit="handleSubmitOtroApoderadoFacultad"
     />

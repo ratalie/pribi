@@ -66,6 +66,7 @@
           placeholder="Selecciona una facultad"
           :options="listaFacultadesOptions"
           :schema="selectFacultadSchema"
+          :is-disabled="mode === 'editar'"
         />
       </div>
 
