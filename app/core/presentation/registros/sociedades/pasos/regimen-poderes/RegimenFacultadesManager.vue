@@ -1,17 +1,17 @@
 <script setup lang="ts">
   import { onMounted } from "vue";
-import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
-import CardTitle from "~/components/base/cards/CardTitle.vue";
-import SimpleCard from "~/components/base/cards/SimpleCard.vue";
-import ConfirmDeleteModal from "~/components/base/modal/ConfirmDeleteModal.vue";
-import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
-import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
-import FacultadesApoderados from "./components/FacultadesApoderados.vue";
-import FacultadApoderadoModal from "./components/modals/FacultadApoderadoModal.vue";
-import TipoFacultadesModal from "./components/modals/TipoFacultadesModal.vue";
-import { useApoderadosFacultades } from "./composables/useApoderadosFacultades";
-import { useOtrosApoderadosFacultades } from "./composables/useOtrosApoderadosFacultades";
-import { useTiposFacultades } from "./composables/useTiposFacultades";
+  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+  import CardTitle from "~/components/base/cards/CardTitle.vue";
+  import SimpleCard from "~/components/base/cards/SimpleCard.vue";
+  import ConfirmDeleteModal from "~/components/base/modal/ConfirmDeleteModal.vue";
+  import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
+  import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import FacultadesApoderados from "./components/FacultadesApoderados.vue";
+  import FacultadApoderadoModal from "./components/modals/FacultadApoderadoModal.vue";
+  import TipoFacultadesModal from "./components/modals/TipoFacultadesModal.vue";
+  import { useApoderadosFacultades } from "./composables/useApoderadosFacultades";
+  import { useOtrosApoderadosFacultades } from "./composables/useOtrosApoderadosFacultades";
+  import { useTiposFacultades } from "./composables/useTiposFacultades";
 
   interface Props {
     mode: EntityModeEnum;

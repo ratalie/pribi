@@ -262,10 +262,16 @@
 </script>
 
 <template>
-  <div class="bg-white p-14">
+  <div
+    :class="[
+      mode !== EntityModeEnum.RESUMEN
+        ? 'bg-white p-14'
+        : 'border border-gray-100 rounded-xl py-12 px-10',
+    ]"
+  >
     <CardTitle
       title="Datos principales"
-      body="Complete todos los datos requeridos."
+      :body="mode !== EntityModeEnum.RESUMEN ? 'Complete todos los datos requeridos.' : ''"
       class="mb-8"
     />
 
@@ -354,6 +360,7 @@
         placeholder="Ingrese el número de RUC"
         :schema="rucSchema"
         :is-loading="false"
+        :is-disabled="mode === EntityModeEnum.RESUMEN"
         @search="handleSearchRuc"
       />
 
@@ -364,6 +371,7 @@
         label="Tipo de sociedad"
         placeholder="Tipo de sociedad"
         :schema="tipoSociedadSchema"
+        :is-disabled="mode === EntityModeEnum.RESUMEN"
       />
 
       <TextInputZod
@@ -372,6 +380,7 @@
         label="Razón social"
         placeholder="Razón social"
         :schema="razonSocialSchema"
+        :is-disabled="mode === EntityModeEnum.RESUMEN"
       />
 
       <TextInputZod
@@ -380,6 +389,7 @@
         label="Nombre comercial"
         placeholder="Nombre comercial"
         :schema="nombreComercialSchema"
+        :is-disabled="mode === EntityModeEnum.RESUMEN"
       />
 
       <TextInputZod
@@ -388,6 +398,7 @@
         label="Dirección"
         placeholder="Dirección"
         :schema="direccionSchema"
+        :is-disabled="mode === EntityModeEnum.RESUMEN"
       />
 
       <TextInputZod
@@ -396,6 +407,7 @@
         label="Distrito"
         placeholder="Distrito"
         :schema="distritoSchema"
+        :is-disabled="mode === EntityModeEnum.RESUMEN"
       />
 
       <TextInputZod
@@ -404,6 +416,7 @@
         label="Provincia"
         placeholder="Provincia"
         :schema="provinciaSchema"
+        :is-disabled="mode === EntityModeEnum.RESUMEN"
       />
 
       <TextInputZod
@@ -412,6 +425,7 @@
         label="Departamento"
         placeholder="Departamento"
         :schema="departamentoSchema"
+        :is-disabled="mode === EntityModeEnum.RESUMEN"
       />
 
       <DateInputZod
@@ -420,6 +434,7 @@
         label="Fecha de inscripción de RUC"
         placeholder="Selecciona la fecha"
         :schema="fechaInscripcionRucSchema"
+        :is-disabled="mode === EntityModeEnum.RESUMEN"
       />
 
       <TextInputZod
@@ -428,6 +443,7 @@
         label="Actividad exterior"
         placeholder="Actividad exterior"
         :schema="actividadExteriorSchema"
+        :is-disabled="mode === EntityModeEnum.RESUMEN"
       />
 
       <DateInputZod
@@ -436,6 +452,7 @@
         label="Fecha de escritura pública"
         placeholder="Selecciona la fecha"
         :schema="fechaEscrituraPublicaSchema"
+        :is-disabled="mode === EntityModeEnum.RESUMEN"
       />
 
       <DateInputZod
@@ -444,6 +461,7 @@
         label="Fecha de registros públicos"
         placeholder="Selecciona la fecha"
         :schema="fechaRegistrosPublicosSchema"
+        :is-disabled="mode === EntityModeEnum.RESUMEN"
       />
 
       <TextInputZod
@@ -452,6 +470,7 @@
         label="Partida registral"
         placeholder="Partida registral"
         :schema="partidaRegistralSchema"
+        :is-disabled="mode === EntityModeEnum.RESUMEN"
       />
 
       <SelectInputZod
@@ -461,6 +480,7 @@
         label="Oficina registral"
         placeholder="Oficina registral"
         :schema="oficinaRegistralSchema"
+        :is-disabled="mode === EntityModeEnum.RESUMEN"
       />
     </form>
   </div>

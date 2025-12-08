@@ -14,5 +14,5 @@
 </script>
 
 <template>
-  <ResumenManager :mode="EntityModeEnum.CREAR" :society-id="societyId" />
+  <ResumenManager :mode="EntityModeEnum.RESUMEN" :society-id="societyId" />
 </template>

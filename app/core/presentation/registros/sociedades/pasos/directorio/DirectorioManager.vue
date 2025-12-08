@@ -65,7 +65,6 @@
     load: loadDirectorio,
     submit: submitDirectorio,
     isReadonly: isReadonlyDirectorio,
-    errorMessage: directorioErrorMessage,
   } = useDirectorioForm({
     societyId,
     mode: computed(() => props.mode),
@@ -251,9 +250,19 @@
 
 <template>
   <div :class="tieneDirectorio ? '' : 'h-full'">
-    <div class="p-14 flex flex-col gap-12">
-      <CardTitle title="Directorio" body="Complete todos los campos requeridos.">
-        <template #switch>
+    <div
+      :class="[
+        'flex flex-col gap-12',
+        mode !== EntityModeEnum.RESUMEN
+          ? 'p-14'
+          : 'border border-gray-100 rounded-xl py-12 px-10',
+      ]"
+    >
+      <CardTitle
+        title="Directorio"
+        :body="mode !== EntityModeEnum.RESUMEN ? 'Complete todos los campos requeridos.' : ''"
+      >
+        <template v-if="mode !== EntityModeEnum.RESUMEN" #switch>
           <Switch v-model="tieneDirectorio" />
           <VDropdownComponent
             message-dropdown="Este paso es opcional. Puedes activar o desactivar el Directorio según corresponda a tu sociedad. Para las S.A., el Directorio está siempre activo."
@@ -261,7 +270,12 @@
           />
         </template>
       </CardTitle>
-      <DirectorioConfigForm v-model:form="form" :term-options="termOptions" />
+      <DirectorioConfigForm
+        v-if="tieneDirectorio"
+        v-model:form="form"
+        :term-options="termOptions"
+        :mode="mode"
+      />
 
       <PresidenteDirectorioForm
         v-if="tieneDirectorio"
@@ -290,27 +304,6 @@
       </SimpleCard>
 
       <DirectorioEmptyState v-else />
-
-      <div
-        v-if="tieneDirectorio"
-        class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
-      >
-        <p v-if="directorioErrorMessage" class="text-sm text-red-600">
-          {{ directorioErrorMessage }}
-        </p>
-        <!-- <div class="flex justify-end gap-3">
-          <Button
-            variant="ghost"
-            type="button"
-            :disabled="isSavingDirectorio"
-            @click="handleReset"
-          >
-            Restablecer
-          </Button>
-           Botón "Siguiente" ahora está en el layout (flow-layout.vue) -->
-        <!-- Se maneja automáticamente mediante useFlowLayoutNext -->
-        <!-- </div> -->
-      </div>
 
       <AgregarDirectorModal
         v-model="isModalOpen"

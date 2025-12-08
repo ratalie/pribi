@@ -54,25 +54,20 @@
           >
             Documento
           </TableHead>
-          <TableHead
-            class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
-          >
-            Participación
-          </TableHead>
           <TableHead v-if="actions && !readonly" class="w-12" />
         </TableRow>
       </TableHeader>
       <TableBody>
         <template v-if="isLoading">
           <TableRow>
-            <TableCell :colspan="4 + (actions && !readonly ? 1 : 0)" class="h-24">
+            <TableCell :colspan="3 + (actions && !readonly ? 1 : 0)" class="h-24">
               <EmptyTableMessage />
             </TableCell>
           </TableRow>
         </template>
         <template v-else-if="items.length === 0">
           <TableRow>
-            <TableCell :colspan="4 + (actions && !readonly ? 1 : 0)" class="h-24">
+            <TableCell :colspan="3 + (actions && !readonly ? 1 : 0)" class="h-24">
               <EmptyTableMessage />
             </TableCell>
           </TableRow>
@@ -93,11 +88,6 @@
               class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
             >
               {{ item.documento }}
-            </TableCell>
-            <TableCell
-              class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
-            >
-              {{ item.participacion || "—" }}
             </TableCell>
             <!-- Celda de acciones -->
             <TableCell v-if="actions && !readonly" class="w-auto">

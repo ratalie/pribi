@@ -16,10 +16,12 @@
     fechaInicioDirectorioSchema,
   } from "~/core/presentation/registros/sociedades/pasos/directorio/schemas/directorio";
   import type { TypeOption } from "~/types/TypeOptions";
+  import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   interface Props {
     form: DirectorioFormUI;
     termOptions: TypeOption[];
+    mode: EntityModeEnum;
   }
 
   const props = defineProps<Props>();
@@ -79,14 +81,18 @@
           :max="9"
           placeholder="3"
           size="large"
-          :is-disabled="localForm.cantidadPersonalizado"
+          :is-disabled="localForm.cantidadPersonalizado || mode === EntityModeEnum.RESUMEN"
         />
         <p class="t-t2 text-gray-500 font-secondary">Valor mínimo: {{ 2 }}.</p>
       </div>
 
       <!-- Segunda columna: Checkbox -->
       <div class="flex items-center gap-2">
-        <Checkbox id="cantidad-personalizado" v-model="localForm.cantidadPersonalizado" />
+        <Checkbox
+          id="cantidad-personalizado"
+          v-model="localForm.cantidadPersonalizado"
+          :is-disabled="mode === EntityModeEnum.RESUMEN"
+        />
         <label
           for="cantidad-personalizado"
           class="t-t2 font-secondary text-gray-800 font-medium cursor-pointer"

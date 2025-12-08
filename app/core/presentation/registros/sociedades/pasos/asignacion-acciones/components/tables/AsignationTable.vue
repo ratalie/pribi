@@ -12,12 +12,14 @@
   import TableHeader from "~/components/ui/table/TableHeader.vue";
   import TableRow from "~/components/ui/table/TableRow.vue";
   import { useConfirmDelete } from "~/composables/useConfirmDelete";
+  import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
   import { useRegistroAsignacionAccionesStore } from "../../stores/useRegistroAsignacionAccionesStore";
   import AsignarAccionesModal from "../modals/AsignarAccionesModal.vue";
 
   interface Props {
     titleMenu?: string;
     societyProfileId?: string;
+    mode?: EntityModeEnum;
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -171,7 +173,7 @@
         >
           % Porcentaje de Participación por clase
         </TableHead>
-        <TableHead class="h-16" />
+        <TableHead v-if="mode !== EntityModeEnum.RESUMEN" class="h-16" />
       </TableRow>
     </TableHeader>
     <TableBody>
@@ -208,6 +210,7 @@
           </TableCell>
           <TableCell>
             <ActionButton
+              v-if="mode !== EntityModeEnum.RESUMEN"
               variant="secondary"
               size="sm"
               label="Asignar"
@@ -237,7 +240,7 @@
               {{ accion.porcentaje }}%
             </TableCell>
             <!-- Celda de acciones -->
-            <TableCell class="w-12">
+            <TableCell v-if="mode !== EntityModeEnum.RESUMEN" class="w-12">
               <DataTableDropDown
                 :item-id="getAccionIdForRow(accion)"
                 :title-menu="props.titleMenu"

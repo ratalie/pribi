@@ -282,6 +282,19 @@
     { immediate: true }
   );
 
+  // Watch para asegurar que cuando el modal se abre en modo create, los stores estén limpios
+  // Solo se ejecuta cuando el modal se abre (isOpen cambia de false a true) y no hay initialAccionista
+  watch(
+    () => isOpen.value,
+    (isOpenValue, previousValue) => {
+      // Solo ejecutar cuando el modal se abre (cambia de false a true) y no hay initialAccionista
+      if (isOpenValue && previousValue === false && !props.initialAccionista) {
+        // Asegurar que los stores estén limpios (hydrateStoresFromPersona ya resetea al inicio)
+        hydrateStoresFromPersona(null);
+      }
+    }
+  );
+
   watch(
     () => tipoAccionista.value,
     (value, previous) => {
@@ -464,6 +477,7 @@
     resetStores();
     personaId.value = null;
     accionistaId.value = null;
+    tipoAccionista.value = TipoAccionistaEnum.NATURAL;
     isOpen.value = false;
   };
 </script>

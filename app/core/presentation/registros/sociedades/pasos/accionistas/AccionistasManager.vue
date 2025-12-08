@@ -1,9 +1,8 @@
 <script setup lang="ts">
-  import { storeToRefs } from "pinia";
-  import { computed, ref, toRef } from "vue";
-
   import type { AccionistaDTO } from "@hexag/registros/sociedades/pasos/accionistas/application";
   import type { Accionista } from "@hexag/registros/sociedades/pasos/accionistas/domain";
+  import { storeToRefs } from "pinia";
+  import { computed, ref, toRef } from "vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import ConfirmDeleteModal from "~/components/base/modal/ConfirmDeleteModal.vue";
@@ -35,13 +34,12 @@
     ttlMs: 60_000,
   });
 
-  const { accionistas, status, errorMessage: storeError } = storeToRefs(store);
+  const { accionistas, status } = storeToRefs(store);
 
   const isLoading = computed(
     () => controller.isBootstrapping.value || status.value === "loading"
   );
   const isSaving = computed(() => status.value === "saving");
-  const errorMessage = computed(() => controller.error.value ?? storeError.value);
 
   const isModalOpen = ref(false);
   const editingAccionista = ref<Accionista | null>(null);
@@ -59,9 +57,6 @@
       etiqueta: getPersonaLabel(item.persona),
       tipo: personaTypeLabels[item.persona.tipo as keyof typeof personaTypeLabels] ?? "—",
       documento: getPersonaDocument(item.persona),
-      participacion: item.participacionPorcentual
-        ? `${item.participacionPorcentual.toFixed(2)}%`
-        : "—",
     }))
   );
 
@@ -210,11 +205,21 @@
 </script>
 
 <template>
-  <div class="h-full p-14 flex flex-col gap-12">
-    <CardTitle title="Accionistas" body="Complete todos los campos requeridos.">
+  <div
+    :class="[
+      'h-full flex flex-col gap-12',
+      mode !== EntityModeEnum.RESUMEN
+        ? ' p-14 '
+        : 'border border-gray-100 rounded-xl py-12 px-10',
+    ]"
+  >
+    <CardTitle
+      title="Accionistas"
+      :body="mode !== EntityModeEnum.RESUMEN ? 'Complete todos los campos requeridos.' : ''"
+    >
       <template #actions>
         <ActionButton
-          v-if="!isReadonly"
+          v-if="!isReadonly && mode !== EntityModeEnum.RESUMEN"
           variant="secondary"
           label="Agregar"
           size="md"
@@ -224,16 +229,12 @@
       </template>
     </CardTitle>
 
-    <p v-if="errorMessage" class="text-sm text-red-500">
-      {{ errorMessage }}
-    </p>
-
     <AccionistasList
       :items="rows"
       :is-loading="isLoading"
       :readonly="isReadonly"
       title-menu="Accionistas"
-      :actions="accionesActions"
+      :actions="mode !== EntityModeEnum.RESUMEN ? accionesActions : undefined"
     />
 
     <AccionistaModal

@@ -6,7 +6,7 @@
   import OutLineCard from "~/components/base/cards/OutLineCard.vue";
   import ConfirmDeleteModal from "~/components/base/modal/ConfirmDeleteModal.vue";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
-  import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
   import AccionesModal from "./components/modals/AccionesModal.vue";
   import ValorNominalModal from "./components/modals/ValorNominalModal.vue";
   import { useAccionesComputed } from "./composable/useAccionesComputed";
@@ -17,6 +17,10 @@
   }
 
   const props = defineProps<Props>();
+
+  const IconCoinValue = computed(() => {
+    return IconCoin;
+  });
 
   const {
     columns,
@@ -42,9 +46,19 @@
 </script>
 
 <template>
-  <div class="h-full w-full p-14 flex flex-col gap-12">
-    <CardTitle title="Capital Social y Acciones" body="Complete todos los campos requeridos.">
-      <template #actions>
+  <div
+    :class="[
+      'h-full w-full flex flex-col gap-12',
+      mode !== EntityModeEnum.RESUMEN
+        ? ' p-14 '
+        : 'border border-gray-100 rounded-xl py-12 px-10',
+    ]"
+  >
+    <CardTitle
+      title="Capital Social y Acciones"
+      :body="mode !== EntityModeEnum.RESUMEN ? 'Complete todos los campos requeridos.' : ''"
+    >
+      <template v-if="mode !== EntityModeEnum.RESUMEN" #actions>
         <div class="flex gap-4">
           <!-- valor nominal -->
           <BaseButton
@@ -53,7 +67,7 @@
             class="h-11"
             @click="openValorNominalModal"
           >
-            <img :src="IconCoin" alt="Valor Nominal" />
+            <img :src="IconCoinValue" alt="Valor Nominal" />
             <p class="font-bold">
               Valor Nominal:
               <span class="font-bold">{{ valorNominalDisplay }}</span>
@@ -90,7 +104,7 @@
         class="flex justify-between items-center px-6 py-3.5 border-2 bg-gray-25 rounded-lg"
       >
         <div class="flex items-center gap-2">
-          <img :src="IconCoin" alt="Valor Nominal" />
+          <img :src="IconCoinValue" alt="Valor Nominal" />
           <p class="font-primary font-semibold t-h6 text-gray-800">Valor Nominal:</p>
         </div>
         <p class="font-secondary font-medium t-t1 text-gray-800">{{ valorNominalDisplay }}</p>
@@ -114,7 +128,7 @@
       :columns="columns"
       :data="registroAccionesStore.tablaAcciones"
       title-menu="Acciones"
-      :actions="accionesActions"
+      :actions="mode !== EntityModeEnum.RESUMEN ? accionesActions : undefined"
     />
 
     <ValorNominalModal

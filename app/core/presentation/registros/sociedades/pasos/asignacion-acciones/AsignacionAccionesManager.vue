@@ -3,7 +3,7 @@
   import BaseButton from "~/components/base/buttons/BaseButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import OutLineCard from "~/components/base/cards/OutLineCard.vue";
-  import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
   import SharesCard from "./components/SharesCard.vue";
   import AsignationTable from "./components/tables/AsignationTable.vue";
   import { useAsignacionAccionesComputed } from "./composables/useAsignacionAccionesComputed";
@@ -15,6 +15,10 @@
   }
 
   const props = defineProps<Props>();
+
+  const IconCoinValue = computed(() => {
+    return IconCoin;
+  });
 
   // Cargar datos desde el backend
   useAsignacionAccionesLoader({
@@ -31,16 +35,25 @@
 </script>
 
 <template>
-  <div class="p-14 flex flex-col gap-12">
+  <div
+    :class="[
+      'w-full flex flex-col gap-12',
+      mode !== EntityModeEnum.RESUMEN
+        ? ' p-14 '
+        : 'border border-gray-100 rounded-xl py-12 px-10',
+    ]"
+  >
     <CardTitle
       title="Asignación de Acciones"
-      body="Distribuye las acciones entre los accionistas."
+      :body="
+        mode !== EntityModeEnum.RESUMEN ? 'Distribuye las acciones entre los accionistas.' : ''
+      "
     >
       <template #actions>
         <div class="flex gap-4">
           <!-- valor nominal -->
           <BaseButton variant="pill" class="h-11">
-            <img :src="IconCoin" alt="Valor Nominal" />
+            <img :src="IconCoinValue" alt="Valor Nominal" />
             <p class="font-bold">
               Valor Nominal:
               <span class="font-bold">{{ valorNominalDisplay }}</span>
@@ -50,7 +63,7 @@
       </template>
     </CardTitle>
 
-    <div v-if="accionesDisponibles.length > 0" class="flex gap-6 overflow-y-auto">
+    <div v-if="accionesDisponibles.length > 0" class="flex gap-6 overflow-x-auto">
       <SharesCard
         v-for="accion in accionesDisponibles"
         :key="accion.id"
@@ -82,6 +95,6 @@
       <OutLineCard title="Capital Social" :value="capitalSocialDisplay" />
     </div>
 
-    <AsignationTable />
+    <AsignationTable :mode="mode" />
   </div>
 </template>

@@ -12,6 +12,7 @@
     placeholder?: string;
     schema: ZodTypeAny;
     isLoading?: boolean;
+    isDisabled?: boolean;
   }
 
   const props = defineProps<Props>();
@@ -65,6 +66,7 @@
         <BaseInput
           :id="name"
           v-model="value"
+          :is-disabled="isDisabled"
           variant="default"
           :size="'md'"
           :placeholder="placeholder"
@@ -74,7 +76,7 @@
           type="button"
           variant="secondary"
           class="h-10 w-10 p-0 absolute right-0 top-1/2 -translate-y-1/2 rounded-l-none bg-gray-900 hover:bg-gray-700 transition-colors"
-          :disabled="isLoading"
+          :disabled="isLoading || isDisabled"
           @click="handleSearch"
         >
           <component

@@ -235,6 +235,20 @@ export const useAccionesComputed = (profileId: string) => {
 
   useFlowLayoutNext(() => {});
 
+  watch(
+    () => registroAccionesStore.acciones,
+    (newVal) => {
+      const tipoAcciones = newVal.every((accion) => accion.tipo === TipoAccionEnum.CLASES);
+
+      if (tipoAcciones) {
+        switchTabs.value = "opcion-b";
+      } else {
+        switchTabs.value = "opcion-a";
+      }
+    },
+    { immediate: true }
+  );
+
   onMounted(async () => {
     await Promise.all([
       registroAccionesStore.loadAcciones(profileId),
