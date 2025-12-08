@@ -11,6 +11,7 @@
     subtitle?: string;
     titleColor?: string;
     mensajeUnanimidad?: string;
+    mensajeAprobacion?: string;
     preguntas?: string[];
     accionistas?: string[];
   }
@@ -23,6 +24,7 @@
     titleColor: "text-gray-900",
     mensajeUnanimidad:
       "Confirmo que todos los accionistas están de acuerdo con realizar el aumento de capital mediante Aportes Dinerarios por la suma de S/ 2,000.00 (Dos Mil y 00/100 Soles), con la emisión de 2,000 nuevas acciones con un valor nominal de S/ 1.00. (Un Sol).",
+    mensajeAprobacion: "la propuesta de Aumento de Capital mediante Aportes Dinerarios.",
     preguntas: () => [],
     accionistas: () => [],
   });
@@ -138,6 +140,7 @@
         v-if="selectedMethod === 'mayoria'"
         :preguntas="props.preguntas"
         :accionistas="props.accionistas"
+        :mensaje-aprobacion="props.mensajeAprobacion"
       />
     </div>
   </SlotWrapper>

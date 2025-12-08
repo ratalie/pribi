@@ -5,6 +5,7 @@
     subtitle="Votación para aprobar los estados financieros y la gestión social"
     title-color="text-primary-800"
     mensaje-unanimidad="Confirmo que todos los accionistas están de acuerdo con la memoria, los estados financieros y la gestión social presentados en la junta."
+    mensaje-aprobacion="la memoria, los estados financieros y la gestión social presentados en la junta."
     :preguntas="preguntas"
     :accionistas="accionistas"
   />

@@ -151,14 +151,12 @@
         <template v-if="getPorcentajeAFavor(0) > 50">
           Se
           <span class="font-semibold">aprobó</span>
-          la propuesta de Aumento de Capital mediante
-          <span class="font-semibold">Aportes Dinerarios.</span>
+          {{ props.mensajeAprobacion }}
         </template>
         <template v-else>
           No se
           <span class="font-semibold">aprobó</span>
-          la propuesta de Aumento de Capital mediante
-          <span class="font-semibold">Aportes Dinerarios.</span>
+          {{ props.mensajeAprobacion }}
         </template>
       </p>
     </div>
@@ -172,6 +170,7 @@
   interface Props {
     preguntas?: string[];
     accionistas?: string[];
+    mensajeAprobacion?: string;
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -183,6 +182,7 @@
       "Melanie Sanchez Aguilar",
       "Braulio Sanchez Aguilar",
     ],
+    mensajeAprobacion: "la propuesta de Aumento de Capital mediante Aportes Dinerarios.",
   });
 
   type Voto = "a-favor" | "en-contra" | "abstencion" | null;

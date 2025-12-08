@@ -1,5 +1,8 @@
 <template>
-  <MetodoVotacio v-model="metodoVotacion" />
+  <MetodoVotacio
+    v-model="metodoVotacion"
+    mensaje-aprobacion="la propuesta de Aumento de Capital mediante Aportes Dinerarios."
+  />
 </template>
 
 <script setup lang="ts">

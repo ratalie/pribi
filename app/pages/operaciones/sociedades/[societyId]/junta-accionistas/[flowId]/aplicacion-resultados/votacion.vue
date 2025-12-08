@@ -5,6 +5,7 @@
     subtitle="Votación sobre la propuestas de aplicacion de resultados"
     title-color="text-primary-800"
     mensaje-unanimidad="Se aprobó la propuesta de aplicación de los resultados del ejercicio"
+    mensaje-aprobacion="la propuesta de aplicación de los resultados del ejercicio."
     :preguntas="preguntas"
     :accionistas="accionistas"
   />

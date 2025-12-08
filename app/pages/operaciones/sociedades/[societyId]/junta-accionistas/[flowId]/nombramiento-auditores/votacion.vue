@@ -5,6 +5,7 @@
     subtitle="Votación sobre la propuestas de aplicacion de los resultados del ejercicio"
     title-color="text-primary-800"
     :mensaje-unanimidad="mensajeUnanimidad"
+    :mensaje-aprobacion="mensajeAprobacion"
     :preguntas="preguntas"
     :accionistas="accionistas"
   />
@@ -37,6 +38,12 @@
   const mensajeUnanimidad = computed(() => {
     const nombre = nombreAuditor.value || "Julio Raúl Solar";
     return `Confirmo que todos los accionistas están de acuerdo con la designación de ${nombre} como auditor externo.`;
+  });
+
+  // Mensaje de aprobación para voto por mayoría con el nombre del auditor
+  const mensajeAprobacion = computed(() => {
+    const nombre = nombreAuditor.value || "Julio Raúl Solar Ramirez";
+    return `la propuesta de la designación de ${nombre} como auditor externo.`;
   });
 
   // Pregunta para voto por mayoría con el nombre del auditor
