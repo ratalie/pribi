@@ -108,7 +108,18 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
                     : String(limite.hasta),
                 tipo_firma: limite.tipoFirma,
                 firmantes:
-                  limite.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA ? limite.firmantes : [],
+                  limite.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA
+                    ? limite.firmantes.map((firmante) => {
+                        // Convertir el ID del grupo a su nombre
+                        const clase = this.clasesApoderadosDisponibles.find(
+                          (c) => c.id === firmante.grupo
+                        );
+                        return {
+                          ...firmante,
+                          grupo: clase?.nombre ?? firmante.grupo, // Usar nombre si existe, sino el ID como fallback
+                        };
+                      })
+                    : [],
               }))
             : [];
 
@@ -146,7 +157,18 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
                     : String(limite.hasta),
                 tipo_firma: limite.tipoFirma,
                 firmantes:
-                  limite.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA ? limite.firmantes : [],
+                  limite.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA
+                    ? limite.firmantes.map((firmante) => {
+                        // Convertir el ID del grupo a su nombre
+                        const clase = this.clasesApoderadosDisponibles.find(
+                          (c) => c.id === firmante.grupo
+                        );
+                        return {
+                          ...firmante,
+                          grupo: clase?.nombre ?? firmante.grupo, // Usar nombre si existe, sino el ID como fallback
+                        };
+                      })
+                    : [],
               }))
             : [];
 
@@ -759,11 +781,10 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
       }
 
       // Si tenía reglas y ahora no, todas se eliminaron
+      // Ya no se envía un array con acciones "remove", solo se retorna array vacío
+      // El backend recibirá tieneReglasFirma: false sin el array reglasMonetarias
       if (facultadOriginal?.reglasYLimites && !facultadActualParaComparar.reglasYLimites) {
-        return facultadOriginal.limiteMonetario.map((regla) => ({
-          accion: "remove" as const,
-          reglaId: regla.id,
-        }));
+        return [];
       }
 
       // Si no tenía reglas y ahora sí, todas se agregaron
@@ -1184,8 +1205,20 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
           : undefined,
       };
 
-      // Si hay cambios en reglas o si la facultad tiene reglas, incluir reglasMonetarias
-      if (cambiosReglas.length > 0 || facultadActual.reglasYLimites) {
+      // Obtener el estado original para detectar si tenía reglas y ahora no
+      const facultadOriginal = this.obtenerEstadoOriginalFacultad(apoderadoId, facultadId);
+
+      // Si la facultad original tenía reglas pero la actual no, enviar tieneReglasFirma: false
+      // (sin el array reglasMonetarias) - esto indica que se eliminaron todas las reglas
+      if (facultadOriginal?.reglasYLimites && !facultadActual.reglasYLimites) {
+        return {
+          ...basePayload,
+          tieneReglasFirma: false,
+        };
+      }
+
+      // Si la facultad actual tiene reglas Y hay cambios en reglas, incluir reglasMonetarias
+      if (facultadActual.reglasYLimites && cambiosReglas.length > 0) {
         return {
           ...basePayload,
           tieneReglasFirma: true,
@@ -1193,6 +1226,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
         };
       }
 
+      // Por defecto, si no tiene reglas o no hay cambios en reglas, enviar tieneReglasFirma: false
       return {
         ...basePayload,
         tieneReglasFirma: false,
@@ -1289,14 +1323,7 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
           facultadActual
         );
 
-        // Si no hay cambios, no hacer nada
-        if (!cambiosBase && cambiosReglas.length === 0) {
-          console.warn("No se detectaron cambios para actualizar");
-          return;
-        }
-
-        // Construir payload
-        // Si se proporciona facultadActual, usarla para obtener valores base; si no, leer del store
+        // Obtener la facultad actual para comparar y construir el payload
         const facultadParaPayload =
           facultadActual ||
           (tipo === "clase"
@@ -1309,6 +1336,19 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
 
         if (!facultadParaPayload) {
           throw new Error(`Facultad con ID ${facultadId} no encontrada`);
+        }
+
+        // Obtener el estado original para detectar si tenía reglas y ahora no
+        const facultadOriginal = this.obtenerEstadoOriginalFacultad(apoderadoId, facultadId);
+
+        // Detectar si se eliminaron todas las reglas (tenía reglas y ahora no)
+        const seEliminaronTodasLasReglas =
+          facultadOriginal?.reglasYLimites && !facultadParaPayload.reglasYLimites;
+
+        // Si no hay cambios y no se eliminaron todas las reglas, no hacer nada
+        if (!cambiosBase && cambiosReglas.length === 0 && !seEliminaronTodasLasReglas) {
+          console.warn("No se detectaron cambios para actualizar");
+          return;
         }
 
         const payload = this.construirUpdatePayload(

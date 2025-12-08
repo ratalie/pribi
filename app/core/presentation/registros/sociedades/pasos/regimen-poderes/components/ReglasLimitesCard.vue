@@ -106,6 +106,34 @@
 
     if (!limite) return;
 
+    // Obtener opciones disponibles
+    const opcionesDisponibles = apoderadoFacultadStore.grupoFirmantesOptions;
+    const totalOpcionesDisponibles = opcionesDisponibles.length;
+
+    // Obtener grupos ya asignados (excluyendo vacíos o sin seleccionar)
+    const gruposAsignados = limite.firmantes
+      .map((f) => f.grupo)
+      .filter((grupo) => grupo && grupo.trim() !== "");
+
+    // Contar firmantes vacíos (sin grupo seleccionado)
+    const firmantesVacios = limite.firmantes.filter(
+      (f) => !f.grupo || f.grupo.trim() === ""
+    ).length;
+
+    // Calcular cuántos slots están ocupados o reservados
+    // Los firmantes con grupo asignado + los firmantes vacíos (que pueden ocupar un slot)
+    const slotsOcupados = gruposAsignados.length + firmantesVacios;
+
+    // Validar si quedan opciones disponibles
+    // Si los slots ocupados/reservados >= opciones disponibles, no se puede agregar más
+    if (slotsOcupados >= totalOpcionesDisponibles) {
+      console.warn(
+        `[ReglasLimitesCard] No hay más apoderados disponibles para asignar como firmantes. Hay ${totalOpcionesDisponibles} opción(es) disponible(s) y ya se han asignado o reservado ${slotsOcupados} slot(s).`
+      );
+      return;
+    }
+
+    // Agregar firmante vacío
     limite.firmantes.push(crearFirmanteVacio());
   };
 
@@ -183,7 +211,7 @@
         </div>
 
         <div
-          v-for="(limite, index) in apoderadoFacultadStore.limiteMonetario"
+          v-for="limite in apoderadoFacultadStore.limiteMonetario"
           :key="limite.id"
           class="flex flex-col gap-4 border p-4 rounded-md bg-gray-25"
         >
@@ -250,8 +278,10 @@
               @update:model-value="(newVal: string) => handleTipoFirmaChange(newVal as TipoFirmasUIEnum, limite.id)"
             />
 
+            <!-- Solo mostrar el botón de eliminar si hay más de un límite -->
+            <!-- Se necesita al menos un límite monetario -->
             <BaseButton
-              v-if="index > 0"
+              v-if="apoderadoFacultadStore.limiteMonetario.length > 1"
               type="button"
               variant="ghost"
               class="w-4 h-4"
@@ -297,7 +327,10 @@
                   />
                 </div>
               </div>
+              <!-- Solo mostrar el botón de eliminar si hay más de un firmante -->
+              <!-- Una firma conjunta necesita al menos un firmante -->
               <BaseButton
+                v-if="limite.firmantes.length > 1"
                 type="button"
                 variant="ghost"
                 class="w-4 h-4"

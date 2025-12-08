@@ -52,7 +52,7 @@ interface ReglaMonetariaResponseDto {
 
 interface FirmantesResponseDto {
   id: string;
-  claseApoderadoId: string;
+  claseApoderadoId?: string; // Opcional porque el backend puede no enviarlo
   claseApoderado: {
     id: string;
     name: string;

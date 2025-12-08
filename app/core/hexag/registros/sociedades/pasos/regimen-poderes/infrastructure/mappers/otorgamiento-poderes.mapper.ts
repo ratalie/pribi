@@ -380,7 +380,7 @@ export class OtorgamientoPoderesMapper {
       firmantes: regla.firmantes.map((signer) => ({
         id: signer.id,
         cantidad: signer.cantidadMiembros,
-        grupo: signer.claseApoderado.name, // name de la clase → grupo
+        grupo: signer.claseApoderado.id,
       })),
     };
   }
