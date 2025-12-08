@@ -5,6 +5,7 @@ import { PersonTypeEnum } from "~/core/hexag/registros/sociedades/pasos/apoderad
 import {
   CreateOtorgamientoPoderUseCase,
   CreateTiposFacultadesUseCase,
+  DeleteOtorgamientoPoderUseCase,
   DeleteTiposFacultadesUseCase,
   ListOtorgamientosPoderUseCase,
   ListTiposFacultadesUseCase,
@@ -43,6 +44,7 @@ const deleteTipoFacultadUseCase = new DeleteTiposFacultadesUseCase(repository);
 const listOtorgamientosPoderUseCase = new ListOtorgamientosPoderUseCase(repository);
 const createOtorgamientoPoderUseCase = new CreateOtorgamientoPoderUseCase(repository);
 const updateOtorgamientoPoderUseCase = new UpdateOtorgamientoPoderUseCase(repository);
+const deleteOtorgamientoPoderUseCase = new DeleteOtorgamientoPoderUseCase(repository);
 
 export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
   state: (): State => ({
@@ -56,12 +58,28 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
 
   getters: {
     tablaTipoFacultades(): TipoFacultadRow[] {
-      return this.tipoFacultades.map((facultad, index) => ({
-        id: facultad.id,
-        table_id: index + 1,
-        tipo_facultades: facultad.tipoFacultades,
-        numero_apoderados: 0,
-      }));
+      return this.tipoFacultades.map((facultad, index) => {
+        // Contar apoderados que tienen esta facultad asignada
+        // Buscar en apoderadosFacultades (clases normales)
+        const apoderadosConEstaFacultad = this.apoderadosFacultades.filter((apoderado) =>
+          apoderado.facultades.some((f) => f.tipoFacultadId === facultad.id)
+        ).length;
+
+        // Buscar en otrosApoderados (apoderados individuales)
+        const otrosApoderadosConEstaFacultad = this.otrosApoderados.filter((apoderado) =>
+          apoderado.facultades.some((f) => f.tipoFacultadId === facultad.id)
+        ).length;
+
+        // Sumar ambos conteos
+        const totalApoderados = apoderadosConEstaFacultad + otrosApoderadosConEstaFacultad;
+
+        return {
+          id: facultad.id,
+          table_id: index + 1,
+          tipo_facultades: facultad.tipoFacultades,
+          numero_apoderados: totalApoderados,
+        };
+      });
     },
 
     tablaApoderadosFacultades(): ApoderadoFacultadRow[] {
@@ -435,15 +453,28 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
       apoderado.facultades[index] = facultadActualizada;
     },
 
-    eliminarFacultadApoderado(idApoderado: string, idFacultad: string) {
+    async eliminarFacultadApoderado(
+      profileId: string,
+      idApoderado: string,
+      idFacultad: string
+    ): Promise<void> {
       const apoderado = this.apoderadosFacultades.find((a) => a.id === idApoderado);
 
       if (!apoderado) {
         console.error(`No se encontró el apoderado con id: ${idApoderado}`);
-        return;
+        throw new Error(`No se encontró el apoderado con id: ${idApoderado}`);
       }
 
-      apoderado.facultades = apoderado.facultades.filter((f) => f.id !== idFacultad);
+      try {
+        // Llamar al backend para eliminar
+        await deleteOtorgamientoPoderUseCase.execute(profileId, [idFacultad]);
+
+        // Actualizar estado local solo si el backend responde OK
+        apoderado.facultades = apoderado.facultades.filter((f) => f.id !== idFacultad);
+      } catch (error) {
+        console.error("Error al eliminar el otorgamiento de poder:", error);
+        throw error; // Re-lanzar para que el composable pueda manejarlo
+      }
     },
 
     //otros apoderados facultad
@@ -480,15 +511,28 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
       apoderado.facultades[index] = facultadActualizada;
     },
 
-    eliminarFacultadOtroApoderado(idApoderado: string, idFacultad: string) {
+    async eliminarFacultadOtroApoderado(
+      profileId: string,
+      idApoderado: string,
+      idFacultad: string
+    ): Promise<void> {
       const apoderado = this.otrosApoderados.find((a) => a.id === idApoderado);
 
       if (!apoderado) {
         console.error(`No se encontró el otro apoderado con id: ${idApoderado}`);
-        return;
+        throw new Error(`No se encontró el otro apoderado con id: ${idApoderado}`);
       }
 
-      apoderado.facultades = apoderado.facultades.filter((f) => f.id !== idFacultad);
+      try {
+        // Llamar al backend para eliminar
+        await deleteOtorgamientoPoderUseCase.execute(profileId, [idFacultad]);
+
+        // Actualizar estado local solo si el backend responde OK
+        apoderado.facultades = apoderado.facultades.filter((f) => f.id !== idFacultad);
+      } catch (error) {
+        console.error("Error al eliminar el otorgamiento de poder:", error);
+        throw error; // Re-lanzar para que el composable pueda manejarlo
+      }
     },
 
     // ========== Sección 6: Estado Original/Actual ==========

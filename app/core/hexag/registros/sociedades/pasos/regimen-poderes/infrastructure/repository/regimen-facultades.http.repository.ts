@@ -119,6 +119,20 @@ export class RegimenFacultadesHttpRepository implements RegimenFacultadesReposit
     }
   }
 
+  async deleteOtorgamientoPoder(profileId: string, ids: string[]): Promise<void> {
+    const url = this.getUrl(profileId, "powers-grants");
+    const config = withAuthHeaders({
+      method: "DELETE" as const,
+      body: ids,
+    });
+
+    const response = await $fetch<BackendApiResponse>(url, config);
+
+    if (!response.success) {
+      throw new Error(response.message || "Error al eliminar el otorgamiento de poder");
+    }
+  }
+
   async listOtorgamientosPoder(profileId: string): Promise<OtorgamientoPoderResponseDTO[]> {
     const url = this.getUrl(profileId, "powers-grants");
     const config = withAuthHeaders({ method: "GET" as const });

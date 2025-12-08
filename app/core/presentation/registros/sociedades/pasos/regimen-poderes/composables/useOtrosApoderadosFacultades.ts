@@ -1,3 +1,4 @@
+import { useConfirmDelete } from "~/composables/useConfirmDelete";
 import { useApoderadoFacultadStore } from "../stores/modal/useApoderadoFacultadStore";
 import { useRegimenFacultadesStore } from "../stores/useRegimenFacultadesStore";
 import {
@@ -52,8 +53,35 @@ export const useOtrosApoderadosFacultades = (profileId: string) => {
     isApoderadoFacultadesModalOpen.value = true;
   };
 
+  // Estado para el modal de confirmación de eliminación
+  const idFacultadAEliminar = ref<string | null>(null);
+  const idApoderadoAEliminar = ref<string | null>(null);
+
+  const confirmDelete = useConfirmDelete(
+    async () => {
+      if (!idFacultadAEliminar.value || !idApoderadoAEliminar.value) {
+        throw new Error("No se encontraron los IDs para eliminar");
+      }
+      await regimenFacultadesStore.eliminarFacultadOtroApoderado(
+        profileId,
+        idApoderadoAEliminar.value,
+        idFacultadAEliminar.value
+      );
+    },
+    {
+      title: "Confirmar eliminación",
+      message:
+        "¿Estás seguro de que deseas eliminar este otorgamiento de poder? Esta acción no se puede deshacer.",
+      confirmLabel: "Eliminar",
+      cancelLabel: "Cancelar",
+    }
+  );
+
   const eliminarFacultad = (idFacultad: string, idApoderado: string) => {
-    regimenFacultadesStore.eliminarFacultadOtroApoderado(idApoderado, idFacultad);
+    // Guardar los IDs y abrir el modal de confirmación
+    idFacultadAEliminar.value = idFacultad;
+    idApoderadoAEliminar.value = idApoderado;
+    confirmDelete.open();
   };
 
   const facultadActions = [
@@ -184,5 +212,7 @@ export const useOtrosApoderadosFacultades = (profileId: string) => {
     handleSubmitApoderadoFacultad,
     isLoading,
     listaFacultadesDisponibles,
+    // Modal de confirmación de eliminación
+    confirmDelete,
   };
 };

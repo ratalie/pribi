@@ -1,3 +1,4 @@
+import { useConfirmDelete } from "~/composables/useConfirmDelete";
 import { useApoderadoFacultadStore } from "../stores/modal/useApoderadoFacultadStore";
 import { useRegimenFacultadesStore } from "../stores/useRegimenFacultadesStore";
 import {
@@ -14,6 +15,10 @@ export const useApoderadosFacultades = (profileId: string) => {
   const idFacultad = ref<string | null>(null);
   const modeModalApoderadoFacultad = ref<"crear" | "editar">("crear");
   const isLoading = ref(false);
+
+  // Estado para el modal de confirmación de eliminación
+  const idFacultadAEliminar = ref<string | null>(null);
+  const idApoderadoAEliminar = ref<string | null>(null);
 
   const cargarFacultadParaEditar = (idApod: string, idFac: string) => {
     const apoderado = regimenFacultadesStore.apoderadosFacultades.find((a) => a.id === idApod);
@@ -52,8 +57,31 @@ export const useApoderadosFacultades = (profileId: string) => {
     isApoderadoFacultadesModalOpen.value = true;
   };
 
+  const confirmDelete = useConfirmDelete(
+    async () => {
+      if (!idFacultadAEliminar.value || !idApoderadoAEliminar.value) {
+        throw new Error("No se encontraron los IDs para eliminar");
+      }
+      await regimenFacultadesStore.eliminarFacultadApoderado(
+        profileId,
+        idApoderadoAEliminar.value,
+        idFacultadAEliminar.value
+      );
+    },
+    {
+      title: "Confirmar eliminación",
+      message:
+        "¿Estás seguro de que deseas eliminar este otorgamiento de poder? Esta acción no se puede deshacer.",
+      confirmLabel: "Eliminar",
+      cancelLabel: "Cancelar",
+    }
+  );
+
   const eliminarFacultad = (idFacultad: string, idApoderado: string) => {
-    regimenFacultadesStore.eliminarFacultadApoderado(idApoderado, idFacultad);
+    // Guardar los IDs y abrir el modal de confirmación
+    idFacultadAEliminar.value = idFacultad;
+    idApoderadoAEliminar.value = idApoderado;
+    confirmDelete.open();
   };
 
   const facultadActions = [
@@ -183,5 +211,7 @@ export const useApoderadosFacultades = (profileId: string) => {
     handleSubmitApoderadoFacultad,
     isLoading,
     listaFacultadesDisponibles,
+    // Modal de confirmación de eliminación
+    confirmDelete,
   };
 };

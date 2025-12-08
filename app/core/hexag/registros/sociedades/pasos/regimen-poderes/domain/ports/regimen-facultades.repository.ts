@@ -38,4 +38,11 @@ export interface RegimenFacultadesRepository {
    * @returns Lista de otorgamientos de poder (ResponseDTO)
    */
   listOtorgamientosPoder(profileId: string): Promise<OtorgamientoPoderResponseDTO[]>;
+
+  /**
+   * Elimina uno o más otorgamientos de poder.
+   * @param profileId ID del perfil de la sociedad
+   * @param ids Array de IDs de los otorgamientos de poder a eliminar
+   */
+  deleteOtorgamientoPoder(profileId: string, ids: string[]): Promise<void>;
 }

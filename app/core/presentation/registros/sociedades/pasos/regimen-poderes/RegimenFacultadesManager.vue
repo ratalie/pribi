@@ -1,16 +1,17 @@
 <script setup lang="ts">
   import { onMounted } from "vue";
-  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
-  import CardTitle from "~/components/base/cards/CardTitle.vue";
-  import SimpleCard from "~/components/base/cards/SimpleCard.vue";
-  import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
-  import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
-  import FacultadesApoderados from "./components/FacultadesApoderados.vue";
-  import FacultadApoderadoModal from "./components/modals/FacultadApoderadoModal.vue";
-  import TipoFacultadesModal from "./components/modals/TipoFacultadesModal.vue";
-  import { useApoderadosFacultades } from "./composables/useApoderadosFacultades";
-  import { useOtrosApoderadosFacultades } from "./composables/useOtrosApoderadosFacultades";
-  import { useTiposFacultades } from "./composables/useTiposFacultades";
+import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+import CardTitle from "~/components/base/cards/CardTitle.vue";
+import SimpleCard from "~/components/base/cards/SimpleCard.vue";
+import ConfirmDeleteModal from "~/components/base/modal/ConfirmDeleteModal.vue";
+import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
+import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+import FacultadesApoderados from "./components/FacultadesApoderados.vue";
+import FacultadApoderadoModal from "./components/modals/FacultadApoderadoModal.vue";
+import TipoFacultadesModal from "./components/modals/TipoFacultadesModal.vue";
+import { useApoderadosFacultades } from "./composables/useApoderadosFacultades";
+import { useOtrosApoderadosFacultades } from "./composables/useOtrosApoderadosFacultades";
+import { useTiposFacultades } from "./composables/useTiposFacultades";
 
   interface Props {
     mode: EntityModeEnum;
@@ -28,6 +29,7 @@
     isTipoFacultadesModalOpen,
     handleSubmitTipoFacultad,
     handleCloseModal,
+    confirmDelete: confirmDeleteTipoFacultad,
   } = useTiposFacultades(props.societyId ?? "");
 
   const {
@@ -38,6 +40,7 @@
     handleCloseModalApoderadoFacultad,
     handleSubmitApoderadoFacultad,
     listaFacultadesDisponibles,
+    confirmDelete,
   } = useApoderadosFacultades(props.societyId ?? "");
 
   const {
@@ -48,6 +51,7 @@
     handleCloseModalApoderadoFacultad: handleCloseModalOtroApoderadoFacultad,
     handleSubmitApoderadoFacultad: handleSubmitOtroApoderadoFacultad,
     listaFacultadesDisponibles: listaFacultadesDisponiblesOtros,
+    confirmDelete: confirmDeleteOtros,
   } = useOtrosApoderadosFacultades(props.societyId ?? "");
 
   onMounted(async () => {
@@ -145,6 +149,43 @@
       :lista-facultades-options="listaFacultadesDisponiblesOtros"
       @close="handleCloseModalOtroApoderadoFacultad"
       @submit="handleSubmitOtroApoderadoFacultad"
+    />
+
+    <!-- Modales de confirmación de eliminación -->
+    <!-- Modal para tipos de facultades -->
+    <ConfirmDeleteModal
+      v-model="confirmDeleteTipoFacultad.isOpen.value"
+      :title="confirmDeleteTipoFacultad.title"
+      :message="confirmDeleteTipoFacultad.message"
+      :confirm-label="confirmDeleteTipoFacultad.confirmLabel"
+      :cancel-label="confirmDeleteTipoFacultad.cancelLabel"
+      :is-loading="confirmDeleteTipoFacultad.isLoading.value"
+      @confirm="confirmDeleteTipoFacultad.handleConfirm"
+      @cancel="confirmDeleteTipoFacultad.handleCancel"
+    />
+
+    <!-- Modal para otorgamientos de poder (apoderados normales) -->
+    <ConfirmDeleteModal
+      v-model="confirmDelete.isOpen.value"
+      :title="confirmDelete.title"
+      :message="confirmDelete.message"
+      :confirm-label="confirmDelete.confirmLabel"
+      :cancel-label="confirmDelete.cancelLabel"
+      :is-loading="confirmDelete.isLoading.value"
+      @confirm="confirmDelete.handleConfirm"
+      @cancel="confirmDelete.handleCancel"
+    />
+
+    <!-- Modal para otorgamientos de poder (otros apoderados) -->
+    <ConfirmDeleteModal
+      v-model="confirmDeleteOtros.isOpen.value"
+      :title="confirmDeleteOtros.title"
+      :message="confirmDeleteOtros.message"
+      :confirm-label="confirmDeleteOtros.confirmLabel"
+      :cancel-label="confirmDeleteOtros.cancelLabel"
+      :is-loading="confirmDeleteOtros.isLoading.value"
+      @confirm="confirmDeleteOtros.handleConfirm"
+      @cancel="confirmDeleteOtros.handleCancel"
     />
   </div>
 </template>
