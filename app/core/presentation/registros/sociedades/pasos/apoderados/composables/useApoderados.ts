@@ -1,3 +1,4 @@
+import { useConfirmDelete } from "~/composables/useConfirmDelete";
 import { useClasesYApoderadosStore } from "../stores/useClasesYApoderadoStore";
 import { ClasesApoderadoEspecialesEnum } from "../types/enums/ClasesApoderadoEspecialesEnum";
 import {
@@ -86,12 +87,29 @@ export const useApoderados = (societyId: string) => {
     }
   };
 
-  const handleEliminarApoderado = async (apoderadoId: string) => {
-    try {
-      await clasesYApoderadoStore.eliminarApoderado(societyId, apoderadoId);
-    } catch (error) {
-      console.error("Error al eliminar el apoderado", error);
+  // Estado para el modal de confirmación de eliminación
+  const idApoderadoAEliminar = ref<string | null>(null);
+
+  const confirmDelete = useConfirmDelete(
+    async () => {
+      if (!idApoderadoAEliminar.value) {
+        throw new Error("No se encontró el ID del apoderado para eliminar");
+      }
+      await clasesYApoderadoStore.eliminarApoderado(societyId, idApoderadoAEliminar.value);
+    },
+    {
+      title: "Confirmar eliminación",
+      message:
+        "¿Estás seguro de que deseas eliminar este apoderado? Esta acción no se puede deshacer.",
+      confirmLabel: "Eliminar",
+      cancelLabel: "Cancelar",
     }
+  );
+
+  const handleEliminarApoderado = (apoderadoId: string) => {
+    // Guardar el ID y abrir el modal de confirmación
+    idApoderadoAEliminar.value = apoderadoId;
+    confirmDelete.open();
   };
 
   const apoderadoActions = [
@@ -117,5 +135,7 @@ export const useApoderados = (societyId: string) => {
     openModalApoderado,
     closeModalApoderado,
     handleSubmitApoderado,
+    // Modal de confirmación de eliminación
+    confirmDelete,
   };
 };

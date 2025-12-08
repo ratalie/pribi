@@ -3,6 +3,7 @@
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
+  import ConfirmDeleteModal from "~/components/base/modal/ConfirmDeleteModal.vue";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
   import ApoderadosTable from "./components/ApoderadosTable.vue";
   import ClasesApoderadoTable from "./components/ClasesApoderadoTable.vue";
@@ -36,6 +37,7 @@
     openModalClase,
     closeModalClase,
     handleSubmitClase,
+    confirmDelete: confirmDeleteClase,
   } = useClasesApoderado(props.societyId ?? "");
 
   const {
@@ -47,6 +49,7 @@
     openModalGerenteGeneral,
     closeModalGerenteGeneral,
     handleSubmitGerenteGeneral,
+    confirmDelete: confirmDeleteGerente,
   } = useGerenteGeneral(props.societyId ?? "");
 
   const {
@@ -59,6 +62,7 @@
     openModalApoderado,
     closeModalApoderado,
     handleSubmitApoderado,
+    confirmDelete: confirmDeleteApoderado,
   } = useApoderados(props.societyId ?? "");
 
   useFlowLayoutNext(() => {});
@@ -194,6 +198,43 @@
       :clase-options="clasesYApoderadoStore.datosClasesOpciones"
       @close="closeModalApoderado"
       @submit="handleSubmitApoderado"
+    />
+
+    <!-- Modales de confirmación de eliminación -->
+    <!-- Modal para clases de apoderado -->
+    <ConfirmDeleteModal
+      v-model="confirmDeleteClase.isOpen.value"
+      :title="confirmDeleteClase.title"
+      :message="confirmDeleteClase.message"
+      :confirm-label="confirmDeleteClase.confirmLabel"
+      :cancel-label="confirmDeleteClase.cancelLabel"
+      :is-loading="confirmDeleteClase.isLoading.value"
+      @confirm="confirmDeleteClase.handleConfirm"
+      @cancel="confirmDeleteClase.handleCancel"
+    />
+
+    <!-- Modal para gerente general -->
+    <ConfirmDeleteModal
+      v-model="confirmDeleteGerente.isOpen.value"
+      :title="confirmDeleteGerente.title"
+      :message="confirmDeleteGerente.message"
+      :confirm-label="confirmDeleteGerente.confirmLabel"
+      :cancel-label="confirmDeleteGerente.cancelLabel"
+      :is-loading="confirmDeleteGerente.isLoading.value"
+      @confirm="confirmDeleteGerente.handleConfirm"
+      @cancel="confirmDeleteGerente.handleCancel"
+    />
+
+    <!-- Modal para apoderados -->
+    <ConfirmDeleteModal
+      v-model="confirmDeleteApoderado.isOpen.value"
+      :title="confirmDeleteApoderado.title"
+      :message="confirmDeleteApoderado.message"
+      :confirm-label="confirmDeleteApoderado.confirmLabel"
+      :cancel-label="confirmDeleteApoderado.cancelLabel"
+      :is-loading="confirmDeleteApoderado.isLoading.value"
+      @confirm="confirmDeleteApoderado.handleConfirm"
+      @cancel="confirmDeleteApoderado.handleCancel"
     />
   </div>
 </template>

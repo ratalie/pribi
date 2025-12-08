@@ -1,3 +1,4 @@
+import { useConfirmDelete } from "~/composables/useConfirmDelete";
 import { PersonTypeEnum } from "~/core/hexag/registros/sociedades/pasos/apoderados/domain";
 import { useClasesYApoderadosStore } from "../stores/useClasesYApoderadoStore";
 import {
@@ -29,6 +30,9 @@ export const useGerenteGeneral = (societyId: string) => {
     tipoPersona.value = "natural";
     editingGerenteGeneralId.value = null;
     editingPersonaId.value = null;
+
+    personaNaturalStore.$reset();
+    personaJuridicaStore.$reset();
   };
 
   const handleSubmitGerenteGeneral = async () => {
@@ -97,12 +101,32 @@ export const useGerenteGeneral = (societyId: string) => {
     openModalGerenteGeneral();
   };
 
-  const handleEliminarGerenteGeneral = async (gerenteGeneralId: string) => {
-    try {
-      await clasesYApoderadoStore.eliminarApoderado(societyId, gerenteGeneralId);
-    } catch (error) {
-      console.error("Error al eliminar el gerente general", error);
+  // Estado para el modal de confirmación de eliminación
+  const idGerenteGeneralAEliminar = ref<string | null>(null);
+
+  const confirmDelete = useConfirmDelete(
+    async () => {
+      if (!idGerenteGeneralAEliminar.value) {
+        throw new Error("No se encontró el ID del gerente general para eliminar");
+      }
+      await clasesYApoderadoStore.eliminarApoderado(
+        societyId,
+        idGerenteGeneralAEliminar.value
+      );
+    },
+    {
+      title: "Confirmar eliminación",
+      message:
+        "¿Estás seguro de que deseas eliminar el gerente general? Esta acción no se puede deshacer.",
+      confirmLabel: "Eliminar",
+      cancelLabel: "Cancelar",
     }
+  );
+
+  const handleEliminarGerenteGeneral = (gerenteGeneralId: string) => {
+    // Guardar el ID y abrir el modal de confirmación
+    idGerenteGeneralAEliminar.value = gerenteGeneralId;
+    confirmDelete.open();
   };
 
   const gerenteActions = [
@@ -127,5 +151,7 @@ export const useGerenteGeneral = (societyId: string) => {
     openModalGerenteGeneral,
     closeModalGerenteGeneral,
     handleSubmitGerenteGeneral,
+    // Modal de confirmación de eliminación
+    confirmDelete,
   };
 };

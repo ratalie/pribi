@@ -5,6 +5,7 @@
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
+  import ConfirmDeleteModal from "~/components/base/modal/ConfirmDeleteModal.vue";
   import { getColumns } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import Switch from "~/components/ui/switch/Switch.vue";
@@ -174,13 +175,15 @@
   });
 
   // Composable para manejar la lógica de directores
-  const { handleDeleteDirector, handleDirectorSaved } = useDirectorioDirectores({
-    directores,
-    deleteDirector,
-    directorioForm,
-    form,
-    presidenteDirectorioRef,
-  });
+  const { handleDeleteDirector, handleDirectorSaved, confirmDelete } = useDirectorioDirectores(
+    {
+      directores,
+      deleteDirector,
+      directorioForm,
+      form,
+      presidenteDirectorioRef,
+    }
+  );
 
   // Acciones para el menú de opciones
   const directoresActions = [
@@ -316,6 +319,18 @@
         :society-id="props.societyId"
         @close="closeModal"
         @saved="handleDirectorSaved"
+      />
+
+      <!-- Modal de confirmación de eliminación -->
+      <ConfirmDeleteModal
+        v-model="confirmDelete.isOpen.value"
+        :title="confirmDelete.title"
+        :message="confirmDelete.message"
+        :confirm-label="confirmDelete.confirmLabel"
+        :cancel-label="confirmDelete.cancelLabel"
+        :is-loading="confirmDelete.isLoading.value"
+        @confirm="confirmDelete.handleConfirm"
+        @cancel="confirmDelete.handleCancel"
       />
     </div>
   </div>

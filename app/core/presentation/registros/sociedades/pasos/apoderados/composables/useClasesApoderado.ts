@@ -1,3 +1,4 @@
+import { useConfirmDelete } from "~/composables/useConfirmDelete";
 import { useClasesYApoderadosStore } from "../stores/useClasesYApoderadoStore";
 import { mapperNombreAEntidad } from "../utils/mapper-clases-apoderados";
 
@@ -57,13 +58,29 @@ export const useClasesApoderado = (profileId: string) => {
     openModalClase();
   };
 
-  const handleEliminarClase = async (claseId: string) => {
-    try {
-      await clasesYApoderadoStore.eliminarClase(profileId, claseId);
-    } catch (error) {
-      console.error(error);
-      throw error;
+  // Estado para el modal de confirmación de eliminación
+  const idClaseAEliminar = ref<string | null>(null);
+
+  const confirmDelete = useConfirmDelete(
+    async () => {
+      if (!idClaseAEliminar.value) {
+        throw new Error("No se encontró el ID de la clase para eliminar");
+      }
+      await clasesYApoderadoStore.eliminarClase(profileId, idClaseAEliminar.value);
+    },
+    {
+      title: "Confirmar eliminación",
+      message:
+        "¿Estás seguro de que deseas eliminar esta clase de apoderado? Esta acción no se puede deshacer.",
+      confirmLabel: "Eliminar",
+      cancelLabel: "Cancelar",
     }
+  );
+
+  const handleEliminarClase = (claseId: string) => {
+    // Guardar el ID y abrir el modal de confirmación
+    idClaseAEliminar.value = claseId;
+    confirmDelete.open();
   };
 
   const claseActions = [
@@ -89,5 +106,7 @@ export const useClasesApoderado = (profileId: string) => {
     openModalClase,
     closeModalClase,
     handleSubmitClase,
+    // Modal de confirmación de eliminación
+    confirmDelete,
   };
 };
