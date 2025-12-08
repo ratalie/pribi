@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { Button } from "@/components/ui/button";
   import type { DatosSociedadDTO } from "@hexag/registros/sociedades/pasos/datos-sociedad/application";
   import type { SociedadDatosGenerales } from "@hexag/registros/sociedades/pasos/datos-sociedad/domain";
   import {
@@ -19,13 +18,14 @@
     tipoSociedadSchema,
   } from "@hexag/registros/sociedades/pasos/datos-sociedad/domain/schemas";
   import { useDatosSociedad } from "@presentation/registros/sociedades/pasos/datos-sociedad/useDatosSociedad";
-  import { Form } from "vee-validate";
+  import { useForm } from "vee-validate";
   import { computed, reactive, ref, toRef, watch } from "vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
+  import { useFlowLayoutNext } from "~/composables/useFlowLayoutNext";
   import {
     getRegistryOfficeLabel,
     getTypeSocietyLabel,
@@ -34,7 +34,6 @@
   } from "~/constants/inputs/enum-helpers";
   import { officeOptions } from "~/constants/inputs/office-options";
   import { societyTypeOptions } from "~/constants/inputs/society-types";
-  import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   const REQUIRED_FIELDS: Array<keyof DatosSociedadDTO> = [
@@ -87,13 +86,15 @@
 
   const form = reactive<DatosSociedadDTO>(createEmptyForm());
 
-  const { datos, isLoading, isSaving, error, fetch, save } = useDatosSociedad(societyIdRef);
+  const { datos, isLoading, fetch, save } = useDatosSociedad(societyIdRef);
+
+  // Usar useForm para validación programática (se conecta automáticamente al Form más cercano)
+  const { validate, setFieldTouched } = useForm();
 
   const isReadonly = computed(() => modeRef.value === EntityModeEnum.PREVISUALIZAR);
 
   const societyOptions = societyTypeOptions;
   const officeSelectOptions = officeOptions;
-  const { withAsyncToast } = useToastFeedback();
 
   const tipoSocietarioLabel = computed(() => getTypeSocietyLabel(form.tipoSocietario));
   const oficinaRegistralLabel = computed(() => getRegistryOfficeLabel(form.oficinaRegistral));
@@ -106,8 +107,6 @@
   );
 
   const isComplete = computed(() => missingRequiredFields.value.length === 0);
-
-  const errorMessage = computed(() => error.value?.message ?? null);
 
   function populateForm(value: SociedadDatosGenerales | null) {
     if (!value) {
@@ -176,37 +175,6 @@
     oficinaRegistral: normalizeRegistryOfficeCode(form.oficinaRegistral),
   });
 
-  async function handleSubmit() {
-    if (isReadonly.value) return;
-
-    await withAsyncToast(() => save(buildPayload()), {
-      loading: {
-        title: "Guardando datos principales…",
-        description: "Estamos sincronizando la información con el registro.",
-      },
-      success: (result) => ({
-        title: result === "created" ? "Datos registrados" : "Datos actualizados",
-        description: "Los datos principales se guardaron correctamente.",
-      }),
-      error: () => ({
-        title: "No se pudo guardar",
-        description: "Revisa la información ingresada e inténtalo nuevamente.",
-      }),
-    });
-  }
-
-  function reset() {
-    if (datos.value) {
-      populateForm(datos.value);
-      return;
-    }
-    Object.assign(form, createEmptyForm());
-  }
-
-  function handleInvalidSubmit(ctx: any) {
-    console.warn("[DatosSociedadForm] invalid submit", ctx?.errors);
-  }
-
   function handleSearchRuc(ruc: string) {
     console.info("[DatosSociedadForm] buscar RUC", ruc);
   }
@@ -236,7 +204,61 @@
     );
   });
 
-  useFlowLayoutNext(() => {});
+  const handleNext = async () => {
+    if (isReadonly.value) {
+      // Si es readonly, solo navegar (sin guardar)
+      return;
+    }
+
+    // Lista de nombres de campos del formulario
+    const fieldNames = [
+      "numero-ruc",
+      "tipo-sociedad",
+      "razon-social",
+      "nombre-comercial",
+      "direccion",
+      "distrito",
+      "provincia",
+      "departamento",
+      "fecha-inscripcion-ruc",
+      "actividad-exterior",
+      "fecha-escritura-publica",
+      "fecha-registros-publicos",
+      "partida-registral",
+      "oficina-registral",
+    ];
+
+    // Marcar todos los campos como "touched" para que se muestren los errores
+    fieldNames.forEach((fieldName) => {
+      setFieldTouched(fieldName, true);
+    });
+
+    // Validar formulario antes de guardar usando useForm
+    const { valid } = await validate();
+
+    if (!valid) {
+      // Si la validación falla, no avanzar
+      // Los errores ya se muestran en el formulario (ahora que están marcados como touched)
+      console.error("[DatosSociedadForm] Validación fallida, no se puede avanzar");
+      throw new Error("Validación fallida: Por favor, completa todos los campos requeridos");
+    }
+
+    // Si la validación pasa, guardar
+    try {
+      const result = await save(buildPayload());
+      console.log(
+        `[DatosSociedadForm] Datos ${
+          result === "created" ? "registrados" : "actualizados"
+        } correctamente`
+      );
+      // Nota: La navegación al siguiente paso la maneja automáticamente useFlowLayoutNext
+    } catch (err) {
+      console.error("[DatosSociedadForm] Error al guardar datos:", err);
+      throw err; // Re-lanzar el error para que useFlowLayoutNext no navegue
+    }
+  };
+
+  useFlowLayoutNext(handleNext);
 </script>
 
 <template>
@@ -246,9 +268,6 @@
       body="Complete todos los datos requeridos."
       class="mb-8"
     />
-    <p v-if="errorMessage" class="mb-8 text-sm text-red-500">
-      {{ errorMessage }}
-    </p>
 
     <div v-if="isLoading">
       <div class="animate-pulse space-y-6">
@@ -327,12 +346,7 @@
       </div>
     </div>
 
-    <Form
-      v-else
-      class="grid grid-cols-2 gap-14"
-      @submit="handleSubmit"
-      @invalid-submit="handleInvalidSubmit"
-    >
+    <form v-else class="grid grid-cols-2 gap-14" @submit.prevent>
       <SearchInputZod
         v-model="form.numeroRuc"
         name="numero-ruc"
@@ -448,31 +462,6 @@
         placeholder="Oficina registral"
         :schema="oficinaRegistralSchema"
       />
-
-      <div class="col-span-2 flex items-center justify-end gap-3 pt-4">
-        <Button variant="ghost" type="button" @click="reset">Restablecer</Button>
-        <Button type="submit" :disabled="isSaving">
-          <span v-if="isSaving" class="mr-2 inline-flex items-center gap-2">
-            <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24">
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              />
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-              />
-            </svg>
-            Guardando...
-          </span>
-          <span v-else>Guardar cambios</span>
-        </Button>
-      </div>
-    </Form>
+    </form>
   </div>
 </template>
