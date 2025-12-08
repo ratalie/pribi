@@ -5,7 +5,7 @@
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import ConfirmDeleteModal from "~/components/base/modal/ConfirmDeleteModal.vue";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
-  import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
   import FacultadesApoderados from "./components/FacultadesApoderados.vue";
   import FacultadApoderadoModal from "./components/modals/FacultadApoderadoModal.vue";
   import TipoFacultadesModal from "./components/modals/TipoFacultadesModal.vue";
@@ -69,15 +69,23 @@
 </script>
 
 <template>
-  <div class="p-14 flex flex-col gap-12">
+  <div
+    :class="[
+      'flex flex-col gap-12',
+      mode !== EntityModeEnum.RESUMEN
+        ? ' p-14 '
+        : 'border border-gray-100 rounded-xl py-12 px-10',
+    ]"
+  >
     <CardTitle
       title="Regimen General de Poderes"
-      body="Complete todos los campos requeridos."
+      :body="mode !== EntityModeEnum.RESUMEN ? 'Complete todos los campos requeridos.' : ''"
     />
     <SimpleCard>
       <CardTitle title="Tipo de Poderes" body="">
         <template #actions>
           <ActionButton
+            v-if="mode !== EntityModeEnum.RESUMEN"
             variant="secondary"
             label="Agregar tipo de Poder"
             size="large"
@@ -90,7 +98,7 @@
         :columns="tipoFacultadesHeaders"
         :data="regimenFacultadesStore.tablaTipoFacultades"
         title-menu="Acciones"
-        :actions="tipoFacultadesActions"
+        :actions="mode !== EntityModeEnum.RESUMEN ? tipoFacultadesActions : undefined"
         icon-type="vertical"
       />
     </SimpleCard>
@@ -104,7 +112,8 @@
           v-for="apoderado in regimenFacultadesStore.tablaApoderadosFacultades"
           :key="apoderado.id"
           :apoderado-item="apoderado"
-          :actions="facultadActions"
+          :actions="mode !== EntityModeEnum.RESUMEN ? facultadActions : undefined"
+          :mode="mode"
           @open-modal="openModalFacultadApoderado"
         />
       </div>
@@ -119,7 +128,8 @@
           v-for="apoderado in regimenFacultadesStore.tablaOtrosApoderadosFacultades"
           :key="apoderado.id"
           :apoderado-item="apoderado"
-          :actions="facultadActionsOtros"
+          :actions="mode !== EntityModeEnum.RESUMEN ? facultadActionsOtros : undefined"
+          :mode="mode"
           @open-modal="openModalFacultadOtroApoderado"
         />
       </div>

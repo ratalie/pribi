@@ -281,12 +281,14 @@
         v-if="tieneDirectorio"
         v-model:form="form"
         :presidente-options="presidenteOptions"
+        :mode="mode"
       />
 
       <SimpleCard v-if="tieneDirectorio">
         <CardTitle title="Directores" body="">
           <template #actions>
             <ActionButton
+              v-if="mode !== EntityModeEnum.RESUMEN"
               variant="secondary"
               label="Agregar Director"
               size="xl"
@@ -299,7 +301,7 @@
           :columns="directoresColumnsDef"
           :data="directoresData"
           title-menu="Acciones"
-          :actions="directoresActions"
+          :actions="mode !== EntityModeEnum.RESUMEN ? directoresActions : undefined"
         />
       </SimpleCard>
 
