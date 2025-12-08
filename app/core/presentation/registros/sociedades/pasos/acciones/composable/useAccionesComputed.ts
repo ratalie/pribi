@@ -1,5 +1,6 @@
 import { computed, onMounted, ref } from "vue";
 import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
+import { useConfirmDelete } from "~/composables/useConfirmDelete";
 import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
 import {
   useAccionesComunesStore,
@@ -194,12 +195,29 @@ export const useAccionesComputed = (profileId: string) => {
     isAccionesModalOpen.value = true;
   };
 
-  const handleDeleteAccion = async (id: string) => {
-    try {
-      await registroAccionesStore.removeAccion(profileId, id);
-    } catch (error) {
-      console.error("[useAccionesComputed] Error al eliminar acción:", error);
+  // Estado para el modal de confirmación de eliminación
+  const idAccionAEliminar = ref<string | null>(null);
+
+  const confirmDelete = useConfirmDelete(
+    async () => {
+      if (!idAccionAEliminar.value) {
+        throw new Error("No se encontró el ID de la acción para eliminar");
+      }
+      await registroAccionesStore.removeAccion(profileId, idAccionAEliminar.value);
+    },
+    {
+      title: "Confirmar eliminación",
+      message:
+        "¿Estás seguro de que deseas eliminar esta acción? Esta acción no se puede deshacer.",
+      confirmLabel: "Eliminar",
+      cancelLabel: "Cancelar",
     }
+  );
+
+  const handleDeleteAccion = (id: string) => {
+    // Guardar el ID y abrir el modal de confirmación
+    idAccionAEliminar.value = id;
+    confirmDelete.open();
   };
 
   const accionesActions = [
@@ -247,5 +265,7 @@ export const useAccionesComputed = (profileId: string) => {
     accionesActions,
     // Stores
     valorNominalStore,
+    // Modal de confirmación de eliminación
+    confirmDelete,
   };
 };
