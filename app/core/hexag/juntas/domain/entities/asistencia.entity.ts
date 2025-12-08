@@ -23,12 +23,24 @@ export interface Asistencia {
   /** Si el accionista asistió a la junta */
   asistio: boolean;
   
-  /** UUID del accionista que lo representa (si aplica) */
+  /** UUID del accionista que lo representa (si aplica) - Legacy */
   representadoPorId: string | null;
   
   /** Si este accionista está representando a otro */
   esRepresentante: boolean;
+  
+  /** Datos completos del representante (NUEVO - objeto completo) */
+  representante: {
+    nombre: string;
+    apellidoPaterno: string;
+    apellidoMaterno?: string | null;
+    tipoDocumento: string;
+    numeroDocumento: string;
+    paisEmision?: string | null;
+  } | null;
 }
+
+
 
 
 

@@ -1,3 +1,3 @@
-export type { Convocatoria } from './convocatoria.entity';
-export type { MeetingDetails } from './meeting-details.entity';
-
+export * from "./vote-entry.entity";
+export * from "./vote-item.entity";
+export * from "./vote-session.entity";

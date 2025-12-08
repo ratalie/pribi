@@ -122,12 +122,9 @@ export class AsistenciaHttpRepository implements AsistenciaRepository {
       body: dto,
     };
     
-    console.debug('[Repository][AsistenciaHttp] update() request', {
-      url,
-      societyId,
-      flowId,
-      dto,
-    });
+    console.log('📤 [Repository] DTO recibido del Use Case:', JSON.stringify(dto, null, 2));
+    console.log('📤 [Repository] URL:', url);
+    console.log('📤 [Repository] Body que se enviará:', JSON.stringify(dto, null, 2));
     
     try {
       const response = await $fetch<{

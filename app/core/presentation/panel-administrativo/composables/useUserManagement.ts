@@ -1,7 +1,7 @@
-import { computed, ref, onMounted } from 'vue';
-import { useUserManagementStore } from '../stores/user-management.store';
-import type { RoleName } from '~/core/hexag/panel-administrativo/domain/entities/role.entity';
-import type { UserFlowAccess } from '~/core/hexag/panel-administrativo/domain/entities/permission.entity';
+import { computed, onMounted, ref } from "vue";
+import type { UserFlowAccess } from "~/core/hexag/panel-administrativo/domain/entities/permission.entity";
+import type { RoleName } from "~/core/hexag/panel-administrativo/domain/entities/role.entity";
+import { useUserManagementStore } from "../stores/user-management.store";
 // import { getUserPermissions } from '~/data/mockDataAdmin'; // No usado
 
 /**
@@ -12,9 +12,9 @@ export function useUserManagement() {
   const store = useUserManagementStore();
 
   // Estados locales del composable
-  const selectedRole = ref<RoleName | 'all'>('all');
-  const searchQuery = ref('');
-  const viewMode = ref<'table' | 'cards'>('table');
+  const selectedRole = ref<RoleName | "all">("all");
+  const searchQuery = ref("");
+  const viewMode = ref<"table" | "cards">("table");
   const showPermissionsEditor = ref(false);
   const showAssignmentModal = ref(false);
 
@@ -27,10 +27,8 @@ export function useUserManagement() {
   const filteredUsers = computed(() => {
     return store.users.filter((user) => {
       const matchesRole =
-        selectedRole.value === 'all' || user.role.name === selectedRole.value;
-      const matchesSearch = user.email
-        .toLowerCase()
-        .includes(searchQuery.value.toLowerCase());
+        selectedRole.value === "all" || user.role.name === selectedRole.value;
+      const matchesSearch = user.email.toLowerCase().includes(searchQuery.value.toLowerCase());
       return matchesRole && matchesSearch && user.status;
     });
   });
@@ -50,7 +48,12 @@ export function useUserManagement() {
   // Abrir editor de permisos
   const openPermissionsEditor = async (user: any) => {
     store.selectUser(user);
-    await store.loadUserPermissions(user.id);
+    // Cargar datos necesarios para el nuevo editor
+    await Promise.all([
+      store.loadUserRoutePermissions(user.id),
+      store.loadUserAssignedSocieties(user.id),
+      store.loadAllSocieties(),
+    ]);
     showPermissionsEditor.value = true;
   };
 
@@ -70,7 +73,7 @@ export function useUserManagement() {
       closePermissionsEditor();
     } catch (error) {
       // Manejo de error
-      console.error('Error al guardar permisos:', error);
+      console.error("Error al guardar permisos:", error);
     }
   };
 
@@ -103,4 +106,3 @@ export function useUserManagement() {
     loadUsers: () => store.loadUsers(),
   };
 }
-

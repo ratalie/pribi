@@ -121,6 +121,7 @@ export async function initAsistenciasMockFromSnapshot(
       asistio: false,  // Por defecto nadie asiste
       representadoPorId: null,
       esRepresentante: false,
+      representante: null,
     };
   });
   

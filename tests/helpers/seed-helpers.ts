@@ -11,6 +11,7 @@ import type { AccionistaDTO } from "~/core/hexag/registros/sociedades/pasos/acci
 import type { Persona } from "~/core/hexag/registros/sociedades/pasos/accionistas/domain/entities/persona.entity";
 import type { ApoderadoDTO } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/dtos/apoderado.dto";
 import type { ClaseApoderadoDTO } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/dtos/clase-apoderado.dto";
+import { ClasesApoderadoEspecialesEnum } from "~/core/presentation/registros/sociedades/pasos/apoderados/types/enums/ClasesApoderadoEspecialesEnum";
 import type { DatosSociedadDTO } from "~/core/hexag/registros/sociedades/pasos/datos-sociedad/application/dtos/datos-sociedad.dto";
 import type { DirectorDTO } from "~/core/hexag/registros/sociedades/pasos/directorio/application/dtos/director.dto";
 import type { DirectorioDTO } from "~/core/hexag/registros/sociedades/pasos/directorio/application/dtos/directorio.dto";
@@ -311,13 +312,12 @@ export function createTestQuorum(): QuorumDTO {
 
 /**
  * Crea una clase de apoderado de prueba
- * Genera nombre único para evitar conflictos con el backend
+ * Usa el enum correcto para "Gerente General"
  */
 export function createTestClaseApoderado(index: number = 0): ClaseApoderadoDTO {
-  const timestamp = Date.now();
   return {
     id: generateUUID(),
-    nombre: `Gerente-${index}-${timestamp}`, // ✅ Nombre único
+    nombre: ClasesApoderadoEspecialesEnum.GERENTE_GENERAL, // ✅ Usar enum correcto: "Gerente General"
   };
 }
 

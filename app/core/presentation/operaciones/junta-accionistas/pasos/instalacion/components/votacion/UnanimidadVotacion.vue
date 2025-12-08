@@ -22,9 +22,20 @@
         <Icon v-else name="fluent:checkbox-unchecked-24-regular" size="20" />
       </div>
 
-      <!-- Texto -->
+      <!-- Texto dinámico -->
       <p class="text-gray-700 t-2 font-secondary">
-        {{ props.mensajeConfirmacion }}
+        <template v-if="props.mensajeConfirmacion">
+          {{ props.mensajeConfirmacion }}
+        </template>
+        <template v-else-if="props.textoVotacion">
+          Confirmo que todos los accionistas están de acuerdo con {{ props.textoVotacion }}
+        </template>
+        <template v-else>
+          Confirmo que todos los accionistas están de acuerdo con realizar el aumento de
+          capital mediante Aportes Dinerarios por la suma de S/ 2,000.00 (Dos Mil y 00/100
+          Soles), con la emisión de 2,000 nuevas acciones con un valor nominal de S/ 1.00. (Un
+          Sol).
+        </template>
       </p>
     </div>
   </div>
@@ -34,12 +45,14 @@
   import { ref } from "vue";
 
   interface Props {
-    mensajeConfirmacion?: string;
+    mensajeConfirmacion?: string; // Legacy (compatibilidad)
+    textoVotacion?: string; // Nueva prop (del compañero)
   }
 
   const props = withDefaults(defineProps<Props>(), {
     mensajeConfirmacion:
       "Confirmo que todos los accionistas están de acuerdo con realizar el aumento de capital mediante Aportes Dinerarios por la suma de S/ 2,000.00 (Dos Mil y 00/100 Soles), con la emisión de 2,000 nuevas acciones con un valor nominal de S/ 1.00. (Un Sol).",
+    textoVotacion: "",
   });
 
   const isConfirmed = ref(false);

@@ -26,15 +26,15 @@
 
           <!-- Filas de Accionistas -->
           <div
-            v-for="(accionista, accionistaIndex) in accionistas"
-            :key="accionistaIndex"
+            v-for="(votante, accionistaIndex) in listaVotantes"
+            :key="votante.id || accionistaIndex"
             class="flex flex-col"
           >
             <div class="flex items-center py-4">
               <!-- Columna 1: Nombre del Accionista -->
               <div class="flex-[1]">
                 <p class="font-secondary text-gray-600 font-medium t-b1">
-                  {{ accionista }}
+                  {{ votante.nombreCompleto || `Votante ${accionistaIndex + 1}` }}
                 </p>
               </div>
 
@@ -71,7 +71,7 @@
 
             <!-- Línea separadora -->
             <div
-              v-if="accionistaIndex < accionistas.length - 1"
+              v-if="accionistaIndex < listaVotantes.length - 1"
               class="w-full h-px bg-gray-100"
             />
           </div>
@@ -164,13 +164,32 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from "vue";
+  import { computed, ref, watch } from "vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
+  import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/stores/useVotacionStore";
+
+  interface Votante {
+    id: string;
+    accionistaId: string;
+    accionista: {
+      id: string;
+      person: {
+        tipo: string;
+        nombre?: string;
+        apellidoPaterno?: string;
+        apellidoMaterno?: string;
+        razonSocial?: string;
+      };
+    };
+    nombreCompleto?: string;
+  }
 
   interface Props {
     preguntas?: string[];
     accionistas?: string[];
     mensajeAprobacion?: string;
+    votantes?: Votante[] | any; // Aceptar también ComputedRef
+    textoVotacion?: string | any; // Aceptar también ComputedRef
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -183,39 +202,174 @@
       "Braulio Sanchez Aguilar",
     ],
     mensajeAprobacion: "la propuesta de Aumento de Capital mediante Aportes Dinerarios.",
+    votantes: () => [],
+    textoVotacion: "",
   });
 
-  type Voto = "a-favor" | "en-contra" | "abstencion" | null;
+  const emit = defineEmits<{
+    "cambiar-voto": [accionistaId: string, valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION"];
+  }>();
+
+  const votacionStore = useVotacionStore();
+
+  // Usar votantes si están disponibles, sino usar accionistas (legacy)
+  const listaVotantes = computed(() => {
+    console.log("[MayoriaVotacion] Props recibidos (raw):", {
+      votantes: props.votantes,
+      tipoVotantes: typeof props.votantes,
+      esArray: Array.isArray(props.votantes),
+      tieneValue:
+        props.votantes && typeof props.votantes === "object" && "value" in props.votantes,
+      accionistas: props.accionistas,
+    });
+
+    // ✅ Extraer valor si es ComputedRef
+    let votantesValue = props.votantes;
+    if (votantesValue && typeof votantesValue === "object" && "value" in votantesValue) {
+      votantesValue = (votantesValue as any).value;
+      console.log("[MayoriaVotacion] Votantes extraídos del computed:", votantesValue);
+    }
+
+    if (votantesValue && Array.isArray(votantesValue) && votantesValue.length > 0) {
+      console.log("[MayoriaVotacion] Usando votantes:", votantesValue);
+      console.log("[MayoriaVotacion] Cantidad de votantes:", votantesValue.length);
+      votantesValue.forEach((v, i) => {
+        console.log(`[MayoriaVotacion] Votante ${i}:`, {
+          id: v.id,
+          accionistaId: v.accionistaId,
+          nombreCompleto: v.nombreCompleto,
+        });
+      });
+      return votantesValue;
+    }
+
+    // Legacy: convertir array de strings a formato Votante
+    if (
+      props.accionistas &&
+      Array.isArray(props.accionistas) &&
+      props.accionistas.length > 0
+    ) {
+      console.log("[MayoriaVotacion] Usando accionistas legacy:", props.accionistas);
+      return props.accionistas.map((nombre, index) => ({
+        id: `legacy-${index}`,
+        accionistaId: `legacy-${index}`,
+        accionista: { id: `legacy-${index}`, person: { tipo: "NATURAL" } },
+        nombreCompleto: nombre,
+      }));
+    }
+
+    console.warn("[MayoriaVotacion] No hay votantes ni accionistas");
+    console.warn("[MayoriaVotacion] votantesValue:", votantesValue);
+    console.warn("[MayoriaVotacion] props.accionistas:", props.accionistas);
+    return [];
+  });
+
+  // Usar texto dinámico si está disponible
+  const preguntas = computed(() => {
+    if (props.textoVotacion) {
+      return [props.textoVotacion];
+    }
+    return props.preguntas.length > 0
+      ? props.preguntas
+      : [
+          "¿Se aprueba el aumento de capital vía Aportes Dinerarios por S/ 2,000, mediante la emisión de 2,000 acciones nuevas de valor nominal S/ 1. El capital social se incrementa de S/ 1,000 a S/ 3,000, y el número de acciones de 1,000 a 3,000.?",
+        ];
+  });
+
+  type Voto = "A_FAVOR" | "EN_CONTRA" | "ABSTENCION" | null;
 
   // Estado de votos: [preguntaIndex][accionistaIndex] = voto
   const votos = ref<Voto[][]>(
-    Array(props.preguntas.length)
+    Array(preguntas.value.length)
       .fill(null)
-      .map(() => Array(props.accionistas.length).fill(null))
+      .map(() => Array(listaVotantes.value.length).fill(null))
+  );
+
+  // Cargar votos existentes del store
+  const cargarVotosExistentes = () => {
+    console.log("[MayoriaVotacion] cargarVotosExistentes() ejecutado");
+    console.log("[MayoriaVotacion] hasVotacion:", votacionStore.hasVotacion);
+    console.log("[MayoriaVotacion] itemVotacion:", votacionStore.itemVotacion);
+    console.log("[MayoriaVotacion] listaVotantes:", listaVotantes.value);
+
+    if (votacionStore.hasVotacion && votacionStore.itemVotacion) {
+      const item = votacionStore.itemVotacion;
+      console.log("[MayoriaVotacion] Item de votación encontrado:", {
+        id: item.id,
+        votosCount: item.votos.length,
+        votos: item.votos,
+      });
+
+      listaVotantes.value.forEach((votante, index) => {
+        const voto = votacionStore.getVotoByAccionista(votante.accionistaId);
+        console.log(`[MayoriaVotacion] Votante ${index} (${votante.accionistaId}):`, {
+          voto,
+          valor: voto?.valor,
+        });
+        if (voto && votos.value[0]) {
+          votos.value[0][index] = voto.valor as Voto;
+          console.log(`[MayoriaVotacion] Voto cargado para votante ${index}:`, voto.valor);
+        }
+      });
+
+      console.log("[MayoriaVotacion] Votos cargados:", votos.value[0]);
+    } else {
+      console.log("[MayoriaVotacion] No hay votación o item de votación");
+    }
+  };
+
+  // Cargar votos al montar
+  cargarVotosExistentes();
+
+  // ✅ Observar cambios en el store para recargar votos cuando se carguen del backend
+  watch(
+    () => [votacionStore.hasVotacion, votacionStore.itemVotacion?.votos],
+    () => {
+      console.log("[MayoriaVotacion] Store cambió, recargando votos...");
+      cargarVotosExistentes();
+    },
+    { deep: true, immediate: false }
+  );
+
+  // ✅ También observar cuando cambian los votantes (por si se cargan después)
+  watch(
+    () => listaVotantes.value.length,
+    () => {
+      console.log("[MayoriaVotacion] Votantes cambiaron, recargando votos...");
+      cargarVotosExistentes();
+    }
   );
 
   const opcionesVoto = [
     {
-      id: "a-favor" as const,
+      id: "A_FAVOR" as const,
       label: "A favor",
       icono: "fluent:checkmark-circle-12-filled",
     },
     {
-      id: "en-contra" as const,
+      id: "EN_CONTRA" as const,
       label: "En contra",
       icono: "fluent:dismiss-circle-12-filled",
     },
     {
-      id: "abstencion" as const,
+      id: "ABSTENCION" as const,
       label: "Abstención",
       icono: "fluent:block-16-filled",
     },
   ];
 
-  const setVoto = (accionistaIndex: number, preguntaIndex: number, voto: Voto) => {
+  const setVoto = async (accionistaIndex: number, preguntaIndex: number, voto: Voto) => {
+    const votante = listaVotantes.value[accionistaIndex];
+    if (!votante) return;
+
     const currentVoto = votos.value[preguntaIndex]?.[accionistaIndex] === voto ? null : voto;
     if (votos.value[preguntaIndex]) {
       votos.value[preguntaIndex][accionistaIndex] = currentVoto;
+    }
+
+    // Emitir evento para guardar en el store
+    if (currentVoto) {
+      emit("cambiar-voto", votante.accionistaId, currentVoto);
     }
   };
 
@@ -225,22 +379,22 @@
 
   // Calcular porcentajes por pregunta
   const getPorcentajeAFavor = (preguntaIndex: number) => {
-    if (props.accionistas.length === 0) return 0;
-    const votosAFavor = votos.value[preguntaIndex]?.filter((v) => v === "a-favor").length || 0;
-    return (votosAFavor / props.accionistas.length) * 100;
+    if (listaVotantes.value.length === 0) return 0;
+    const votosAFavor = votos.value[preguntaIndex]?.filter((v) => v === "A_FAVOR").length || 0;
+    return (votosAFavor / listaVotantes.value.length) * 100;
   };
 
   const getPorcentajeEnContra = (preguntaIndex: number) => {
-    if (props.accionistas.length === 0) return 0;
+    if (listaVotantes.value.length === 0) return 0;
     const votosEnContra =
-      votos.value[preguntaIndex]?.filter((v) => v === "en-contra").length || 0;
-    return (votosEnContra / props.accionistas.length) * 100;
+      votos.value[preguntaIndex]?.filter((v) => v === "EN_CONTRA").length || 0;
+    return (votosEnContra / listaVotantes.value.length) * 100;
   };
 
   const getPorcentajeAbstencion = (preguntaIndex: number) => {
-    if (props.accionistas.length === 0) return 0;
+    if (listaVotantes.value.length === 0) return 0;
     const votosAbstencion =
-      votos.value[preguntaIndex]?.filter((v) => v === "abstencion").length || 0;
-    return (votosAbstencion / props.accionistas.length) * 100;
+      votos.value[preguntaIndex]?.filter((v) => v === "ABSTENCION").length || 0;
+    return (votosAbstencion / listaVotantes.value.length) * 100;
   };
 </script>

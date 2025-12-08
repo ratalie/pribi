@@ -35,13 +35,16 @@ export const useAsistenciaStore = defineStore('asistencia', {
   
   getters: {
     /**
-     * Asistencias enriquecidas con nombre completo
+     * Asistencias enriquecidas con nombre completo y representante
      */
     asistenciasEnriquecidas(): AsistenciaEnriquecida[] {
       return this.asistencias.map((asist) => ({
         ...asist,
         nombreCompleto: getNombreCompletoShareholder(asist.accionista),
         tipoPersona: asist.accionista.person.tipo,
+        nombreRepresentante: asist.representante
+          ? `${asist.representante.nombre} ${asist.representante.apellidoPaterno} ${asist.representante.apellidoMaterno || ''}`.trim()
+          : null,
       }));
     },
     
@@ -192,13 +195,21 @@ export const useAsistenciaStore = defineStore('asistencia', {
     },
     
     /**
-     * Asignar representante a un accionista
+     * Asignar representante a un accionista (NUEVO: con objeto completo)
+     * Backend crea PersonV2 automáticamente
      */
     async asignarRepresentante(
       societyId: number,
       flowId: number,
       registroId: string,
-      representadoPorId: string
+      representante: {
+        nombre: string;
+        apellidoPaterno: string;
+        apellidoMaterno?: string;
+        tipoDocumento: string;
+        numeroDocumento: string;
+        paisEmision?: string;
+      }
     ) {
       const asistencia = this.asistencias.find((a) => a.id === registroId);
       if (!asistencia) {
@@ -206,36 +217,34 @@ export const useAsistenciaStore = defineStore('asistencia', {
         return;
       }
       
-      console.debug('[Store][Asistencia] Asignando representante', {
+      if (!asistencia.asistio) {
+        console.error('[Store][Asistencia] Solo se puede asignar representante a quien asistió');
+        throw new Error('El accionista debe haber asistido para asignar representante');
+      }
+      
+      console.debug('[Store][Asistencia] Asignando representante (objeto completo)', {
         registroId,
-        representadoPorId,
+        representante,
       });
       
       try {
-        // Actualizar en backend
         const repository = new AsistenciaHttpRepository();
-        const useCase = new UpdateAsistenciaUseCase(repository);
+        const { AssignRepresentanteUseCase } = await import(
+          '~/core/hexag/juntas/application/use-cases/asistencia/assign-representante.use-case'
+        );
+        const useCase = new AssignRepresentanteUseCase(repository);
+        
         await useCase.execute(
           societyId,
           flowId,
           registroId,
-          true, // Auto-marcar asistencia al asignar representante
-          representadoPorId
+          asistencia.asistio,
+          representante
         );
         
-        // Actualizar en store
-        asistencia.representadoPorId = representadoPorId;
-        asistencia.asistio = true; // Auto-marcar
-        
-        // Recalcular quórum
-        this.calcularQuorum();
-        
-        console.debug('[Store][Asistencia] Representante asignado', {
-          registroId,
-          representadoPorId,
-        });
+        await this.loadAsistencias(societyId, flowId);
       } catch (error: any) {
-        console.error('[Store][Asistencia] Error al asignar representante', error);
+        console.error('[Store][Asistencia] Error:', error);
         throw error;
       }
     },
@@ -254,7 +263,7 @@ export const useAsistenciaStore = defineStore('asistencia', {
       console.debug('[Store][Asistencia] Eliminando representante', { registroId });
       
       try {
-        // Actualizar en backend
+        // Actualizar en backend (enviar sin representante)
         const repository = new AsistenciaHttpRepository();
         const useCase = new UpdateAsistenciaUseCase(repository);
         await useCase.execute(
@@ -265,11 +274,8 @@ export const useAsistenciaStore = defineStore('asistencia', {
           undefined // Sin representante
         );
         
-        // Actualizar en store
-        asistencia.representadoPorId = null;
-        
-        // Recalcular quórum
-        this.calcularQuorum();
+        // Recargar asistencias para obtener datos actualizados del backend
+        await this.loadAsistencias(societyId, flowId);
         
         console.debug('[Store][Asistencia] Representante eliminado', { registroId });
       } catch (error: any) {
@@ -333,6 +339,7 @@ export const useAsistenciaStore = defineStore('asistencia', {
 export interface AsistenciaEnriquecida extends Asistencia {
   nombreCompleto: string;
   tipoPersona: string;
+  nombreRepresentante: string | null;
 }
 
 /**

@@ -22,6 +22,7 @@ export class AsistenciaMapper {
       asistio: dto.asistio,
       representadoPorId: dto.representadoPorId,
       esRepresentante: dto.esRepresentante,
+      representante: dto.representante,
     };
   }
   
@@ -41,6 +42,8 @@ export class AsistenciaMapper {
     };
   }
 }
+
+
 
 
 

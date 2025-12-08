@@ -18,6 +18,14 @@ import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
 interface Props {
   isOpen: boolean;
   accionistaId: string | null;
+  representanteData?: {
+    nombre: string;
+    apellidoPaterno: string;
+    apellidoMaterno?: string | null;
+    tipoDocumento: string;
+    numeroDocumento: string;
+    paisEmision?: string | null;
+  } | null;
 }
 
 const props = defineProps<Props>();
@@ -100,9 +108,21 @@ function resetForm() {
   };
 }
 
-// Reset form cuando se cierra el modal
+// Cargar datos cuando se abre el modal (para editar)
 watch(() => props.isOpen, (isOpen) => {
-  if (!isOpen) {
+  if (isOpen && props.representanteData) {
+    // Modo editar: cargar datos existentes
+    // Convertir string a TipoDocumentosEnum si es necesario
+    const tipoDoc = props.representanteData.tipoDocumento as TipoDocumentosEnum || TipoDocumentosEnum.DNI;
+    formData.value = {
+      nombre: props.representanteData.nombre || "",
+      apellidoPaterno: props.representanteData.apellidoPaterno || "",
+      apellidoMaterno: props.representanteData.apellidoMaterno || "",
+      tipoDocumento: tipoDoc,
+      numeroDocumento: props.representanteData.numeroDocumento || "",
+    };
+  } else if (!isOpen) {
+    // Cerrar: resetear formulario
     resetForm();
   }
 });
@@ -113,10 +133,10 @@ watch(() => props.isOpen, (isOpen) => {
     <DialogContent class="sm:max-w-[600px]">
       <DialogHeader>
         <DialogTitle class="t-h4 font-primary text-gray-800 font-semibold">
-          Agregar Representante
+          {{ representanteData ? 'Editar Representante' : 'Agregar Representante' }}
         </DialogTitle>
         <DialogDescription class="t-t1 font-secondary text-gray-600">
-          Registra quién será el representante.
+          {{ representanteData ? 'Modifica los datos del representante.' : 'Registra quién será el representante.' }}
         </DialogDescription>
       </DialogHeader>
 
@@ -171,7 +191,7 @@ watch(() => props.isOpen, (isOpen) => {
           Cancelar
         </Button>
         <Button type="button" @click="handleSave">
-          Agregar
+          {{ representanteData ? 'Guardar cambios' : 'Agregar' }}
         </Button>
       </DialogFooter>
     </DialogContent>

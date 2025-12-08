@@ -17,7 +17,6 @@ import { TipoJunta } from "~/core/hexag/juntas/domain/enums/tipo-junta.enum";
 import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
 import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
 import RepresentanteModal from "./RepresentanteModal.vue";
-import RepresentanteInfo from "./RepresentanteInfo.vue";
 
 interface Props {
   societyId: number;
@@ -38,13 +37,21 @@ const { asistenciasEnriquecidas, totalAcciones, accionesPresentes } = storeToRef
 // ========================================
 const isRepresentanteModalOpen = ref(false);
 const selectedAccionistaId = ref<string | null>(null);
+const representanteDataToEdit = ref<{
+  nombre: string;
+  apellidoPaterno: string;
+  apellidoMaterno?: string | null;
+  tipoDocumento: string;
+  numeroDocumento: string;
+  paisEmision?: string | null;
+} | null>(null);
 
 // Acciones para el menú de representante (DataTableDropDown)
 const representanteActions = computed(() => [
   {
     label: "Editar",
     icon: "SquarePen",
-    onClick: (id: string) => openRepresentanteModal(id),
+    onClick: (id: string) => openRepresentanteModalForEdit(id),
   },
   {
     label: "Eliminar",
@@ -106,10 +113,26 @@ async function toggleAsistencia(registroId: string) {
 }
 
 /**
- * Abrir modal para agregar representante
+ * Abrir modal para agregar representante (nuevo)
  */
 function openRepresentanteModal(accionistaId: string) {
   selectedAccionistaId.value = accionistaId;
+  representanteDataToEdit.value = null; // Modo crear
+  isRepresentanteModalOpen.value = true;
+}
+
+/**
+ * Abrir modal para editar representante (existente)
+ */
+function openRepresentanteModalForEdit(accionistaId: string) {
+  const asistencia = asistenciasEnriquecidas.value.find(a => a.id === accionistaId);
+  if (!asistencia || !asistencia.representante) {
+    console.warn('[AsistenciaSection] No se encontró representante para editar');
+    return;
+  }
+  
+  selectedAccionistaId.value = accionistaId;
+  representanteDataToEdit.value = asistencia.representante; // Modo editar
   isRepresentanteModalOpen.value = true;
 }
 
@@ -119,6 +142,7 @@ function openRepresentanteModal(accionistaId: string) {
 function closeRepresentanteModal() {
   isRepresentanteModalOpen.value = false;
   selectedAccionistaId.value = null;
+  representanteDataToEdit.value = null;
 }
 
 /**
@@ -133,12 +157,15 @@ async function saveRepresentante(representanteData: any) {
   });
 
   try {
-    // TODO: Aquí debería:
-    // 1. Crear la persona representante en el backend
-    // 2. Actualizar la asistencia con representadoPorId
-    // Por ahora, solo cerramos el modal
+    // ✅ Llamar al store con el objeto completo (backend crea PersonV2 automáticamente)
+    await asistenciaStore.asignarRepresentante(
+      props.societyId,
+      Number(props.flowId),
+      selectedAccionistaId.value,
+      representanteData
+    );
     
-    console.log("✅ [AsistenciaSection] Representante guardado (mock)");
+    console.log("✅ [AsistenciaSection] Representante asignado correctamente");
     closeRepresentanteModal();
   } catch (error) {
     console.error("❌ [AsistenciaSection] Error al guardar representante:", error);
@@ -298,12 +325,11 @@ function requiereRepresentante(tipo: string): boolean {
             <TableCell class="h-16">
               <!-- CASO 1: Asistió -->
               <template v-if="asistencia.asistio">
-                <template v-if="asistencia.representadoPorId">
+                <template v-if="asistencia.nombreRepresentante">
                   <!-- Ya tiene representante: mostrar nombre -->
-                  <RepresentanteInfo
-                    :accionista-id="asistencia.id"
-                    :representante-id="asistencia.representadoPorId"
-                  />
+                  <span class="t-t2 font-secondary text-gray-700">
+                    {{ asistencia.nombreRepresentante }}
+                  </span>
                 </template>
                 <template v-else-if="requiereRepresentanteObligatorio(asistencia.tipoPersona)">
                   <!-- Requiere representante obligatorio -->
@@ -327,7 +353,7 @@ function requiereRepresentante(tipo: string): boolean {
             <TableCell class="h-16 text-right">
               <div class="flex justify-end">
                 <!-- Si tiene representante: mostrar DataTableDropDown (3 puntos) -->
-                <template v-if="asistencia.representadoPorId">
+                <template v-if="asistencia.nombreRepresentante">
                   <DataTableDropDown
                     :item-id="asistencia.id"
                     title-menu="Acciones"
@@ -376,6 +402,7 @@ function requiereRepresentante(tipo: string): boolean {
     <RepresentanteModal
       :is-open="isRepresentanteModalOpen"
       :accionista-id="selectedAccionistaId"
+      :representante-data="representanteDataToEdit"
       @close="closeRepresentanteModal"
       @save="saveRepresentante"
     />

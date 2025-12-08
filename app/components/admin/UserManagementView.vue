@@ -13,7 +13,7 @@ import {
 import { useUserManagement } from '~/core/presentation/panel-administrativo/composables/useUserManagement';
 import { mockRoles, getRoleBadgeColor } from '~/data/mockDataAdmin';
 import type { RoleName } from '~/core/hexag/panel-administrativo/domain/entities/role.entity';
-import PermissionsEditor from './PermissionsEditor.vue';
+import PermissionsEditor from './permissions/PermissionsEditor.vue';
 import UserAssignmentModal from './UserAssignmentModal.vue';
 
 const {
@@ -588,9 +588,8 @@ const {
         v-if="showPermissionsEditor && store.selectedUser"
         :is-open="showPermissionsEditor"
         :user="store.selectedUser"
-        :permissions="store.userPermissions"
         @close="closePermissionsEditor"
-        @save="(perms) => store.updateUserPermissions(store.selectedUser!.id, perms).then(() => closePermissionsEditor())"
+        @save="() => { closePermissionsEditor(); store.loadUsers(); }"
       />
 
       <!-- Modal de Asignación -->

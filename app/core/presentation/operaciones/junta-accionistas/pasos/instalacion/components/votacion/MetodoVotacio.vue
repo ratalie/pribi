@@ -5,6 +5,21 @@
   import MayoriaVotacion from "./MayoriaVotacion.vue";
   import UnanimidadVotacion from "./UnanimidadVotacion.vue";
 
+  interface Votante {
+    id: string;
+    accionista: {
+      id: string;
+      person: {
+        tipo: string;
+        nombre?: string;
+        apellidoPaterno?: string;
+        apellidoMaterno?: string;
+        razonSocial?: string;
+      };
+    };
+    nombreCompleto?: string;
+  }
+
   interface Props {
     modelValue?: string;
     title?: string;
@@ -14,10 +29,13 @@
     mensajeAprobacion?: string;
     preguntas?: string[];
     accionistas?: string[];
+    votantes?: Votante[] | any; // Aceptar también ComputedRef
+    textoVotacion?: string | any; // Aceptar también ComputedRef
   }
 
   const props = withDefaults(defineProps<Props>(), {
     modelValue: "unanimidad",
+    // Defaults legacy
     title: "Votación del aumento de capital",
     subtitle:
       "Votación para aprobar el aumento capital realizado mediante aportes dinerarios.",
@@ -27,15 +45,40 @@
     mensajeAprobacion: "la propuesta de Aumento de Capital mediante Aportes Dinerarios.",
     preguntas: () => [],
     accionistas: () => [],
+    // Defaults nuevos
+    votantes: () => [],
+    textoVotacion: "",
+  });
+
+  // Extraer valores si son computed (para props nuevas)
+  const votantesValue = computed(() => {
+    const v = props.votantes;
+    if (!v) return [];
+    if (Array.isArray(v)) return v;
+    if (typeof v === "object" && "value" in v) return (v as any).value || [];
+    return [];
+  });
+
+  const textoVotacionValue = computed(() => {
+    const t = props.textoVotacion;
+    if (!t) return "";
+    if (typeof t === "string") return t;
+    if (typeof t === "object" && "value" in t) return (t as any).value || "";
+    return "";
   });
 
   const emit = defineEmits<{
     "update:modelValue": [value: string];
+    "cambiar-tipo": [tipo: "unanimidad" | "mayoria"];
+    "cambiar-voto": [accionistaId: string, valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION"];
   }>();
 
   const selectedMethod = computed({
     get: () => props.modelValue,
-    set: (value) => emit("update:modelValue", value),
+    set: (value) => {
+      emit("update:modelValue", value);
+      emit("cambiar-tipo", value as "unanimidad" | "mayoria");
+    },
   });
 
   const methods = [
@@ -134,13 +177,21 @@
     <div class="mt-10">
       <UnanimidadVotacion
         v-if="selectedMethod === 'unanimidad'"
-        :mensaje-confirmacion="props.mensajeUnanimidad"
+        :mensaje-confirmacion="
+          props.mensajeUnanimidad ||
+          (textoVotacionValue
+            ? `Confirmo que todos los accionistas están de acuerdo con ${textoVotacionValue}`
+            : undefined)
+        "
       />
       <MayoriaVotacion
         v-if="selectedMethod === 'mayoria'"
         :preguntas="props.preguntas"
         :accionistas="props.accionistas"
         :mensaje-aprobacion="props.mensajeAprobacion"
+        :votantes="votantesValue"
+        :texto-votacion="textoVotacionValue"
+        @cambiar-voto="(accionistaId, valor) => emit('cambiar-voto', accionistaId, valor)"
       />
     </div>
   </SlotWrapper>

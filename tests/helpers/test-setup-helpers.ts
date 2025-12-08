@@ -237,7 +237,8 @@ export async function setupDirector(
 // ========================================
 
 /**
- * Crea clase de apoderado + 2 apoderados
+ * Obtiene la clase "Gerente General" existente y crea el gerente general
+ * La clase "Gerente General" se crea automáticamente al crear el perfil de sociedad
  * 
  * @param societyId ID de la sociedad
  * @returns Object con claseId y array de apoderadosIds
@@ -246,28 +247,33 @@ export async function setupApoderados(societyId: string): Promise<{
   claseId: string;
   apoderadosIds: string[];
 }> {
-  console.log(`  📝 [Setup] Creando apoderados para sociedad ${societyId}...`);
+  console.log(`  📝 [Setup] Configurando apoderados para sociedad ${societyId}...`);
   
   const repo = new (await import("~/core/hexag/registros/sociedades/pasos/apoderados/infrastructure/repositories/apoderados.http.repository")).ApoderadosHttpRepository();
   
-  // 1️⃣ Crear clase de apoderado "Gerente General"
-  const { CreateClaseApoderadoUseCase } = await import(
-    "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/create-clase-apoderado.use-case"
+  // 1️⃣ Obtener clase "Gerente General" existente (se crea automáticamente al crear el perfil)
+  const { ListClasesApoderadoUseCase } = await import(
+    "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/list-clases-apoderado.use-case"
   );
   const { ClasesApoderadoEspecialesEnum } = await import(
     "~/core/presentation/registros/sociedades/pasos/apoderados/types/enums/ClasesApoderadoEspecialesEnum"
   );
-  const { generateUUID } = await import("@tests/utils/uuid-generator");
   
-  const claseGerenteGeneral = {
-    id: generateUUID(),
-    nombre: ClasesApoderadoEspecialesEnum.GERENTE_GENERAL, // ✅ "Gerente General"
-  };
+  const listClasesUseCase = new ListClasesApoderadoUseCase(repo);
+  const clases = await listClasesUseCase.execute(societyId);
   
-  const claseUseCase = new CreateClaseApoderadoUseCase(repo);
-  await claseUseCase.execute(societyId, claseGerenteGeneral);
+  // Buscar "Gerente General" en las clases existentes
+  const claseGerenteGeneral = clases.find(
+    (clase) => clase.nombre === ClasesApoderadoEspecialesEnum.GERENTE_GENERAL
+  );
   
-  console.log(`    ✅ Clase 'Gerente General' creada: ${claseGerenteGeneral.id}`);
+  if (!claseGerenteGeneral) {
+    throw new Error(
+      `No se encontró la clase "Gerente General". Clases disponibles: ${clases.map((c) => c.nombre).join(", ")}`
+    );
+  }
+  
+  console.log(`    ✅ Clase 'Gerente General' encontrada: ${claseGerenteGeneral.id}`);
   
   // 2️⃣ Crear GERENTE GENERAL (Roberto Silva Mendoza)
   const { CreateApoderadoUseCase } = await import(

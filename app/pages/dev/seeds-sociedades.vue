@@ -51,8 +51,9 @@
   import type { ApoderadoDTO } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/dtos/apoderado.dto";
   import type { ClaseApoderadoDTO } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/dtos/clase-apoderado.dto";
   import { CreateApoderadoUseCase } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/create-apoderado.use-case";
-  import { CreateClaseApoderadoUseCase } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/create-clase-apoderado.use-case";
+  import { ListClasesApoderadoUseCase } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/list-clases-apoderado.use-case";
   import { ApoderadosHttpRepository } from "~/core/hexag/registros/sociedades/pasos/apoderados/infrastructure/repositories/apoderados.http.repository";
+  import { ClasesApoderadoEspecialesEnum } from "~/core/presentation/registros/sociedades/pasos/apoderados/types/enums/ClasesApoderadoEspecialesEnum";
 
   // Valor Nominal
   import { UpdateValorNominalUseCase } from "~/core/hexag/registros/sociedades/application/use-cases/update-valor-nominal.use-case";
@@ -98,7 +99,7 @@
   const directorUseCase = new CreateDirectorUseCase(directorRepo);
 
   const apoderadosRepo = new ApoderadosHttpRepository();
-  const claseApoderadoUseCase = new CreateClaseApoderadoUseCase(apoderadosRepo);
+  const listClasesApoderadoUseCase = new ListClasesApoderadoUseCase(apoderadosRepo);
   const apoderadoUseCase = new CreateApoderadoUseCase(apoderadosRepo);
 
   const valorNominalRepo = new ValorNominalHttpRepository();
@@ -379,7 +380,7 @@
       // Apoderado (Gerente)
       claseApoderado: {
         id: generateUUID(),
-        nombre: `Gerente-${index}-${Date.now()}`,  // ✅ Nombre único con index y timestamp
+        nombre: ClasesApoderadoEspecialesEnum.GERENTE_GENERAL, // ✅ Usar enum correcto: "Gerente General"
       } as ClaseApoderadoDTO,
 
       apoderado: {
@@ -592,47 +593,54 @@
         // Continuar de todas formas
       }
 
-      // Paso 8: Crear clase de apoderado (Gerente General)
-      currentStep.value = `[Sociedad ${index + 1}] Paso 9/10: Clase de apoderado...`;
-      let claseApoderado: any = null;
+      // Paso 8: Obtener clase "Gerente General" existente (se crea automáticamente al crear el perfil)
+      currentStep.value = `[Sociedad ${index + 1}] Paso 9/10: Obteniendo clase Gerente General...`;
+      let claseGerenteGeneral: any = null;
       const result8 = await executeStep("claseApoderado", "claseApoderado", async () => {
-        console.debug(
-          `[Seeds] Creando clase de apoderado para sociedad ${societyId}`,
-          testData.claseApoderado
+        console.debug(`[Seeds] Obteniendo clases de apoderado para sociedad ${societyId}`);
+        const clases = await listClasesApoderadoUseCase.execute(societyId);
+        console.debug(`[Seeds] Clases obtenidas:`, clases);
+        
+        // Buscar "Gerente General" en las clases existentes
+        claseGerenteGeneral = clases.find(
+          (clase) => clase.nombre === ClasesApoderadoEspecialesEnum.GERENTE_GENERAL
         );
-        claseApoderado = await claseApoderadoUseCase.execute(
-          societyId,
-          testData.claseApoderado
-        );
-        console.debug(`[Seeds] Clase de apoderado creada:`, claseApoderado);
+        
+        if (!claseGerenteGeneral) {
+          throw new Error(
+            `No se encontró la clase "Gerente General". Clases disponibles: ${clases.map((c) => c.nombre).join(", ")}`
+          );
+        }
+        
+        console.debug(`[Seeds] Clase "Gerente General" encontrada:`, claseGerenteGeneral);
       });
       steps.claseApoderado = result8;
       if (!result8.completed) {
-        console.error(`[Seeds] Error creando clase de apoderado: ${result8.error}`);
+        console.error(`[Seeds] Error obteniendo clase de apoderado: ${result8.error}`);
         // Continuar de todas formas, pero no podremos crear el apoderado sin la clase
       }
 
-      // Paso 9: Crear apoderado (Gerente)
-      currentStep.value = `[Sociedad ${index + 1}] Paso 10/10: Gerente...`;
-      if (claseApoderado?.id) {
-        testData.apoderado.claseApoderadoId = claseApoderado.id;
+      // Paso 9: Crear apoderado (Gerente General)
+      currentStep.value = `[Sociedad ${index + 1}] Paso 10/10: Gerente General...`;
+      if (claseGerenteGeneral?.id) {
+        testData.apoderado.claseApoderadoId = claseGerenteGeneral.id;
         steps.apoderado = await executeStep("apoderado", "apoderado", async () => {
           console.debug(
-            `[Seeds] Creando apoderado para sociedad ${societyId}`,
+            `[Seeds] Creando gerente general para sociedad ${societyId}`,
             testData.apoderado
           );
           await apoderadoUseCase.execute(societyId, testData.apoderado);
-          console.debug(`[Seeds] Apoderado creado exitosamente`);
+          console.debug(`[Seeds] Gerente general creado exitosamente`);
         });
         if (!steps.apoderado.completed) {
-          console.error(`[Seeds] Error creando apoderado: ${steps.apoderado.error}`);
+          console.error(`[Seeds] Error creando gerente general: ${steps.apoderado.error}`);
         }
       } else {
         steps.apoderado = {
           completed: false,
-          error: "No se pudo crear la clase de apoderado",
+          error: "No se pudo obtener la clase 'Gerente General'",
         };
-        console.warn(`[Seeds] No se puede crear apoderado sin clase de apoderado`);
+        console.warn(`[Seeds] No se puede crear gerente general sin la clase`);
       }
 
       createdSocieties.value.push({
