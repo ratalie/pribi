@@ -1,5 +1,11 @@
+import { ListAccionistasUseCase } from "~/core/hexag/registros/sociedades/pasos/accionistas/application";
+import { AccionistasHttpRepository } from "~/core/hexag/registros/sociedades/pasos/accionistas/infrastructure";
+import { mapAccionistasDomainToStore } from "~/core/presentation/registros/sociedades/pasos/asignacion-acciones/mappers/accionista-domain-to-store.mapper";
 import type { Accionista, AccionistaRow } from "../types/accionistas";
 import { TipoAccionistaEnum } from "../types/enums/TipoAccionistaEnum";
+
+const repository = new AccionistasHttpRepository();
+const listUseCase = new ListAccionistasUseCase(repository);
 
 export const useRegistroAccionistasStore = defineStore("registroAccionistas", {
   state: (): State => ({
@@ -70,6 +76,20 @@ export const useRegistroAccionistasStore = defineStore("registroAccionistas", {
   },
 
   actions: {
+    /**
+     * Carga los accionistas desde el backend
+     * @param profileId ID del perfil de sociedad
+     */
+    async loadAccionistas(profileId: string) {
+      try {
+        const accionistasDomain = await listUseCase.execute(profileId);
+        const accionistasStore = mapAccionistasDomainToStore(accionistasDomain);
+        this.accionistas = accionistasStore;
+      } catch (error) {
+        console.error("[useRegistroAccionistasStore] Error al cargar accionistas:", error);
+        this.accionistas = [];
+      }
+    },
     agregarAccionista(accionista: Accionista) {
       this.accionistas.push(accionista);
     },

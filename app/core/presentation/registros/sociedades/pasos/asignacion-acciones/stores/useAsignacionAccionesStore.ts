@@ -2,28 +2,29 @@ import { defineStore } from "pinia";
 
 export const useAsignacionAccionesStore = defineStore("asignacionAccionesForm", {
   state: () => ({
-    tipoAccion: "",
-    cantidadAccionesSuscritas: 0,
-    precioAccion: 0,
+    accionId: "", // ID de la acción (UUID)
+    cantidadSuscrita: 0,
+    precioPorAccion: 0,
+    porcentajePagadoPorAccion: 0,
+    dividendoPasivoTotal: 0,
+    pagadoCompletamente: true, // Por defecto en true (SI)
+    // Campos calculados/UI (no van al backend)
     capitalSocial: 0,
     prima: 0,
-    totalmentePagado: false,
-    porcentajePagado: 0,
-    dividendoPasivo: 0,
   }),
 
   actions: {
     // Método para obtener todos los datos del formulario
     getFormData() {
       return {
-        tipoAccion: this.tipoAccion,
-        cantidadAccionesSuscritas: this.cantidadAccionesSuscritas,
-        precioAccion: this.precioAccion,
+        accionId: this.accionId,
+        cantidadSuscrita: this.cantidadSuscrita,
+        precioPorAccion: this.precioPorAccion,
+        porcentajePagadoPorAccion: this.porcentajePagadoPorAccion,
+        dividendoPasivoTotal: this.dividendoPasivoTotal,
+        pagadoCompletamente: this.pagadoCompletamente,
         capitalSocial: this.capitalSocial,
         prima: this.prima,
-        totalmentePagado: this.totalmentePagado,
-        porcentajePagado: this.porcentajePagado,
-        dividendoPasivo: this.dividendoPasivo,
       };
     },
   },

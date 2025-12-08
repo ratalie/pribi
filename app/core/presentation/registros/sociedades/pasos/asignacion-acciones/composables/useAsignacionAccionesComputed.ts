@@ -1,13 +1,20 @@
 import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
 import { useRegistroAccionesStore } from "../../acciones/stores/useRegistroAccionesStore";
 import { useValorNominalStore } from "../../acciones/stores/useValorNominalStore";
 import { useRegistroAsignacionAccionesStore } from "../stores/useRegistroAsignacionAccionesStore";
 import type { AsignacionAccionistaTableRow } from "../types/asignacion-acciones";
 
 export const useAsignacionAccionesComputed = () => {
+  const route = useRoute();
   const asignacionAccionesStore = useRegistroAsignacionAccionesStore();
   const registroAccionesStore = useRegistroAccionesStore();
   const valorNominalStore = useValorNominalStore();
+
+  // Obtener societyProfileId de route
+  const societyProfileId = computed(() => {
+    return (route.params.id as string | undefined) || "";
+  });
 
   // Formateador de moneda
   const currencyFormatter = new Intl.NumberFormat("es-PE", {
@@ -79,8 +86,13 @@ export const useAsignacionAccionesComputed = () => {
     isAsignacionModalOpen.value = true;
   };
 
-  const handleDeleteAsignacion = (accionistaId: string, accionId: string) => {
-    asignacionAccionesStore.removeAsignacionAccion(accionistaId, accionId);
+  const handleDeleteAsignacion = async (accionistaId: string, accionId: string) => {
+    const profileId = societyProfileId.value;
+    if (!profileId) {
+      console.error("No hay societyProfileId disponible para eliminar asignación");
+      return;
+    }
+    await asignacionAccionesStore.removeAsignacionAccion(profileId, accionistaId, accionId);
   };
 
   // Acciones para la tabla
