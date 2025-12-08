@@ -22,6 +22,7 @@
   import { useVotacionController } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/composables/useVotacionController";
   import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/stores/useVotacionStore";
   import { VoteAgreementType } from "~/core/hexag/juntas/domain/enums/vote-agreement-type.enum";
+  import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
 
   /**
    * Página: Votación (Sub-sección de Aporte Dinerario)
@@ -106,7 +107,11 @@
 
   function handleCambiarVoto(accionistaId: string, valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION") {
     // Solo actualizar estado local, NO guardar
-    controller.setVoto(accionistaId, valor);
+    // Convertir string literal a enum VoteValue
+    const voteValue = valor === "A_FAVOR" ? VoteValue.A_FAVOR 
+      : valor === "EN_CONTRA" ? VoteValue.EN_CONTRA 
+      : VoteValue.ABSTENCION;
+    controller.setVoto(accionistaId, voteValue);
   }
 
   // Configurar el botón "Siguiente"

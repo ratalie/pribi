@@ -20,11 +20,8 @@ export class AssignUserToSocietiesUseCase {
       throw new Error('Usuario no encontrado');
     }
 
-    // Verificar si es lector (asumiendo que el rol.name puede ser "Lector" o "lector")
-    const isLector =
-      user.role.name === 'Lector' ||
-      user.role.name === 'lector' ||
-      user.role.name.toLowerCase() === 'lector';
+    // Verificar si es lector
+    const isLector = user.role.name === 'Lector';
 
     if (isLector && societyIds.length > 1) {
       throw new Error(

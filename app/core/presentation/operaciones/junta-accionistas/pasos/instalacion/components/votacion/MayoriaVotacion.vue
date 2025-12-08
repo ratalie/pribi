@@ -296,7 +296,7 @@
           voto,
           valor: voto?.valor,
         });
-        if (voto) {
+        if (voto && votos.value[0]) {
           votos.value[0][index] = voto.valor as Voto;
           console.log(`[MayoriaVotacion] Voto cargado para votante ${index}:`, voto.valor);
         }

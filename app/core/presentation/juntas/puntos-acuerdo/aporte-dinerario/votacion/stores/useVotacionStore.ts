@@ -38,7 +38,8 @@ export const useVotacionStore = defineStore("votacion", {
       if (!this.sesionVotacion || this.sesionVotacion.items.length === 0) {
         return null;
       }
-      return this.sesionVotacion.items[0];
+      const item = this.sesionVotacion.items[0];
+      return item ?? null;
     },
 
     /**
@@ -56,6 +57,7 @@ export const useVotacionStore = defineStore("votacion", {
         return null;
       }
       const item = state.sesionVotacion.items[0];
+      if (!item) return null;
       return item.votos.find((v) => v.accionistaId === accionistaId) || null;
     },
 
@@ -182,6 +184,9 @@ export const useVotacionStore = defineStore("votacion", {
       }
 
       const item = this.sesionVotacion.items[0];
+      if (!item) {
+        throw new Error("No hay item de votación activo");
+      }
       const existingVote = item.votos.find((v) => v.accionistaId === accionistaId);
 
       if (existingVote) {
@@ -207,6 +212,9 @@ export const useVotacionStore = defineStore("votacion", {
       }
 
       const item = this.sesionVotacion.items[0];
+      if (!item) {
+        throw new Error("No hay item de votación activo");
+      }
       const voteId = this.generateUuid();
 
       try {
@@ -255,6 +263,9 @@ export const useVotacionStore = defineStore("votacion", {
       }
 
       const item = this.sesionVotacion.items[0];
+      if (!item) {
+        throw new Error("No hay item de votación activo");
+      }
 
       try {
         const repository = new VoteHttpRepository();
@@ -294,6 +305,9 @@ export const useVotacionStore = defineStore("votacion", {
       }
 
       const item = this.sesionVotacion.items[0];
+      if (!item) {
+        throw new Error("No hay item de votación activo");
+      }
 
       try {
         const repository = new VoteHttpRepository();

@@ -162,7 +162,7 @@ export const useUserManagementStore = defineStore('user-management', {
         
         // Actualizar en la lista de usuarios
         const userIndex = this.users.findIndex((u) => u.id === userId);
-        if (userIndex !== -1) {
+        if (userIndex !== -1 && this.users[userIndex]) {
           this.users[userIndex].routePermissions = updatedPermissions;
         }
         
@@ -217,7 +217,7 @@ export const useUserManagementStore = defineStore('user-management', {
         
         // Actualizar en la lista de usuarios
         const userIndex = this.users.findIndex((u) => u.id === userId);
-        if (userIndex !== -1) {
+        if (userIndex !== -1 && this.users[userIndex]) {
           this.users[userIndex].assignedSocieties = assignedSocieties;
         }
         

@@ -1,43 +1,79 @@
 <template>
-  <div class="page-container p-6">
-    <div class="space-y-2 mb-6">
-      <h1 class="text-3xl font-bold tracking-tight">Descargar Documentos</h1>
-      <p class="text-sm text-muted-foreground font-mono">
-        {{ $route.path }}
-      </p>
+  <div class="page-container">
+    <!-- Loading State -->
+    <div v-if="isLoading" class="flex justify-center items-center py-12">
+      <div class="text-center">
+        <div
+          class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-800 mx-auto mb-4"
+        ></div>
+        <p class="text-sm text-muted">Cargando datos de la junta...</p>
+      </div>
     </div>
 
-    <div class="placeholder mt-4">
-      <p class="text-gray-600 dark:text-gray-300">
-        Descarga de actas y documentos generados de la junta.
-      </p>
-      <p class="text-xs text-blue-500 mt-2">
-        📌 Esta página tiene rightSidebar con lista de actas disponibles
-      </p>
+    <!-- Error State -->
+    <div v-else-if="hasError" class="flex justify-center items-center py-12">
+      <div class="text-center">
+        <p class="text-red-600 mb-2">Error al cargar datos</p>
+        <p class="text-sm text-muted">{{ errorMessage }}</p>
+        <button @click="reload" class="mt-4 px-4 py-2 bg-primary-800 text-white rounded">
+          Reintentar
+        </button>
+      </div>
+    </div>
+
+    <!-- Success State -->
+    <div v-else-if="downloadData">
+      <JuntaDocumentosGenerados />
+    </div>
+
+    <!-- Debug: Mostrar datos en consola -->
+    <div v-if="downloadData" class="hidden">
+      <!-- Los datos se muestran en consola, no en UI -->
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
+  import { watch } from "vue";
+  import JuntaDocumentosGenerados from "~/components/juntas/documentos/JuntaDocumentosGenerados.vue";
+  import { useDownloadData } from "~/composables/useDownloadData";
+  import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
 
-/**
- * Página: Documentos Generados
- * 
- * Paso 6 del flujo de Juntas de Accionistas.
- * Permite visualizar y descargar los documentos finales generados.
- * 
- * Ruta: /operaciones/junta-accionistas/[id]/descargar
- */
+  /**
+   * Página: Documentos Generados
+   *
+   * Paso 6 del flujo de Juntas de Accionistas.
+   * Permite visualizar y descargar los documentos finales generados.
+   *
+   * Ruta: /operaciones/sociedades/[societyId]/junta-accionistas/[flowId]/descargar
+   */
 
-definePageMeta({
-  layout: "registros",
-  flowLayoutJuntas: true,
-});
+  definePageMeta({
+    layout: "registros",
+    flowLayoutJuntas: true,
+  });
 
-// Configurar el botón "Siguiente" (en este caso sería "Finalizar")
-useJuntasFlowNext(async () => {
-  // TODO: Agregar lógica de finalización del flujo
-  // Por ahora, solo permite navegar (aunque este es el último paso)
-});
+  // Cargar datos de descarga (GET automático al montar)
+  const { downloadData, isLoading, hasError, errorMessage, reload } = useDownloadData();
+
+  // Debug: Mostrar datos en consola cuando se carguen
+  watch(
+    downloadData,
+    (data) => {
+      if (data) {
+        console.log("📥 [Descargar] Datos completos cargados:", data);
+        console.log("📋 [Descargar] Puntos de agenda:", data.agendaItems);
+        console.log("📄 [Descargar] Detalles de junta:", data.meetingDetails);
+        console.log("👥 [Descargar] Asistencia:", data.attendance.length, "accionistas");
+        console.log("💰 [Descargar] Aporte dinerario:", data.agendaItemsData?.aporteDinerario);
+      }
+    },
+    { immediate: true }
+  );
+
+  // Configurar el botón "Siguiente" (en este caso sería "Finalizar")
+  useJuntasFlowNext(async () => {
+    // TODO: Agregar lógica de finalización del flujo
+    // Por ahora, solo permite navegar (aunque este es el último paso)
+  });
 </script>

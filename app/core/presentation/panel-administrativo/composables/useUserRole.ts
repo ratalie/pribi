@@ -12,19 +12,19 @@ export function useUserRole(user: User) {
   const currentRole = computed(() => {
     const roleName = user.role.name;
     // Mapear roles del sistema a roles simplificados
-    if (roleName === 'Administrador' || roleName === 'admin') return 'admin';
-    if (roleName === 'Usuario' || roleName === 'user') return 'user';
-    if (roleName === 'Lector' || roleName === 'lector') return 'lector';
+    if (roleName === 'Administrador') return 'admin';
+    if (roleName === 'Usuario') return 'user';
+    if (roleName === 'Lector') return 'lector';
     return 'user'; // Por defecto
   });
 
   // Opciones de roles disponibles
   const availableRoles = [
-    { value: 'lector', label: 'Lector', description: 'Solo lectura' },
-    { value: 'editor', label: 'Editor', description: 'Puede editar' },
-    { value: 'admin', label: 'Administrador', description: 'Administrador completo' },
-    { value: 'user', label: 'Usuario', description: 'Usuario normal' },
-  ] as const;
+    { value: 'lector' as const, label: 'Lector', description: 'Solo lectura' },
+    { value: 'editor' as const, label: 'Editor', description: 'Puede editar' },
+    { value: 'admin' as const, label: 'Administrador', description: 'Administrador completo' },
+    { value: 'user' as const, label: 'Usuario', description: 'Usuario normal' },
+  ];
 
   // Rol seleccionado (local, para edición)
   const selectedRole = ref<'lector' | 'editor' | 'admin' | 'user'>(currentRole.value);

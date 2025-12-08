@@ -1598,3 +1598,5 @@ export interface AportanteResponseDto {
 
 
 
+
+

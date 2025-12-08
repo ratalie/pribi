@@ -16,7 +16,7 @@ export function useSocietyAssignment(user: User) {
   // Verificar si el usuario es LECTOR
   const isLector = computed(() => {
     const roleName = user.role.name;
-    return roleName === 'Lector' || roleName === 'lector' || roleName.toLowerCase() === 'lector';
+    return roleName === 'Lector';
   });
 
   // Sociedades asignadas (local, para edición)

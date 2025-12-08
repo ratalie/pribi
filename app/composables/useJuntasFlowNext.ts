@@ -73,20 +73,24 @@ export const useJuntasFlowNext = (handleNext: FlowNextHandler) => {
           // Si hay una sección siguiente dentro del sub-step
           if (currentSectionIndex >= 0 && currentSectionIndex < sections.length - 1) {
             const nextSection = sections[currentSectionIndex + 1];
-            console.log("🔍 [useJuntasFlowNext] Siguiente sección encontrada:", nextSection.id);
-            
-            // Obtener la ruta de la siguiente sección
-            const societyId = route.params.societyId as string;
-            const flowId = route.params.flowId as string;
-            const basePath = buildBasePath(societyId, flowId);
-            const sectionRoutes = getSectionRoutesForSubStep(currentSubStepId, basePath);
-            
-            if (sectionRoutes && sectionRoutes[nextSection.id]) {
-              const nextRoute = sectionRoutes[nextSection.id];
-              console.log("🚀 [useJuntasFlowNext] Navegando a siguiente sección:", nextRoute);
-              await router.push(nextRoute);
-              console.log("✅ [useJuntasFlowNext] Navegación a sección completada");
-              return; // Salir temprano, ya navegamos
+            if (nextSection) {
+              console.log("🔍 [useJuntasFlowNext] Siguiente sección encontrada:", nextSection.id);
+              
+              // Obtener la ruta de la siguiente sección
+              const societyId = route.params.societyId as string;
+              const flowId = route.params.flowId as string;
+              const basePath = buildBasePath(societyId, flowId);
+              const sectionRoutes = getSectionRoutesForSubStep(currentSubStepId, basePath);
+              
+              if (sectionRoutes && nextSection.id && sectionRoutes[nextSection.id]) {
+                const nextRoute = sectionRoutes[nextSection.id];
+                if (nextRoute) {
+                  console.log("🚀 [useJuntasFlowNext] Navegando a siguiente sección:", nextRoute);
+                  await router.push(nextRoute);
+                  console.log("✅ [useJuntasFlowNext] Navegación a sección completada");
+                  return; // Salir temprano, ya navegamos
+                }
+              }
             }
           } else {
             console.log("ℹ️ [useJuntasFlowNext] No hay más secciones en el sub-step, buscando siguiente paso principal");

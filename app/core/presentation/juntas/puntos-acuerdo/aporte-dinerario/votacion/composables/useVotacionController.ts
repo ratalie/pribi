@@ -137,7 +137,7 @@ export function useVotacionController() {
       await loadParticipantes();
 
       // 4. Cargar aportes (contribuciones) - para calcular capital después
-      await aportesStore.loadAportes(societyId.value, flowId.value);
+      await aportesStore.loadAportes(String(societyId.value), String(flowId.value));
       
       // Cargar contribuciones para mostrar en la vista
       await loadContribuciones();
