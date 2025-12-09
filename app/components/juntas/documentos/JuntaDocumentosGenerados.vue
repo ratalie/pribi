@@ -55,7 +55,6 @@
         :titulo="categoria"
         :documentos="documentos"
         @descargar="handleDownloadIndividual"
-        @preview="handlePreview"
       />
     </div>
 
@@ -130,21 +129,13 @@
       </div>
     </div>
 
-    <!-- Modal de Preview -->
-    <DocumentoPreviewModal
-      :is-open="previewModalOpen"
-      :documento="documentoPreview"
-      @close="handleClosePreview"
-      @download="handleDownloadIndividual"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
+import { computed, watch } from "vue";
 import HeaderExito from "./HeaderExito.vue";
 import CategoriaDocumentos from "./CategoriaDocumentos.vue";
-import DocumentoPreviewModal from "./DocumentoPreviewModal.vue";
 import type { Documento } from "~/core/hexag/documentos/domain/entities/documento.entity";
 import { useDownloadData } from "~/composables/useDownloadData";
 import { useDocumentosGeneradosStore } from "~/core/presentation/juntas/documentos/stores/documentos-generados.store";
@@ -163,10 +154,6 @@ const documentos = computed(() => documentosStore.documentos);
 const isGenerating = computed(() => documentosStore.status === "generating");
 const documentosPorCategoria = computed(() => documentosStore.documentosPorCategoria);
 const totalDocumentos = computed(() => documentosStore.totalDocumentos);
-
-// Estado del modal de preview
-const previewModalOpen = ref(false);
-const documentoPreview = ref<Documento | null>(null);
 
 const puntosAprobados = computed(() => {
   // Contar puntos de agenda activos
@@ -215,32 +202,6 @@ const handleDownloadIndividual = async (documento: Documento) => {
   a.download = documento.nombre;
   a.click();
   URL.revokeObjectURL(url);
-};
-
-const handlePreview = (documento: Documento) => {
-  console.log("🎯 [JuntaDocumentosGenerados] handlePreview llamado");
-  console.log("📄 [JuntaDocumentosGenerados] Documento recibido:", {
-    id: documento.id,
-    nombre: documento.nombre,
-    categoria: documento.categoria,
-    blobSize: documento.blob?.size || 0,
-    blobType: documento.blob?.type || "N/A",
-  });
-  console.log("🔧 [JuntaDocumentosGenerados] Configurando estado del modal...");
-  documentoPreview.value = documento;
-  previewModalOpen.value = true;
-  console.log("✅ [JuntaDocumentosGenerados] Modal configurado:", {
-    previewModalOpen: previewModalOpen.value,
-    hasDocumentoPreview: !!documentoPreview.value,
-  });
-};
-
-const handleClosePreview = () => {
-  previewModalOpen.value = false;
-  // Limpiar después de que el modal se cierre (para animación)
-  setTimeout(() => {
-    documentoPreview.value = null;
-  }, 300);
 };
 </script>
 

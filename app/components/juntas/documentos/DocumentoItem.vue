@@ -30,15 +30,6 @@
     <!-- Derecha: Botones Hover -->
     <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
       <button
-        @click="handlePreviewClick"
-        class="flex items-center gap-2 px-3 py-1.5 rounded border text-sm"
-        style="border-color: var(--border-default); color: var(--text-secondary)"
-        title="Previsualizar"
-      >
-        <Icon name="lucide:eye" class="w-4 h-4" />
-        Ver
-      </button>
-      <button
         @click="$emit('descargar', documento)"
         class="flex items-center gap-2 px-3 py-1.5 rounded border text-sm"
         style="border-color: var(--border-default); color: var(--text-secondary)"
@@ -54,26 +45,12 @@
 <script setup lang="ts">
 import type { Documento } from "~/core/hexag/documentos/domain/entities/documento.entity";
 
-const props = defineProps<{
+defineProps<{
   documento: Documento;
 }>();
 
-const emit = defineEmits<{
+defineEmits<{
   descargar: [documento: Documento];
-  preview: [documento: Documento];
 }>();
-
-const handlePreviewClick = () => {
-  console.log("🔘 [DocumentoItem] Click en botón 'Ver' detectado");
-  console.log("📄 [DocumentoItem] Documento a previsualizar:", {
-    id: props.documento.id,
-    nombre: props.documento.nombre,
-    blobSize: props.documento.blob?.size || 0,
-    blobType: props.documento.blob?.type || "N/A",
-  });
-  console.log("📤 [DocumentoItem] Emitiendo evento 'preview'...");
-  emit("preview", props.documento);
-  console.log("✅ [DocumentoItem] Evento 'preview' emitido");
-};
 </script>
 
