@@ -15,7 +15,9 @@
         v-for="documento in documentos"
         :key="documento.id"
         :documento="documento"
+        :is-selected="isDocumentoSelected(documento.id)"
         @descargar="handleDescargar"
+        @toggle-selection="$emit('toggle-selection', $event)"
       />
     </div>
   </div>
@@ -28,10 +30,12 @@ import type { Documento } from "~/core/hexag/documentos/domain/entities/document
 defineProps<{
   titulo: string;
   documentos: Documento[];
+  isDocumentoSelected: (id: string) => boolean;
 }>();
 
 defineEmits<{
   descargar: [documento: Documento];
+  "toggle-selection": [documentoId: string];
 }>();
 </script>
 

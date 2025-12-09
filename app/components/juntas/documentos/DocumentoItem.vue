@@ -3,8 +3,18 @@
     class="flex items-center justify-between p-4 rounded-lg border hover:shadow-md transition-all group"
     style="border-color: var(--border-default)"
   >
-    <!-- Izquierda: Icono + Info -->
+    <!-- Izquierda: Checkbox + Icono + Info -->
     <div class="flex items-center gap-3 flex-1">
+      <!-- Checkbox -->
+      <input
+        :checked="isSelected"
+        @change="$emit('toggle-selection', documento.id)"
+        type="checkbox"
+        :id="`doc-${documento.id}`"
+        class="w-4 h-4 rounded cursor-pointer"
+        style="accent-color: var(--primary-800)"
+      />
+      
       <div
         class="w-10 h-10 rounded-lg flex items-center justify-center"
         style="background-color: var(--primary-100)"
@@ -47,10 +57,12 @@ import type { Documento } from "~/core/hexag/documentos/domain/entities/document
 
 defineProps<{
   documento: Documento;
+  isSelected: boolean;
 }>();
 
 defineEmits<{
   descargar: [documento: Documento];
+  "toggle-selection": [documentoId: string];
 }>();
 </script>
 
