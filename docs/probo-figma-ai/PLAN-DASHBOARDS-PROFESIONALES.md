@@ -436,3 +436,5 @@ app/
 **Última actualización:** Diciembre 2024
 **Versión:** 1.0.0
 
+
+

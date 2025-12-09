@@ -140,6 +140,52 @@ export class ObtenerDocumentosJuntasUseCase {
   }
 
   /**
+   * Obtiene la estructura de "operaciones" (directorio y juntas)
+   * 
+   * @param structureId ID de la estructura de la sociedad
+   * @returns Estructura de operaciones con directorio y juntas
+   */
+  async obtenerEstructuraOperaciones(structureId: string): Promise<{
+    directorio: RepositorioNode | null;
+    juntas: RepositorioNode | null;
+  }> {
+    console.log("🟡 [ObtenerDocumentosJuntasUseCase] ========================================");
+    console.log("🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA OPERACIONES");
+    console.log("🟡 [ObtenerDocumentosJuntasUseCase] ========================================");
+    console.log("🟡 [ObtenerDocumentosJuntasUseCase] structureId:", structureId);
+
+    try {
+      // 1. Obtener todos los nodos core
+      const nodos = await this.repositorioDocumentosRepository.obtenerNodosCore(structureId);
+      console.log("🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core:", nodos.length);
+
+      // 2. Encontrar nodo "core" (parentId: 2 o null, path: "/core/")
+      // Los nodos con parentId: 2 son hijos directos de "core"
+      const nodoDirectorio = nodos.find(
+        (node) => node.type === "folder" && node.name === "directorio" && node.path === "/core/"
+      );
+      
+      const nodoJuntas = nodos.find(
+        (node) => node.type === "folder" && node.name === "juntas" && node.path === "/core/"
+      );
+
+      console.log("🟡 [ObtenerDocumentosJuntasUseCase] Nodos encontrados:", {
+        directorio: nodoDirectorio ? { id: nodoDirectorio.id, name: nodoDirectorio.name } : null,
+        juntas: nodoJuntas ? { id: nodoJuntas.id, name: nodoJuntas.name } : null,
+      });
+      console.log("🟡 [ObtenerDocumentosJuntasUseCase] ========================================");
+
+      return {
+        directorio: nodoDirectorio || null,
+        juntas: nodoJuntas || null,
+      };
+    } catch (error: any) {
+      console.error("🔴 [ObtenerDocumentosJuntasUseCase] ERROR:", error);
+      throw error;
+    }
+  }
+
+  /**
    * Obtiene la estructura completa de juntas para la vista
    * 
    * Retorna estructura compatible con la vista actual:

@@ -25,8 +25,12 @@
   import PreviewModal from "./PreviewModal.vue";
   import type { AdvancedFilters } from "./types";
 
+  const route = useRoute();
+  const router = useRouter();
+  
   const { 
-    documentosGenerados, 
+    documentosGenerados,
+    estructuraOperaciones,
     documentosCarpeta,
     carpetaActual,
     isLoading, 
@@ -45,8 +49,40 @@
   // Estado de filtros avanzados
   const filters = ref<AdvancedFilters>({ scope: "generados" });
 
-  // Navegación por carpetas (path: ['registros', 'sociedades', 'sub-sociedades-spa'])
-  const currentPath = ref<string[]>([]);
+  // Obtener path de la ruta (catch-all)
+  // Filtrar elementos vacíos y normalizar
+  const currentPath = computed(() => {
+    const path = route.params.path;
+    let segments: string[] = [];
+    
+    if (Array.isArray(path)) {
+      segments = path.filter((p) => p && typeof p === "string" && p.trim() !== "");
+    } else if (typeof path === "string" && path.trim() !== "") {
+      segments = [path];
+    }
+    
+    console.log("🔵 [DocumentosGeneradosView] currentPath computed:", {
+      routeParamsPath: route.params.path,
+      segments,
+      routePath: route.path,
+    });
+    
+    return segments;
+  });
+
+  // Obtener idSociety de la ruta o del store
+  const idSociety = computed(() => {
+    // Primero intentar leer de la ruta
+    const param = route.params.idSociety;
+    if (typeof param === "string") return param;
+    if (Array.isArray(param) && param.length > 0 && typeof param[0] === "string") {
+      return param[0];
+    }
+    
+    // Si no está en la ruta, usar el del store (sociedad seleccionada)
+    return dashboardStore.sociedadSeleccionada?.id;
+  });
+
   const vista = ref<"grid" | "list">("grid");
 
   // Cargar documentos cuando cambie la sociedad
@@ -60,16 +96,76 @@
     { immediate: true }
   );
 
+  // Watch para cargar documentos cuando cambie el path y estemos en una carpeta de junta
+  watch(
+    () => [currentPath.value, idSociety.value],
+    async ([path, societyId]) => {
+      // Si estamos en nivel 3 (carpeta de junta), cargar automáticamente
+      if (path.length === 2 && path[0] === "junta-accionistas" && path[1]?.startsWith("carpeta-")) {
+        const nodeId = path[1].replace("carpeta-", "");
+        console.log("🟡 [DocumentosGeneradosView] Watch detectó cambio a carpeta de junta, cargando:", nodeId);
+        
+        // Solo cargar si no está ya cargada
+        if (carpetaActual.value !== nodeId) {
+          try {
+            await cargarDocumentosDeCarpeta(nodeId);
+          } catch (error) {
+            console.error("❌ [DocumentosGeneradosView] Error al cargar documentos:", error);
+          }
+        }
+      }
+      
+      // Si estamos en nivel 4 (carpeta de documentos), cargar automáticamente
+      if (path.length === 3 && path[0] === "junta-accionistas") {
+        const carpetaDocumentosId = path[2];
+        console.log("🟡 [DocumentosGeneradosView] Watch detectó cambio a carpeta de documentos, cargando:", carpetaDocumentosId);
+        
+        // Solo cargar si no está ya cargada
+        if (carpetaActual.value !== carpetaDocumentosId) {
+          try {
+            await cargarDocumentosDeCarpeta(carpetaDocumentosId);
+          } catch (error) {
+            console.error("❌ [DocumentosGeneradosView] Error al cargar documentos:", error);
+          }
+        }
+      }
+    },
+    { immediate: true }
+  );
+
   // Obtener datos según el path actual
   const getCurrentData = computed(() => {
-    if (!documentosGenerados.value) return { folders: [], files: [] };
+    console.log("🔵 [DocumentosGeneradosView] getCurrentData ejecutado:", {
+      currentPath: currentPath.value,
+      routePath: route.path,
+      routeParams: route.params,
+      documentosGenerados: documentosGenerados.value,
+      estructuraOperaciones: estructuraOperaciones.value,
+    });
+
+    // POR REGLA DE NEGOCIO: documentosGenerados siempre existe (nunca es null)
+    // Si no hay datos cargados, aún así mostramos las carpetas base
+    if (!documentosGenerados.value) {
+      console.log("🔴 [DocumentosGeneradosView] documentosGenerados es null - esto no debería pasar");
+      // Aún así, retornar estructura básica para mostrar carpetas
+      if (currentPath.value.length === 0) {
+        return {
+          folders: [
+            { id: "operaciones-directorio", nombre: "Directorio", tipo: "carpeta" as const, color: "#10B981" },
+            { id: "operaciones-juntas", nombre: "Juntas de Accionistas", tipo: "carpeta" as const, color: "#6366F1" },
+          ],
+          files: [],
+        };
+      }
+      return { folders: [], files: [] };
+    }
 
     const folders: Array<{
       id: string;
       nombre: string;
       tipo: "categoria" | "carpeta" | "subcarpeta" | "junta";
       color: string;
-      nodeId?: number; // ID real del nodo para cargar documentos
+      nodeId?: number | string; // ID real del nodo para cargar documentos
     }> = [];
     const files: Array<{
       id: string;
@@ -80,37 +176,51 @@
       juntaId?: string;
     }> = [];
 
-    // Nivel 0: Raíz → mostrar "operaciones"
-    if (currentPath.value.length === 0) {
-      if (documentosGenerados.value.operaciones) {
-        folders.push({
-          id: "operaciones",
-          nombre: documentosGenerados.value.operaciones.nombre || "Operaciones",
-          tipo: "categoria",
-          color: "#10B981", // Verde
-        });
-      }
-      return { folders, files };
-    }
-
-    // Nivel 1: operaciones → mostrar "juntas"
-    if (currentPath.value.length === 1 && currentPath.value[0] === "operaciones") {
-      if (documentosGenerados.value.operaciones?.carpetas?.juntas) {
-        folders.push({
-          id: "operaciones-juntas",
-          nombre: documentosGenerados.value.operaciones.carpetas.juntas.nombre || "Juntas",
-          tipo: "carpeta",
-          color: "#6366F1",
-        });
-      }
+    // Nivel 1: operaciones → mostrar "directorio" y "juntas"
+    // Cuando estás en /operaciones/, el currentPath debería ser [] (vacío después de filtrar)
+    // Verificamos si estamos en la ruta /operaciones/ (path vacío)
+    const isOperacionesLevel = currentPath.value.length === 0;
+    
+    if (isOperacionesLevel) {
+      console.log("🟢 [DocumentosGeneradosView] Mostrando carpetas de operaciones:", {
+        currentPath: currentPath.value,
+        routePath: route.path,
+        estructuraOperaciones: estructuraOperaciones.value,
+        documentosGenerados: documentosGenerados.value,
+        directorio: documentosGenerados.value.operaciones?.carpetas?.directorio,
+        juntas: documentosGenerados.value.operaciones?.carpetas?.juntas,
+      });
+      
+      // POR REGLA DE NEGOCIO: Siempre mostrar "Directorio" y "Juntas de Accionistas"
+      // Incluso si no existen en el backend, deben mostrarse como carpetas vacías
+      
+      // Mostrar directorio (siempre)
+      const directorio = documentosGenerados.value.operaciones?.carpetas?.directorio;
+      folders.push({
+        id: "operaciones-directorio",
+        nombre: directorio?.nombre || "Directorio",
+        tipo: "carpeta",
+        color: "#10B981",
+        nodeId: directorio?.nodeId || estructuraOperaciones.value?.directorio?.id,
+      });
+      
+      // Mostrar juntas (siempre) - mostrar como "Juntas de Accionistas"
+      folders.push({
+        id: "operaciones-juntas",
+        nombre: "Juntas de Accionistas", // Nombre fijo según regla de negocio
+        tipo: "carpeta",
+        color: "#6366F1",
+        nodeId: estructuraOperaciones.value?.juntas?.id,
+      });
+      
+      console.log("🟢 [DocumentosGeneradosView] Carpetas agregadas:", folders);
       return { folders, files };
     }
 
     // Nivel 2: juntas → mostrar carpetas de juntas reales del backend
     if (
-      currentPath.value.length === 2 &&
-      currentPath.value[0] === "operaciones" &&
-      currentPath.value[1] === "juntas"
+      currentPath.value.length === 1 &&
+      currentPath.value[0] === "junta-accionistas"
     ) {
       const juntas = documentosGenerados.value.operaciones?.carpetas?.juntas?.juntas || [];
       juntas.forEach((junta: any) => {
@@ -126,10 +236,18 @@
     }
 
     // Nivel 3: carpeta de junta → mostrar carpetas de documentos y documentos directos
-    if (currentPath.value.length === 3) {
-      const carpetaId = currentPath.value[2];
+    // Path: /operaciones/junta-accionistas/carpeta-26 → currentPath = ["junta-accionistas", "carpeta-26"] (length 2)
+    if (currentPath.value.length === 2 && currentPath.value[0] === "junta-accionistas") {
+      const carpetaId = currentPath.value[1];
       if (carpetaId && carpetaId.startsWith("carpeta-")) {
         const nodeId = carpetaId.replace("carpeta-", "");
+        
+        console.log("🟡 [DocumentosGeneradosView] Nivel 3 - Carpeta de junta:", {
+          carpetaId,
+          nodeId,
+          carpetaActual: carpetaActual.value,
+          documentosCarpetaLength: documentosCarpeta.value.length,
+        });
         
         // Buscar la carpeta de junta en los documentos generados
         const juntas = documentosGenerados.value?.operaciones?.carpetas?.juntas?.juntas || [];
@@ -138,6 +256,7 @@
         if (carpetaJunta) {
           // Si tenemos los hijos cargados en documentosCarpeta, usarlos
           if (carpetaActual.value === nodeId && documentosCarpeta.value.length > 0) {
+            console.log("🟢 [DocumentosGeneradosView] Usando documentos cargados:", documentosCarpeta.value);
             documentosCarpeta.value.forEach((item) => {
               if (item.type === "folder") {
                 // Es una carpeta de documentos (ej: "documentos juntas: {fecha}")
@@ -161,20 +280,33 @@
               }
             });
           } else {
-            // Si no están cargados, intentar cargarlos
-            // Esto se hará automáticamente cuando se navegue a la carpeta
+            // Si no están cargados, intentar cargarlos automáticamente
+            console.log("🟡 [DocumentosGeneradosView] Cargando documentos de carpeta automáticamente...");
+            cargarDocumentosDeCarpeta(nodeId).catch((error) => {
+              console.error("❌ [DocumentosGeneradosView] Error al cargar documentos:", error);
+            });
           }
+        } else {
+          console.log("🔴 [DocumentosGeneradosView] Carpeta de junta no encontrada en documentosGenerados");
         }
       }
       return { folders, files };
     }
 
     // Nivel 4: carpeta de documentos dentro de junta → mostrar documentos
-    if (currentPath.value.length === 4) {
-      const carpetaDocumentosId = currentPath.value[3];
+    // Path: /operaciones/junta-accionistas/carpeta-26/31 → currentPath = ["junta-accionistas", "carpeta-26", "31"] (length 3)
+    if (currentPath.value.length === 3 && currentPath.value[0] === "junta-accionistas") {
+      const carpetaDocumentosId = currentPath.value[2];
+      
+      console.log("🟡 [DocumentosGeneradosView] Nivel 4 - Carpeta de documentos:", {
+        carpetaDocumentosId,
+        carpetaActual: carpetaActual.value,
+        documentosCarpetaLength: documentosCarpeta.value.length,
+      });
       
       // Si tenemos los documentos cargados en documentosCarpeta, usarlos
       if (carpetaActual.value === carpetaDocumentosId && documentosCarpeta.value.length > 0) {
+        console.log("🟢 [DocumentosGeneradosView] Usando documentos cargados de carpeta de documentos:", documentosCarpeta.value);
         documentosCarpeta.value.forEach((item) => {
           if (item.type === "document") {
             files.push({
@@ -186,6 +318,12 @@
               versionCode: item.versions?.[0]?.versionCode,
             });
           }
+        });
+      } else {
+        // Si no están cargados, intentar cargarlos automáticamente
+        console.log("🟡 [DocumentosGeneradosView] Cargando documentos de carpeta de documentos automáticamente...");
+        cargarDocumentosDeCarpeta(carpetaDocumentosId).catch((error) => {
+          console.error("❌ [DocumentosGeneradosView] Error al cargar documentos:", error);
         });
       }
       return { folders, files };
@@ -262,17 +400,22 @@
     };
   });
 
-  // Navegar a carpeta
+  // Navegar a carpeta usando router
   const navigateToFolder = async (folderId: string) => {
     console.log("📂 [DocumentosGeneradosView] Navegando a carpeta:", folderId);
     
+    if (!idSociety.value) {
+      console.error("❌ [DocumentosGeneradosView] No hay idSociety en la ruta");
+      return;
+    }
+
     // Si es una carpeta de junta (nivel 2 → 3), cargar documentos
-    if (folderId.startsWith("carpeta-") && currentPath.value.length === 2) {
+    if (folderId.startsWith("carpeta-") && currentPath.value.length === 1 && currentPath.value[0] === "junta-accionistas") {
       const nodeId = folderId.replace("carpeta-", "");
       console.log("📂 [DocumentosGeneradosView] Cargando documentos de carpeta de junta:", nodeId);
       
-      // Agregar al path
-      currentPath.value = ["operaciones", "juntas", folderId];
+      // Navegar a la ruta
+      router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/junta-accionistas/${folderId}`);
       
       // Cargar documentos de la carpeta (carpetas de documentos y documentos directos)
       try {
@@ -284,14 +427,14 @@
     }
     
     // Si es una carpeta de documentos dentro de una junta (nivel 3 → 4)
-    if (folderId.includes("-") && currentPath.value.length === 3) {
+    if (folderId.includes("-") && currentPath.value.length === 2 && currentPath.value[0] === "junta-accionistas") {
       const parts = folderId.split("-");
       if (parts.length >= 2 && parts[0] === "carpeta") {
         const carpetaDocumentosId = parts[parts.length - 1];
         console.log("📂 [DocumentosGeneradosView] Cargando documentos de carpeta de documentos:", carpetaDocumentosId);
         
-        // Agregar al path
-        currentPath.value = [...currentPath.value, carpetaDocumentosId];
+        // Navegar a la ruta
+        router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/junta-accionistas/${currentPath.value[1]}/${carpetaDocumentosId}`);
         
         // Cargar documentos de la carpeta de documentos
         try {
@@ -305,18 +448,20 @@
     
     // Navegación normal por niveles
     if (folderId === "operaciones") {
-      currentPath.value = ["operaciones"];
+      router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/`);
     } else if (folderId === "operaciones-juntas") {
-      currentPath.value = ["operaciones", "juntas"];
+      router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/junta-accionistas`);
+    } else if (folderId === "operaciones-directorio") {
+      router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/directorio`);
     } else {
       // Extraer el path del folderId (compatibilidad con código anterior)
       const parts = folderId.split("-");
       if (parts.length === 1 && parts[0]) {
-        currentPath.value = [parts[0]];
+        router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/${parts[0]}`);
       } else if (parts.length === 2 && parts[0] && parts[1]) {
-        currentPath.value = [parts[0], parts[1]];
+        router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/${parts[0]}-${parts[1]}`);
       } else if (parts.length === 3 && parts[0] && parts[1] && parts[2]) {
-        currentPath.value = [parts[0], parts[1], parts[2]];
+        router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/${parts[0]}-${parts[1]}-${parts[2]}`);
       }
     }
   };

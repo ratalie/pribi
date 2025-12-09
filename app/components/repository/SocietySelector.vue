@@ -278,3 +278,5 @@ const seleccionarSociedad = async (sociedad: typeof sociedadesMapeadas.value[0])
   </div>
 </template>
 
+
+

@@ -61,3 +61,5 @@ export interface HistorialJunta {
   votacion?: string;
 }
 
+
+

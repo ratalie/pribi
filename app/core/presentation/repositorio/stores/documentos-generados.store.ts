@@ -16,12 +16,21 @@ interface EstructuraJuntas {
 }
 
 /**
+ * Estructura de operaciones (directorio y juntas)
+ */
+interface EstructuraOperaciones {
+  directorio: RepositorioNode | null;
+  juntas: RepositorioNode | null;
+}
+
+/**
  * Store para Documentos Generados
  * Usa Option API según las reglas del proyecto
  */
 export const useDocumentosGeneradosStore = defineStore('documentos-generados', {
   state: () => ({
     estructuraJuntas: null as EstructuraJuntas | null,
+    estructuraOperaciones: null as EstructuraOperaciones | null,
     documentosCarpeta: [] as RepositorioNode[],
     carpetaActual: null as string | null,
     status: 'idle' as Status,
@@ -46,9 +55,20 @@ export const useDocumentosGeneradosStore = defineStore('documentos-generados', {
       try {
         const repository = new RepositorioDocumentosHttpRepository();
         const useCase = new ObtenerDocumentosJuntasUseCase(repository);
+        
+        // Cargar estructura de operaciones (directorio y juntas)
+        console.log("🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraOperaciones...");
+        this.estructuraOperaciones = await useCase.obtenerEstructuraOperaciones(structureId);
+        
+        // Cargar estructura de juntas (carpetas de juntas individuales)
         console.log("🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraJuntas...");
         this.estructuraJuntas = await useCase.obtenerEstructuraJuntas(structureId);
+        
         console.log("🟢 [DocumentosGeneradosStore] Estructura obtenida:", {
+          operaciones: {
+            directorio: this.estructuraOperaciones?.directorio?.id || null,
+            juntas: this.estructuraOperaciones?.juntas?.id || null,
+          },
           totalJuntas: this.estructuraJuntas?.operaciones?.juntas?.length || 0,
         });
         this.status = 'idle';
@@ -106,6 +126,7 @@ export const useDocumentosGeneradosStore = defineStore('documentos-generados', {
      */
     limpiar() {
       this.estructuraJuntas = null;
+      this.estructuraOperaciones = null;
       this.documentosCarpeta = [];
       this.carpetaActual = null;
       this.errorMessage = null;

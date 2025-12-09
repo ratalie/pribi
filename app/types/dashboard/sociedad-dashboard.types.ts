@@ -39,3 +39,5 @@ export interface TopSociedad {
   estado: "activa" | "en_proceso" | "finalizada";
 }
 
+
+

@@ -46,27 +46,43 @@ export function useDocumentosGenerados() {
 
   // Computed para facilitar el acceso
   // Mantener compatibilidad con la vista actual
+  // POR REGLA DE NEGOCIO: Siempre retornar estructura, incluso si no hay datos
+  // Las carpetas "Directorio" y "Juntas de Accionistas" siempre deben existir
   const documentosGenerados = computed(() => {
-    if (!store.estructuraJuntas) return null;
+    console.log("🔵 [useDocumentosGenerados] documentosGenerados computed:", {
+      estructuraJuntas: store.estructuraJuntas,
+      estructuraOperaciones: store.estructuraOperaciones,
+    });
     
     // Retornar estructura compatible con la vista actual
+    // SIEMPRE incluir directorio y juntas, incluso si son null
     return {
       operaciones: {
         nombre: 'Operaciones',
         carpetas: {
+          // Directorio: puede ser null si no existe en backend, pero siempre se muestra
+          directorio: store.estructuraOperaciones?.directorio ? {
+            id: store.estructuraOperaciones.directorio.id,
+            nombre: store.estructuraOperaciones.directorio.name,
+            nodeId: store.estructuraOperaciones.directorio.id,
+          } : null,
+          // Juntas: SIEMPRE existe (por regla de negocio), aunque puede estar vacía
           juntas: {
-            nombre: 'Juntas',
-            juntas: store.estructuraJuntas.operaciones.juntas.map((carpeta) => ({
+            nombre: 'Juntas de Accionistas', // Nombre fijo según regla de negocio
+            juntas: store.estructuraJuntas?.operaciones?.juntas?.map((carpeta) => ({
               id: carpeta.id,
               nombre: carpeta.name,
               fecha: carpeta.createdAt,
               nodeId: carpeta.id, // Guardar ID real del nodo (string)
-            })),
+            })) || [],
           },
         },
       },
     };
   });
+
+  // Exponer estructura de operaciones
+  const estructuraOperaciones = computed(() => store.estructuraOperaciones);
 
   // Estados
   const isLoading = computed(() => store.isLoading);
@@ -96,6 +112,7 @@ export function useDocumentosGenerados() {
   return {
     // Estado
     documentosGenerados,
+    estructuraOperaciones,
     documentosCarpeta: computed(() => store.documentosCarpeta),
     carpetaActual: computed(() => store.carpetaActual),
     isLoading,

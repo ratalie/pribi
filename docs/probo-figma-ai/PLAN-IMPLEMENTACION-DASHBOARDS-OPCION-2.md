@@ -594,3 +594,5 @@ const capitalChartConfig = {
 **Versión:** 1.0.0
 **Estado:** ✅ Listo para implementar
 
+
+
