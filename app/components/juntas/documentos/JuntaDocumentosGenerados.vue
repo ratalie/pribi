@@ -172,7 +172,7 @@
           <!-- Botón Enviar Manual -->
           <button
             @click="handleEnviarManual"
-            :disabled="isUploading || documentosSeleccionados.length === 0"
+            :disabled="isUploading || documentosSeleccionadosArray.length === 0"
             class="flex items-center gap-2 px-4 py-2 rounded-lg text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             style="background-color: var(--primary-800)"
           >
@@ -188,8 +188,8 @@
             />
             <span v-if="!isUploading">
               Enviar al Repositorio
-              <span v-if="documentosSeleccionados.length > 0">
-                ({{ documentosSeleccionados.length }} {{ documentosSeleccionados.length === 1 ? 'archivo' : 'archivos' }})
+              <span v-if="documentosSeleccionadosArray.length > 0">
+                ({{ documentosSeleccionadosArray.length }})
               </span>
             </span>
             <span v-else>Enviando...</span>

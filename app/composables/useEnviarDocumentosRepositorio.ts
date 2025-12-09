@@ -5,6 +5,7 @@ import { useDocumentosGeneradosStore } from "~/core/presentation/juntas/document
 import { EnviarDocumentosRepositorioUseCase } from "~/core/hexag/repositorio/application/use-cases/enviar-documentos-repositorio.use-case";
 import { RepositorioDocumentosHttpRepository } from "~/core/hexag/repositorio/infrastructure/repositories/repositorio-documentos-http.repository";
 import { useToast } from "~/components/ui/toast/use-toast";
+import type { Documento } from "~/core/hexag/documentos/domain/entities/documento.entity";
 
 /**
  * Composable para enviar documentos al repositorio

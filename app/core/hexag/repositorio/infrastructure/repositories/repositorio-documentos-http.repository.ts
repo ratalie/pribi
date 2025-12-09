@@ -195,16 +195,25 @@ export class RepositorioDocumentosHttpRepository
       console.log("🟢 [RepositorioDocumentosHttp] Enviando request...");
       console.log("🟢 [RepositorioDocumentosHttp] Params:", { name: nombreCarpeta });
       
+      // IMPORTANTE: Con FormData, NO establecer Content-Type manualmente
+      // El navegador lo establece automáticamente con el boundary correcto
+      // Si lo establecemos manualmente, perdemos el token de Authorization
+      const authConfig = withAuthHeaders();
+      console.log("🟢 [RepositorioDocumentosHttp] Headers de autenticación:", {
+        hasAuthorization: Boolean(authConfig.headers?.Authorization),
+        authorizationPreview: authConfig.headers?.Authorization 
+          ? `${authConfig.headers.Authorization.toString().slice(0, 20)}...` 
+          : "NO HAY TOKEN",
+      });
+      
       const response = await $fetch(url, {
-        ...withAuthHeaders(),
+        ...authConfig,
         method: "POST" as const,
         body: formData,
         params: {
           name: nombreCarpeta,
         },
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        // NO establecer Content-Type aquí - el navegador lo hace automáticamente con FormData
       });
 
       console.log("🟢 [RepositorioDocumentosHttp] ========================================");

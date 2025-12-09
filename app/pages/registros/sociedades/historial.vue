@@ -1,33 +1,17 @@
 <script setup lang="ts">
   import { Button } from "@/components/ui/button";
-  import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-  } from "@/components/ui/card";
-  import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu";
-  import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-  } from "@/components/ui/table";
-  import { Eye, MoreVertical, Pencil, Trash2, TestTube } from "lucide-vue-next";
+  import { TestTube, Trash2, Eye, Pencil } from "lucide-vue-next";
   import { storeToRefs } from "pinia";
-import { computed, onMounted } from "vue";
+  import { computed, onMounted } from "vue";
   import { useRouter } from "vue-router";
   import { useSociedadHistorialStore } from "~/core/presentation/registros/sociedades/stores/sociedad-historial.store";
-import { SocietyRegisterStep } from "~/core/hexag/registros/sociedades/domain/enums/society-register-step.enum";
+  import { SocietyRegisterStep } from "~/core/hexag/registros/sociedades/domain/enums/society-register-step.enum";
+  import CustomTable from "~/components/tables/CustomTable.vue";
+  import HistorialLayout from "~/components/historial/HistorialLayout.vue";
+  import HistorialHeader from "~/components/historial/HistorialHeader.vue";
+  import { historialSociedadesTableConfig } from "~/config/tables/historial-sociedades.config";
+  import type { TableCellRenderer, TableAction } from "~/types/tables/table-config";
+  import type { SociedadResumenDTO } from "~/core/hexag/registros/sociedades/application/dtos";
 
   definePageMeta({
     layout: "registros",
@@ -47,32 +31,42 @@ import { SocietyRegisterStep } from "~/core/hexag/registros/sociedades/domain/en
 
   const isLoading = computed(() => status.value === "loading");
 
-const formatDate = (isoString: string | null | undefined) => {
-  if (!isoString) return "—";
-  const date = new Date(isoString);
-  if (Number.isNaN(date.getTime())) return "—";
-  return new Intl.DateTimeFormat("es-PE", { dateStyle: "medium" }).format(date);
-};
+  const formatDate = (isoString: string | null | undefined) => {
+    if (!isoString) return "—";
+    const date = new Date(isoString);
+    if (Number.isNaN(date.getTime())) return "—";
+    const dateOnly = isoString.split("T")[0];
+    const [year, month, day] = dateOnly.split("-");
+    return `${day}/${month}/${year}`;
+  };
 
-const pasoLabels: Record<SocietyRegisterStep, string> = {
-  [SocietyRegisterStep.DATOS_SOCIEDAD]: "Datos principales",
-  [SocietyRegisterStep.ACCIONISTAS]: "Accionistas",
-  [SocietyRegisterStep.ACCIONES]: "Acciones",
-  [SocietyRegisterStep.ASIGNACION_ACCIONES]: "Asignación de acciones",
-  [SocietyRegisterStep.DIRECTORIO]: "Directorio",
-  [SocietyRegisterStep.REGISTRO_APODERADOS]: "Registro apoderados",
-  [SocietyRegisterStep.REGIMEN_PODERES]: "Régimen de poderes",
-  [SocietyRegisterStep.QUORUMS_MAYORIAS]: "Quórums y mayorías",
-  [SocietyRegisterStep.ACUERDOS_SOCIETARIOS]: "Acuerdos societarios",
-  [SocietyRegisterStep.RESUMEN]: "Resumen",
-  [SocietyRegisterStep.FINALIZAR]: "Finalizado",
-};
+  const pasoLabels: Record<SocietyRegisterStep, string> = {
+    [SocietyRegisterStep.DATOS_SOCIEDAD]: "Datos principales",
+    [SocietyRegisterStep.ACCIONISTAS]: "Accionistas",
+    [SocietyRegisterStep.ACCIONES]: "Acciones",
+    [SocietyRegisterStep.ASIGNACION_ACCIONES]: "Asignación de acciones",
+    [SocietyRegisterStep.DIRECTORIO]: "Directorio",
+    [SocietyRegisterStep.REGISTRO_APODERADOS]: "Registro apoderados",
+    [SocietyRegisterStep.REGIMEN_PODERES]: "Régimen de poderes",
+    [SocietyRegisterStep.QUORUMS_MAYORIAS]: "Quórums y mayorías",
+    [SocietyRegisterStep.ACUERDOS_SOCIETARIOS]: "Acuerdos societarios",
+    [SocietyRegisterStep.RESUMEN]: "Resumen",
+    [SocietyRegisterStep.FINALIZAR]: "Finalizado",
+  };
 
-const formatPasoActual = (paso: SocietyRegisterStep | string | undefined) => {
-  if (!paso) return "—";
-  const normalized = paso as SocietyRegisterStep;
-  return pasoLabels[normalized] ?? paso.replace(/-/g, " ");
-};
+  const formatPasoActual = (paso: SocietyRegisterStep | string | undefined) => {
+    if (!paso) return "—";
+    const normalized = paso as SocietyRegisterStep;
+    return pasoLabels[normalized] ?? paso.replace(/-/g, " ");
+  };
+
+  const getEstado = (sociedad: SociedadResumenDTO) => {
+    const paso = sociedad.pasoActual;
+    if (paso === SocietyRegisterStep.FINALIZAR) {
+      return { label: "Completado", isComplete: true };
+    }
+    return { label: "Pendiente", isComplete: false };
+  };
 
   const goToPreview = (id: string) => {
     router.push(`/registros/sociedades/${id}/preview`);
@@ -82,10 +76,10 @@ const formatPasoActual = (paso: SocietyRegisterStep | string | undefined) => {
     router.push(`/registros/sociedades/${id}/datos-sociedad`);
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (sociedad: SociedadResumenDTO) => {
     const confirmed = window.confirm("¿Deseas eliminar este registro de sociedad?");
     if (!confirmed) return;
-    await historialStore.eliminarSociedad(id);
+    await historialStore.eliminarSociedad(sociedad.idSociety);
   };
 
   const goToTestPage = () => {
@@ -104,173 +98,133 @@ const formatPasoActual = (paso: SocietyRegisterStep | string | undefined) => {
 
     await historialStore.eliminarTodasLasSociedades();
   };
+
+  // Renderizadores personalizados
+  const cellRenderers: TableCellRenderer[] = [
+    {
+      columnKey: "razonSocial",
+      render: (rowData: SociedadResumenDTO) => rowData.razonSocial || "Sociedad sin nombre",
+    },
+    {
+      columnKey: "ruc",
+      render: (rowData: SociedadResumenDTO) => rowData.ruc || "—",
+    },
+    {
+      columnKey: "nombreComercial",
+      render: (rowData: SociedadResumenDTO) => rowData.nombreComercial || "—",
+    },
+    {
+      columnKey: "tipoSociedad",
+      render: (rowData: SociedadResumenDTO) => rowData.tipoSocietario || "—",
+    },
+    {
+      columnKey: "estado",
+      render: (rowData: SociedadResumenDTO) => getEstado(rowData),
+    },
+  ];
+
+  // Acciones del dropdown
+  const tableActions: TableAction[] = [
+    {
+      id: "preview",
+      label: "Previsualizar",
+      icon: "Eye",
+      handler: (rowData: SociedadResumenDTO) => goToPreview(rowData.idSociety),
+    },
+    {
+      id: "edit",
+      label: "Editar datos",
+      icon: "Pencil",
+      handler: (rowData: SociedadResumenDTO) => goToEdit(rowData.idSociety),
+    },
+    {
+      id: "delete",
+      label: "Eliminar registro",
+      icon: "Trash2",
+      destructive: true,
+      handler: (rowData: SociedadResumenDTO) => handleDelete(rowData),
+    },
+  ];
+
+  const tableData = computed(() => sociedades.value);
 </script>
 
 <template>
-  <div class="space-y-8 px-6 py-6">
-    <PageTitle title-key="pages.sociedadesHistorial" />
+  <HistorialLayout
+    :show-footer="true"
+    :total="sociedades.length"
+    footer-label="Sociedades"
+  >
+    <template #header>
+      <HistorialHeader
+        title="Registro de Sociedades"
+        description="Gestiona aquí las sociedades: agrega, edita o elimina fácilmente"
+        :show-actions="true"
+      >
+        <template #actions>
+          <Button
+            variant="outline"
+            size="sm"
+            class="text-primary-700 border-primary-300 hover:bg-primary-50"
+            @click="goToTestPage"
+          >
+            <TestTube class="h-4 w-4 mr-2" />
+            Vista de Test
+          </Button>
+          <Button
+            v-if="sociedades.length > 0"
+            variant="destructive"
+            size="sm"
+            class="text-white"
+            :disabled="isLoading"
+            @click="handleDeleteAll"
+          >
+            <Trash2 class="h-4 w-4 mr-2" />
+            Eliminar Todas
+          </Button>
+        </template>
+      </HistorialHeader>
+    </template>
 
-    <Card class="border border-primary-400/40 bg-primary-75/20 text-gray-600">
-      <CardHeader>
-        <div class="flex items-start justify-between">
-          <div class="flex-1">
-            <CardTitle class="text-lg font-semibold text-primary-800">
-              Historial de registros societarios
-            </CardTitle>
-            <CardDescription class="text-gray-500">
-              Consulta las sociedades creadas en el sistema. Este listado utiliza los endpoints
-              mockeados con MSW, por lo que podrás validar el flujo completo antes de integrar el
-              backend real.
-            </CardDescription>
+    <!-- Tabla -->
+    <div class="bg-white rounded-lg border border-gray-200 shadow-sm">
+      <CustomTable
+        :config="historialSociedadesTableConfig"
+        :data="tableData"
+        :is-loading="isLoading"
+        :cell-renderers="cellRenderers"
+        :actions="tableActions"
+        :get-row-id="(row) => row.idSociety"
+        empty-message="Aún no has registrado información. No te preocupes, puedes agregarla fácilmente haciendo click en el botón 'Agregar'"
+      >
+        <!-- Renderizado personalizado de razón social con nombre comercial -->
+        <template #cell-razonSocial="{ rowData }">
+          <div class="flex flex-col">
+            <span class="font-medium text-layout-gray-800">
+              {{ rowData.razonSocial || "Sociedad sin nombre" }}
+            </span>
+            <span v-if="rowData.nombreComercial" class="text-xs text-gray-600">
+              Nombre comercial: {{ rowData.nombreComercial }}
+            </span>
           </div>
-          <div class="flex gap-2 ml-4">
-            <Button
-              variant="outline"
-              size="sm"
-              class="text-primary-700 border-primary-300 hover:bg-primary-50"
-              @click="goToTestPage"
+        </template>
+
+        <!-- Renderizado personalizado del estado con badge -->
+        <template #cell-estado="{ rowData }">
+          <div class="flex justify-start items-center">
+            <span
+              :class="[
+                'py-1 px-3 rounded-full w-auto text-center text-xs font-medium',
+                getEstado(rowData).isComplete
+                  ? 'bg-green-100 text-green-800 border border-green-200'
+                  : 'bg-yellow-100 text-yellow-800 border border-yellow-200',
+              ]"
             >
-              <TestTube class="h-4 w-4 mr-2" />
-              Vista de Test
-            </Button>
-            <Button
-              v-if="sociedades.length > 0"
-              variant="destructive"
-              size="sm"
-              class="text-white"
-              :disabled="isLoading"
-              @click="handleDeleteAll"
-            >
-              <Trash2 class="h-4 w-4 mr-2" />
-              Eliminar Todas
-            </Button>
+              {{ getEstado(rowData).label }}
+            </span>
           </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div
-          class="min-h-[340px] overflow-hidden rounded-2xl border border-primary-400/30 bg-white/60"
-        >
-          <p v-if="errorMessage" class="px-4 py-3 text-sm text-red-500">
-            {{ errorMessage }}
-          </p>
-          <Table class="[&_th]:text-left">
-            <TableHeader class="text-primary-600">
-              <TableRow class="border-primary-300/40 bg-primary-25/40">
-                <TableHead class="w-[120px] font-medium uppercase tracking-wide text-xs text-primary-700">
-                  ID
-                </TableHead>
-                <TableHead class="font-medium uppercase tracking-wide text-xs text-primary-700">
-                  Razón social
-                </TableHead>
-                <TableHead class="w-[150px] font-medium uppercase tracking-wide text-xs text-primary-700">
-                  RUC
-                </TableHead>
-                <TableHead class="w-[160px] font-medium uppercase tracking-wide text-xs text-primary-700">
-                  Paso actual
-                </TableHead>
-                <TableHead class="w-[160px] font-medium uppercase tracking-wide text-xs text-primary-700">
-                  Tipo societario
-                </TableHead>
-                <TableHead class="w-[140px] font-medium uppercase tracking-wide text-xs text-primary-700">
-                  Creación
-                </TableHead>
-                <TableHead class="w-[60px]" />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <template v-if="isLoading">
-                <TableRow>
-                  <TableCell colspan="6" class="py-6 text-center text-primary-600">
-                    Cargando sociedades...
-                  </TableCell>
-                </TableRow>
-              </template>
-              <template v-else-if="sociedades.length === 0">
-                <TableRow>
-                  <TableCell colspan="6" class="py-6 text-center text-primary-600">
-                    Aún no registras sociedades. Utiliza el botón “Comenzar formulario guiado”
-                    para crear la primera.
-                  </TableCell>
-                </TableRow>
-              </template>
-              <template v-else>
-                <TableRow
-                  v-for="sociedad in sociedades"
-                  :key="sociedad.idSociety"
-                  class="border-primary-200/40 text-gray-700 transition-colors hover:bg-primary-50/40"
-                >
-                  <TableCell class="py-4 font-semibold text-primary-700">
-                    {{ sociedad.idSociety }}
-                  </TableCell>
-                  <TableCell class="py-4">
-                    <div class="flex flex-col">
-                      <span class="font-medium text-primary-900">{{ sociedad.razonSocial || "Sociedad sin nombre" }}</span>
-                      <span v-if="sociedad.nombreComercial" class="text-xs text-primary-600">
-                        Nombre comercial: {{ sociedad.nombreComercial }}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell class="py-4">
-                    {{ sociedad.ruc || "—" }}
-                  </TableCell>
-                  <TableCell class="py-4">
-                    <span class="inline-flex items-center rounded-full bg-primary-100 px-2 py-1 text-xs font-semibold text-primary-700">
-                      {{ formatPasoActual(sociedad.pasoActual) }}
-                    </span>
-                  </TableCell>
-                  <TableCell class="py-4">
-                    {{ sociedad.tipoSocietario || "—" }}
-                  </TableCell>
-                  <TableCell class="py-4">
-                    {{ formatDate(sociedad.createdAt) }}
-                  </TableCell>
-                  <TableCell class="py-4 text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger as-child>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          class="h-8 w-8 p-0 text-primary-700 hover:bg-primary-200/60"
-                        >
-                          <MoreVertical class="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        align="end"
-                        class="w-48 border border-primary-200/60 bg-white text-gray-700 shadow-lg"
-                      >
-                        <DropdownMenuItem
-                          class="cursor-pointer gap-2"
-                          @click="goToPreview(sociedad.idSociety)"
-                        >
-                          <Eye class="h-3.5 w-3.5" />
-                          Previsualizar
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          class="cursor-pointer gap-2"
-                          @click="goToEdit(sociedad.idSociety)"
-                        >
-                          <Pencil class="h-3.5 w-3.5" />
-                          Editar datos
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator class="bg-primary-100" />
-                        <DropdownMenuItem
-                          class="cursor-pointer gap-2 text-red-500 hover:text-red-600"
-                          @click="handleDelete(sociedad.idSociety)"
-                        >
-                          <Trash2 class="h-3.5 w-3.5" />
-                          Eliminar registro
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              </template>
-            </TableBody>
-          </Table>
-        </div>
-      </CardContent>
-    </Card>
-  </div>
+        </template>
+      </CustomTable>
+    </div>
+  </HistorialLayout>
 </template>
