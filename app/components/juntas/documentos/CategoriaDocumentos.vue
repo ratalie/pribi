@@ -15,7 +15,8 @@
         v-for="documento in documentos"
         :key="documento.id"
         :documento="documento"
-        @descargar="$emit('descargar', documento)"
+        @descargar="handleDescargar"
+        @preview="handlePreview"
       />
     </div>
   </div>
@@ -25,13 +26,32 @@
 import DocumentoItem from "./DocumentoItem.vue";
 import type { Documento } from "~/core/hexag/documentos/domain/entities/documento.entity";
 
-defineProps<{
+const props = defineProps<{
   titulo: string;
   documentos: Documento[];
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   descargar: [documento: Documento];
+  preview: [documento: Documento];
 }>();
+
+const handleDescargar = (documento: Documento) => {
+  console.log("📥 [CategoriaDocumentos] Evento 'descargar' recibido desde DocumentoItem");
+  console.log("📤 [CategoriaDocumentos] Re-emitiendo evento 'descargar' hacia padre");
+  emit("descargar", documento);
+};
+
+const handlePreview = (documento: Documento) => {
+  console.log("👁️ [CategoriaDocumentos] Evento 'preview' recibido desde DocumentoItem");
+  console.log("📄 [CategoriaDocumentos] Documento recibido:", {
+    id: documento.id,
+    nombre: documento.nombre,
+    categoria: documento.categoria,
+  });
+  console.log("📤 [CategoriaDocumentos] Re-emitiendo evento 'preview' hacia padre (JuntaDocumentosGenerados)");
+  emit("preview", documento);
+  console.log("✅ [CategoriaDocumentos] Evento 'preview' re-emitido");
+};
 </script>
 

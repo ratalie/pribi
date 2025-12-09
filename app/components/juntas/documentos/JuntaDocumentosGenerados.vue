@@ -55,14 +55,18 @@
         :titulo="categoria"
         :documentos="documentos"
         @descargar="handleDownloadIndividual"
+        @preview="handlePreview"
       />
     </div>
 
     <!-- Loading State -->
-    <div v-else-if="isGenerating" class="flex justify-center items-center py-12">
+    <div v-else-if="isLoadingData || isGenerating" class="flex justify-center items-center py-12">
       <div class="text-center">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-800 mx-auto mb-4"></div>
-        <p class="text-sm text-muted">Generando documentos...</p>
+        <p class="text-sm text-muted">
+          <span v-if="isLoadingData">Cargando datos de la junta...</span>
+          <span v-else-if="isGenerating">Generando documentos...</span>
+        </p>
       </div>
     </div>
 
@@ -125,42 +129,79 @@
         </label>
       </div>
     </div>
+
+    <!-- Modal de Preview -->
+    <DocumentoPreviewModal
+      :is-open="previewModalOpen"
+      :documento="documentoPreview"
+      @close="handleClosePreview"
+      @download="handleDownloadIndividual"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { ref, computed, watch } from "vue";
 import HeaderExito from "./HeaderExito.vue";
 import CategoriaDocumentos from "./CategoriaDocumentos.vue";
+import DocumentoPreviewModal from "./DocumentoPreviewModal.vue";
 import type { Documento } from "~/core/hexag/documentos/domain/entities/documento.entity";
-import { DocumentoCategorizerService } from "~/core/hexag/documentos/domain/services/documento-categorizer.service";
-// TODO: Importar use case cuando esté listo
-// import { generateAllDocumentosUseCase } from "~/core/hexag/documentos/application/use-cases/generate-all-documentos.use-case";
+import { useDownloadData } from "~/composables/useDownloadData";
+import { useDocumentosGeneradosStore } from "~/core/presentation/juntas/documentos/stores/documentos-generados.store";
 
-const route = useRoute();
-const societyId = computed(() => Number(route.params.societyId));
-const flowId = computed(() => Number(route.params.flowId));
+const {
+  downloadData,
+  razonSocial,
+  ruc,
+  isLoading: isLoadingData,
+  hasError: hasErrorData,
+} = useDownloadData();
 
-const documentos = ref<Documento[]>([]);
-const isGenerating = ref(false);
+const documentosStore = useDocumentosGeneradosStore();
 
-const documentosPorCategoria = computed(() => {
-  if (documentos.value.length === 0) return {};
-  return DocumentoCategorizerService.agruparPorCategoria(documentos.value);
-});
+const documentos = computed(() => documentosStore.documentos);
+const isGenerating = computed(() => documentosStore.status === "generating");
+const documentosPorCategoria = computed(() => documentosStore.documentosPorCategoria);
+const totalDocumentos = computed(() => documentosStore.totalDocumentos);
 
-const totalDocumentos = computed(() => documentos.value.length);
+// Estado del modal de preview
+const previewModalOpen = ref(false);
+const documentoPreview = ref<Documento | null>(null);
 
 const puntosAprobados = computed(() => {
-  // TODO: Obtener de store o API
-  return 0;
+  // Contar puntos de agenda activos
+  if (!downloadData.value) return 0;
+  const items = downloadData.value.agendaItems;
+  let count = 0;
+  if (items.aumentoCapital.aportesDinerarios) count++;
+  if (items.aumentoCapital.capitalizacionDeCreditos) count++;
+  if (items.nombramiento.nombramientoGerenteGeneral) count++;
+  if (items.nombramiento.nombramientoDirectores) count++;
+  // ... agregar más puntos
+  return count;
 });
+
+// Generar documentos cuando haya datos
+watch(
+  [downloadData, razonSocial, ruc],
+  async ([data, razon, rucValue]) => {
+    if (data && razon && rucValue && !documentosStore.hasDocumentos && !isGenerating.value) {
+      console.log("🔄 [JuntaDocumentosGenerados] Generando documentos...", {
+        hasData: !!data,
+        razonSocial: razon,
+        ruc: rucValue,
+      });
+      await documentosStore.generarDocumentos(data, razon, rucValue);
+      console.log("✅ [JuntaDocumentosGenerados] Documentos generados:", documentos.value.length);
+    }
+  },
+  { immediate: true }
+);
 
 const handleDownloadAll = async () => {
   if (documentos.value.length === 0) {
-    // TODO: Generar documentos si no existen
-    await generarDocumentos();
+    console.warn("No hay documentos para descargar");
+    return;
   }
 
   // TODO: Generar ZIP y descargar
@@ -176,27 +217,30 @@ const handleDownloadIndividual = async (documento: Documento) => {
   URL.revokeObjectURL(url);
 };
 
-const generarDocumentos = async () => {
-  isGenerating.value = true;
-  try {
-    // TODO: Llamar a generateAllDocumentosUseCase
-    // documentos.value = await generateAllDocumentosUseCase.execute({
-    //   societyId: societyId.value,
-    //   flowId: flowId.value,
-    // });
-    
-    // Por ahora, mock data
-    documentos.value = [];
-  } catch (error) {
-    console.error("Error generando documentos:", error);
-  } finally {
-    isGenerating.value = false;
-  }
+const handlePreview = (documento: Documento) => {
+  console.log("🎯 [JuntaDocumentosGenerados] handlePreview llamado");
+  console.log("📄 [JuntaDocumentosGenerados] Documento recibido:", {
+    id: documento.id,
+    nombre: documento.nombre,
+    categoria: documento.categoria,
+    blobSize: documento.blob?.size || 0,
+    blobType: documento.blob?.type || "N/A",
+  });
+  console.log("🔧 [JuntaDocumentosGenerados] Configurando estado del modal...");
+  documentoPreview.value = documento;
+  previewModalOpen.value = true;
+  console.log("✅ [JuntaDocumentosGenerados] Modal configurado:", {
+    previewModalOpen: previewModalOpen.value,
+    hasDocumentoPreview: !!documentoPreview.value,
+  });
 };
 
-onMounted(() => {
-  // Generar documentos al montar
-  generarDocumentos();
-});
+const handleClosePreview = () => {
+  previewModalOpen.value = false;
+  // Limpiar después de que el modal se cierre (para animación)
+  setTimeout(() => {
+    documentoPreview.value = null;
+  }, 300);
+};
 </script>
 

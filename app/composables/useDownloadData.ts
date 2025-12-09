@@ -1,6 +1,7 @@
 import { computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useDownloadDataStore } from "~/core/presentation/juntas/documentos/stores/download-data.store";
+import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 
 /**
  * Composable para Download Data de Juntas
@@ -11,9 +12,19 @@ import { useDownloadDataStore } from "~/core/presentation/juntas/documentos/stor
 export function useDownloadData() {
   const route = useRoute();
   const store = useDownloadDataStore();
+  const snapshotStore = useSnapshotStore();
 
   const societyId = computed(() => Number(route.params.societyId));
   const flowId = computed(() => Number(route.params.flowId));
+
+  // Obtener razonSocial y ruc del snapshot
+  const razonSocial = computed(() => {
+    return snapshotStore.snapshot?.societyData?.reasonSocial || "Sociedad sin nombre";
+  });
+
+  const ruc = computed(() => {
+    return snapshotStore.snapshot?.societyData?.ruc || "";
+  });
 
   // Cargar datos al montar
   onMounted(async () => {
@@ -22,6 +33,13 @@ export function useDownloadData() {
         societyId: societyId.value,
         flowId: flowId.value,
       });
+
+      // Cargar snapshot si no está cargado (para obtener razonSocial y ruc)
+      if (!snapshotStore.snapshot) {
+        console.log("📦 [useDownloadData] Cargando snapshot para obtener datos de sociedad...");
+        await snapshotStore.loadSnapshot(societyId.value, flowId.value);
+      }
+
       await store.loadDownloadData(societyId.value, flowId.value);
       console.log("✅ [useDownloadData] Datos cargados:", store.downloadData);
     }
@@ -55,6 +73,9 @@ export function useDownloadData() {
     attendance,
     aporteDinerario,
     hasAporteDinerario,
+    // Datos de sociedad
+    razonSocial,
+    ruc,
     // Estados
     isLoading,
     hasError,
@@ -64,8 +85,9 @@ export function useDownloadData() {
     flowId,
     // Métodos
     reload,
-    // Store (para acceso directo si es necesario)
+    // Stores (para acceso directo si es necesario)
     store,
+    snapshotStore,
   };
 }
 
