@@ -27,4 +27,5 @@ export interface PersonaJuridica extends PersonaBase {
   provincia?: string;
   departamento?: string;
   pais?: string;
+  representante?: Omit<PersonaNatural, "id" | "tipo">;
 }

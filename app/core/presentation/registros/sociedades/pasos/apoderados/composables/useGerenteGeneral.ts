@@ -1,5 +1,9 @@
 import { useConfirmDelete } from "~/composables/useConfirmDelete";
-import { PersonTypeEnum } from "~/core/hexag/registros/sociedades/pasos/apoderados/domain";
+import {
+  PersonTypeEnum,
+  type Apoderado,
+  type PersonaJuridica,
+} from "~/core/hexag/registros/sociedades/pasos/apoderados/domain";
 import { useClasesYApoderadosStore } from "../stores/useClasesYApoderadoStore";
 import {
   mapperApoderadoJuridicaEntityAModal,
@@ -60,6 +64,7 @@ export const useGerenteGeneral = (societyId: string) => {
         const payload = mapperApoderadoJuridicaModalALista(
           claseApoderadoId,
           personaJuridicaStore,
+          personaNaturalStore,
           editingGerenteGeneralId.value ?? undefined,
           editingPersonaId.value ?? undefined
         );
@@ -93,6 +98,25 @@ export const useGerenteGeneral = (societyId: string) => {
       personaNaturalStore.setFormData(mapperApoderadoNaturalEntityAModal(apoderado));
     } else {
       personaJuridicaStore.setFormData(mapperApoderadoJuridicaEntityAModal(apoderado));
+
+      // Si hay representante, mapear sus datos al store de persona natural
+      const personaJuridica = apoderado.persona as PersonaJuridica;
+      if (personaJuridica.representante) {
+        const apoderadoTemporal: Apoderado = {
+          ...apoderado,
+          persona: {
+            id: apoderado.persona.id, // Mantener el ID original
+            tipo: PersonTypeEnum.NATURAL,
+            nombre: personaJuridica.representante.nombre,
+            apellidoPaterno: personaJuridica.representante.apellidoPaterno,
+            apellidoMaterno: personaJuridica.representante.apellidoMaterno,
+            tipoDocumento: personaJuridica.representante.tipoDocumento,
+            numeroDocumento: personaJuridica.representante.numeroDocumento,
+            paisEmision: personaJuridica.representante.paisEmision,
+          },
+        };
+        personaNaturalStore.setFormData(mapperApoderadoNaturalEntityAModal(apoderadoTemporal));
+      }
     }
 
     editingGerenteGeneralId.value = apoderado.id;
