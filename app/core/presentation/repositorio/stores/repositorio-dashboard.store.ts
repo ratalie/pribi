@@ -5,6 +5,7 @@ import type { DashboardStatsDTO } from '~/core/hexag/repositorio/application/dto
 import type { SearchResultDTO } from '~/core/hexag/repositorio/application/dtos/search-query.dto';
 import type { Sociedad } from '~/core/hexag/repositorio/domain/entities/sociedad.entity';
 import { RepositorioMockRepository } from '~/core/hexag/repositorio/infrastructure/repositories/repositorio-mock.repository';
+import { useSociedadHistorialStore } from '~/core/presentation/registros/sociedades/stores/sociedad-historial.store';
 // TODO: Cambiar a HTTP cuando esté listo
 // import { RepositorioHttpRepository } from '~/core/hexag/repositorio/infrastructure/repositories/repositorio-http.repository';
 
@@ -66,41 +67,39 @@ export const useRepositorioDashboardStore = defineStore('repositorio-dashboard',
     },
 
     /**
-     * Carga la lista de sociedades
+     * Selecciona una sociedad por ID y carga sus estadísticas
+     * Mapea desde SociedadResumenDTO a Sociedad
      */
-    async cargarSociedades() {
-      this.status = 'loading';
-      this.errorMessage = null;
+    async seleccionarSociedad(societyId: string) {
+      console.log("🟢 [RepositorioDashboardStore] Seleccionando sociedad:", societyId);
+      
+      const sociedadHistorialStore = useSociedadHistorialStore();
+      
+      // Buscar la sociedad en el store de historial
+      const sociedadDTO = sociedadHistorialStore.sociedades.find(
+        (s) => s.idSociety === societyId
+      );
 
-      try {
-        const repository = new RepositorioMockRepository();
-        const sociedades = await repository.listSociedades();
-        
-        this.sociedades = sociedades;
-        
-        // Seleccionar la primera sociedad activa por defecto
-        if (!this.sociedadSeleccionada) {
-          const primeraActiva = sociedades.find((s) => s.activa);
-          if (primeraActiva) {
-            this.sociedadSeleccionada = primeraActiva;
-            // Cargar stats de la sociedad seleccionada
-            await this.cargarStats(primeraActiva.id);
-          }
-        }
-        
-        this.status = 'idle';
-      } catch (error: any) {
-        console.error('[RepositorioDashboardStore] Error al cargar sociedades:', error);
-        this.status = 'error';
-        this.errorMessage = error?.message ?? 'No pudimos cargar las sociedades';
+      if (!sociedadDTO) {
+        console.error('[RepositorioDashboardStore] Sociedad no encontrada:', societyId);
+        this.errorMessage = 'Sociedad no encontrada';
+        return;
       }
-    },
 
-    /**
-     * Selecciona una sociedad y carga sus estadísticas
-     */
-    async seleccionarSociedad(sociedad: Sociedad) {
+      // Mapear SociedadResumenDTO a Sociedad
+      const sociedad: Sociedad = {
+        id: sociedadDTO.idSociety,
+        nombre: sociedadDTO.razonSocial || 'Sociedad sin nombre',
+        rut: sociedadDTO.ruc || '',
+        tipo: (sociedadDTO.tipoSocietario as Sociedad['tipo']) || 'SpA',
+        activa: sociedadDTO.estado === 'completo',
+      };
+
+      console.log("🟢 [RepositorioDashboardStore] Sociedad mapeada:", sociedad);
       this.sociedadSeleccionada = sociedad;
+      console.log("🟢 [RepositorioDashboardStore] Sociedad seleccionada actualizada en store");
+      
+      // Cargar stats de la sociedad seleccionada
       await this.cargarStats(sociedad.id);
     },
 

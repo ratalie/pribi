@@ -25,7 +25,14 @@
   import PreviewModal from "./PreviewModal.vue";
   import type { AdvancedFilters } from "./types";
 
-  const { documentosGenerados, isLoading, obtenerDocumento } = useDocumentosGenerados();
+  const { 
+    documentosGenerados, 
+    documentosCarpeta,
+    carpetaActual,
+    isLoading, 
+    cargarDocumentosDeCarpeta,
+    obtenerDocumento 
+  } = useDocumentosGenerados();
 
   const dashboardStore = useRepositorioDashboardStore();
 
@@ -62,6 +69,7 @@
       nombre: string;
       tipo: "categoria" | "carpeta" | "subcarpeta" | "junta";
       color: string;
+      nodeId?: number; // ID real del nodo para cargar documentos
     }> = [];
     const files: Array<{
       id: string;
@@ -72,20 +80,12 @@
       juntaId?: string;
     }> = [];
 
-    // Nivel raíz: mostrar categorías
+    // Nivel 0: Raíz → mostrar "operaciones"
     if (currentPath.value.length === 0) {
-      if (documentosGenerados.value.registros) {
-        folders.push({
-          id: "registros",
-          nombre: documentosGenerados.value.registros.nombre,
-          tipo: "categoria",
-          color: "#F59E0B", // Amarillo/Naranja
-        });
-      }
       if (documentosGenerados.value.operaciones) {
         folders.push({
           id: "operaciones",
-          nombre: documentosGenerados.value.operaciones.nombre,
+          nombre: documentosGenerados.value.operaciones.nombre || "Operaciones",
           tipo: "categoria",
           color: "#10B981", // Verde
         });
@@ -93,110 +93,102 @@
       return { folders, files };
     }
 
-    // Nivel 1: Categoría (registros u operaciones)
-    const categoria = currentPath.value[0];
-    const categoriaData =
-      categoria === "registros"
-        ? documentosGenerados.value.registros
-        : documentosGenerados.value.operaciones;
-
-    if (!categoriaData) return { folders, files };
-
-    // Si solo hay categoría, mostrar carpetas principales
-    if (currentPath.value.length === 1) {
-      Object.entries(categoriaData.carpetas).forEach(([key, carpeta]) => {
+    // Nivel 1: operaciones → mostrar "juntas"
+    if (currentPath.value.length === 1 && currentPath.value[0] === "operaciones") {
+      if (documentosGenerados.value.operaciones?.carpetas?.juntas) {
         folders.push({
-          id: `${categoria}-${key}`,
-          nombre: carpeta.nombre,
+          id: "operaciones-juntas",
+          nombre: documentosGenerados.value.operaciones.carpetas.juntas.nombre || "Juntas",
           tipo: "carpeta",
-          color: categoria === "registros" ? "#8B5CF6" : "#6366F1",
+          color: "#6366F1",
+        });
+      }
+      return { folders, files };
+    }
+
+    // Nivel 2: juntas → mostrar carpetas de juntas reales del backend
+    if (
+      currentPath.value.length === 2 &&
+      currentPath.value[0] === "operaciones" &&
+      currentPath.value[1] === "juntas"
+    ) {
+      const juntas = documentosGenerados.value.operaciones?.carpetas?.juntas?.juntas || [];
+      juntas.forEach((junta: any) => {
+        folders.push({
+          id: `carpeta-${junta.nodeId || junta.id}`,
+          nombre: junta.nombre,
+          tipo: "junta",
+          color: "#6366F1",
+          nodeId: junta.nodeId || parseInt(junta.id), // ID real del nodo
         });
       });
       return { folders, files };
     }
 
-    // Nivel 2: Carpeta principal
-    const carpetaKey = currentPath.value[1];
-    if (!carpetaKey) return { folders, files };
-    const carpeta = categoriaData.carpetas[carpetaKey];
-
-    if (!carpeta) return { folders, files };
-
-    // Si solo hay carpeta, mostrar subcarpetas o juntas
-    if (currentPath.value.length === 2) {
-      // Caso especial: Juntas
-      if (carpeta.juntas && carpeta.juntas.length > 0) {
-        carpeta.juntas.forEach((junta: any) => {
-          folders.push({
-            id: `${categoria}-${carpetaKey}-${junta.id}`,
-            nombre: junta.nombre,
-            tipo: "junta",
-            color: "#6366F1",
-          });
-        });
-      }
-      // Subcarpetas normales
-      if (carpeta.subcarpetas && carpeta.subcarpetas.length > 0) {
-        carpeta.subcarpetas.forEach((subcarpeta: any) => {
-          folders.push({
-            id: `${categoria}-${carpetaKey}-${subcarpeta.id}`,
-            nombre: subcarpeta.nombre,
-            tipo: "subcarpeta",
-            color: "#8B5CF6",
-          });
-        });
-      }
-      // Documentos directos
-      if (carpeta.documentos && carpeta.documentos.length > 0) {
-        carpeta.documentos.forEach((doc: any) => {
-          files.push({
-            id: doc.id,
-            nombre: doc.nombre,
-            fecha: doc.fecha,
-            tamaño: doc.tamaño,
-            tipo: doc.tipo,
-          });
-        });
+    // Nivel 3: carpeta de junta → mostrar carpetas de documentos y documentos directos
+    if (currentPath.value.length === 3) {
+      const carpetaId = currentPath.value[2];
+      if (carpetaId && carpetaId.startsWith("carpeta-")) {
+        const nodeId = carpetaId.replace("carpeta-", "");
+        
+        // Buscar la carpeta de junta en los documentos generados
+        const juntas = documentosGenerados.value?.operaciones?.carpetas?.juntas?.juntas || [];
+        const carpetaJunta = juntas.find((j: any) => (j.nodeId || j.id) === nodeId);
+        
+        if (carpetaJunta) {
+          // Si tenemos los hijos cargados en documentosCarpeta, usarlos
+          if (carpetaActual.value === nodeId && documentosCarpeta.value.length > 0) {
+            documentosCarpeta.value.forEach((item) => {
+              if (item.type === "folder") {
+                // Es una carpeta de documentos (ej: "documentos juntas: {fecha}")
+                folders.push({
+                  id: `${carpetaId}-${item.id}`,
+                  nombre: item.name,
+                  tipo: "carpeta",
+                  color: "#8B5CF6",
+                  nodeId: item.id,
+                });
+              } else if (item.type === "document") {
+                // Es un documento directo
+                files.push({
+                  id: item.id,
+                  nombre: item.name,
+                  fecha: new Date(item.createdAt),
+                  tamaño: item.sizeInBytes,
+                  tipo: item.mimeType,
+                  versionCode: item.versions?.[0]?.versionCode,
+                });
+              }
+            });
+          } else {
+            // Si no están cargados, intentar cargarlos
+            // Esto se hará automáticamente cuando se navegue a la carpeta
+          }
+        }
       }
       return { folders, files };
     }
 
-    // Nivel 3: Subcarpeta o Junta
-    const subcarpetaId = currentPath.value[2];
-
-    // Buscar en subcarpetas
-    if (carpeta.subcarpetas) {
-      const subcarpeta = carpeta.subcarpetas.find((s) => s.id === subcarpetaId);
-      if (subcarpeta) {
-        subcarpeta.documentos.forEach((doc) => {
-          files.push({
-            id: doc.id,
-            nombre: doc.nombre,
-            fecha: doc.fecha,
-            tamaño: doc.tamaño,
-            tipo: doc.tipo,
-          });
+    // Nivel 4: carpeta de documentos dentro de junta → mostrar documentos
+    if (currentPath.value.length === 4) {
+      const carpetaDocumentosId = currentPath.value[3];
+      
+      // Si tenemos los documentos cargados en documentosCarpeta, usarlos
+      if (carpetaActual.value === carpetaDocumentosId && documentosCarpeta.value.length > 0) {
+        documentosCarpeta.value.forEach((item) => {
+          if (item.type === "document") {
+            files.push({
+              id: item.id,
+              nombre: item.name,
+              fecha: new Date(item.createdAt),
+              tamaño: item.sizeInBytes,
+              tipo: item.mimeType,
+              versionCode: item.versions?.[0]?.versionCode,
+            });
+          }
         });
-        return { folders, files };
       }
-    }
-
-    // Buscar en juntas
-    if (carpeta.juntas) {
-      const junta = carpeta.juntas.find((j) => j.id === subcarpetaId);
-      if (junta) {
-        junta.documentos.forEach((doc) => {
-          files.push({
-            id: doc.id,
-            nombre: doc.nombre,
-            fecha: doc.fecha,
-            tamaño: doc.tamaño,
-            tipo: doc.tipo,
-            juntaId: junta.id,
-          });
-        });
-        return { folders, files };
-      }
+      return { folders, files };
     }
 
     return { folders, files };
@@ -208,51 +200,49 @@
 
     if (currentPath.value.length === 0) return items;
 
-    // Categoría
-    const categoria = currentPath.value[0];
-    const categoriaData =
-      categoria === "registros"
-        ? documentosGenerados.value?.registros
-        : documentosGenerados.value?.operaciones;
-
-    if (categoriaData && categoria) {
-      items.push({ id: categoria, nombre: categoriaData.nombre });
+    // Nivel 1: operaciones
+    if (currentPath.value[0] === "operaciones") {
+      items.push({ 
+        id: "operaciones", 
+        nombre: documentosGenerados.value?.operaciones?.nombre || "Operaciones" 
+      });
     }
 
-    // Carpeta principal
-    if (currentPath.value.length > 1) {
-      const carpetaKey = currentPath.value[1];
-      if (categoriaData && carpetaKey) {
-        const carpeta = categoriaData.carpetas[carpetaKey];
+    // Nivel 2: juntas
+    if (currentPath.value.length > 1 && currentPath.value[1] === "juntas") {
+      items.push({ 
+        id: "operaciones-juntas", 
+        nombre: documentosGenerados.value?.operaciones?.carpetas?.juntas?.nombre || "Juntas" 
+      });
+    }
+
+    // Nivel 3: carpeta de junta específica
+    if (currentPath.value.length > 2) {
+      const carpetaId = currentPath.value[2];
+      if (carpetaId && typeof carpetaId === "string" && carpetaId.startsWith("carpeta-")) {
+        const nodeId = carpetaId.replace("carpeta-", "");
+        const juntas = documentosGenerados.value?.operaciones?.carpetas?.juntas?.juntas || [];
+        const carpeta = juntas.find((j: any) => (j.nodeId || j.id) === nodeId);
         if (carpeta) {
-          items.push({ id: `${categoria}-${carpetaKey}`, nombre: carpeta.nombre });
+          items.push({
+            id: carpetaId,
+            nombre: carpeta.nombre,
+          });
         }
       }
     }
 
-    // Subcarpeta o Junta
-    if (currentPath.value.length > 2) {
-      const carpetaKey = currentPath.value[1];
-      const subcarpetaId = currentPath.value[2];
-      if (categoriaData && carpetaKey && subcarpetaId) {
-        const carpeta = categoriaData.carpetas[carpetaKey];
-        if (carpeta) {
-          // Buscar en subcarpetas
-          const subcarpeta = carpeta.subcarpetas?.find((s: any) => s.id === subcarpetaId);
-          if (subcarpeta) {
-            items.push({
-              id: `${categoria}-${carpetaKey}-${subcarpetaId}`,
-              nombre: subcarpeta.nombre,
-            });
-          }
-          // Buscar en juntas
-          const junta = carpeta.juntas?.find((j: any) => j.id === subcarpetaId);
-          if (junta) {
-            items.push({
-              id: `${categoria}-${carpetaKey}-${subcarpetaId}`,
-              nombre: junta.nombre,
-            });
-          }
+    // Nivel 4: carpeta de documentos dentro de junta
+    if (currentPath.value.length > 3) {
+      const carpetaDocumentosId = currentPath.value[3];
+      // Buscar el nombre de la carpeta de documentos en documentosCarpeta
+      if (carpetaActual.value === carpetaDocumentosId && documentosCarpeta.value.length > 0) {
+        const carpetaDoc = documentosCarpeta.value.find((item) => item.id === carpetaDocumentosId && item.type === "folder");
+        if (carpetaDoc) {
+          items.push({
+            id: `${currentPath.value[2]}-${carpetaDocumentosId}`,
+            nombre: carpetaDoc.name,
+          });
         }
       }
     }
@@ -273,23 +263,60 @@
   });
 
   // Navegar a carpeta
-  const navigateToFolder = (folderId: string) => {
-    // El folderId viene como "registros", "registros-sociedades", etc.
-    // Necesitamos extraer solo la parte relevante según el nivel actual
-    const parts = folderId.split("-");
-
-    if (currentPath.value.length === 0 && parts[0]) {
-      // Nivel raíz: agregar categoría (registros u operaciones)
-      currentPath.value = [parts[0]];
-    } else if (currentPath.value.length === 1 && parts[1]) {
-      // Nivel categoría: agregar carpeta principal (sociedades, sucursales, etc.)
-      currentPath.value = [...currentPath.value, parts[1]];
-    } else if (currentPath.value.length === 2) {
-      // Nivel carpeta principal: agregar subcarpeta o junta
-      // El ID completo es "categoria-carpeta-subcarpeta", necesitamos solo la subcarpeta
-      const subcarpetaId = parts.slice(2).join("-");
-      if (subcarpetaId) {
-        currentPath.value = [...currentPath.value, subcarpetaId];
+  const navigateToFolder = async (folderId: string) => {
+    console.log("📂 [DocumentosGeneradosView] Navegando a carpeta:", folderId);
+    
+    // Si es una carpeta de junta (nivel 2 → 3), cargar documentos
+    if (folderId.startsWith("carpeta-") && currentPath.value.length === 2) {
+      const nodeId = folderId.replace("carpeta-", "");
+      console.log("📂 [DocumentosGeneradosView] Cargando documentos de carpeta de junta:", nodeId);
+      
+      // Agregar al path
+      currentPath.value = ["operaciones", "juntas", folderId];
+      
+      // Cargar documentos de la carpeta (carpetas de documentos y documentos directos)
+      try {
+        await cargarDocumentosDeCarpeta(nodeId);
+      } catch (error) {
+        console.error("❌ [DocumentosGeneradosView] Error al cargar documentos:", error);
+      }
+      return;
+    }
+    
+    // Si es una carpeta de documentos dentro de una junta (nivel 3 → 4)
+    if (folderId.includes("-") && currentPath.value.length === 3) {
+      const parts = folderId.split("-");
+      if (parts.length >= 2 && parts[0] === "carpeta") {
+        const carpetaDocumentosId = parts[parts.length - 1];
+        console.log("📂 [DocumentosGeneradosView] Cargando documentos de carpeta de documentos:", carpetaDocumentosId);
+        
+        // Agregar al path
+        currentPath.value = [...currentPath.value, carpetaDocumentosId];
+        
+        // Cargar documentos de la carpeta de documentos
+        try {
+          await cargarDocumentosDeCarpeta(carpetaDocumentosId);
+        } catch (error) {
+          console.error("❌ [DocumentosGeneradosView] Error al cargar documentos:", error);
+        }
+        return;
+      }
+    }
+    
+    // Navegación normal por niveles
+    if (folderId === "operaciones") {
+      currentPath.value = ["operaciones"];
+    } else if (folderId === "operaciones-juntas") {
+      currentPath.value = ["operaciones", "juntas"];
+    } else {
+      // Extraer el path del folderId (compatibilidad con código anterior)
+      const parts = folderId.split("-");
+      if (parts.length === 1 && parts[0]) {
+        currentPath.value = [parts[0]];
+      } else if (parts.length === 2 && parts[0] && parts[1]) {
+        currentPath.value = [parts[0], parts[1]];
+      } else if (parts.length === 3 && parts[0] && parts[1] && parts[2]) {
+        currentPath.value = [parts[0], parts[1], parts[2]];
       }
     }
   };
@@ -297,6 +324,10 @@
   // Navegar hacia atrás
   const navigateBack = () => {
     currentPath.value = currentPath.value.slice(0, -1);
+    // Si salimos de una carpeta de junta, limpiar documentos cargados
+    if (currentPath.value.length < 3) {
+      // El composable manejará la limpieza si es necesario
+    }
   };
 
   // Navegar a breadcrumb
@@ -307,13 +338,13 @@
   // Click en documento
   const handleDocumentClick = async (file: any) => {
     const doc = await obtenerDocumento(file.id);
-    if (doc) {
+    if (doc && doc.type === "document") {
       selectedDocument.value = {
-        name: doc.nombre,
-        type: doc.tipo || "documento",
+        name: doc.name,
+        type: doc.mimeType || "documento",
         owner: "Sistema",
-        dateModified: doc.fecha || new Date(),
-        size: doc.tamaño,
+        dateModified: new Date(doc.createdAt),
+        size: doc.sizeInBytes,
       };
       previewModalOpen.value = true;
     }
@@ -331,29 +362,31 @@
 
     // Si es documento de junta, obtener info de la junta
     if (file.juntaId && currentPath.value.length >= 3) {
-      const categoria = currentPath.value[0];
-      const carpetaKey = currentPath.value[1];
-      const categoriaData =
-        categoria === "registros"
-          ? documentosGenerados.value?.registros
-          : documentosGenerados.value?.operaciones;
-      if (categoriaData && carpetaKey) {
-        const carpeta = categoriaData.carpetas[carpetaKey];
-        const junta = carpeta?.juntas?.find((j: any) => j.id === file.juntaId);
+      // Buscar la carpeta de junta en la estructura actual
+      const carpetaId = currentPath.value[2];
+      if (carpetaId && carpetaId.startsWith("carpeta-")) {
+        const nodeId = carpetaId.replace("carpeta-", "");
+        const juntas = documentosGenerados.value?.operaciones?.carpetas?.juntas?.juntas || [];
+        const carpeta = juntas.find((j: any) => (j.nodeId || j.id) === nodeId);
 
-        if (junta) {
+        if (carpeta) {
+          // Buscar la fecha en la estructura de documentos generados
+          const carpetaConFecha = juntas.find((j: any) => (j.nodeId || j.id) === nodeId);
+          
           juntaInfo.value = {
-            nombre: junta.nombre,
+            nombre: carpeta.name,
             fecha: new Intl.DateTimeFormat("es-ES", {
               year: "numeric",
               month: "long",
               day: "numeric",
-            }).format(junta.fecha),
+            }).format(new Date(carpeta.createdAt || carpetaConFecha?.fecha || new Date())),
             sociedad: dashboardStore.sociedadSeleccionada?.nombre || "N/A",
           };
         } else {
           juntaInfo.value = null;
         }
+      } else {
+        juntaInfo.value = null;
       }
     } else {
       juntaInfo.value = null;

@@ -1,7 +1,8 @@
 import type { Documento } from "~/core/hexag/documentos/domain/entities/documento.entity";
+import type { RepositorioNode } from "../entities/repositorio-node.entity";
 
 /**
- * Puerto (contrato) para enviar documentos al repositorio
+ * Puerto (contrato) para operaciones con el repositorio
  */
 export interface RepositorioDocumentosRepository {
   /**
@@ -25,5 +26,19 @@ export interface RepositorioDocumentosRepository {
     documentos: Documento[],
     nombreCarpeta: string
   ): Promise<void>;
+
+  /**
+   * Obtiene todos los nodos core de una sociedad
+   * @param structureId ID de la estructura de la sociedad
+   * @returns Lista de nodos core (carpetas y documentos dentro de /core/)
+   */
+  obtenerNodosCore(structureId: string): Promise<RepositorioNode[]>;
+
+  /**
+   * Obtiene un nodo específico por su ID (incluye hijos si es carpeta)
+   * @param nodeId ID del nodo a obtener
+   * @returns Nodo con sus hijos (si es carpeta)
+   */
+  obtenerNodoPorId(nodeId: number): Promise<RepositorioNode>;
 }
 

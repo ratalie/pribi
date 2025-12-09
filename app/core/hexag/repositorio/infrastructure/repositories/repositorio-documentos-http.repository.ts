@@ -1,5 +1,8 @@
 import type { RepositorioDocumentosRepository } from "../../domain/ports/repositorio-documentos.repository";
 import type { Documento } from "~/core/hexag/documentos/domain/entities/documento.entity";
+import type { RepositorioNode } from "../../domain/entities/repositorio-node.entity";
+import type { RepositorioNodeDTO } from "../../application/dtos/repositorio-node.dto";
+import { RepositorioNodeMapper } from "../mappers/repositorio-node.mapper";
 import { withAuthHeaders } from "~/lib/api-client";
 
 /**
@@ -248,6 +251,99 @@ export class RepositorioDocumentosHttpRepository
 
       throw new Error(
         `No se pudieron enviar los documentos al repositorio: ${errorMessage || "Error desconocido"}`
+      );
+    }
+  }
+
+  /**
+   * Obtiene todos los nodos core de una sociedad
+   * 
+   * ENDPOINT V2: GET /api/v2/repository/society-profile/:structureId/nodes/core
+   */
+  async obtenerNodosCore(structureId: string): Promise<RepositorioNode[]> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/nodes/core`;
+
+    console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE");
+    console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔵 [RepositorioDocumentosHttp] URL:", url);
+    console.log("🔵 [RepositorioDocumentosHttp] structureId:", structureId);
+
+    try {
+      const response = await $fetch<{
+        success: boolean;
+        data: RepositorioNodeDTO[];
+      }>(url, {
+        ...withAuthHeaders(),
+        method: "GET" as const,
+      });
+
+      console.log("🔵 [RepositorioDocumentosHttp] Nodos obtenidos:", response.data.length);
+      console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+
+      return RepositorioNodeMapper.toEntities(response.data);
+    } catch (error: any) {
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      console.error("🔴 [RepositorioDocumentosHttp] ERROR AL OBTENER NODOS CORE:");
+      console.error("🔴 [RepositorioDocumentosHttp] URL:", url);
+      console.error("🔴 [RepositorioDocumentosHttp] structureId:", structureId);
+      console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
+      console.error("🔴 [RepositorioDocumentosHttp] Error message:", error?.message);
+      console.error("🔴 [RepositorioDocumentosHttp] Error statusCode:", error?.statusCode);
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+
+      throw new Error(
+        `No se pudieron obtener los nodos core: ${error?.message || "Error desconocido"}`
+      );
+    }
+  }
+
+  /**
+   * Obtiene un nodo específico por su ID (incluye hijos si es carpeta)
+   * 
+   * ENDPOINT V2: GET /api/v2/repository/society-profile/nodes/:nodeId
+   */
+  async obtenerNodoPorId(nodeId: string): Promise<RepositorioNode | null> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/society-profile/nodes/${nodeId}`;
+
+    console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID");
+    console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔵 [RepositorioDocumentosHttp] URL:", url);
+    console.log("🔵 [RepositorioDocumentosHttp] nodeId:", nodeId);
+
+    try {
+      const response = await $fetch<{
+        success: boolean;
+        data: RepositorioNodeDTO;
+      }>(url, {
+        ...withAuthHeaders(),
+        method: "GET" as const,
+      });
+
+      console.log("🔵 [RepositorioDocumentosHttp] Nodo obtenido:", {
+        id: response.data.id,
+        name: response.data.name,
+        type: response.data.type,
+        childrenCount: response.data.children?.length || 0,
+      });
+      console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+
+      return RepositorioNodeMapper.toEntity(response.data);
+    } catch (error: any) {
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      console.error("🔴 [RepositorioDocumentosHttp] ERROR AL OBTENER NODO:");
+      console.error("🔴 [RepositorioDocumentosHttp] URL:", url);
+      console.error("🔴 [RepositorioDocumentosHttp] nodeId:", nodeId);
+      console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
+      console.error("🔴 [RepositorioDocumentosHttp] Error message:", error?.message);
+      console.error("🔴 [RepositorioDocumentosHttp] Error statusCode:", error?.statusCode);
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+
+      throw new Error(
+        `No se pudo obtener el nodo: ${error?.message || "Error desconocido"}`
       );
     }
   }

@@ -8,13 +8,12 @@
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select";
-  import { Building2, Pencil, Trash2 } from "lucide-vue-next";
+  import { Crown, Building2, Pencil, Trash2, CheckCircle2, Clock, Plus } from "lucide-vue-next";
+  import { Button } from "@/components/ui/button";
   import { storeToRefs } from "pinia";
   import { useSociedadHistorialStore } from "~/core/presentation/registros/sociedades/stores/sociedad-historial.store";
   import { useJuntaHistorialStore } from "~/core/presentation/juntas/stores/junta-historial.store";
   import CustomTable from "~/components/tables/CustomTable.vue";
-  import HistorialLayout from "~/components/historial/HistorialLayout.vue";
-  import HistorialHeader from "~/components/historial/HistorialHeader.vue";
   import { historialJuntasTableConfig } from "~/config/tables/historial-juntas.config";
   import type { TableCellRenderer, TableAction } from "~/types/tables/table-config";
   import type { JuntaResumenDTO } from "~/core/hexag/juntas/application/dtos";
@@ -62,20 +61,14 @@
   };
 
   const getTipoJunta = (junta: JuntaResumenDTO) => {
-    // Por ahora retornamos un valor por defecto
-    // TODO: Obtener del backend cuando esté disponible
     return "Junta General";
   };
 
   const getCategoria = (junta: JuntaResumenDTO) => {
-    // Por ahora retornamos un valor por defecto
-    // TODO: Obtener del backend cuando esté disponible
     return "Aumento de Capital";
   };
 
   const getAccion = (junta: JuntaResumenDTO) => {
-    // Por ahora retornamos un valor por defecto
-    // TODO: Obtener del backend cuando esté disponible
     return "Aporte Dinerario";
   };
 
@@ -126,6 +119,15 @@
     const societyIdNumber = parseInt(selectedSocietyId.value, 10);
     if (!Number.isNaN(societyIdNumber)) {
       await juntaHistorialStore.eliminarJunta(societyIdNumber, junta.id);
+    }
+  };
+
+  const handleCreate = () => {
+    if (selectedSocietyId.value) {
+      const societyIdNumber = parseInt(selectedSocietyId.value, 10);
+      if (!Number.isNaN(societyIdNumber)) {
+        router.push(`/operaciones/sociedades/${societyIdNumber}/junta-accionistas/crear`);
+      }
     }
   };
 
@@ -180,37 +182,82 @@
   // Datos mapeados para la tabla
   const tableData = computed(() => juntas.value);
 
-  // Total de juntas para el footer (solo si hay sociedad seleccionada)
-  const totalJuntas = computed(() => {
-    if (!selectedSocietyId.value) return 0;
-    return juntas.value.length;
+  const selectedSociedad = computed(() => {
+    if (!selectedSocietyId.value) return null;
+    return sociedades.value.find(
+      (s) => s.idSociety === selectedSocietyId.value
+    );
   });
 </script>
 
 <template>
-  <HistorialLayout
-    :show-footer="!!selectedSocietyId"
-    :total="totalJuntas"
-    footer-label="Juntas"
-  >
-    <template #header>
-      <HistorialHeader
-        title="Historial de Registros"
-        description="Consulta aquí todos los registros realizados."
-      />
-    </template>
+  <div class="min-h-full bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200 shadow-sm">
+      <div class="max-w-[1600px] mx-auto px-8 py-8">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div
+              class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"
+              style="background: linear-gradient(135deg, var(--primary-700), var(--primary-500))"
+            >
+              <Crown class="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <h1
+                class="text-3xl font-bold mb-1"
+                style="
+                  color: var(--text-primary);
+                  font-family: var(--font-primary);
+                "
+              >
+                Historial de Juntas
+              </h1>
+              <p
+                class="text-base"
+                style="
+                  color: var(--text-muted);
+                  font-family: var(--font-secondary);
+                "
+              >
+                Consulta aquí todos los registros realizados
+              </p>
+            </div>
+          </div>
+          <Button
+            v-if="selectedSocietyId"
+            variant="primary"
+            size="md"
+            class="flex items-center gap-2 shadow-md hover:shadow-lg transition-all"
+            @click="handleCreate"
+          >
+            <Plus class="w-4 h-4" />
+            Crear Junta
+          </Button>
+        </div>
+      </div>
+    </div>
 
-    <div class="space-y-6">
-      <!-- Selector de Sociedades -->
-      <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-        <div class="space-y-2">
-          <label class="text-sm font-medium text-layout-gray-800">Selecciona la sociedad</label>
+    <!-- Contenido Principal -->
+    <div class="max-w-[1600px] mx-auto px-8 py-10">
+      <div class="space-y-6">
+        <!-- Selector de Sociedades -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+          <label
+            class="text-base font-bold block mb-3"
+            style="
+              color: var(--text-primary);
+              font-family: var(--font-primary);
+            "
+          >
+            Selecciona la sociedad
+          </label>
           <Select
-            v-model="selectedSocietyId"
+            :model-value="selectedSocietyId"
             :disabled="isLoadingSociedades"
             @update:model-value="handleSocietyChange"
           >
-            <SelectTrigger class="w-full md:w-96">
+            <SelectTrigger class="w-full md:w-96 h-12">
               <SelectValue placeholder="Selecciona una sociedad..." />
             </SelectTrigger>
             <SelectContent>
@@ -226,53 +273,137 @@
               </SelectItem>
             </SelectContent>
           </Select>
-          <p v-if="isLoadingSociedades" class="text-xs text-gray-500">
+          <p
+            v-if="isLoadingSociedades"
+            class="text-xs mt-2"
+            style="
+              color: var(--text-muted);
+              font-family: var(--font-secondary);
+            "
+          >
             Cargando sociedades...
           </p>
-          <p v-else-if="sociedades.length === 0" class="text-xs text-amber-600">
+          <p
+            v-else-if="sociedades.length === 0"
+            class="text-xs text-amber-600 font-medium mt-2"
+            style="font-family: var(--font-secondary)"
+          >
             No hay sociedades disponibles. Crea una sociedad primero.
+          </p>
+          <div
+            v-if="selectedSociedad"
+            class="mt-4 p-4 rounded-lg bg-primary-50 border border-primary-200"
+          >
+            <p
+              class="text-sm font-medium mb-1"
+              style="
+                color: var(--primary-800);
+                font-family: var(--font-primary);
+              "
+            >
+              {{ selectedSociedad.razonSocial }}
+            </p>
+            <p
+              class="text-xs"
+              style="
+                color: var(--text-muted);
+                font-family: var(--font-secondary);
+              "
+            >
+              RUC: {{ selectedSociedad.ruc || "N/A" }} | Tipo: {{ selectedSociedad.tipoSocietario || "N/A" }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Tabla de Juntas -->
+        <div v-if="selectedSocietyId" class="bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3
+                  class="text-lg font-semibold mb-1"
+                  style="
+                    color: var(--text-primary);
+                    font-family: var(--font-primary);
+                  "
+                >
+                  Juntas de Accionistas
+                </h3>
+                <p
+                  class="text-sm"
+                  style="
+                    color: var(--text-muted);
+                    font-family: var(--font-secondary);
+                  "
+                >
+                  Total: {{ juntas.length }} {{ juntas.length === 1 ? "junta" : "juntas" }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <CustomTable
+            :config="historialJuntasTableConfig"
+            :data="tableData"
+            :is-loading="isLoading"
+            :cell-renderers="cellRenderers"
+            :actions="tableActions"
+            :get-row-id="(row) => row.id"
+            empty-message="Aún no has registrado información. No te preocupes, puedes hacerlo en cualquier momento."
+          >
+            <!-- Renderizado personalizado del estado con badge -->
+            <template #cell-estado="{ rowData }">
+              <div class="flex justify-start items-center">
+                <span
+                  :class="[
+                    'inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium',
+                    isComplete(rowData.estado)
+                      ? 'bg-green-100 text-green-800 border border-green-200'
+                      : 'bg-yellow-100 text-yellow-800 border border-yellow-200',
+                  ]"
+                  style="font-family: var(--font-secondary)"
+                >
+                  <CheckCircle2
+                    v-if="isComplete(rowData.estado)"
+                    class="w-3.5 h-3.5"
+                  />
+                  <Clock
+                    v-else
+                    class="w-3.5 h-3.5"
+                  />
+                  {{ formatEstado(rowData.estado) }}
+                </span>
+              </div>
+            </template>
+          </CustomTable>
+        </div>
+
+        <!-- Mensaje cuando no hay sociedad seleccionada -->
+        <div
+          v-else
+          class="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center"
+        >
+          <Crown class="w-16 h-16 mx-auto mb-4" style="color: var(--text-muted)" />
+          <h3
+            class="text-xl font-semibold mb-2"
+            style="
+              color: var(--text-primary);
+              font-family: var(--font-primary);
+            "
+          >
+            Selecciona una sociedad
+          </h3>
+          <p
+            class="text-sm"
+            style="
+              color: var(--text-muted);
+              font-family: var(--font-secondary);
+            "
+          >
+            Elige una sociedad del selector para ver sus juntas de accionistas
           </p>
         </div>
       </div>
-
-      <!-- Tabla de Juntas -->
-      <div v-if="selectedSocietyId" class="bg-white rounded-lg border border-gray-200 shadow-sm">
-        <CustomTable
-          :config="historialJuntasTableConfig"
-          :data="tableData"
-          :is-loading="isLoading"
-          :cell-renderers="cellRenderers"
-          :actions="tableActions"
-          :get-row-id="(row) => row.id"
-          empty-message="Aún no has registrado información. No te preocupes, puedes hacerlo en cualquier momento."
-        >
-          <!-- Renderizado personalizado del estado con badge -->
-          <template #cell-estado="{ rowData }">
-            <div class="flex justify-start items-center">
-              <span
-                :class="[
-                  'py-1 px-3 rounded-full w-auto text-center text-xs font-medium',
-                  isComplete(rowData.estado)
-                    ? 'bg-green-100 text-green-800 border border-green-200'
-                    : 'bg-yellow-100 text-yellow-800 border border-yellow-200',
-                ]"
-              >
-                {{ formatEstado(rowData.estado) }}
-              </span>
-            </div>
-          </template>
-        </CustomTable>
-      </div>
-
-      <!-- Mensaje cuando no hay sociedad seleccionada -->
-      <div
-        v-else
-        class="flex min-h-[200px] items-center justify-center rounded-lg border border-gray-200 bg-white"
-      >
-        <p class="text-center text-gray-500">
-          Selecciona una sociedad para ver sus juntas de accionistas.
-        </p>
-      </div>
     </div>
-  </HistorialLayout>
+  </div>
 </template>
