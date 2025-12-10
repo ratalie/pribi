@@ -32,6 +32,8 @@
     capitalSocialDisplay,
     valorNominalDisplay,
   } = useAsignacionAccionesComputed();
+
+  useFlowLayoutNext(() => {});
 </script>
 
 <template>

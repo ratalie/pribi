@@ -32,6 +32,7 @@
   const controller = useAccionistasController({
     societyId,
     ttlMs: 60_000,
+    forceInitial: true, // Forzar carga inicial para tener datos actualizados siempre
   });
 
   const { accionistas, status } = storeToRefs(store);

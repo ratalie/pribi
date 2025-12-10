@@ -153,6 +153,6 @@ export const mapperApoderadoJuridicaEntityAModal = (
     provincia: apoderado.persona.provincia ?? "",
     departamento: apoderado.persona.departamento ?? "",
     paisOrigen: apoderado.persona.pais ?? "",
-    tieneRepresentante: false,
+    tieneRepresentante: apoderado.persona.representante ? true : false,
   };
 };

@@ -1,5 +1,4 @@
 export enum TipoFondoEnum {
-  CERRADO = "CERRADO",
-  ABIERTO = "ABIERTO",
-  MIXTO = "MIXTO",
+  PRIVADO = "PRIVADO",
+  PUBLICO = "PUBLICO",
 }

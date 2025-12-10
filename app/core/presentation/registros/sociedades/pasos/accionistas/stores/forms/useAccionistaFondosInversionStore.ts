@@ -8,7 +8,7 @@ export const useAccionistaFondosInversionStore = defineStore("accionistaFondosIn
     numeroDocumento: "",
     razonSocial: "",
     direccion: "",
-    tipoFondo: TipoFondoEnum.CERRADO,
+    tipoFondo: TipoFondoEnum.PRIVADO,
     numeroDocumentoSociedadAdministradora: "",
     tipoDocumentoSociedadAdministradora: "",
     razonSocialSociedadAdministradora: "",

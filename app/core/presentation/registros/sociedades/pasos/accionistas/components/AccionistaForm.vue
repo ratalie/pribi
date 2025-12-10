@@ -157,7 +157,7 @@
       ruc: "",
       razonSocial: "",
       direccion: "",
-      tipoFondo: "CERRADO",
+      tipoFondo: "PRIVADO",
       representante: createRepresentativeState(),
       fiduciario: createFiduciarioState(),
     },
@@ -246,7 +246,7 @@
           ruc: fondo.ruc ?? "",
           razonSocial: fondo.razonSocial ?? "",
           direccion: fondo.direccion ?? "",
-          tipoFondo: fondo.tipoFondo ?? "CERRADO",
+          tipoFondo: fondo.tipoFondo ?? "PRIVADO",
           representante: cloneRepresentative(fondo.representante),
           fiduciario: cloneFiduciario(fondo.fiduciario),
         });
@@ -403,7 +403,7 @@
           ruc: form.fondo.ruc,
           razonSocial: form.fondo.razonSocial,
           direccion: normalizeString(form.fondo.direccion),
-          tipoFondo: form.fondo.tipoFondo || "CERRADO",
+          tipoFondo: form.fondo.tipoFondo || "PRIVADO",
           representante: buildRepresentative(form.fondo.representante),
           fiduciario: buildFiduciario(form.fondo.fiduciario),
         };

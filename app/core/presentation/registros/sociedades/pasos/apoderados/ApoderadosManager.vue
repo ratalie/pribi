@@ -183,9 +183,9 @@
 
     <ClaseApoderadoModal
       v-model="isOpenModalClase"
+      v-model:initial-value="valorInicialClase"
       :mode="modeModalClase"
       :is-saving="isLoadingClase"
-      :initial-value="valorInicialClase"
       @close="closeModalClase"
       @submit="handleSubmitClase"
     />
