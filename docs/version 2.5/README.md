@@ -259,3 +259,4 @@ Las 3 IAs tienen toda la informaci√≥n para trabajar coordinadamente y avanzar r√
 
 
 
+
