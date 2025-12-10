@@ -40,5 +40,25 @@ export interface RepositorioDocumentosRepository {
    * @returns Nodo con sus hijos (si es carpeta)
    */
   obtenerNodoPorId(nodeId: number): Promise<RepositorioNode>;
+
+  /**
+   * Descarga una versión de documento
+   * @param versionCode Código de la versión del documento
+   * @returns Blob del archivo
+   */
+  descargarVersion(versionCode: string): Promise<Blob>;
+
+  /**
+   * Elimina un nodo (documento o carpeta)
+   * @param nodeId ID del nodo a eliminar
+   */
+  eliminarNodo(nodeId: number): Promise<void>;
+
+  /**
+   * Descarga una carpeta completa como ZIP
+   * @param nodeId ID de la carpeta
+   * @returns Blob del archivo ZIP
+   */
+  descargarCarpetaZip(nodeId: number): Promise<Blob>;
 }
 

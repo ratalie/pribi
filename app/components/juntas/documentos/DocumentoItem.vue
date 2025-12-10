@@ -1,7 +1,7 @@
 <template>
   <div
-    class="flex items-center justify-between p-4 rounded-lg border hover:shadow-md transition-all group"
-    style="border-color: var(--border-default)"
+    class="flex items-center justify-between p-4 rounded-lg hover:shadow-md transition-all group bg-white"
+    style="border: 1px solid var(--border-light)"
   >
     <!-- Izquierda: Checkbox + Icono + Info -->
     <div class="flex items-center gap-3 flex-1">
@@ -41,8 +41,8 @@
     <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
       <button
         @click="$emit('descargar', documento)"
-        class="flex items-center gap-2 px-3 py-1.5 rounded border text-sm"
-        style="border-color: var(--border-default); color: var(--text-secondary)"
+        class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors hover:bg-gray-50"
+        style="border: 1px solid var(--border-light); color: var(--text-secondary); font-family: var(--font-secondary)"
         title="Descargar"
       >
         <Icon name="lucide:download" class="w-4 h-4" />

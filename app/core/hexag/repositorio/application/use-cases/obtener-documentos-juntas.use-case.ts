@@ -121,6 +121,7 @@ export class ObtenerDocumentosJuntasUseCase {
       console.log("🟡 [ObtenerDocumentosJuntasUseCase] Carpeta obtenida:", {
         id: carpeta.id,
         name: carpeta.name,
+        type: carpeta.type,
         childrenCount: carpeta.children?.length || 0,
       });
 
@@ -130,6 +131,13 @@ export class ObtenerDocumentosJuntasUseCase {
       const hijos = carpeta.children || [];
 
       console.log("🟡 [ObtenerDocumentosJuntasUseCase] Hijos encontrados:", hijos.length);
+      if (hijos.length > 0) {
+        console.log("🟡 [ObtenerDocumentosJuntasUseCase] Detalle de hijos:", hijos.map(h => ({
+          id: h.id,
+          name: h.name,
+          type: h.type,
+        })));
+      }
       console.log("🟡 [ObtenerDocumentosJuntasUseCase] ========================================");
 
       return hijos;

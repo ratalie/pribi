@@ -328,7 +328,24 @@ export class RepositorioDocumentosHttpRepository
         name: response.data.name,
         type: response.data.type,
         childrenCount: response.data.children?.length || 0,
+        hasDocumentVersions: Boolean(response.data.documentVersions),
+        documentVersionsCount: response.data.documentVersions?.length || 0,
+        hasVersions: Boolean(response.data.versions),
+        versionsCount: response.data.versions?.length || 0,
+        mimeType: response.data.mimeType,
+        sizeInBytes: response.data.sizeInBytes,
       });
+      
+      // Log detallado de documentVersions si existe
+      if (response.data.documentVersions && response.data.documentVersions.length > 0) {
+        console.log("🔵 [RepositorioDocumentosHttp] documentVersions encontradas:", response.data.documentVersions);
+      }
+      
+      // Log detallado de versions si existe
+      if (response.data.versions && response.data.versions.length > 0) {
+        console.log("🔵 [RepositorioDocumentosHttp] versions encontradas:", response.data.versions);
+      }
+      
       console.log("🔵 [RepositorioDocumentosHttp] ========================================");
 
       return RepositorioNodeMapper.toEntity(response.data);
@@ -344,6 +361,101 @@ export class RepositorioDocumentosHttpRepository
 
       throw new Error(
         `No se pudo obtener el nodo: ${error?.message || "Error desconocido"}`
+      );
+    }
+  }
+
+  /**
+   * Descarga una versión de documento
+   * 
+   * ENDPOINT V2: GET /api/v2/repository/documents/versions/:versionCode/download
+   */
+  async descargarVersion(versionCode: string): Promise<Blob> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/documents/versions/${versionCode}/download`;
+
+    console.log("🔵 [RepositorioDocumentosHttp] Descargando versión:", versionCode);
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          ...withAuthHeaders().headers,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error al descargar: ${response.statusText}`);
+      }
+
+      return await response.blob();
+    } catch (error: any) {
+      console.error("🔴 [RepositorioDocumentosHttp] Error al descargar versión:", error);
+      throw new Error(
+        `No se pudo descargar el documento: ${error?.message || "Error desconocido"}`
+      );
+    }
+  }
+
+  /**
+   * Elimina un nodo (documento o carpeta)
+   * 
+   * ENDPOINT V2: DELETE /api/v2/repository/nodes/:nodeId
+   */
+  async eliminarNodo(nodeId: number): Promise<void> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/nodes/${nodeId}`;
+
+    console.log("🔵 [RepositorioDocumentosHttp] Eliminando nodo:", nodeId);
+
+    try {
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          ...withAuthHeaders().headers,
+        },
+      });
+
+      if (response.status !== 204) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Error al eliminar nodo");
+      }
+    } catch (error: any) {
+      console.error("🔴 [RepositorioDocumentosHttp] Error al eliminar nodo:", error);
+      throw new Error(
+        `No se pudo eliminar el nodo: ${error?.message || "Error desconocido"}`
+      );
+    }
+  }
+
+  /**
+   * Descarga una carpeta completa como ZIP
+   * 
+   * ENDPOINT V2: GET /api/v2/repository/nodes/:nodeId/download-zip
+   */
+  async descargarCarpetaZip(nodeId: number): Promise<Blob> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/nodes/${nodeId}/download-zip`;
+
+    console.log("🔵 [RepositorioDocumentosHttp] Descargando carpeta ZIP:", nodeId);
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          ...withAuthHeaders().headers,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error al descargar ZIP: ${response.statusText}`);
+      }
+
+      return await response.blob();
+    } catch (error: any) {
+      console.error("🔴 [RepositorioDocumentosHttp] Error al descargar ZIP:", error);
+      throw new Error(
+        `No se pudo descargar la carpeta: ${error?.message || "Error desconocido"}`
       );
     }
   }

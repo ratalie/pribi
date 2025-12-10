@@ -17,9 +17,13 @@
     Grid,
     List,
     MoreVertical,
+    Trash2,
     X,
   } from "lucide-vue-next";
+  import { useDescargarCarpetaZip } from "~/core/presentation/repositorio/composables/useDescargarCarpetaZip";
+  import { useDescargarDocumento } from "~/core/presentation/repositorio/composables/useDescargarDocumento";
   import { useDocumentosGenerados } from "~/core/presentation/repositorio/composables/useDocumentosGenerados";
+  import { useEliminarDocumento } from "~/core/presentation/repositorio/composables/useEliminarDocumento";
   import { useRepositorioDashboardStore } from "~/core/presentation/repositorio/stores/repositorio-dashboard.store";
   import AdvancedSearchBar from "./AdvancedSearchBar.vue";
   import PreviewModal from "./PreviewModal.vue";
@@ -27,18 +31,21 @@
 
   const route = useRoute();
   const router = useRouter();
-  
-  const { 
+
+  const {
     documentosGenerados,
     estructuraOperaciones,
     documentosCarpeta,
     carpetaActual,
-    isLoading, 
+    isLoading,
     cargarDocumentosDeCarpeta,
-    obtenerDocumento 
+    obtenerDocumento,
   } = useDocumentosGenerados();
 
   const dashboardStore = useRepositorioDashboardStore();
+  const { descargar: descargarDocumento } = useDescargarDocumento();
+  const { eliminar: eliminarDocumento } = useEliminarDocumento();
+  const { descargar: descargarZip } = useDescargarCarpetaZip();
 
   const searchQuery = ref("");
   const previewModalOpen = ref(false);
@@ -54,19 +61,19 @@
   const currentPath = computed(() => {
     const path = route.params.path;
     let segments: string[] = [];
-    
+
     if (Array.isArray(path)) {
       segments = path.filter((p) => p && typeof p === "string" && p.trim() !== "");
     } else if (typeof path === "string" && path.trim() !== "") {
       segments = [path];
     }
-    
+
     console.log("🔵 [DocumentosGeneradosView] currentPath computed:", {
       routeParamsPath: route.params.path,
       segments,
       routePath: route.path,
     });
-    
+
     return segments;
   });
 
@@ -78,7 +85,7 @@
     if (Array.isArray(param) && param.length > 0 && typeof param[0] === "string") {
       return param[0];
     }
-    
+
     // Si no está en la ruta, usar el del store (sociedad seleccionada)
     return dashboardStore.sociedadSeleccionada?.id;
   });
@@ -101,10 +108,17 @@
     () => [currentPath.value, idSociety.value],
     async ([path, societyId]) => {
       // Si estamos en nivel 3 (carpeta de junta), cargar automáticamente
-      if (path.length === 2 && path[0] === "junta-accionistas" && path[1]?.startsWith("carpeta-")) {
+      if (
+        path.length === 2 &&
+        path[0] === "junta-accionistas" &&
+        path[1]?.startsWith("carpeta-")
+      ) {
         const nodeId = path[1].replace("carpeta-", "");
-        console.log("🟡 [DocumentosGeneradosView] Watch detectó cambio a carpeta de junta, cargando:", nodeId);
-        
+        console.log(
+          "🟡 [DocumentosGeneradosView] Watch detectó cambio a carpeta de junta, cargando:",
+          nodeId
+        );
+
         // Solo cargar si no está ya cargada
         if (carpetaActual.value !== nodeId) {
           try {
@@ -114,12 +128,15 @@
           }
         }
       }
-      
+
       // Si estamos en nivel 4 (carpeta de documentos), cargar automáticamente
       if (path.length === 3 && path[0] === "junta-accionistas") {
         const carpetaDocumentosId = path[2];
-        console.log("🟡 [DocumentosGeneradosView] Watch detectó cambio a carpeta de documentos, cargando:", carpetaDocumentosId);
-        
+        console.log(
+          "🟡 [DocumentosGeneradosView] Watch detectó cambio a carpeta de documentos, cargando:",
+          carpetaDocumentosId
+        );
+
         // Solo cargar si no está ya cargada
         if (carpetaActual.value !== carpetaDocumentosId) {
           try {
@@ -146,13 +163,25 @@
     // POR REGLA DE NEGOCIO: documentosGenerados siempre existe (nunca es null)
     // Si no hay datos cargados, aún así mostramos las carpetas base
     if (!documentosGenerados.value) {
-      console.log("🔴 [DocumentosGeneradosView] documentosGenerados es null - esto no debería pasar");
+      console.log(
+        "🔴 [DocumentosGeneradosView] documentosGenerados es null - esto no debería pasar"
+      );
       // Aún así, retornar estructura básica para mostrar carpetas
       if (currentPath.value.length === 0) {
         return {
           folders: [
-            { id: "operaciones-directorio", nombre: "Directorio", tipo: "carpeta" as const, color: "#10B981" },
-            { id: "operaciones-juntas", nombre: "Juntas de Accionistas", tipo: "carpeta" as const, color: "#6366F1" },
+            {
+              id: "operaciones-directorio",
+              nombre: "Directorio",
+              tipo: "carpeta" as const,
+              color: "#10B981",
+            },
+            {
+              id: "operaciones-juntas",
+              nombre: "Juntas de Accionistas",
+              tipo: "carpeta" as const,
+              color: "#6366F1",
+            },
           ],
           files: [],
         };
@@ -173,6 +202,7 @@
       fecha: Date;
       tamaño?: number;
       tipo?: string;
+      versionCode?: string;
       juntaId?: string;
     }> = [];
 
@@ -180,7 +210,7 @@
     // Cuando estás en /operaciones/, el currentPath debería ser [] (vacío después de filtrar)
     // Verificamos si estamos en la ruta /operaciones/ (path vacío)
     const isOperacionesLevel = currentPath.value.length === 0;
-    
+
     if (isOperacionesLevel) {
       console.log("🟢 [DocumentosGeneradosView] Mostrando carpetas de operaciones:", {
         currentPath: currentPath.value,
@@ -190,10 +220,10 @@
         directorio: documentosGenerados.value.operaciones?.carpetas?.directorio,
         juntas: documentosGenerados.value.operaciones?.carpetas?.juntas,
       });
-      
+
       // POR REGLA DE NEGOCIO: Siempre mostrar "Directorio" y "Juntas de Accionistas"
       // Incluso si no existen en el backend, deben mostrarse como carpetas vacías
-      
+
       // Mostrar directorio (siempre)
       const directorio = documentosGenerados.value.operaciones?.carpetas?.directorio;
       folders.push({
@@ -203,7 +233,7 @@
         color: "#10B981",
         nodeId: directorio?.nodeId || estructuraOperaciones.value?.directorio?.id,
       });
-      
+
       // Mostrar juntas (siempre) - mostrar como "Juntas de Accionistas"
       folders.push({
         id: "operaciones-juntas",
@@ -212,16 +242,13 @@
         color: "#6366F1",
         nodeId: estructuraOperaciones.value?.juntas?.id,
       });
-      
+
       console.log("🟢 [DocumentosGeneradosView] Carpetas agregadas:", folders);
       return { folders, files };
     }
 
     // Nivel 2: juntas → mostrar carpetas de juntas reales del backend
-    if (
-      currentPath.value.length === 1 &&
-      currentPath.value[0] === "junta-accionistas"
-    ) {
+    if (currentPath.value.length === 1 && currentPath.value[0] === "junta-accionistas") {
       const juntas = documentosGenerados.value.operaciones?.carpetas?.juntas?.juntas || [];
       juntas.forEach((junta: any) => {
         folders.push({
@@ -241,22 +268,25 @@
       const carpetaId = currentPath.value[1];
       if (carpetaId && carpetaId.startsWith("carpeta-")) {
         const nodeId = carpetaId.replace("carpeta-", "");
-        
+
         console.log("🟡 [DocumentosGeneradosView] Nivel 3 - Carpeta de junta:", {
           carpetaId,
           nodeId,
           carpetaActual: carpetaActual.value,
           documentosCarpetaLength: documentosCarpeta.value.length,
         });
-        
+
         // Buscar la carpeta de junta en los documentos generados
         const juntas = documentosGenerados.value?.operaciones?.carpetas?.juntas?.juntas || [];
         const carpetaJunta = juntas.find((j: any) => (j.nodeId || j.id) === nodeId);
-        
+
         if (carpetaJunta) {
           // Si tenemos los hijos cargados en documentosCarpeta, usarlos
           if (carpetaActual.value === nodeId && documentosCarpeta.value.length > 0) {
-            console.log("🟢 [DocumentosGeneradosView] Usando documentos cargados:", documentosCarpeta.value);
+            console.log(
+              "🟢 [DocumentosGeneradosView] Usando documentos cargados:",
+              documentosCarpeta.value
+            );
             documentosCarpeta.value.forEach((item) => {
               if (item.type === "folder") {
                 // Es una carpeta de documentos (ej: "documentos juntas: {fecha}")
@@ -281,13 +311,17 @@
             });
           } else {
             // Si no están cargados, intentar cargarlos automáticamente
-            console.log("🟡 [DocumentosGeneradosView] Cargando documentos de carpeta automáticamente...");
+            console.log(
+              "🟡 [DocumentosGeneradosView] Cargando documentos de carpeta automáticamente..."
+            );
             cargarDocumentosDeCarpeta(nodeId).catch((error) => {
               console.error("❌ [DocumentosGeneradosView] Error al cargar documentos:", error);
             });
           }
         } else {
-          console.log("🔴 [DocumentosGeneradosView] Carpeta de junta no encontrada en documentosGenerados");
+          console.log(
+            "🔴 [DocumentosGeneradosView] Carpeta de junta no encontrada en documentosGenerados"
+          );
         }
       }
       return { folders, files };
@@ -297,16 +331,19 @@
     // Path: /operaciones/junta-accionistas/carpeta-26/31 → currentPath = ["junta-accionistas", "carpeta-26", "31"] (length 3)
     if (currentPath.value.length === 3 && currentPath.value[0] === "junta-accionistas") {
       const carpetaDocumentosId = currentPath.value[2];
-      
+
       console.log("🟡 [DocumentosGeneradosView] Nivel 4 - Carpeta de documentos:", {
         carpetaDocumentosId,
         carpetaActual: carpetaActual.value,
         documentosCarpetaLength: documentosCarpeta.value.length,
       });
-      
+
       // Si tenemos los documentos cargados en documentosCarpeta, usarlos
       if (carpetaActual.value === carpetaDocumentosId && documentosCarpeta.value.length > 0) {
-        console.log("🟢 [DocumentosGeneradosView] Usando documentos cargados de carpeta de documentos:", documentosCarpeta.value);
+        console.log(
+          "🟢 [DocumentosGeneradosView] Usando documentos cargados de carpeta de documentos:",
+          documentosCarpeta.value
+        );
         documentosCarpeta.value.forEach((item) => {
           if (item.type === "document") {
             files.push({
@@ -321,7 +358,9 @@
         });
       } else {
         // Si no están cargados, intentar cargarlos automáticamente
-        console.log("🟡 [DocumentosGeneradosView] Cargando documentos de carpeta de documentos automáticamente...");
+        console.log(
+          "🟡 [DocumentosGeneradosView] Cargando documentos de carpeta de documentos automáticamente..."
+        );
         cargarDocumentosDeCarpeta(carpetaDocumentosId).catch((error) => {
           console.error("❌ [DocumentosGeneradosView] Error al cargar documentos:", error);
         });
@@ -340,17 +379,17 @@
 
     // Nivel 1: operaciones
     if (currentPath.value[0] === "operaciones") {
-      items.push({ 
-        id: "operaciones", 
-        nombre: documentosGenerados.value?.operaciones?.nombre || "Operaciones" 
+      items.push({
+        id: "operaciones",
+        nombre: documentosGenerados.value?.operaciones?.nombre || "Operaciones",
       });
     }
 
     // Nivel 2: juntas
     if (currentPath.value.length > 1 && currentPath.value[1] === "juntas") {
-      items.push({ 
-        id: "operaciones-juntas", 
-        nombre: documentosGenerados.value?.operaciones?.carpetas?.juntas?.nombre || "Juntas" 
+      items.push({
+        id: "operaciones-juntas",
+        nombre: documentosGenerados.value?.operaciones?.carpetas?.juntas?.nombre || "Juntas",
       });
     }
 
@@ -375,7 +414,9 @@
       const carpetaDocumentosId = currentPath.value[3];
       // Buscar el nombre de la carpeta de documentos en documentosCarpeta
       if (carpetaActual.value === carpetaDocumentosId && documentosCarpeta.value.length > 0) {
-        const carpetaDoc = documentosCarpeta.value.find((item) => item.id === carpetaDocumentosId && item.type === "folder");
+        const carpetaDoc = documentosCarpeta.value.find(
+          (item) => item.id === carpetaDocumentosId && item.type === "folder"
+        );
         if (carpetaDoc) {
           items.push({
             id: `${currentPath.value[2]}-${carpetaDocumentosId}`,
@@ -403,20 +444,29 @@
   // Navegar a carpeta usando router
   const navigateToFolder = async (folderId: string) => {
     console.log("📂 [DocumentosGeneradosView] Navegando a carpeta:", folderId);
-    
+
     if (!idSociety.value) {
       console.error("❌ [DocumentosGeneradosView] No hay idSociety en la ruta");
       return;
     }
 
     // Si es una carpeta de junta (nivel 2 → 3), cargar documentos
-    if (folderId.startsWith("carpeta-") && currentPath.value.length === 1 && currentPath.value[0] === "junta-accionistas") {
+    if (
+      folderId.startsWith("carpeta-") &&
+      currentPath.value.length === 1 &&
+      currentPath.value[0] === "junta-accionistas"
+    ) {
       const nodeId = folderId.replace("carpeta-", "");
-      console.log("📂 [DocumentosGeneradosView] Cargando documentos de carpeta de junta:", nodeId);
-      
+      console.log(
+        "📂 [DocumentosGeneradosView] Cargando documentos de carpeta de junta:",
+        nodeId
+      );
+
       // Navegar a la ruta
-      router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/junta-accionistas/${folderId}`);
-      
+      router.push(
+        `/storage/documentos-generados/${idSociety.value}/operaciones/junta-accionistas/${folderId}`
+      );
+
       // Cargar documentos de la carpeta (carpetas de documentos y documentos directos)
       try {
         await cargarDocumentosDeCarpeta(nodeId);
@@ -425,17 +475,26 @@
       }
       return;
     }
-    
+
     // Si es una carpeta de documentos dentro de una junta (nivel 3 → 4)
-    if (folderId.includes("-") && currentPath.value.length === 2 && currentPath.value[0] === "junta-accionistas") {
+    if (
+      folderId.includes("-") &&
+      currentPath.value.length === 2 &&
+      currentPath.value[0] === "junta-accionistas"
+    ) {
       const parts = folderId.split("-");
       if (parts.length >= 2 && parts[0] === "carpeta") {
         const carpetaDocumentosId = parts[parts.length - 1];
-        console.log("📂 [DocumentosGeneradosView] Cargando documentos de carpeta de documentos:", carpetaDocumentosId);
-        
+        console.log(
+          "📂 [DocumentosGeneradosView] Cargando documentos de carpeta de documentos:",
+          carpetaDocumentosId
+        );
+
         // Navegar a la ruta
-        router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/junta-accionistas/${currentPath.value[1]}/${carpetaDocumentosId}`);
-        
+        router.push(
+          `/storage/documentos-generados/${idSociety.value}/operaciones/junta-accionistas/${currentPath.value[1]}/${carpetaDocumentosId}`
+        );
+
         // Cargar documentos de la carpeta de documentos
         try {
           await cargarDocumentosDeCarpeta(carpetaDocumentosId);
@@ -445,23 +504,31 @@
         return;
       }
     }
-    
+
     // Navegación normal por niveles
     if (folderId === "operaciones") {
       router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/`);
     } else if (folderId === "operaciones-juntas") {
-      router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/junta-accionistas`);
+      router.push(
+        `/storage/documentos-generados/${idSociety.value}/operaciones/junta-accionistas`
+      );
     } else if (folderId === "operaciones-directorio") {
       router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/directorio`);
     } else {
       // Extraer el path del folderId (compatibilidad con código anterior)
       const parts = folderId.split("-");
       if (parts.length === 1 && parts[0]) {
-        router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/${parts[0]}`);
+        router.push(
+          `/storage/documentos-generados/${idSociety.value}/operaciones/${parts[0]}`
+        );
       } else if (parts.length === 2 && parts[0] && parts[1]) {
-        router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/${parts[0]}-${parts[1]}`);
+        router.push(
+          `/storage/documentos-generados/${idSociety.value}/operaciones/${parts[0]}-${parts[1]}`
+        );
       } else if (parts.length === 3 && parts[0] && parts[1] && parts[2]) {
-        router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/${parts[0]}-${parts[1]}-${parts[2]}`);
+        router.push(
+          `/storage/documentos-generados/${idSociety.value}/operaciones/${parts[0]}-${parts[1]}-${parts[2]}`
+        );
       }
     }
   };
@@ -482,16 +549,102 @@
 
   // Click en documento
   const handleDocumentClick = async (file: any) => {
-    const doc = await obtenerDocumento(file.id);
-    if (doc && doc.type === "document") {
-      selectedDocument.value = {
-        name: doc.name,
-        type: doc.mimeType || "documento",
-        owner: "Sistema",
-        dateModified: new Date(doc.createdAt),
-        size: doc.sizeInBytes,
-      };
-      previewModalOpen.value = true;
+    try {
+      console.log("🟡 [DocumentosGeneradosView] ========================================");
+      console.log("🟡 [DocumentosGeneradosView] CLICK EN DOCUMENTO");
+      console.log("🟡 [DocumentosGeneradosView] ========================================");
+      console.log("🟡 [DocumentosGeneradosView] file:", file);
+
+      const nodeId = typeof file.id === "number" ? file.id : parseInt(file.id);
+      console.log("🟡 [DocumentosGeneradosView] Obteniendo documento con nodeId:", nodeId);
+
+      const doc = await obtenerDocumento(String(nodeId));
+      console.log("🟡 [DocumentosGeneradosView] Documento obtenido:", {
+        id: doc?.id,
+        name: doc?.name,
+        type: doc?.type,
+        hasVersions: Boolean(doc?.versions),
+        versionsCount: doc?.versions?.length || 0,
+        mimeType: doc?.mimeType,
+      });
+
+      if (doc && doc.type === "document") {
+        // Obtener versionCode si no está disponible
+        let versionCode = file.versionCode;
+        console.log("🟡 [DocumentosGeneradosView] versionCode inicial:", versionCode);
+
+        if (!versionCode && doc.versions && doc.versions.length > 0) {
+          versionCode = doc.versions[0].versionCode;
+          console.log(
+            "🟢 [DocumentosGeneradosView] versionCode obtenido de versions:",
+            versionCode
+          );
+        } else if (!versionCode) {
+          console.error(
+            "❌ [DocumentosGeneradosView] No hay versionCode disponible en el documento"
+          );
+          console.error("❌ [DocumentosGeneradosView] doc.versions:", doc.versions);
+        }
+
+        if (!versionCode) {
+          console.error(
+            "❌ [DocumentosGeneradosView] No se puede abrir preview sin versionCode"
+          );
+          // TODO: Mostrar toast de error
+          return;
+        }
+
+        // Inferir mimeType desde el nombre si no está disponible
+        let mimeType = doc.mimeType;
+        if (!mimeType && doc.name) {
+          const extension = doc.name.toLowerCase().split(".").pop();
+          const mimeTypes: Record<string, string> = {
+            "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "doc": "application/msword",
+            "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "xls": "application/vnd.ms-excel",
+            "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            "ppt": "application/vnd.ms-powerpoint",
+            "pdf": "application/pdf",
+            "jpg": "image/jpeg",
+            "jpeg": "image/jpeg",
+            "png": "image/png",
+            "gif": "image/gif",
+            "txt": "text/plain",
+          };
+          mimeType = mimeTypes[extension || ""];
+          if (mimeType) {
+            console.log("🟡 [DocumentosGeneradosView] MIME type inferido desde nombre:", {
+              fileName: doc.name,
+              extension,
+              inferredMimeType: mimeType,
+            });
+          }
+        }
+
+        selectedDocument.value = {
+          name: doc.name,
+          type: mimeType || "documento",
+          owner: "Sistema",
+          dateModified: new Date(doc.createdAt),
+          size: doc.sizeInBytes,
+          versionCode: versionCode,
+          mimeType: mimeType,
+        };
+
+        console.log("🟢 [DocumentosGeneradosView] Documento configurado para preview:", {
+          name: selectedDocument.value.name,
+          versionCode: selectedDocument.value.versionCode,
+          mimeType: selectedDocument.value.mimeType,
+          type: selectedDocument.value.type,
+        });
+
+        previewModalOpen.value = true;
+      } else {
+        console.error("❌ [DocumentosGeneradosView] El nodo no es un documento:", doc?.type);
+      }
+    } catch (error) {
+      console.error("❌ [DocumentosGeneradosView] Error al obtener documento:", error);
     }
   };
 
@@ -517,7 +670,7 @@
         if (carpeta) {
           // Buscar la fecha en la estructura de documentos generados
           const carpetaConFecha = juntas.find((j: any) => (j.nodeId || j.id) === nodeId);
-          
+
           juntaInfo.value = {
             nombre: carpeta.name,
             fecha: new Intl.DateTimeFormat("es-ES", {
@@ -559,9 +712,61 @@
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
-  const handleDownload = (file: any) => {
-    // TODO: Implementar descarga
-    console.log("Descargar:", file);
+  const handleDownload = async (file: any) => {
+    try {
+      let versionCode = file.versionCode;
+
+      // Si no hay versionCode, obtener el documento completo
+      if (!versionCode) {
+        console.log(
+          "🟡 [DocumentosGeneradosView] No hay versionCode, obteniendo documento completo..."
+        );
+        const nodeId = typeof file.id === "number" ? file.id : parseInt(file.id);
+        const documento = await obtenerDocumento(String(nodeId));
+
+        if (documento && documento.versions && documento.versions.length > 0) {
+          versionCode = documento.versions[0].versionCode;
+          console.log("🟢 [DocumentosGeneradosView] versionCode obtenido:", versionCode);
+        } else {
+          console.error(
+            "❌ [DocumentosGeneradosView] No se pudo obtener versionCode del documento"
+          );
+          return;
+        }
+      }
+
+      await descargarDocumento(versionCode, file.nombre || "documento");
+    } catch (error) {
+      console.error("❌ [DocumentosGeneradosView] Error al descargar:", error);
+    }
+  };
+
+  const handleDelete = async (file: any) => {
+    if (!confirm(`¿Estás seguro de eliminar "${file.nombre}"?`)) {
+      return;
+    }
+
+    try {
+      const nodeId = typeof file.id === "number" ? file.id : parseInt(file.id);
+      await eliminarDocumento(nodeId);
+
+      // Recargar documentos después de eliminar
+      if (carpetaActual.value) {
+        await cargarDocumentosDeCarpeta(carpetaActual.value);
+      }
+    } catch (error) {
+      console.error("❌ [DocumentosGeneradosView] Error al eliminar:", error);
+    }
+  };
+
+  const handleDownloadZip = async (folder: any) => {
+    try {
+      const nodeId =
+        typeof folder.nodeId === "number" ? folder.nodeId : parseInt(folder.nodeId);
+      await descargarZip(nodeId, folder.nombre || "carpeta");
+    } catch (error) {
+      console.error("❌ [DocumentosGeneradosView] Error al descargar ZIP:", error);
+    }
   };
 </script>
 
@@ -853,6 +1058,13 @@
                       <Download class="w-4 h-4 mr-2" />
                       Descargar
                     </DropdownMenuItem>
+                    <DropdownMenuItem
+                      @click.stop="handleDelete(file)"
+                      class="text-red-600 focus:text-red-600"
+                    >
+                      <Trash2 class="w-4 h-4 mr-2" />
+                      Eliminar
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -981,6 +1193,13 @@
                         <DropdownMenuItem @click.stop="handleDownload(file)">
                           <Download class="w-4 h-4 mr-2" />
                           Descargar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          @click.stop="handleDelete(file)"
+                          class="text-red-600 focus:text-red-600"
+                        >
+                          <Trash2 class="w-4 h-4 mr-2" />
+                          Eliminar
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

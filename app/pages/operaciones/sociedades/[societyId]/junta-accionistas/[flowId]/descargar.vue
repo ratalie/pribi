@@ -1,28 +1,39 @@
 <template>
-  <div class="page-container">
+  <div class="min-h-full bg-gray-50">
     <!-- Loading State -->
     <div v-if="isLoading" class="flex justify-center items-center py-12">
       <div class="text-center">
         <div
-          class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-800 mx-auto mb-4"
+          class="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4"
+          style="border-color: var(--primary-700)"
         ></div>
-        <p class="text-sm text-muted">Cargando datos de la junta...</p>
+        <p class="text-sm" style="color: var(--text-muted); font-family: var(--font-secondary)">
+          Cargando datos de la junta...
+        </p>
       </div>
     </div>
 
     <!-- Error State -->
     <div v-else-if="hasError" class="flex justify-center items-center py-12">
       <div class="text-center">
-        <p class="text-red-600 mb-2">Error al cargar datos</p>
-        <p class="text-sm text-muted">{{ errorMessage }}</p>
-        <button @click="reload" class="mt-4 px-4 py-2 bg-primary-800 text-white rounded">
+        <p class="mb-2" style="color: #DC2626; font-family: var(--font-primary); font-weight: 600">
+          Error al cargar datos
+        </p>
+        <p class="text-sm mb-4" style="color: var(--text-muted); font-family: var(--font-secondary)">
+          {{ errorMessage }}
+        </p>
+        <button
+          @click="reload"
+          class="px-4 py-2 rounded-lg text-white transition-colors"
+          style="background-color: var(--primary-800); font-family: var(--font-secondary)"
+        >
           Reintentar
         </button>
       </div>
     </div>
 
     <!-- Success State -->
-    <div v-else-if="downloadData">
+    <div v-else-if="downloadData" class="max-w-[1600px] mx-auto px-8 py-10">
       <JuntaDocumentosGenerados />
     </div>
 

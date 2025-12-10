@@ -1,7 +1,7 @@
 <template>
   <div
-    class="bg-white border rounded-xl p-6"
-    style="border-color: var(--border-default); border-radius: var(--radius-medium)"
+    class="bg-white rounded-xl p-6 shadow-sm"
+    style="border: 1px solid var(--border-light)"
   >
     <h3
       class="text-base mb-4"

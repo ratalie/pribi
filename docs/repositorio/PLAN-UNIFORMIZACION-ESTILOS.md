@@ -340,3 +340,4 @@ Ya existe `SocietySelector`, pero podemos mejorar su estilo para que sea más co
 **Estado:** 📋 Plan listo para implementar
 
 
+

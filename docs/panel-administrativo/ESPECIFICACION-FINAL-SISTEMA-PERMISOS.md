@@ -372,3 +372,4 @@ interface SocietyAssignment {
 
 
 
+

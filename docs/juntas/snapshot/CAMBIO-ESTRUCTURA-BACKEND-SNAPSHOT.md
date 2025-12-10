@@ -514,3 +514,4 @@ Según la respuesta real del backend recibida:
 - Se requiere **coordinación con backend** para decidir el estándar final
 - **Fecha de última actualización:** 2025-01-XX
 
+

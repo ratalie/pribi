@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6 p-6">
+  <div class="space-y-6">
     <!-- Header de Éxito -->
     <HeaderExito
       :total-documentos="totalDocumentos"
@@ -8,8 +8,8 @@
 
     <!-- Botón Descarga Global -->
     <div
-      class="bg-white border rounded-xl p-6"
-      style="border-color: var(--border-default); border-radius: var(--radius-medium)"
+      class="bg-white rounded-xl p-6 shadow-sm"
+      style="border: 1px solid var(--border-light)"
     >
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -36,8 +36,8 @@
         </div>
         <button
           @click="handleDownloadAll"
-          class="flex items-center gap-2 px-4 py-2 rounded-lg text-white transition-colors"
-          style="background-color: var(--primary-800)"
+          class="flex items-center gap-2 px-4 py-2 rounded-lg text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          style="background-color: var(--primary-800); font-family: var(--font-secondary)"
           :disabled="isGenerating"
         >
           <Icon name="lucide:download" class="w-4 h-4" />
@@ -63,8 +63,11 @@
     <!-- Loading State -->
     <div v-else-if="isLoadingData || isGenerating" class="flex justify-center items-center py-12">
       <div class="text-center">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-800 mx-auto mb-4"></div>
-        <p class="text-sm text-muted">
+        <div
+          class="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4"
+          style="border-color: var(--primary-700)"
+        ></div>
+        <p class="text-sm" style="color: var(--text-muted); font-family: var(--font-secondary)">
           <span v-if="isLoadingData">Cargando datos de la junta...</span>
           <span v-else-if="isGenerating">Generando documentos...</span>
         </p>
@@ -73,8 +76,8 @@
 
     <!-- Info Banner -->
     <div
-      class="bg-blue-50 border border-blue-200 rounded-xl p-6"
-      style="border-radius: var(--radius-medium)"
+      class="bg-blue-50 rounded-xl p-6"
+      style="border: 1px solid #BFDBFE"
     >
       <div class="flex items-start gap-3">
         <div
@@ -104,8 +107,8 @@
 
     <!-- Sección Repositorio -->
     <div
-      class="bg-white border rounded-xl p-6"
-      style="border-color: var(--border-default); border-radius: var(--radius-medium)"
+      class="bg-white rounded-xl p-6 shadow-sm"
+      style="border: 1px solid var(--border-light)"
     >
       <div class="space-y-4">
         <!-- Título -->

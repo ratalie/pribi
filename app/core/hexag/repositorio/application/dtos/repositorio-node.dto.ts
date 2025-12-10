@@ -11,7 +11,7 @@ export interface RepositorioNodeDTO {
   societyId: number;
   parentId: number | null;
   name: string;
-  type: 1 | 2; // 1 = folder, 2 = file
+  type: 0 | 1; // 0 = documento, 1 = carpeta
   path: string;
   description: string | null;
   createdAt: string; // ISO string
@@ -19,7 +19,7 @@ export interface RepositorioNodeDTO {
   isCore: boolean;
   children?: RepositorioNodeDTO[];
   
-  // Para archivos (type === 2)
+  // Para archivos (type === 0)
   mimeType?: string;
   sizeInBytes?: number;
   versions?: Array<{
@@ -27,6 +27,16 @@ export interface RepositorioNodeDTO {
     documentCode: string;
     createdAt: string;
     updatedAt: string;
+  }>;
+  // El backend puede devolver documentVersions en lugar de versions
+  documentVersions?: Array<{
+    versionCode: string;
+    documentCode?: string;
+    title?: string;
+    sizeInBytes?: number;
+    createdAt: string;
+    updatedAt: string;
+    userId?: number;
   }>;
 }
 
