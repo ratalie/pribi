@@ -23,9 +23,14 @@ import {
 import AdvancedSearchBar from "./AdvancedSearchBar.vue";
 import type { AdvancedFilters } from "./types";
 import PreviewModal from "./PreviewModal.vue";
+import UploadModal from "./UploadModal.vue";
+import CreateFolderModal from "./CreateFolderModal.vue";
 // import DocumentCard from "./DocumentCard.vue"; // No usado
 import { useAlmacenamiento } from "~/core/presentation/repositorio/composables/useAlmacenamiento";
 import { useRepositorioDashboardStore } from "~/core/presentation/repositorio/stores/repositorio-dashboard.store";
+import { useObtenerNodoRaiz } from "~/core/presentation/repositorio/composables/useObtenerNodoRaiz";
+
+const router = useRouter();
 
 const {
   documentos,
@@ -40,13 +45,18 @@ const {
   navegarAtras: _navegarAtras,
   obtenerDocumento,
   eliminarDocumento,
+  crearCarpeta,
 } = useAlmacenamiento();
 
 const dashboardStore = useRepositorioDashboardStore();
+const { obtenerNodoRaiz } = useObtenerNodoRaiz();
 
 const searchQuery = ref("");
 const previewModalOpen = ref(false);
 const selectedDocument = ref<any>(null);
+const uploadModalOpen = ref(false);
+const createFolderModalOpen = ref(false);
+const parentNodeIdForUpload = ref<string | null>(null);
 
 // Estado de filtros avanzados
 const filters = ref<AdvancedFilters>({ scope: "societarios" });
@@ -97,8 +107,26 @@ const handleDelete = async (doc: any) => {
 };
 
 const handleDownload = async (doc: any) => {
-  // TODO: Implementar descarga
+  // TODO: Implementar descarga usando useDescargarDocumento
   console.log("Descargar:", doc);
+};
+
+const handleCreateFolder = async (folderName: string) => {
+  try {
+    await crearCarpeta({
+      nombre: folderName,
+      parentId: carpetaActual.value,
+    });
+    await cargarDocumentos(carpetaActual.value);
+  } catch (error) {
+    console.error("Error al crear carpeta:", error);
+  }
+};
+
+const navigateToDocumentosGenerados = () => {
+  if (dashboardStore.sociedadSeleccionada?.id) {
+    router.push(`/storage/documentos-generados/${dashboardStore.sociedadSeleccionada.id}/operaciones/`);
+  }
 };
 
 const formatDate = (date: Date) => {
@@ -119,6 +147,28 @@ const formatSize = (bytes?: number) => {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };
+
+// Obtener el parentNodeId para subir archivos
+// Si estamos en la raíz (carpetaActual es null), necesitamos obtener el nodo raíz
+watch(
+  () => [carpetaActual.value, dashboardStore.sociedadSeleccionada?.id],
+  async ([carpetaId, structureId]) => {
+    if (!structureId) {
+      parentNodeIdForUpload.value = null;
+      return;
+    }
+
+    if (carpetaId) {
+      // Si hay carpeta actual, usar su ID
+      parentNodeIdForUpload.value = carpetaId;
+    } else {
+      // Si estamos en la raíz, obtener el nodo raíz del backend
+      const nodoRaizId = await obtenerNodoRaiz(structureId);
+      parentNodeIdForUpload.value = nodoRaizId;
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -141,7 +191,7 @@ const formatSize = (bytes?: number) => {
               fontFamily: 'var(--font-secondary)',
             }"
           >
-            Documentos Societarios
+            Almacén
           </span>
           <template v-if="breadcrumb.length > 0">
             <ChevronRight
@@ -222,6 +272,7 @@ const formatSize = (bytes?: number) => {
 
             <!-- Botón Subir -->
             <button
+              @click="uploadModalOpen = true"
               class="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border hover:shadow-md transition-all"
               :style="{
                 borderColor: 'var(--border-light)',
@@ -234,6 +285,7 @@ const formatSize = (bytes?: number) => {
 
             <!-- Botón Nueva Carpeta -->
             <button
+              @click="createFolderModalOpen = true"
               class="flex items-center gap-2 px-4 py-2 rounded-lg transition-all"
               style="
                 background-color: var(--primary-700);
@@ -418,6 +470,75 @@ const formatSize = (bytes?: number) => {
             </tr>
           </thead>
           <tbody>
+            <!-- Fila especial: Documentos Generados (solo en raíz) -->
+            <tr
+              v-if="!carpetaActual && dashboardStore.sociedadSeleccionada?.id"
+              class="border-b hover:bg-gray-50 cursor-pointer transition-colors"
+              :style="{ borderColor: 'var(--border-light)' }"
+              @click="navigateToDocumentosGenerados"
+            >
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="p-2 rounded-lg"
+                    style="background-color: #EEF2FF"
+                  >
+                    <Folder
+                      class="w-4 h-4"
+                      :style="{ color: 'var(--primary-700)' }"
+                    />
+                  </div>
+                  <span
+                    class="text-sm"
+                    :style="{
+                      color: 'var(--text-primary)',
+                      fontFamily: 'var(--font-secondary)',
+                      fontWeight: 500,
+                    }"
+                  >
+                    Documentos Generados
+                  </span>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <span
+                  class="text-sm"
+                  :style="{
+                    color: 'var(--text-muted)',
+                    fontFamily: 'var(--font-secondary)',
+                  }"
+                >
+                  Sistema
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <span
+                  class="text-sm"
+                  :style="{
+                    color: 'var(--text-muted)',
+                    fontFamily: 'var(--font-secondary)',
+                  }"
+                >
+                  -
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <span
+                  class="text-sm"
+                  :style="{
+                    color: 'var(--text-muted)',
+                    fontFamily: 'var(--font-secondary)',
+                  }"
+                >
+                  -
+                </span>
+              </td>
+              <td class="px-6 py-4 text-right">
+                <!-- Sin acciones para Documentos Generados -->
+              </td>
+            </tr>
+
+            <!-- Filas normales: documentos y carpetas -->
             <tr
               v-for="doc in documentosFiltrados"
               :key="doc.id"
@@ -540,6 +661,26 @@ const formatSize = (bytes?: number) => {
           previewModalOpen = false;
           selectedDocument = null;
         "
+      />
+
+      <!-- Upload Modal -->
+      <UploadModal
+        v-if="dashboardStore.sociedadSeleccionada?.id && parentNodeIdForUpload"
+        :is-open="uploadModalOpen"
+        :structure-id="dashboardStore.sociedadSeleccionada.id"
+        :parent-node-id="parentNodeIdForUpload"
+        @close="uploadModalOpen = false"
+        @uploaded="
+          cargarDocumentos(carpetaActual);
+          uploadModalOpen = false;
+        "
+      />
+
+      <!-- Create Folder Modal -->
+      <CreateFolderModal
+        :is-open="createFolderModalOpen"
+        @close="createFolderModalOpen = false"
+        @created="handleCreateFolder"
       />
     </div>
   </div>

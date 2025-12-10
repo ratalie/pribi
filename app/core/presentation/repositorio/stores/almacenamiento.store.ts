@@ -11,7 +11,7 @@ import {
 import type { DocumentoSocietario } from '~/core/hexag/repositorio/almacenamiento/domain/entities/documento-societario.entity';
 // import type { CarpetaSistema } from '~/core/hexag/repositorio/almacenamiento/domain/entities/carpeta-sistema.entity'; // No usado
 import type { CreateCarpetaDTO, UploadDocumentoDTO } from '~/core/hexag/repositorio/almacenamiento/application/dtos/documento-societario.dto';
-import { AlmacenamientoMockRepository } from '~/core/hexag/repositorio/almacenamiento/infrastructure';
+import { AlmacenamientoHttpRepository } from '~/core/hexag/repositorio/almacenamiento/infrastructure';
 
 type Status = 'idle' | 'loading' | 'uploading' | 'error';
 
@@ -69,7 +69,7 @@ export const useAlmacenamientoStore = defineStore('almacenamiento', {
       this.carpetaActual = parentId;
 
       try {
-        const repository = new AlmacenamientoMockRepository();
+        const repository = new AlmacenamientoHttpRepository();
         const useCase = new ListDocumentosSocietariosUseCase(repository);
         const documentos = await useCase.execute(id, parentId);
 
@@ -96,7 +96,7 @@ export const useAlmacenamientoStore = defineStore('almacenamiento', {
       this.errorMessage = null;
 
       try {
-        const repository = new AlmacenamientoMockRepository();
+        const repository = new AlmacenamientoHttpRepository();
         const useCase = new NavigateCarpetaUseCase(repository);
         const documentos = await useCase.execute(id, carpetaId);
 
@@ -160,7 +160,7 @@ export const useAlmacenamientoStore = defineStore('almacenamiento', {
       this.errorMessage = null;
 
       try {
-        const repository = new AlmacenamientoMockRepository();
+        const repository = new AlmacenamientoHttpRepository();
         const useCase = new GetDocumentoSocietarioUseCase(repository);
         const documento = await useCase.execute(id, documentoId);
 
@@ -189,7 +189,7 @@ export const useAlmacenamientoStore = defineStore('almacenamiento', {
       this.errorMessage = null;
 
       try {
-        const repository = new AlmacenamientoMockRepository();
+        const repository = new AlmacenamientoHttpRepository();
         const useCase = new CreateCarpetaSistemaUseCase(repository);
         const carpeta = await useCase.execute(id, dto);
 
@@ -219,7 +219,7 @@ export const useAlmacenamientoStore = defineStore('almacenamiento', {
       this.errorMessage = null;
 
       try {
-        const repository = new AlmacenamientoMockRepository();
+        const repository = new AlmacenamientoHttpRepository();
         const useCase = new UploadDocumentoUseCase(repository);
         const documento = await useCase.execute(id, dto);
 
@@ -249,7 +249,7 @@ export const useAlmacenamientoStore = defineStore('almacenamiento', {
       this.errorMessage = null;
 
       try {
-        const repository = new AlmacenamientoMockRepository();
+        const repository = new AlmacenamientoHttpRepository();
         const useCase = new DownloadDocumentoUseCase(repository);
         const blob = await useCase.execute(id, documentoId);
 
@@ -286,7 +286,7 @@ export const useAlmacenamientoStore = defineStore('almacenamiento', {
       this.errorMessage = null;
 
       try {
-        const repository = new AlmacenamientoMockRepository();
+        const repository = new AlmacenamientoHttpRepository();
         const useCase = new DeleteDocumentoUseCase(repository);
         await useCase.execute(id, documentoId);
 

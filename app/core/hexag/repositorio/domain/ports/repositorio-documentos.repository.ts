@@ -35,6 +35,13 @@ export interface RepositorioDocumentosRepository {
   obtenerNodosCore(structureId: string): Promise<RepositorioNode[]>;
 
   /**
+   * Obtiene los nodos raíz de una sociedad (core y common)
+   * @param structureId ID de la estructura de la sociedad
+   * @returns Lista de nodos raíz (carpetas core y common)
+   */
+  obtenerNodosRaiz(structureId: string): Promise<RepositorioNode[]>;
+
+  /**
    * Obtiene un nodo específico por su ID (incluye hijos si es carpeta)
    * @param nodeId ID del nodo a obtener
    * @returns Nodo con sus hijos (si es carpeta)
@@ -60,5 +67,31 @@ export interface RepositorioDocumentosRepository {
    * @returns Blob del archivo ZIP
    */
   descargarCarpetaZip(nodeId: number): Promise<Blob>;
+
+  /**
+   * Sube un archivo a una carpeta
+   * @param structureId ID de la estructura de la sociedad
+   * @param parentNodeId ID del nodo padre (carpeta destino)
+   * @param file Archivo a subir
+   * @returns Nodo creado del documento subido
+   */
+  subirArchivo(
+    structureId: string,
+    parentNodeId: string,
+    file: File
+  ): Promise<RepositorioNode>;
+
+  /**
+   * Sube múltiples archivos a una carpeta
+   * @param structureId ID de la estructura de la sociedad
+   * @param parentNodeId ID del nodo padre (carpeta destino)
+   * @param files Lista de archivos a subir
+   * @returns Lista de nodos creados
+   */
+  subirMultiplesArchivos(
+    structureId: string,
+    parentNodeId: string,
+    files: File[]
+  ): Promise<RepositorioNode[]>;
 }
 

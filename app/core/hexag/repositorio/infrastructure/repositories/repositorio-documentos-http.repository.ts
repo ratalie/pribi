@@ -300,6 +300,48 @@ export class RepositorioDocumentosHttpRepository
   }
 
   /**
+   * Obtiene los nodos raíz de una sociedad (core y common)
+   * 
+   * ENDPOINT V2: GET /api/v2/repository/society-profile/:structureId/nodes/root
+   */
+  async obtenerNodosRaiz(structureId: string): Promise<RepositorioNode[]> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/nodes/root`;
+
+    console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔵 [RepositorioDocumentosHttp] OBTENER NODOS RAÍZ");
+    console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔵 [RepositorioDocumentosHttp] URL:", url);
+    console.log("🔵 [RepositorioDocumentosHttp] structureId:", structureId);
+
+    try {
+      const response = await $fetch<{
+        success: boolean;
+        data: RepositorioNodeDTO[];
+      }>(url, {
+        ...withAuthHeaders(),
+        method: "GET" as const,
+      });
+
+      console.log("🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos:", response.data.length);
+      console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+
+      return RepositorioNodeMapper.toEntities(response.data);
+    } catch (error: any) {
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      console.error("🔴 [RepositorioDocumentosHttp] ERROR AL OBTENER NODOS RAÍZ:");
+      console.error("🔴 [RepositorioDocumentosHttp] URL:", url);
+      console.error("🔴 [RepositorioDocumentosHttp] structureId:", structureId);
+      console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+
+      throw new Error(
+        `No se pudieron obtener los nodos raíz: ${error?.message || "Error desconocido"}`
+      );
+    }
+  }
+
+  /**
    * Obtiene un nodo específico por su ID (incluye hijos si es carpeta)
    * 
    * ENDPOINT V2: GET /api/v2/repository/society-profile/nodes/:nodeId
@@ -456,6 +498,167 @@ export class RepositorioDocumentosHttpRepository
       console.error("🔴 [RepositorioDocumentosHttp] Error al descargar ZIP:", error);
       throw new Error(
         `No se pudo descargar la carpeta: ${error?.message || "Error desconocido"}`
+      );
+    }
+  }
+
+  /**
+   * Sube un archivo a una carpeta
+   * 
+   * ENDPOINT V2: POST /api/v2/repository/society-profile/{structureId}/nodes/{parentNodeId}/documents
+   */
+  async subirArchivo(
+    structureId: string,
+    parentNodeId: string,
+    file: File
+  ): Promise<RepositorioNode> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/nodes/${parentNodeId}/documents`;
+
+    console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔵 [RepositorioDocumentosHttp] SUBIR ARCHIVO");
+    console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔵 [RepositorioDocumentosHttp] URL:", url);
+    console.log("🔵 [RepositorioDocumentosHttp] structureId:", structureId);
+    console.log("🔵 [RepositorioDocumentosHttp] parentNodeId:", parentNodeId);
+    console.log("🔵 [RepositorioDocumentosHttp] fileName:", file.name);
+    console.log("🔵 [RepositorioDocumentosHttp] fileSize:", file.size);
+
+    try {
+      // Crear FormData
+      const formData = new FormData();
+      // El backend espera el archivo con un UUID como nombre del campo
+      const fileFieldUUID = window.crypto.randomUUID();
+      formData.append(fileFieldUUID, file);
+
+      // Headers con autenticación
+      const authHeaders = withAuthHeaders();
+      const headers: Record<string, string> = {
+        ...authHeaders.headers,
+        "x-file-size": file.size.toString(),
+      };
+
+      // No incluir Content-Type, el navegador lo establecerá automáticamente con el boundary
+      const response = await fetch(url, {
+        method: "POST",
+        headers,
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("🔴 [RepositorioDocumentosHttp] Error response:", errorText);
+        throw new Error(`Error al subir archivo: ${response.statusText}`);
+      }
+
+      const responseData = await response.json();
+      console.log("🔵 [RepositorioDocumentosHttp] Respuesta:", responseData);
+
+      // El backend devuelve { success: true, data: RepositorioNodeDTO }
+      if (responseData.success && responseData.data) {
+        const nodo = RepositorioNodeMapper.toEntity(responseData.data);
+        console.log("🟢 [RepositorioDocumentosHttp] Archivo subido exitosamente:", {
+          id: nodo.id,
+          name: nodo.name,
+        });
+        console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+        return nodo;
+      }
+
+      throw new Error("La respuesta del servidor no contiene los datos esperados");
+    } catch (error: any) {
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      console.error("🔴 [RepositorioDocumentosHttp] ERROR AL SUBIR ARCHIVO:");
+      console.error("🔴 [RepositorioDocumentosHttp] URL:", url);
+      console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      throw new Error(
+        `No se pudo subir el archivo: ${error?.message || "Error desconocido"}`
+      );
+    }
+  }
+
+  /**
+   * Sube múltiples archivos a una carpeta
+   * 
+   * ENDPOINT V2: POST /api/v2/repository/society-profile/{structureId}/nodes/{parentNodeId}/core
+   */
+  async subirMultiplesArchivos(
+    structureId: string,
+    parentNodeId: string,
+    files: File[]
+  ): Promise<RepositorioNode[]> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/nodes/${parentNodeId}/core`;
+
+    console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔵 [RepositorioDocumentosHttp] SUBIR MÚLTIPLES ARCHIVOS");
+    console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔵 [RepositorioDocumentosHttp] URL:", url);
+    console.log("🔵 [RepositorioDocumentosHttp] structureId:", structureId);
+    console.log("🔵 [RepositorioDocumentosHttp] parentNodeId:", parentNodeId);
+    console.log("🔵 [RepositorioDocumentosHttp] filesCount:", files.length);
+
+    try {
+      // Crear FormData
+      const formData = new FormData();
+      
+      // Agregar todos los archivos con el mismo nombre de campo "file"
+      files.forEach((file) => {
+        formData.append("file", file);
+      });
+
+      // Headers con autenticación
+      const authHeaders = withAuthHeaders();
+      const headers: Record<string, string> = {
+        ...authHeaders.headers,
+      };
+
+      // No incluir Content-Type, el navegador lo establecerá automáticamente con el boundary
+      const response = await fetch(url, {
+        method: "POST",
+        headers,
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("🔴 [RepositorioDocumentosHttp] Error response:", errorText);
+        throw new Error(`Error al subir archivos: ${response.statusText}`);
+      }
+
+      const responseData = await response.json();
+      console.log("🔵 [RepositorioDocumentosHttp] Respuesta:", responseData);
+
+      // El backend puede devolver un array de nodos o un objeto con data
+      let nodosDTO: RepositorioNodeDTO[] = [];
+      
+      if (Array.isArray(responseData.data)) {
+        nodosDTO = responseData.data;
+      } else if (responseData.data && Array.isArray(responseData.data.nodes)) {
+        nodosDTO = responseData.data.nodes;
+      } else if (responseData.success && responseData.data) {
+        // Si solo hay un nodo, puede venir como objeto único
+        nodosDTO = [responseData.data];
+      }
+
+      const nodos = nodosDTO.map((dto) => RepositorioNodeMapper.toEntity(dto));
+      
+      console.log("🟢 [RepositorioDocumentosHttp] Archivos subidos exitosamente:", {
+        count: nodos.length,
+        nodos: nodos.map((n) => ({ id: n.id, name: n.name })),
+      });
+      console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+      
+      return nodos;
+    } catch (error: any) {
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      console.error("🔴 [RepositorioDocumentosHttp] ERROR AL SUBIR ARCHIVOS:");
+      console.error("🔴 [RepositorioDocumentosHttp] URL:", url);
+      console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      throw new Error(
+        `No se pudieron subir los archivos: ${error?.message || "Error desconocido"}`
       );
     }
   }
