@@ -151,14 +151,12 @@
         <template v-if="getPorcentajeAFavor(0) > 50">
           Se
           <span class="font-semibold">aprobó</span>
-          la propuesta de Aumento de Capital mediante
-          <span class="font-semibold">Aportes Dinerarios.</span>
+          {{ props.mensajeAprobacion }}
         </template>
         <template v-else>
           No se
           <span class="font-semibold">aprobó</span>
-          la propuesta de Aumento de Capital mediante
-          <span class="font-semibold">Aportes Dinerarios.</span>
+          {{ props.mensajeAprobacion }}
         </template>
       </p>
     </div>
@@ -166,10 +164,9 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from "vue";
+  import { computed, ref, watch } from "vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/stores/useVotacionStore";
-  import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
 
   interface Votante {
     id: string;
@@ -189,14 +186,22 @@
 
   interface Props {
     preguntas?: string[];
-    accionistas?: string[]; // Legacy, mantener para compatibilidad
-    votantes?: Votante[]; // Nuevo: lista de votantes con datos completos
-    textoVotacion?: string; // Texto dinámico de votación
+    accionistas?: string[];
+    mensajeAprobacion?: string;
+    votantes?: Votante[] | any; // Aceptar también ComputedRef
+    textoVotacion?: string | any; // Aceptar también ComputedRef
   }
 
   const props = withDefaults(defineProps<Props>(), {
-    preguntas: () => [],
-    accionistas: () => [],
+    preguntas: () => [
+      "¿Se aprueba el aumento de capital vía Aportes Dinerarios por S/ 2,000, mediante la emisión de 2,000 acciones nuevas de valor nominal S/ 1. El capital social se incrementa de S/ 1,000 a S/ 3,000, y el número de acciones de 1,000 a 3,000.?",
+    ],
+    accionistas: () => [
+      "Olenka Sanchez Aguilar",
+      "Melanie Sanchez Aguilar",
+      "Braulio Sanchez Aguilar",
+    ],
+    mensajeAprobacion: "la propuesta de Aumento de Capital mediante Aportes Dinerarios.",
     votantes: () => [],
     textoVotacion: "",
   });
@@ -213,17 +218,18 @@
       votantes: props.votantes,
       tipoVotantes: typeof props.votantes,
       esArray: Array.isArray(props.votantes),
-      tieneValue: props.votantes && typeof props.votantes === 'object' && 'value' in props.votantes,
+      tieneValue:
+        props.votantes && typeof props.votantes === "object" && "value" in props.votantes,
       accionistas: props.accionistas,
     });
-    
+
     // ✅ Extraer valor si es ComputedRef
     let votantesValue = props.votantes;
-    if (votantesValue && typeof votantesValue === 'object' && 'value' in votantesValue) {
+    if (votantesValue && typeof votantesValue === "object" && "value" in votantesValue) {
       votantesValue = (votantesValue as any).value;
       console.log("[MayoriaVotacion] Votantes extraídos del computed:", votantesValue);
     }
-    
+
     if (votantesValue && Array.isArray(votantesValue) && votantesValue.length > 0) {
       console.log("[MayoriaVotacion] Usando votantes:", votantesValue);
       console.log("[MayoriaVotacion] Cantidad de votantes:", votantesValue.length);
@@ -236,9 +242,13 @@
       });
       return votantesValue;
     }
-    
+
     // Legacy: convertir array de strings a formato Votante
-    if (props.accionistas && Array.isArray(props.accionistas) && props.accionistas.length > 0) {
+    if (
+      props.accionistas &&
+      Array.isArray(props.accionistas) &&
+      props.accionistas.length > 0
+    ) {
       console.log("[MayoriaVotacion] Usando accionistas legacy:", props.accionistas);
       return props.accionistas.map((nombre, index) => ({
         id: `legacy-${index}`,
@@ -247,7 +257,7 @@
         nombreCompleto: nombre,
       }));
     }
-    
+
     console.warn("[MayoriaVotacion] No hay votantes ni accionistas");
     console.warn("[MayoriaVotacion] votantesValue:", votantesValue);
     console.warn("[MayoriaVotacion] props.accionistas:", props.accionistas);
@@ -281,7 +291,7 @@
     console.log("[MayoriaVotacion] hasVotacion:", votacionStore.hasVotacion);
     console.log("[MayoriaVotacion] itemVotacion:", votacionStore.itemVotacion);
     console.log("[MayoriaVotacion] listaVotantes:", listaVotantes.value);
-    
+
     if (votacionStore.hasVotacion && votacionStore.itemVotacion) {
       const item = votacionStore.itemVotacion;
       console.log("[MayoriaVotacion] Item de votación encontrado:", {
@@ -289,7 +299,7 @@
         votosCount: item.votos.length,
         votos: item.votos,
       });
-      
+
       listaVotantes.value.forEach((votante, index) => {
         const voto = votacionStore.getVotoByAccionista(votante.accionistaId);
         console.log(`[MayoriaVotacion] Votante ${index} (${votante.accionistaId}):`, {
@@ -301,7 +311,7 @@
           console.log(`[MayoriaVotacion] Voto cargado para votante ${index}:`, voto.valor);
         }
       });
-      
+
       console.log("[MayoriaVotacion] Votos cargados:", votos.value[0]);
     } else {
       console.log("[MayoriaVotacion] No hay votación o item de votación");

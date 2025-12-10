@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, watch } from "vue";
+  import { computed } from "vue";
   import SlotWrapper from "~/components/containers/SlotWrapper.vue";
   import TitleH2 from "~/components/titles/TitleH2.vue";
   import MayoriaVotacion from "./MayoriaVotacion.vue";
@@ -22,30 +22,48 @@
 
   interface Props {
     modelValue?: string;
-    votantes?: Votante[] | any; // ✅ Aceptar también ComputedRef
-    textoVotacion?: string | any; // ✅ Aceptar también ComputedRef
+    title?: string;
+    subtitle?: string;
+    titleColor?: string;
+    mensajeUnanimidad?: string;
+    mensajeAprobacion?: string;
+    preguntas?: string[];
+    accionistas?: string[];
+    votantes?: Votante[] | any; // Aceptar también ComputedRef
+    textoVotacion?: string | any; // Aceptar también ComputedRef
   }
 
   const props = withDefaults(defineProps<Props>(), {
     modelValue: "unanimidad",
+    // Defaults legacy
+    title: "Votación del aumento de capital",
+    subtitle:
+      "Votación para aprobar el aumento capital realizado mediante aportes dinerarios.",
+    titleColor: "text-gray-900",
+    mensajeUnanimidad:
+      "Confirmo que todos los accionistas están de acuerdo con realizar el aumento de capital mediante Aportes Dinerarios por la suma de S/ 2,000.00 (Dos Mil y 00/100 Soles), con la emisión de 2,000 nuevas acciones con un valor nominal de S/ 1.00. (Un Sol).",
+    mensajeAprobacion: "la propuesta de Aumento de Capital mediante Aportes Dinerarios.",
+    preguntas: () => [],
+    accionistas: () => [],
+    // Defaults nuevos
     votantes: () => [],
     textoVotacion: "",
   });
 
-  // ✅ Extraer valores si son computed
+  // Extraer valores si son computed (para props nuevas)
   const votantesValue = computed(() => {
     const v = props.votantes;
     if (!v) return [];
     if (Array.isArray(v)) return v;
-    if (typeof v === 'object' && 'value' in v) return (v as any).value || [];
+    if (typeof v === "object" && "value" in v) return (v as any).value || [];
     return [];
   });
 
   const textoVotacionValue = computed(() => {
     const t = props.textoVotacion;
     if (!t) return "";
-    if (typeof t === 'string') return t;
-    if (typeof t === 'object' && 'value' in t) return (t as any).value || "";
+    if (typeof t === "string") return t;
+    if (typeof t === "object" && "value" in t) return (t as any).value || "";
     return "";
   });
 
@@ -81,10 +99,7 @@
 
 <template>
   <SlotWrapper>
-    <TitleH2
-      title="Votación del aumento de capital"
-      subtitle="Votación para aprobar el aumento capital realizado mediante aportes dinerarios."
-    />
+    <TitleH2 :title="props.title" :subtitle="props.subtitle" :title-color="props.titleColor" />
 
     <p class="t-h5 text-gray-800 font-primary">Método de votación</p>
     <div class="flex gap-8">
@@ -162,15 +177,22 @@
     <div class="mt-10">
       <UnanimidadVotacion
         v-if="selectedMethod === 'unanimidad'"
-        :texto-votacion="textoVotacionValue"
+        :mensaje-confirmacion="
+          props.mensajeUnanimidad ||
+          (textoVotacionValue
+            ? `Confirmo que todos los accionistas están de acuerdo con ${textoVotacionValue}`
+            : undefined)
+        "
       />
       <MayoriaVotacion
         v-if="selectedMethod === 'mayoria'"
+        :preguntas="props.preguntas"
+        :accionistas="props.accionistas"
+        :mensaje-aprobacion="props.mensajeAprobacion"
         :votantes="votantesValue"
         :texto-votacion="textoVotacionValue"
         @cambiar-voto="(accionistaId, valor) => emit('cambiar-voto', accionistaId, valor)"
       />
     </div>
-
   </SlotWrapper>
 </template>
