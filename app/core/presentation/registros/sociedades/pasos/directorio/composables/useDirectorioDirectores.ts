@@ -1,4 +1,5 @@
 import type { Ref } from "vue";
+import { useConfirmDelete } from "~/composables/useConfirmDelete";
 import type { DirectorioDTO } from "~/core/hexag/registros/sociedades/pasos/directorio/application";
 import type { DirectorConfig } from "~/core/hexag/registros/sociedades/pasos/directorio/domain/entities/director.entity";
 import { TipoDirector } from "~/core/hexag/registros/sociedades/pasos/directorio/domain/enums/director-tipo.enum";
@@ -41,24 +42,40 @@ export function useDirectorioDirectores(options: UseDirectorioDirectoresOptions)
     presidenteDirectorioRef,
   } = options;
 
-  /**
-   * Elimina un director y limpia la referencia del presidente si era el director eliminado
-   * @param directorId - ID del director a eliminar
-   */
-  const handleDeleteDirector = async (directorId: string) => {
-    try {
-      await deleteDirectorFn(directorId);
+  // Estado para el modal de confirmación de eliminación
+  const idDirectorAEliminar = ref<string | null>(null);
+
+  const confirmDelete = useConfirmDelete(
+    async () => {
+      if (!idDirectorAEliminar.value) {
+        throw new Error("No se encontró el ID del director para eliminar");
+      }
+      await deleteDirectorFn(idDirectorAEliminar.value);
 
       // Si el director eliminado era el presidente, limpiar la referencia
-      if (directorioForm.presidenteId === directorId) {
+      if (directorioForm.presidenteId === idDirectorAEliminar.value) {
         directorioForm.presidenteId = null;
         form.value.presidenteDirectorio = "";
         presidenteDirectorioRef.value = "";
       }
-    } catch (error) {
-      console.error("Error al eliminar director:", error);
-      throw error;
+    },
+    {
+      title: "Confirmar eliminación",
+      message:
+        "¿Estás seguro de que deseas eliminar este director? Esta acción no se puede deshacer.",
+      confirmLabel: "Eliminar",
+      cancelLabel: "Cancelar",
     }
+  );
+
+  /**
+   * Abre el modal de confirmación para eliminar un director
+   * @param directorId - ID del director a eliminar
+   */
+  const handleDeleteDirector = (directorId: string) => {
+    // Guardar el ID y abrir el modal de confirmación
+    idDirectorAEliminar.value = directorId;
+    confirmDelete.open();
   };
 
   /**
@@ -113,5 +130,7 @@ export function useDirectorioDirectores(options: UseDirectorioDirectoresOptions)
   return {
     handleDeleteDirector,
     handleDirectorSaved,
+    // Modal de confirmación de eliminación
+    confirmDelete,
   };
 }

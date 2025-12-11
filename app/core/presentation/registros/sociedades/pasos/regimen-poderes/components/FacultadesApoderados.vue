@@ -9,15 +9,17 @@
   import TableHead from "~/components/ui/table/TableHead.vue";
   import TableHeader from "~/components/ui/table/TableHeader.vue";
   import TableRow from "~/components/ui/table/TableRow.vue";
+  import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
   import type { ApoderadoFacultadRow } from "../types/apoderadosFacultades";
 
   interface Props {
     apoderadoItem: ApoderadoFacultadRow;
-    actions: {
+    actions?: {
       label: string;
       icon?: string;
       onClick: (idFacultad: string, idApoderado: string) => void;
     }[];
+    mode: EntityModeEnum;
   }
 
   const props = defineProps<Props>();
@@ -48,7 +50,7 @@
         toggleFacultad(id);
       },
     },
-    ...props.actions.map((action) => ({
+    ...(props.actions ?? []).map((action) => ({
       ...action,
       onClick: (idFacultad: string) => {
         action.onClick(idFacultad, props.apoderadoItem.id);
@@ -73,6 +75,7 @@
       </div>
 
       <ActionButton
+        v-if="mode !== EntityModeEnum.RESUMEN"
         variant="secondary"
         label="Agregar Facultad"
         size="lg"

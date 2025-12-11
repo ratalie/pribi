@@ -84,7 +84,7 @@ export function mapAccionistaDomainToStore(
         numeroDocumento: persona.ruc,
         razonSocial: persona.razonSocial,
         direccion: persona.direccion || "",
-        tipoFondo: persona.tipoFondo || "CERRADO",
+        tipoFondo: persona.tipoFondo || "PRIVADO",
         numeroDocumentoSociedadAdministradora: persona.fiduciario?.ruc || "",
         tipoDocumentoSociedadAdministradora: "RUC",
         razonSocialSociedadAdministradora: persona.fiduciario?.razonSocial || "",

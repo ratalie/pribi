@@ -16,10 +16,12 @@
     fechaInicioDirectorioSchema,
   } from "~/core/presentation/registros/sociedades/pasos/directorio/schemas/directorio";
   import type { TypeOption } from "~/types/TypeOptions";
+  import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   interface Props {
     form: DirectorioFormUI;
     termOptions: TypeOption[];
+    mode: EntityModeEnum;
   }
 
   const props = defineProps<Props>();
@@ -79,14 +81,18 @@
           :max="9"
           placeholder="3"
           size="large"
-          :is-disabled="localForm.cantidadPersonalizado"
+          :is-disabled="localForm.cantidadPersonalizado || mode === EntityModeEnum.RESUMEN"
         />
         <p class="t-t2 text-gray-500 font-secondary">Valor mínimo: {{ 2 }}.</p>
       </div>
 
       <!-- Segunda columna: Checkbox -->
       <div class="flex items-center gap-2">
-        <Checkbox id="cantidad-personalizado" v-model="localForm.cantidadPersonalizado" />
+        <Checkbox
+          id="cantidad-personalizado"
+          v-model="localForm.cantidadPersonalizado"
+          :is-disabled="mode === EntityModeEnum.RESUMEN"
+        />
         <label
           for="cantidad-personalizado"
           class="t-t2 font-secondary text-gray-800 font-medium cursor-pointer"
@@ -110,6 +116,7 @@
           :max="9"
           placeholder="3"
           size="large"
+          :is-disabled="mode === EntityModeEnum.RESUMEN"
         />
         <p class="t-t2 text-gray-500 font-secondary">Valor mínimo: {{ 3 }}.</p>
       </div>
@@ -128,6 +135,7 @@
           :max="9"
           placeholder="3"
           size="large"
+          :is-disabled="mode === EntityModeEnum.RESUMEN"
         />
       </div>
 
@@ -139,6 +147,7 @@
           label="Duración del Directorio"
           placeholder="Duración del Directorio"
           :schema="duracionDirectorioSchema"
+          :is-disabled="mode === EntityModeEnum.RESUMEN"
         />
       </div>
       <div />
@@ -149,6 +158,7 @@
           label="Fecha de Inicio del Directorio"
           placeholder="Ingrese la fecha de inicio del directorio"
           :schema="fechaInicioDirectorioSchema"
+          :is-disabled="mode === EntityModeEnum.RESUMEN"
         />
       </div>
       <div class="flex gap-2">
@@ -158,6 +168,7 @@
           label="Fecha de Fin del Directorio"
           placeholder="Ingrese la fecha de fin del directorio"
           :schema="fechaFinDirectorioSchema"
+          :is-disabled="mode === EntityModeEnum.RESUMEN"
         />
       </div>
 
@@ -172,6 +183,7 @@
           :max="100"
           placeholder="0"
           size="large"
+          :is-disabled="mode === EntityModeEnum.RESUMEN"
         />
         <p class="t-t2 text-gray-500 font-secondary">
           Mínimo requerido: la mitad más uno de sus miembros.
@@ -188,6 +200,7 @@
           :max="100"
           placeholder="0"
           size="large"
+          :is-disabled="mode === EntityModeEnum.RESUMEN"
         />
         <p class="t-t2 text-gray-500 font-secondary">
           Mínimo requerido: la mitad más uno de los participantes.
@@ -207,6 +220,7 @@
           opcion-a="El Directorio"
           opcion-b="La Asamblea de Accionistas"
           variant="default"
+          :is-disabled="mode === EntityModeEnum.RESUMEN"
         />
       </div>
       <div class="flex flex-col gap-2 col-span-2">
@@ -223,6 +237,7 @@
           opcion-a="El Gerente General"
           opcion-b="La Junta de Accionistas lo designa"
           variant="default"
+          :is-disabled="mode === EntityModeEnum.RESUMEN"
         />
       </div>
 
@@ -238,7 +253,11 @@
             Selecciona una de las dos opciones.
           </span>
         </div>
-        <SimpleSwitchYesNo v-model="localForm.reeleccionDirectores" label="" />
+        <SimpleSwitchYesNo
+          v-model="localForm.reeleccionDirectores"
+          label=""
+          :is-disabled="mode === EntityModeEnum.RESUMEN"
+        />
       </div>
     </Form>
   </SimpleCard>

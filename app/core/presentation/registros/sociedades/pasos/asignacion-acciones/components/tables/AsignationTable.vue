@@ -3,6 +3,7 @@
   import { computed, ref } from "vue";
   import BaseButton from "~/components/base/buttons/BaseButton.vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+  import ConfirmDeleteModal from "~/components/base/modal/ConfirmDeleteModal.vue";
   import DataTableDropDown from "~/components/base/tables/DataTableDropDown.vue";
   import Table from "~/components/ui/table/Table.vue";
   import TableBody from "~/components/ui/table/TableBody.vue";
@@ -10,12 +11,15 @@
   import TableHead from "~/components/ui/table/TableHead.vue";
   import TableHeader from "~/components/ui/table/TableHeader.vue";
   import TableRow from "~/components/ui/table/TableRow.vue";
+  import { useConfirmDelete } from "~/composables/useConfirmDelete";
+  import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
   import { useRegistroAsignacionAccionesStore } from "../../stores/useRegistroAsignacionAccionesStore";
   import AsignarAccionesModal from "../modals/AsignarAccionesModal.vue";
 
   interface Props {
     titleMenu?: string;
     societyProfileId?: string;
+    mode?: EntityModeEnum;
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -52,6 +56,34 @@
   const selectedAccionId = ref<string | null>(null);
   const modalMode = ref<"crear" | "editar">("crear");
 
+  // Estado para el modal de confirmación de eliminación
+  const accionistaIdAEliminar = ref<string | null>(null);
+  const accionIdAEliminar = ref<string | null>(null);
+
+  const confirmDelete = useConfirmDelete(
+    async () => {
+      if (!accionistaIdAEliminar.value || !accionIdAEliminar.value) {
+        throw new Error("No se encontraron los IDs para eliminar");
+      }
+      const profileId = societyProfileId.value;
+      if (!profileId) {
+        throw new Error("No hay societyProfileId disponible");
+      }
+      await asignacionAccionesStore.removeAsignacionAccion(
+        profileId,
+        accionistaIdAEliminar.value,
+        accionIdAEliminar.value
+      );
+    },
+    {
+      title: "Confirmar eliminación",
+      message:
+        "¿Estás seguro de que deseas eliminar esta asignación de acciones? Esta acción no se puede deshacer.",
+      confirmLabel: "Eliminar",
+      cancelLabel: "Cancelar",
+    }
+  );
+
   function toggleRow(id: string) {
     if (expanded.value.includes(id)) {
       expanded.value = expanded.value.filter((e) => e !== id);
@@ -82,13 +114,11 @@
     openModal(accionistaId, accionId);
   }
 
-  async function handleDelete(accionistaId: string, accionId: string) {
-    const profileId = societyProfileId.value;
-    if (!profileId) {
-      console.error("No hay societyProfileId disponible");
-      return;
-    }
-    await asignacionAccionesStore.removeAsignacionAccion(profileId, accionistaId, accionId);
+  function handleDelete(accionistaId: string, accionId: string) {
+    // Guardar los IDs y abrir el modal de confirmación
+    accionistaIdAEliminar.value = accionistaId;
+    accionIdAEliminar.value = accionId;
+    confirmDelete.open();
   }
 
   // Obtener el ID de la asignación directamente desde la fila
@@ -143,7 +173,7 @@
         >
           % Porcentaje de Participación por clase
         </TableHead>
-        <TableHead class="h-16" />
+        <TableHead v-if="mode !== EntityModeEnum.RESUMEN" class="h-16" />
       </TableRow>
     </TableHeader>
     <TableBody>
@@ -180,6 +210,7 @@
           </TableCell>
           <TableCell>
             <ActionButton
+              v-if="mode !== EntityModeEnum.RESUMEN"
               variant="secondary"
               size="sm"
               label="Asignar"
@@ -209,7 +240,7 @@
               {{ accion.porcentaje }}%
             </TableCell>
             <!-- Celda de acciones -->
-            <TableCell class="w-12">
+            <TableCell v-if="mode !== EntityModeEnum.RESUMEN" class="w-12">
               <DataTableDropDown
                 :item-id="getAccionIdForRow(accion)"
                 :title-menu="props.titleMenu"
@@ -230,5 +261,17 @@
     :society-profile-id="societyProfileId"
     @close="closeModal"
     @submit="closeModal"
+  />
+
+  <!-- Modal de confirmación de eliminación -->
+  <ConfirmDeleteModal
+    v-model="confirmDelete.isOpen.value"
+    :title="confirmDelete.title"
+    :message="confirmDelete.message"
+    :confirm-label="confirmDelete.confirmLabel"
+    :cancel-label="confirmDelete.cancelLabel"
+    :is-loading="confirmDelete.isLoading.value"
+    @confirm="confirmDelete.handleConfirm"
+    @cancel="confirmDelete.handleCancel"
   />
 </template>

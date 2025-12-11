@@ -81,7 +81,7 @@ export const useRegistroAsignacionAccionesStore = defineStore("registroAsignacio
         } else if (accionista.tipoAccionista === "sucursal") {
           accionistaNombre = accionista.nombreSucursal;
         } else if (accionista.tipoAccionista === "fideicomisos") {
-          accionistaNombre = accionista.identificacionFideicomiso;
+          accionistaNombre = accionista.tipoAccionista;
         } else {
           accionistaNombre = accionista.razonSocial || "Accionista desconocido";
         }

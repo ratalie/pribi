@@ -37,7 +37,7 @@ export interface PersonaJuridica extends PersonaBase {
   departamento?: string;
   pais?: string;
   jurisdiccion?: "peruana" | "extranjera";
-  representadoPor?: Representante | null;
+  representante?: Representante | null;
 }
 
 export interface PersonaSucursal extends PersonaBase {
@@ -55,7 +55,7 @@ export interface PersonaFondoInversion extends PersonaBase {
   ruc: string;
   razonSocial: string;
   direccion?: string;
-  tipoFondo: "ABIERTO" | "CERRADO" | "MIXTO" | string;
+  tipoFondo: "PUBLICO" | "PRIVADO" | string;
   representante?: Representante;
   fiduciario?: {
     ruc?: string;
@@ -97,7 +97,6 @@ export type Persona =
   | PersonaFondoInversion
   | PersonaFideicomiso
   | PersonaSucesionIndivisa;
-
 /**
  * Type guards para Persona
  */

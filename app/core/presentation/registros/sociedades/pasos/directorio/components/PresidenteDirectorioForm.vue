@@ -8,10 +8,12 @@
   import type { DirectorioFormUI } from "~/core/presentation/registros/sociedades/pasos/directorio/composables/useDirectorioFormSync";
   import { presidenteDirectorioSchema } from "~/core/presentation/registros/sociedades/pasos/directorio/schemas/directorio";
   import type { TypeOption } from "~/types/TypeOptions";
+  import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   interface Props {
     form: DirectorioFormUI;
     presidenteOptions: TypeOption[];
+    mode: EntityModeEnum;
   }
 
   const props = defineProps<Props>();
@@ -68,7 +70,11 @@
             Selecciona una de las dos opciones.
           </span>
         </div>
-        <SimpleSwitchYesNo v-model="localForm.presideJuntas" label="" />
+        <SimpleSwitchYesNo
+          v-model="localForm.presideJuntas"
+          label=""
+          :is-disabled="mode === EntityModeEnum.RESUMEN"
+        />
       </div>
 
       <div class="flex justify-between gap-2 col-span-2">
@@ -80,7 +86,11 @@
             Selecciona una de las dos opciones.
           </span>
         </div>
-        <SimpleSwitchYesNo v-model="localForm.votoDirimente" label="" />
+        <SimpleSwitchYesNo
+          v-model="localForm.votoDirimente"
+          label=""
+          :is-disabled="mode === EntityModeEnum.RESUMEN"
+        />
       </div>
 
       <div class="flex flex-col gap-2 w-1/2">
@@ -91,6 +101,7 @@
           label="Presidente del Directorio"
           placeholder="Seleccionar"
           :schema="presidenteDirectorioSchema"
+          :is-disabled="mode === EntityModeEnum.RESUMEN"
         />
         <span class="t-b2 text-gray-500 font-secondary">
           Este campo se habilita al registrar al menos un director titular.

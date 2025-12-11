@@ -128,9 +128,17 @@
           type="button"
           tabindex="-1"
           class="p-0 flex items-center justify-center"
-          :disabled="!canIncrement"
-          :class="{ 'opacity-50 cursor-not-allowed': !canIncrement }"
-          @click="increment"
+          :disabled="props.isDisabled || !canIncrement"
+          :class="{
+            'opacity-50 cursor-not-allowed': props.isDisabled || !canIncrement,
+          }"
+          @click="
+            () => {
+              if (!props.isDisabled) {
+                increment();
+              }
+            }
+          "
         >
           <ChevronUp :class="[iconSize, 'text-gray-600']" />
         </button>
@@ -138,9 +146,17 @@
           type="button"
           tabindex="-1"
           class="p-0 flex items-center justify-center"
-          :disabled="!canDecrement"
-          :class="{ 'opacity-50 cursor-not-allowed': !canDecrement }"
-          @click="decrement"
+          :disabled="props.isDisabled || !canDecrement"
+          :class="{
+            'opacity-50 cursor-not-allowed': props.isDisabled || !canDecrement,
+          }"
+          @click="
+            () => {
+              if (!props.isDisabled) {
+                decrement();
+              }
+            }
+          "
         >
           <ChevronDown :class="[iconSize, 'text-gray-600']" />
         </button>

@@ -50,7 +50,8 @@ const mapPersona = (data: BackendPersona | undefined): Persona => {
         departamento: base.departamento,
         pais: base.pais,
         jurisdiccion: base.jurisdiccion,
-        representadoPor: normalizeRepresentante(base.representadoPor),
+        // El backend envía "representante", mapearlo al dominio
+        representante: normalizeRepresentante(base.representante ?? base.representadoPor),
       } as PersonaJuridica;
     case "SUCURSAL":
       return {
@@ -70,7 +71,7 @@ const mapPersona = (data: BackendPersona | undefined): Persona => {
         ruc: base.ruc ?? "",
         razonSocial: base.razonSocial ?? "",
         direccion: base.direccion,
-        tipoFondo: base.tipoFondo ?? "CERRADO",
+        tipoFondo: base.tipoFondo ?? "PRIVADO",
         representante: normalizeRepresentante(base.representante),
         fiduciario: base.fiduciario
           ? {

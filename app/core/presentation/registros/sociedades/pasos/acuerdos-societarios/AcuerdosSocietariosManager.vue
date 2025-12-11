@@ -4,7 +4,8 @@
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import SimpleCardDropDown from "~/components/base/cards/SimpleCardDropDown.vue";
   import FileUploadDragDrop from "~/components/base/inputs/FileUploadDragDrop.vue";
-  import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import SummaryTable from "./components/SummaryTable.vue";
   import { useAcuerdosSocietariosController } from "./composables/useAcuerdosSocietariosController";
 
   interface Props {
@@ -23,12 +24,20 @@
 </script>
 
 <template>
-  <div class="p-14 flex flex-col gap-12">
+  <div
+    :class="[
+      'flex flex-col gap-12',
+      mode !== EntityModeEnum.RESUMEN
+        ? ' p-14 '
+        : 'border border-gray-100 rounded-xl py-12 px-10',
+    ]"
+  >
     <CardTitle
       title="Acuerdos Societarios Especiales"
-      body="Complete todos los campos requeridos."
+      :body="mode !== EntityModeEnum.RESUMEN ? 'Complete todos los campos requeridos.' : ''"
     />
-    <div class="flex flex-col gap-8">
+
+    <div v-if="mode !== EntityModeEnum.RESUMEN" class="flex flex-col gap-8">
       <span class="t-h5 text-gray-800 font-medium font-primary">Estatutos Sociales</span>
       <SimpleCardDropDown>
         <template #title>
@@ -157,5 +166,10 @@
         />
       </SimpleCard>
     </div>
+
+    <SummaryTable
+      v-if="mode === EntityModeEnum.RESUMEN"
+      :items="acuerdosSocietariosStore.acuerdoSocietario"
+    />
   </div>
 </template>

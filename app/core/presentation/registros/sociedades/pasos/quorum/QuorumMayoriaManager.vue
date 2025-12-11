@@ -38,7 +38,6 @@
     setValue,
     isLoading,
     isReadonly,
-    errorMessage,
     relationshipErrors,
     hasValidationErrors,
   } = useQuorumForm({
@@ -93,23 +92,27 @@
     }
   });
 
-  const isPreview = computed(() => isReadonly.value);
+  const isPreview = computed(() => isReadonly.value || props.mode === EntityModeEnum.RESUMEN);
   // disableNext ya no es necesario porque el botón está en el layout
 </script>
 
 <template>
-  <div class="flex flex-col gap-8 p-6 md:p-10">
+  <div
+    :class="[
+      'flex flex-col gap-8 md:p-10',
+      mode !== EntityModeEnum.RESUMEN
+        ? ' p-14 '
+        : 'border border-gray-100 rounded-xl py-12 px-10',
+    ]"
+  >
     <CardTitle
       title="Quórums y Mayorías para Adopción de Acuerdos"
-      body="Ingrese los porcentajes mínimos requeridos para la instalación de juntas y toma de acuerdos."
+      :body="
+        mode !== EntityModeEnum.RESUMEN
+          ? 'Ingrese los porcentajes mínimos requeridos para la instalación de juntas y toma de acuerdos.'
+          : ''
+      "
     />
-
-    <p
-      v-if="errorMessage"
-      class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-    >
-      {{ errorMessage }}
-    </p>
 
     <div
       v-if="isLoading"

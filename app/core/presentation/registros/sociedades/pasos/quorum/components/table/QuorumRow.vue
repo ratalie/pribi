@@ -70,19 +70,26 @@
         <div v-if="props.ruler" class="flex gap-2 items-center shrink-0">
           <p class="whitespace-nowrap">{{ ruler }}</p>
           <div class="relative shrink-0">
+            <!-- Modo Preview: Mostrar solo el valor con fondo gris -->
             <div
+              v-if="isPreview"
+              class="px-2 flex items-center justify-center h-10 w-24 border border-gray-700 rounded-lg bg-layout-gray-300 pointer-events-none"
+            >
+              <span class="text-gray-700 t-t2 font-secondary font-semibold">{{ value }}</span>
+              <span class="text-gray-700 t-t2 font-secondary font-semibold">%</span>
+            </div>
+
+            <!-- Modo Normal: Mostrar el input -->
+            <div
+              v-else
               class="px-2 flex items-center w-24 border rounded-lg"
-              :class="[
-                showError ? 'border-red-500' : 'border-gray-700',
-                isPreview ? 'bg-layout-gray-300 pointer-events-none' : '',
-              ]"
+              :class="[showError ? 'border-red-500' : 'border-gray-700']"
             >
               <InputPercentZod
                 v-model="value"
                 name="quorum-percent-input"
                 :schema="porcentajeSchema"
                 class="px-0 text-gray-700 t-t2 font-secondary font-semibold border-none focus:border-none outline-none focus:outline-none"
-                :is-disabled="isPreview"
               />
               <span>%</span>
             </div>

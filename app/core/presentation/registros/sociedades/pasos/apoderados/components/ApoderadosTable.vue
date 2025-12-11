@@ -12,7 +12,7 @@
   interface Props {
     items: ApoderadoRow[];
     titleMenu?: string;
-    actions: {
+    actions?: {
       label: string;
       icon?: string;
       separatorLine?: boolean;

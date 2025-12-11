@@ -1,4 +1,5 @@
 import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
+import { useConfirmDelete } from "~/composables/useConfirmDelete";
 import { useTiposFacultadStore } from "../stores/modal/useTiposFacultadStore";
 import { useRegimenFacultadesStore } from "../stores/useRegimenFacultadesStore";
 import type { TipoFacultadRow } from "../types/facultades";
@@ -71,21 +72,32 @@ export const useTiposFacultades = (profileId: string) => {
     isTipoFacultadesModalOpen.value = true;
   };
 
-  const handleDeleteMode = async (id: string) => {
-    try {
-      const tipoFacultad = regimenFacultadesStore.tipoFacultades.find(
-        (facultad) => facultad.id === id
-      );
+  // Estado para el modal de confirmación de eliminación
+  const idTipoFacultadAEliminar = ref<string | null>(null);
 
-      if (!tipoFacultad) {
-        throw new Error("Tipo de facultad no encontrada para eliminar");
+  const confirmDelete = useConfirmDelete(
+    async () => {
+      if (!idTipoFacultadAEliminar.value) {
+        throw new Error("No se encontró el ID del tipo de facultad para eliminar");
       }
-
-      await regimenFacultadesStore.eliminarTipoFacultad(profileId, tipoFacultad.id);
-    } catch (error) {
-      console.error(error);
-      throw error;
+      await regimenFacultadesStore.eliminarTipoFacultad(
+        profileId,
+        idTipoFacultadAEliminar.value
+      );
+    },
+    {
+      title: "Confirmar eliminación",
+      message:
+        "¿Estás seguro de que deseas eliminar este tipo de poder? Esta acción no se puede deshacer.",
+      confirmLabel: "Eliminar",
+      cancelLabel: "Cancelar",
     }
+  );
+
+  const handleDeleteMode = (id: string) => {
+    // Guardar el ID y abrir el modal de confirmación
+    idTipoFacultadAEliminar.value = id;
+    confirmDelete.open();
   };
 
   const tipoFacultadesActions = [
@@ -110,5 +122,7 @@ export const useTiposFacultades = (profileId: string) => {
     isTipoFacultadesModalOpen,
     handleSubmitTipoFacultad,
     handleCloseModal,
+    // Modal de confirmación de eliminación
+    confirmDelete,
   };
 };

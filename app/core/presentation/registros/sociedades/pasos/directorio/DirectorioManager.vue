@@ -5,6 +5,7 @@
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
+  import ConfirmDeleteModal from "~/components/base/modal/ConfirmDeleteModal.vue";
   import { getColumns } from "~/components/base/tables/getColumns";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import Switch from "~/components/ui/switch/Switch.vue";
@@ -64,7 +65,6 @@
     load: loadDirectorio,
     submit: submitDirectorio,
     isReadonly: isReadonlyDirectorio,
-    errorMessage: directorioErrorMessage,
   } = useDirectorioForm({
     societyId,
     mode: computed(() => props.mode),
@@ -174,13 +174,15 @@
   });
 
   // Composable para manejar la lógica de directores
-  const { handleDeleteDirector, handleDirectorSaved } = useDirectorioDirectores({
-    directores,
-    deleteDirector,
-    directorioForm,
-    form,
-    presidenteDirectorioRef,
-  });
+  const { handleDeleteDirector, handleDirectorSaved, confirmDelete } = useDirectorioDirectores(
+    {
+      directores,
+      deleteDirector,
+      directorioForm,
+      form,
+      presidenteDirectorioRef,
+    }
+  );
 
   // Acciones para el menú de opciones
   const directoresActions = [
@@ -248,9 +250,19 @@
 
 <template>
   <div :class="tieneDirectorio ? '' : 'h-full'">
-    <div class="p-14 flex flex-col gap-12">
-      <CardTitle title="Directorio" body="Complete todos los campos requeridos.">
-        <template #switch>
+    <div
+      :class="[
+        'flex flex-col gap-12',
+        mode !== EntityModeEnum.RESUMEN
+          ? 'p-14'
+          : 'border border-gray-100 rounded-xl py-12 px-10',
+      ]"
+    >
+      <CardTitle
+        title="Directorio"
+        :body="mode !== EntityModeEnum.RESUMEN ? 'Complete todos los campos requeridos.' : ''"
+      >
+        <template v-if="mode !== EntityModeEnum.RESUMEN" #switch>
           <Switch v-model="tieneDirectorio" />
           <VDropdownComponent
             message-dropdown="Este paso es opcional. Puedes activar o desactivar el Directorio según corresponda a tu sociedad. Para las S.A., el Directorio está siempre activo."
@@ -258,18 +270,25 @@
           />
         </template>
       </CardTitle>
-      <DirectorioConfigForm v-model:form="form" :term-options="termOptions" />
+      <DirectorioConfigForm
+        v-if="tieneDirectorio"
+        v-model:form="form"
+        :term-options="termOptions"
+        :mode="mode"
+      />
 
       <PresidenteDirectorioForm
         v-if="tieneDirectorio"
         v-model:form="form"
         :presidente-options="presidenteOptions"
+        :mode="mode"
       />
 
       <SimpleCard v-if="tieneDirectorio">
         <CardTitle title="Directores" body="">
           <template #actions>
             <ActionButton
+              v-if="mode !== EntityModeEnum.RESUMEN"
               variant="secondary"
               label="Agregar Director"
               size="xl"
@@ -282,32 +301,11 @@
           :columns="directoresColumnsDef"
           :data="directoresData"
           title-menu="Acciones"
-          :actions="directoresActions"
+          :actions="mode !== EntityModeEnum.RESUMEN ? directoresActions : undefined"
         />
       </SimpleCard>
 
       <DirectorioEmptyState v-else />
-
-      <div
-        v-if="tieneDirectorio"
-        class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
-      >
-        <p v-if="directorioErrorMessage" class="text-sm text-red-600">
-          {{ directorioErrorMessage }}
-        </p>
-        <!-- <div class="flex justify-end gap-3">
-          <Button
-            variant="ghost"
-            type="button"
-            :disabled="isSavingDirectorio"
-            @click="handleReset"
-          >
-            Restablecer
-          </Button>
-           Botón "Siguiente" ahora está en el layout (flow-layout.vue) -->
-        <!-- Se maneja automáticamente mediante useFlowLayoutNext -->
-        <!-- </div> -->
-      </div>
 
       <AgregarDirectorModal
         v-model="isModalOpen"
@@ -316,6 +314,18 @@
         :society-id="props.societyId"
         @close="closeModal"
         @saved="handleDirectorSaved"
+      />
+
+      <!-- Modal de confirmación de eliminación -->
+      <ConfirmDeleteModal
+        v-model="confirmDelete.isOpen.value"
+        :title="confirmDelete.title"
+        :message="confirmDelete.message"
+        :confirm-label="confirmDelete.confirmLabel"
+        :cancel-label="confirmDelete.cancelLabel"
+        :is-loading="confirmDelete.isLoading.value"
+        @confirm="confirmDelete.handleConfirm"
+        @cancel="confirmDelete.handleCancel"
       />
     </div>
   </div>
