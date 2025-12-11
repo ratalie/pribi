@@ -56,6 +56,19 @@ export function getDelegacionAuditoresRoutes(basePath: string): Record<string, s
 }
 
 /**
+ * Mapeo de secciones a rutas para "nombramiento-directores"
+ */
+export function getNombramientoDirectoresRoutes(basePath: string): Record<string, string> {
+  return {
+    "nombramiento-directores": `${basePath}/nombramiento-directores`,
+    cantidad: `${basePath}/nombramiento-directores/cantidad`,
+    nombramiento: `${basePath}/nombramiento-directores/nombramiento`,
+    votacion: `${basePath}/nombramiento-directores/votacion`,
+    resumen: `${basePath}/nombramiento-directores/resumen`,
+  };
+}
+
+/**
  * Obtiene el mapeo de rutas para un sub-step
  */
 export function getSectionRoutesForSubStep(
@@ -71,6 +84,8 @@ export function getSectionRoutesForSubStep(
       return getPronunciamientoGestionRoutes(basePath);
     case "delegacion-auditores":
       return getDelegacionAuditoresRoutes(basePath);
+    case "nombramiento-directores":
+      return getNombramientoDirectoresRoutes(basePath);
     default:
       return null;
   }
