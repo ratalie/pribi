@@ -61,9 +61,9 @@ export function getDelegacionAuditoresRoutes(basePath: string): Record<string, s
 export function getNombramientoDirectoresRoutes(basePath: string): Record<string, string> {
   return {
     "nombramiento-directores": `${basePath}/nombramiento-directores`,
-    cantidad: `${basePath}/nombramiento-directores/cantidad`,
     nombramiento: `${basePath}/nombramiento-directores/nombramiento`,
     votacion: `${basePath}/nombramiento-directores/votacion`,
+    presidente: `${basePath}/nombramiento-directores/presidente`,
     resumen: `${basePath}/nombramiento-directores/resumen`,
   };
 }

@@ -151,15 +151,15 @@ export const SUB_STEP_SECTIONS_MAP: Record<string, Array<Omit<SectionItem, "stat
       navigationType: "route",
     },
     {
-      id: "cantidad",
-      title: "Cantidad",
-      description: "Define la cantidad de directores",
-      navigationType: "route",
-    },
-    {
       id: "votacion",
       title: "Votación",
       description: "Registra la votación",
+      navigationType: "route",
+    },
+    {
+      id: "presidente",
+      title: "Presidente",
+      description: "Define el presidente del directorio",
       navigationType: "route",
     },
     {

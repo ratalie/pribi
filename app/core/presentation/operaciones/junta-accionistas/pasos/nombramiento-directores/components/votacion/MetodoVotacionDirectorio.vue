@@ -150,7 +150,10 @@
         :preguntas="props.preguntas"
         :accionistas="props.accionistas"
         :mensaje-aprobacion="props.mensajeAprobacion"
-        @cambiar-voto="(accionistaId, valor) => emit('cambiar-voto', accionistaId, valor)"
+        @cambiar-voto="
+          (accionistaId: string, valor: 'A_FAVOR' | 'EN_CONTRA' | 'ABSTENCION') =>
+            emit('cambiar-voto', accionistaId, valor)
+        "
       />
     </div>
   </SlotWrapper>
