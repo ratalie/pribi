@@ -121,5 +121,55 @@ export interface RepositorioDocumentosRepository {
     nombre: string,
     description?: string
   ): Promise<RepositorioNode>;
+
+  /**
+   * Verifica si un documento con un nombre específico ya existe en una carpeta
+   * @param structureId ID de la estructura de la sociedad
+   * @param folderId ID de la carpeta donde buscar
+   * @param fileName Nombre exacto del archivo a verificar (case-sensitive)
+   * @returns Información sobre si el documento existe y sus datos si existe
+   */
+  verificarDocumentoDuplicado(
+    structureId: string,
+    folderId: number,
+    fileName: string
+  ): Promise<{
+    exists: boolean;
+    document: {
+      versionCode: string;
+      documentCode: string;
+      title: string;
+      latestVersion: {
+        versionCode: string;
+        versionNumber: number;
+        createdAt: string;
+        sizeInBytes: number;
+      };
+      node: {
+        id: number;
+        code: string;
+        name: string;
+        path: string;
+      };
+    } | null;
+  }>;
+
+  /**
+   * Sube una nueva versión de un documento existente
+   * @param documentCode Código del documento (UUID)
+   * @param file Archivo de la nueva versión
+   * @returns Información de la nueva versión creada
+   */
+  subirNuevaVersion(
+    documentCode: string,
+    file: File
+  ): Promise<{
+    versionCode: string;
+    documentCode: string;
+    versionNumber: number;
+    title: string;
+    sizeInBytes: number;
+    createdAt: string;
+  }>;
 }
 

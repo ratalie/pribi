@@ -817,5 +817,180 @@ export class RepositorioDocumentosHttpRepository
       );
     }
   }
+
+  /**
+   * Verifica si un documento con un nombre específico ya existe en una carpeta
+   * 
+   * ENDPOINT V2: GET /api/v2/repository/society-profile/:structureId/nodes/:folderId/documents/check?fileName={nombre}
+   */
+  async verificarDocumentoDuplicado(
+    structureId: string,
+    folderId: number,
+    fileName: string
+  ): Promise<{
+    exists: boolean;
+    document: {
+      versionCode: string;
+      documentCode: string;
+      title: string;
+      latestVersion: {
+        versionCode: string;
+        versionNumber: number;
+        createdAt: string;
+        sizeInBytes: number;
+      };
+      node: {
+        id: number;
+        code: string;
+        name: string;
+        path: string;
+      };
+    } | null;
+  }> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/nodes/${folderId}/documents/check?fileName=${encodeURIComponent(fileName)}`;
+
+    console.log("🔍 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔍 [RepositorioDocumentosHttp] VERIFICAR DOCUMENTO DUPLICADO");
+    console.log("🔍 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔍 [RepositorioDocumentosHttp] URL:", url);
+    console.log("🔍 [RepositorioDocumentosHttp] structureId:", structureId);
+    console.log("🔍 [RepositorioDocumentosHttp] folderId:", folderId);
+    console.log("🔍 [RepositorioDocumentosHttp] fileName:", fileName);
+
+    try {
+      const response = await $fetch<{
+        success: boolean;
+        code: number;
+        message: string;
+        data: {
+          exists: boolean;
+          document: {
+            versionCode: string;
+            documentCode: string;
+            title: string;
+            latestVersion: {
+              versionCode: string;
+              versionNumber: number;
+              createdAt: string;
+              sizeInBytes: number;
+            };
+            node: {
+              id: number;
+              code: string;
+              name: string;
+              path: string;
+            };
+          } | null;
+        };
+      }>(url, {
+        ...withAuthHeaders(),
+        method: "GET" as const,
+      });
+
+      console.log("🔍 [RepositorioDocumentosHttp] ========================================");
+      console.log("🔍 [RepositorioDocumentosHttp] RESPUESTA:");
+      console.log("🔍 [RepositorioDocumentosHttp] exists:", response.data.exists);
+      console.log("🔍 [RepositorioDocumentosHttp] document:", response.data.document);
+      console.log("🔍 [RepositorioDocumentosHttp] ========================================");
+
+      return response.data;
+    } catch (error: any) {
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      console.error("🔴 [RepositorioDocumentosHttp] ERROR AL VERIFICAR DUPLICADO:");
+      console.error("🔴 [RepositorioDocumentosHttp] URL:", url);
+      console.error("🔴 [RepositorioDocumentosHttp] structureId:", structureId);
+      console.error("🔴 [RepositorioDocumentosHttp] folderId:", folderId);
+      console.error("🔴 [RepositorioDocumentosHttp] fileName:", fileName);
+      console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+
+      throw new Error(
+        `No se pudo verificar el documento duplicado: ${error?.message || error?.data?.message || "Error desconocido"}`
+      );
+    }
+  }
+
+  /**
+   * Sube una nueva versión de un documento existente
+   * 
+   * ENDPOINT V2: POST /api/v2/repository/documents/:documentCode/versions
+   */
+  async subirNuevaVersion(
+    documentCode: string,
+    file: File
+  ): Promise<{
+    versionCode: string;
+    documentCode: string;
+    versionNumber: number;
+    title: string;
+    sizeInBytes: number;
+    createdAt: string;
+  }> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/documents/${documentCode}/versions`;
+
+    console.log("🟡 [RepositorioDocumentosHttp] ========================================");
+    console.log("🟡 [RepositorioDocumentosHttp] SUBIR NUEVA VERSIÓN");
+    console.log("🟡 [RepositorioDocumentosHttp] ========================================");
+    console.log("🟡 [RepositorioDocumentosHttp] URL:", url);
+    console.log("🟡 [RepositorioDocumentosHttp] documentCode:", documentCode);
+    console.log("🟡 [RepositorioDocumentosHttp] fileName:", file.name);
+    console.log("🟡 [RepositorioDocumentosHttp] fileSize:", file.size);
+
+    try {
+      const formData = new FormData();
+      const fileFieldUUID = window.crypto.randomUUID();
+      formData.append(fileFieldUUID, file);
+
+      const authConfig = withAuthHeaders();
+      const headers: Record<string, string> = {
+        ...authConfig.headers,
+        "x-file-size": file.size.toString(),
+      };
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers,
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("🔴 [RepositorioDocumentosHttp] Error response:", errorText);
+        throw new Error(`Error al subir nueva versión: ${response.statusText}`);
+      }
+
+      const responseData = await response.json();
+      console.log("🟡 [RepositorioDocumentosHttp] ========================================");
+      console.log("🟡 [RepositorioDocumentosHttp] RESPUESTA:");
+      console.log("🟡 [RepositorioDocumentosHttp] responseData:", responseData);
+      console.log("🟡 [RepositorioDocumentosHttp] ========================================");
+
+      if (responseData.success && responseData.data) {
+        const version = responseData.data.documentVersion || responseData.data;
+        return {
+          versionCode: version.versionCode,
+          documentCode: version.documentCode,
+          versionNumber: version.versionNumber,
+          title: version.title,
+          sizeInBytes: version.sizeInBytes,
+          createdAt: version.createdAt,
+        };
+      }
+
+      throw new Error("La respuesta del servidor no contiene los datos esperados");
+    } catch (error: any) {
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      console.error("🔴 [RepositorioDocumentosHttp] ERROR AL SUBIR NUEVA VERSIÓN:");
+      console.error("🔴 [RepositorioDocumentosHttp] URL:", url);
+      console.error("🔴 [RepositorioDocumentosHttp] documentCode:", documentCode);
+      console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      throw new Error(
+        `No se pudo subir la nueva versión: ${error?.message || "Error desconocido"}`
+      );
+    }
+  }
 }
 
