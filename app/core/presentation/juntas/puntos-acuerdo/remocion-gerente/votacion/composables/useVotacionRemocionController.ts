@@ -1,221 +1,176 @@
-import { computed, onActivated, onMounted, ref } from "vue";
+import { computed, nextTick, onActivated, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { VoteAgreementType } from "~/core/hexag/juntas/domain/enums/vote-agreement-type.enum";
 import { VoteContext } from "~/core/hexag/juntas/domain/enums/vote-context.enum";
 import { VoteMode } from "~/core/hexag/juntas/domain/enums/vote-mode.enum";
 import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
+import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/stores/useVotacionStore";
+import { filtrarVotantes } from "~/core/presentation/juntas/puntos-acuerdo/votacion/utils/votantes-filter";
 import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
-import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
-import { useAportesManagerStore } from "../../aportes/stores/useAportesManagerStore";
-import { useVotacionAportesStore } from "../stores/useVotacionAportesStore";
-import { useVotacionStore } from "../stores/useVotacionStore";
+import { useVotacionRemocionStore } from "../stores/useVotacionRemocionStore";
 
 /**
- * Controller para la vista de Votación de Aporte Dinerario
+ * Controller para la vista de Votación de Remoción de Gerente
  *
  * Orquesta:
- * - Carga de datos (asistentes, aportes, snapshot)
+ * - Carga de datos (asistentes, snapshot)
+ * - Filtrado de votantes (asistentes con acciones con derecho a voto)
  * - Carga/creación de sesión de votación
  * - Generación de texto de votación
  * - Guardado de votos
  */
-export function useVotacionController() {
+export function useVotacionRemocionController() {
   const route = useRoute();
   const votacionStore = useVotacionStore();
-  const votacionAportesStore = useVotacionAportesStore();
+  const votacionRemocionStore = useVotacionRemocionStore();
   const asistenciaStore = useAsistenciaStore();
-  const aportesStore = useAportesManagerStore();
   const snapshotStore = useSnapshotStore();
 
   const societyId = computed(() => Number(route.params.societyId));
   const flowId = computed(() => Number(route.params.flowId));
-
-  // Estado para participantes (aportantes)
-  const participantes = ref<any[]>([]);
-  const contribuciones = ref<any[]>([]);
-
-  /**
-   * Cargar participantes (aportantes) desde el backend
-   */
-  async function loadParticipantes() {
-    try {
-      const baseUrl = resolveBaseUrl();
-      const url = `${baseUrl}/api/v2/society-profile/${societyId.value}/register-assembly/${flowId.value}/participants`;
-
-      console.log("[DEBUG][VotacionController] Cargando participantes desde:", url);
-
-      const response = await $fetch<{
-        success: boolean;
-        message: string;
-        data: any[];
-      }>(url, {
-        ...withAuthHeaders(),
-        method: "GET",
-      });
-
-      if (response.success && Array.isArray(response.data)) {
-        participantes.value = response.data;
-        console.log(
-          "[DEBUG][VotacionController] Participantes cargados:",
-          participantes.value.length
-        );
-      }
-    } catch (error: any) {
-      console.error("[Controller][Votacion] Error al cargar participantes:", error);
-      // No lanzar error, solo loguear
-    }
-  }
-
-  /**
-   * Cargar contribuciones (aportes) desde el backend
-   */
-  async function loadContribuciones() {
-    try {
-      const baseUrl = resolveBaseUrl();
-      const url = `${baseUrl}/api/v2/society-profile/${societyId.value}/register-assembly/${flowId.value}/contributions`;
-
-      console.log("[DEBUG][VotacionController] Cargando contribuciones desde:", url);
-
-      const response = await $fetch<{
-        success: boolean;
-        message: string;
-        data: any[];
-      }>(url, {
-        ...withAuthHeaders(),
-        method: "GET",
-      });
-
-      if (response.success && Array.isArray(response.data)) {
-        contribuciones.value = response.data;
-        console.log(
-          "[DEBUG][VotacionController] Contribuciones cargadas:",
-          contribuciones.value.length
-        );
-      }
-    } catch (error: any) {
-      console.error("[Controller][Votacion] Error al cargar contribuciones:", error);
-      // No lanzar error, solo loguear
-    }
-  }
-
-  /**
-   * Resolver URL base (helper)
-   */
-  function resolveBaseUrl(): string {
-    const config = useRuntimeConfig();
-    const apiBase = (config.public?.apiBase as string | undefined) || "";
-    const origin = typeof window !== "undefined" ? window.location.origin : "";
-    const candidates = [apiBase, origin, "http://localhost:3000"];
-
-    for (const base of candidates) {
-      if (!base) continue;
-      try {
-        return new URL(base, origin || "http://localhost:3000").origin;
-      } catch {
-        continue;
-      }
-    }
-    return "";
-  }
 
   /**
    * Cargar todos los datos necesarios
    */
   async function loadData() {
     try {
-      // 1. Cargar snapshot (para capital actual)
+      // 1. Cargar snapshot (para gerente general)
       if (!snapshotStore.snapshot) {
         await snapshotStore.loadSnapshot(societyId.value, flowId.value);
       }
 
-      // 2. Cargar asistentes (para obtener votantes - solo los que asistieron)
-      console.log("[DEBUG][VotacionController] Cargando asistentes...");
+      // 2. Cargar asistentes (para obtener votantes)
+      console.log("[DEBUG][VotacionRemocionController] Cargando asistencias...");
       await asistenciaStore.loadAsistencias(societyId.value, flowId.value);
       console.log(
-        "[DEBUG][VotacionController] Asistentes cargados:",
+        "[DEBUG][VotacionRemocionController] Asistencias cargadas:",
         asistenciaStore.asistencias
       );
-      console.log(
-        "[DEBUG][VotacionController] Asistentes que asistieron:",
-        asistenciaStore.asistencias.filter((a) => a.asistio)
-      );
 
-      // 3. Cargar participantes (aportantes) - para mostrar en la vista
-      // Los participantes son los que pueden aportar (isContributor: true)
-      console.log("[DEBUG][VotacionController] Cargando participantes...");
-      await loadParticipantes();
-
-      // 4. Cargar aportes (contribuciones) - para calcular capital después
-      await aportesStore.loadAportes(String(societyId.value), String(flowId.value));
-
-      // Cargar contribuciones para mostrar en la vista
-      await loadContribuciones();
-
-      // 5. Actualizar datos calculados
-      votacionAportesStore.actualizarDatos();
-
-      // 6. ✅ SOLO CARGAR votación existente (NO crear automáticamente)
-      // La votación se creará/actualizará cuando el usuario haga click en "Siguiente"
+      // 3. Cargar votación existente (si existe)
       try {
         await votacionStore.loadVotacion(
           societyId.value,
           flowId.value,
-          VoteContext.APORTES_DINERARIOS
+          VoteContext.REMOCION_GERENTE
         );
-        console.log("[DEBUG][VotacionController] Votación cargada:", {
+        console.log("[DEBUG][VotacionRemocionController] Votación cargada:", {
           hasVotacion: votacionStore.hasVotacion,
           hasItem: !!votacionStore.itemVotacion,
-          itemId: votacionStore.itemVotacion?.id,
           votosCount: votacionStore.itemVotacion?.votos.length || 0,
-          votos: votacionStore.itemVotacion?.votos.map((v) => ({
-            id: v.id,
-            accionistaId: v.accionistaId,
-            valor: v.valor,
-          })),
+          contexto: votacionStore.sesionVotacion?.contexto,
         });
+
+        // ✅ 4. Verificar que el contexto de la sesión cargada sea correcto
+        if (
+          votacionStore.sesionVotacion &&
+          votacionStore.sesionVotacion.contexto !== VoteContext.REMOCION_GERENTE
+        ) {
+          console.error(
+            "[DEBUG][VotacionRemocionController] ⚠️ ERROR: Sesión cargada tiene contexto incorrecto:",
+            {
+              contextoEsperado: VoteContext.REMOCION_GERENTE,
+              contextoObtenido: votacionStore.sesionVotacion.contexto,
+            }
+          );
+          // Limpiar la sesión incorrecta para evitar conflictos
+          votacionStore.sesionVotacion = null;
+        }
+
+        // ✅ 5. Sincronizar votos con votantes actuales (fuente de verdad)
+        // Esto asegura que solo se mantengan votos de accionistas que actualmente tienen derecho a voto
+        // Usar nextTick para asegurar que votantes esté definido
+        if (votacionStore.hasVotacion && votacionStore.itemVotacion) {
+          await nextTick();
+          sincronizarVotosConVotantesActuales();
+        }
       } catch (error: any) {
-        // Si no existe (404), es normal - se creará al guardar
         if (error.statusCode === 404 || error.status === 404) {
           console.log(
-            "[DEBUG][VotacionController] No hay votación existente (404), se creará al guardar"
+            "[DEBUG][VotacionRemocionController] No hay votación existente (404), se creará al guardar"
           );
         } else {
-          console.error("[Controller][Votacion] Error al cargar votación:", error);
+          console.error("[Controller][VotacionRemocion] Error al cargar votación:", error);
         }
       }
-
-      // ✅ DEBUG: Estado final después de carga
-      console.log("[DEBUG][VotacionController] Carga de datos completada:", {
-        hasVotacion: votacionStore.hasVotacion,
-        hasItem: !!votacionStore.itemVotacion,
-        votantesCount: votantes.value.length,
-        participantesCount: participantes.value.length,
-        contribucionesCount: contribuciones.value.length,
-      });
     } catch (error: any) {
-      console.error("[Controller][Votacion] Error al cargar datos:", error);
+      console.error("[Controller][VotacionRemocion] Error al cargar datos:", error);
       throw error;
     }
   }
 
   /**
-   * Obtener votantes (solo asistentes) con formato para componentes
+   * Obtener votantes (asistentes con acciones con derecho a voto)
+   * ✅ FILTRO DOBLE: Asistencia + Acciones con derecho a voto
    */
   const votantes = computed(() => {
     const asistentes = asistenciaStore.asistenciasEnriquecidas;
-    const filtrados = asistentes.filter((a) => a.asistio);
 
-    console.log("[DEBUG][VotacionController] Votantes filtrados:", filtrados);
+    // ✅ Usar helper reutilizable con filtro de acciones con derecho a voto
+    const filtrados = filtrarVotantes(asistentes, {
+      requireAttendance: true,
+      requireVotingRights: true, // ✅ FILTRO ADICIONAL
+    });
+
+    console.log("[DEBUG][VotacionRemocionController] Votantes filtrados:", filtrados);
 
     return filtrados.map((a) => ({
       id: a.id, // ID del registro de asistencia
-      accionistaId: a.accionista.id, // ✅ ID del accionista (para votos)
+      accionistaId: a.accionista.id, // ID del accionista (para votos)
       accionista: a.accionista,
       nombreCompleto: a.nombreCompleto,
       tipoPersona: a.tipoPersona,
+      accionesConDerechoVoto: a.accionesConDerechoVoto, // ✅ Incluir para referencia
     }));
   });
+
+  /**
+   * Sincroniza votos históricos con votantes actuales
+   *
+   * ⚠️ IMPORTANTE: Los votantes actuales son la fuente de verdad
+   * - Solo se mantienen votos de accionistas que actualmente tienen derecho a voto
+   * - Los votos de accionistas que ya no tienen derecho a voto se eliminan del item
+   * - Los votos históricos quedan en el backend pero no se envían en updates
+   */
+  function sincronizarVotosConVotantesActuales() {
+    if (!votacionStore.itemVotacion) {
+      return;
+    }
+
+    const item = votacionStore.itemVotacion;
+    const votantesActuales = votantes.value;
+    const accionistasIdsActuales = new Set(votantesActuales.map((v) => v.accionistaId));
+
+    // Contar votos antes de sincronizar
+    const votosAntes = item.votos.length;
+
+    // ✅ Filtrar votos: solo mantener los de accionistas que actualmente tienen derecho a voto
+    const votosSincronizados = item.votos.filter((voto) =>
+      accionistasIdsActuales.has(voto.accionistaId)
+    );
+
+    // Contar votos después de sincronizar
+    const votosDespues = votosSincronizados.length;
+    const votosEliminados = votosAntes - votosDespues;
+
+    // Actualizar votos en el item
+    item.votos = votosSincronizados;
+
+    console.log("[DEBUG][VotacionRemocionController] Sincronización de votos completada:", {
+      votosAntes,
+      votosDespues,
+      votosEliminados,
+      votantesActuales: votantesActuales.length,
+      accionistasConVoto: accionistasIdsActuales.size,
+    });
+
+    if (votosEliminados > 0) {
+      console.warn(
+        `[DEBUG][VotacionRemocionController] ⚠️ Se eliminaron ${votosEliminados} votos de accionistas que ya no tienen derecho a voto`
+      );
+    }
+  }
 
   /**
    * Obtener texto de votación
@@ -224,7 +179,7 @@ export function useVotacionController() {
     if (votacionStore.itemVotacion) {
       return votacionStore.itemVotacion.label;
     }
-    return votacionAportesStore.textoVotacion;
+    return votacionRemocionStore.textoVotacion;
   });
 
   /**
@@ -244,22 +199,22 @@ export function useVotacionController() {
     // ✅ Si no hay sesión, crear en memoria (NO guardar todavía)
     if (!votacionStore.sesionVotacion) {
       console.log(
-        "[DEBUG][VotacionController] Creando sesión en memoria al votar (no guardada todavía)"
+        "[DEBUG][VotacionRemocionController] Creando sesión en memoria al votar (no guardada todavía)"
       );
       const sessionId = votacionStore.generateUuid();
       const itemId = votacionStore.generateUuid();
-      const textoVotacionValue = votacionAportesStore.textoVotacion;
+      const textoVotacionValue = votacionRemocionStore.textoVotacion;
 
       votacionStore.sesionVotacion = {
         id: sessionId,
-        contexto: VoteContext.APORTES_DINERARIOS,
+        contexto: VoteContext.REMOCION_GERENTE, // ✅ Contexto específico
         modo: VoteMode.SIMPLE,
         items: [
           {
             id: itemId,
             orden: 0,
             label: textoVotacionValue,
-            descripción: "Votación sobre la aprobación de los aportes dinerarios propuestos",
+            descripción: "Votación sobre la remoción del gerente general",
             tipoAprobacion: VoteAgreementType.SOMETIDO_A_VOTACION, // Por defecto mayoría al votar
             votos: [],
           },
@@ -270,16 +225,16 @@ export function useVotacionController() {
     // ✅ Si hay sesión pero no hay item, crear item en memoria
     if (!votacionStore.itemVotacion) {
       console.log(
-        "[DEBUG][VotacionController] Creando item en memoria al votar (no guardado todavía)"
+        "[DEBUG][VotacionRemocionController] Creando item en memoria al votar (no guardado todavía)"
       );
       const itemId = votacionStore.generateUuid();
-      const textoVotacionValue = votacionAportesStore.textoVotacion;
+      const textoVotacionValue = votacionRemocionStore.textoVotacion;
 
       votacionStore.sesionVotacion.items.push({
         id: itemId,
         orden: 0,
         label: textoVotacionValue,
-        descripción: "Votación sobre la aprobación de los aportes dinerarios propuestos",
+        descripción: "Votación sobre la remoción del gerente general",
         tipoAprobacion: VoteAgreementType.SOMETIDO_A_VOTACION, // Por defecto mayoría al votar
         votos: [],
       });
@@ -287,7 +242,7 @@ export function useVotacionController() {
 
     const item = votacionStore.itemVotacion;
     if (!item) {
-      console.error("[Controller][Votacion] No se pudo crear item");
+      console.error("[Controller][VotacionRemocion] No se pudo crear item");
       return;
     }
 
@@ -297,7 +252,7 @@ export function useVotacionController() {
     if (votoExistente) {
       // Actualizar voto existente en estado local
       votoExistente.valor = valor as string | number;
-      console.log("[DEBUG][VotacionController] Voto actualizado en memoria:", {
+      console.log("[DEBUG][VotacionRemocionController] Voto actualizado en memoria:", {
         accionistaId,
         valor,
       });
@@ -309,7 +264,7 @@ export function useVotacionController() {
         accionistaId,
         valor: valor as string | number,
       });
-      console.log("[DEBUG][VotacionController] Voto agregado en memoria:", {
+      console.log("[DEBUG][VotacionRemocionController] Voto agregado en memoria:", {
         accionistaId,
         valor,
         voteId,
@@ -323,7 +278,7 @@ export function useVotacionController() {
    * ⚠️ IMPORTANTE: Si no hay sesión/item, se crea en memoria (se guardará al hacer "Siguiente")
    */
   function cambiarTipoAprobacion(tipo: "unanimidad" | "mayoria") {
-    console.log("[DEBUG][VotacionController] cambiarTipoAprobacion llamado:", {
+    console.log("[DEBUG][VotacionRemocionController] cambiarTipoAprobacion llamado:", {
       tipo,
       hasVotacion: votacionStore.hasVotacion,
       hasSesion: !!votacionStore.sesionVotacion,
@@ -338,22 +293,22 @@ export function useVotacionController() {
     // ✅ Si no hay sesión, crear en memoria (NO guardar todavía)
     if (!votacionStore.sesionVotacion) {
       console.log(
-        "[DEBUG][VotacionController] Creando sesión en memoria (no guardada todavía)"
+        "[DEBUG][VotacionRemocionController] Creando sesión en memoria (no guardada todavía)"
       );
       const sessionId = votacionStore.generateUuid();
       const itemId = votacionStore.generateUuid();
-      const textoVotacionValue = votacionAportesStore.textoVotacion;
+      const textoVotacionValue = votacionRemocionStore.textoVotacion;
 
       votacionStore.sesionVotacion = {
         id: sessionId,
-        contexto: VoteContext.APORTES_DINERARIOS,
+        contexto: VoteContext.REMOCION_GERENTE, // ✅ Contexto específico
         modo: VoteMode.SIMPLE,
         items: [
           {
             id: itemId,
             orden: 0,
             label: textoVotacionValue,
-            descripción: "Votación sobre la aprobación de los aportes dinerarios propuestos",
+            descripción: "Votación sobre la remoción del gerente general",
             tipoAprobacion,
             votos: [],
           },
@@ -363,16 +318,16 @@ export function useVotacionController() {
       // ✅ Si hay sesión pero no hay item, crear item en memoria
       if (!votacionStore.itemVotacion) {
         console.log(
-          "[DEBUG][VotacionController] Creando item en memoria (no guardado todavía)"
+          "[DEBUG][VotacionRemocionController] Creando item en memoria (no guardado todavía)"
         );
         const itemId = votacionStore.generateUuid();
-        const textoVotacionValue = votacionAportesStore.textoVotacion;
+        const textoVotacionValue = votacionRemocionStore.textoVotacion;
 
         votacionStore.sesionVotacion.items.push({
           id: itemId,
           orden: 0,
           label: textoVotacionValue,
-          descripción: "Votación sobre la aprobación de los aportes dinerarios propuestos",
+          descripción: "Votación sobre la remoción del gerente general",
           tipoAprobacion,
           votos: [],
         });
@@ -380,11 +335,14 @@ export function useVotacionController() {
         // ✅ Actualizar tipoAprobacion en el item existente (solo en memoria)
         const item = votacionStore.itemVotacion;
         item.tipoAprobacion = tipoAprobacion;
-        console.log("[DEBUG][VotacionController] Tipo de aprobación actualizado en memoria:", {
-          tipo,
-          tipoAprobacion,
-          itemId: item.id,
-        });
+        console.log(
+          "[DEBUG][VotacionRemocionController] Tipo de aprobación actualizado en memoria:",
+          {
+            tipo,
+            tipoAprobacion,
+            itemId: item.id,
+          }
+        );
       }
     }
   }
@@ -401,44 +359,57 @@ export function useVotacionController() {
    */
   async function guardarVotacion() {
     console.log(
-      "[DEBUG][VotacionController] guardarVotacion() ejecutado - Iniciando guardado..."
+      "[DEBUG][VotacionRemocionController] guardarVotacion() ejecutado - Iniciando guardado..."
     );
 
     // ✅ 1. Asegurar que hay sesión/item en memoria (crear si no existe)
+    // ⚠️ IMPORTANTE: Asegurar que el contexto siempre sea REMOCION_GERENTE
     if (!votacionStore.sesionVotacion) {
-      console.log("[DEBUG][VotacionController] No hay sesión en memoria, creando...");
+      console.log("[DEBUG][VotacionRemocionController] No hay sesión en memoria, creando...");
       const sessionId = votacionStore.generateUuid();
       const itemId = votacionStore.generateUuid();
-      const textoVotacionValue = votacionAportesStore.textoVotacion;
+      const textoVotacionValue = votacionRemocionStore.textoVotacion;
 
       votacionStore.sesionVotacion = {
         id: sessionId,
-        contexto: VoteContext.APORTES_DINERARIOS,
+        contexto: VoteContext.REMOCION_GERENTE, // ✅ Contexto específico
         modo: VoteMode.SIMPLE,
         items: [
           {
             id: itemId,
             orden: 0,
             label: textoVotacionValue,
-            descripción: "Votación sobre la aprobación de los aportes dinerarios propuestos",
+            descripción: "Votación sobre la remoción del gerente general",
             tipoAprobacion: VoteAgreementType.APROBADO_POR_TODOS, // Por defecto unanimidad
             votos: [],
           },
         ],
       };
+    } else {
+      // ✅ Asegurar que el contexto de la sesión existente sea correcto
+      if (votacionStore.sesionVotacion.contexto !== VoteContext.REMOCION_GERENTE) {
+        console.warn(
+          "[DEBUG][VotacionRemocionController] ⚠️ Contexto incorrecto en sesión existente, corrigiendo...",
+          {
+            contextoActual: votacionStore.sesionVotacion.contexto,
+            contextoCorrecto: VoteContext.REMOCION_GERENTE,
+          }
+        );
+        votacionStore.sesionVotacion.contexto = VoteContext.REMOCION_GERENTE;
+      }
     }
 
     const item = votacionStore.itemVotacion;
     if (!item) {
-      console.log("[DEBUG][VotacionController] No hay item en memoria, creando...");
+      console.log("[DEBUG][VotacionRemocionController] No hay item en memoria, creando...");
       const itemId = votacionStore.generateUuid();
-      const textoVotacionValue = votacionAportesStore.textoVotacion;
+      const textoVotacionValue = votacionRemocionStore.textoVotacion;
 
       votacionStore.sesionVotacion.items.push({
         id: itemId,
         orden: 0,
         label: textoVotacionValue,
-        descripción: "Votación sobre la aprobación de los aportes dinerarios propuestos",
+        descripción: "Votación sobre la remoción del gerente general",
         tipoAprobacion: VoteAgreementType.APROBADO_POR_TODOS, // Por defecto unanimidad
         votos: [],
       });
@@ -447,7 +418,7 @@ export function useVotacionController() {
     const finalItem = votacionStore.itemVotacion!;
     const tipoAprobacion = finalItem.tipoAprobacion || VoteAgreementType.APROBADO_POR_TODOS;
 
-    console.log("[DEBUG][VotacionController] Estado antes de guardar:", {
+    console.log("[DEBUG][VotacionRemocionController] Estado antes de guardar:", {
       tipoAprobacion,
       votosActuales: finalItem.votos.length,
       votantesDisponibles: votantes.value.length,
@@ -457,7 +428,7 @@ export function useVotacionController() {
       // ✅ 2. Si es unanimidad, generar todos los votos a favor automáticamente
       if (tipoAprobacion === VoteAgreementType.APROBADO_POR_TODOS) {
         console.log(
-          "[DEBUG][VotacionController] Es unanimidad - generando todos los votos a favor"
+          "[DEBUG][VotacionRemocionController] Es unanimidad - generando todos los votos a favor"
         );
 
         // Limpiar votos existentes y generar nuevos para todos los votantes
@@ -468,16 +439,24 @@ export function useVotacionController() {
         }));
 
         console.log(
-          "[DEBUG][VotacionController] Votos generados para unanimidad:",
+          "[DEBUG][VotacionRemocionController] Votos generados para unanimidad:",
           finalItem.votos.length
         );
       } else {
-        // ✅ 3. Si es sometida a votos, validar que haya votos
+        // ✅ 3. Si es sometida a votos, sincronizar votos con votantes actuales antes de validar
+        // ⚠️ IMPORTANTE: Asegurar que solo se envíen votos de votantes actuales (fuente de verdad)
+        sincronizarVotosConVotantesActuales();
+
+        // Actualizar finalItem con votos sincronizados
+        const itemSincronizado = votacionStore.itemVotacion!;
+        finalItem.votos = itemSincronizado.votos;
+
+        // Validar que haya votos después de sincronización
         if (finalItem.votos.length === 0) {
           throw new Error("Debe registrar al menos un voto para votación por mayoría");
         }
         console.log(
-          "[DEBUG][VotacionController] Es sometida a votos - usando votos del usuario:",
+          "[DEBUG][VotacionRemocionController] Es sometida a votos - usando votos sincronizados:",
           finalItem.votos.length
         );
       }
@@ -498,7 +477,7 @@ export function useVotacionController() {
       const existeEnBackend = votacionStore.hasVotacion;
       const itemExisteEnBackend = existeEnBackend && !!votacionStore.itemVotacion;
 
-      console.log("[DEBUG][VotacionController] Estado antes de guardar:", {
+      console.log("[DEBUG][VotacionRemocionController] Estado antes de guardar:", {
         existeEnBackend,
         itemExisteEnBackend,
         sessionId: votacionStore.sesionVotacion!.id,
@@ -510,9 +489,9 @@ export function useVotacionController() {
       if (!existeEnBackend) {
         // ✅ Crear nueva votación con POST (incluyendo item + votos en un solo request)
         console.log(
-          "[DEBUG][VotacionController] Creando nueva votación en backend (POST con todo)..."
+          "[DEBUG][VotacionRemocionController] Creando nueva votación en backend (POST con todo)..."
         );
-        console.log("[DEBUG][VotacionController] Datos a crear:", {
+        console.log("[DEBUG][VotacionRemocionController] Datos a crear:", {
           sessionId: votacionStore.sesionVotacion!.id,
           itemId: finalItem.id,
           tipoAprobacion,
@@ -529,14 +508,14 @@ export function useVotacionController() {
           finalItem.label,
           finalItem.descripción,
           tipoAprobacion,
-          VoteContext.APORTES_DINERARIOS
+          VoteContext.REMOCION_GERENTE
         );
 
-        console.log("[DEBUG][VotacionController] Votación creada exitosamente");
+        console.log("[DEBUG][VotacionRemocionController] Votación creada exitosamente");
       } else if (!itemExisteEnBackend) {
         // ✅ Sesión existe pero item no existe: usar PUT con accion: "add" (incluyendo votos)
         console.log(
-          "[DEBUG][VotacionController] Agregando item a sesión existente (PUT con accion: 'add' incluyendo votos)..."
+          "[DEBUG][VotacionRemocionController] Agregando item a sesión existente (PUT con accion: 'add' incluyendo votos)..."
         );
 
         await votacionStore.addVoteItemConVotos(
@@ -547,15 +526,15 @@ export function useVotacionController() {
           finalItem.descripción,
           tipoAprobacion,
           finalItem.votos,
-          VoteContext.APORTES_DINERARIOS
+          VoteContext.REMOCION_GERENTE
         );
 
-        console.log("[DEBUG][VotacionController] Item agregado exitosamente");
+        console.log("[DEBUG][VotacionRemocionController] Item agregado exitosamente");
       } else {
         // ✅ Sesión e item existen: usar PUT con accion: "add" para reemplazar todo (incluyendo votos)
         // ⚠️ IMPORTANTE: Enviar todo en un solo request
         console.log(
-          "[DEBUG][VotacionController] Actualizando item existente (PUT con accion: 'add' incluyendo votos)..."
+          "[DEBUG][VotacionRemocionController] Actualizando item existente (PUT con accion: 'add' incluyendo votos)..."
         );
 
         await votacionStore.updateItemConVotos(
@@ -566,15 +545,15 @@ export function useVotacionController() {
           finalItem.descripción,
           tipoAprobacion,
           finalItem.votos,
-          VoteContext.APORTES_DINERARIOS
+          VoteContext.REMOCION_GERENTE
         );
 
-        console.log("[DEBUG][VotacionController] Item actualizado exitosamente");
+        console.log("[DEBUG][VotacionRemocionController] Item actualizado exitosamente");
       }
 
-      console.log("[DEBUG][VotacionController] Guardado completado exitosamente");
+      console.log("[DEBUG][VotacionRemocionController] Guardado completado exitosamente");
     } catch (error: any) {
-      console.error("[Controller][Votacion] Error al guardar votación:", error);
+      console.error("[Controller][VotacionRemocion] Error al guardar votación:", error);
       throw error;
     }
   }
@@ -595,18 +574,10 @@ export function useVotacionController() {
     // Estado
     votantes,
     textoVotacion,
-    participantes: computed(() => participantes.value), // ✅ Participantes (aportantes)
-    contribuciones: computed(() => contribuciones.value), // ✅ Contribuciones (aportes)
     isLoading: computed(() => votacionStore.status === "loading"),
     error: computed(() => votacionStore.errorMessage),
     esUnanimidad: computed(() => votacionStore.esUnanimidad),
     esSometidaAVotacion: computed(() => votacionStore.esSometidaAVotacion),
-
-    // Datos calculados
-    capitalAntes: computed(() => votacionAportesStore.capitalAntes),
-    accionesAntes: computed(() => votacionAportesStore.accionesAntes),
-    capitalDespues: computed(() => votacionAportesStore.capitalDespues),
-    accionesDespues: computed(() => votacionAportesStore.accionesDespues),
 
     // Métodos
     getVoto,
