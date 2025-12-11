@@ -11,7 +11,7 @@ export const remocionApoderadosVotacionItem: FlowItem = {
   },
   hierarchy: {
     level: 4,
-    order: 2,
+    order: 4,
     parentId: "remocion-apoderados-contenido",
     children: [],
   },

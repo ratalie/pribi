@@ -14,9 +14,10 @@ export const nombramientoDirectoresContenidoItem: FlowItem = {
     order: 1,
     parentId: "nombramiento-directores",
     children: [
-      "nombramiento-directores-designacion",
-      "nombramiento-directores-cantidad",
+      "nombramiento-directores-nombramiento",
+      "nombramiento-directores-registro",
       "nombramiento-directores-votacion",
+      "nombramiento-directores-presidente",
     ],
   },
   navigation: {

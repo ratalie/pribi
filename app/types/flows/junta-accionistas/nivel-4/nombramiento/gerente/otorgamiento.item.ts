@@ -11,7 +11,7 @@ export const nombramientoGerenteOtorgamientoItem: FlowItem = {
   },
   hierarchy: {
     level: 4,
-    order: 2,
+    order: 3,
     parentId: "nombramiento-gerente-contenido",
     children: [],
   },

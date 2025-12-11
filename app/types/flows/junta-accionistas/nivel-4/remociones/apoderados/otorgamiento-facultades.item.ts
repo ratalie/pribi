@@ -3,28 +3,30 @@ import type { FlowItem } from "@/types/flow-system";
 import { FlowItemType, NavigationBehavior } from "@/types/flow-system";
 import { defaultBehavior, defaultValidation } from "../../../defaults";
 
-export const nombramientoDirectorioDesignacionItem: FlowItem = {
+export const remocionApoderadosOtorgamientoFacultadesItem: FlowItem = {
   identity: {
-    id: "nombramiento-directorio-designacion",
+    id: "remocion-apoderados-otorgamiento-facultades",
     type: FlowItemType.STEP,
-    label: "Designación de Directores",
+    label: "Otorgamiento de Facultades",
   },
   hierarchy: {
     level: 4,
-    order: 4,
-    parentId: "nombramiento-directorio-contenido",
+    order: 3,
+    parentId: "remocion-apoderados-contenido",
     children: [],
   },
   navigation: {
-    route: JuntaRoutes.NOMBRAMIENTO_DIRECTORIO_DETALLE,
+    route: JuntaRoutes.REMOCION_APODERADOS_DETALLE,
     behavior: NavigationBehavior.PUSH,
+    hash: "#otorgamiento-facultades",
   },
   behavior: defaultBehavior,
   rightSidebar: { enabled: false },
   validation: defaultValidation,
   metadata: {
-    description: "Designación de los directores del nuevo directorio",
-    tags: ["nivel-4", "nombramiento", "directorio"],
+    description: "Registro del otorgamiento de facultades para la remoción",
+    tags: ["nivel-4", "remociones", "apoderados"],
     version: "1.0.0",
   },
 };
+

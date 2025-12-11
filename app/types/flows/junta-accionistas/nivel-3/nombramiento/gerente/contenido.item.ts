@@ -14,7 +14,8 @@ export const nombramientoGerenteContenidoItem: FlowItem = {
     order: 1,
     parentId: "nombramiento-gerente",
     children: [
-      "nombramiento-gerente-designacion",
+      "nombramiento-gerente-nombramiento",
+      "nombramiento-gerente-gerente-general",
       "nombramiento-gerente-otorgamiento",
       "nombramiento-gerente-votacion",
     ],

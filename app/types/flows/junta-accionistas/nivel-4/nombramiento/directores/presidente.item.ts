@@ -3,28 +3,30 @@ import type { FlowItem } from "@/types/flow-system";
 import { FlowItemType, NavigationBehavior } from "@/types/flow-system";
 import { defaultBehavior, defaultValidation } from "../../../defaults";
 
-export const nombramientoDirectorioDesignacionItem: FlowItem = {
+export const nombramientoDirectoresPresidenteItem: FlowItem = {
   identity: {
-    id: "nombramiento-directorio-designacion",
+    id: "nombramiento-directores-presidente",
     type: FlowItemType.STEP,
-    label: "Designación de Directores",
+    label: "Presidente del Directorio",
   },
   hierarchy: {
     level: 4,
     order: 4,
-    parentId: "nombramiento-directorio-contenido",
+    parentId: "nombramiento-directores-contenido",
     children: [],
   },
   navigation: {
-    route: JuntaRoutes.NOMBRAMIENTO_DIRECTORIO_DETALLE,
+    route: JuntaRoutes.NOMBRAMIENTO_DIRECTORES_DETALLE,
     behavior: NavigationBehavior.PUSH,
+    hash: "#presidente",
   },
   behavior: defaultBehavior,
   rightSidebar: { enabled: false },
   validation: defaultValidation,
   metadata: {
-    description: "Designación de los directores del nuevo directorio",
-    tags: ["nivel-4", "nombramiento", "directorio"],
+    description: "Designación del presidente del directorio",
+    tags: ["nivel-4", "nombramiento", "directores"],
     version: "1.0.0",
   },
 };
+

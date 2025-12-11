@@ -1,3 +1,3 @@
-export { nombramientoDirectoresDesignacionItem } from "./designacion.item";
-export { nombramientoDirectoresCantidadItem } from "./cantidad.item";
+export { nombramientoDirectoresNombramientoItem, nombramientoDirectoresRegistroItem } from "./designacion.item";
 export { nombramientoDirectoresVotacionItem } from "./votacion.item";
+export { nombramientoDirectoresPresidenteItem } from "./presidente.item";

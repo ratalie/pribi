@@ -129,6 +129,75 @@ export function detectCurrentSection(
     }
   }
 
+  // Remociones
+  if (subStepId === "remocion-gerente") {
+    if (path.includes("/remocion-gerente/remocion")) return "remocion";
+    if (path.includes("/remocion-gerente/votacion")) return "votacion";
+    if (path.includes("/remocion-gerente/resumen")) return "resumen";
+    if (path.includes("/remocion-gerente") && !path.includes("/remocion-gerente/")) {
+      return "remocion-gerente";
+    }
+  }
+
+  if (subStepId === "remocion-apoderados") {
+    if (path.includes("/remocion-apoderados/remocion")) return "remocion";
+    if (path.includes("/remocion-apoderados/votacion")) return "votacion";
+    if (path.includes("/remocion-apoderados/resumen")) return "resumen";
+    if (path.includes("/remocion-apoderados") && !path.includes("/remocion-apoderados/")) {
+      return "remocion-apoderados";
+    }
+  }
+
+  if (subStepId === "remocion-directores") {
+    if (path.includes("/remocion-directores/remocion")) return "remocion";
+    if (path.includes("/remocion-directores/votacion")) return "votacion";
+    if (path.includes("/remocion-directores/resumen")) return "resumen";
+    if (path.includes("/remocion-directores") && !path.includes("/remocion-directores/")) {
+      return "remocion-directores";
+    }
+  }
+
+  // Nombramientos
+  if (subStepId === "nombramiento-gerente") {
+    if (path.includes("/nombramiento-gerente/nombramiento")) return "nombramiento";
+    if (path.includes("/nombramiento-gerente/otorgamiento")) return "otorgamiento";
+    if (path.includes("/nombramiento-gerente/votacion")) return "votacion";
+    if (path.includes("/nombramiento-gerente/resumen")) return "resumen";
+    if (path.includes("/nombramiento-gerente") && !path.includes("/nombramiento-gerente/")) {
+      return "nombramiento-gerente";
+    }
+  }
+
+  if (subStepId === "nombramiento-apoderados") {
+    if (path.includes("/nombramiento-apoderados/nombramiento")) return "nombramiento";
+    if (path.includes("/nombramiento-apoderados/otorgamiento-poderes")) return "otorgamiento-poderes";
+    if (path.includes("/nombramiento-apoderados/votacion")) return "votacion";
+    if (path.includes("/nombramiento-apoderados/resumen")) return "resumen";
+    if (path.includes("/nombramiento-apoderados") && !path.includes("/nombramiento-apoderados/")) {
+      return "nombramiento-apoderados";
+    }
+  }
+
+  if (subStepId === "nombramiento-directores") {
+    if (path.includes("/nombramiento-directores/nombramiento")) return "nombramiento";
+    if (path.includes("/nombramiento-directores/cantidad")) return "cantidad";
+    if (path.includes("/nombramiento-directores/votacion")) return "votacion";
+    if (path.includes("/nombramiento-directores/resumen")) return "resumen";
+    if (path.includes("/nombramiento-directores") && !path.includes("/nombramiento-directores/")) {
+      return "nombramiento-directores";
+    }
+  }
+
+  if (subStepId === "nombramiento-nuevo-directorio") {
+    if (path.includes("/nombramiento-directorio/cantidad")) return "cantidad";
+    if (path.includes("/nombramiento-directorio/nombramiento")) return "nombramiento";
+    if (path.includes("/nombramiento-directorio/votacion")) return "votacion";
+    if (path.includes("/nombramiento-directorio/resumen")) return "resumen";
+    if (path.includes("/nombramiento-directorio") && !path.includes("/nombramiento-directorio/")) {
+      return "nombramiento-directorio";
+    }
+  }
+
   return "";
 }
 

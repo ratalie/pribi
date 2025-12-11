@@ -56,6 +56,97 @@ export function getDelegacionAuditoresRoutes(basePath: string): Record<string, s
 }
 
 /**
+ * Mapeo de secciones a rutas para "remocion-gerente"
+ */
+export function getRemocionGerenteRoutes(basePath: string): Record<string, string> {
+  return {
+    "remocion-gerente": `${basePath}/remocion-gerente`,
+    remocion: `${basePath}/remocion-gerente/remocion`,
+    votacion: `${basePath}/remocion-gerente/votacion`,
+    resumen: `${basePath}/remocion-gerente/resumen`,
+  };
+}
+
+/**
+ * Mapeo de secciones a rutas para "remocion-apoderados"
+ */
+export function getRemocionApoderadosRoutes(basePath: string): Record<string, string> {
+  return {
+    "remocion-apoderados": `${basePath}/remocion-apoderados`,
+    remocion: `${basePath}/remocion-apoderados/remocion`,
+    "otorgamiento-facultades": `${basePath}/remocion-apoderados/remocion`,
+    votacion: `${basePath}/remocion-apoderados/votacion`,
+    resumen: `${basePath}/remocion-apoderados/resumen`,
+  };
+}
+
+/**
+ * Mapeo de secciones a rutas para "remocion-directores"
+ */
+export function getRemocionDirectoresRoutes(basePath: string): Record<string, string> {
+  return {
+    "remocion-directores": `${basePath}/remocion-directores`,
+    remocion: `${basePath}/remocion-directores/remocion`,
+    votacion: `${basePath}/remocion-directores/votacion`,
+    resumen: `${basePath}/remocion-directores/resumen`,
+  };
+}
+
+/**
+ * Mapeo de secciones a rutas para "nombramiento-gerente"
+ */
+export function getNombramientoGerenteRoutes(basePath: string): Record<string, string> {
+  return {
+    "nombramiento-gerente": `${basePath}/nombramiento-gerente`,
+    nombramiento: `${basePath}/nombramiento-gerente/nombramiento`,
+    otorgamiento: `${basePath}/nombramiento-gerente/otorgamiento`,
+    votacion: `${basePath}/nombramiento-gerente/votacion`,
+    resumen: `${basePath}/nombramiento-gerente/resumen`,
+  };
+}
+
+/**
+ * Mapeo de secciones a rutas para "nombramiento-apoderados"
+ */
+export function getNombramientoApoderadosRoutes(basePath: string): Record<string, string> {
+  return {
+    "nombramiento-apoderados": `${basePath}/nombramiento-apoderados`,
+    nombramiento: `${basePath}/nombramiento-apoderados/nombramiento`,
+    "otorgamiento-poderes": `${basePath}/nombramiento-apoderados/otorgamiento-poderes`,
+    votacion: `${basePath}/nombramiento-apoderados/votacion`,
+    resumen: `${basePath}/nombramiento-apoderados/resumen`,
+  };
+}
+
+/**
+ * Mapeo de secciones a rutas para "nombramiento-directores"
+ */
+export function getNombramientoDirectoresRoutes(basePath: string): Record<string, string> {
+  return {
+    "nombramiento-directores": `${basePath}/nombramiento-directores`,
+    nombramiento: `${basePath}/nombramiento-directores/nombramiento`,
+    votacion: `${basePath}/nombramiento-directores/votacion`,
+    presidente: `${basePath}/nombramiento-directores/nombramiento`,
+    resumen: `${basePath}/nombramiento-directores/resumen`,
+  };
+}
+
+/**
+ * Mapeo de secciones a rutas para "nombramiento-directorio"
+ */
+export function getNombramientoDirectorioRoutes(basePath: string): Record<string, string> {
+  return {
+    "nombramiento-directorio": `${basePath}/nombramiento-directorio`,
+    cantidad: `${basePath}/nombramiento-directorio/cantidad`,
+    "votacion-configuracion": `${basePath}/nombramiento-directorio/votacion`,
+    nombramiento: `${basePath}/nombramiento-directorio/nombramiento`,
+    votacion: `${basePath}/nombramiento-directorio/votacion`,
+    presidente: `${basePath}/nombramiento-directorio/nombramiento`,
+    resumen: `${basePath}/nombramiento-directorio/resumen`,
+  };
+}
+
+/**
  * Obtiene el mapeo de rutas para un sub-step
  */
 export function getSectionRoutesForSubStep(
@@ -71,6 +162,20 @@ export function getSectionRoutesForSubStep(
       return getPronunciamientoGestionRoutes(basePath);
     case "delegacion-auditores":
       return getDelegacionAuditoresRoutes(basePath);
+    case "remocion-gerente":
+      return getRemocionGerenteRoutes(basePath);
+    case "remocion-apoderados":
+      return getRemocionApoderadosRoutes(basePath);
+    case "remocion-directores":
+      return getRemocionDirectoresRoutes(basePath);
+    case "nombramiento-gerente":
+      return getNombramientoGerenteRoutes(basePath);
+    case "nombramiento-apoderados":
+      return getNombramientoApoderadosRoutes(basePath);
+    case "nombramiento-directores":
+      return getNombramientoDirectoresRoutes(basePath);
+    case "nombramiento-nuevo-directorio":
+      return getNombramientoDirectorioRoutes(basePath);
     default:
       return null;
   }

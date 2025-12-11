@@ -7,7 +7,8 @@
 
     <div class="flex flex-col gap-8">
       <p class="text-sm text-muted-foreground">
-        Utiliza esta introducción como punto de partida y continúa con cada apartado específico desde el panel derecho.
+        Utiliza esta introducción como punto de partida y continúa con cada apartado específico
+        desde el panel derecho.
       </p>
       <BlankContainer />
     </div>

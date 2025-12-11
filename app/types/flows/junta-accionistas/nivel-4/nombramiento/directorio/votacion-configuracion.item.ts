@@ -3,28 +3,30 @@ import type { FlowItem } from "@/types/flow-system";
 import { FlowItemType, NavigationBehavior } from "@/types/flow-system";
 import { defaultBehavior, defaultValidation } from "../../../defaults";
 
-export const nombramientoDirectorioDesignacionItem: FlowItem = {
+export const nombramientoDirectorioVotacionConfiguracionItem: FlowItem = {
   identity: {
-    id: "nombramiento-directorio-designacion",
+    id: "nombramiento-directorio-votacion-configuracion",
     type: FlowItemType.STEP,
-    label: "Designación de Directores",
+    label: "Votación de la Configuración del Directorio",
   },
   hierarchy: {
     level: 4,
-    order: 4,
+    order: 3,
     parentId: "nombramiento-directorio-contenido",
     children: [],
   },
   navigation: {
-    route: JuntaRoutes.NOMBRAMIENTO_DIRECTORIO_DETALLE,
+    route: JuntaRoutes.NOMBRAMIENTO_DIRECTORIO_VOTACION,
     behavior: NavigationBehavior.PUSH,
+    hash: "#configuracion",
   },
   behavior: defaultBehavior,
   rightSidebar: { enabled: false },
   validation: defaultValidation,
   metadata: {
-    description: "Designación de los directores del nuevo directorio",
+    description: "Votación sobre la configuración del directorio",
     tags: ["nivel-4", "nombramiento", "directorio"],
     version: "1.0.0",
   },
 };
+

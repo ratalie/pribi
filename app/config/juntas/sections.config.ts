@@ -140,6 +140,197 @@ export const SUB_STEP_SECTIONS_MAP: Record<
       navigationType: "route",
     },
   ],
+  // Remociones
+  "remocion-gerente": [
+    {
+      id: "remocion-gerente",
+      title: "Remoción del Gerente General",
+      navigationType: "route",
+    },
+    {
+      id: "remocion",
+      title: "Gerente General",
+      navigationType: "route",
+    },
+    {
+      id: "votacion",
+      title: "Votación",
+      navigationType: "route",
+    },
+    {
+      id: "resumen",
+      title: "Resumen",
+      navigationType: "route",
+    },
+  ],
+  "remocion-apoderados": [
+    {
+      id: "remocion-apoderados",
+      title: "Remoción de Apoderados",
+      navigationType: "route",
+    },
+    {
+      id: "remocion",
+      title: "Selección de Apoderados",
+      navigationType: "route",
+    },
+    {
+      id: "otorgamiento-facultades",
+      title: "Otorgamiento de Facultades",
+      navigationType: "route",
+    },
+    {
+      id: "votacion",
+      title: "Votación",
+      navigationType: "route",
+    },
+    {
+      id: "resumen",
+      title: "Resumen",
+      navigationType: "route",
+    },
+  ],
+  "remocion-directores": [
+    {
+      id: "remocion-directores",
+      title: "Remoción de Directores",
+      navigationType: "route",
+    },
+    {
+      id: "remocion",
+      title: "Directores",
+      navigationType: "route",
+    },
+    {
+      id: "votacion",
+      title: "Votación",
+      navigationType: "route",
+    },
+    {
+      id: "resumen",
+      title: "Resumen",
+      navigationType: "route",
+    },
+  ],
+  // Nombramientos
+  "nombramiento-gerente": [
+    {
+      id: "nombramiento-gerente",
+      title: "Nombramiento de Gerente General",
+      navigationType: "route",
+    },
+    {
+      id: "nombramiento",
+      title: "Gerente General",
+      navigationType: "route",
+    },
+    {
+      id: "otorgamiento",
+      title: "Otorgamiento de Poderes",
+      navigationType: "route",
+    },
+    {
+      id: "votacion",
+      title: "Votación",
+      navigationType: "route",
+    },
+    {
+      id: "resumen",
+      title: "Resumen",
+      navigationType: "route",
+    },
+  ],
+  "nombramiento-apoderados": [
+    {
+      id: "nombramiento-apoderados",
+      title: "Nombramiento de Apoderados",
+      navigationType: "route",
+    },
+    {
+      id: "nombramiento",
+      title: "Selección de Apoderados",
+      navigationType: "route",
+    },
+    {
+      id: "otorgamiento-poderes",
+      title: "Otorgamiento de Poderes",
+      navigationType: "route",
+    },
+    {
+      id: "votacion",
+      title: "Votación",
+      navigationType: "route",
+    },
+    {
+      id: "resumen",
+      title: "Resumen",
+      navigationType: "route",
+    },
+  ],
+  "nombramiento-directores": [
+    {
+      id: "nombramiento-directores",
+      title: "Nombramiento de Directores",
+      navigationType: "route",
+    },
+    {
+      id: "nombramiento",
+      title: "Registro de Directores",
+      navigationType: "route",
+    },
+    {
+      id: "votacion",
+      title: "Votación de la Designación",
+      navigationType: "route",
+    },
+    {
+      id: "presidente",
+      title: "Presidente del Directorio",
+      navigationType: "route",
+    },
+    {
+      id: "resumen",
+      title: "Resumen",
+      navigationType: "route",
+    },
+  ],
+  "nombramiento-nuevo-directorio": [
+    {
+      id: "nombramiento-directorio",
+      title: "Nombramiento de Nuevo Directorio",
+      navigationType: "route",
+    },
+    {
+      id: "cantidad",
+      title: "Configurar Directorio",
+      navigationType: "route",
+    },
+    {
+      id: "votacion-configuracion",
+      title: "Votación de la Configuración del Directorio",
+      navigationType: "route",
+    },
+    {
+      id: "nombramiento",
+      title: "Designación de Directores",
+      navigationType: "route",
+    },
+    {
+      id: "votacion",
+      title: "Votación de la Designación",
+      navigationType: "route",
+    },
+    {
+      id: "presidente",
+      title: "Presidente del Directorio",
+      navigationType: "route",
+    },
+    {
+      id: "resumen",
+      title: "Resumen",
+      navigationType: "route",
+    },
+  ],
 };
 
 /**

@@ -19,6 +19,10 @@ export const nombramientoDirectoresVotacionItem: FlowItem = {
     route: JuntaRoutes.NOMBRAMIENTO_DIRECTORES_VOTACION,
     behavior: NavigationBehavior.PUSH,
   },
+  navigation: {
+    route: JuntaRoutes.NOMBRAMIENTO_DIRECTORES_VOTACION,
+    behavior: NavigationBehavior.PUSH,
+  },
   behavior: defaultBehavior,
   rightSidebar: { enabled: false },
   validation: defaultValidation,

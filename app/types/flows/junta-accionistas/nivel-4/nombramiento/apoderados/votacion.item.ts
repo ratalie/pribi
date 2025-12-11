@@ -11,7 +11,7 @@ export const nombramientoApoderadosVotacionItem: FlowItem = {
   },
   hierarchy: {
     level: 4,
-    order: 3,
+    order: 4,
     parentId: "nombramiento-apoderados-contenido",
     children: [],
   },
