@@ -87,9 +87,21 @@ export const mapperApoderadoNaturalEntityAModal = (
 export const mapperApoderadoJuridicaModalALista = (
   claseApoderadoId: string,
   personaJuridicaStore: ReturnType<typeof usePersonaJuridicaStore>,
+  personaNaturalStore: ReturnType<typeof usePersonaNaturalStore>,
   apoderadoId?: string,
   personaId?: string
 ): Apoderado => {
+  const representante = {
+    nombre: personaNaturalStore.nombre,
+    apellidoPaterno: personaNaturalStore.apellidoPaterno,
+    apellidoMaterno: personaNaturalStore.apellidoMaterno,
+    tipoDocumento: convertirDocumentoUIADomain(
+      personaNaturalStore.tipoDocumento as TipoDocumentosEnum
+    ),
+    numeroDocumento: personaNaturalStore.numeroDocumento,
+    paisEmision: personaNaturalStore.paisPasaporte ?? undefined,
+  };
+
   return {
     id: apoderadoId ?? uuidv4(),
     claseApoderadoId: claseApoderadoId,
@@ -118,6 +130,7 @@ export const mapperApoderadoJuridicaModalALista = (
       pais: !personaJuridicaStore.seConstituyoEnPeru
         ? personaJuridicaStore.paisOrigen
         : undefined,
+      representante: personaJuridicaStore.tieneRepresentante ? representante : undefined,
     },
   };
 };
@@ -140,6 +153,6 @@ export const mapperApoderadoJuridicaEntityAModal = (
     provincia: apoderado.persona.provincia ?? "",
     departamento: apoderado.persona.departamento ?? "",
     paisOrigen: apoderado.persona.pais ?? "",
-    tieneRepresentante: false,
+    tieneRepresentante: apoderado.persona.representante ? true : false,
   };
 };

@@ -7,9 +7,11 @@
   import SimpleCardDropDown from "~/components/base/cards/SimpleCardDropDown.vue";
   import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
-  import { TipoFirmasEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoFirmasEnum";
-  import { TipoMontoEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoMontoEnum";
-  import { EntityCoinEnum } from "~/types/enums/EntityCoinEnum";
+  import {
+    EntityCoinUIEnum,
+    TipoFirmasUIEnum,
+    TipoMontoUIEnum,
+  } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
   import {
     montoDesdeSchema,
     montoHastaSchema,
@@ -20,15 +22,42 @@
     selectTipoMontoSchema,
   } from "../schemas/FacultadApoderado";
   import { useApoderadoFacultadStore } from "../stores/modal/useApoderadoFacultadStore";
+  import { useRegimenFacultadesStore } from "../stores/useRegimenFacultadesStore";
 
   const apoderadoFacultadStore = useApoderadoFacultadStore();
+  const regimenFacultadesStore = useRegimenFacultadesStore();
+
+  // Computed para obtener opciones de cantidad basadas en el grupo del firmante
+  const getCantidadFirmantesOptions = (grupoId: string | null | undefined) => {
+    if (!grupoId) {
+      return Array.from({ length: 10 }, (_, index) => ({
+        id: index + 1,
+        label: String(index + 1),
+        value: index + 1,
+      }));
+    }
+
+    const clase = regimenFacultadesStore.clasesApoderadosDisponibles.find(
+      (c) => c.id === grupoId
+    );
+
+    if (!clase || clase.cantidadApoderados === 0) {
+      return [];
+    }
+
+    return Array.from({ length: clase.cantidadApoderados }, (_, index) => ({
+      id: index + 1,
+      label: String(index + 1),
+      value: index + 1,
+    }));
+  };
 
   const crearLimiteVacio = () => ({
     id: uuidv4(),
     desde: 0,
-    tipoMonto: TipoMontoEnum.MONTO,
+    tipoMonto: TipoMontoUIEnum.MONTO,
     hasta: 0,
-    tipoFirma: TipoFirmasEnum.SOLA_FIRMA,
+    tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA,
     firmantes: [],
   });
 
@@ -38,7 +67,22 @@
     grupo: "",
   });
 
-  const handleTipoFirmaChange = (newVal: TipoFirmasEnum, limiteId: string) => {
+  const handleGrupoFirmanteChange = (newVal: string, limiteId: string, firmanteId: string) => {
+    const limite = apoderadoFacultadStore.limiteMonetario.find(
+      (limite) => limite.id === limiteId
+    );
+
+    if (!limite) return;
+
+    const firmante = limite.firmantes.find((f) => f.id === firmanteId);
+    if (firmante) {
+      firmante.grupo = newVal;
+      // Actualizar claseFirmanteSeleccionada para que el getter cantidadFirmantesOptions se actualice
+      apoderadoFacultadStore.claseFirmanteSeleccionada = newVal;
+    }
+  };
+
+  const handleTipoFirmaChange = (newVal: TipoFirmasUIEnum, limiteId: string) => {
     const limite = apoderadoFacultadStore.limiteMonetario.find(
       (limite) => limite.id === limiteId
     );
@@ -47,7 +91,7 @@
 
     limite.tipoFirma = newVal;
 
-    if (newVal === TipoFirmasEnum.FIRMA_CONJUNTA) {
+    if (newVal === TipoFirmasUIEnum.FIRMA_CONJUNTA) {
       if (limite.firmantes.length === 0) {
         limite.firmantes.push(crearFirmanteVacio());
       }
@@ -62,6 +106,34 @@
 
     if (!limite) return;
 
+    // Obtener opciones disponibles
+    const opcionesDisponibles = apoderadoFacultadStore.grupoFirmantesOptions;
+    const totalOpcionesDisponibles = opcionesDisponibles.length;
+
+    // Obtener grupos ya asignados (excluyendo vacíos o sin seleccionar)
+    const gruposAsignados = limite.firmantes
+      .map((f) => f.grupo)
+      .filter((grupo) => grupo && grupo.trim() !== "");
+
+    // Contar firmantes vacíos (sin grupo seleccionado)
+    const firmantesVacios = limite.firmantes.filter(
+      (f) => !f.grupo || f.grupo.trim() === ""
+    ).length;
+
+    // Calcular cuántos slots están ocupados o reservados
+    // Los firmantes con grupo asignado + los firmantes vacíos (que pueden ocupar un slot)
+    const slotsOcupados = gruposAsignados.length + firmantesVacios;
+
+    // Validar si quedan opciones disponibles
+    // Si los slots ocupados/reservados >= opciones disponibles, no se puede agregar más
+    if (slotsOcupados >= totalOpcionesDisponibles) {
+      console.warn(
+        `[ReglasLimitesCard] No hay más apoderados disponibles para asignar como firmantes. Hay ${totalOpcionesDisponibles} opción(es) disponible(s) y ya se han asignado o reservado ${slotsOcupados} slot(s).`
+      );
+      return;
+    }
+
+    // Agregar firmante vacío
     limite.firmantes.push(crearFirmanteVacio());
   };
 
@@ -96,6 +168,13 @@
 
   const agregarLimite = () => {
     apoderadoFacultadStore.limiteMonetario.push(crearLimiteVacio());
+  };
+
+  const eliminarLimite = (limiteId: string) => {
+    const index = apoderadoFacultadStore.limiteMonetario.findIndex((l) => l.id === limiteId);
+    if (index > -1 && apoderadoFacultadStore.limiteMonetario.length > 1) {
+      apoderadoFacultadStore.limiteMonetario.splice(index, 1);
+    }
   };
 </script>
 
@@ -143,7 +222,7 @@
               :name="`desde-${limite.id}`"
               placeholder="Ingrese el monto desde"
               :currency="
-                apoderadoFacultadStore.tipoMoneda === EntityCoinEnum.SOLES ? 'PEN' : 'USD'
+                apoderadoFacultadStore.tipoMoneda === EntityCoinUIEnum.SOLES ? 'PEN' : 'USD'
               "
               format="decimal"
               :schema="montoDesdeSchema"
@@ -151,7 +230,7 @@
             <span class="t-t2 font-secondary text-gray-700 font-medium">Hasta</span>
 
             <!-- Si el tipo de monto es monto, mostrar el select y el input -->
-            <template v-if="limite.tipoMonto === TipoMontoEnum.MONTO">
+            <template v-if="limite.tipoMonto === TipoMontoUIEnum.MONTO">
               <SelectInputZod
                 v-model="limite.tipoMonto"
                 :name="`tipo-monto-${limite.id}`"
@@ -164,7 +243,7 @@
                 :name="`hasta-${limite.id}`"
                 placeholder="Ingrese el monto hasta"
                 :currency="
-                  apoderadoFacultadStore.tipoMoneda === EntityCoinEnum.SOLES ? 'PEN' : 'USD'
+                  apoderadoFacultadStore.tipoMoneda === EntityCoinUIEnum.SOLES ? 'PEN' : 'USD'
                 "
                 format="decimal"
                 :schema="montoHastaSchema"
@@ -182,7 +261,7 @@
                 <button
                   type="button"
                   class="size-[18px] shrink-0 text-primary-500 hover:text-primary-600 transition-colors cursor-pointer"
-                  @click="limite.tipoMonto = TipoMontoEnum.MONTO"
+                  @click="limite.tipoMonto = TipoMontoUIEnum.MONTO"
                 >
                   <X :size="18" />
                 </button>
@@ -196,13 +275,25 @@
               placeholder="Selecciona un tipo de firma"
               :options="apoderadoFacultadStore.tipoFirmaOptions"
               :schema="selectTipoFirmaSchema"
-              @update:model-value="(newVal: string) => handleTipoFirmaChange(newVal as TipoFirmasEnum, limite.id)"
+              @update:model-value="(newVal: string) => handleTipoFirmaChange(newVal as TipoFirmasUIEnum, limite.id)"
             />
+
+            <!-- Solo mostrar el botón de eliminar si hay más de un límite -->
+            <!-- Se necesita al menos un límite monetario -->
+            <BaseButton
+              v-if="apoderadoFacultadStore.limiteMonetario.length > 1"
+              type="button"
+              variant="ghost"
+              class="w-4 h-4"
+              @click="eliminarLimite(limite.id)"
+            >
+              <component :is="X" class="w-4 h-4" />
+            </BaseButton>
           </div>
 
           <!-- Firmantes -->
           <div
-            v-if="limite.tipoFirma === TipoFirmasEnum.FIRMA_CONJUNTA"
+            v-if="limite.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA"
             class="flex flex-col gap-3 px-6"
           >
             <div
@@ -217,7 +308,7 @@
                     v-model="firmante.cantidad"
                     :name="`cantidad-firmantes-${limite.id}-${firmante.id}`"
                     placeholder="0"
-                    :options="apoderadoFacultadStore.cantidadFirmantesOptions"
+                    :options="getCantidadFirmantesOptions(firmante.grupo)"
                     :schema="selectCantidadFirmantesSchema"
                   />
                 </div>
@@ -227,7 +318,8 @@
                 </span>
                 <div>
                   <SelectInputZod
-                    v-model="firmante.grupo"
+                    :model-value="firmante.grupo"
+                    @update:model-value="(newVal: string) => handleGrupoFirmanteChange(newVal, limite.id, firmante.id)"
                     :name="`grupo-firmantes-${limite.id}-${firmante.id}`"
                     placeholder="Selecciona el grupo de firmantes"
                     :options="apoderadoFacultadStore.grupoFirmantesOptions"
@@ -235,7 +327,10 @@
                   />
                 </div>
               </div>
+              <!-- Solo mostrar el botón de eliminar si hay más de un firmante -->
+              <!-- Una firma conjunta necesita al menos un firmante -->
               <BaseButton
+                v-if="limite.firmantes.length > 1"
                 type="button"
                 variant="ghost"
                 class="w-4 h-4"

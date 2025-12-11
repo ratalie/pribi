@@ -12,7 +12,7 @@
   interface Props {
     items: GerenteGeneralRow[];
     titleMenu?: string;
-    actions: {
+    actions?: {
       label: string;
       icon?: string;
       separatorLine?: boolean;

@@ -1,10 +1,12 @@
 import { v4 as uuidv4 } from "uuid";
-import { TipoFirmasEnum } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/enums/TipoFirmasEnum";
-import { EntityCoinEnum } from "~/types/enums/EntityCoinEnum";
-import { TiemposVigenciaEnum } from "~/types/enums/TiemposVigenciaEnum";
+import {
+  EntityCoinUIEnum,
+  TiempoVigenciaUIEnum,
+  TipoFirmasUIEnum,
+  type Facultad,
+} from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
 import type { useApoderadoFacultadStore } from "../stores/modal/useApoderadoFacultadStore";
 import type { useRegimenFacultadesStore } from "../stores/useRegimenFacultadesStore";
-import type { Facultad } from "../types/apoderadosFacultades";
 
 export const transformarModalAFacultad = (
   modalStore: ReturnType<typeof useApoderadoFacultadStore>,
@@ -22,17 +24,18 @@ export const transformarModalAFacultad = (
 
   const baseFacultad = {
     id: idFacultad || uuidv4(),
-    nombre: tipoFacultadEncontrada.tipoFacultades,
+    tipoFacultadId: tipoFacultadEncontrada.id,
+    tipoFacultadNombre: tipoFacultadEncontrada.tipoFacultades,
   };
 
   const tipoVigencia = !modalStore.esIrrevocable
     ? {
         esIrrevocable: false as const,
-        vigencia: TiemposVigenciaEnum.INDEFINIDO,
+        vigencia: TiempoVigenciaUIEnum.INDEFINIDO,
       }
     : {
         esIrrevocable: true as const,
-        vigencia: TiemposVigenciaEnum.DETERMIADO,
+        vigencia: TiempoVigenciaUIEnum.DETERMIADO,
         fecha_inicio: modalStore.fechaInicio,
         fecha_fin: modalStore.fechaFin,
       };
@@ -42,12 +45,13 @@ export const transformarModalAFacultad = (
         reglasYLimites: true as const,
         tipoMoneda: modalStore.tipoMoneda,
         limiteMonetario: modalStore.limiteMonetario.map((limite) => ({
-          id: uuidv4(),
+          // Preservar el ID original si existe (edición), generar nuevo si no (creación)
+          id: limite.id && limite.id.trim() !== "" ? limite.id : uuidv4(),
           desde: limite.desde,
           tipoMonto: limite.tipoMonto,
           hasta: limite.hasta,
           tipoFirma: limite.tipoFirma,
-          ...(limite.tipoFirma === TipoFirmasEnum.FIRMA_CONJUNTA
+          ...(limite.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA
             ? {
                 firmantes: limite.firmantes.map((firmante) => ({
                   id: firmante.id,
@@ -74,11 +78,11 @@ export const transformarFacultadAModal = (
   regimenStore: ReturnType<typeof useRegimenFacultadesStore>
 ): ReturnType<typeof useApoderadoFacultadStore>["$state"] | null => {
   const tipoFacultadEncontrada = regimenStore.tipoFacultades.find(
-    (f) => f.tipoFacultades === facultad.nombre
+    (f) => f.tipoFacultades === facultad.tipoFacultadNombre
   );
 
   if (!tipoFacultadEncontrada) {
-    console.error(`No se encontró el tipo de facultad: ${facultad.nombre}`);
+    console.error(`No se encontró el tipo de facultad: ${facultad.tipoFacultadNombre}`);
     return null;
   }
 
@@ -101,7 +105,7 @@ export const transformarFacultadAModal = (
           hasta: limite.hasta,
           tipoFirma: limite.tipoFirma,
           firmantes:
-            limite.tipoFirma === TipoFirmasEnum.FIRMA_CONJUNTA
+            limite.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA
               ? limite.firmantes.map((firmante) => ({
                   id: firmante.id,
                   cantidad: String(firmante.cantidad),
@@ -112,7 +116,7 @@ export const transformarFacultadAModal = (
       }
     : {
         reglasYLimites: false,
-        tipoMoneda: EntityCoinEnum.SOLES,
+        tipoMoneda: EntityCoinUIEnum.SOLES,
         limiteMonetario: [],
       };
 

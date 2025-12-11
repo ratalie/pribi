@@ -1,9 +1,11 @@
 <script setup lang="ts">
+  import { onMounted } from "vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
+  import ConfirmDeleteModal from "~/components/base/modal/ConfirmDeleteModal.vue";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
-  import type { EntityModeEnum } from "~/types/enums/EntityModeEnum";
+  import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
   import FacultadesApoderados from "./components/FacultadesApoderados.vue";
   import FacultadApoderadoModal from "./components/modals/FacultadApoderadoModal.vue";
   import TipoFacultadesModal from "./components/modals/TipoFacultadesModal.vue";
@@ -16,17 +18,19 @@
     societyId?: string;
   }
 
-  defineProps<Props>();
+  const props = defineProps<Props>();
 
   const {
     regimenFacultadesStore,
     modeModal,
+    isLoadingTipoFacultad,
     tipoFacultadesHeaders,
     tipoFacultadesActions,
     isTipoFacultadesModalOpen,
     handleSubmitTipoFacultad,
     handleCloseModal,
-  } = useTiposFacultades();
+    confirmDelete: confirmDeleteTipoFacultad,
+  } = useTiposFacultades(props.societyId ?? "");
 
   const {
     facultadActions,
@@ -35,7 +39,9 @@
     openModalFacultadApoderado,
     handleCloseModalApoderadoFacultad,
     handleSubmitApoderadoFacultad,
-  } = useApoderadosFacultades();
+    listaFacultadesDisponibles,
+    confirmDelete,
+  } = useApoderadosFacultades(props.societyId ?? "");
 
   const {
     facultadActions: facultadActionsOtros,
@@ -44,21 +50,42 @@
     openModalFacultadApoderado: openModalFacultadOtroApoderado,
     handleCloseModalApoderadoFacultad: handleCloseModalOtroApoderadoFacultad,
     handleSubmitApoderadoFacultad: handleSubmitOtroApoderadoFacultad,
-  } = useOtrosApoderadosFacultades();
+    listaFacultadesDisponibles: listaFacultadesDisponiblesOtros,
+    confirmDelete: confirmDeleteOtros,
+  } = useOtrosApoderadosFacultades(props.societyId ?? "");
+
+  onMounted(async () => {
+    if (props.societyId) {
+      try {
+        await regimenFacultadesStore.loadTipoFacultades(props.societyId);
+        await regimenFacultadesStore.loadOtorgamientosPoderes(props.societyId);
+      } catch (error) {
+        console.error("Error al cargar otorgamientos de poderes:", error);
+      }
+    }
+  });
 
   useFlowLayoutNext(() => {});
 </script>
 
 <template>
-  <div class="p-14 flex flex-col gap-12">
+  <div
+    :class="[
+      'flex flex-col gap-12',
+      mode !== EntityModeEnum.RESUMEN
+        ? ' p-14 '
+        : 'border border-gray-100 rounded-xl py-12 px-10',
+    ]"
+  >
     <CardTitle
       title="Regimen General de Poderes"
-      body="Complete todos los campos requeridos."
+      :body="mode !== EntityModeEnum.RESUMEN ? 'Complete todos los campos requeridos.' : ''"
     />
     <SimpleCard>
       <CardTitle title="Tipo de Poderes" body="">
         <template #actions>
           <ActionButton
+            v-if="mode !== EntityModeEnum.RESUMEN"
             variant="secondary"
             label="Agregar tipo de Poder"
             size="large"
@@ -71,7 +98,7 @@
         :columns="tipoFacultadesHeaders"
         :data="regimenFacultadesStore.tablaTipoFacultades"
         title-menu="Acciones"
-        :actions="tipoFacultadesActions"
+        :actions="mode !== EntityModeEnum.RESUMEN ? tipoFacultadesActions : undefined"
         icon-type="vertical"
       />
     </SimpleCard>
@@ -85,7 +112,8 @@
           v-for="apoderado in regimenFacultadesStore.tablaApoderadosFacultades"
           :key="apoderado.id"
           :apoderado-item="apoderado"
-          :actions="facultadActions"
+          :actions="mode !== EntityModeEnum.RESUMEN ? facultadActions : undefined"
+          :mode="mode"
           @open-modal="openModalFacultadApoderado"
         />
       </div>
@@ -100,7 +128,8 @@
           v-for="apoderado in regimenFacultadesStore.tablaOtrosApoderadosFacultades"
           :key="apoderado.id"
           :apoderado-item="apoderado"
-          :actions="facultadActionsOtros"
+          :actions="mode !== EntityModeEnum.RESUMEN ? facultadActionsOtros : undefined"
+          :mode="mode"
           @open-modal="openModalFacultadOtroApoderado"
         />
       </div>
@@ -111,6 +140,7 @@
     <TipoFacultadesModal
       v-model="isTipoFacultadesModalOpen"
       :mode="modeModal"
+      :is-loading="isLoadingTipoFacultad"
       @close="handleCloseModal"
       @submit="handleSubmitTipoFacultad"
     />
@@ -118,7 +148,7 @@
     <FacultadApoderadoModal
       v-model="isApoderadoFacultadesModalOpen"
       :mode="modeModalApoderadoFacultad"
-      :lista-facultades-options="regimenFacultadesStore.listaFacultadesOptions"
+      :lista-facultades-options="listaFacultadesDisponibles"
       @close="handleCloseModalApoderadoFacultad"
       @submit="handleSubmitApoderadoFacultad"
     />
@@ -126,9 +156,46 @@
     <FacultadApoderadoModal
       v-model="isOtrosApoderadosFacultadesModalOpen"
       :mode="modeModalOtroApoderadoFacultad"
-      :lista-facultades-options="regimenFacultadesStore.listaFacultadesOptions"
+      :lista-facultades-options="listaFacultadesDisponiblesOtros"
       @close="handleCloseModalOtroApoderadoFacultad"
       @submit="handleSubmitOtroApoderadoFacultad"
+    />
+
+    <!-- Modales de confirmación de eliminación -->
+    <!-- Modal para tipos de facultades -->
+    <ConfirmDeleteModal
+      v-model="confirmDeleteTipoFacultad.isOpen.value"
+      :title="confirmDeleteTipoFacultad.title"
+      :message="confirmDeleteTipoFacultad.message"
+      :confirm-label="confirmDeleteTipoFacultad.confirmLabel"
+      :cancel-label="confirmDeleteTipoFacultad.cancelLabel"
+      :is-loading="confirmDeleteTipoFacultad.isLoading.value"
+      @confirm="confirmDeleteTipoFacultad.handleConfirm"
+      @cancel="confirmDeleteTipoFacultad.handleCancel"
+    />
+
+    <!-- Modal para otorgamientos de poder (apoderados normales) -->
+    <ConfirmDeleteModal
+      v-model="confirmDelete.isOpen.value"
+      :title="confirmDelete.title"
+      :message="confirmDelete.message"
+      :confirm-label="confirmDelete.confirmLabel"
+      :cancel-label="confirmDelete.cancelLabel"
+      :is-loading="confirmDelete.isLoading.value"
+      @confirm="confirmDelete.handleConfirm"
+      @cancel="confirmDelete.handleCancel"
+    />
+
+    <!-- Modal para otorgamientos de poder (otros apoderados) -->
+    <ConfirmDeleteModal
+      v-model="confirmDeleteOtros.isOpen.value"
+      :title="confirmDeleteOtros.title"
+      :message="confirmDeleteOtros.message"
+      :confirm-label="confirmDeleteOtros.confirmLabel"
+      :cancel-label="confirmDeleteOtros.cancelLabel"
+      :is-loading="confirmDeleteOtros.isLoading.value"
+      @confirm="confirmDeleteOtros.handleConfirm"
+      @cancel="confirmDeleteOtros.handleCancel"
     />
   </div>
 </template>

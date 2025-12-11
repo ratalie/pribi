@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useVModel } from "@vueuse/core";
-  import { computed, ref, watch } from "vue";
+  import { computed, nextTick, ref, watch } from "vue";
 
   import type { AccionistaDTO } from "@hexag/registros/sociedades/pasos/accionistas/application";
   import type {
@@ -66,6 +66,7 @@
   const tipoAccionista = ref<TipoAccionistaEnum>(TipoAccionistaEnum.NATURAL);
   const personaId = ref<string | null>(null);
   const accionistaId = ref<string | null>(null);
+  const isHydrating = ref(false);
 
   const generateUuid = (): string => {
     if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
@@ -155,18 +156,20 @@
   };
 
   const ensureTipoFondo = (value?: string | null): TipoFondoEnum => {
-    if (value === TipoFondoEnum.ABIERTO || value === TipoFondoEnum.MIXTO) {
+    if (value === TipoFondoEnum.PUBLICO || value === TipoFondoEnum.PRIVADO) {
       return value;
     }
-    return TipoFondoEnum.CERRADO;
+    return TipoFondoEnum.PRIVADO;
   };
 
   const hydrateStoresFromPersona = (persona?: Persona | null) => {
+    isHydrating.value = true;
     resetStores();
     if (!persona) {
       tipoAccionista.value = TipoAccionistaEnum.NATURAL;
       personaId.value = null;
       accionistaId.value = null;
+      isHydrating.value = false;
       return;
     }
 
@@ -200,7 +203,9 @@
           state.provincia = juridicaPersona.provincia ?? "";
           state.departamento = juridicaPersona.departamento ?? "";
           state.paisOrigen = juridicaPersona.pais ?? "";
+          state.tieneRepresentante = Boolean(juridicaPersona.representante);
         });
+        patchRepresentante(juridicaPersona.representante ?? null);
         break;
       }
       case "SUCURSAL": {
@@ -270,21 +275,54 @@
         break;
       }
     }
+    isHydrating.value = false;
   };
 
+  // Watch para manejar la apertura del modal
+  watch(
+    () => isOpen.value,
+    (isOpenValue, previousValue) => {
+      // Solo ejecutar cuando el modal se abre (cambia de false a true)
+      if (isOpenValue && previousValue === false) {
+        // Usar nextTick para asegurar que initialAccionista esté actualizado
+        nextTick(() => {
+          if (props.initialAccionista) {
+            // Si hay initialAccionista, hidratar los datos
+            personaId.value = props.initialAccionista.persona?.id ?? null;
+            accionistaId.value = props.initialAccionista.id ?? null;
+            hydrateStoresFromPersona(props.initialAccionista.persona ?? null);
+          } else {
+            // Si no hay initialAccionista, limpiar los stores
+            personaId.value = null;
+            accionistaId.value = null;
+            hydrateStoresFromPersona(null);
+          }
+        });
+      }
+    }
+  );
+
+  // Watch para manejar cambios en initialAccionista (con deep para detectar cambios en objetos anidados)
   watch(
     () => props.initialAccionista,
     (value) => {
-      personaId.value = value?.persona.id ?? null;
-      accionistaId.value = value?.id ?? null;
-      hydrateStoresFromPersona(value?.persona ?? null);
+      // Solo hidratar si el modal está abierto y hay un valor
+      if (isOpen.value && value) {
+        personaId.value = value.persona?.id ?? null;
+        accionistaId.value = value.id ?? null;
+        hydrateStoresFromPersona(value.persona ?? null);
+      }
     },
-    { immediate: true }
+    { deep: true }
   );
 
   watch(
     () => tipoAccionista.value,
     (value, previous) => {
+      // No resetear stores si estamos hidratando desde initialAccionista
+      if (isHydrating.value) {
+        return;
+      }
       if (value !== previous) {
         const getter = storeMap[value];
         if (getter) {
@@ -357,6 +395,7 @@
           departamento: trim(juridicaStore.departamento),
           pais: trim(juridicaStore.paisOrigen),
           constituida: juridicaStore.seConstituyoEnPeru,
+          representante: juridicaStore.tieneRepresentante ? buildRepresentante() : undefined,
         } as PersonaJuridica);
       case TipoAccionistaEnum.SUCURSAL:
         if (!sucursalStore.numeroDocumento || !sucursalStore.nombreSucursal) {
@@ -416,7 +455,7 @@
           ruc: fondoStore.numeroDocumento,
           razonSocial: fondoStore.razonSocial,
           direccion: trim(fondoStore.direccion),
-          tipoFondo: fondoStore.tipoFondo || "CERRADO",
+          tipoFondo: fondoStore.tipoFondo || "PRIVADO",
           representante: fondoStore.tieneRepresentante ? buildRepresentante() : undefined,
           fiduciario:
             fondoStore.numeroDocumentoSociedadAdministradora ||
@@ -464,6 +503,7 @@
     resetStores();
     personaId.value = null;
     accionistaId.value = null;
+    tipoAccionista.value = TipoAccionistaEnum.NATURAL;
     isOpen.value = false;
   };
 </script>

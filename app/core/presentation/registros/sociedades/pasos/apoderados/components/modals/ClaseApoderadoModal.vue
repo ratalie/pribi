@@ -22,15 +22,13 @@
 
   const emit = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
-    (e: "submit", payload: string): void;
+    (e: "update:initialValue" | "submit", value: string): void;
     (e: "close"): void;
   }>();
 
   const isOpen = useVModel(props, "modelValue", emit);
 
-  const nombreClase = useVModel(props, "initialValue", emit, {
-    passive: true,
-  });
+  const nombreClase = useVModel(props, "initialValue", emit);
 
   const title = computed(() =>
     props.mode === "crear" ? "Agregar clase de apoderado" : "Editar clase de apoderado"

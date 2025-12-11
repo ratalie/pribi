@@ -36,6 +36,10 @@
     passive: true,
   });
 
+  const IconCoinValue = computed(() => {
+    return IconCoin;
+  });
+
   const handleClose = () => {
     emits("close");
     modelValue.value = false;
@@ -63,7 +67,7 @@
         <template #actions>
           <!-- valor nominal -->
           <BaseButton type="button" variant="pill" class="h-11">
-            <img :src="IconCoin" alt="Valor Nominal" />
+            <img :src="IconCoinValue" alt="Valor Nominal" />
             <p class="font-bold">
               Valor Nominal:
               <span class="font-bold">{{ props.valorNominalDisplay }}</span>

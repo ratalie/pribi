@@ -3,6 +3,7 @@
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
+  import ConfirmDeleteModal from "~/components/base/modal/ConfirmDeleteModal.vue";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
   import ApoderadosTable from "./components/ApoderadosTable.vue";
   import ClasesApoderadoTable from "./components/ClasesApoderadoTable.vue";
@@ -36,6 +37,7 @@
     openModalClase,
     closeModalClase,
     handleSubmitClase,
+    confirmDelete: confirmDeleteClase,
   } = useClasesApoderado(props.societyId ?? "");
 
   const {
@@ -47,6 +49,7 @@
     openModalGerenteGeneral,
     closeModalGerenteGeneral,
     handleSubmitGerenteGeneral,
+    confirmDelete: confirmDeleteGerente,
   } = useGerenteGeneral(props.societyId ?? "");
 
   const {
@@ -59,6 +62,7 @@
     openModalApoderado,
     closeModalApoderado,
     handleSubmitApoderado,
+    confirmDelete: confirmDeleteApoderado,
   } = useApoderados(props.societyId ?? "");
 
   useFlowLayoutNext(() => {});
@@ -74,13 +78,23 @@
 </script>
 
 <template>
-  <div class="p-14 flex flex-col gap-12">
-    <CardTitle title="Registro de Apoderados" body="Complete todos los campos requeridos." />
+  <div
+    :class="[
+      ' flex flex-col gap-12',
+      mode !== EntityModeEnum.RESUMEN
+        ? ' p-14 '
+        : 'border border-gray-100 rounded-xl py-12 px-10',
+    ]"
+  >
+    <CardTitle
+      title="Registro de Apoderados"
+      :body="mode !== EntityModeEnum.RESUMEN ? 'Complete todos los campos requeridos.' : ''"
+    />
     <SimpleCard>
       <CardTitle title="Clases de apoderado">
         <template #actions>
           <ActionButton
-            v-if="!isReadonly"
+            v-if="!isReadonly && mode !== EntityModeEnum.RESUMEN"
             variant="secondary"
             label="Agregar clase"
             size="lg"
@@ -92,7 +106,7 @@
 
       <ClasesApoderadoTable
         :items="clasesYApoderadoStore.datosTablaClases"
-        :actions="claseActions"
+        :actions="mode !== EntityModeEnum.RESUMEN ? claseActions : undefined"
       />
     </SimpleCard>
 
@@ -104,7 +118,7 @@
       >
         <template #actions>
           <ActionButton
-            v-if="!isReadonly"
+            v-if="!isReadonly && mode !== EntityModeEnum.RESUMEN"
             variant="secondary"
             label="Agregar gerente"
             size="lg"
@@ -117,7 +131,7 @@
 
       <GerenteGeneralTable
         :items="clasesYApoderadoStore.datosTablaGerenteGeneral"
-        :actions="gerenteActions"
+        :actions="mode !== EntityModeEnum.RESUMEN ? gerenteActions : undefined"
       />
     </SimpleCard>
 
@@ -129,7 +143,7 @@
       >
         <template #actions>
           <ActionButton
-            v-if="!isReadonly"
+            v-if="!isReadonly && mode !== EntityModeEnum.RESUMEN"
             variant="secondary"
             label="Agregar apoderado"
             size="lg"
@@ -142,7 +156,7 @@
 
       <ApoderadosTable
         :items="clasesYApoderadoStore.datosTablaApoderados"
-        :actions="apoderadoActions"
+        :actions="mode !== EntityModeEnum.RESUMEN ? apoderadoActions : undefined"
       />
     </SimpleCard>
 
@@ -151,7 +165,7 @@
       <CardTitle title="Otros Apoderados" body="Registra apoderados sin cargo específico.">
         <template #actions>
           <ActionButton
-            v-if="!isReadonly"
+            v-if="!isReadonly && mode !== EntityModeEnum.RESUMEN"
             variant="secondary"
             label="Agregar apoderado"
             size="lg"
@@ -163,15 +177,15 @@
 
       <OtrosApoderadosTable
         :items="clasesYApoderadoStore.datosTablaOtrosApoderados"
-        :actions="apoderadoActions"
+        :actions="mode !== EntityModeEnum.RESUMEN ? apoderadoActions : undefined"
       />
     </SimpleCard>
 
     <ClaseApoderadoModal
       v-model="isOpenModalClase"
+      v-model:initial-value="valorInicialClase"
       :mode="modeModalClase"
       :is-saving="isLoadingClase"
-      :initial-value="valorInicialClase"
       @close="closeModalClase"
       @submit="handleSubmitClase"
     />
@@ -194,6 +208,43 @@
       :clase-options="clasesYApoderadoStore.datosClasesOpciones"
       @close="closeModalApoderado"
       @submit="handleSubmitApoderado"
+    />
+
+    <!-- Modales de confirmación de eliminación -->
+    <!-- Modal para clases de apoderado -->
+    <ConfirmDeleteModal
+      v-model="confirmDeleteClase.isOpen.value"
+      :title="confirmDeleteClase.title"
+      :message="confirmDeleteClase.message"
+      :confirm-label="confirmDeleteClase.confirmLabel"
+      :cancel-label="confirmDeleteClase.cancelLabel"
+      :is-loading="confirmDeleteClase.isLoading.value"
+      @confirm="confirmDeleteClase.handleConfirm"
+      @cancel="confirmDeleteClase.handleCancel"
+    />
+
+    <!-- Modal para gerente general -->
+    <ConfirmDeleteModal
+      v-model="confirmDeleteGerente.isOpen.value"
+      :title="confirmDeleteGerente.title"
+      :message="confirmDeleteGerente.message"
+      :confirm-label="confirmDeleteGerente.confirmLabel"
+      :cancel-label="confirmDeleteGerente.cancelLabel"
+      :is-loading="confirmDeleteGerente.isLoading.value"
+      @confirm="confirmDeleteGerente.handleConfirm"
+      @cancel="confirmDeleteGerente.handleCancel"
+    />
+
+    <!-- Modal para apoderados -->
+    <ConfirmDeleteModal
+      v-model="confirmDeleteApoderado.isOpen.value"
+      :title="confirmDeleteApoderado.title"
+      :message="confirmDeleteApoderado.message"
+      :confirm-label="confirmDeleteApoderado.confirmLabel"
+      :cancel-label="confirmDeleteApoderado.cancelLabel"
+      :is-loading="confirmDeleteApoderado.isLoading.value"
+      @confirm="confirmDeleteApoderado.handleConfirm"
+      @cancel="confirmDeleteApoderado.handleCancel"
     />
   </div>
 </template>

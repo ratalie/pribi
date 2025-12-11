@@ -1,15 +1,17 @@
-import { v4 as uuidv4 } from "uuid";
 import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
+import { useConfirmDelete } from "~/composables/useConfirmDelete";
 import { useTiposFacultadStore } from "../stores/modal/useTiposFacultadStore";
 import { useRegimenFacultadesStore } from "../stores/useRegimenFacultadesStore";
 import type { TipoFacultadRow } from "../types/facultades";
+import { mapperTiposFacultadesAEntidad } from "../utils/mapperTiposFacultades";
 
-export const useTiposFacultades = () => {
+export const useTiposFacultades = (profileId: string) => {
   const regimenFacultadesStore = useRegimenFacultadesStore();
 
   const tiposFacultadStore = useTiposFacultadStore();
 
   const modeModal = ref<"crear" | "editar">("crear");
+  const isLoadingTipoFacultad = ref(false);
   const isTipoFacultadesModalOpen = ref(false);
   const idTipoFacultad = ref<string | null>(null);
 
@@ -20,6 +22,39 @@ export const useTiposFacultades = () => {
   ];
 
   const tipoFacultadesHeaders = getColumns(tipoFacultadesColumns);
+
+  const handleCloseModal = () => {
+    tiposFacultadStore.$reset();
+    isTipoFacultadesModalOpen.value = false;
+    modeModal.value = "crear";
+    idTipoFacultad.value = null;
+  };
+
+  const handleSubmitTipoFacultad = () => {
+    try {
+      isLoadingTipoFacultad.value = true;
+
+      const entity = mapperTiposFacultadesAEntidad(
+        tiposFacultadStore.nombreFacultad,
+        idTipoFacultad.value ?? undefined
+      );
+
+      if (modeModal.value === "editar" && idTipoFacultad.value) {
+        regimenFacultadesStore.editarTipoFacultad(profileId, entity);
+      }
+
+      if (modeModal.value === "crear") {
+        regimenFacultadesStore.agregarTipoFacultad(profileId, entity);
+      }
+
+      handleCloseModal();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    } finally {
+      isLoadingTipoFacultad.value = false;
+    }
+  };
 
   const handleEditMode = (id: string) => {
     const tipoFacultad = regimenFacultadesStore.tipoFacultades.find(
@@ -37,16 +72,32 @@ export const useTiposFacultades = () => {
     isTipoFacultadesModalOpen.value = true;
   };
 
-  const handleDeleteMode = (id: string) => {
-    const tipoFacultad = regimenFacultadesStore.tipoFacultades.find(
-      (facultad) => facultad.id === id
-    );
+  // Estado para el modal de confirmación de eliminación
+  const idTipoFacultadAEliminar = ref<string | null>(null);
 
-    if (!tipoFacultad) {
-      throw new Error("Tipo de facultad no encontrada para eliminar");
+  const confirmDelete = useConfirmDelete(
+    async () => {
+      if (!idTipoFacultadAEliminar.value) {
+        throw new Error("No se encontró el ID del tipo de facultad para eliminar");
+      }
+      await regimenFacultadesStore.eliminarTipoFacultad(
+        profileId,
+        idTipoFacultadAEliminar.value
+      );
+    },
+    {
+      title: "Confirmar eliminación",
+      message:
+        "¿Estás seguro de que deseas eliminar este tipo de poder? Esta acción no se puede deshacer.",
+      confirmLabel: "Eliminar",
+      cancelLabel: "Cancelar",
     }
+  );
 
-    regimenFacultadesStore.eliminarTipoFacultad(tipoFacultad.id);
+  const handleDeleteMode = (id: string) => {
+    // Guardar el ID y abrir el modal de confirmación
+    idTipoFacultadAEliminar.value = id;
+    confirmDelete.open();
   };
 
   const tipoFacultadesActions = [
@@ -62,40 +113,16 @@ export const useTiposFacultades = () => {
     },
   ];
 
-  const handleSubmitTipoFacultad = () => {
-    //se agrega la logica y el mapper para guardar en el backend
-
-    if (modeModal.value === "editar" && idTipoFacultad.value) {
-      regimenFacultadesStore.editarTipoFacultad({
-        id: idTipoFacultad.value,
-        tipoFacultades: tiposFacultadStore.nombreFacultad,
-      });
-    }
-
-    if (modeModal.value === "crear") {
-      regimenFacultadesStore.agregarTipoFacultad({
-        id: uuidv4(),
-        tipoFacultades: tiposFacultadStore.nombreFacultad,
-      });
-    }
-
-    handleCloseModal();
-  };
-
-  const handleCloseModal = () => {
-    tiposFacultadStore.$reset();
-    isTipoFacultadesModalOpen.value = false;
-    modeModal.value = "crear";
-    idTipoFacultad.value = null;
-  };
-
   return {
     regimenFacultadesStore,
     modeModal,
+    isLoadingTipoFacultad,
     tipoFacultadesHeaders,
     tipoFacultadesActions,
     isTipoFacultadesModalOpen,
     handleSubmitTipoFacultad,
     handleCloseModal,
+    // Modal de confirmación de eliminación
+    confirmDelete,
   };
 };

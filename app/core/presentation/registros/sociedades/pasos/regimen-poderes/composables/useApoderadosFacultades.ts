@@ -1,3 +1,4 @@
+import { useConfirmDelete } from "~/composables/useConfirmDelete";
 import { useApoderadoFacultadStore } from "../stores/modal/useApoderadoFacultadStore";
 import { useRegimenFacultadesStore } from "../stores/useRegimenFacultadesStore";
 import {
@@ -5,7 +6,7 @@ import {
   transformarModalAFacultad,
 } from "../utils/transformFacultadModal";
 
-export const useApoderadosFacultades = () => {
+export const useApoderadosFacultades = (profileId: string) => {
   const regimenFacultadesStore = useRegimenFacultadesStore();
   const apoderadoFacultadStore = useApoderadoFacultadStore();
 
@@ -13,6 +14,11 @@ export const useApoderadosFacultades = () => {
   const idApoderado = ref<string | null>(null);
   const idFacultad = ref<string | null>(null);
   const modeModalApoderadoFacultad = ref<"crear" | "editar">("crear");
+  const isLoading = ref(false);
+
+  // Estado para el modal de confirmación de eliminación
+  const idFacultadAEliminar = ref<string | null>(null);
+  const idApoderadoAEliminar = ref<string | null>(null);
 
   const cargarFacultadParaEditar = (idApod: string, idFac: string) => {
     const apoderado = regimenFacultadesStore.apoderadosFacultades.find((a) => a.id === idApod);
@@ -29,6 +35,13 @@ export const useApoderadosFacultades = () => {
       return;
     }
 
+    // Guardar estado original antes de editar
+    regimenFacultadesStore.guardarEstadoOriginal("clase", idApod);
+
+    // Configurar información de la clase seleccionada
+    apoderadoFacultadStore.claseApoderadoIdSeleccionada = apoderado.claseApoderadoId;
+    apoderadoFacultadStore.esOtrosApoderados = false;
+
     const modalData = transformarFacultadAModal(facultad, regimenFacultadesStore);
 
     if (!modalData) {
@@ -44,8 +57,31 @@ export const useApoderadosFacultades = () => {
     isApoderadoFacultadesModalOpen.value = true;
   };
 
+  const confirmDelete = useConfirmDelete(
+    async () => {
+      if (!idFacultadAEliminar.value || !idApoderadoAEliminar.value) {
+        throw new Error("No se encontraron los IDs para eliminar");
+      }
+      await regimenFacultadesStore.eliminarFacultadApoderado(
+        profileId,
+        idApoderadoAEliminar.value,
+        idFacultadAEliminar.value
+      );
+    },
+    {
+      title: "Confirmar eliminación",
+      message:
+        "¿Estás seguro de que deseas eliminar este otorgamiento de poder? Esta acción no se puede deshacer.",
+      confirmLabel: "Eliminar",
+      cancelLabel: "Cancelar",
+    }
+  );
+
   const eliminarFacultad = (idFacultad: string, idApoderado: string) => {
-    regimenFacultadesStore.eliminarFacultadApoderado(idApoderado, idFacultad);
+    // Guardar los IDs y abrir el modal de confirmación
+    idFacultadAEliminar.value = idFacultad;
+    idApoderadoAEliminar.value = idApoderado;
+    confirmDelete.open();
   };
 
   const facultadActions = [
@@ -66,58 +102,105 @@ export const useApoderadosFacultades = () => {
   ];
 
   const openModalFacultadApoderado = (id: string) => {
+    const apoderado = regimenFacultadesStore.apoderadosFacultades.find((a) => a.id === id);
+
+    if (!apoderado) {
+      console.warn(`No se encontró el apoderado con id: ${id}`);
+      return;
+    }
+
+    // Verificar si hay facultades disponibles antes de abrir el modal
+    const facultadesDisponibles = regimenFacultadesStore.obtenerFacultadesDisponibles(
+      id,
+      "clase"
+    );
+
+    if (facultadesDisponibles.length === 0) {
+      console.warn(
+        `No hay facultades disponibles para asignar al apoderado. El apoderado ya tiene todas las facultades asignadas.`
+      );
+      return;
+    }
+
+    // Configurar información de la clase seleccionada
+    apoderadoFacultadStore.claseApoderadoIdSeleccionada = apoderado.claseApoderadoId;
+    apoderadoFacultadStore.esOtrosApoderados = false;
+
     idApoderado.value = id;
     modeModalApoderadoFacultad.value = "crear";
     isApoderadoFacultadesModalOpen.value = true;
   };
 
   const handleCloseModalApoderadoFacultad = () => {
+    // Limpiar estado original si se cancela la edición
+    regimenFacultadesStore.limpiarEstadoOriginal();
     apoderadoFacultadStore.$reset();
+    // Limpiar estados adicionales
+    apoderadoFacultadStore.claseApoderadoIdSeleccionada = null;
+    apoderadoFacultadStore.claseFirmanteSeleccionada = null;
+    apoderadoFacultadStore.esOtrosApoderados = false;
     isApoderadoFacultadesModalOpen.value = false;
     idApoderado.value = null;
     idFacultad.value = null;
     modeModalApoderadoFacultad.value = "crear";
   };
 
-  const handleSubmitApoderadoFacultad = () => {
+  const handleSubmitApoderadoFacultad = async () => {
     if (!idApoderado.value) {
       console.error("No se encontró el id del apoderado");
       return;
     }
 
-    if (modeModalApoderadoFacultad.value === "editar" && idFacultad.value) {
-      const facultadActualizada = transformarModalAFacultad(
+    isLoading.value = true;
+
+    try {
+      const entity = transformarModalAFacultad(
         apoderadoFacultadStore,
         regimenFacultadesStore,
-        idFacultad.value
+        idFacultad.value ?? undefined
       );
 
-      if (!facultadActualizada) {
-        console.error("Error al transformar los datos del modal");
-        return;
+      if (!entity) {
+        throw new Error("Error al transformar los datos del modal");
       }
 
-      regimenFacultadesStore.editarFacultadApoderado(
-        idApoderado.value,
-        idFacultad.value,
-        facultadActualizada
-      );
-    } else {
-      const nuevaFacultad = transformarModalAFacultad(
-        apoderadoFacultadStore,
-        regimenFacultadesStore
-      );
-
-      if (!nuevaFacultad) {
-        console.error("Error al transformar los datos del modal");
-        return;
+      if (modeModalApoderadoFacultad.value === "editar" && idFacultad.value) {
+        // Actualizar otorgamiento existente
+        // Pasar la entity transformada para que la detección de cambios use los datos del modal
+        await regimenFacultadesStore.updateOtorgamientoPoder(
+          profileId,
+          "clase",
+          idApoderado.value,
+          idFacultad.value,
+          entity
+        );
+      } else {
+        // Crear nuevo otorgamiento
+        await regimenFacultadesStore.createOtorgamientoPoder(
+          profileId,
+          "clase",
+          idApoderado.value,
+          entity,
+          entity.tipoFacultadId
+        );
       }
 
-      regimenFacultadesStore.agregarFacultadApoderado(idApoderado.value, nuevaFacultad);
+      handleCloseModalApoderadoFacultad();
+    } catch (err) {
+      console.error("Error al guardar otorgamiento de poder:", err);
+    } finally {
+      isLoading.value = false;
     }
-
-    handleCloseModalApoderadoFacultad();
   };
+
+  // Computed para obtener las facultades disponibles (filtradas)
+  const listaFacultadesDisponibles = computed(() => {
+    return regimenFacultadesStore.obtenerFacultadesDisponibles(
+      idApoderado.value,
+      "clase",
+      modeModalApoderadoFacultad.value === "editar" ? idFacultad.value ?? undefined : undefined
+    );
+  });
 
   return {
     facultadActions,
@@ -126,5 +209,9 @@ export const useApoderadosFacultades = () => {
     openModalFacultadApoderado,
     handleCloseModalApoderadoFacultad,
     handleSubmitApoderadoFacultad,
+    isLoading,
+    listaFacultadesDisponibles,
+    // Modal de confirmación de eliminación
+    confirmDelete,
   };
 };

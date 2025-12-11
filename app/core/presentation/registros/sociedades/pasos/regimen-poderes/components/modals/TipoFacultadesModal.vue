@@ -10,6 +10,7 @@
   interface Props {
     modelValue: boolean;
     mode: "crear" | "editar";
+    isLoading: boolean;
   }
 
   const props = defineProps<Props>();
@@ -74,6 +75,7 @@
           variant="primary"
           :label="mode === 'crear' ? 'Guardar' : 'Editar'"
           size="md"
+          :is-loading="isLoading"
         />
       </div>
     </template>

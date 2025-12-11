@@ -14,7 +14,7 @@
   interface Props {
     items: ClaseApoderadoRow[];
     titleMenu?: string;
-    actions: {
+    actions?: {
       label: string;
       icon?: string;
       separatorLine?: boolean;

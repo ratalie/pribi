@@ -1,11 +1,12 @@
 <script setup lang="ts">
-  import { storeToRefs } from "pinia";
-  import { computed, ref, toRef } from "vue";
-
   import type { AccionistaDTO } from "@hexag/registros/sociedades/pasos/accionistas/application";
   import type { Accionista } from "@hexag/registros/sociedades/pasos/accionistas/domain";
+  import { storeToRefs } from "pinia";
+  import { computed, ref, toRef } from "vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
+  import ConfirmDeleteModal from "~/components/base/modal/ConfirmDeleteModal.vue";
+  import { useConfirmDelete } from "~/composables/useConfirmDelete";
   import { useToastFeedback } from "~/core/presentation/shared/composables/useToastFeedback";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
   import { useAccionistasController } from "../../composables/useAccionistasController";
@@ -31,15 +32,15 @@
   const controller = useAccionistasController({
     societyId,
     ttlMs: 60_000,
+    forceInitial: true, // Forzar carga inicial para tener datos actualizados siempre
   });
 
-  const { accionistas, status, errorMessage: storeError } = storeToRefs(store);
+  const { accionistas, status } = storeToRefs(store);
 
   const isLoading = computed(
     () => controller.isBootstrapping.value || status.value === "loading"
   );
   const isSaving = computed(() => status.value === "saving");
-  const errorMessage = computed(() => controller.error.value ?? storeError.value);
 
   const isModalOpen = ref(false);
   const editingAccionista = ref<Accionista | null>(null);
@@ -57,9 +58,6 @@
       etiqueta: getPersonaLabel(item.persona),
       tipo: personaTypeLabels[item.persona.tipo as keyof typeof personaTypeLabels] ?? "—",
       documento: getPersonaDocument(item.persona),
-      participacion: item.participacionPorcentual
-        ? `${item.participacionPorcentual.toFixed(2)}%`
-        : "—",
     }))
   );
 
@@ -68,6 +66,38 @@
     isModalOpen.value = true;
   };
 
+  // Estado para el modal de confirmación de eliminación
+  const idAccionistaAEliminar = ref<string | null>(null);
+
+  const confirmDelete = useConfirmDelete(
+    async () => {
+      if (!idAccionistaAEliminar.value) {
+        throw new Error("No se encontró el ID del accionista para eliminar");
+      }
+      const profileId = ensureSocietyId();
+      await withAsyncToast(() => store.remove(profileId, idAccionistaAEliminar.value!), {
+        loading: {
+          title: "Eliminando accionista…",
+        },
+        success: {
+          title: "Accionista eliminado",
+          description: "Se eliminó correctamente.",
+        },
+        error: () => ({
+          title: "No se pudo eliminar",
+          description: "Inténtalo nuevamente.",
+        }),
+      });
+    },
+    {
+      title: "Confirmar eliminación",
+      message:
+        "¿Estás seguro de que deseas eliminar este accionista? Esta acción no se puede deshacer.",
+      confirmLabel: "Eliminar",
+      cancelLabel: "Cancelar",
+    }
+  );
+
   const handleEdit = (accionistaId: string) => {
     const current = accionistas.value.find((item) => item.id === accionistaId);
     if (!current) return;
@@ -75,25 +105,29 @@
     isModalOpen.value = true;
   };
 
-  const handleRemove = async (accionistaId: string) => {
-    const confirmed = window.confirm("¿Deseas eliminar este accionista?");
-    if (!confirmed) return;
-    const profileId = ensureSocietyId();
-
-    await withAsyncToast(() => store.remove(profileId, accionistaId), {
-      loading: {
-        title: "Eliminando accionista…",
-      },
-      success: {
-        title: "Accionista eliminado",
-        description: "Se eliminó correctamente.",
-      },
-      error: () => ({
-        title: "No se pudo eliminar",
-        description: "Inténtalo nuevamente.",
-      }),
-    });
+  const handleRemove = (accionistaId: string) => {
+    // Guardar el ID y abrir el modal de confirmación
+    idAccionistaAEliminar.value = accionistaId;
+    confirmDelete.open();
   };
+
+  // Acciones para el dropdown de la tabla
+  const accionesActions = computed(() => {
+    if (isReadonly.value) return undefined;
+    return [
+      {
+        label: "Editar",
+        icon: "Pencil",
+        onClick: handleEdit,
+      },
+      {
+        label: "Eliminar",
+        icon: "Trash",
+        separatorLine: true,
+        onClick: handleRemove,
+      },
+    ];
+  });
 
   const handleModalSubmit = async (payload: AccionistaDTO) => {
     const profileId = ensureSocietyId();
@@ -172,11 +206,21 @@
 </script>
 
 <template>
-  <div class="h-full p-14 flex flex-col gap-12">
-    <CardTitle title="Accionistas" body="Complete todos los campos requeridos.">
+  <div
+    :class="[
+      'h-full flex flex-col gap-12',
+      mode !== EntityModeEnum.RESUMEN
+        ? ' p-14 '
+        : 'border border-gray-100 rounded-xl py-12 px-10',
+    ]"
+  >
+    <CardTitle
+      title="Accionistas"
+      :body="mode !== EntityModeEnum.RESUMEN ? 'Complete todos los campos requeridos.' : ''"
+    >
       <template #actions>
         <ActionButton
-          v-if="!isReadonly"
+          v-if="!isReadonly && mode !== EntityModeEnum.RESUMEN"
           variant="secondary"
           label="Agregar"
           size="md"
@@ -186,16 +230,12 @@
       </template>
     </CardTitle>
 
-    <p v-if="errorMessage" class="text-sm text-red-500">
-      {{ errorMessage }}
-    </p>
-
     <AccionistasList
       :items="rows"
       :is-loading="isLoading"
       :readonly="isReadonly"
-      @edit="handleEdit"
-      @remove="handleRemove"
+      title-menu="Accionistas"
+      :actions="mode !== EntityModeEnum.RESUMEN ? accionesActions : undefined"
     />
 
     <AccionistaModal
@@ -205,6 +245,18 @@
       :initial-accionista="editingAccionista ?? undefined"
       @close="closeModal"
       @submit="handleModalSubmit"
+    />
+
+    <!-- Modal de confirmación de eliminación -->
+    <ConfirmDeleteModal
+      v-model="confirmDelete.isOpen.value"
+      :title="confirmDelete.title"
+      :message="confirmDelete.message"
+      :confirm-label="confirmDelete.confirmLabel"
+      :cancel-label="confirmDelete.cancelLabel"
+      :is-loading="confirmDelete.isLoading.value"
+      @confirm="confirmDelete.handleConfirm"
+      @cancel="confirmDelete.handleCancel"
     />
   </div>
 </template>
