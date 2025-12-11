@@ -73,14 +73,69 @@ export class AlmacenamientoHttpRepository implements AlmacenamientoRepository {
 
         // Filtrar solo los hijos directos de /core/ (no incluir /core/ mismo)
         // Según la respuesta del backend, los nodos con parentId: 1 son hijos directos de /core/
-        // Los nodos con path="/core/" son hijos directos
         nodes = nodes.filter(node => {
           // Incluir solo nodos que son hijos directos de /core/
-          // path debe ser "/core/nombre/" o "/core/nombre"
-          // O parentId debe ser 1 (hijo directo de /core/)
-          return (node.path.startsWith('/core/') && node.path !== '/core/') || 
-                 (node.parentId === "1" || node.parentId === null);
+          // parentId debe ser 1 (hijo directo de /core/)
+          return node.parentId === "1";
         });
+
+        // IMPORTANTE: Filtrar carpetas de "documentos generados"
+        // Estas carpetas NO deben aparecer en el Almacén porque son del sistema
+        // y pertenecen a "Documentos Generados", no al Almacén del usuario
+        nodes = nodes.filter(node => {
+          const path = node.path.toLowerCase();
+          const name = node.name.toLowerCase();
+          
+          // Lista de nombres de carpetas del sistema (documentos generados)
+          const carpetasSistema = [
+            'directorio',
+            'sociedades',
+            'juntas',
+            'historial de registro',
+            'ficha de la sociedad',
+            'registro sociedades',
+            'estados financieros y reparto de dividendos',
+            'aumento capital',
+            'designación y/o remoción',
+            'accionistas',
+            'datos principales',
+            'capital social y acciones',
+            'asignación de acciones',
+            'registro de apoderados',
+            'quorums y mayoría',
+            'régimen de facultades',
+            'estatutos',
+            'gerentes y/o apoderados',
+            'directores',
+            'aporte dinerario',
+            'capitalización de créditos',
+          ];
+          
+          // Excluir si el nombre coincide con carpetas del sistema
+          if (carpetasSistema.includes(name)) {
+            console.log("🔵 [AlmacenamientoHttp] Filtrando carpeta del sistema:", name);
+            return false;
+          }
+          
+          // Excluir si el path contiene rutas de documentos generados
+          if (path.includes('/core/sociedades/') || 
+              path.includes('/core/juntas/') || 
+              path.includes('/core/directorio/')) {
+            console.log("🔵 [AlmacenamientoHttp] Filtrando por path:", path);
+            return false;
+          }
+          
+          // Excluir carpetas que son IDs numéricos (carpetas de juntas por ID, no por fecha)
+          // Estas deberían ser por fecha (ej: "junta 12/12/2023"), no por ID (ej: "4", "8")
+          if (/^\d+$/.test(name)) {
+            console.log("🔵 [AlmacenamientoHttp] Filtrando carpeta numérica (ID):", name);
+            return false;
+          }
+          
+          return true;
+        });
+        
+        console.log("🔵 [AlmacenamientoHttp] Nodos después de filtrar:", nodes.length);
       } else {
         // Si hay parentId, obtener el nodo con sus hijos
         const nodeIdNumber = parseInt(parentId, 10);

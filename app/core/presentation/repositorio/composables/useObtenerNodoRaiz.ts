@@ -30,20 +30,25 @@ export function useObtenerNodoRaiz() {
     try {
       const repository = new RepositorioDocumentosHttpRepository();
       
-      // 1. Intentar obtener nodos raíz (core y common)
+      // 1. Intentar obtener nodos raíz (core y common) - más eficiente
       let nodoCore: RepositorioNode | undefined;
       
       try {
         const nodosRaiz = await repository.obtenerNodosRaiz(structureId);
         // Buscar el nodo "core" en los nodos raíz
+        // Según el backend, el nodo core tiene name: "core", path: "/", parentId: null
         nodoCore = nodosRaiz.find(
-          (node) => node.type === "folder" && (node.path === "/core/" || node.name.toLowerCase() === "core")
+          (node) => node.type === "folder" && node.name.toLowerCase() === "core"
         );
+        
+        if (nodoCore) {
+          console.log("🟢 [useObtenerNodoRaiz] Nodo raíz encontrado en /nodes/root:", nodoCore.id);
+        }
       } catch (error) {
         console.warn("⚠️ [useObtenerNodoRaiz] No se pudieron obtener nodos raíz, intentando con core...");
       }
 
-      // 2. Si no se encontró en nodos raíz, buscar en nodos core
+      // 2. Si no se encontró en nodos raíz, buscar en nodos core (fallback)
       if (!nodoCore) {
         const nodosCore = await repository.obtenerNodosCore(structureId);
         
@@ -53,22 +58,19 @@ export function useObtenerNodoRaiz() {
           return null;
         }
 
-        // Buscar el nodo con path="/core/" o el que tenga el menor parentId (probablemente el raíz)
-        // Según la respuesta del backend, los nodos con parentId: 1 son hijos directos de /core/
-        // El nodo raíz /core/ probablemente tiene id: 1 o parentId: null
+        // El nodo raíz /core/ tiene id: 1 según el backend
+        // Buscar el nodo con id: "1" o el que tenga parentId: null y sea carpeta
         nodoCore = nodosCore.find(
-          (node) => node.type === "folder" && node.path === "/core/"
+          (node) => node.type === "folder" && (node.id === "1" || !node.parentId)
         );
 
-        // Si no se encuentra con path="/core/", buscar el nodo con el menor ID que sea carpeta
-        // (probablemente el nodo raíz tiene id: 1)
+        // Si no se encuentra, buscar el nodo con el menor ID que sea carpeta
         if (!nodoCore) {
           const carpetas = nodosCore.filter(node => node.type === "folder");
           if (carpetas.length > 0) {
-            // Ordenar por ID y tomar el primero (probablemente el raíz)
+            // Ordenar por ID y tomar el primero (probablemente el raíz con id: 1)
             carpetas.sort((a, b) => parseInt(a.id) - parseInt(b.id));
-            // Buscar el que tenga parentId más bajo o null
-            nodoCore = carpetas.find(node => !node.parentId || node.parentId === "1") || carpetas[0];
+            nodoCore = carpetas[0];
           }
         }
       }

@@ -129,6 +129,16 @@ const navigateToDocumentosGenerados = () => {
   }
 };
 
+const navegarARaiz = async () => {
+  await cargarDocumentos(null);
+};
+
+const handleUploadSuccess = async () => {
+  // Recargar documentos después de subir exitosamente
+  await cargarDocumentos(carpetaActual.value);
+  uploadModalOpen.value = false;
+};
+
 const formatDate = (date: Date) => {
   const now = new Date();
   const diff = now.getTime() - date.getTime();
@@ -184,15 +194,16 @@ watch(
             class="w-5 h-5"
             :style="{ color: 'var(--primary-700)' }"
           />
-          <span
-            class="text-sm"
+          <button
+            class="text-sm hover:underline"
             :style="{
-              color: 'var(--text-primary)',
+              color: carpetaActual ? 'var(--primary-700)' : 'var(--text-primary)',
               fontFamily: 'var(--font-secondary)',
             }"
+            @click="navegarARaiz"
           >
             Almacén
-          </span>
+          </button>
           <template v-if="breadcrumb.length > 0">
             <ChevronRight
               class="w-4 h-4"
@@ -670,10 +681,7 @@ watch(
         :structure-id="dashboardStore.sociedadSeleccionada.id"
         :parent-node-id="parentNodeIdForUpload"
         @close="uploadModalOpen = false"
-        @uploaded="
-          cargarDocumentos(carpetaActual);
-          uploadModalOpen = false;
-        "
+        @uploaded="handleUploadSuccess"
       />
 
       <!-- Create Folder Modal -->

@@ -294,6 +294,7 @@ const handleUpload = async () => {
       fileInputRef.value.value = "";
     }
     
+    // Emitir evento de subida exitosa (el componente padre recargará)
     emits("uploaded");
     emits("close");
   } catch (err: any) {
