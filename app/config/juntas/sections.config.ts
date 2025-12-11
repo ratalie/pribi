@@ -1,6 +1,6 @@
 /**
  * Configuración de secciones para cada sub-step
- * 
+ *
  * Define las secciones que aparecen en el sidebar derecho para cada acuerdo
  */
 
@@ -9,10 +9,7 @@ import type { SectionItem } from "~/types/junta-navigation.types";
 /**
  * Mapeo de sub-steps a sus secciones base (sin estados)
  */
-export const SUB_STEP_SECTIONS_MAP: Record<
-  string,
-  Array<Omit<SectionItem, "status">>
-> = {
+export const SUB_STEP_SECTIONS_MAP: Record<string, Array<Omit<SectionItem, "status">>> = {
   "aporte-dinerarios": [
     {
       id: "aporte-dinerario",
@@ -140,6 +137,38 @@ export const SUB_STEP_SECTIONS_MAP: Record<
       navigationType: "route",
     },
   ],
+  "nombramiento-directores": [
+    {
+      id: "nombramiento-directores",
+      title: "Nombramiento de Directores",
+      description: "Vista general",
+      navigationType: "route",
+    },
+    {
+      id: "nombramiento",
+      title: "Nombramiento",
+      description: "Registra los directores propuestos",
+      navigationType: "route",
+    },
+    {
+      id: "cantidad",
+      title: "Cantidad",
+      description: "Define la cantidad de directores",
+      navigationType: "route",
+    },
+    {
+      id: "votacion",
+      title: "Votación",
+      description: "Registra la votación",
+      navigationType: "route",
+    },
+    {
+      id: "resumen",
+      title: "Resumen",
+      description: "Revisa el resumen",
+      navigationType: "route",
+    },
+  ],
 };
 
 /**
@@ -176,4 +205,3 @@ export function applySectionStatuses(
     }
   });
 }
-
