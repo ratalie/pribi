@@ -50,16 +50,32 @@ export class ObtenerDocumentosJuntasUseCase {
       });
 
       // 3. Filtrar carpetas que son hijas directas del nodo "juntas"
-      // Estas son las carpetas de juntas individuales (flowId)
-      // Estructura: path: "/core/juntas/", name: "{flowId}", parentId: {id del nodo juntas}
+      // Estas son las carpetas de juntas individuales
+      // Pueden tener:
+      // - Nombre numérico (flowId): "4", "8", "3" (carpetas antiguas)
+      // - Nombre legible (fecha): "11 de diciembre del 2025" (carpetas nuevas con folderName)
+      // Estructura: path: "/core/juntas/", parentId: {id del nodo juntas}
       const carpetasJuntas = nodos.filter((node) => {
         if (node.type !== "folder") return false;
         // Debe ser hija directa del nodo "juntas"
         if (node.parentId !== nodoJuntas.id) return false;
         // El path debe ser "/core/juntas/"
         if (node.path !== "/core/juntas/") return false;
-        // El name debe ser numérico (el flowId)
-        return /^\d+$/.test(node.name);
+        // Excluir carpetas del sistema (aumento capital, designación, etc.)
+        const carpetasSistema = [
+          "aumento capital",
+          "designación y/o remoción",
+          "estados financieros y reparto de dividendos",
+        ];
+        if (carpetasSistema.includes(node.name.toLowerCase())) {
+          return false;
+        }
+        // Incluir carpetas con nombre numérico (flowId) O nombre legible (fecha)
+        // Nombre numérico: "4", "8", "3"
+        // Nombre legible: "11 de diciembre del 2025", "20 de diciembre del 2025"
+        const esNumerico = /^\d+$/.test(node.name);
+        const esFechaLegible = /^\d+\s+de\s+\w+\s+del\s+\d{4}$/.test(node.name);
+        return esNumerico || esFechaLegible;
       });
 
       console.log("🟡 [ObtenerDocumentosJuntasUseCase] Carpetas de juntas encontradas:", carpetasJuntas.length);

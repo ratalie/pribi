@@ -9,22 +9,21 @@ export interface RepositorioDocumentosRepository {
    * Obtiene o crea la carpeta de junta en el repositorio
    * @param structureId ID de la estructura de la sociedad (structureId = societyId)
    * @param flowId ID del flujo de la junta
+   * @param folderName Nombre opcional de la carpeta (ej: "20 de diciembre del 2025"). Si no se proporciona, usa flowId.toString()
    * @returns ID de la carpeta creada o existente
    */
-  obtenerFolderIdJunta(structureId: string, flowId: string): Promise<number>;
+  obtenerFolderIdJunta(structureId: string, flowId: string, folderName?: string): Promise<number>;
 
   /**
    * Envía documentos al repositorio
    * @param structureId ID de la estructura de la sociedad
-   * @param folderId ID de la carpeta donde se subirán los documentos
+   * @param folderId ID de la carpeta donde se subirán los documentos (carpeta de la junta)
    * @param documentos Lista de documentos a subir
-   * @param nombreCarpeta Nombre de la carpeta (ej: "Documentos Juntas: 8 de diciembre de 2025")
    */
   enviarDocumentos(
     structureId: string,
     folderId: number,
-    documentos: Documento[],
-    nombreCarpeta: string
+    documentos: Documento[]
   ): Promise<void>;
 
   /**
@@ -62,6 +61,20 @@ export interface RepositorioDocumentosRepository {
   eliminarNodo(nodeId: number): Promise<void>;
 
   /**
+   * Actualiza un nodo (renombrar carpeta, cambiar metadata)
+   * @param nodeId ID del nodo a actualizar
+   * @param updates Objeto con los campos a actualizar (name, description, parentId)
+   */
+  actualizarNodo(
+    nodeId: number,
+    updates: {
+      name?: string;
+      description?: string;
+      parentId?: number;
+    }
+  ): Promise<void>;
+
+  /**
    * Descarga una carpeta completa como ZIP
    * @param nodeId ID de la carpeta
    * @returns Blob del archivo ZIP
@@ -93,5 +106,20 @@ export interface RepositorioDocumentosRepository {
     parentNodeId: string,
     files: File[]
   ): Promise<RepositorioNode[]>;
+
+  /**
+   * Crea una carpeta en el repositorio
+   * @param structureId ID de la estructura de la sociedad
+   * @param parentNodeId ID del nodo padre donde se creará la carpeta
+   * @param nombre Nombre de la carpeta
+   * @param description Descripción opcional de la carpeta
+   * @returns Nodo creado de la carpeta
+   */
+  crearCarpeta(
+    structureId: string,
+    parentNodeId: number,
+    nombre: string,
+    description?: string
+  ): Promise<RepositorioNode>;
 }
 

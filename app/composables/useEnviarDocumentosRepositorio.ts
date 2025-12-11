@@ -2,10 +2,12 @@ import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useDownloadData } from "./useDownloadData";
 import { useDocumentosGeneradosStore } from "~/core/presentation/juntas/documentos/stores/documentos-generados.store";
+import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
 import { EnviarDocumentosRepositorioUseCase } from "~/core/hexag/repositorio/application/use-cases/enviar-documentos-repositorio.use-case";
 import { RepositorioDocumentosHttpRepository } from "~/core/hexag/repositorio/infrastructure/repositories/repositorio-documentos-http.repository";
 import { useToast } from "~/components/ui/toast/use-toast";
 import type { Documento } from "~/core/hexag/documentos/domain/entities/documento.entity";
+import { OrdenConvocatoria } from "~/core/hexag/juntas/domain/enums/orden-convocatoria.enum";
 
 /**
  * Composable para enviar documentos al repositorio
@@ -16,6 +18,7 @@ export function useEnviarDocumentosRepositorio() {
   const route = useRoute();
   const { downloadData } = useDownloadData();
   const documentosStore = useDocumentosGeneradosStore();
+  const meetingDetailsStore = useMeetingDetailsStore();
 
   const isUploading = ref(false);
   const errorMessage = ref<string | null>(null);
@@ -53,10 +56,84 @@ export function useEnviarDocumentosRepositorio() {
     return extractFlowId();
   });
 
-  // Obtener fecha de la junta
+  // Obtener fecha de instalación de la junta según lógica de negocio:
+  // - JUNTA_UNIVERSAL: siempre usa firstCall.date
+  // - JUNTA_GENERAL: usa firstCall.date o secondCall.date según instaladaEnConvocatoria
+  // 
+  // instaladaEnConvocatoria viene del paso "instalación de la junta" y está en meetingDetailsStore
   const fechaJunta = computed(() => {
-    return downloadData.value?.meetingDetails?.firstCall?.dateFormatted || "";
+    const meetingDetailsFromDownload = downloadData.value?.meetingDetails;
+    if (!meetingDetailsFromDownload) {
+      console.error("🔴 [useEnviarDocumentosRepositorio] No hay meetingDetails en downloadData");
+      return "";
+    }
+
+    const meetingType = meetingDetailsFromDownload.meetingType;
+    console.log("🔵 [useEnviarDocumentosRepositorio] Tipo de junta:", meetingType);
+
+    // Lógica según tipo de junta
+    if (meetingType === "JUNTA_UNIVERSAL") {
+      // Junta Universal: siempre usa primera convocatoria
+      const dateISO = meetingDetailsFromDownload.firstCall?.date;
+      if (!dateISO) {
+        console.error("🔴 [useEnviarDocumentosRepositorio] No hay fecha de primera convocatoria para Junta Universal");
+        return "";
+      }
+      console.log("🔵 [useEnviarDocumentosRepositorio] Junta Universal: usando firstCall.date");
+      return formatDateToLegible(dateISO);
+    }
+
+    // Junta General: usar instaladaEnConvocatoria del store para decidir
+    // instaladaEnConvocatoria viene del paso "instalación de la junta"
+    // Puede ser OrdenConvocatoria.PRIMERA o OrdenConvocatoria.SEGUNDA
+    const meetingDetailsFromStore = meetingDetailsStore.meetingDetails;
+    const instaladaEnConvocatoria = meetingDetailsFromStore?.instaladaEnConvocatoria || OrdenConvocatoria.PRIMERA;
+    
+    console.log("🔵 [useEnviarDocumentosRepositorio] Junta General - instaladaEnConvocatoria:", instaladaEnConvocatoria);
+    console.log("🔵 [useEnviarDocumentosRepositorio] meetingDetailsFromStore:", meetingDetailsFromStore);
+
+    if (instaladaEnConvocatoria === OrdenConvocatoria.PRIMERA) {
+      const dateISO = meetingDetailsFromDownload.firstCall?.date;
+      if (!dateISO) {
+        console.error("🔴 [useEnviarDocumentosRepositorio] No hay fecha de primera convocatoria");
+        return "";
+      }
+      console.log("🔵 [useEnviarDocumentosRepositorio] Junta General (PRIMERA): usando firstCall.date");
+      return formatDateToLegible(dateISO);
+    } else {
+      // SEGUNDA convocatoria
+      const dateISO = meetingDetailsFromDownload.secondCall?.date;
+      if (!dateISO) {
+        console.error("🔴 [useEnviarDocumentosRepositorio] No hay fecha de segunda convocatoria");
+        return "";
+      }
+      console.log("🔵 [useEnviarDocumentosRepositorio] Junta General (SEGUNDA): usando secondCall.date");
+      return formatDateToLegible(dateISO);
+    }
   });
+
+  /**
+   * Formatea una fecha ISO a formato legible en español
+   * Ejemplo: "2025-12-10T00:00:00.000Z" -> "10 de diciembre del 2025"
+   */
+  const formatDateToLegible = (dateISO: string): string => {
+    try {
+      const date = new Date(dateISO);
+      const day = date.getDate();
+      const month = date.getMonth();
+      const year = date.getFullYear();
+      
+      const meses = [
+        "enero", "febrero", "marzo", "abril", "mayo", "junio",
+        "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+      ];
+      
+      return `${day} de ${meses[month]} del ${year}`;
+    } catch (error) {
+      console.error("🔴 [useEnviarDocumentosRepositorio] Error al formatear fecha:", error);
+      return "";
+    }
+  };
 
   /**
    * Envía documentos al repositorio
@@ -87,11 +164,6 @@ export function useEnviarDocumentosRepositorio() {
       );
     }
 
-    if (!fechaJunta.value) {
-      console.error("🔴 [useEnviarDocumentosRepositorio] ERROR: No hay fecha de junta");
-      throw new Error("No se encontró la fecha de la junta");
-    }
-
     // Usar documentos específicos si se proporcionan, sino usar todos del store
     const documentos = documentosEspecificos || documentosStore.documentos;
     console.log("🟣 [useEnviarDocumentosRepositorio] Documentos a enviar:", documentos.length);
@@ -112,7 +184,9 @@ export function useEnviarDocumentosRepositorio() {
       const useCase = new EnviarDocumentosRepositorioUseCase(repository);
 
       console.log("🟣 [useEnviarDocumentosRepositorio] Ejecutando use case...");
-      // Ejecutar envío
+      console.log("🟣 [useEnviarDocumentosRepositorio] fechaJunta (legible):", fechaJunta.value);
+      console.log("🟣 [useEnviarDocumentosRepositorio] NOTA: Los documentos se subirán directamente a la carpeta de la junta y se renombrará con la fecha");
+      // Ejecutar envío - Pasamos fechaJunta para renombrar la carpeta
       await useCase.execute(
         currentStructureId,
         currentFlowId,

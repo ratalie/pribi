@@ -58,12 +58,20 @@ export class RepositorioDocumentosHttpRepository
   /**
    * Obtiene el folderId de la carpeta de junta
    * 
-   * ENDPOINT V2: GET /api/v2/repository/society-profile/:structureId/juntas/:flowId/folder
-   * Este endpoint obtiene o crea automáticamente la carpeta
+   * ENDPOINT V2: GET /api/v2/repository/society-profile/:structureId/juntas/:flowId/folder?folderName={nombre}
+   * Este endpoint obtiene o crea automáticamente la carpeta con el nombre especificado
+   * 
+   * @param folderName Nombre opcional de la carpeta. Si se proporciona, el backend crea/obtiene la carpeta con ese nombre.
+   *                   Si no se proporciona, usa flowId.toString() como nombre.
    */
-  async obtenerFolderIdJunta(structureId: string, flowId: string): Promise<number> {
+  async obtenerFolderIdJunta(structureId: string, flowId: string, folderName?: string): Promise<number> {
     const baseUrl = this.resolveBaseUrl();
-    const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/juntas/${flowId}/folder`;
+    let url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/juntas/${flowId}/folder`;
+    
+    // Si se proporciona folderName, agregarlo como query parameter
+    if (folderName) {
+      url += `?folderName=${encodeURIComponent(folderName)}`;
+    }
     
     console.log("🔵 [RepositorioDocumentosHttp] ========================================");
     console.log("🔵 [RepositorioDocumentosHttp] OBTENER FOLDER ID JUNTA (ENDPOINT V2)");
@@ -71,11 +79,12 @@ export class RepositorioDocumentosHttpRepository
     console.log("🔵 [RepositorioDocumentosHttp] URL:", url);
     console.log("🔵 [RepositorioDocumentosHttp] structureId:", structureId);
     console.log("🔵 [RepositorioDocumentosHttp] flowId:", flowId);
+    console.log("🔵 [RepositorioDocumentosHttp] folderName:", folderName || "(usando flowId)");
     
     try {
       console.log("🔵 [RepositorioDocumentosHttp] Obteniendo/creando carpeta de junta...");
       
-      // ENDPOINT V2: GET /api/v2/repository/society-profile/:structureId/juntas/:flowId/folder
+      // ENDPOINT V2: GET /api/v2/repository/society-profile/:structureId/juntas/:flowId/folder?folderName={nombre}
       const response = await $fetch<{
         success?: boolean;
         data?: {
@@ -113,6 +122,8 @@ export class RepositorioDocumentosHttpRepository
         id: response.data.id,
         name: response.data.name,
         path: response.data.path,
+        folderNameSolicitado: folderName || "flowId",
+        folderNameObtenido: response.data.name,
       });
 
       return response.data.id;
@@ -135,22 +146,25 @@ export class RepositorioDocumentosHttpRepository
   }
 
   /**
-   * Envía documentos al repositorio
+   * Envía documentos al repositorio directamente a la carpeta de la junta
    * 
-   * ENDPOINT V2: POST /api/v2/repository/society-profile/:structureId/nodes/:parentNodeId/core?name={nombre}
+   * ENDPOINT V2: POST /api/v2/repository/society-profile/:structureId/nodes/:parentNodeId/documents
+   * 
+   * IMPORTANTE: Usamos `/documents` en lugar de `/core` porque:
+   * - `/core` SIEMPRE crea una subcarpeta (incluso sin el parámetro `name`)
+   * - `/documents` sube archivos DIRECTAMENTE a la carpeta sin crear subcarpetas
    * 
    * CÓDIGO EXACTO DE V2.5:
-   * - FormData con key = file.size.toString()
+   * - FormData con key = "file" (no file.size.toString())
    * - Usa getCorrectMimeType() para MIME types
    */
   async enviarDocumentos(
     structureId: string,
     folderId: number,
-    documentos: Documento[],
-    nombreCarpeta: string
+    documentos: Documento[]
   ): Promise<void> {
     const baseUrl = this.resolveBaseUrl();
-    const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/nodes/${folderId}/core`;
+    const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/nodes/${folderId}/documents`;
     
     console.log("🟢 [RepositorioDocumentosHttp] ========================================");
     console.log("🟢 [RepositorioDocumentosHttp] ENVIAR DOCUMENTOS (CÓDIGO V2.5)");
@@ -158,8 +172,8 @@ export class RepositorioDocumentosHttpRepository
     console.log("🟢 [RepositorioDocumentosHttp] URL:", url);
     console.log("🟢 [RepositorioDocumentosHttp] structureId:", structureId);
     console.log("🟢 [RepositorioDocumentosHttp] folderId:", folderId, typeof folderId);
-    console.log("🟢 [RepositorioDocumentosHttp] nombreCarpeta:", nombreCarpeta);
     console.log("🟢 [RepositorioDocumentosHttp] cantidadDocumentos:", documentos.length);
+    console.log("🟢 [RepositorioDocumentosHttp] NOTA: Subiendo directamente a la carpeta de la junta (sin crear subcarpeta)");
     
     try {
       // CÓDIGO EXACTO V2.5: Convertir documentos a Files con getCorrectMimeType
@@ -182,55 +196,78 @@ export class RepositorioDocumentosHttpRepository
         return file;
       });
 
-      // CÓDIGO EXACTO V2.5: Crear FormData con key = file.size.toString()
-      console.log("🟢 [RepositorioDocumentosHttp] Creando FormData...");
-      const formData = new FormData();
-      for (const file of files) {
-        // CÓDIGO EXACTO V2.5: formData.append(file.size.toString(), file, file.name)
-        const key = file.size.toString();
-        formData.append(key, file, file.name);
-        console.log(`🟢 [RepositorioDocumentosHttp] Agregado a FormData: key="${key}", name="${file.name}", size=${file.size}`);
-      }
+      // ENDPOINT /documents: Solo acepta UN archivo por request
+      // Necesitamos hacer múltiples requests, uno por cada archivo
+      console.log("🟢 [RepositorioDocumentosHttp] El endpoint /documents acepta un archivo por request");
+      console.log("🟢 [RepositorioDocumentosHttp] Haciendo", files.length, "requests (uno por archivo)...");
       
-      console.log("🟢 [RepositorioDocumentosHttp] FormData creado con", files.length, "archivos");
-
-      // CÓDIGO EXACTO V2.5: postFilesToNode
-      console.log("🟢 [RepositorioDocumentosHttp] Enviando request...");
-      console.log("🟢 [RepositorioDocumentosHttp] Params:", { name: nombreCarpeta });
-      
-      // IMPORTANTE: Con FormData, NO establecer Content-Type manualmente
-      // El navegador lo establece automáticamente con el boundary correcto
-      // Si lo establecemos manualmente, perdemos el token de Authorization
       const authConfig = withAuthHeaders();
-      console.log("🟢 [RepositorioDocumentosHttp] Headers de autenticación:", {
-        hasAuthorization: Boolean(authConfig.headers?.Authorization),
-        authorizationPreview: authConfig.headers?.Authorization 
-          ? `${authConfig.headers.Authorization.toString().slice(0, 20)}...` 
-          : "NO HAY TOKEN",
-      });
-      
-      const response = await $fetch(url, {
-        ...authConfig,
-        method: "POST" as const,
-        body: formData,
-        params: {
-          name: nombreCarpeta,
-        },
-        // NO establecer Content-Type aquí - el navegador lo hace automáticamente con FormData
-      });
+      const resultados: any[] = [];
+      const errores: any[] = [];
+
+      // Subir cada archivo individualmente
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        console.log(`🟢 [RepositorioDocumentosHttp] Subiendo archivo ${i + 1}/${files.length}: ${file.name}`);
+        
+        try {
+          // Crear FormData para un solo archivo
+          const formData = new FormData();
+          const fileFieldUUID = window.crypto.randomUUID();
+          formData.append(fileFieldUUID, file);
+
+          // Headers para /documents (similar a subirArchivo)
+          const headers: Record<string, string> = {
+            ...authConfig.headers,
+            "x-file-size": file.size.toString(),
+          };
+
+          const response = await fetch(url, {
+            method: "POST",
+            headers,
+            body: formData,
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`🔴 [RepositorioDocumentosHttp] Error al subir ${file.name}:`, errorText);
+            errores.push({ archivo: file.name, error: response.statusText });
+            continue;
+          }
+
+          const responseData = await response.json();
+          console.log(`✅ [RepositorioDocumentosHttp] Archivo ${i + 1}/${files.length} subido:`, file.name);
+          resultados.push(responseData);
+        } catch (error: any) {
+          console.error(`🔴 [RepositorioDocumentosHttp] Error al subir ${file.name}:`, error);
+          errores.push({ archivo: file.name, error: error.message });
+        }
+      }
 
       console.log("🟢 [RepositorioDocumentosHttp] ========================================");
-      console.log("🟢 [RepositorioDocumentosHttp] RESPUESTA DE ENVÍO:");
-      console.log("🟢 [RepositorioDocumentosHttp] response:", JSON.stringify(response, null, 2));
+      console.log("🟢 [RepositorioDocumentosHttp] RESUMEN DE SUBIDA:");
+      console.log("🟢 [RepositorioDocumentosHttp] Exitosos:", resultados.length);
+      console.log("🟢 [RepositorioDocumentosHttp] Errores:", errores.length);
       console.log("🟢 [RepositorioDocumentosHttp] ========================================");
-      console.log(`✅ [RepositorioDocumentosHttp] ${documentos.length} documentos enviados al repositorio`);
+
+      // Si hay errores, lanzar excepción
+      if (errores.length > 0) {
+        const mensajeErrores = errores.map(e => `${e.archivo}: ${e.error}`).join(", ");
+        throw new Error(`Error al subir algunos documentos: ${mensajeErrores}`);
+      }
+
+      // Si no se subió ningún archivo, lanzar error
+      if (resultados.length === 0) {
+        throw new Error("No se pudo subir ningún documento");
+      }
+
+      console.log(`✅ [RepositorioDocumentosHttp] ${resultados.length} documentos enviados al repositorio`);
     } catch (error: any) {
       console.error("🔴 [RepositorioDocumentosHttp] ========================================");
       console.error("🔴 [RepositorioDocumentosHttp] ERROR AL ENVIAR DOCUMENTOS:");
       console.error("🔴 [RepositorioDocumentosHttp] URL:", url);
       console.error("🔴 [RepositorioDocumentosHttp] structureId:", structureId);
       console.error("🔴 [RepositorioDocumentosHttp] folderId:", folderId);
-      console.error("🔴 [RepositorioDocumentosHttp] nombreCarpeta:", nombreCarpeta);
       console.error("🔴 [RepositorioDocumentosHttp] cantidadDocumentos:", documentos.length);
       console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
       console.error("🔴 [RepositorioDocumentosHttp] Error message:", error?.message);
@@ -444,6 +481,53 @@ export class RepositorioDocumentosHttpRepository
    * 
    * ENDPOINT V2: DELETE /api/v2/repository/nodes/:nodeId
    */
+  /**
+   * Actualiza un nodo (renombrar carpeta, cambiar metadata)
+   * 
+   * ENDPOINT V2: PATCH /api/v2/repository/nodes/:nodeId
+   */
+  async actualizarNodo(
+    nodeId: number,
+    updates: {
+      name?: string;
+      description?: string;
+      parentId?: number;
+    }
+  ): Promise<void> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/nodes/${nodeId}`;
+    
+    console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔵 [RepositorioDocumentosHttp] ACTUALIZAR NODO");
+    console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔵 [RepositorioDocumentosHttp] URL:", url);
+    console.log("🔵 [RepositorioDocumentosHttp] nodeId:", nodeId);
+    console.log("🔵 [RepositorioDocumentosHttp] updates:", updates);
+    
+    try {
+      const response = await $fetch(url, {
+        ...withAuthHeaders(),
+        method: "PATCH" as const,
+        body: updates,
+      });
+
+      console.log("✅ [RepositorioDocumentosHttp] Nodo actualizado exitosamente");
+      console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    } catch (error: any) {
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      console.error("🔴 [RepositorioDocumentosHttp] ERROR AL ACTUALIZAR NODO:");
+      console.error("🔴 [RepositorioDocumentosHttp] URL:", url);
+      console.error("🔴 [RepositorioDocumentosHttp] nodeId:", nodeId);
+      console.error("🔴 [RepositorioDocumentosHttp] updates:", updates);
+      console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      
+      throw new Error(
+        `No se pudo actualizar el nodo: ${error?.message || error?.data?.message || "Error desconocido"}`
+      );
+    }
+  }
+
   async eliminarNodo(nodeId: number): Promise<void> {
     const baseUrl = this.resolveBaseUrl();
     const url = `${baseUrl}/api/v2/repository/nodes/${nodeId}`;
@@ -583,6 +667,77 @@ export class RepositorioDocumentosHttpRepository
    * 
    * ENDPOINT V2: POST /api/v2/repository/society-profile/{structureId}/nodes/{parentNodeId}/core
    */
+  /**
+   * Crea una carpeta en el repositorio
+   * 
+   * ENDPOINT V2: POST /api/v2/repository/society-profile/:structureId/nodes/:parentNodeId/folder
+   */
+  async crearCarpeta(
+    structureId: string,
+    parentNodeId: number,
+    nombre: string,
+    description?: string
+  ): Promise<RepositorioNode> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/nodes/${parentNodeId}/folder`;
+    
+    console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔵 [RepositorioDocumentosHttp] CREAR CARPETA");
+    console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔵 [RepositorioDocumentosHttp] URL:", url);
+    console.log("🔵 [RepositorioDocumentosHttp] structureId:", structureId);
+    console.log("🔵 [RepositorioDocumentosHttp] parentNodeId:", parentNodeId);
+    console.log("🔵 [RepositorioDocumentosHttp] nombre:", nombre);
+    console.log("🔵 [RepositorioDocumentosHttp] description:", description);
+    
+    try {
+      const response = await $fetch<{
+        success: boolean;
+        data: RepositorioNodeDTO;
+        message?: string;
+        code?: number;
+      }>(url, {
+        ...withAuthHeaders(),
+        method: "POST" as const,
+        body: {
+          name: nombre,
+          description: description || null,
+        },
+      });
+
+      console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+      console.log("🔵 [RepositorioDocumentosHttp] RESPUESTA:");
+      console.log("🔵 [RepositorioDocumentosHttp] response:", JSON.stringify(response, null, 2));
+      console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+
+      if (!response || !response.data) {
+        throw new Error("La respuesta del servidor no contiene los datos esperados");
+      }
+
+      const carpeta = RepositorioNodeMapper.toEntity(response.data);
+      console.log("✅ [RepositorioDocumentosHttp] Carpeta creada exitosamente:", {
+        id: carpeta.id,
+        name: carpeta.name,
+        path: carpeta.path,
+      });
+
+      return carpeta;
+    } catch (error: any) {
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      console.error("🔴 [RepositorioDocumentosHttp] ERROR AL CREAR CARPETA:");
+      console.error("🔴 [RepositorioDocumentosHttp] URL:", url);
+      console.error("🔴 [RepositorioDocumentosHttp] structureId:", structureId);
+      console.error("🔴 [RepositorioDocumentosHttp] parentNodeId:", parentNodeId);
+      console.error("🔴 [RepositorioDocumentosHttp] nombre:", nombre);
+      console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      
+      throw new Error(
+        `No se pudo crear la carpeta: ${error?.message || error?.data?.message || "Error desconocido"}`
+      );
+    }
+  }
+
   async subirMultiplesArchivos(
     structureId: string,
     parentNodeId: string,

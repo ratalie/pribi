@@ -69,12 +69,20 @@ export function useDocumentosGenerados() {
           // Juntas: SIEMPRE existe (por regla de negocio), aunque puede estar vacía
           juntas: {
             nombre: 'Juntas de Accionistas', // Nombre fijo según regla de negocio
-            juntas: store.estructuraJuntas?.operaciones?.juntas?.map((carpeta) => ({
-              id: carpeta.id,
-              nombre: carpeta.name,
-              fecha: carpeta.createdAt,
-              nodeId: carpeta.id, // Guardar ID real del nodo (string)
-            })) || [],
+            juntas: store.estructuraJuntas?.operaciones?.juntas?.map((carpeta) => {
+              // Mostrar nombre legible: "Junta #{flowId}" en lugar del flowId solo
+              // El nombre de la carpeta es el flowId (ej: "4", "8", "3")
+              const nombreLegible = /^\d+$/.test(carpeta.name) 
+                ? `Junta #${carpeta.name}` 
+                : carpeta.name;
+              
+              return {
+                id: carpeta.id,
+                nombre: nombreLegible,
+                fecha: carpeta.createdAt,
+                nodeId: carpeta.id, // Guardar ID real del nodo (string)
+              };
+            }) || [],
           },
         },
       },

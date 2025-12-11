@@ -396,7 +396,7 @@
           tipoDocumento: "DNI",
           fechaNacimiento: "01-01-1985",
           nacionalidad: "Peruana",
-          estadoCivil: "CASADO",
+          estadoCivil: "SOLTERO",
           direccion: "Av. Gerente 789",
           distrito: "San Isidro",
           provincia: "Lima",
