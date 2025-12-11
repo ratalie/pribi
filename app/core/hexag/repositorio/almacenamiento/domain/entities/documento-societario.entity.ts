@@ -10,5 +10,6 @@ export interface DocumentoSocietario {
   fechaModificacion: Date;
   tamaño?: number; // en bytes
   parentId: string | null; // ID de la carpeta padre, null si está en raíz
+  versionCode?: string; // Código de la versión del documento (para descarga y preview)
 }
 

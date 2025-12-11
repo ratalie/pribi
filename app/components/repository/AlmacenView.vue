@@ -25,10 +25,12 @@ import type { AdvancedFilters } from "./types";
 import PreviewModal from "./PreviewModal.vue";
 import UploadModal from "./UploadModal.vue";
 import CreateFolderModal from "./CreateFolderModal.vue";
+import DeleteConfirmModal from "./DeleteConfirmModal.vue";
 // import DocumentCard from "./DocumentCard.vue"; // No usado
 import { useAlmacenamiento } from "~/core/presentation/repositorio/composables/useAlmacenamiento";
 import { useRepositorioDashboardStore } from "~/core/presentation/repositorio/stores/repositorio-dashboard.store";
-import { useObtenerNodoRaiz } from "~/core/presentation/repositorio/composables/useObtenerNodoRaiz";
+import { useObtenerCarpetaDocumentosSocietarios } from "~/core/presentation/repositorio/composables/useObtenerCarpetaDocumentosSocietarios";
+import { RepositorioDocumentosHttpRepository } from "~/core/hexag/repositorio/infrastructure/repositories/repositorio-documentos-http.repository";
 
 const router = useRouter();
 
@@ -49,7 +51,7 @@ const {
 } = useAlmacenamiento();
 
 const dashboardStore = useRepositorioDashboardStore();
-const { obtenerNodoRaiz } = useObtenerNodoRaiz();
+const { obtenerCarpetaDocumentosSocietarios } = useObtenerCarpetaDocumentosSocietarios();
 
 const searchQuery = ref("");
 const previewModalOpen = ref(false);
@@ -85,41 +87,140 @@ const handleDocumentClick = async (doc: any) => {
   if (doc.tipo === "folder") {
     await navegarACarpeta(doc.id);
   } else {
-    const documento = await obtenerDocumento(doc.id);
-    if (documento) {
+    try {
+      console.log("🔵 [AlmacenView] Obteniendo documento para preview:", doc.id);
+      
+      // Si el documento ya tiene versionCode, usarlo directamente
+      if (doc.versionCode && doc.mimeType) {
+        console.log("🟢 [AlmacenView] Usando versionCode del documento:", doc.versionCode);
+        selectedDocument.value = {
+          name: doc.nombre,
+          type: doc.mimeType || "documento",
+          owner: doc.propietario || "Sistema",
+          dateModified: doc.fechaModificacion || new Date(),
+          size: doc.tamaño,
+          versionCode: doc.versionCode,
+          mimeType: doc.mimeType,
+        };
+        previewModalOpen.value = true;
+        return;
+      }
+      
+      // Si no tiene versionCode, obtener el nodo completo del backend
+      console.log("🟡 [AlmacenView] No hay versionCode, obteniendo nodo completo...");
+      const repository = new RepositorioDocumentosHttpRepository();
+      const nodeIdNumber = parseInt(doc.id, 10);
+      
+      if (isNaN(nodeIdNumber)) {
+        throw new Error(`ID de documento inválido: ${doc.id}`);
+      }
+      
+      const node = await repository.obtenerNodoPorId(nodeIdNumber);
+      
+      if (!node) {
+        throw new Error("No se pudo obtener el documento del servidor");
+      }
+      
+      if (node.type !== "document") {
+        throw new Error("El nodo no es un documento");
+      }
+      
+      // Obtener versionCode de las versiones del nodo
+      let versionCode: string | undefined;
+      if (node.versions && node.versions.length > 0) {
+        versionCode = node.versions[0].versionCode;
+        console.log("🟢 [AlmacenView] versionCode obtenido del nodo:", versionCode);
+      }
+      
+      if (!versionCode) {
+        console.error("❌ [AlmacenView] No se pudo obtener versionCode del documento");
+        alert("No se pudo obtener la versión del documento para previsualizar");
+        return;
+      }
+      
       selectedDocument.value = {
-        name: documento.nombre,
-        type: documento.mimeType || "documento",
-        owner: documento.propietario,
-        dateModified: documento.fechaModificacion,
-        size: documento.tamaño,
+        name: node.name,
+        type: node.mimeType || "documento",
+        owner: "Sistema",
+        dateModified: new Date(node.updatedAt),
+        size: node.sizeInBytes,
+        versionCode: versionCode,
+        mimeType: node.mimeType,
       };
       previewModalOpen.value = true;
+    } catch (error: any) {
+      console.error("❌ [AlmacenView] Error al obtener documento:", error);
+      alert(`Error al abrir el documento: ${error?.message || "Error desconocido"}`);
     }
   }
 };
 
+const deleteConfirmModalOpen = ref(false);
+const itemToDelete = ref<any>(null);
+
 const handleDelete = async (doc: any) => {
-  if (confirm(`¿Estás seguro de eliminar "${doc.nombre}"?`)) {
-    await eliminarDocumento(doc.id);
+  itemToDelete.value = doc;
+  deleteConfirmModalOpen.value = true;
+};
+
+const confirmDelete = async () => {
+  if (!itemToDelete.value) return;
+  
+  try {
+    console.log("🔵 [AlmacenView] Eliminando:", itemToDelete.value);
+    await eliminarDocumento(itemToDelete.value.id);
     await cargarDocumentos(carpetaActual.value);
+    deleteConfirmModalOpen.value = false;
+    itemToDelete.value = null;
+  } catch (error: any) {
+    console.error("❌ [AlmacenView] Error al eliminar:", error);
+    alert(`Error al eliminar: ${error?.message || "Error desconocido"}`);
   }
 };
 
 const handleDownload = async (doc: any) => {
-  // TODO: Implementar descarga usando useDescargarDocumento
-  console.log("Descargar:", doc);
+  try {
+    console.log("🔵 [AlmacenView] Descargando documento:", doc.id);
+    await descargarDocumento(doc.id);
+    console.log("✅ [AlmacenView] Documento descargado exitosamente");
+  } catch (error: any) {
+    console.error("❌ [AlmacenView] Error al descargar:", error);
+    alert(`Error al descargar el documento: ${error?.message || "Error desconocido"}`);
+  }
 };
 
 const handleCreateFolder = async (folderName: string) => {
   try {
+    console.log("🔵 [AlmacenView] Creando carpeta:", folderName);
+    console.log("🔵 [AlmacenView] carpetaActual:", carpetaActual.value);
+    console.log("🔵 [AlmacenView] sociedadSeleccionada:", dashboardStore.sociedadSeleccionada?.id);
+    
+    // Si estamos en la raíz (carpetaActual es null), usar la carpeta /core/
+    let parentId = carpetaActual.value;
+    
+    if (!parentId && dashboardStore.sociedadSeleccionada?.id) {
+      console.log("🔵 [AlmacenView] Obteniendo carpeta /core/...");
+      parentId = await obtenerCarpetaDocumentosSocietarios(dashboardStore.sociedadSeleccionada.id);
+      console.log("🔵 [AlmacenView] Carpeta /core/ obtenida:", parentId);
+    }
+    
+    if (!parentId) {
+      const errorMsg = "No se pudo obtener la carpeta /core/ para crear la carpeta. Asegúrate de que la sociedad tenga la estructura configurada.";
+      console.error("🔴 [AlmacenView]", errorMsg);
+      alert(errorMsg);
+      return;
+    }
+    
+    console.log("🔵 [AlmacenView] Creando carpeta con parentId:", parentId);
     await crearCarpeta({
       nombre: folderName,
-      parentId: carpetaActual.value,
+      parentId: parentId,
     });
+    console.log("✅ [AlmacenView] Carpeta creada exitosamente");
     await cargarDocumentos(carpetaActual.value);
-  } catch (error) {
-    console.error("Error al crear carpeta:", error);
+  } catch (error: any) {
+    console.error("🔴 [AlmacenView] Error al crear carpeta:", error);
+    alert(`Error al crear la carpeta: ${error?.message || "Error desconocido"}`);
   }
 };
 
@@ -131,6 +232,27 @@ const navigateToDocumentosGenerados = () => {
 
 const navegarARaiz = async () => {
   await cargarDocumentos(null);
+};
+
+const handleUploadClick = () => {
+  if (!parentNodeIdForUpload.value) {
+    console.warn("⚠️ [AlmacenView] No se puede subir: parentNodeIdForUpload es null");
+    alert("No se pudo obtener la carpeta destino. Por favor, recarga la página.");
+    return;
+  }
+  
+  if (!dashboardStore.sociedadSeleccionada?.id) {
+    console.warn("⚠️ [AlmacenView] No se puede subir: no hay sociedad seleccionada");
+    alert("Por favor, selecciona una sociedad primero.");
+    return;
+  }
+  
+  console.log("🔵 [AlmacenView] Abriendo modal de subida:", {
+    structureId: dashboardStore.sociedadSeleccionada.id,
+    parentNodeId: parentNodeIdForUpload.value,
+  });
+  
+  uploadModalOpen.value = true;
 };
 
 const handleUploadSuccess = async () => {
@@ -159,22 +281,32 @@ const formatSize = (bytes?: number) => {
 };
 
 // Obtener el parentNodeId para subir archivos
-// Si estamos en la raíz (carpetaActual es null), necesitamos obtener el nodo raíz
+// Si estamos en la raíz (carpetaActual es null), necesitamos obtener la carpeta /core/
 watch(
   () => [carpetaActual.value, dashboardStore.sociedadSeleccionada?.id],
   async ([carpetaId, structureId]) => {
+    console.log("🔵 [AlmacenView] Watch parentNodeIdForUpload:", { carpetaId, structureId });
+    
     if (!structureId) {
+      console.log("🔵 [AlmacenView] No hay structureId, limpiando parentNodeIdForUpload");
       parentNodeIdForUpload.value = null;
       return;
     }
 
     if (carpetaId) {
       // Si hay carpeta actual, usar su ID
+      console.log("🔵 [AlmacenView] Usando carpeta actual:", carpetaId);
       parentNodeIdForUpload.value = carpetaId;
     } else {
-      // Si estamos en la raíz, obtener el nodo raíz del backend
-      const nodoRaizId = await obtenerNodoRaiz(structureId);
-      parentNodeIdForUpload.value = nodoRaizId;
+      // Si estamos en la raíz, obtener la carpeta /core/
+      console.log("🔵 [AlmacenView] Obteniendo carpeta /core/ para subir archivos...");
+      const carpetaCoreId = await obtenerCarpetaDocumentosSocietarios(structureId);
+      console.log("🔵 [AlmacenView] Carpeta /core/ obtenida:", carpetaCoreId);
+      parentNodeIdForUpload.value = carpetaCoreId;
+      
+      if (!carpetaCoreId) {
+        console.warn("⚠️ [AlmacenView] No se pudo obtener la carpeta /core/. El botón de subir no funcionará.");
+      }
     }
   },
   { immediate: true }
@@ -283,12 +415,13 @@ watch(
 
             <!-- Botón Subir -->
             <button
-              @click="uploadModalOpen = true"
-              class="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border hover:shadow-md transition-all"
+              @click="handleUploadClick"
+              class="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               :style="{
                 borderColor: 'var(--border-light)',
                 fontFamily: 'var(--font-secondary)',
               }"
+              :disabled="!parentNodeIdForUpload"
             >
               <Upload class="w-4 h-4" />
               <span>Subir</span>
@@ -327,6 +460,46 @@ watch(
         v-else-if="vista === 'grid'"
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
       >
+        <!-- Carpeta visual "Documentos Generados" (solo en raíz) -->
+        <div
+          v-if="!carpetaActual && dashboardStore.sociedadSeleccionada?.id"
+          class="bg-white rounded-xl p-4 border hover:shadow-md transition-all cursor-pointer group relative"
+          :style="{ borderColor: 'var(--border-light)' }"
+          @click="navigateToDocumentosGenerados"
+        >
+          <!-- Icono -->
+          <div class="flex items-center justify-center mb-3">
+            <div
+              class="p-4 rounded-lg"
+              style="background-color: #EEF2FF"
+            >
+              <Folder
+                class="w-8 h-8"
+                :style="{ color: 'var(--primary-700)' }"
+              />
+            </div>
+          </div>
+
+          <!-- Nombre -->
+          <h4
+            class="text-sm font-medium truncate mb-2"
+            :style="{
+              color: 'var(--text-primary)',
+              fontFamily: 'var(--font-secondary)',
+            }"
+          >
+            Documentos Generados
+          </h4>
+
+          <!-- Metadata -->
+          <div class="text-xs space-y-1">
+            <p :style="{ color: 'var(--text-muted)' }">
+              Sistema
+            </p>
+          </div>
+        </div>
+
+        <!-- Documentos reales -->
         <div
           v-for="doc in documentosFiltrados"
           :key="doc.id"
@@ -481,7 +654,7 @@ watch(
             </tr>
           </thead>
           <tbody>
-            <!-- Fila especial: Documentos Generados (solo en raíz) -->
+            <!-- Fila especial: Documentos Generados (solo en raíz) - Carpeta visual -->
             <tr
               v-if="!carpetaActual && dashboardStore.sociedadSeleccionada?.id"
               class="border-b hover:bg-gray-50 cursor-pointer transition-colors"
@@ -672,6 +845,18 @@ watch(
           previewModalOpen = false;
           selectedDocument = null;
         "
+      />
+
+      <!-- Delete Confirm Modal -->
+      <DeleteConfirmModal
+        :is-open="deleteConfirmModalOpen"
+        :item-name="itemToDelete?.nombre || ''"
+        :item-type="itemToDelete?.tipo === 'folder' ? 'folder' : 'file'"
+        @close="
+          deleteConfirmModalOpen = false;
+          itemToDelete = null;
+        "
+        @confirm="confirmDelete"
       />
 
       <!-- Upload Modal -->
