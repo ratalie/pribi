@@ -914,7 +914,7 @@ export class RepositorioDocumentosHttpRepository
   /**
    * Sube una nueva versión de un documento existente
    * 
-   * ENDPOINT V2: POST /api/v2/repository/documents/:documentCode/versions
+   * ENDPOINT V2: POST /api/v2/repository/society-profile/documents/:documentCode/versions
    */
   async subirNuevaVersion(
     documentCode: string,
@@ -928,7 +928,7 @@ export class RepositorioDocumentosHttpRepository
     createdAt: string;
   }> {
     const baseUrl = this.resolveBaseUrl();
-    const url = `${baseUrl}/api/v2/repository/documents/${documentCode}/versions`;
+    const url = `${baseUrl}/api/v2/repository/society-profile/documents/${documentCode}/versions`;
 
     console.log("🟡 [RepositorioDocumentosHttp] ========================================");
     console.log("🟡 [RepositorioDocumentosHttp] SUBIR NUEVA VERSIÓN");
