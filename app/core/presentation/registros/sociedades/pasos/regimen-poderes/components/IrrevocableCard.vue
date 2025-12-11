@@ -3,7 +3,7 @@
   import OptionButton from "~/components/base/buttons/OptionButton.vue";
   import SimpleCardDropDown from "~/components/base/cards/SimpleCardDropDown.vue";
   import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
-  import { TiemposVigenciaEnum } from "~/types/enums/TiemposVigenciaEnum";
+  import { TiempoVigenciaUIEnum } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
   import { fechaFinSchema, fechaInicioSchema } from "../schemas/FacultadApoderado";
   import { useApoderadoFacultadStore } from "../stores/modal/useApoderadoFacultadStore";
 
@@ -59,8 +59,8 @@
           <div class="grid grid-cols-2 gap-4">
             <OptionButton
               label="Tiempo indefinido"
-              :selected="apoderadoFacultadStore.vigencia === TiemposVigenciaEnum.INDEFINIDO"
-              @click="apoderadoFacultadStore.vigencia = TiemposVigenciaEnum.INDEFINIDO"
+              :selected="apoderadoFacultadStore.vigencia === TiempoVigenciaUIEnum.INDEFINIDO"
+              @click="apoderadoFacultadStore.vigencia = TiempoVigenciaUIEnum.INDEFINIDO"
             />
           </div>
         </div>

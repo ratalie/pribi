@@ -726,13 +726,22 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
 
       // Comparar fechas (solo si es vigencia determinada)
       if (
-        facultadOriginal.vigencia === TiempoVigenciaUIEnum.DETERMIADO &&
-        facultadActualParaComparar.vigencia === TiempoVigenciaUIEnum.DETERMIADO
+        facultadOriginal.vigencia === TiempoVigenciaUIEnum.DETERMINADO &&
+        facultadActualParaComparar.vigencia === TiempoVigenciaUIEnum.DETERMINADO
       ) {
-        if (facultadOriginal.fecha_inicio !== facultadActualParaComparar.fecha_inicio) {
+        // Type narrowing: sabemos que ambas tienen fecha_inicio y fecha_fin
+        if (
+          "fecha_inicio" in facultadOriginal &&
+          "fecha_inicio" in facultadActualParaComparar &&
+          facultadOriginal.fecha_inicio !== facultadActualParaComparar.fecha_inicio
+        ) {
           cambiosBase.fechaInicio = facultadActualParaComparar.fecha_inicio;
         }
-        if (facultadOriginal.fecha_fin !== facultadActualParaComparar.fecha_fin) {
+        if (
+          "fecha_fin" in facultadOriginal &&
+          "fecha_fin" in facultadActualParaComparar &&
+          facultadOriginal.fecha_fin !== facultadActualParaComparar.fecha_fin
+        ) {
           cambiosBase.fechaFin = facultadActualParaComparar.fecha_fin;
         }
       }
@@ -1090,12 +1099,12 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
         poderId: facultad.tipoFacultadId,
         esIrrevocable: facultad.esIrrevocable,
         fechaInicio: new Date(
-          facultad.vigencia === TiempoVigenciaUIEnum.DETERMIADO
+          facultad.vigencia === TiempoVigenciaUIEnum.DETERMINADO && "fecha_inicio" in facultad
             ? facultad.fecha_inicio
             : new Date()
         ),
         fechaFin:
-          facultad.vigencia === TiempoVigenciaUIEnum.DETERMIADO
+          facultad.vigencia === TiempoVigenciaUIEnum.DETERMINADO && "fecha_fin" in facultad
             ? new Date(facultad.fecha_fin)
             : undefined,
       };
@@ -1195,12 +1204,14 @@ export const useRegimenFacultadesStore = defineStore("regimenFacultades", {
         esIrrevocable: cambiosBase?.esIrrevocable ?? facultadActual.esIrrevocable,
         fechaInicio: cambiosBase?.fechaInicio
           ? new Date(cambiosBase.fechaInicio)
-          : facultadActual.vigencia === TiempoVigenciaUIEnum.DETERMIADO
+          : facultadActual.vigencia === TiempoVigenciaUIEnum.DETERMINADO &&
+            "fecha_inicio" in facultadActual
           ? new Date(facultadActual.fecha_inicio)
           : new Date(),
         fechaFin: cambiosBase?.fechaFin
           ? new Date(cambiosBase.fechaFin)
-          : facultadActual.vigencia === TiempoVigenciaUIEnum.DETERMIADO
+          : facultadActual.vigencia === TiempoVigenciaUIEnum.DETERMINADO &&
+            "fecha_fin" in facultadActual
           ? new Date(facultadActual.fecha_fin)
           : undefined,
       };

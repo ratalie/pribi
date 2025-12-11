@@ -89,15 +89,19 @@ export const transformarFacultadAModal = (
   const baseModal = {
     tipoFacultad: tipoFacultadEncontrada.id,
     esIrrevocable: facultad.esIrrevocable,
-    vigencia: facultad.vigencia as unknown as TiemposVigenciaEnum,
-    fechaInicio: !facultad.esIrrevocable ? "" : facultad.fecha_inicio,
-    fechaFin: !facultad.esIrrevocable ? "" : facultad.fecha_fin,
+    vigencia: facultad.vigencia,
+    fechaInicio:
+      !facultad.esIrrevocable || !("fecha_inicio" in facultad) ? "" : facultad.fecha_inicio,
+    fechaFin: !facultad.esIrrevocable || !("fecha_fin" in facultad) ? "" : facultad.fecha_fin,
+    claseApoderadoIdSeleccionada: null,
+    claseFirmanteSeleccionada: null,
+    esOtrosApoderados: false,
   };
 
   const reglas = facultad.reglasYLimites
     ? {
         reglasYLimites: true,
-        tipoMoneda: facultad.tipoMoneda as unknown as EntityCoinEnum,
+        tipoMoneda: facultad.tipoMoneda,
         limiteMonetario: facultad.limiteMonetario.map((limite: any) => ({
           id: limite.id,
           desde: limite.desde,
