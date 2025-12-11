@@ -12,6 +12,7 @@
 import SummarySectionRenderer from "@/components/juntas/SummarySectionRenderer.vue";
 
 definePageMeta({
-  layout: "default",
+  layout: "registros",
+  flowLayoutJuntas: true,
 });
 </script>
