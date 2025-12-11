@@ -46,6 +46,7 @@ const {
   navegarACarpeta,
   navegarAtras: _navegarAtras,
   obtenerDocumento,
+  descargarDocumento,
   eliminarDocumento,
   crearCarpeta,
 } = useAlmacenamiento();
