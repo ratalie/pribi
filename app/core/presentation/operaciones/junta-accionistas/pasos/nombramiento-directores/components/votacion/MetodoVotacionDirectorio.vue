@@ -2,55 +2,34 @@
   import { computed } from "vue";
   import SlotWrapper from "~/components/containers/SlotWrapper.vue";
   import TitleH2 from "~/components/titles/TitleH2.vue";
-  import MayoriaVotacion from "./MayoriaVotacion.vue";
-  import UnanimidadVotacion from "./UnanimidadVotacion.vue";
-
-  interface Votante {
-    id: string;
-    accionista: {
-      id: string;
-      person: {
-        tipo: string;
-        nombre?: string;
-        apellidoPaterno?: string;
-        apellidoMaterno?: string;
-        razonSocial?: string;
-      };
-    };
-    nombreCompleto?: string;
-  }
+  import MayoriaVotacionDirectorio from "./MayoriaVotacionDirectorio.vue";
+  import UnanimidadVotacionDirectorio from "./UnanimidadVotacionDirectorio.vue";
 
   interface Props {
     modelValue?: string;
-    votantes?: Votante[] | any; // ✅ Aceptar también ComputedRef
-    textoVotacion?: string | any; // ✅ Aceptar también ComputedRef
+    candidatosSeleccionados?: string[];
+    title?: string;
+    subtitle?: string;
+    titleColor?: string;
+    preguntas?: string[];
+    accionistas?: string[];
+    mensajeAprobacion?: string;
   }
 
   const props = withDefaults(defineProps<Props>(), {
     modelValue: "unanimidad",
-    votantes: () => [],
-    textoVotacion: "",
-  });
-
-  // ✅ Extraer valores si son computed
-  const votantesValue = computed(() => {
-    const v = props.votantes;
-    if (!v) return [];
-    if (Array.isArray(v)) return v;
-    if (typeof v === 'object' && 'value' in v) return (v as any).value || [];
-    return [];
-  });
-
-  const textoVotacionValue = computed(() => {
-    const t = props.textoVotacion;
-    if (!t) return "";
-    if (typeof t === 'string') return t;
-    if (typeof t === 'object' && 'value' in t) return (t as any).value || "";
-    return "";
+    candidatosSeleccionados: () => [],
+    title: "Votación para la designación de directores",
+    subtitle: "Votación para aprobar la designación de los directores propuestos.",
+    titleColor: "text-primary-800",
+    preguntas: () => [],
+    accionistas: () => [],
+    mensajeAprobacion: "la designación de los directores propuestos.",
   });
 
   const emit = defineEmits<{
     "update:modelValue": [value: string];
+    "update:candidatosSeleccionados": [candidatos: string[]];
     "cambiar-tipo": [tipo: "unanimidad" | "mayoria"];
     "cambiar-voto": [accionistaId: string, valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION"];
   }>();
@@ -61,6 +40,11 @@
       emit("update:modelValue", value);
       emit("cambiar-tipo", value as "unanimidad" | "mayoria");
     },
+  });
+
+  const candidatosSeleccionados = computed({
+    get: () => props.candidatosSeleccionados || [],
+    set: (value) => emit("update:candidatosSeleccionados", value),
   });
 
   const methods = [
@@ -81,10 +65,7 @@
 
 <template>
   <SlotWrapper>
-    <TitleH2
-      title="Votación del aumento de capital"
-      subtitle="Votación para aprobar el aumento capital realizado mediante aportes dinerarios."
-    />
+    <TitleH2 :title="props.title" :subtitle="props.subtitle" :title-color="props.titleColor" />
 
     <p class="t-h5 text-gray-800 font-primary">Método de votación</p>
     <div class="flex gap-8">
@@ -160,17 +141,17 @@
 
     <!-- Contenido condicional según el método seleccionado -->
     <div class="mt-10">
-      <UnanimidadVotacion
+      <UnanimidadVotacionDirectorio
         v-if="selectedMethod === 'unanimidad'"
-        :texto-votacion="textoVotacionValue"
+        v-model:candidatos-seleccionados="candidatosSeleccionados"
       />
-      <MayoriaVotacion
+      <MayoriaVotacionDirectorio
         v-if="selectedMethod === 'mayoria'"
-        :votantes="votantesValue"
-        :texto-votacion="textoVotacionValue"
+        :preguntas="props.preguntas"
+        :accionistas="props.accionistas"
+        :mensaje-aprobacion="props.mensajeAprobacion"
         @cambiar-voto="(accionistaId, valor) => emit('cambiar-voto', accionistaId, valor)"
       />
     </div>
-
   </SlotWrapper>
 </template>
