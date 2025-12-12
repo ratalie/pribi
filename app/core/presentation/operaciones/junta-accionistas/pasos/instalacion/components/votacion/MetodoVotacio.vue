@@ -70,7 +70,11 @@
   const emit = defineEmits<{
     "update:modelValue": [value: string];
     "cambiar-tipo": [tipo: "unanimidad" | "mayoria"];
-    "cambiar-voto": [accionistaId: string, valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION"];
+    "cambiar-voto": [
+      accionistaId: string,
+      valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION",
+      preguntaIndex?: number
+    ];
   }>();
 
   const selectedMethod = computed({
@@ -191,7 +195,10 @@
         :mensaje-aprobacion="props.mensajeAprobacion"
         :votantes="votantesValue"
         :texto-votacion="textoVotacionValue"
-        @cambiar-voto="(accionistaId, valor) => emit('cambiar-voto', accionistaId, valor)"
+        @cambiar-voto="
+          (accionistaId, valor, preguntaIndex) =>
+            emit('cambiar-voto', accionistaId, valor, preguntaIndex)
+        "
       />
     </div>
   </SlotWrapper>

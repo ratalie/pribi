@@ -2,16 +2,19 @@ import { defineStore } from "pinia";
 import { CreateVoteSessionUseCase } from "~/core/hexag/juntas/application/use-cases/create-vote-session.use-case";
 import { GetVoteSessionUseCase } from "~/core/hexag/juntas/application/use-cases/get-vote-session.use-case";
 import { UpdateVoteSessionUseCase } from "~/core/hexag/juntas/application/use-cases/update-vote-session.use-case";
+import {
+  TipoAcuerdo,
+  getTipoAcuerdo,
+} from "~/core/hexag/juntas/domain/constants/agenda-classification.constants";
 import type { VoteEntry } from "~/core/hexag/juntas/domain/entities/vote-entry.entity";
 import type { VoteItem } from "~/core/hexag/juntas/domain/entities/vote-item.entity";
 import type { VoteSession } from "~/core/hexag/juntas/domain/entities/vote-session.entity";
 import { VoteAgreementType } from "~/core/hexag/juntas/domain/enums/vote-agreement-type.enum";
 import { VoteContext } from "~/core/hexag/juntas/domain/enums/vote-context.enum";
 import { VoteMode } from "~/core/hexag/juntas/domain/enums/vote-mode.enum";
-import type { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
+import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
 import { VoteHttpRepository } from "~/core/hexag/juntas/infrastructure/repositories/vote.http.repository";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
-import { TipoAcuerdo, getTipoAcuerdo } from "~/core/hexag/juntas/domain/constants/agenda-classification.constants";
 
 /**
  * Store para gestionar Votaciones de Aporte Dinerario
@@ -83,45 +86,46 @@ export const useVotacionStore = defineStore("votacion", {
 
     /**
      * Calcula el resultado de la votación
-     * 
+     *
      * @param puntoId - ID del punto de agenda (ej: "aporte-dinerarios")
      * @returns Resultado completo de la votación con aprobación, porcentajes, etc.
      */
     getResult: (state) => (puntoId: string) => {
       // 1. Obtener snapshot store
       const snapshotStore = useSnapshotStore();
-      
+
       // 2. Obtener accionistas con derecho a voto
       const accionistasConDerechoVoto = snapshotStore.accionistasConDerechoVoto;
-      
+
       // 3. Obtener votos del store
       const votos = state.sesionVotacion?.items?.[0]?.votos || [];
-      
+
       // 4. Determinar tipo de acuerdo (SIMPLE o CALIFICADO)
       const tipoAcuerdo = getTipoAcuerdo(puntoId);
-      
+
       // 5. Obtener quorum mínimo requerido (mayorías para acuerdos)
       const quorums = snapshotStore.quorums;
-      const quorumMinimoRequerido = tipoAcuerdo === TipoAcuerdo.CALIFICADO
-        ? (quorums?.mayoriasAcuerdosCalificado || 60)
-        : (quorums?.mayoriasAcuerdosSimple || 50);
-      
+      const quorumMinimoRequerido =
+        tipoAcuerdo === TipoAcuerdo.CALIFICADO
+          ? quorums?.mayoriasAcuerdosCalificado || 60
+          : quorums?.mayoriasAcuerdosSimple || 50;
+
       // 6. Calcular acciones por tipo de voto
       let accionesAFavor = 0;
       let accionesEnContra = 0;
       let accionesAbstencion = 0;
       let accionesSinVoto = 0;
-      
+
       // Mapa para acceder rápido a acciones por accionista
       const accionesPorAccionista = new Map<string, number>();
       accionistasConDerechoVoto.forEach((acc) => {
         accionesPorAccionista.set(acc.shareholder.id, acc.totalAcciones);
       });
-      
+
       // Calcular acciones por tipo de voto
       votos.forEach((voto) => {
         const acciones = accionesPorAccionista.get(voto.accionistaId) || 0;
-        
+
         if (voto.valor === VoteValue.A_FAVOR) {
           accionesAFavor += acciones;
         } else if (voto.valor === VoteValue.EN_CONTRA) {
@@ -130,7 +134,7 @@ export const useVotacionStore = defineStore("votacion", {
           accionesAbstencion += acciones;
         }
       });
-      
+
       // Calcular acciones sin voto (accionistas que no votaron)
       accionistasConDerechoVoto.forEach((acc) => {
         const tieneVoto = votos.some((v) => v.accionistaId === acc.shareholder.id);
@@ -138,64 +142,69 @@ export const useVotacionStore = defineStore("votacion", {
           accionesSinVoto += acc.totalAcciones;
         }
       });
-      
+
       // 7. Calcular total de acciones con derecho a voto
       const totalAccionesConDerechoVoto = accionistasConDerechoVoto.reduce(
         (sum, acc) => sum + acc.totalAcciones,
         0
       );
-      
+
       // 8. Calcular porcentajes
-      const porcentajeAFavor = totalAccionesConDerechoVoto > 0
-        ? (accionesAFavor / totalAccionesConDerechoVoto) * 100
-        : 0;
-      
-      const porcentajeEnContra = totalAccionesConDerechoVoto > 0
-        ? (accionesEnContra / totalAccionesConDerechoVoto) * 100
-        : 0;
-      
-      const porcentajeAbstencion = totalAccionesConDerechoVoto > 0
-        ? (accionesAbstencion / totalAccionesConDerechoVoto) * 100
-        : 0;
-      
-      const porcentajeSinVoto = totalAccionesConDerechoVoto > 0
-        ? (accionesSinVoto / totalAccionesConDerechoVoto) * 100
-        : 0;
-      
+      const porcentajeAFavor =
+        totalAccionesConDerechoVoto > 0
+          ? (accionesAFavor / totalAccionesConDerechoVoto) * 100
+          : 0;
+
+      const porcentajeEnContra =
+        totalAccionesConDerechoVoto > 0
+          ? (accionesEnContra / totalAccionesConDerechoVoto) * 100
+          : 0;
+
+      const porcentajeAbstencion =
+        totalAccionesConDerechoVoto > 0
+          ? (accionesAbstencion / totalAccionesConDerechoVoto) * 100
+          : 0;
+
+      const porcentajeSinVoto =
+        totalAccionesConDerechoVoto > 0
+          ? (accionesSinVoto / totalAccionesConDerechoVoto) * 100
+          : 0;
+
       // 9. Determinar si está aprobado
       const aprobado = porcentajeAFavor >= quorumMinimoRequerido;
-      
+
       // 10. Calcular total de acciones que votaron
       const accionesVotantes = accionesAFavor + accionesEnContra + accionesAbstencion;
-      const porcentajeVotantes = totalAccionesConDerechoVoto > 0
-        ? (accionesVotantes / totalAccionesConDerechoVoto) * 100
-        : 0;
-      
+      const porcentajeVotantes =
+        totalAccionesConDerechoVoto > 0
+          ? (accionesVotantes / totalAccionesConDerechoVoto) * 100
+          : 0;
+
       return {
         // Tipo de acuerdo
         tipoAcuerdo,
         quorumMinimoRequerido,
-        
+
         // Totales
         totalAccionesConDerechoVoto,
         accionesVotantes,
         porcentajeVotantes,
-        
+
         // Resultados por tipo de voto
         accionesAFavor,
         accionesEnContra,
         accionesAbstencion,
         accionesSinVoto,
-        
+
         // Porcentajes
         porcentajeAFavor,
         porcentajeEnContra,
         porcentajeAbstencion,
         porcentajeSinVoto,
-        
+
         // Aprobación
         aprobado,
-        
+
         // Detalles adicionales
         totalVotantes: votos.length,
         totalAccionistas: accionistasConDerechoVoto.length,
