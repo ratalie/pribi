@@ -182,6 +182,7 @@
       };
     };
     nombreCompleto?: string;
+    accionesConDerechoVoto?: number; // ✅ Acciones con derecho a voto del accionista
   }
 
   interface Props {
@@ -377,24 +378,73 @@
     return votos.value[preguntaIndex]?.[accionistaIndex] || null;
   };
 
-  // Calcular porcentajes por pregunta
+  // Calcular porcentajes por pregunta basados en ACCIONES, no en número de votantes
   const getPorcentajeAFavor = (preguntaIndex: number) => {
     if (listaVotantes.value.length === 0) return 0;
-    const votosAFavor = votos.value[preguntaIndex]?.filter((v) => v === "A_FAVOR").length || 0;
-    return (votosAFavor / listaVotantes.value.length) * 100;
+    
+    // Calcular total de acciones con derecho a voto de todos los votantes
+    const totalAcciones = listaVotantes.value.reduce(
+      (sum, votante) => sum + (votante.accionesConDerechoVoto || 0),
+      0
+    );
+    
+    if (totalAcciones === 0) return 0;
+    
+    // Sumar acciones de votantes que votaron a favor
+    const accionesAFavor = listaVotantes.value.reduce((sum, votante, index) => {
+      const voto = votos.value[preguntaIndex]?.[index];
+      if (voto === "A_FAVOR") {
+        return sum + (votante.accionesConDerechoVoto || 0);
+      }
+      return sum;
+    }, 0);
+    
+    return (accionesAFavor / totalAcciones) * 100;
   };
 
   const getPorcentajeEnContra = (preguntaIndex: number) => {
     if (listaVotantes.value.length === 0) return 0;
-    const votosEnContra =
-      votos.value[preguntaIndex]?.filter((v) => v === "EN_CONTRA").length || 0;
-    return (votosEnContra / listaVotantes.value.length) * 100;
+    
+    // Calcular total de acciones con derecho a voto de todos los votantes
+    const totalAcciones = listaVotantes.value.reduce(
+      (sum, votante) => sum + (votante.accionesConDerechoVoto || 0),
+      0
+    );
+    
+    if (totalAcciones === 0) return 0;
+    
+    // Sumar acciones de votantes que votaron en contra
+    const accionesEnContra = listaVotantes.value.reduce((sum, votante, index) => {
+      const voto = votos.value[preguntaIndex]?.[index];
+      if (voto === "EN_CONTRA") {
+        return sum + (votante.accionesConDerechoVoto || 0);
+      }
+      return sum;
+    }, 0);
+    
+    return (accionesEnContra / totalAcciones) * 100;
   };
 
   const getPorcentajeAbstencion = (preguntaIndex: number) => {
     if (listaVotantes.value.length === 0) return 0;
-    const votosAbstencion =
-      votos.value[preguntaIndex]?.filter((v) => v === "ABSTENCION").length || 0;
-    return (votosAbstencion / listaVotantes.value.length) * 100;
+    
+    // Calcular total de acciones con derecho a voto de todos los votantes
+    const totalAcciones = listaVotantes.value.reduce(
+      (sum, votante) => sum + (votante.accionesConDerechoVoto || 0),
+      0
+    );
+    
+    if (totalAcciones === 0) return 0;
+    
+    // Sumar acciones de votantes que se abstuvieron
+    const accionesAbstencion = listaVotantes.value.reduce((sum, votante, index) => {
+      const voto = votos.value[preguntaIndex]?.[index];
+      if (voto === "ABSTENCION") {
+        return sum + (votante.accionesConDerechoVoto || 0);
+      }
+      return sum;
+    }, 0);
+    
+    return (accionesAbstencion / totalAcciones) * 100;
   };
 </script>

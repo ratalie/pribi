@@ -1,11 +1,11 @@
 import { computed, nextTick, onActivated, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import type { Shareholder } from "~/core/hexag/juntas/application/dtos/snapshot-complete.dto";
 import { VoteAgreementType } from "~/core/hexag/juntas/domain/enums/vote-agreement-type.enum";
 import { VoteContext } from "~/core/hexag/juntas/domain/enums/vote-context.enum";
 import { VoteMode } from "~/core/hexag/juntas/domain/enums/vote-mode.enum";
 import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
 import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/stores/useVotacionStore";
-import { filtrarVotantes } from "~/core/presentation/juntas/puntos-acuerdo/votacion/utils/votantes-filter";
 import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 import { useVotacionRemocionStore } from "../stores/useVotacionRemocionStore";
@@ -101,28 +101,137 @@ export function useVotacionRemocionController() {
   }
 
   /**
-   * Obtener votantes (asistentes con acciones con derecho a voto)
-   * ✅ FILTRO DOBLE: Asistencia + Acciones con derecho a voto
+   * Helper: Obtener nombre completo de un accionista
    */
-  const votantes = computed(() => {
-    const asistentes = asistenciaStore.asistenciasEnriquecidas;
+  function getNombreCompletoShareholder(shareholder: Shareholder): string {
+    const person = shareholder.person;
+    if (person.tipo === "NATURAL") {
+      return `${person.nombre} ${person.apellidoPaterno} ${
+        person.apellidoMaterno || ""
+      }`.trim();
+    }
+    // Para personas jurídicas y otros tipos
+    if ("razonSocial" in person) {
+      return person.razonSocial || "";
+    }
+    return ""; // Fallback
+  }
 
-    // ✅ Usar helper reutilizable con filtro de acciones con derecho a voto
-    const filtrados = filtrarVotantes(asistentes, {
-      requireAttendance: true,
-      requireVotingRights: true, // ✅ FILTRO ADICIONAL
+  /**
+   * Mapper: Calcular votantes desde snapshot + asistencias
+   *
+   * ✅ FUENTE DE VERDAD: Snapshot (no confiar en accionesConDerechoVoto del backend)
+   *
+   * Lógica:
+   * 1. Calcular acciones con derecho a voto desde snapshot (shareAllocations + shareClasses)
+   * 2. Filtrar solo accionistas que asistieron (asistenciaStore)
+   * 3. Combinar datos: snapshot (accionista, acciones) + asistencia (id registro, representante)
+   */
+  function mapearVotantesDesdeSnapshot() {
+    const snapshot = snapshotStore.snapshot;
+    const asistencias = asistenciaStore.asistencias;
+
+    if (!snapshot) {
+      console.warn(
+        "[DEBUG][VotacionRemocionController] No hay snapshot disponible para mapear votantes"
+      );
+      return [];
+    }
+
+    const { shareAllocations, shareClasses, shareholders } = snapshot;
+
+    console.log("[DEBUG][VotacionRemocionController] Mapeando votantes desde snapshot:", {
+      totalShareholders: shareholders.length,
+      totalShareAllocations: shareAllocations.length,
+      totalShareClasses: shareClasses.length,
+      totalAsistencias: asistencias.length,
     });
 
-    console.log("[DEBUG][VotacionRemocionController] Votantes filtrados:", filtrados);
+    // 1. Calcular acciones con derecho a voto por accionista desde snapshot
+    const accionistasConAcciones = shareholders.map((accionista) => {
+      // Buscar todas las asignaciones de este accionista
+      const asignaciones = shareAllocations.filter(
+        (asig) => asig.accionistaId === accionista.id
+      );
 
-    return filtrados.map((a) => ({
-      id: a.id, // ID del registro de asistencia
-      accionistaId: a.accionista.id, // ID del accionista (para votos)
-      accionista: a.accionista,
-      nombreCompleto: a.nombreCompleto,
-      tipoPersona: a.tipoPersona,
-      accionesConDerechoVoto: a.accionesConDerechoVoto, // ✅ Incluir para referencia
-    }));
+      let totalAccionesConDerechoVoto = 0;
+
+      asignaciones.forEach((asig) => {
+        // Buscar la clase de acción correspondiente
+        const shareClass = shareClasses.find((sc) => sc.id === asig.accionId);
+
+        if (!shareClass) {
+          console.warn(
+            `[DEBUG][VotacionRemocionController] No se encontró shareClass con id ${asig.accionId} para accionista ${accionista.id}`
+          );
+          return;
+        }
+
+        // Solo contar acciones con derecho a voto
+        if (shareClass.conDerechoVoto) {
+          totalAccionesConDerechoVoto += asig.cantidadSuscrita;
+        }
+      });
+
+      return {
+        accionista,
+        totalAccionesConDerechoVoto,
+      };
+    });
+
+    console.log(
+      "[DEBUG][VotacionRemocionController] Accionistas con acciones calculadas:",
+      accionistasConAcciones.map((item) => ({
+        accionistaId: item.accionista.id,
+        nombre: getNombreCompletoShareholder(item.accionista),
+        accionesConDerechoVoto: item.totalAccionesConDerechoVoto,
+      }))
+    );
+
+    // 2. Filtrar solo los que tienen acciones con derecho a voto Y asistieron
+    const votantes = accionistasConAcciones
+      .filter((item) => item.totalAccionesConDerechoVoto > 0)
+      .map((item) => {
+        // Buscar registro de asistencia del accionista
+        const asistencia = asistencias.find((a) => a.accionista.id === item.accionista.id);
+
+        // Solo incluir si asistió
+        if (!asistencia || !asistencia.asistio) {
+          return null;
+        }
+
+        // Combinar datos: snapshot (accionista, acciones) + asistencia (id, representante)
+        return {
+          id: asistencia.id, // ID del registro de asistencia
+          accionistaId: item.accionista.id, // ID del accionista (para votos)
+          accionista: item.accionista,
+          nombreCompleto: getNombreCompletoShareholder(item.accionista),
+          tipoPersona: item.accionista.person.tipo,
+          accionesConDerechoVoto: item.totalAccionesConDerechoVoto, // ✅ Calculado desde snapshot
+        };
+      })
+      .filter((v): v is NonNullable<typeof v> => v !== null);
+
+    console.log("[DEBUG][VotacionRemocionController] Votantes mapeados desde snapshot:", {
+      total: votantes.length,
+      votantes: votantes.map((v) => ({
+        id: v.id,
+        accionistaId: v.accionistaId,
+        nombreCompleto: v.nombreCompleto,
+        accionesConDerechoVoto: v.accionesConDerechoVoto,
+      })),
+    });
+
+    return votantes;
+  }
+
+  /**
+   * Obtener votantes (asistentes con acciones con derecho a voto)
+   * ✅ FUENTE DE VERDAD: Snapshot (no confiar en accionesConDerechoVoto del backend)
+   */
+  const votantes = computed(() => {
+    // ✅ Usar mapper que calcula desde snapshot
+    return mapearVotantesDesdeSnapshot();
   });
 
   /**
