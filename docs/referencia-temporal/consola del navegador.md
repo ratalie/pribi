@@ -1,668 +1,2584 @@
- Error: <path> attribute d: Expected number, "MNaN,416.579CNaN,…".
-(anonymous) @ @unovis_vue.js?v=ac832780:718
- Error: <path> attribute d: Expected number, "MNaN,582.811CNaN,…".
-(anonymous) @ @unovis_vue.js?v=ac832780:718
- Error: <path> attribute d: Expected number, "MNaN,790.40151856…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,790.48972192…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,790.23763498…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,790.39867569…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,790.15669146…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,790.35370717…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,789.95610763…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,790.24227195…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,789.67577785…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,790.08653352…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,789.28321829…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,789.86844535…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,788.87630553…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,789.64238321…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,788.33449750…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,789.34137940…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,787.68960929…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,788.98310896…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,786.91904815…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,788.55502038…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,786.03897679…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,788.06609292…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,784.97465691…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,787.47480539…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,783.81809803…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,786.83227408…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,782.51297801…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,786.10720900…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,780.99874718…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,785.26597149…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,779.39253385…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,784.37363271…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,777.48971579…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,783.31651388…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,775.45298776…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,782.18500078…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,773.06158384…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,780.85644596…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,770.85162213…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,779.62869215…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,768.19178854…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,778.15101006…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,765.35249433…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,776.57362784…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,762.17656460…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,774.80922630…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,758.51446177…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,772.77472919…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,755.29427694…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,770.98574154…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,751.47140730…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,768.86192972…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,747.38208512…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,766.59008905…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,743.01733390…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,764.16523257…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,738.36817712…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,761.58237335…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,733.17064905…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,758.69486408…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,728.00059892…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,755.82262030…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,722.43383404…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,752.72997993…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,716.54645838…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,749.45922284…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,710.22303593…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,745.94621806…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,703.66179042…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,742.30108966…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,696.39812037…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,738.26572624…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,689.11444960…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,734.21925135…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,681.33403833…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,729.89681012…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,673.16579773…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,725.35890862…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,664.31262455…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,720.44048985…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,654.87434675…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,715.19701367…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,644.97715286…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,709.69858467…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,636.42588500…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,704.94789071…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,626.69136218…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,699.53983433…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,615.84144362…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,693.51211500…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,605.26753794…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,687.63773583…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,593.85200492…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,681.29578694…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,583.24328768…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,675.40206805…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,573.06648987…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,669.74830388…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,563.15360287…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,664.24115650…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,553.51645767…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,658.88719868…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,544.60157296…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,653.93449580…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,536.22104871…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,649.27865920…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,527.94952080…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,644.68337598…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,520.06829642…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,640.30492759…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,512.44810633…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,636.07149793…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,505.43902681…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,632.17757339…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,498.45627082…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,628.29827300…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,491.34067447…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,624.34517258…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,486.18657754…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,621.48179168…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,480.54050152…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,618.34508965…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,475.12204206…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,615.33484099…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,470.09975198…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,612.54468595…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,465.29691721…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,609.87645025…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,460.79036673…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,607.37281658…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,456.63758067…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,605.06571827…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,452.75334167…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,602.90781244…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,449.07041010…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,600.86174383…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,445.59231219…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,598.92947145…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,442.47170060…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,597.19580214…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,439.62956749…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,595.61684277…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,436.96071713…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,594.13415137…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,434.42802768…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,592.72710476…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,432.14998498…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,591.46152825…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,430.07451660…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,590.30849279…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,428.10443298…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,589.21400429…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,426.46720292…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,588.30443403…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,424.94563883…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,587.45912250…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,423.65178750…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,586.74031778…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,422.46136726…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,586.07897465…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,421.31519880…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,585.44221579…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,420.49658770…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,584.98743284…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,419.69206728…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,584.54047803…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,418.99568572…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,584.15360023…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,418.44623832…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,583.84835235…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,417.95856046…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,583.57742080…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,417.56984852…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,583.36147019…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,417.26201167…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,583.19045009…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,417.02561706…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,583.05912004…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,416.85364097…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,582.96357798…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,416.72942319…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,582.89456825…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,416.65275139…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,582.85197290…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,416.60684156…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,582.82646749…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,416.58388283…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,582.81371268…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,416.57938006…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,582.81121114…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,416.579CNaN,…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- Error: <path> attribute d: Expected number, "MNaN,582.811CNaN,…".
-(anonymous) @ @unovis_vue.js?v=ac832780:3258
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps: Array(6)
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟣 [useJuntasNavbarRoutes] Sub-steps en store cambiaron: Proxy(Array)
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps: Array(6)
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟣 [useJuntasNavbarRoutes] Sub-steps en store cambiaron: Proxy(Array)
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps: Array(6)
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟣 [useJuntasNavbarRoutes] Sub-steps en store cambiaron: Proxy(Array)
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps: Array(6)
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🧹 [useJuntasFlowNext] Limpiando handler al desmontar
- 
-================================================================================
- 📸 SNAPSHOT COMPLETO DE JUNTA
- ================================================================================
- Sociedad ID: 5
- Flow ID: 7
- 
-📋 RESUMEN:
-   • Accionistas: 2
-   • Clases de Acciones: 1
-   • Asignaciones: 2
-   • Directores: 5
-   • Apoderados: 1
-   • Valor Nominal: $1
-   • Tiene Directorio: Sí
-   • Tiene Quorums: Sí
- 
-📦 DATOS COMPLETOS:
- {
-  "shareholderId": "019b0887-33b9-709c-8b62-24c747cfe985",
-  "nominalValueId": "019b0887-33b9-709c-8b62-2bf1de76ce51",
-  "shareAllocationId": "019b0887-33b9-709c-8b62-2cd643dacd63",
-  "meetingConfigId": "019b0887-33b9-709c-8b62-310d3a5064b4",
-  "directoryId": "019b0887-33b9-709c-8b62-34d1606405fb",
-  "attorneyRegistryId": "019b0887-33b9-709c-8b62-3bef9aec23c9",
-  "powerRegimenId": "019b0887-33b9-709c-8b62-3e603d16606b",
-  "quorumId": "019b0887-33b9-709c-8b62-4318b8843d2f",
-  "specialAgreementsId": "019b0887-33b9-709c-8b62-45592ef20c52",
-  "nominalValue": 1,
-  "shareClasses": [
-    {
-      "id": "019b0887-33b9-709c-8b62-599927954e1a",
-      "tipo": "COMUN",
-      "cantidadSuscrita": 500,
-      "redimible": true,
-      "conDerechoVoto": false
-    }
-  ],
-  "shareholders": [
-    {
-      "id": "019b0887-33b9-709c-8b62-4aba09990935",
-      "person": {
-        "id": "019b0887-33b9-709c-8b62-4c2ee16e5367",
-        "tipo": "NATURAL",
-        "nombre": "Juan",
-        "apellidoPaterno": "Pérez",
-        "apellidoMaterno": "García",
-        "tipoDocumento": "DNI",
-        "numeroDocumento": "00000009"
+ mswDisabled true
+ <Suspense> is an experimental feature and its API will likely change.
+ ✨ Nuxt DevTools  Press Shift + Alt + D to open DevTools 
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 🚀 [onMounted] useTheme MONTADO
+   🌍 true: true
+   📄 typeof document: object
+   📄 typeof window: object
+   💾 Intentando cargar desde localStorage...
+     - Valor en localStorage: null
+   ℹ️ No hay tema válido, usando default: light
+   📊 Estado después de cargar:
+     - currentTheme.value: light
+     - effectiveTheme.value: light
+   🎯 Aplicando tema inicial...
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 🔧 [applyTheme] INICIO
+   📝 Theme solicitado: light
+   🌍 true: true
+   ✅ Estamos en CLIENT - procediendo...
+   📄 document.documentElement: 
+   📄 tagName: HTML
+   📊 ESTADO ANTES:
+     - className: ""
+     - classList: []
+     - style.colorScheme: 
+   🧹 Limpiando clases...
+     - Después de remove: []
+   ➕ Agregando clase: light
+     - Después de add: ['light']
+   ✔️ Verificación classList.contains('light'): true
+   📊 ESTADO DESPUÉS:
+     - className: "light"
+     - classList: ['light']
+   🎨 Actualizando color-scheme a: light
+     - style.colorScheme: light
+   🔍 Verificando variables CSS:
+     - --color-background: oklch(1 0 0)
+     - --color-primary: oklch(0.21 0.034 264.665)
+ ✅ [applyTheme] COMPLETADO
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   👁️ Configurando watcher de effectiveTheme...
+   💾 Configurando watcher de currentTheme...
+ ✅ [onMounted] CONFIGURACIÓN COMPLETA
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <Teleport to=undefined disabled=false defer=false  ... > 
+  at <MenuPortal disabled=false defer=false forceMount=false  ... > 
+  at <DropdownMenuPortal style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <DropdownMenuContent align="start" class="w-[400px]" style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <PopperRoot data-slot="dropdown-menu" > 
+  at <MenuRoot open=false onUpdate:open=fn dir="ltr"  ... > 
+  at <DropdownMenuRoot data-slot="dropdown-menu" onUpdate:open=fn > 
+  at <DropdownMenu > 
+  at <SocietySelector > 
+  at <Almacen onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/storage/almacen" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/storage/almacen', hash: '', query: {…}, name: 'storage-almacen', path: '/storage/almacen', …}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Default ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot>
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bun…er.js?v=e57cfd2b:50
+renderComponentRoot @ runtime-core.esm-bun….js?v=e57cfd2b:6680
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5492
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:427
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+baseWatchOptions.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:6314
+effect2.scheduler @ reactivity.esm-bundl….js?v=e57cfd2b:1773
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+ref @ reka-ui.js?v=e57cfd2b:4473
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+setRef @ runtime-core.esm-bun….js?v=e57cfd2b:1607
+(anonymous) @ runtime-core.esm-bun….js?v=e57cfd2b:1546
+setRef @ runtime-core.esm-bun….js?v=e57cfd2b:1545
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4831
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+processFragment @ runtime-core.esm-bun….js?v=e57cfd2b:5205
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4763
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+processFragment @ runtime-core.esm-bun….js?v=e57cfd2b:5205
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4763
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+processFragment @ runtime-core.esm-bun….js?v=e57cfd2b:5205
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4763
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+processFragment @ runtime-core.esm-bun….js?v=e57cfd2b:5205
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4763
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+processFragment @ runtime-core.esm-bun….js?v=e57cfd2b:5205
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4763
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+processFragment @ runtime-core.esm-bun….js?v=e57cfd2b:5205
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4763
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+processFragment @ runtime-core.esm-bun….js?v=e57cfd2b:5205
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4763
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+processFragment @ runtime-core.esm-bun….js?v=e57cfd2b:5205
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4763
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+processFragment @ runtime-core.esm-bun….js?v=e57cfd2b:5205
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4763
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+processFragment @ runtime-core.esm-bun….js?v=e57cfd2b:5205
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4763
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+processFragment @ runtime-core.esm-bun….js?v=e57cfd2b:5205
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4763
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+processFragment @ runtime-core.esm-bun….js?v=e57cfd2b:5205
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4763
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+processFragment @ runtime-core.esm-bun….js?v=e57cfd2b:5205
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4763
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+processFragment @ runtime-core.esm-bun….js?v=e57cfd2b:5205
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4763
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+Promise.then
+registerDep @ runtime-core.esm-bun….js?v=e57cfd2b:7293
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5316
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountSuspense @ runtime-core.esm-bun….js?v=e57cfd2b:6926
+process @ runtime-core.esm-bun….js?v=e57cfd2b:6867
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4814
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+processFragment @ runtime-core.esm-bun….js?v=e57cfd2b:5205
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4763
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountSuspense @ runtime-core.esm-bun….js?v=e57cfd2b:6926
+process @ runtime-core.esm-bun….js?v=e57cfd2b:6867
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4814
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+render @ runtime-core.esm-bun….js?v=e57cfd2b:6086
+mount @ runtime-core.esm-bun….js?v=e57cfd2b:4021
+app.mount @ runtime-dom.esm-bund….js?v=e57cfd2b:1774
+initApp @ entry.js?v=e57cfd2b:65
+await in initApp
+(anonymous) @ entry.js?v=e57cfd2b:73
+ 🍍 "repositorio-dashboard" store installed 🆕
+ 🍍 "registros-sociedad-historial" store installed 🆕
+ 🟢 [RepositorioDashboardStore] Seleccionando sociedad: 10
+ 🟢 [RepositorioDashboardStore] Sociedad mapeada: {id: '10', nombre: 'Empresa Test 5', rut: '20000000582', tipo: 'Sociedad Anónima Cerrada (S.A.C.)', activa: false}
+ 🟢 [RepositorioDashboardStore] Sociedad seleccionada actualizada en store
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(0), oldPath: undefined}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: null
+ 🔵 [AlmacenamientoHttp] Cargando contenido de /core/ (raíz del almacén)
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS RAÍZ
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/root
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: null, structureId: '10'}
+ 🔵 [AlmacenView] Obteniendo carpeta /core/ para subir archivos...
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS RAÍZ
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/root
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: false
+ 🟡 [PreviewModal] versionCode: undefined
+ 🟡 [PreviewModal] document: null
+ 🟡 [PreviewModal] mimeType: undefined
+ ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:79
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bun….js?v=e57cfd2b:6302
+job @ reactivity.esm-bundl….js?v=e57cfd2b:1757
+watch @ reactivity.esm-bundl….js?v=e57cfd2b:1792
+doWatch @ runtime-core.esm-bun….js?v=e57cfd2b:6330
+watch @ runtime-core.esm-bun….js?v=e57cfd2b:6263
+setup @ PreviewModal.vue:37
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+setupStatefulComponent @ runtime-core.esm-bun….js?v=e57cfd2b:8012
+setupComponent @ runtime-core.esm-bun….js?v=e57cfd2b:7973
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5309
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+patchBlockChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5145
+patchElement @ runtime-core.esm-bun….js?v=e57cfd2b:5063
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4922
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+baseWatchOptions.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:6314
+effect2.scheduler @ reactivity.esm-bundl….js?v=e57cfd2b:1773
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:695
+set @ reactivity.esm-bundler.js?v=e57cfd2b:983
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1511
+set @ reactivity.esm-bundler.js?v=e57cfd2b:967
+set @ pinia.mjs?v=e57cfd2b:757
+seleccionarSociedad @ repositorio-dashboard.store.ts:74
+wrappedAction @ pinia.mjs?v=e57cfd2b:1067
+store.<computed> @ pinia.mjs?v=e57cfd2b:761
+seleccionarSociedad @ SocietySelector.vue:39
+onClick @ SocietySelector.vue:325
+(anonymous) @ runtime-dom.esm-bund…r.js?v=e57cfd2b:750
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:215
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: null
+ 🔵 [AlmacenamientoHttp] Cargando contenido de /core/ (raíz del almacén)
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS RAÍZ
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/root
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🍍 "almacenamiento" store installed 🆕
+ 🍍 "auth" store installed 🆕
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(0), oldPath: Array(0)}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: null
+ 🔵 [AlmacenamientoHttp] Cargando contenido de /core/ (raíz del almacén)
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS RAÍZ
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/root
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos: 2
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Carpeta 'core' encontrada: {id: '39', name: 'core', path: '/'}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/39
+ 🔵 [RepositorioDocumentosHttp] nodeId: 39
+ 🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos: 2
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [useObtenerCarpetaDocumentosSocietarios] Nodos raíz obtenidos: 2
+ 🟢 [useObtenerCarpetaDocumentosSocietarios] Carpeta /core/ encontrada: {id: '39', name: 'core', path: '/', code: 'ee3fb899-00cb-4c26-b08a-589beedc688c'}
+ 🔵 [AlmacenView] Carpeta /core/ obtenida: 39
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 39, name: 'core', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🔵 [AlmacenamientoHttp] Contenido de /core/ (filtrado): 1 elementos
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos: 2
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Carpeta 'core' encontrada: {id: '39', name: 'core', path: '/'}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/39
+ 🔵 [RepositorioDocumentosHttp] nodeId: 39
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 39, name: 'core', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🔵 [AlmacenamientoHttp] Contenido de /core/ (filtrado): 1 elementos
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos: 2
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Carpeta 'core' encontrada: {id: '39', name: 'core', path: '/'}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/39
+ 🔵 [RepositorioDocumentosHttp] nodeId: 39
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 39, name: 'core', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🔵 [AlmacenamientoHttp] Contenido de /core/ (filtrado): 1 elementos
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Obteniendo documento para preview: 73
+ 🟢 [AlmacenView] Usando versionCode del documento: cd1d12ef-da3c-41aa-bfb5-ffac47efe278
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: true
+ 🟡 [PreviewModal] versionCode: cd1d12ef-da3c-41aa-bfb5-ffac47efe278
+ 🟡 [PreviewModal] document: Proxy(Object) {name: 'acta-junta-universal.docx', type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', owner: 'Sistema', dateModified: Thu Dec 11 2025 16:47:00 GMT-0500 (hora estándar de Perú), size: undefined, …}
+ 🟡 [PreviewModal] mimeType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+ 🟢 [PreviewModal] Iniciando carga de preview...
+ 🟢 [PreviewModal] Llamando a previsualizar...
+ 🟡 [usePrevisualizarDocumento] ========================================
+ 🟡 [usePrevisualizarDocumento] PREVISUALIZAR DOCUMENTO
+ 🟡 [usePrevisualizarDocumento] ========================================
+ 🟡 [usePrevisualizarDocumento] versionCode: cd1d12ef-da3c-41aa-bfb5-ffac47efe278
+ 🟡 [usePrevisualizarDocumento] mimeType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+ 🔵 [RepositorioDocumentosHttp] Descargando versión: cd1d12ef-da3c-41aa-bfb5-ffac47efe278
+ 🟡 [DocumentPreviewService] ========================================
+ 🟡 [DocumentPreviewService] PREVIEW DOCUMENT
+ 🟡 [DocumentPreviewService] ========================================
+ 🟡 [DocumentPreviewService] mimeType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+ 🟡 [DocumentPreviewService] blob size: 79784 bytes
+ 🟢 [DocumentPreviewService] Procesando como Word (DOCX)...
+ 🟡 [DocumentPreviewService] Iniciando conversión de Word a HTML...
+ 🟢 [DocumentPreviewService] ArrayBuffer obtenido, tamaño: 79784
+ 🟢 [DocumentPreviewService] Conversión completada, HTML length: 947
+ 🟢 [DocumentPreviewService] HTML sanitizado, length: 947
+ 🟢 [usePrevisualizarDocumento] Preview obtenido: {type: 'html', hasContent: true}
+ 🟢 [PreviewModal] Preview obtenido: {type: 'html', hasContent: true}
+ 🟢 [PreviewModal] Preview cargado correctamente
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: false
+ 🟡 [PreviewModal] versionCode: undefined
+ 🟡 [PreviewModal] document: null
+ 🟡 [PreviewModal] mimeType: undefined
+ ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:79
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bun….js?v=e57cfd2b:6302
+job @ reactivity.esm-bundl….js?v=e57cfd2b:1757
+flushPreFlushCbs @ runtime-core.esm-bun…r.js?v=e57cfd2b:353
+updateComponentPreRender @ runtime-core.esm-bun….js?v=e57cfd2b:5559
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5478
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+updateComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5352
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5286
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+patchBlockChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5145
+patchElement @ runtime-core.esm-bun….js?v=e57cfd2b:5063
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4922
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+set @ reactivity.esm-bundl….js?v=e57cfd2b:1459
+_createVNode.onClose._cache.<computed>._cache.<computed> @ AlmacenView.vue:1187
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+emit @ runtime-core.esm-bun….js?v=e57cfd2b:6493
+(anonymous) @ runtime-core.esm-bun….js?v=e57cfd2b:8204
+$props.isOpen._createElementVNode.onClick._cache.<computed>._cache.<computed> @ PreviewModal.vue:167
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🔵 [AlmacenView] Obteniendo documento para preview: 73
+ 🟢 [AlmacenView] Usando versionCode del documento: cd1d12ef-da3c-41aa-bfb5-ffac47efe278
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: true
+ 🟡 [PreviewModal] versionCode: cd1d12ef-da3c-41aa-bfb5-ffac47efe278
+ 🟡 [PreviewModal] document: Proxy(Object) {name: 'acta-junta-universal.docx', type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', owner: 'Sistema', dateModified: Thu Dec 11 2025 16:47:00 GMT-0500 (hora estándar de Perú), size: undefined, …}
+ 🟡 [PreviewModal] mimeType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+ 🟢 [PreviewModal] Iniciando carga de preview...
+ 🟢 [PreviewModal] Llamando a previsualizar...
+ 🟡 [usePrevisualizarDocumento] ========================================
+ 🟡 [usePrevisualizarDocumento] PREVISUALIZAR DOCUMENTO
+ 🟡 [usePrevisualizarDocumento] ========================================
+ 🟡 [usePrevisualizarDocumento] versionCode: cd1d12ef-da3c-41aa-bfb5-ffac47efe278
+ 🟡 [usePrevisualizarDocumento] mimeType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+ 🔵 [RepositorioDocumentosHttp] Descargando versión: cd1d12ef-da3c-41aa-bfb5-ffac47efe278
+ 🟡 [DocumentPreviewService] ========================================
+ 🟡 [DocumentPreviewService] PREVIEW DOCUMENT
+ 🟡 [DocumentPreviewService] ========================================
+ 🟡 [DocumentPreviewService] mimeType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+ 🟡 [DocumentPreviewService] blob size: 79784 bytes
+ 🟢 [DocumentPreviewService] Procesando como Word (DOCX)...
+ 🟡 [DocumentPreviewService] Iniciando conversión de Word a HTML...
+ 🟢 [DocumentPreviewService] ArrayBuffer obtenido, tamaño: 79784
+ 🟢 [DocumentPreviewService] Conversión completada, HTML length: 947
+ 🟢 [DocumentPreviewService] HTML sanitizado, length: 947
+ 🟢 [usePrevisualizarDocumento] Preview obtenido: {type: 'html', hasContent: true}
+ 🟢 [PreviewModal] Preview obtenido: {type: 'html', hasContent: true}
+ 🟢 [PreviewModal] Preview cargado correctamente
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: false
+ 🟡 [PreviewModal] versionCode: undefined
+ 🟡 [PreviewModal] document: null
+ 🟡 [PreviewModal] mimeType: undefined
+ ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:79
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bun….js?v=e57cfd2b:6302
+job @ reactivity.esm-bundl….js?v=e57cfd2b:1757
+flushPreFlushCbs @ runtime-core.esm-bun…r.js?v=e57cfd2b:353
+updateComponentPreRender @ runtime-core.esm-bun….js?v=e57cfd2b:5559
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5478
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+updateComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5352
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5286
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+patchBlockChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5145
+patchElement @ runtime-core.esm-bun….js?v=e57cfd2b:5063
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4922
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+set @ reactivity.esm-bundl….js?v=e57cfd2b:1459
+_createVNode.onClose._cache.<computed>._cache.<computed> @ AlmacenView.vue:1187
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+emit @ runtime-core.esm-bun….js?v=e57cfd2b:6493
+(anonymous) @ runtime-core.esm-bun….js?v=e57cfd2b:8204
+$props.isOpen._createElementVNode.onClick._cache.<computed>._cache.<computed> @ PreviewModal.vue:167
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🟢 [useDocumentosGenerados] Watch detectó cambio de sociedad: {oldId: undefined, newId: '10', sociedadCompleta: Proxy(Object)}
+ 🟢 [useDocumentosGenerados] Cargando documentos para sociedad: 10
+ 🟢 [DocumentosGeneradosStore] Cargando documentos generados para structureId: 10
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraOperaciones...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA OPERACIONES (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: null, estructuraOperaciones: null}
+ 🔵 [DocumentosGeneradosView] currentPath computed: {routeParamsPath: '', segments: Array(0), routePath: '/storage/documentos-generados/10/operaciones/'}
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: false
+ 🟡 [PreviewModal] versionCode: undefined
+ 🟡 [PreviewModal] document: null
+ 🟡 [PreviewModal] mimeType: undefined
+ ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:79
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bun….js?v=e57cfd2b:6302
+job @ reactivity.esm-bundl….js?v=e57cfd2b:1757
+watch @ reactivity.esm-bundl….js?v=e57cfd2b:1792
+doWatch @ runtime-core.esm-bun….js?v=e57cfd2b:6330
+watch @ runtime-core.esm-bun….js?v=e57cfd2b:6263
+setup @ PreviewModal.vue:37
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+setupStatefulComponent @ runtime-core.esm-bun….js?v=e57cfd2b:8012
+setupComponent @ runtime-core.esm-bun….js?v=e57cfd2b:7973
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5309
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+patchSuspense @ runtime-core.esm-bun….js?v=e57cfd2b:7087
+process @ runtime-core.esm-bun….js?v=e57cfd2b:6885
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4814
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToDocumentosGenerados @ AlmacenView.vue:314
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <Teleport to=undefined disabled=false defer=false  ... > 
+  at <MenuPortal disabled=false defer=false forceMount=false  ... > 
+  at <DropdownMenuPortal style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <DropdownMenuContent align="start" class="w-[400px]" style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <PopperRoot data-slot="dropdown-menu" > 
+  at <MenuRoot open=false onUpdate:open=fn dir="ltr"  ... > 
+  at <DropdownMenuRoot data-slot="dropdown-menu" onUpdate:open=fn > 
+  at <DropdownMenu > 
+  at <SocietySelector > 
+  at <[...path] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/storage/documentos-generados/10()/operaciones/" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/storage/documentos-generados/10/operaciones/', path: '/storage/documentos-generados/10/operaciones/', query: {…}, hash: '', name: 'storage-documentos-generados-idSociety-operaciones-path', …}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Default ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot>
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bun…er.js?v=e57cfd2b:50
+renderComponentRoot @ runtime-core.esm-bun….js?v=e57cfd2b:6680
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5492
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:427
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToDocumentosGenerados @ AlmacenView.vue:314
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🍍 "documentos-generados" store installed 🆕
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodos encontrados (V2): {directorio: {…}, juntas: {…}}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraJuntas...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA JUNTAS
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER CARPETAS JUNTAS (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodo 'juntas-accionistas' encontrado: {id: '45', name: 'juntas-accionistas', path: '/core/documentos-generados/operaciones/'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas de juntas encontradas: 1
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas: [{…}]
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/62
+ 🔵 [RepositorioDocumentosHttp] nodeId: 62
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 62, name: 'junta del 11 de diciembre del 2025', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'minuta-aumento-capital-aporte-dinerario.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpeta completa obtenida: {id: '62', name: 'junta del 11 de diciembre del 2025', childrenCount: 2}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Estructura obtenida: {totalJuntas: 1}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Estructura obtenida: {operaciones: {…}, totalJuntas: 1}
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(0), routePath: '/storage/documentos-generados/10/operaciones/', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 🟢 [DocumentosGeneradosView] Mostrando carpetas de operaciones: {currentPath: Array(0), routePath: '/storage/documentos-generados/10/operaciones/', estructuraOperaciones: Proxy(Object), documentosGenerados: {…}, directorio: {…}, …}
+ 🟢 [DocumentosGeneradosView] Carpetas agregadas: (2) [{…}, {…}]
+ 🟢 [useDocumentosGenerados] Documentos cargados exitosamente
+ 🔵 [DocumentosGeneradosView] currentPath computed: {routeParamsPath: '', segments: Array(0), routePath: '/storage/documentos-generados/10/operaciones/'}
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(0), routePath: '/storage/documentos-generados/10/operaciones/', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 🟢 [DocumentosGeneradosView] Mostrando carpetas de operaciones: {currentPath: Array(0), routePath: '/storage/documentos-generados/10/operaciones/', estructuraOperaciones: Proxy(Object), documentosGenerados: {…}, directorio: {…}, …}
+ 🟢 [DocumentosGeneradosView] Carpetas agregadas: (2) [{…}, {…}]
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(0), oldPath: undefined}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: null
+ 🔵 [AlmacenamientoHttp] Cargando contenido de /core/ (raíz del almacén)
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS RAÍZ
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/root
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: null, structureId: '10'}
+ 🔵 [AlmacenView] Obteniendo carpeta /core/ para subir archivos...
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS RAÍZ
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/root
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: false
+ 🟡 [PreviewModal] versionCode: undefined
+ 🟡 [PreviewModal] document: null
+ 🟡 [PreviewModal] mimeType: undefined
+ ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:79
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bun….js?v=e57cfd2b:6302
+job @ reactivity.esm-bundl….js?v=e57cfd2b:1757
+watch @ reactivity.esm-bundl….js?v=e57cfd2b:1792
+doWatch @ runtime-core.esm-bun….js?v=e57cfd2b:6330
+watch @ runtime-core.esm-bun….js?v=e57cfd2b:6263
+setup @ PreviewModal.vue:37
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+setupStatefulComponent @ runtime-core.esm-bun….js?v=e57cfd2b:8012
+setupComponent @ runtime-core.esm-bun….js?v=e57cfd2b:7973
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5309
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+patchSuspense @ runtime-core.esm-bun….js?v=e57cfd2b:7087
+process @ runtime-core.esm-bun….js?v=e57cfd2b:6885
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4814
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1222
+Promise.then
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1221
+(anonymous) @ vue-router.mjs?v=e57cfd2b:39
+popStateHandler @ vue-router.mjs?v=e57cfd2b:38
+ [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <Teleport to=undefined disabled=false defer=false  ... > 
+  at <MenuPortal disabled=false defer=false forceMount=false  ... > 
+  at <DropdownMenuPortal style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <DropdownMenuContent align="start" class="w-[400px]" style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <PopperRoot data-slot="dropdown-menu" > 
+  at <MenuRoot open=false onUpdate:open=fn dir="ltr"  ... > 
+  at <DropdownMenuRoot data-slot="dropdown-menu" onUpdate:open=fn > 
+  at <DropdownMenu > 
+  at <SocietySelector > 
+  at <Almacen onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/storage/almacen" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/storage/almacen/10', path: '/storage/almacen/10', query: {…}, hash: '', name: 'storage-almacen-idSociety-path', …}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Default ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot>
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bun…er.js?v=e57cfd2b:50
+renderComponentRoot @ runtime-core.esm-bun….js?v=e57cfd2b:6680
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5492
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:427
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1222
+Promise.then
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1221
+(anonymous) @ vue-router.mjs?v=e57cfd2b:39
+popStateHandler @ vue-router.mjs?v=e57cfd2b:38
+ 🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos: 2
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Carpeta 'core' encontrada: {id: '39', name: 'core', path: '/'}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/39
+ 🔵 [RepositorioDocumentosHttp] nodeId: 39
+ 🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos: 2
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [useObtenerCarpetaDocumentosSocietarios] Nodos raíz obtenidos: 2
+ 🟢 [useObtenerCarpetaDocumentosSocietarios] Carpeta /core/ encontrada: {id: '39', name: 'core', path: '/', code: 'ee3fb899-00cb-4c26-b08a-589beedc688c'}
+ 🔵 [AlmacenView] Carpeta /core/ obtenida: 39
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 39, name: 'core', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🔵 [AlmacenamientoHttp] Contenido de /core/ (filtrado): 1 elementos
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Creando carpeta: kkk
+ 🔵 [AlmacenView] carpetaActual: null
+ 🔵 [AlmacenView] sociedadSeleccionada: 10
+ 🔵 [AlmacenView] Obteniendo carpeta /core/...
+ 🔵 [AlmacenView] Carpeta /core/ obtenida: 39
+ 🔵 [AlmacenView] Creando carpeta con parentId: 39
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] CREATE CARPETA
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] nombre: kkk
+ 🔵 [AlmacenamientoHttp] parentId: 39
+ 🔵 [AlmacenamientoHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/39/folder
+ 🔵 [AlmacenamientoHttp] Body: {name: 'kkk', description: null}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] RESPUESTA:
+ 🔵 [AlmacenamientoHttp] response: {
+  "success": true,
+  "message": "Folder created successfully",
+  "data": {
+    "id": 78,
+    "code": "e4c60e3f-41a5-4b76-8b79-38eb3e55a394",
+    "societyId": 4,
+    "parentId": 39,
+    "name": "kkk",
+    "type": 1,
+    "path": "/core/",
+    "description": null,
+    "createdAt": "2025-12-11T22:28:51.083Z",
+    "updatedAt": "2025-12-11T22:28:51.083Z",
+    "isCore": false,
+    "children": []
+  },
+  "code": 201
+}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🟢 [AlmacenamientoHttp] Carpeta creada exitosamente: {id: '78', name: 'kkk', path: '/core/'}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 39
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/39
+ 🔵 [RepositorioDocumentosHttp] nodeId: 39
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: '39', structureId: '10'}
+ 🔵 [AlmacenView] Usando carpeta actual: 39
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 39, name: 'core', type: 1, childrenCount: 3, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 3
+ 🔵 [AlmacenamientoHttp] ========================================
+ ✅ [AlmacenView] Carpeta creada exitosamente
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 39
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/39
+ 🔵 [RepositorioDocumentosHttp] nodeId: 39
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 39, name: 'core', type: 1, childrenCount: 3, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 3
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Navegando a carpeta: 78
+ 🔵 [AlmacenView] Actualizando ruta a: /storage/almacen/10/78
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(1), oldPath: Array(0)}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 0, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 0
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: '78', structureId: '10'}
+ 🔵 [AlmacenView] Usando carpeta actual: 78
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 0, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 0, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 0
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(1), oldPath: Array(1)}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 0, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 0
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Creando carpeta: kkkk
+ 🔵 [AlmacenView] carpetaActual: 78
+ 🔵 [AlmacenView] sociedadSeleccionada: 10
+ 🔵 [AlmacenView] Creando carpeta con parentId: 78
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] CREATE CARPETA
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] nombre: kkkk
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [AlmacenamientoHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/78/folder
+ 🔵 [AlmacenamientoHttp] Body: {name: 'kkkk', description: null}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] RESPUESTA:
+ 🔵 [AlmacenamientoHttp] response: {
+  "success": true,
+  "message": "Folder created successfully",
+  "data": {
+    "id": 79,
+    "code": "7a902982-d28e-4891-98ff-502b432425a7",
+    "societyId": 4,
+    "parentId": 78,
+    "name": "kkkk",
+    "type": 1,
+    "path": "/core/kkk/",
+    "description": null,
+    "createdAt": "2025-12-11T22:29:02.319Z",
+    "updatedAt": "2025-12-11T22:29:02.319Z",
+    "isCore": false,
+    "children": []
+  },
+  "code": 201
+}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🟢 [AlmacenamientoHttp] Carpeta creada exitosamente: {id: '79', name: 'kkkk', path: '/core/kkk/'}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ ✅ [AlmacenView] Carpeta creada exitosamente
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Navegando a carpeta: 79
+ 🔵 [AlmacenView] Actualizando ruta a: /storage/almacen/10/78/79
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 79
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/79
+ 🔵 [RepositorioDocumentosHttp] nodeId: 79
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(2), oldPath: Array(1)}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/79
+ 🔵 [RepositorioDocumentosHttp] nodeId: 79
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 79, name: 'kkkk', type: 1, childrenCount: 0, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 0
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: '79', structureId: '10'}
+ 🔵 [AlmacenView] Usando carpeta actual: 79
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 79, name: 'kkkk', type: 1, childrenCount: 0, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 79
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/79
+ 🔵 [RepositorioDocumentosHttp] nodeId: 79
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 79, name: 'kkkk', type: 1, childrenCount: 0, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 0
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Navegando a breadcrumb index: 0
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(1), oldPath: Array(2)}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: '78', structureId: '10'}
+ 🔵 [AlmacenView] Usando carpeta actual: 78
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: null
+ 🔵 [AlmacenamientoHttp] Cargando contenido de /core/ (raíz del almacén)
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS RAÍZ
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/root
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: null, structureId: '10'}
+ 🔵 [AlmacenView] Obteniendo carpeta /core/ para subir archivos...
+ 🔵 [AlmacenView] Carpeta /core/ obtenida: 39
+ 🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos: 2
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Carpeta 'core' encontrada: {id: '39', name: 'core', path: '/'}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/39
+ 🔵 [RepositorioDocumentosHttp] nodeId: 39
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 39, name: 'core', type: 1, childrenCount: 3, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🔵 [AlmacenamientoHttp] Contenido de /core/ (filtrado): 2 elementos
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 2
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Navegando a carpeta: 78
+ 🔵 [AlmacenView] Actualizando ruta a: /storage/almacen/10/78/78
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(2), oldPath: Array(1)}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: '78', structureId: '10'}
+ 🔵 [AlmacenView] Usando carpeta actual: 78
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Navegando a breadcrumb index: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Navegando a breadcrumb index: 0
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(1), oldPath: Array(2)}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Navegando a carpeta: 79
+ 🔵 [AlmacenView] Actualizando ruta a: /storage/almacen/10/78/79
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 79
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/79
+ 🔵 [RepositorioDocumentosHttp] nodeId: 79
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(2), oldPath: Array(1)}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 79
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/79
+ 🔵 [RepositorioDocumentosHttp] nodeId: 79
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 79, name: 'kkkk', type: 1, childrenCount: 0, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 0
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: '79', structureId: '10'}
+ 🔵 [AlmacenView] Usando carpeta actual: 79
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 79, name: 'kkkk', type: 1, childrenCount: 0, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 0
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Creando carpeta: 8888
+ 🔵 [AlmacenView] carpetaActual: 79
+ 🔵 [AlmacenView] sociedadSeleccionada: 10
+ 🔵 [AlmacenView] Creando carpeta con parentId: 79
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] CREATE CARPETA
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] nombre: 8888
+ 🔵 [AlmacenamientoHttp] parentId: 79
+ 🔵 [AlmacenamientoHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/79/folder
+ 🔵 [AlmacenamientoHttp] Body: {name: '8888', description: null}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] RESPUESTA:
+ 🔵 [AlmacenamientoHttp] response: {
+  "success": true,
+  "message": "Folder created successfully",
+  "data": {
+    "id": 80,
+    "code": "2f7fd321-74c0-4c8c-8483-056935c932e2",
+    "societyId": 4,
+    "parentId": 79,
+    "name": "8888",
+    "type": 1,
+    "path": "/core/kkk/kkkk/",
+    "description": null,
+    "createdAt": "2025-12-11T22:29:15.535Z",
+    "updatedAt": "2025-12-11T22:29:15.535Z",
+    "isCore": false,
+    "children": []
+  },
+  "code": 201
+}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🟢 [AlmacenamientoHttp] Carpeta creada exitosamente: {id: '80', name: '8888', path: '/core/kkk/kkkk/'}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 79
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/79
+ 🔵 [RepositorioDocumentosHttp] nodeId: 79
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 79, name: 'kkkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ ✅ [AlmacenView] Carpeta creada exitosamente
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 79
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/79
+ 🔵 [RepositorioDocumentosHttp] nodeId: 79
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 79, name: 'kkkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Navegando a carpeta: 80
+ 🔵 [AlmacenView] Actualizando ruta a: /storage/almacen/10/78/79/80
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 80
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/80
+ 🔵 [RepositorioDocumentosHttp] nodeId: 80
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(3), oldPath: Array(2)}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/80
+ 🔵 [RepositorioDocumentosHttp] nodeId: 80
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 80, name: '8888', type: 1, childrenCount: 0, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 0
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: '80', structureId: '10'}
+ 🔵 [AlmacenView] Usando carpeta actual: 80
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 80, name: '8888', type: 1, childrenCount: 0, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 80
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/80
+ 🔵 [RepositorioDocumentosHttp] nodeId: 80
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 80, name: '8888', type: 1, childrenCount: 0, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 0
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Abriendo modal de subida: {structureId: '10', parentNodeId: '80'}
+ 🟡 [useSubirArchivo] Subiendo archivo...
+ 🟡 [SubirArchivoUseCase] ========================================
+ 🟡 [SubirArchivoUseCase] SUBIR ARCHIVO
+ 🟡 [SubirArchivoUseCase] ========================================
+ 🟡 [SubirArchivoUseCase] structureId: 10
+ 🟡 [SubirArchivoUseCase] parentNodeId: 80
+ 🟡 [SubirArchivoUseCase] fileName: acta-junta-universal.docx
+ 🟡 [SubirArchivoUseCase] fileSize: 79784 bytes
+ 🟡 [SubirArchivoUseCase] fileType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] SUBIR ARCHIVO
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/80/documents
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] parentNodeId: 80
+ 🔵 [RepositorioDocumentosHttp] fileName: acta-junta-universal.docx
+ 🔵 [RepositorioDocumentosHttp] fileSize: 79784
+ 🔵 [RepositorioDocumentosHttp] Respuesta: {success: true, message: 'Documentos cargados y creados correctamente.', data: {…}, code: 201}
+ 🟢 [RepositorioDocumentosHttp] Archivo subido exitosamente: {id: 'undefined', name: undefined}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟢 [SubirArchivoUseCase] Archivo subido exitosamente: {id: 'undefined', name: undefined}
+ 🟢 [SubirArchivoUseCase] ========================================
+ 🟢 [useSubirArchivo] Archivo subido exitosamente: {id: 'undefined', code: undefined, societyId: 'undefined', parentId: null, name: undefined, …}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 80
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/80
+ 🔵 [RepositorioDocumentosHttp] nodeId: 80
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 80, name: '8888', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Navegando a breadcrumb index: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 79
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/79
+ 🔵 [RepositorioDocumentosHttp] nodeId: 79
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(2), oldPath: Array(3)}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 79
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/79
+ 🔵 [RepositorioDocumentosHttp] nodeId: 79
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 79, name: 'kkkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: '79', structureId: '10'}
+ 🔵 [AlmacenView] Usando carpeta actual: 79
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 79, name: 'kkkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Navegando a breadcrumb index: 0
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(1), oldPath: Array(2)}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: '78', structureId: '10'}
+ 🔵 [AlmacenView] Usando carpeta actual: 78
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: null
+ 🔵 [AlmacenamientoHttp] Cargando contenido de /core/ (raíz del almacén)
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS RAÍZ
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/root
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: null, structureId: '10'}
+ 🔵 [AlmacenView] Obteniendo carpeta /core/ para subir archivos...
+ 🔵 [AlmacenView] Carpeta /core/ obtenida: 39
+ 🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos: 2
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Carpeta 'core' encontrada: {id: '39', name: 'core', path: '/'}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/39
+ 🔵 [RepositorioDocumentosHttp] nodeId: 39
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 39, name: 'core', type: 1, childrenCount: 3, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🔵 [AlmacenamientoHttp] Contenido de /core/ (filtrado): 2 elementos
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 2
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Obteniendo documento para preview: 73
+ 🟢 [AlmacenView] Usando versionCode del documento: cd1d12ef-da3c-41aa-bfb5-ffac47efe278
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: true
+ 🟡 [PreviewModal] versionCode: cd1d12ef-da3c-41aa-bfb5-ffac47efe278
+ 🟡 [PreviewModal] document: Proxy(Object) {name: 'acta-junta-universal.docx', type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', owner: 'Sistema', dateModified: Thu Dec 11 2025 16:47:00 GMT-0500 (hora estándar de Perú), size: undefined, …}
+ 🟡 [PreviewModal] mimeType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+ 🟢 [PreviewModal] Iniciando carga de preview...
+ 🟢 [PreviewModal] Llamando a previsualizar...
+ 🟡 [usePrevisualizarDocumento] ========================================
+ 🟡 [usePrevisualizarDocumento] PREVISUALIZAR DOCUMENTO
+ 🟡 [usePrevisualizarDocumento] ========================================
+ 🟡 [usePrevisualizarDocumento] versionCode: cd1d12ef-da3c-41aa-bfb5-ffac47efe278
+ 🟡 [usePrevisualizarDocumento] mimeType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+ 🔵 [RepositorioDocumentosHttp] Descargando versión: cd1d12ef-da3c-41aa-bfb5-ffac47efe278
+ 🟡 [DocumentPreviewService] ========================================
+ 🟡 [DocumentPreviewService] PREVIEW DOCUMENT
+ 🟡 [DocumentPreviewService] ========================================
+ 🟡 [DocumentPreviewService] mimeType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+ 🟡 [DocumentPreviewService] blob size: 79784 bytes
+ 🟢 [DocumentPreviewService] Procesando como Word (DOCX)...
+ 🟡 [DocumentPreviewService] Iniciando conversión de Word a HTML...
+ 🟢 [DocumentPreviewService] ArrayBuffer obtenido, tamaño: 79784
+ 🟢 [DocumentPreviewService] Conversión completada, HTML length: 947
+ 🟢 [DocumentPreviewService] HTML sanitizado, length: 947
+ 🟢 [usePrevisualizarDocumento] Preview obtenido: {type: 'html', hasContent: true}
+ 🟢 [PreviewModal] Preview obtenido: {type: 'html', hasContent: true}
+ 🟢 [PreviewModal] Preview cargado correctamente
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: false
+ 🟡 [PreviewModal] versionCode: undefined
+ 🟡 [PreviewModal] document: null
+ 🟡 [PreviewModal] mimeType: undefined
+ ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:79
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bun….js?v=e57cfd2b:6302
+job @ reactivity.esm-bundl….js?v=e57cfd2b:1757
+flushPreFlushCbs @ runtime-core.esm-bun…r.js?v=e57cfd2b:353
+updateComponentPreRender @ runtime-core.esm-bun….js?v=e57cfd2b:5559
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5478
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+updateComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5352
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5286
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+patchBlockChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5145
+patchElement @ runtime-core.esm-bun….js?v=e57cfd2b:5063
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4922
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+set @ reactivity.esm-bundl….js?v=e57cfd2b:1459
+_createVNode.onClose._cache.<computed>._cache.<computed> @ AlmacenView.vue:1187
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+emit @ runtime-core.esm-bun….js?v=e57cfd2b:6493
+(anonymous) @ runtime-core.esm-bun….js?v=e57cfd2b:8204
+$props.isOpen._createElementVNode.onClick._cache.<computed>._cache.<computed> @ PreviewModal.vue:167
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🔵 [AlmacenView] Navegando a carpeta: 78
+ 🔵 [AlmacenView] Actualizando ruta a: /storage/almacen/10/78/78
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(2), oldPath: Array(1)}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 78
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+ 🔵 [RepositorioDocumentosHttp] nodeId: 78
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: '78', structureId: '10'}
+ 🔵 [AlmacenView] Usando carpeta actual: 78
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Navegando a carpeta: 79
+ 🔵 [AlmacenView] Actualizando ruta a: /storage/almacen/10/78/78/79
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 79
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/79
+ 🔵 [RepositorioDocumentosHttp] nodeId: 79
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(3), oldPath: Array(2)}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 79
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/79
+ 🔵 [RepositorioDocumentosHttp] nodeId: 79
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 79, name: 'kkkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: '79', structureId: '10'}
+ 🔵 [AlmacenView] Usando carpeta actual: 79
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 79, name: 'kkkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Navegando a carpeta: 80
+ 🔵 [AlmacenView] Actualizando ruta a: /storage/almacen/10/78/78/79/80
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 80
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/80
+ 🔵 [RepositorioDocumentosHttp] nodeId: 80
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(4), oldPath: Array(3)}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: 80
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/80
+ 🔵 [RepositorioDocumentosHttp] nodeId: 80
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 80, name: '8888', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: '80', structureId: '10'}
+ 🔵 [AlmacenView] Usando carpeta actual: 80
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 80, name: '8888', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: null
+ 🔵 [AlmacenamientoHttp] Cargando contenido de /core/ (raíz del almacén)
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS RAÍZ
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/root
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: null, structureId: '10'}
+ 🔵 [AlmacenView] Obteniendo carpeta /core/ para subir archivos...
+ 🔵 [AlmacenView] Carpeta /core/ obtenida: 39
+ 🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos: 2
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Carpeta 'core' encontrada: {id: '39', name: 'core', path: '/'}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/39
+ 🔵 [RepositorioDocumentosHttp] nodeId: 39
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 39, name: 'core', type: 1, childrenCount: 3, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🔵 [AlmacenamientoHttp] Contenido de /core/ (filtrado): 2 elementos
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 2
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🟢 [useDocumentosGenerados] Watch detectó cambio de sociedad: {oldId: undefined, newId: '10', sociedadCompleta: Proxy(Object)}
+ 🟢 [useDocumentosGenerados] Cargando documentos para sociedad: 10
+ 🟢 [DocumentosGeneradosStore] Cargando documentos generados para structureId: 10
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraOperaciones...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA OPERACIONES (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] currentPath computed: {routeParamsPath: '', segments: Array(0), routePath: '/storage/documentos-generados/10/operaciones/'}
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: false
+ 🟡 [PreviewModal] versionCode: undefined
+ 🟡 [PreviewModal] document: null
+ 🟡 [PreviewModal] mimeType: undefined
+ ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:79
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bun….js?v=e57cfd2b:6302
+job @ reactivity.esm-bundl….js?v=e57cfd2b:1757
+watch @ reactivity.esm-bundl….js?v=e57cfd2b:1792
+doWatch @ runtime-core.esm-bun….js?v=e57cfd2b:6330
+watch @ runtime-core.esm-bun….js?v=e57cfd2b:6263
+setup @ PreviewModal.vue:37
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+setupStatefulComponent @ runtime-core.esm-bun….js?v=e57cfd2b:8012
+setupComponent @ runtime-core.esm-bun….js?v=e57cfd2b:7973
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5309
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+patchSuspense @ runtime-core.esm-bun….js?v=e57cfd2b:7087
+process @ runtime-core.esm-bun….js?v=e57cfd2b:6885
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4814
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToDocumentosGenerados @ AlmacenView.vue:314
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <Teleport to=undefined disabled=false defer=false  ... > 
+  at <MenuPortal disabled=false defer=false forceMount=false  ... > 
+  at <DropdownMenuPortal style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <DropdownMenuContent align="start" class="w-[400px]" style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <PopperRoot data-slot="dropdown-menu" > 
+  at <MenuRoot open=false onUpdate:open=fn dir="ltr"  ... > 
+  at <DropdownMenuRoot data-slot="dropdown-menu" onUpdate:open=fn > 
+  at <DropdownMenu > 
+  at <SocietySelector > 
+  at <[...path] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/storage/documentos-generados/10()/operaciones/" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/storage/documentos-generados/10/operaciones/', path: '/storage/documentos-generados/10/operaciones/', query: {…}, hash: '', name: 'storage-documentos-generados-idSociety-operaciones-path', …}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Default ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot>
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bun…er.js?v=e57cfd2b:50
+renderComponentRoot @ runtime-core.esm-bun….js?v=e57cfd2b:6680
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5492
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:427
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToDocumentosGenerados @ AlmacenView.vue:314
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodos encontrados (V2): {directorio: {…}, juntas: {…}}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraJuntas...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA JUNTAS
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER CARPETAS JUNTAS (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodo 'juntas-accionistas' encontrado: {id: '45', name: 'juntas-accionistas', path: '/core/documentos-generados/operaciones/'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas de juntas encontradas: 1
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas: [{…}]
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/62
+ 🔵 [RepositorioDocumentosHttp] nodeId: 62
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 62, name: 'junta del 11 de diciembre del 2025', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'minuta-aumento-capital-aporte-dinerario.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpeta completa obtenida: {id: '62', name: 'junta del 11 de diciembre del 2025', childrenCount: 2}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Estructura obtenida: {totalJuntas: 1}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Estructura obtenida: {operaciones: {…}, totalJuntas: 1}
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(0), routePath: '/storage/documentos-generados/10/operaciones/', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 🟢 [DocumentosGeneradosView] Mostrando carpetas de operaciones: {currentPath: Array(0), routePath: '/storage/documentos-generados/10/operaciones/', estructuraOperaciones: Proxy(Object), documentosGenerados: {…}, directorio: {…}, …}
+ 🟢 [DocumentosGeneradosView] Carpetas agregadas: (2) [{…}, {…}]
+ 🟢 [useDocumentosGenerados] Documentos cargados exitosamente
+ 📂 [DocumentosGeneradosView] Navegando a carpeta: operaciones-juntas
+ 🟢 [useDocumentosGenerados] Watch detectó cambio de sociedad: {oldId: undefined, newId: '10', sociedadCompleta: Proxy(Object)}
+ 🟢 [useDocumentosGenerados] Cargando documentos para sociedad: 10
+ 🟢 [DocumentosGeneradosStore] Cargando documentos generados para structureId: 10
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraOperaciones...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA OPERACIONES (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] currentPath computed: {routeParamsPath: Array(1), segments: Array(1), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas'}
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: false
+ 🟡 [PreviewModal] versionCode: undefined
+ 🟡 [PreviewModal] document: null
+ 🟡 [PreviewModal] mimeType: undefined
+ ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:79
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bun….js?v=e57cfd2b:6302
+job @ reactivity.esm-bundl….js?v=e57cfd2b:1757
+watch @ reactivity.esm-bundl….js?v=e57cfd2b:1792
+doWatch @ runtime-core.esm-bun….js?v=e57cfd2b:6330
+watch @ runtime-core.esm-bun….js?v=e57cfd2b:6263
+setup @ PreviewModal.vue:37
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+setupStatefulComponent @ runtime-core.esm-bun….js?v=e57cfd2b:8012
+setupComponent @ runtime-core.esm-bun….js?v=e57cfd2b:7973
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5309
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+patchSuspense @ runtime-core.esm-bun….js?v=e57cfd2b:7087
+process @ runtime-core.esm-bun….js?v=e57cfd2b:6885
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4814
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToFolder @ DocumentosGeneradosView.vue:391
+onClick @ DocumentosGeneradosView.vue:1071
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <Teleport to=undefined disabled=false defer=false  ... > 
+  at <MenuPortal disabled=false defer=false forceMount=false  ... > 
+  at <DropdownMenuPortal style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <DropdownMenuContent align="start" class="w-[400px]" style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <PopperRoot data-slot="dropdown-menu" > 
+  at <MenuRoot open=false onUpdate:open=fn dir="ltr"  ... > 
+  at <DropdownMenuRoot data-slot="dropdown-menu" onUpdate:open=fn > 
+  at <DropdownMenu > 
+  at <SocietySelector > 
+  at <[...path] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/storage/documentos-generados/10()/operaciones/junta-accionistas" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/storage/documentos-generados/10/operaciones/junta-accionistas', path: '/storage/documentos-generados/10/operaciones/junta-accionistas', query: {…}, hash: '', name: 'storage-documentos-generados-idSociety-operaciones-path', …}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Default ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot>
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bun…er.js?v=e57cfd2b:50
+renderComponentRoot @ runtime-core.esm-bun….js?v=e57cfd2b:6680
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5492
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:427
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToFolder @ DocumentosGeneradosView.vue:391
+onClick @ DocumentosGeneradosView.vue:1071
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodos encontrados (V2): {directorio: {…}, juntas: {…}}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraJuntas...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA JUNTAS
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER CARPETAS JUNTAS (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodo 'juntas-accionistas' encontrado: {id: '45', name: 'juntas-accionistas', path: '/core/documentos-generados/operaciones/'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas de juntas encontradas: 1
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas: [{…}]
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/62
+ 🔵 [RepositorioDocumentosHttp] nodeId: 62
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 62, name: 'junta del 11 de diciembre del 2025', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'minuta-aumento-capital-aporte-dinerario.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpeta completa obtenida: {id: '62', name: 'junta del 11 de diciembre del 2025', childrenCount: 2}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Estructura obtenida: {totalJuntas: 1}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Estructura obtenida: {operaciones: {…}, totalJuntas: 1}
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(1), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 🟢 [useDocumentosGenerados] Documentos cargados exitosamente
+ 📂 [DocumentosGeneradosView] Navegando a carpeta: carpeta-62
+ 📂 [DocumentosGeneradosView] Cargando documentos de carpeta de junta: 62
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER DOCUMENTOS DE CARPETA
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] carpetaId: 62
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/62
+ 🔵 [RepositorioDocumentosHttp] nodeId: 62
+ 🟢 [useDocumentosGenerados] Watch detectó cambio de sociedad: {oldId: undefined, newId: '10', sociedadCompleta: Proxy(Object)}
+ 🟢 [useDocumentosGenerados] Cargando documentos para sociedad: 10
+ 🟢 [DocumentosGeneradosStore] Cargando documentos generados para structureId: 10
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraOperaciones...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA OPERACIONES (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] currentPath computed: {routeParamsPath: Array(2), segments: Array(2), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62'}
+ 🟡 [DocumentosGeneradosView] Watch detectó cambio a carpeta de junta, cargando: 62
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: false
+ 🟡 [PreviewModal] versionCode: undefined
+ 🟡 [PreviewModal] document: null
+ 🟡 [PreviewModal] mimeType: undefined
+ ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:79
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bun….js?v=e57cfd2b:6302
+job @ reactivity.esm-bundl….js?v=e57cfd2b:1757
+watch @ reactivity.esm-bundl….js?v=e57cfd2b:1792
+doWatch @ runtime-core.esm-bun….js?v=e57cfd2b:6330
+watch @ runtime-core.esm-bun….js?v=e57cfd2b:6263
+setup @ PreviewModal.vue:37
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+setupStatefulComponent @ runtime-core.esm-bun….js?v=e57cfd2b:8012
+setupComponent @ runtime-core.esm-bun….js?v=e57cfd2b:7973
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5309
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+patchSuspense @ runtime-core.esm-bun….js?v=e57cfd2b:7087
+process @ runtime-core.esm-bun….js?v=e57cfd2b:6885
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4814
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToFolder @ DocumentosGeneradosView.vue:359
+onClick @ DocumentosGeneradosView.vue:999
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <Teleport to=undefined disabled=false defer=false  ... > 
+  at <MenuPortal disabled=false defer=false forceMount=false  ... > 
+  at <DropdownMenuPortal style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <DropdownMenuContent align="start" class="w-[400px]" style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <PopperRoot data-slot="dropdown-menu" > 
+  at <MenuRoot open=false onUpdate:open=fn dir="ltr"  ... > 
+  at <DropdownMenuRoot data-slot="dropdown-menu" onUpdate:open=fn > 
+  at <DropdownMenu > 
+  at <SocietySelector > 
+  at <[...path] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/storage/documentos-generados/10()/operaciones/junta-accionistas,carpeta-62" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62', path: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62', query: {…}, hash: '', name: 'storage-documentos-generados-idSociety-operaciones-path', …}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Default ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot>
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bun…er.js?v=e57cfd2b:50
+renderComponentRoot @ runtime-core.esm-bun….js?v=e57cfd2b:6680
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5492
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:427
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToFolder @ DocumentosGeneradosView.vue:359
+onClick @ DocumentosGeneradosView.vue:999
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 62, name: 'junta del 11 de diciembre del 2025', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'minuta-aumento-capital-aporte-dinerario.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpeta obtenida: {id: '62', name: 'junta del 11 de diciembre del 2025', type: 'folder', childrenCount: 2}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Hijos encontrados: 2
+ 🟡 [ObtenerDocumentosJuntasUseCase] Detalle de hijos: (2) [{…}, {…}]
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ [DocumentosGeneradosStore] Documentos de carpeta cargados: {carpetaId: '62', cantidad: 2}
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(2), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 🟡 [DocumentosGeneradosView] Nivel 3 - Carpeta de junta: {carpetaId: 'carpeta-62', nodeId: '62', carpetaActual: '62', documentosCarpetaLength: 2}
+ 🟢 [DocumentosGeneradosView] Usando documentos cargados: Proxy(Array) {0: {…}, 1: {…}}
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodos encontrados (V2): {directorio: {…}, juntas: {…}}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraJuntas...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA JUNTAS
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER CARPETAS JUNTAS (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(2), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 🟡 [DocumentosGeneradosView] Nivel 3 - Carpeta de junta: {carpetaId: 'carpeta-62', nodeId: '62', carpetaActual: '62', documentosCarpetaLength: 2}
+ 🟢 [DocumentosGeneradosView] Usando documentos cargados: Proxy(Array) {0: {…}, 1: {…}}
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodo 'juntas-accionistas' encontrado: {id: '45', name: 'juntas-accionistas', path: '/core/documentos-generados/operaciones/'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas de juntas encontradas: 1
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas: [{…}]
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/62
+ 🔵 [RepositorioDocumentosHttp] nodeId: 62
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 62, name: 'junta del 11 de diciembre del 2025', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'minuta-aumento-capital-aporte-dinerario.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpeta completa obtenida: {id: '62', name: 'junta del 11 de diciembre del 2025', childrenCount: 2}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Estructura obtenida: {totalJuntas: 1}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Estructura obtenida: {operaciones: {…}, totalJuntas: 1}
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(2), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 🟡 [DocumentosGeneradosView] Nivel 3 - Carpeta de junta: {carpetaId: 'carpeta-62', nodeId: '62', carpetaActual: '62', documentosCarpetaLength: 2}
+ 🟢 [DocumentosGeneradosView] Usando documentos cargados: Proxy(Array) {0: {…}, 1: {…}}
+ 🟢 [useDocumentosGenerados] Documentos cargados exitosamente
+ [Vue warn] Write operation failed: computed value is readonly
+overrideMethod @ installHook.js:1
+warn @ reactivity.esm-bundler.js?v=e57cfd2b:8
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1586
+navigateBack @ DocumentosGeneradosView.vue:414
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🔵 [DocumentosGeneradosView] currentPath computed: {routeParamsPath: Array(2), segments: Array(2), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62'}
+ 🟡 [DocumentosGeneradosView] Watch detectó cambio a carpeta de junta, cargando: 62
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(2), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 🟡 [DocumentosGeneradosView] Nivel 3 - Carpeta de junta: {carpetaId: 'carpeta-62', nodeId: '62', carpetaActual: '62', documentosCarpetaLength: 2}
+ 🟢 [DocumentosGeneradosView] Usando documentos cargados: Proxy(Array) {0: {…}, 1: {…}}
+  GET http://localhost:3000/api/v2/society-profile/list 404 (Not Found)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+list @ sociedad.http.repository.ts:132
+execute @ list-sociedades.use-case.ts:6
+cargarHistorial @ sociedad-historial.store.ts:56
+eliminarTodasLasSociedades @ sociedad-historial.store.ts:117
+await in eliminarTodasLasSociedades
+wrappedAction @ pinia.mjs?v=e57cfd2b:1067
+store.<computed> @ pinia.mjs?v=e57cfd2b:761
+handleDeleteAll @ historial.vue:87
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Repository][SociedadHttp] list():error {url: 'http://localhost:3000/api/v2/society-profile/list', statusCode: 404, message: 'Society Profile not found with criteria: No societies found for the user'}
+overrideMethod @ installHook.js:1
+list @ sociedad.http.repository.ts:141
+await in list
+execute @ list-sociedades.use-case.ts:6
+cargarHistorial @ sociedad-historial.store.ts:56
+eliminarTodasLasSociedades @ sociedad-historial.store.ts:117
+await in eliminarTodasLasSociedades
+wrappedAction @ pinia.mjs?v=e57cfd2b:1067
+store.<computed> @ pinia.mjs?v=e57cfd2b:761
+handleDeleteAll @ historial.vue:87
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [SociedadHistorialStore] Error al cargar sociedades: {statusCode: 404, message: 'Society Profile not found with criteria: No societies found for the user'}
+overrideMethod @ installHook.js:1
+cargarHistorial @ sociedad-historial.store.ts:63
+await in cargarHistorial
+eliminarTodasLasSociedades @ sociedad-historial.store.ts:117
+await in eliminarTodasLasSociedades
+wrappedAction @ pinia.mjs?v=e57cfd2b:1067
+store.<computed> @ pinia.mjs?v=e57cfd2b:761
+handleDeleteAll @ historial.vue:87
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Repository][DatosSociedadHttp] create() - Payload mapeado: {
+  "ruc": "20000000131",
+  "razonSocial": "Inversiones del Sur S.A.C.",
+  "tipoSociedad": "S.A.C.",
+  "nombreComercial": "Inversiones del Sur S.A.C. S.A.C.",
+  "direccion": "Av. Principal 1",
+  "distrito": "San Isidro",
+  "provincia": "Lima",
+  "departamento": "Lima",
+  "fechaRegistro": "2024-01-01",
+  "actividadExtranjera": "Comercio",
+  "fechaEscritura": "2024-01-01",
+  "oficinaRegistral": "LIM",
+  "partidaRegistral": "12340"
+}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/16/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/16/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 1}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/16/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/16/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 2}
+ [Repository][AccionesHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/16/acction', payload: '{\n  "id": "55ead9c4-66de-4ae3-95cf-d94e4208969a",\n…\n  "redimible": false,\n  "conDerechoVoto": true\n}'}
+ [Repository][AccionesHttp] create:response {
+  "success": true,
+  "message": "Accion creada correctamente.",
+  "code": 201
+}
+ [Repository][AccionesHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/16/acction'}
+ [Repository][AccionesHttp] list:response {
+  "success": true,
+  "message": "Acciones obtenidas correctamente",
+  "data": {
+    "datos": [
+      {
+        "id": "55ead9c4-66de-4ae3-95cf-d94e4208969a",
+        "tipo": "COMUN",
+        "cantidadSuscrita": 500,
+        "redimible": true,
+        "conDerechoVoto": false
       }
-    },
-    {
-      "id": "019b0887-33b9-709c-8b62-519e4e2aec19",
-      "person": {
-        "id": "019b0887-33b9-709c-8b62-5491f3b3519c",
-        "tipo": "NATURAL",
-        "nombre": "María",
-        "apellidoPaterno": "González",
-        "apellidoMaterno": "López",
-        "tipoDocumento": "DNI",
-        "numeroDocumento": "00000010"
-      }
+    ],
+    "paginacion": {
+      "tieneSiguientePagina": false,
+      "cantidad": 1
     }
-  ],
-  "shareAllocations": [
-    {
-      "id": "019b0887-33ba-7487-b530-eea650503fc0",
-      "accionistaId": "019b0887-33b9-709c-8b62-4aba09990935",
-      "cantidadSuscrita": 300,
-      "precioPorAccion": 1,
-      "capitalSocial": null,
-      "prima": null,
-      "pagadoCompletamente": true,
-      "porcentajePagadoPorAccion": 100,
-      "dividendoPasivoTotal": 0
-    },
-    {
-      "id": "019b0887-33ba-7487-b530-f24d600d9bf7",
-      "accionistaId": "019b0887-33b9-709c-8b62-519e4e2aec19",
-      "cantidadSuscrita": 200,
-      "precioPorAccion": 1,
-      "capitalSocial": null,
-      "prima": null,
-      "pagadoCompletamente": true,
-      "porcentajePagadoPorAccion": 100,
-      "dividendoPasivoTotal": 0
-    }
-  ],
-  "directory": {
-    "cantidadDirectores": 5,
-    "conteoPersonalizado": false,
-    "inicioMandato": "2025-01-01T05:00:00.000Z",
-    "finMandato": "2026-01-01T05:00:00.000Z",
-    "quorumMinimo": 2,
-    "mayoria": 2,
-    "presidenteDesignado": true,
-    "secretarioAsignado": true,
-    "reeleccionPermitida": true,
-    "presidentePreside": true,
-    "presidenteDesempata": true,
-    "periodo": "ONE_YEAR",
-    "presidenteId": "019b0887-33b9-709c-8b62-5decc9ce0699"
   },
-  "directors": [
-    {
-      "id": "019b0887-33b9-709c-8b62-5decc9ce0699",
-      "persona": {
-        "id": "019b0887-33b9-709c-8b62-6281bbde48fd",
-        "nombre": "Carlos",
-        "apellidoPaterno": "Rodríguez",
-        "apellidoMaterno": "Vargas",
-        "tipoDocumento": "DNI",
-        "numeroDocumento": "00000050",
-        "paisEmision": "PE"
-      },
-      "rolDirector": "TITULAR",
-      "reemplazaId": null
-    },
-    {
-      "id": "019b0887-33b9-709c-8b62-65e76e9929c7",
-      "persona": {
-        "id": "019b0887-33b9-709c-8b62-6bf4306892e4",
-        "nombre": "Ana",
-        "apellidoPaterno": "Martínez",
-        "apellidoMaterno": "Sánchez",
-        "tipoDocumento": "DNI",
-        "numeroDocumento": "00000051",
-        "paisEmision": "PE"
-      },
-      "rolDirector": "TITULAR",
-      "reemplazaId": null
-    },
-    {
-      "id": "019b0887-33b9-709c-8b62-6cf33907b4b3",
-      "persona": {
-        "id": "019b0887-33b9-709c-8b62-7175fa05e5d5",
-        "nombre": "Luis",
-        "apellidoPaterno": "Fernández",
-        "apellidoMaterno": "Torres",
-        "tipoDocumento": "DNI",
-        "numeroDocumento": "00000052",
-        "paisEmision": "PE"
-      },
-      "rolDirector": "TITULAR",
-      "reemplazaId": null
-    },
-    {
-      "id": "019b0887-33b9-709c-8b62-75d0eabd0122",
-      "persona": {
-        "id": "019b0887-33b9-709c-8b62-785e19d16bd1",
-        "nombre": "María",
-        "apellidoPaterno": "García",
-        "apellidoMaterno": "González",
-        "tipoDocumento": "DNI",
-        "numeroDocumento": "00000053",
-        "paisEmision": "PE"
-      },
-      "rolDirector": "TITULAR",
-      "reemplazaId": null
-    },
-    {
-      "id": "019b0887-33b9-709c-8b62-7e8702bcb675",
-      "persona": {
-        "id": "019b0887-33ba-7487-b530-d984e65923a8",
-        "nombre": "Pedro",
-        "apellidoPaterno": "López",
-        "apellidoMaterno": "Pérez",
-        "tipoDocumento": "DNI",
-        "numeroDocumento": "00000054",
-        "paisEmision": "PE"
-      },
-      "rolDirector": "TITULAR",
-      "reemplazaId": null
-    }
-  ],
-  "attorneyClasses": [
-    {
-      "id": "019b0887-33ba-7487-b530-de90e9088da6",
-      "name": "Gerente General"
-    },
-    {
-      "id": "019b0887-33ba-7487-b530-e8f175403e68",
-      "name": "Otros Apoderados"
-    }
-  ],
-  "attorneys": [
-    {
-      "id": "019b0887-33ba-7487-b530-e0f102e997a4",
-      "claseApoderadoId": "019b0887-33ba-7487-b530-de90e9088da6",
-      "persona": {
-        "id": "019b0887-33ba-7487-b530-e46f52c9b05a",
-        "tipo": "NATURAL",
-        "nombre": "Roberto",
-        "apellidoPaterno": "Silva",
-        "apellidoMaterno": "Mendoza",
-        "tipoDocumento": "DNI",
-        "numeroDocumento": "00000030"
-      },
-      "poderId": null
-    }
-  ],
-  "gerenteGeneral": {
-    "id": "019b0887-33ba-7487-b530-e0f102e997a4",
-    "claseApoderadoId": "019b0887-33ba-7487-b530-de90e9088da6",
-    "persona": {
-      "id": "019b0887-33ba-7487-b530-e46f52c9b05a",
-      "tipo": "NATURAL",
-      "nombre": "Roberto",
-      "apellidoPaterno": "Silva",
-      "apellidoMaterno": "Mendoza",
-      "tipoDocumento": "DNI",
-      "numeroDocumento": "00000030"
-    },
-    "poderId": null
-  },
-  "powers": {
-    "id": "019b0887-33b9-709c-8b62-3e603d16606b",
-    "powers": [],
-    "powerGrants": []
-  },
-  "quorums": {
+  "code": 200
+}
+ [Repository][AccionesHttp] list:mapped {count: 1}
+ [Repository][QuorumHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/16/quorum', payload: '{\n  "primeraConvocatoriaSimple": 60,\n  "primeraCon…nimoSimple": 50,\n  "quorumMinimoCalificado": 60\n}'}
+ [Repository][QuorumHttp] create:response {
+  "success": true,
+  "message": "Quórum actualizado correctamente.",
+  "code": 200
+}
+ [Repository][QuorumHttp] get:request {url: 'http://localhost:3000/api/v2/society-profile/16/quorum', societyProfileId: '16'}
+ [Repository][QuorumHttp] get:response {
+  "success": true,
+  "message": "Quórum obtenido correctamente",
+  "data": {
     "primeraConvocatoriaSimple": 60,
     "primeraConvocatoriaCalificada": 60,
     "segundaConvocatoriaSimple": 66,
@@ -670,1051 +2586,2989 @@
     "quorumMinimoSimple": 50,
     "quorumMinimoCalificado": 60
   },
-  "specialAgreements": {
-    "derechoPreferencia": false,
-    "archivoEstatutos": null,
-    "archivoAccionistas": null,
-    "archivoTerceros": null
+  "code": 200
+}
+  POST http://localhost:3000/api/v2/society-profile/16/attorney-register/attorneys 400 (Bad Request)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765492126359:923
+executeStep @ seeds-sociedades.vue?t=1765492126359:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:914
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso apoderadosAdicionales: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765492126359:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:914
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando apoderados adicionales: [POST] "http://localhost:3000/api/v2/society-profile/16/attorney-register/attorneys": 400 Bad Request
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:936
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+  POST http://localhost:3000/api/v2/society-profile/16/attorney-register/attorneys 400 (Bad Request)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765492126359:952
+await in (anonymous)
+executeStep @ seeds-sociedades.vue?t=1765492126359:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:939
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso otrosApoderados: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765492126359:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:939
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando otros apoderados: [POST] "http://localhost:3000/api/v2/society-profile/16/attorney-register/attorneys": 400 Bad Request
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:964
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Repository][DatosSociedadHttp] create() - Payload mapeado: {
+  "ruc": "20000000202",
+  "razonSocial": "Comercial Andina S.A.C.",
+  "tipoSociedad": "S.A.C.",
+  "nombreComercial": "Comercial Andina S.A.C. S.A.C.",
+  "direccion": "Av. Principal 2",
+  "distrito": "San Isidro",
+  "provincia": "Lima",
+  "departamento": "Lima",
+  "fechaRegistro": "2024-01-01",
+  "actividadExtranjera": "Comercio",
+  "fechaEscritura": "2024-01-01",
+  "oficinaRegistral": "LIM",
+  "partidaRegistral": "12341"
+}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/17/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/17/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 1}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/17/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/17/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 2}
+ [Repository][AccionesHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/17/acction', payload: '{\n  "id": "8283b734-bcf8-4bb8-8183-5a86dd215e18",\n…\n  "redimible": false,\n  "conDerechoVoto": true\n}'}
+ [Repository][AccionesHttp] create:response {
+  "success": true,
+  "message": "Accion creada correctamente.",
+  "code": 201
+}
+ [Repository][AccionesHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/17/acction'}
+ [Repository][AccionesHttp] list:response {
+  "success": true,
+  "message": "Acciones obtenidas correctamente",
+  "data": {
+    "datos": [
+      {
+        "id": "8283b734-bcf8-4bb8-8183-5a86dd215e18",
+        "tipo": "COMUN",
+        "cantidadSuscrita": 500,
+        "redimible": true,
+        "conDerechoVoto": false
+      }
+    ],
+    "paginacion": {
+      "tieneSiguientePagina": false,
+      "cantidad": 1
+    }
   },
-  "societyData": {
-    "ruc": "20000000599",
-    "reasonSocial": "Empresa Test 5",
-    "typeSociety": "S.A.C.",
-    "commercialName": "Empresa Test 5 S.A.C.",
-    "address": "Av. Principal 5",
-    "district": "San Isidro",
-    "province": "Lima",
-    "department": "Lima",
-    "registrationDate": "2024-01-01T00:00:00.000Z",
-    "foreignActivity": "Comercio",
-    "publicDeedDate": "2024-01-01T00:00:00.000Z",
-    "registryOffice": "LIM",
-    "registrationRecord": "12344"
+  "code": 200
+}
+ [Repository][AccionesHttp] list:mapped {count: 1}
+ [Repository][QuorumHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/17/quorum', payload: '{\n  "primeraConvocatoriaSimple": 60,\n  "primeraCon…nimoSimple": 50,\n  "quorumMinimoCalificado": 60\n}'}
+ [Repository][QuorumHttp] create:response {
+  "success": true,
+  "message": "Quórum actualizado correctamente.",
+  "code": 200
+}
+ [Repository][QuorumHttp] get:request {url: 'http://localhost:3000/api/v2/society-profile/17/quorum', societyProfileId: '17'}
+ [Repository][QuorumHttp] get:response {
+  "success": true,
+  "message": "Quórum obtenido correctamente",
+  "data": {
+    "primeraConvocatoriaSimple": 60,
+    "primeraConvocatoriaCalificada": 60,
+    "segundaConvocatoriaSimple": 66,
+    "segundaConvocatoriaCalificada": 66,
+    "quorumMinimoSimple": 50,
+    "quorumMinimoCalificado": 60
   },
-  "meetingConfig": {
-    "id": "019b0887-33b9-709c-8b62-310d3a5064b4",
-    "meetingType": "JUNTA_UNIVERSAL",
-    "isAnnualMandatory": false
+  "code": 200
+}
+  POST http://localhost:3000/api/v2/society-profile/17/attorney-register/attorneys 400 (Bad Request)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765492126359:923
+executeStep @ seeds-sociedades.vue?t=1765492126359:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:914
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso apoderadosAdicionales: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765492126359:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:914
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando apoderados adicionales: [POST] "http://localhost:3000/api/v2/society-profile/17/attorney-register/attorneys": 400 Bad Request
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:936
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+  POST http://localhost:3000/api/v2/society-profile/17/attorney-register/attorneys 400 (Bad Request)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765492126359:952
+await in (anonymous)
+executeStep @ seeds-sociedades.vue?t=1765492126359:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:939
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso otrosApoderados: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765492126359:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:939
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando otros apoderados: [POST] "http://localhost:3000/api/v2/society-profile/17/attorney-register/attorneys": 400 Bad Request
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:964
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Repository][DatosSociedadHttp] create() - Payload mapeado: {
+  "ruc": "20000000326",
+  "razonSocial": "Servicios Empresariales S.A.C.",
+  "tipoSociedad": "S.A.C.",
+  "nombreComercial": "Servicios Empresariales S.A.C. S.A.C.",
+  "direccion": "Av. Principal 3",
+  "distrito": "San Isidro",
+  "provincia": "Lima",
+  "departamento": "Lima",
+  "fechaRegistro": "2024-01-01",
+  "actividadExtranjera": "Comercio",
+  "fechaEscritura": "2024-01-01",
+  "oficinaRegistral": "LIM",
+  "partidaRegistral": "12342"
+}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/18/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/18/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 1}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/18/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/18/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 2}
+ [Repository][AccionesHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/18/acction', payload: '{\n  "id": "690f4205-1c76-4309-82c3-a2ccc50b5a83",\n…\n  "redimible": false,\n  "conDerechoVoto": true\n}'}
+ [Repository][AccionesHttp] create:response {
+  "success": true,
+  "message": "Accion creada correctamente.",
+  "code": 201
+}
+ [Repository][AccionesHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/18/acction'}
+ [Repository][AccionesHttp] list:response {
+  "success": true,
+  "message": "Acciones obtenidas correctamente",
+  "data": {
+    "datos": [
+      {
+        "id": "690f4205-1c76-4309-82c3-a2ccc50b5a83",
+        "tipo": "COMUN",
+        "cantidadSuscrita": 500,
+        "redimible": true,
+        "conDerechoVoto": false
+      }
+    ],
+    "paginacion": {
+      "tieneSiguientePagina": false,
+      "cantidad": 1
+    }
   },
-  "flowInfo": {
-    "flowStructureId": 7,
-    "currentStep": "INIT",
-    "statusProgression": "CREATED"
-  }
+  "code": 200
 }
- ================================================================================
-
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/seleccion-agenda
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 0
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🔴 [useJuntasSidebarExpansion] Watch currentStepId cambiaron: seleccion-agenda
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/seleccion-agenda
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/seleccion-agenda
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🟪 [useJuntasContentSidebar] hasRightSidebar (normal): Object
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- ✅ [useJuntasFlowNext] Handler configurado inmediatamente
- ✅ [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/7/seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/seleccion-agenda
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟢 [useJuntasFlowStore] updateDynamicSubSteps: Array(0)
- 🟢 [useJuntasFlowStore] selectedSubSteps actualizado: Proxy(Array)
- 🟣 [useJuntasNavbarRoutes] Sub-steps en store cambiaron: Proxy(Array)
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps: Array(6)
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟣 [useJuntasNavbarRoutes] Sub-steps en store cambiaron: Proxy(Array)
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps: Array(6)
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟣 [useJuntasNavbarRoutes] Sub-steps en store cambiaron: Proxy(Array)
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps: Array(6)
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟣 [useJuntasNavbarRoutes] Sub-steps en store cambiaron: Proxy(Array)
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟣 [useJuntasNavbarRoutes] Recalculando pasos con nuevos sub-steps: Array(6)
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: seleccion-agenda
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- ✅ [useJuntasFlowNext] Handler configurado inmediatamente
- ✅ [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/7/puntos-acuerdo
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- ℹ️ [useJuntasFlowNext] Handler ya fue reemplazado, no limpiar
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/puntos-acuerdo
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: puntos-acuerdo
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: puntos-acuerdo
- 🔴 [useJuntasSidebarExpansion] Expandido 'puntos-acuerdo' (es paso actual)
- 🔴 [useJuntasSidebarExpansion] Watch currentStepId cambiaron: puntos-acuerdo
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: puntos-acuerdo
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/puntos-acuerdo
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: puntos-acuerdo
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: puntos-acuerdo
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/puntos-acuerdo
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: puntos-acuerdo
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: puntos-acuerdo
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/puntos-acuerdo
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: puntos-acuerdo
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: puntos-acuerdo
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- ✅ [useJuntasFlowNext] Handler configurado inmediatamente
- ✅ [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/7/detalles
- [ConvocatoriaSection] detalleModo.get() Object
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- ℹ️ [useJuntasFlowNext] Handler ya fue reemplazado, no limpiar
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/detalles
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: detalles
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: detalles
- 🔴 [useJuntasSidebarExpansion] Watch currentStepId cambiaron: detalles
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: detalles
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/detalles
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: detalles
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: detalles
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/detalles
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: detalles
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: detalles
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/detalles
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: detalles
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: detalles
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🔍 [Mapper] fromResponseDto - IDs extraídos: Object
- [ConvocatoriaSection] detalleModo.get() Object
- [ConvocatoriaSection] detalleModo.get() Object
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- ✅ [useJuntasFlowNext] Handler configurado inmediatamente
- ✅ [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/7/instalacion
- 🔍 [isUniversal] Tipo junta: JUNTA_UNIVERSAL → Es universal: true
- 🔵 [presidenteAsistio] Watch activado: Object
- ✅ [presidenteAsistio] Actualizado a: false
- 🔍 [presidenteReemplazoId] Verificando inicialización: Object
- 🟢 [secretarioAsistio] Watch activado: Object
- ✅ [secretarioAsistio] Actualizado a: false
- ✅ [gerenteGeneral] Obtenido del snapshot: Object
- 🔍 [secretarioReemplazoId] Verificando inicialización: Object
- 🔍 [asistentesOptions] Total asistencias: 2
- 🔍 [asistentesOptions] Presentes (asistio=true): 2
- 🔍 [asistentesOptions] Mapeando: Object
- 🔍 [asistentesOptions] Mapeando: Object
- ✅ [asistentesOptions] Opciones generadas: Array(2)
- 🔵 [presidenteMode] READONLY Object
- 🔍 [presidenteId.get] READONLY mode: Object
- ✅ [presidenteNombre] READONLY - Director: Carlos Rodríguez Vargas
- 🔵 [secretarioMode] READONLY Object
- 🔍 [secretarioId.get] READONLY mode: Object
- ✅ [secretarioNombre] READONLY - Gerente: Roberto Silva Mendoza
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- ╔═══════════════════════════════════════════════════════════════╗
- ║  🏛️ [MesaDirectiva] MONTADO - INICIANDO DEBUG              ║
- ╚═══════════════════════════════════════════════════════════════╝
- 🟦 [onMounted] presidenteAsistio.value: false
- 🟦 [onMounted] secretarioAsistio.value: false
- 📦 [MesaDirectiva] Snapshot completo: Proxy(Object)
- 📦 [MesaDirectiva] Snapshot Store (computed): Object
- 🎯 [MesaDirectiva] PRESIDENTE: Object
- 🎯 [MesaDirectiva] SECRETARIO: Object
- 👥 [MesaDirectiva] Asistentes presentes: Object
- ✅ [MesaDirectiva] Auto-actualizando presidenteId (READONLY): 019b05ba-6083-721e-af1e-65ccfa11f234
-    → Director: Carlos Rodríguez Vargas
- ✅ [MesaDirectiva] Auto-actualizando secretarioId (READONLY): 019b05ba-6083-721e-af1e-91a913b8750f
-    → Gerente: Roberto Silva Mendoza
- 📊 [MesaDirectiva] Estado final: Object
- 🚀 [Instalacion] Página montada Object
- 📦 [Instalacion] Cargando snapshot...
- ℹ️ [useJuntasFlowNext] Handler ya fue reemplazado, no limpiar
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/instalacion
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: instalacion
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: instalacion
- 🔴 [useJuntasSidebarExpansion] Watch currentStepId cambiaron: instalacion
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: instalacion
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/instalacion
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: instalacion
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: instalacion
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/instalacion
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: instalacion
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: instalacion
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/instalacion
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: instalacion
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: instalacion
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🔍 [isUniversal] Tipo junta: JUNTA_UNIVERSAL → Es universal: true
- 🔵 [presidenteAsistio] Watch activado: Object
- ✅ [presidenteAsistio] Actualizado a: true
- 🔍 [presidenteReemplazoId] Verificando inicialización: Object
- 🟢 [secretarioAsistio] Watch activado: Object
- ✅ [secretarioAsistio] Actualizado a: true
- ✅ [gerenteGeneral] Obtenido del snapshot: Object
- 🔍 [secretarioReemplazoId] Verificando inicialización: Object
- 🔍 [asistentesOptions] Total asistencias: 2
- 🔍 [asistentesOptions] Presentes (asistio=true): 2
- 🔍 [asistentesOptions] Mapeando: Object
- 🔍 [asistentesOptions] Mapeando: Object
- ✅ [asistentesOptions] Opciones generadas: Array(2)
- 🔵 [presidenteMode] READONLY Object
- ✅ [presidenteNombre] READONLY - Director: Carlos Rodríguez Vargas
- 🔍 [presidenteId.get] READONLY mode: Object
- 🔵 [secretarioMode] READONLY Object
- ✅ [secretarioNombre] READONLY - Gerente: Roberto Silva Mendoza
- 🔍 [secretarioId.get] READONLY mode: Object
- ╔═══════════════════════════════════════════════════════════════╗
- ║  🏛️ [MesaDirectiva] MONTADO - INICIANDO DEBUG              ║
- ╚═══════════════════════════════════════════════════════════════╝
- 🟦 [onMounted] presidenteAsistio.value: true
- 🟦 [onMounted] secretarioAsistio.value: true
- 📦 [MesaDirectiva] Snapshot completo: Proxy(Object)
- 📦 [MesaDirectiva] Snapshot Store (computed): Object
- 🎯 [MesaDirectiva] PRESIDENTE: Object
- 🎯 [MesaDirectiva] SECRETARIO: Object
- 👥 [MesaDirectiva] Asistentes presentes: Object
- ✅ [MesaDirectiva] Auto-actualizando presidenteId (READONLY): 019b0887-33b9-709c-8b62-5decc9ce0699
-    → Director: Carlos Rodríguez Vargas
- ✅ [MesaDirectiva] Auto-actualizando secretarioId (READONLY): 019b0887-33ba-7487-b530-e0f102e997a4
-    → Gerente: Roberto Silva Mendoza
- 📊 [MesaDirectiva] Estado final: Object
- ✅ [Instalacion] Snapshot cargado
- 📊 [Instalacion] Snapshot.directory: Proxy(Object)
- 📊 [Instalacion] Snapshot.presidenteDirectorio: Proxy(Object)
- 📊 [Instalacion] Snapshot.attorneys: Proxy(Array)
- 📄 [Instalacion] Cargando meeting details...
- 🔍 [Mapper] fromResponseDto - IDs extraídos: Object
- 🔵 [presidenteAsistio] Watch activado: Object
- ✅ [presidenteAsistio] Actualizado a: false
- 🟢 [secretarioAsistio] Watch activado: Object
- ✅ [secretarioAsistio] Actualizado a: false
- ✅ [Instalacion] Meeting details cargado (ANTES de inicializar): Object
- ✅ [Instalacion] Inicializando presidenteId (primera vez): 019b0887-33b9-709c-8b62-5decc9ce0699
- ℹ️ [Instalacion] presidenteAsistio YA definido en backend: false - NO se sobrescribe
- ✅ [Instalacion] Inicializando secretarioId (primera vez): 019b0887-33ba-7487-b530-e0f102e997a4
- ℹ️ [Instalacion] secretarioAsistio YA definido en backend: false - NO se sobrescribe
- 🔄 [secretarioReemplazoId] Sincronizado desde store: 019b0887-33ba-7487-b530-e0f102e997a4
- 🟢 [secretarioReemplazoId] Seleccionado reemplazo: 019b0887-33ba-7487-b530-e0f102e997a4
- ✅ [Instalacion] Meeting details inicializado (solo valores nuevos): Object
- 👥 [Instalacion] Cargando asistencias...
- 🔍 [asistentesOptions] Total asistencias: 2
- 🔍 [asistentesOptions] Presentes (asistio=true): 0
- ✅ [asistentesOptions] Opciones generadas: Array(0)
- 
-╔═══════════════════════════════════════════════════════════════╗
- ║  🐛 DEBUG Mesa Directiva                                     ║
- ╚═══════════════════════════════════════════════════════════════╝
- 
-📊 Snapshot Data:
-   • Tiene directorio: true
-   • presidentePreside: true
-   • presidenteId (directorio): 019b0887-33b9-709c-8b62-5decc9ce0699
-   • secretarioAsignado: true
-   • gerenteGeneral.id: 019b0887-33ba-7487-b530-e0f102e997a4
- 
-🎭 Modos:
-   • Presidente Mode: readonly
-   • Secretario Mode: readonly
- 
-👤 Designaciones:
-   • Presidente: Carlos Rodríguez Vargas
-   • Secretario: Roberto Silva Mendoza
- 
-👥 Asistentes disponibles: 0
-   • Lista: Array(0)
- 
-╚═══════════════════════════════════════════════════════════════╝
-
- ✅ [Instalacion] Asistencias cargadas: 2
- 📊 [Instalacion] Estado inicial de asistencias: Array(2)
- 🌍 [Instalacion] Junta Universal detectada - Marcando todos como presentes...
-   ✓ Marcando como presente: 019b0887-341e-7480-875a-fe26d30fe815
- ⚠️ [UseCase] Enviando sin representante: Object
- 📤 [UseCase] DTO FINAL a enviar al repository: {
-  "id": "019b0887-341e-7480-875a-fe26d30fe815",
-  "attended": true,
-  "isRepresentative": false
+ [Repository][AccionesHttp] list:mapped {count: 1}
+ [Repository][QuorumHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/18/quorum', payload: '{\n  "primeraConvocatoriaSimple": 60,\n  "primeraCon…nimoSimple": 50,\n  "quorumMinimoCalificado": 60\n}'}
+ [Repository][QuorumHttp] create:response {
+  "success": true,
+  "message": "Quórum actualizado correctamente.",
+  "code": 200
 }
- 📤 [Repository] DTO recibido del Use Case: {
-  "id": "019b0887-341e-7480-875a-fe26d30fe815",
-  "attended": true,
-  "isRepresentative": false
+ [Repository][QuorumHttp] get:request {url: 'http://localhost:3000/api/v2/society-profile/18/quorum', societyProfileId: '18'}
+ [Repository][QuorumHttp] get:response {
+  "success": true,
+  "message": "Quórum obtenido correctamente",
+  "data": {
+    "primeraConvocatoriaSimple": 60,
+    "primeraConvocatoriaCalificada": 60,
+    "segundaConvocatoriaSimple": 66,
+    "segundaConvocatoriaCalificada": 66,
+    "quorumMinimoSimple": 50,
+    "quorumMinimoCalificado": 60
+  },
+  "code": 200
 }
- 📤 [Repository] URL: http://localhost:3000/api/v2/society-profile/5/register-assembly/7/attendance
- 📤 [Repository] Body que se enviará: {
-  "id": "019b0887-341e-7480-875a-fe26d30fe815",
-  "attended": true,
-  "isRepresentative": false
+  POST http://localhost:3000/api/v2/society-profile/18/attorney-register/attorneys 400 (Bad Request)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765492126359:923
+executeStep @ seeds-sociedades.vue?t=1765492126359:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:914
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso apoderadosAdicionales: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765492126359:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:914
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando apoderados adicionales: [POST] "http://localhost:3000/api/v2/society-profile/18/attorney-register/attorneys": 400 Bad Request
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:936
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+  POST http://localhost:3000/api/v2/society-profile/18/attorney-register/attorneys 400 (Bad Request)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765492126359:952
+await in (anonymous)
+executeStep @ seeds-sociedades.vue?t=1765492126359:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:939
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso otrosApoderados: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765492126359:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:939
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando otros apoderados: [POST] "http://localhost:3000/api/v2/society-profile/18/attorney-register/attorneys": 400 Bad Request
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:964
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Repository][DatosSociedadHttp] create() - Payload mapeado: {
+  "ruc": "20000000418",
+  "razonSocial": "Construcciones Modernas S.A.C.",
+  "tipoSociedad": "S.A.C.",
+  "nombreComercial": "Construcciones Modernas S.A.C. S.A.C.",
+  "direccion": "Av. Principal 4",
+  "distrito": "San Isidro",
+  "provincia": "Lima",
+  "departamento": "Lima",
+  "fechaRegistro": "2024-01-01",
+  "actividadExtranjera": "Comercio",
+  "fechaEscritura": "2024-01-01",
+  "oficinaRegistral": "LIM",
+  "partidaRegistral": "12343"
 }
- 🔍 [asistentesOptions] Total asistencias: 2
- 🔍 [asistentesOptions] Presentes (asistio=true): 1
- 🔍 [asistentesOptions] Mapeando: Object
- ✅ [asistentesOptions] Opciones generadas: Array(1)
- 
-╔═══════════════════════════════════════════════════════════════╗
- ║  🐛 DEBUG Mesa Directiva                                     ║
- ╚═══════════════════════════════════════════════════════════════╝
- 
-📊 Snapshot Data:
-   • Tiene directorio: true
-   • presidentePreside: true
-   • presidenteId (directorio): 019b0887-33b9-709c-8b62-5decc9ce0699
-   • secretarioAsignado: true
-   • gerenteGeneral.id: 019b0887-33ba-7487-b530-e0f102e997a4
- 
-🎭 Modos:
-   • Presidente Mode: readonly
-   • Secretario Mode: readonly
- 
-👤 Designaciones:
-   • Presidente: Carlos Rodríguez Vargas
-   • Secretario: Roberto Silva Mendoza
- 
-👥 Asistentes disponibles: 1
-   • Lista: Array(1)
- 
-╚═══════════════════════════════════════════════════════════════╝
-
-   ✓ Marcando como presente: 019b0887-341e-7480-875b-0054b7e169f6
- ⚠️ [UseCase] Enviando sin representante: Object
- 📤 [UseCase] DTO FINAL a enviar al repository: {
-  "id": "019b0887-341e-7480-875b-0054b7e169f6",
-  "attended": true,
-  "isRepresentative": false
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/19/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/19/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 1}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/19/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/19/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 2}
+ [Repository][AccionesHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/19/acction', payload: '{\n  "id": "685d753f-7fe9-45ec-a4e8-9b061d13ae21",\n…\n  "redimible": false,\n  "conDerechoVoto": true\n}'}
+ [Repository][AccionesHttp] create:response {
+  "success": true,
+  "message": "Accion creada correctamente.",
+  "code": 201
 }
- 📤 [Repository] DTO recibido del Use Case: {
-  "id": "019b0887-341e-7480-875b-0054b7e169f6",
-  "attended": true,
-  "isRepresentative": false
+ [Repository][AccionesHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/19/acction'}
+ [Repository][AccionesHttp] list:response {
+  "success": true,
+  "message": "Acciones obtenidas correctamente",
+  "data": {
+    "datos": [
+      {
+        "id": "685d753f-7fe9-45ec-a4e8-9b061d13ae21",
+        "tipo": "COMUN",
+        "cantidadSuscrita": 500,
+        "redimible": true,
+        "conDerechoVoto": false
+      }
+    ],
+    "paginacion": {
+      "tieneSiguientePagina": false,
+      "cantidad": 1
+    }
+  },
+  "code": 200
 }
- 📤 [Repository] URL: http://localhost:3000/api/v2/society-profile/5/register-assembly/7/attendance
- 📤 [Repository] Body que se enviará: {
-  "id": "019b0887-341e-7480-875b-0054b7e169f6",
-  "attended": true,
-  "isRepresentative": false
+ [Repository][AccionesHttp] list:mapped {count: 1}
+ [Repository][QuorumHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/19/quorum', payload: '{\n  "primeraConvocatoriaSimple": 60,\n  "primeraCon…nimoSimple": 50,\n  "quorumMinimoCalificado": 60\n}'}
+ [Repository][QuorumHttp] create:response {
+  "success": true,
+  "message": "Quórum actualizado correctamente.",
+  "code": 200
 }
- 🔍 [asistentesOptions] Total asistencias: 2
- 🔍 [asistentesOptions] Presentes (asistio=true): 2
- 🔍 [asistentesOptions] Mapeando: Object
- 🔍 [asistentesOptions] Mapeando: Object
- ✅ [asistentesOptions] Opciones generadas: Array(2)
- 
-╔═══════════════════════════════════════════════════════════════╗
- ║  🐛 DEBUG Mesa Directiva                                     ║
- ╚═══════════════════════════════════════════════════════════════╝
- 
-📊 Snapshot Data:
-   • Tiene directorio: true
-   • presidentePreside: true
-   • presidenteId (directorio): 019b0887-33b9-709c-8b62-5decc9ce0699
-   • secretarioAsignado: true
-   • gerenteGeneral.id: 019b0887-33ba-7487-b530-e0f102e997a4
- 
-🎭 Modos:
-   • Presidente Mode: readonly
-   • Secretario Mode: readonly
- 
-👤 Designaciones:
-   • Presidente: Carlos Rodríguez Vargas
-   • Secretario: Roberto Silva Mendoza
- 
-👥 Asistentes disponibles: 2
-   • Lista: Array(2)
- 
-╚═══════════════════════════════════════════════════════════════╝
-
- ✅ [Instalacion] 2 accionistas marcados como presentes (Junta Universal)
- 📊 [Instalacion] Estado DESPUÉS de marcar: 2 presentes de 2 total
- 📊 [Instalacion] Detalle presentes: Array(2)
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🔵 [resumen/index] selectedSubSteps desde state: Proxy(Array)
- 🔵 [resumen/index] selectedSectionIds mapeados: Array(0)
- 🔵 [resumen/index] puntosAcuerdoSummary disponibles: Array(14)
- 🔵 [resumen/index] Sección excluida: aporte-dinerario no está en Array(0)
- 🔵 [resumen/index] Sección excluida: capitalizacion-creditos no está en Array(0)
- 🔵 [resumen/index] Sección excluida: nombramiento-apoderados no está en Array(0)
- 🔵 [resumen/index] Sección excluida: nombramiento-gerente no está en Array(0)
- 🔵 [resumen/index] Sección excluida: nombramiento-directores no está en Array(0)
- 🔵 [resumen/index] Sección excluida: nombramiento-directorio no está en Array(0)
- 🔵 [resumen/index] Sección excluida: nombramiento-auditores no está en Array(0)
- 🔵 [resumen/index] Sección excluida: remocion-apoderados no está en Array(0)
- 🔵 [resumen/index] Sección excluida: remocion-directores no está en Array(0)
- 🔵 [resumen/index] Sección excluida: remocion-gerente no está en Array(0)
- 🔵 [resumen/index] Sección excluida: pronunciamiento-gestion no está en Array(0)
- 🔵 [resumen/index] Sección excluida: aplicacion-resultados no está en Array(0)
- 🔵 [resumen/index] Sección excluida: estados-financieros no está en Array(0)
- 🔵 [resumen/index] Sección excluida: reparto-dividendos no está en Array(0)
- 🔵 [resumen/index] acuerdosResumen filtrados: Array(0)
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🧹 [useJuntasFlowNext] Limpiando handler al desmontar
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/resumen
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: resumen
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: resumen
- 🔴 [useJuntasSidebarExpansion] Watch currentStepId cambiaron: resumen
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: resumen
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/resumen
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: resumen
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: resumen
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/resumen
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: resumen
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: resumen
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🔵 [useJuntasResumenSections] Generando secciones para resumen
- 🔵 [useJuntasResumenSections] currentSectionId: undefined
- 🔵 [useJuntasResumenSections] allSummarySections: 18
- 🔵 [useJuntasResumenSections] Agregada sección base: detalles
- 🔵 [useJuntasResumenSections] Agregada sección base: instalacion
- 🔵 [useJuntasResumenSections] selectedSubSteps desde state: Proxy(Array)
- 🔵 [useJuntasResumenSections] selectedSectionIds mapeados: Array(0)
- 🔵 [useJuntasResumenSections] allSections disponibles: Array(18)
- 🔵 [useJuntasResumenSections] Sección excluida: seleccion-agenda no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: detalles no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: instalacion no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: resumen no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: aporte-dinerario no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: capitalizacion-creditos no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: nombramiento-apoderados no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: nombramiento-gerente no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: nombramiento-directores no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: nombramiento-directorio no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: nombramiento-auditores no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: remocion-apoderados no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: remocion-directores no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: remocion-gerente no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: pronunciamiento-gestion no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: aplicacion-resultados no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: estados-financieros no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: reparto-dividendos no está en Array(0)
- 🔵 [useJuntasResumenSections] puntosAcuerdoSections filtradas: Array(0)
- 🔵 [useJuntasResumenSections] Agregada sección puntos-acuerdo con 0 sub-secciones
- 🔵 [useJuntasResumenSections] Total de secciones generadas: 3
- 🟪 [useJuntasContentSidebar] hasRightSidebar (resumen): Object
- 🟦 [useJuntasContentSidebar] Usando secciones de resumen: 3
- 🔵 [resumen/index] selectedSubSteps desde state: Proxy(Array)
- 🔵 [resumen/index] selectedSectionIds mapeados: Array(0)
- 🔵 [resumen/index] puntosAcuerdoSummary disponibles: Array(14)
- 🔵 [resumen/index] Sección excluida: aporte-dinerario no está en Array(0)
- 🔵 [resumen/index] Sección excluida: capitalizacion-creditos no está en Array(0)
- 🔵 [resumen/index] Sección excluida: nombramiento-apoderados no está en Array(0)
- 🔵 [resumen/index] Sección excluida: nombramiento-gerente no está en Array(0)
- 🔵 [resumen/index] Sección excluida: nombramiento-directores no está en Array(0)
- 🔵 [resumen/index] Sección excluida: nombramiento-directorio no está en Array(0)
- 🔵 [resumen/index] Sección excluida: nombramiento-auditores no está en Array(0)
- 🔵 [resumen/index] Sección excluida: remocion-apoderados no está en Array(0)
- 🔵 [resumen/index] Sección excluida: remocion-directores no está en Array(0)
- 🔵 [resumen/index] Sección excluida: remocion-gerente no está en Array(0)
- 🔵 [resumen/index] Sección excluida: pronunciamiento-gestion no está en Array(0)
- 🔵 [resumen/index] Sección excluida: aplicacion-resultados no está en Array(0)
- 🔵 [resumen/index] Sección excluida: estados-financieros no está en Array(0)
- 🔵 [resumen/index] Sección excluida: reparto-dividendos no está en Array(0)
- 🔵 [resumen/index] acuerdosResumen filtrados: Array(0)
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/resumen
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: resumen
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: resumen
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 🔵 [useJuntasResumenSections] Generando secciones para resumen
- 🔵 [useJuntasResumenSections] currentSectionId: undefined
- 🔵 [useJuntasResumenSections] allSummarySections: 18
- 🔵 [useJuntasResumenSections] Agregada sección base: detalles
- 🔵 [useJuntasResumenSections] Agregada sección base: instalacion
- 🔵 [useJuntasResumenSections] selectedSubSteps desde state: Proxy(Array)
- 🔵 [useJuntasResumenSections] selectedSectionIds mapeados: Array(0)
- 🔵 [useJuntasResumenSections] allSections disponibles: Array(18)
- 🔵 [useJuntasResumenSections] Sección excluida: seleccion-agenda no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: detalles no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: instalacion no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: resumen no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: aporte-dinerario no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: capitalizacion-creditos no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: nombramiento-apoderados no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: nombramiento-gerente no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: nombramiento-directores no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: nombramiento-directorio no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: nombramiento-auditores no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: remocion-apoderados no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: remocion-directores no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: remocion-gerente no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: pronunciamiento-gestion no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: aplicacion-resultados no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: estados-financieros no está en Array(0)
- 🔵 [useJuntasResumenSections] Sección excluida: reparto-dividendos no está en Array(0)
- 🔵 [useJuntasResumenSections] puntosAcuerdoSections filtradas: Array(0)
- 🔵 [useJuntasResumenSections] Agregada sección puntos-acuerdo con 0 sub-secciones
- 🔵 [useJuntasResumenSections] Total de secciones generadas: 3
- 🟪 [useJuntasContentSidebar] hasRightSidebar (resumen): Object
- 🟦 [useJuntasContentSidebar] Usando secciones de resumen: 3
- 🟦 [useJuntasResumenDetection] isResumenPage: Object
- 📥 [Descargar] Datos completos cargados: Proxy(Object)
- 📋 [Descargar] Puntos de agenda: Proxy(Object)
- 📄 [Descargar] Detalles de junta: Proxy(Object)
- 👥 [Descargar] Asistencia: 2 accionistas
- 💰 [Descargar] Aporte dinerario: Proxy(Object)
- ✅ [useJuntasFlowNext] Handler configurado inmediatamente
- ✅ [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/7/descargar
- [Vue warn]: Property "handleDescargar" was accessed during render but is not defined on instance. 
-  at <CategoriaDocumentos key="Acta Principal" titulo="Acta Principal" documentos= Array(1)  ... > 
-  at <JuntaDocumentosGenerados > 
-  at <Descargar onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
-  at <RouteProvider key="/operaciones/sociedades/5()/junta-accionistas/7()/descargar" vnode= Object route= Object  ... > 
-  at <RouterView name=undefined route=undefined > 
-  at <NuxtPage > 
-  at <FlowLayoutJuntasContent has-right-sidebar=true final-sections= Array(3) current-section-id="detalles"  ... > 
-  at <FlowLayoutJuntasContentWrapper > 
-  at <FlowLayoutJuntas ref=Ref< Proxy(Object) > > 
-  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
-  at <LayoutLoader key="flow-layout-juntas" layoutProps= Object name="flow-layout-juntas" > 
-  at <NuxtLayoutProvider layoutProps= Object key="flow-layout-juntas" name="flow-layout-juntas"  ... > 
-  at <NuxtLayout name="flow-layout-juntas" > 
-  at <Registros ref=Ref< Proxy(Object) > > 
-  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
-  at <LayoutLoader key="registros" layoutProps= Object name="registros" > 
-  at <NuxtLayoutProvider layoutProps= Object key="registros" name="registros"  ... > 
-  at <NuxtLayout > 
-  at <App key=4 > 
-  at <NuxtRoot>
-warn$1 @ runtime-core.esm-bun…er.js?v=ac832780:50
- [Vue warn]: Property "handleDescargar" was accessed during render but is not defined on instance. 
-  at <CategoriaDocumentos key="Detalles de la Junta" titulo="Detalles de la Junta" documentos= Array(1)  ... > 
-  at <JuntaDocumentosGenerados > 
-  at <Descargar onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
-  at <RouteProvider key="/operaciones/sociedades/5()/junta-accionistas/7()/descargar" vnode= Object route= Object  ... > 
-  at <RouterView name=undefined route=undefined > 
-  at <NuxtPage > 
-  at <FlowLayoutJuntasContent has-right-sidebar=true final-sections= Array(3) current-section-id="detalles"  ... > 
-  at <FlowLayoutJuntasContentWrapper > 
-  at <FlowLayoutJuntas ref=Ref< Proxy(Object) > > 
-  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
-  at <LayoutLoader key="flow-layout-juntas" layoutProps= Object name="flow-layout-juntas" > 
-  at <NuxtLayoutProvider layoutProps= Object key="flow-layout-juntas" name="flow-layout-juntas"  ... > 
-  at <NuxtLayout name="flow-layout-juntas" > 
-  at <Registros ref=Ref< Proxy(Object) > > 
-  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
-  at <LayoutLoader key="registros" layoutProps= Object name="registros" > 
-  at <NuxtLayoutProvider layoutProps= Object key="registros" name="registros"  ... > 
-  at <NuxtLayout > 
-  at <App key=4 > 
-  at <NuxtRoot>
-warn$1 @ runtime-core.esm-bun…er.js?v=ac832780:50
- [Vue warn]: Property "handleDescargar" was accessed during render but is not defined on instance. 
-  at <CategoriaDocumentos key="Acuerdos: Aumento de Capital" titulo="Acuerdos: Aumento de Capital" documentos= Array(1)  ... > 
-  at <JuntaDocumentosGenerados > 
-  at <Descargar onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
-  at <RouteProvider key="/operaciones/sociedades/5()/junta-accionistas/7()/descargar" vnode= Object route= Object  ... > 
-  at <RouterView name=undefined route=undefined > 
-  at <NuxtPage > 
-  at <FlowLayoutJuntasContent has-right-sidebar=true final-sections= Array(3) current-section-id="detalles"  ... > 
-  at <FlowLayoutJuntasContentWrapper > 
-  at <FlowLayoutJuntas ref=Ref< Proxy(Object) > > 
-  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
-  at <LayoutLoader key="flow-layout-juntas" layoutProps= Object name="flow-layout-juntas" > 
-  at <NuxtLayoutProvider layoutProps= Object key="flow-layout-juntas" name="flow-layout-juntas"  ... > 
-  at <NuxtLayout name="flow-layout-juntas" > 
-  at <Registros ref=Ref< Proxy(Object) > > 
-  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
-  at <LayoutLoader key="registros" layoutProps= Object name="registros" > 
-  at <NuxtLayoutProvider layoutProps= Object key="registros" name="registros"  ... > 
-  at <NuxtLayout > 
-  at <App key=4 > 
-  at <NuxtRoot>
-warn$1 @ runtime-core.esm-bun…er.js?v=ac832780:50
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/descargar
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
- 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
- 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
- 🟠 [useJuntasNavbarRoutes] Paso actual: descargar
- 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
- 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
- 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
- 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
- 🔴 [useJuntasSidebarExpansion] Old steps count: 6
- 🔴 [useJuntasSidebarExpansion] New steps count: 6
- 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: descargar
- 🔴 [useJuntasSidebarExpansion] Watch currentStepId cambiaron: descargar
- 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
- 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
- 🔴 [useJuntasSidebarExpansion] currentStepId: descargar
- 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/descargar
- 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
- 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
-junta-navigation.ts:257 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
-useJuntasNavbarRoutes.ts:236 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
-useJuntasNavbarRoutes.ts:247 🟠 [useJuntasNavbarRoutes] Paso actual: descargar
-useJuntasNavbarRoutes.ts:252 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
-useJuntasNavbarRoutes.ts:264 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
-useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
-useJuntasSidebarExpansion.ts:129 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
-useJuntasSidebarExpansion.ts:130 🔴 [useJuntasSidebarExpansion] Old steps count: 6
-useJuntasSidebarExpansion.ts:131 🔴 [useJuntasSidebarExpansion] New steps count: 6
-useJuntasSidebarExpansion.ts:140 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
-useJuntasSidebarExpansion.ts:36 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
-useJuntasSidebarExpansion.ts:37 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
-useJuntasSidebarExpansion.ts:38 🔴 [useJuntasSidebarExpansion] currentStepId: descargar
-useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
-useJuntasNavbarRoutes.ts:231 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/descargar
-junta-navigation.ts:248 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
-junta-navigation.ts:253 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
-junta-navigation.ts:257 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
-useJuntasNavbarRoutes.ts:236 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
-useJuntasNavbarRoutes.ts:247 🟠 [useJuntasNavbarRoutes] Paso actual: descargar
-useJuntasNavbarRoutes.ts:252 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
-useJuntasNavbarRoutes.ts:264 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
-useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
-useJuntasSidebarExpansion.ts:129 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
-useJuntasSidebarExpansion.ts:130 🔴 [useJuntasSidebarExpansion] Old steps count: 6
-useJuntasSidebarExpansion.ts:131 🔴 [useJuntasSidebarExpansion] New steps count: 6
-useJuntasSidebarExpansion.ts:140 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
-useJuntasSidebarExpansion.ts:36 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
-useJuntasSidebarExpansion.ts:37 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
-useJuntasSidebarExpansion.ts:38 🔴 [useJuntasSidebarExpansion] currentStepId: descargar
-useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
-useJuntasResumenDetection.ts:22 🟦 [useJuntasResumenDetection] isResumenPage: Object
-useJuntasContentSidebar.ts:61 🟪 [useJuntasContentSidebar] hasRightSidebar (normal): Object
-useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
-descargar.vue:64 📥 [Descargar] Datos completos cargados: Proxy(Object)
-descargar.vue:65 📋 [Descargar] Puntos de agenda: Proxy(Object)
-descargar.vue:66 📄 [Descargar] Detalles de junta: Proxy(Object)
-descargar.vue:67 👥 [Descargar] Asistencia: 2 accionistas
-descargar.vue:68 💰 [Descargar] Aporte dinerario: Proxy(Object)
-useJuntasFlowNext.ts:126 ✅ [useJuntasFlowNext] Handler configurado inmediatamente
-useJuntasFlowNext.ts:127 ✅ [useJuntasFlowNext] Ruta actual: /operaciones/sociedades/5/junta-accionistas/7/descargar
-runtime-core.esm-bundler.js?v=ac832780:50 [Vue warn]: Property "handleDescargar" was accessed during render but is not defined on instance. 
-  at <CategoriaDocumentos key="Acta Principal" titulo="Acta Principal" documentos= Array(1)  ... > 
-  at <JuntaDocumentosGenerados > 
-  at <Descargar onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
-  at <RouteProvider key="/operaciones/sociedades/5()/junta-accionistas/7()/descargar" vnode= Object route= Object  ... > 
-  at <RouterView name=undefined route=undefined > 
-  at <NuxtPage > 
-  at <FlowLayoutJuntasContent has-right-sidebar=false final-sections= Array(0) current-section-id=""  ... > 
-  at <FlowLayoutJuntasContentWrapper > 
-  at <FlowLayoutJuntas ref=Ref< Proxy(Object) > > 
-  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
-  at <LayoutLoader key="flow-layout-juntas" layoutProps= Object name="flow-layout-juntas" > 
-  at <NuxtLayoutProvider layoutProps= Object key="flow-layout-juntas" name="flow-layout-juntas"  ... > 
-  at <NuxtLayout name="flow-layout-juntas" > 
-  at <Registros ref=Ref< Proxy(Object) > > 
-  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
-  at <LayoutLoader key="registros" layoutProps= Object name="registros" > 
-  at <NuxtLayoutProvider layoutProps= Object key="registros" name="registros"  ... > 
-  at <NuxtLayout > 
-  at <App key=4 > 
-  at <NuxtRoot>
-warn$1 @ runtime-core.esm-bundler.js?v=ac832780:50
-runtime-core.esm-bundler.js?v=ac832780:50 [Vue warn]: Property "handleDescargar" was accessed during render but is not defined on instance. 
-  at <CategoriaDocumentos key="Detalles de la Junta" titulo="Detalles de la Junta" documentos= Array(1)  ... > 
-  at <JuntaDocumentosGenerados > 
-  at <Descargar onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
-  at <RouteProvider key="/operaciones/sociedades/5()/junta-accionistas/7()/descargar" vnode= Object route= Object  ... > 
-  at <RouterView name=undefined route=undefined > 
-  at <NuxtPage > 
-  at <FlowLayoutJuntasContent has-right-sidebar=false final-sections= Array(0) current-section-id=""  ... > 
-  at <FlowLayoutJuntasContentWrapper > 
-  at <FlowLayoutJuntas ref=Ref< Proxy(Object) > > 
-  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
-  at <LayoutLoader key="flow-layout-juntas" layoutProps= Object name="flow-layout-juntas" > 
-  at <NuxtLayoutProvider layoutProps= Object key="flow-layout-juntas" name="flow-layout-juntas"  ... > 
-  at <NuxtLayout name="flow-layout-juntas" > 
-  at <Registros ref=Ref< Proxy(Object) > > 
-  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
-  at <LayoutLoader key="registros" layoutProps= Object name="registros" > 
-  at <NuxtLayoutProvider layoutProps= Object key="registros" name="registros"  ... > 
-  at <NuxtLayout > 
-  at <App key=4 > 
-  at <NuxtRoot>
-warn$1 @ runtime-core.esm-bundler.js?v=ac832780:50
-runtime-core.esm-bundler.js?v=ac832780:50 [Vue warn]: Property "handleDescargar" was accessed during render but is not defined on instance. 
-  at <CategoriaDocumentos key="Acuerdos: Aumento de Capital" titulo="Acuerdos: Aumento de Capital" documentos= Array(1)  ... > 
-  at <JuntaDocumentosGenerados > 
-  at <Descargar onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
-  at <RouteProvider key="/operaciones/sociedades/5()/junta-accionistas/7()/descargar" vnode= Object route= Object  ... > 
-  at <RouterView name=undefined route=undefined > 
-  at <NuxtPage > 
-  at <FlowLayoutJuntasContent has-right-sidebar=false final-sections= Array(0) current-section-id=""  ... > 
-  at <FlowLayoutJuntasContentWrapper > 
-  at <FlowLayoutJuntas ref=Ref< Proxy(Object) > > 
-  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
-  at <LayoutLoader key="flow-layout-juntas" layoutProps= Object name="flow-layout-juntas" > 
-  at <NuxtLayoutProvider layoutProps= Object key="flow-layout-juntas" name="flow-layout-juntas"  ... > 
-  at <NuxtLayout name="flow-layout-juntas" > 
-  at <Registros ref=Ref< Proxy(Object) > > 
-  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
-  at <LayoutLoader key="registros" layoutProps= Object name="registros" > 
-  at <NuxtLayoutProvider layoutProps= Object key="registros" name="registros"  ... > 
-  at <NuxtLayout > 
-  at <App key=4 > 
-  at <NuxtRoot>
-warn$1 @ runtime-core.esm-bundler.js?v=ac832780:50
-useJuntasNavbarRoutes.ts:231 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/7/descargar
-junta-navigation.ts:248 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array)
-junta-navigation.ts:253 🟡 [juntaNavigation] Procesando paso 'puntos-acuerdo'
-junta-navigation.ts:257 🟡 [juntaNavigation] No hay sub-steps seleccionados, retornando paso sin sub-steps
-useJuntasNavbarRoutes.ts:236 🟠 [useJuntasNavbarRoutes] Pasos generados: 6 Array(6)
-useJuntasNavbarRoutes.ts:247 🟠 [useJuntasNavbarRoutes] Paso actual: descargar
-useJuntasNavbarRoutes.ts:252 🟠 [useJuntasNavbarRoutes] extractCurrentSubStepId resultado: undefined
-useJuntasNavbarRoutes.ts:264 🟠 [useJuntasNavbarRoutes] No hay sub-step, limpiando store
-useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
-useJuntasSidebarExpansion.ts:129 🔴 [useJuntasSidebarExpansion] Watch steps cambiaron
-useJuntasSidebarExpansion.ts:130 🔴 [useJuntasSidebarExpansion] Old steps count: 6
-useJuntasSidebarExpansion.ts:131 🔴 [useJuntasSidebarExpansion] New steps count: 6
-useJuntasSidebarExpansion.ts:140 🔴 [useJuntasSidebarExpansion] 'puntos-acuerdo' sub-steps: Object
-useJuntasSidebarExpansion.ts:36 🔴 [useJuntasSidebarExpansion] updateExpandedSteps ejecutado
-useJuntasSidebarExpansion.ts:37 🔴 [useJuntasSidebarExpansion] steps: Proxy(Array)
-useJuntasSidebarExpansion.ts:38 🔴 [useJuntasSidebarExpansion] currentStepId: descargar
-useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
-useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
-useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
-useJuntasResumenDetection.ts:22 🟦 [useJuntasResumenDetection] isResumenPage: Object
-useJuntasFlowNext.ts:136 ℹ️ [useJuntasFlowNext] Handler ya fue reemplazado, no limpiar
-useJuntasFlowNext.ts:133 🧹 [useJuntasFlowNext] Limpiando handler al desmontar
-runtime-core.esm-bundler.js?v=ac832780:50 [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+ [Repository][QuorumHttp] get:request {url: 'http://localhost:3000/api/v2/society-profile/19/quorum', societyProfileId: '19'}
+ [Repository][QuorumHttp] get:response {
+  "success": true,
+  "message": "Quórum obtenido correctamente",
+  "data": {
+    "primeraConvocatoriaSimple": 60,
+    "primeraConvocatoriaCalificada": 60,
+    "segundaConvocatoriaSimple": 66,
+    "segundaConvocatoriaCalificada": 66,
+    "quorumMinimoSimple": 50,
+    "quorumMinimoCalificado": 60
+  },
+  "code": 200
+}
+  POST http://localhost:3000/api/v2/society-profile/19/attorney-register/attorneys 400 (Bad Request)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765492126359:923
+executeStep @ seeds-sociedades.vue?t=1765492126359:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:914
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso apoderadosAdicionales: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765492126359:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:914
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando apoderados adicionales: [POST] "http://localhost:3000/api/v2/society-profile/19/attorney-register/attorneys": 400 Bad Request
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:936
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+  POST http://localhost:3000/api/v2/society-profile/19/attorney-register/attorneys 400 (Bad Request)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765492126359:952
+await in (anonymous)
+executeStep @ seeds-sociedades.vue?t=1765492126359:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:939
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso otrosApoderados: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765492126359:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:939
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando otros apoderados: [POST] "http://localhost:3000/api/v2/society-profile/19/attorney-register/attorneys": 400 Bad Request
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:964
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Repository][DatosSociedadHttp] create() - Payload mapeado: {
+  "ruc": "20000000508",
+  "razonSocial": "Tecnología Avanzada S.A.C.",
+  "tipoSociedad": "S.A.C.",
+  "nombreComercial": "Tecnología Avanzada S.A.C. S.A.C.",
+  "direccion": "Av. Principal 5",
+  "distrito": "San Isidro",
+  "provincia": "Lima",
+  "departamento": "Lima",
+  "fechaRegistro": "2024-01-01",
+  "actividadExtranjera": "Comercio",
+  "fechaEscritura": "2024-01-01",
+  "oficinaRegistral": "LIM",
+  "partidaRegistral": "12344"
+}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/20/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/20/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 1}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/20/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/20/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 2}
+ [Repository][AccionesHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/20/acction', payload: '{\n  "id": "bbe366a8-9a23-45ec-b90f-3aa1a689b108",\n…\n  "redimible": false,\n  "conDerechoVoto": true\n}'}
+ [Repository][AccionesHttp] create:response {
+  "success": true,
+  "message": "Accion creada correctamente.",
+  "code": 201
+}
+ [Repository][AccionesHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/20/acction'}
+ [Repository][AccionesHttp] list:response {
+  "success": true,
+  "message": "Acciones obtenidas correctamente",
+  "data": {
+    "datos": [
+      {
+        "id": "bbe366a8-9a23-45ec-b90f-3aa1a689b108",
+        "tipo": "COMUN",
+        "cantidadSuscrita": 500,
+        "redimible": true,
+        "conDerechoVoto": false
+      }
+    ],
+    "paginacion": {
+      "tieneSiguientePagina": false,
+      "cantidad": 1
+    }
+  },
+  "code": 200
+}
+ [Repository][AccionesHttp] list:mapped {count: 1}
+ [Repository][QuorumHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/20/quorum', payload: '{\n  "primeraConvocatoriaSimple": 60,\n  "primeraCon…nimoSimple": 50,\n  "quorumMinimoCalificado": 60\n}'}
+ [Repository][QuorumHttp] create:response {
+  "success": true,
+  "message": "Quórum actualizado correctamente.",
+  "code": 200
+}
+ [Repository][QuorumHttp] get:request {url: 'http://localhost:3000/api/v2/society-profile/20/quorum', societyProfileId: '20'}
+ [Repository][QuorumHttp] get:response {
+  "success": true,
+  "message": "Quórum obtenido correctamente",
+  "data": {
+    "primeraConvocatoriaSimple": 60,
+    "primeraConvocatoriaCalificada": 60,
+    "segundaConvocatoriaSimple": 66,
+    "segundaConvocatoriaCalificada": 66,
+    "quorumMinimoSimple": 50,
+    "quorumMinimoCalificado": 60
+  },
+  "code": 200
+}
+  POST http://localhost:3000/api/v2/society-profile/20/attorney-register/attorneys 400 (Bad Request)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765492126359:923
+executeStep @ seeds-sociedades.vue?t=1765492126359:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:914
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso apoderadosAdicionales: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765492126359:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:914
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando apoderados adicionales: [POST] "http://localhost:3000/api/v2/society-profile/20/attorney-register/attorneys": 400 Bad Request
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:936
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+  POST http://localhost:3000/api/v2/society-profile/20/attorney-register/attorneys 400 (Bad Request)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765492126359:952
+await in (anonymous)
+executeStep @ seeds-sociedades.vue?t=1765492126359:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:939
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso otrosApoderados: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765492126359:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:939
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando otros apoderados: [POST] "http://localhost:3000/api/v2/society-profile/20/attorney-register/attorneys": 400 Bad Request
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765492126359:964
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765492126359:1177
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765492126359:1388
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+  GET http://localhost:3000/api/v2/society-profile/list net::ERR_CONNECTION_REFUSED
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+list @ sociedad.http.repository.ts:132
+execute @ list-sociedades.use-case.ts:6
+cargarHistorial @ sociedad-historial.store.ts:56
+wrappedAction @ pinia.mjs?v=e57cfd2b:1067
+store.<computed> @ pinia.mjs?v=e57cfd2b:761
+(anonymous) @ historial.vue:29
+(anonymous) @ runtime-core.esm-bun….js?v=e57cfd2b:2902
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+hook.__weh.hook.__weh @ runtime-core.esm-bun….js?v=e57cfd2b:2882
+flushPostFlushCbs @ runtime-core.esm-bun…r.js?v=e57cfd2b:382
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:424
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigate @ vue-router.mjs?v=e57cfd2b:767
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+  GET http://localhost:3000/api/v2/society-profile/list net::ERR_CONNECTION_REFUSED
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+onError @ ofetch.03887fc3.mjs?v=e57cfd2b:179
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:270
+await in $fetchRaw2
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+list @ sociedad.http.repository.ts:132
+execute @ list-sociedades.use-case.ts:6
+cargarHistorial @ sociedad-historial.store.ts:56
+wrappedAction @ pinia.mjs?v=e57cfd2b:1067
+store.<computed> @ pinia.mjs?v=e57cfd2b:761
+(anonymous) @ historial.vue:29
+(anonymous) @ runtime-core.esm-bun….js?v=e57cfd2b:2902
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+hook.__weh.hook.__weh @ runtime-core.esm-bun….js?v=e57cfd2b:2882
+flushPostFlushCbs @ runtime-core.esm-bun…r.js?v=e57cfd2b:382
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:424
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigate @ vue-router.mjs?v=e57cfd2b:767
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Repository][SociedadHttp] list():error {url: 'http://localhost:3000/api/v2/society-profile/list', statusCode: null, message: '[GET] "http://localhost:3000/api/v2/society-profile/list": <no response> Failed to fetch'}
+overrideMethod @ installHook.js:1
+list @ sociedad.http.repository.ts:141
+await in list
+execute @ list-sociedades.use-case.ts:6
+cargarHistorial @ sociedad-historial.store.ts:56
+wrappedAction @ pinia.mjs?v=e57cfd2b:1067
+store.<computed> @ pinia.mjs?v=e57cfd2b:761
+(anonymous) @ historial.vue:29
+(anonymous) @ runtime-core.esm-bun….js?v=e57cfd2b:2902
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+hook.__weh.hook.__weh @ runtime-core.esm-bun….js?v=e57cfd2b:2882
+flushPostFlushCbs @ runtime-core.esm-bun…r.js?v=e57cfd2b:382
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:424
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigate @ vue-router.mjs?v=e57cfd2b:767
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [SociedadHistorialStore] Error al cargar sociedades: {statusCode: null, message: '[GET] "http://localhost:3000/api/v2/society-profile/list": <no response> Failed to fetch'}
+overrideMethod @ installHook.js:1
+cargarHistorial @ sociedad-historial.store.ts:63
+await in cargarHistorial
+wrappedAction @ pinia.mjs?v=e57cfd2b:1067
+store.<computed> @ pinia.mjs?v=e57cfd2b:761
+(anonymous) @ historial.vue:29
+(anonymous) @ runtime-core.esm-bun….js?v=e57cfd2b:2902
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+hook.__weh.hook.__weh @ runtime-core.esm-bun….js?v=e57cfd2b:2882
+flushPostFlushCbs @ runtime-core.esm-bun…r.js?v=e57cfd2b:382
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:424
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigate @ vue-router.mjs?v=e57cfd2b:767
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Repository][DatosSociedadHttp] create() - Payload mapeado: {
+  "ruc": "20000000155",
+  "razonSocial": "Inversiones del Sur S.A.C.",
+  "tipoSociedad": "S.A.C.",
+  "nombreComercial": "Inversiones del Sur S.A.C. S.A.C.",
+  "direccion": "Av. Principal 1",
+  "distrito": "San Isidro",
+  "provincia": "Lima",
+  "departamento": "Lima",
+  "fechaRegistro": "2024-01-01",
+  "actividadExtranjera": "Comercio",
+  "fechaEscritura": "2024-01-01",
+  "oficinaRegistral": "LIM",
+  "partidaRegistral": "12340"
+}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/21/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/21/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 1}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/21/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/21/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 2}
+ [Repository][AccionesHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/21/acction', payload: '{\n  "id": "6192e298-b156-4c5b-bf19-121fb345ca4c",\n…\n  "redimible": false,\n  "conDerechoVoto": true\n}'}
+ [Repository][AccionesHttp] create:response {
+  "success": true,
+  "message": "Accion creada correctamente.",
+  "code": 201
+}
+ [Repository][AccionesHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/21/acction'}
+ [Repository][AccionesHttp] list:response {
+  "success": true,
+  "message": "Acciones obtenidas correctamente",
+  "data": {
+    "datos": [
+      {
+        "id": "6192e298-b156-4c5b-bf19-121fb345ca4c",
+        "tipo": "COMUN",
+        "cantidadSuscrita": 500,
+        "redimible": true,
+        "conDerechoVoto": false
+      }
+    ],
+    "paginacion": {
+      "tieneSiguientePagina": false,
+      "cantidad": 1
+    }
+  },
+  "code": 200
+}
+ [Repository][AccionesHttp] list:mapped {count: 1}
+ [Repository][QuorumHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/21/quorum', payload: '{\n  "primeraConvocatoriaSimple": 60,\n  "primeraCon…nimoSimple": 50,\n  "quorumMinimoCalificado": 60\n}'}
+ [Repository][QuorumHttp] create:response {
+  "success": true,
+  "message": "Quórum actualizado correctamente.",
+  "code": 200
+}
+ [Repository][QuorumHttp] get:request {url: 'http://localhost:3000/api/v2/society-profile/21/quorum', societyProfileId: '21'}
+ [Repository][QuorumHttp] get:response {
+  "success": true,
+  "message": "Quórum obtenido correctamente",
+  "data": {
+    "primeraConvocatoriaSimple": 60,
+    "primeraConvocatoriaCalificada": 60,
+    "segundaConvocatoriaSimple": 66,
+    "segundaConvocatoriaCalificada": 66,
+    "quorumMinimoSimple": 50,
+    "quorumMinimoCalificado": 60
+  },
+  "code": 200
+}
+  POST http://localhost:3000/api/v2/society-profile/21/attorney-register/attorneys 422 (Unprocessable Entity)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765493123374:929
+executeStep @ seeds-sociedades.vue?t=1765493123374:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:920
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso apoderadosAdicionales: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765493123374:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:920
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando apoderados adicionales: [POST] "http://localhost:3000/api/v2/society-profile/21/attorney-register/attorneys": 422 Unprocessable Entity
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:942
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+  POST http://localhost:3000/api/v2/society-profile/21/attorney-register/attorneys 422 (Unprocessable Entity)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765493123374:958
+await in (anonymous)
+executeStep @ seeds-sociedades.vue?t=1765493123374:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:945
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso otrosApoderados: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765493123374:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:945
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando otros apoderados: [POST] "http://localhost:3000/api/v2/society-profile/21/attorney-register/attorneys": 422 Unprocessable Entity
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:970
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Repository][DatosSociedadHttp] create() - Payload mapeado: {
+  "ruc": "20000000228",
+  "razonSocial": "Comercial Andina S.A.C.",
+  "tipoSociedad": "S.A.C.",
+  "nombreComercial": "Comercial Andina S.A.C. S.A.C.",
+  "direccion": "Av. Principal 2",
+  "distrito": "San Isidro",
+  "provincia": "Lima",
+  "departamento": "Lima",
+  "fechaRegistro": "2024-01-01",
+  "actividadExtranjera": "Comercio",
+  "fechaEscritura": "2024-01-01",
+  "oficinaRegistral": "LIM",
+  "partidaRegistral": "12341"
+}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/22/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/22/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 1}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/22/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/22/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 2}
+ [Repository][AccionesHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/22/acction', payload: '{\n  "id": "260049d5-ba7c-4876-b142-b066df0769da",\n…\n  "redimible": false,\n  "conDerechoVoto": true\n}'}
+ [Repository][AccionesHttp] create:response {
+  "success": true,
+  "message": "Accion creada correctamente.",
+  "code": 201
+}
+ [Repository][AccionesHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/22/acction'}
+ [Repository][AccionesHttp] list:response {
+  "success": true,
+  "message": "Acciones obtenidas correctamente",
+  "data": {
+    "datos": [
+      {
+        "id": "260049d5-ba7c-4876-b142-b066df0769da",
+        "tipo": "COMUN",
+        "cantidadSuscrita": 500,
+        "redimible": true,
+        "conDerechoVoto": false
+      }
+    ],
+    "paginacion": {
+      "tieneSiguientePagina": false,
+      "cantidad": 1
+    }
+  },
+  "code": 200
+}
+ [Repository][AccionesHttp] list:mapped {count: 1}
+ [Repository][QuorumHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/22/quorum', payload: '{\n  "primeraConvocatoriaSimple": 60,\n  "primeraCon…nimoSimple": 50,\n  "quorumMinimoCalificado": 60\n}'}
+ [Repository][QuorumHttp] create:response {
+  "success": true,
+  "message": "Quórum actualizado correctamente.",
+  "code": 200
+}
+ [Repository][QuorumHttp] get:request {url: 'http://localhost:3000/api/v2/society-profile/22/quorum', societyProfileId: '22'}
+ [Repository][QuorumHttp] get:response {
+  "success": true,
+  "message": "Quórum obtenido correctamente",
+  "data": {
+    "primeraConvocatoriaSimple": 60,
+    "primeraConvocatoriaCalificada": 60,
+    "segundaConvocatoriaSimple": 66,
+    "segundaConvocatoriaCalificada": 66,
+    "quorumMinimoSimple": 50,
+    "quorumMinimoCalificado": 60
+  },
+  "code": 200
+}
+  POST http://localhost:3000/api/v2/society-profile/22/attorney-register/attorneys 422 (Unprocessable Entity)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765493123374:929
+executeStep @ seeds-sociedades.vue?t=1765493123374:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:920
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso apoderadosAdicionales: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765493123374:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:920
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando apoderados adicionales: [POST] "http://localhost:3000/api/v2/society-profile/22/attorney-register/attorneys": 422 Unprocessable Entity
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:942
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+  POST http://localhost:3000/api/v2/society-profile/22/attorney-register/attorneys 422 (Unprocessable Entity)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765493123374:958
+await in (anonymous)
+executeStep @ seeds-sociedades.vue?t=1765493123374:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:945
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso otrosApoderados: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765493123374:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:945
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando otros apoderados: [POST] "http://localhost:3000/api/v2/society-profile/22/attorney-register/attorneys": 422 Unprocessable Entity
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:970
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Repository][DatosSociedadHttp] create() - Payload mapeado: {
+  "ruc": "20000000301",
+  "razonSocial": "Servicios Empresariales S.A.C.",
+  "tipoSociedad": "S.A.C.",
+  "nombreComercial": "Servicios Empresariales S.A.C. S.A.C.",
+  "direccion": "Av. Principal 3",
+  "distrito": "San Isidro",
+  "provincia": "Lima",
+  "departamento": "Lima",
+  "fechaRegistro": "2024-01-01",
+  "actividadExtranjera": "Comercio",
+  "fechaEscritura": "2024-01-01",
+  "oficinaRegistral": "LIM",
+  "partidaRegistral": "12342"
+}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/23/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/23/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 1}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/23/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/23/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 2}
+ [Repository][AccionesHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/23/acction', payload: '{\n  "id": "09df9240-3d35-4ada-a442-34e173544e03",\n…\n  "redimible": false,\n  "conDerechoVoto": true\n}'}
+ [Repository][AccionesHttp] create:response {
+  "success": true,
+  "message": "Accion creada correctamente.",
+  "code": 201
+}
+ [Repository][AccionesHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/23/acction'}
+ [Repository][AccionesHttp] list:response {
+  "success": true,
+  "message": "Acciones obtenidas correctamente",
+  "data": {
+    "datos": [
+      {
+        "id": "09df9240-3d35-4ada-a442-34e173544e03",
+        "tipo": "COMUN",
+        "cantidadSuscrita": 500,
+        "redimible": true,
+        "conDerechoVoto": false
+      }
+    ],
+    "paginacion": {
+      "tieneSiguientePagina": false,
+      "cantidad": 1
+    }
+  },
+  "code": 200
+}
+ [Repository][AccionesHttp] list:mapped {count: 1}
+ [Repository][QuorumHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/23/quorum', payload: '{\n  "primeraConvocatoriaSimple": 60,\n  "primeraCon…nimoSimple": 50,\n  "quorumMinimoCalificado": 60\n}'}
+ [Repository][QuorumHttp] create:response {
+  "success": true,
+  "message": "Quórum actualizado correctamente.",
+  "code": 200
+}
+ [Repository][QuorumHttp] get:request {url: 'http://localhost:3000/api/v2/society-profile/23/quorum', societyProfileId: '23'}
+ [Repository][QuorumHttp] get:response {
+  "success": true,
+  "message": "Quórum obtenido correctamente",
+  "data": {
+    "primeraConvocatoriaSimple": 60,
+    "primeraConvocatoriaCalificada": 60,
+    "segundaConvocatoriaSimple": 66,
+    "segundaConvocatoriaCalificada": 66,
+    "quorumMinimoSimple": 50,
+    "quorumMinimoCalificado": 60
+  },
+  "code": 200
+}
+  POST http://localhost:3000/api/v2/society-profile/23/attorney-register/attorneys 422 (Unprocessable Entity)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765493123374:929
+executeStep @ seeds-sociedades.vue?t=1765493123374:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:920
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso apoderadosAdicionales: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765493123374:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:920
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando apoderados adicionales: [POST] "http://localhost:3000/api/v2/society-profile/23/attorney-register/attorneys": 422 Unprocessable Entity
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:942
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+  POST http://localhost:3000/api/v2/society-profile/23/attorney-register/attorneys 422 (Unprocessable Entity)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765493123374:958
+await in (anonymous)
+executeStep @ seeds-sociedades.vue?t=1765493123374:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:945
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso otrosApoderados: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765493123374:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:945
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando otros apoderados: [POST] "http://localhost:3000/api/v2/society-profile/23/attorney-register/attorneys": 422 Unprocessable Entity
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:970
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Repository][DatosSociedadHttp] create() - Payload mapeado: {
+  "ruc": "20000000460",
+  "razonSocial": "Construcciones Modernas S.A.C.",
+  "tipoSociedad": "S.A.C.",
+  "nombreComercial": "Construcciones Modernas S.A.C. S.A.C.",
+  "direccion": "Av. Principal 4",
+  "distrito": "San Isidro",
+  "provincia": "Lima",
+  "departamento": "Lima",
+  "fechaRegistro": "2024-01-01",
+  "actividadExtranjera": "Comercio",
+  "fechaEscritura": "2024-01-01",
+  "oficinaRegistral": "LIM",
+  "partidaRegistral": "12343"
+}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/24/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/24/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 1}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/24/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/24/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 2}
+ [Repository][AccionesHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/24/acction', payload: '{\n  "id": "e650da9e-8316-4fc6-8898-4f4429c71b46",\n…\n  "redimible": false,\n  "conDerechoVoto": true\n}'}
+ [Repository][AccionesHttp] create:response {
+  "success": true,
+  "message": "Accion creada correctamente.",
+  "code": 201
+}
+ [Repository][AccionesHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/24/acction'}
+ [Repository][AccionesHttp] list:response {
+  "success": true,
+  "message": "Acciones obtenidas correctamente",
+  "data": {
+    "datos": [
+      {
+        "id": "e650da9e-8316-4fc6-8898-4f4429c71b46",
+        "tipo": "COMUN",
+        "cantidadSuscrita": 500,
+        "redimible": true,
+        "conDerechoVoto": false
+      }
+    ],
+    "paginacion": {
+      "tieneSiguientePagina": false,
+      "cantidad": 1
+    }
+  },
+  "code": 200
+}
+ [Repository][AccionesHttp] list:mapped {count: 1}
+ [Repository][QuorumHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/24/quorum', payload: '{\n  "primeraConvocatoriaSimple": 60,\n  "primeraCon…nimoSimple": 50,\n  "quorumMinimoCalificado": 60\n}'}
+ [Repository][QuorumHttp] create:response {
+  "success": true,
+  "message": "Quórum actualizado correctamente.",
+  "code": 200
+}
+ [Repository][QuorumHttp] get:request {url: 'http://localhost:3000/api/v2/society-profile/24/quorum', societyProfileId: '24'}
+ [Repository][QuorumHttp] get:response {
+  "success": true,
+  "message": "Quórum obtenido correctamente",
+  "data": {
+    "primeraConvocatoriaSimple": 60,
+    "primeraConvocatoriaCalificada": 60,
+    "segundaConvocatoriaSimple": 66,
+    "segundaConvocatoriaCalificada": 66,
+    "quorumMinimoSimple": 50,
+    "quorumMinimoCalificado": 60
+  },
+  "code": 200
+}
+  POST http://localhost:3000/api/v2/society-profile/24/attorney-register/attorneys 422 (Unprocessable Entity)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765493123374:929
+executeStep @ seeds-sociedades.vue?t=1765493123374:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:920
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso apoderadosAdicionales: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765493123374:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:920
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando apoderados adicionales: [POST] "http://localhost:3000/api/v2/society-profile/24/attorney-register/attorneys": 422 Unprocessable Entity
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:942
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+  POST http://localhost:3000/api/v2/society-profile/24/attorney-register/attorneys 422 (Unprocessable Entity)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765493123374:958
+await in (anonymous)
+executeStep @ seeds-sociedades.vue?t=1765493123374:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:945
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso otrosApoderados: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765493123374:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:945
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando otros apoderados: [POST] "http://localhost:3000/api/v2/society-profile/24/attorney-register/attorneys": 422 Unprocessable Entity
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:970
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Repository][DatosSociedadHttp] create() - Payload mapeado: {
+  "ruc": "20000000530",
+  "razonSocial": "Tecnología Avanzada S.A.C.",
+  "tipoSociedad": "S.A.C.",
+  "nombreComercial": "Tecnología Avanzada S.A.C. S.A.C.",
+  "direccion": "Av. Principal 5",
+  "distrito": "San Isidro",
+  "provincia": "Lima",
+  "departamento": "Lima",
+  "fechaRegistro": "2024-01-01",
+  "actividadExtranjera": "Comercio",
+  "fechaEscritura": "2024-01-01",
+  "oficinaRegistral": "LIM",
+  "partidaRegistral": "12344"
+}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/25/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/25/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 1}
+ [Repository][AccionistasHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/25/shareholder', personaTipo: 'NATURAL'}
+ [Repository][AccionistasHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/25/shareholder'}
+ [Repository][AccionistasHttp] list:success {count: 2}
+ [Repository][AccionesHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/25/acction', payload: '{\n  "id": "3cdd9384-fa01-4b8d-a0be-81e7834ec8ff",\n…\n  "redimible": false,\n  "conDerechoVoto": true\n}'}
+ [Repository][AccionesHttp] create:response {
+  "success": true,
+  "message": "Accion creada correctamente.",
+  "code": 201
+}
+ [Repository][AccionesHttp] list:request {url: 'http://localhost:3000/api/v2/society-profile/25/acction'}
+ [Repository][AccionesHttp] list:response {
+  "success": true,
+  "message": "Acciones obtenidas correctamente",
+  "data": {
+    "datos": [
+      {
+        "id": "3cdd9384-fa01-4b8d-a0be-81e7834ec8ff",
+        "tipo": "COMUN",
+        "cantidadSuscrita": 500,
+        "redimible": true,
+        "conDerechoVoto": false
+      }
+    ],
+    "paginacion": {
+      "tieneSiguientePagina": false,
+      "cantidad": 1
+    }
+  },
+  "code": 200
+}
+ [Repository][AccionesHttp] list:mapped {count: 1}
+ [Repository][QuorumHttp] create:request {url: 'http://localhost:3000/api/v2/society-profile/25/quorum', payload: '{\n  "primeraConvocatoriaSimple": 60,\n  "primeraCon…nimoSimple": 50,\n  "quorumMinimoCalificado": 60\n}'}
+ [Repository][QuorumHttp] create:response {
+  "success": true,
+  "message": "Quórum actualizado correctamente.",
+  "code": 200
+}
+ [Repository][QuorumHttp] get:request {url: 'http://localhost:3000/api/v2/society-profile/25/quorum', societyProfileId: '25'}
+ [Repository][QuorumHttp] get:response {
+  "success": true,
+  "message": "Quórum obtenido correctamente",
+  "data": {
+    "primeraConvocatoriaSimple": 60,
+    "primeraConvocatoriaCalificada": 60,
+    "segundaConvocatoriaSimple": 66,
+    "segundaConvocatoriaCalificada": 66,
+    "quorumMinimoSimple": 50,
+    "quorumMinimoCalificado": 60
+  },
+  "code": 200
+}
+  POST http://localhost:3000/api/v2/society-profile/25/attorney-register/attorneys 422 (Unprocessable Entity)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765493123374:929
+executeStep @ seeds-sociedades.vue?t=1765493123374:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:920
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso apoderadosAdicionales: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765493123374:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:920
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando apoderados adicionales: [POST] "http://localhost:3000/api/v2/society-profile/25/attorney-register/attorneys": 422 Unprocessable Entity
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:942
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+  POST http://localhost:3000/api/v2/society-profile/25/attorney-register/attorneys 422 (Unprocessable Entity)
+(anonymous) @ index.mjs?v=e57cfd2b:21
+$fetchRaw2 @ ofetch.03887fc3.mjs?v=e57cfd2b:258
+$fetch2 @ ofetch.03887fc3.mjs?v=e57cfd2b:316
+createApoderado @ apoderados.http.repository.ts:92
+execute @ create-apoderado.use-case.ts:6
+(anonymous) @ seeds-sociedades.vue?t=1765493123374:958
+await in (anonymous)
+executeStep @ seeds-sociedades.vue?t=1765493123374:374
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:945
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error en paso otrosApoderados: 
+overrideMethod @ installHook.js:1
+executeStep @ seeds-sociedades.vue?t=1765493123374:378
+await in executeStep
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:945
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Seeds] Error creando otros apoderados: [POST] "http://localhost:3000/api/v2/society-profile/25/attorney-register/attorneys": 422 Unprocessable Entity
+overrideMethod @ installHook.js:1
+createSocietyCompleto @ seeds-sociedades.vue?t=1765493123374:970
+await in createSocietyCompleto
+createMultipleSocietiesCompleto @ seeds-sociedades.vue…=1765493123374:1183
+await in createMultipleSocietiesCompleto
+_createVNode.onClick._cache.<computed>._cache.<computed> @ seeds-sociedades.vue…=1765493123374:1394
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(0), oldPath: undefined}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: null
+ 🔵 [AlmacenamientoHttp] Cargando contenido de /core/ (raíz del almacén)
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS RAÍZ
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/root
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: null, structureId: '10'}
+ 🔵 [AlmacenView] Obteniendo carpeta /core/ para subir archivos...
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS RAÍZ
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/root
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: false
+ 🟡 [PreviewModal] versionCode: undefined
+ 🟡 [PreviewModal] document: null
+ 🟡 [PreviewModal] mimeType: undefined
+ ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:79
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bun….js?v=e57cfd2b:6302
+job @ reactivity.esm-bundl….js?v=e57cfd2b:1757
+watch @ reactivity.esm-bundl….js?v=e57cfd2b:1792
+doWatch @ runtime-core.esm-bun….js?v=e57cfd2b:6330
+watch @ runtime-core.esm-bun….js?v=e57cfd2b:6263
+setup @ PreviewModal.vue:37
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+setupStatefulComponent @ runtime-core.esm-bun….js?v=e57cfd2b:8012
+setupComponent @ runtime-core.esm-bun….js?v=e57cfd2b:7973
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5309
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+patchSuspense @ runtime-core.esm-bun….js?v=e57cfd2b:7087
+process @ runtime-core.esm-bun….js?v=e57cfd2b:6885
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4814
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigate @ vue-router.mjs?v=e57cfd2b:767
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
   at <Teleport to=undefined disabled=false defer=false  ... > 
   at <MenuPortal disabled=false defer=false forceMount=false  ... > 
-  at <DropdownMenuPortal style= Object > 
-  at <DropdownMenuContent align="start" class="w-[400px]" style= Object > 
+  at <DropdownMenuPortal style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <DropdownMenuContent align="start" class="w-[400px]" style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
   at <PopperRoot data-slot="dropdown-menu" > 
   at <MenuRoot open=false onUpdate:open=fn dir="ltr"  ... > 
   at <DropdownMenuRoot data-slot="dropdown-menu" onUpdate:open=fn > 
   at <DropdownMenu > 
   at <SocietySelector > 
-  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
-  at <RouteProvider key="/storage/documentos-generados" vnode= Object route= Object  ... > 
+  at <Almacen onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/storage/almacen" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/storage/almacen', path: '/storage/almacen', query: {…}, hash: '', name: 'storage-almacen', …}  ... > 
   at <RouterView name=undefined route=undefined > 
   at <NuxtPage > 
-  at <Default ref=Ref< Proxy(Object) > > 
-  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
-  at <LayoutLoader key="default" layoutProps= Object name="default" > 
-  at <NuxtLayoutProvider layoutProps= Object key="default" name="default"  ... > 
+  at <Default ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
   at <NuxtLayout > 
   at <App key=4 > 
   at <NuxtRoot>
-warn$1 @ runtime-core.esm-bundler.js?v=ac832780:50
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bun…er.js?v=e57cfd2b:50
+renderComponentRoot @ runtime-core.esm-bun….js?v=e57cfd2b:6680
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5492
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:427
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigate @ vue-router.mjs?v=e57cfd2b:767
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos: 2
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Carpeta 'core' encontrada: {id: '39', name: 'core', path: '/'}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/39
+ 🔵 [RepositorioDocumentosHttp] nodeId: 39
+ 🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos: 2
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [useObtenerCarpetaDocumentosSocietarios] Nodos raíz obtenidos: 2
+ 🟢 [useObtenerCarpetaDocumentosSocietarios] Carpeta /core/ encontrada: {id: '39', name: 'core', path: '/', code: 'ee3fb899-00cb-4c26-b08a-589beedc688c'}
+ 🔵 [AlmacenView] Carpeta /core/ obtenida: 39
+ 🔵 [AlmacenView] Ruta cambió: {newPath: Array(0), oldPath: Array(0)}
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [AlmacenamientoHttp] sociedadId: 10
+ 🔵 [AlmacenamientoHttp] parentId: null
+ 🔵 [AlmacenamientoHttp] Cargando contenido de /core/ (raíz del almacén)
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS RAÍZ
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/root
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 39, name: 'core', type: 1, childrenCount: 3, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🔵 [AlmacenamientoHttp] Contenido de /core/ (filtrado): 2 elementos
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 2
+ 🔵 [AlmacenamientoHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos: 2
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [AlmacenamientoHttp] Carpeta 'core' encontrada: {id: '39', name: 'core', path: '/'}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/39
+ 🔵 [RepositorioDocumentosHttp] nodeId: 39
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 39, name: 'core', type: 1, childrenCount: 3, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🔵 [AlmacenamientoHttp] Contenido de /core/ (filtrado): 2 elementos
+ 🔵 [AlmacenamientoHttp] Nodos obtenidos: 2
+ 🔵 [AlmacenamientoHttp] ========================================
+ [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <Teleport to=undefined disabled=false defer=false  ... > 
+  at <MenuPortal disabled=false defer=false forceMount=false  ... > 
+  at <DropdownMenuPortal style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <DropdownMenuContent align="start" class="w-[400px]" style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <PopperRoot data-slot="dropdown-menu" > 
+  at <MenuRoot open=false onUpdate:open=fn dir="ltr"  ... > 
+  at <DropdownMenuRoot data-slot="dropdown-menu" onUpdate:open=fn > 
+  at <DropdownMenu > 
+  at <SocietySelector > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/storage/documentos-generados" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/storage/documentos-generados', path: '/storage/documentos-generados', query: {…}, hash: '', name: 'storage-documentos-generados', …}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Default ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot>
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bun…er.js?v=e57cfd2b:50
+renderComponentRoot @ runtime-core.esm-bun….js?v=e57cfd2b:6680
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5492
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:427
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigate @ vue-router.mjs?v=e57cfd2b:767
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🟢 [useDocumentosGenerados] Watch detectó cambio de sociedad: {oldId: undefined, newId: '10', sociedadCompleta: Proxy(Object)}
+ 🟢 [useDocumentosGenerados] Cargando documentos para sociedad: 10
+ 🟢 [DocumentosGeneradosStore] Cargando documentos generados para structureId: 10
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraOperaciones...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA OPERACIONES (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] currentPath computed: {routeParamsPath: '', segments: Array(0), routePath: '/storage/documentos-generados/10/operaciones/'}
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: false
+ 🟡 [PreviewModal] versionCode: undefined
+ 🟡 [PreviewModal] document: null
+ 🟡 [PreviewModal] mimeType: undefined
+ ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:79
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bun….js?v=e57cfd2b:6302
+job @ reactivity.esm-bundl….js?v=e57cfd2b:1757
+watch @ reactivity.esm-bundl….js?v=e57cfd2b:1792
+doWatch @ runtime-core.esm-bun….js?v=e57cfd2b:6330
+watch @ runtime-core.esm-bun….js?v=e57cfd2b:6263
+setup @ PreviewModal.vue:37
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+setupStatefulComponent @ runtime-core.esm-bun….js?v=e57cfd2b:8012
+setupComponent @ runtime-core.esm-bun….js?v=e57cfd2b:7973
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5309
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+patchSuspense @ runtime-core.esm-bun….js?v=e57cfd2b:7087
+process @ runtime-core.esm-bun….js?v=e57cfd2b:6885
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4814
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToOperaciones @ index.vue:19
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <Teleport to=undefined disabled=false defer=false  ... > 
+  at <MenuPortal disabled=false defer=false forceMount=false  ... > 
+  at <DropdownMenuPortal style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <DropdownMenuContent align="start" class="w-[400px]" style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <PopperRoot data-slot="dropdown-menu" > 
+  at <MenuRoot open=false onUpdate:open=fn dir="ltr"  ... > 
+  at <DropdownMenuRoot data-slot="dropdown-menu" onUpdate:open=fn > 
+  at <DropdownMenu > 
+  at <SocietySelector > 
+  at <[...path] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/storage/documentos-generados/10()/operaciones/" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/storage/documentos-generados/10/operaciones/', path: '/storage/documentos-generados/10/operaciones/', query: {…}, hash: '', name: 'storage-documentos-generados-idSociety-operaciones-path', …}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Default ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot>
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bun…er.js?v=e57cfd2b:50
+renderComponentRoot @ runtime-core.esm-bun….js?v=e57cfd2b:6680
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5492
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:427
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToOperaciones @ index.vue:19
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodos encontrados (V2): {directorio: {…}, juntas: {…}}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraJuntas...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA JUNTAS
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER CARPETAS JUNTAS (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodo 'juntas-accionistas' encontrado: {id: '45', name: 'juntas-accionistas', path: '/core/documentos-generados/operaciones/'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas de juntas encontradas: 1
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas: [{…}]
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/62
+ 🔵 [RepositorioDocumentosHttp] nodeId: 62
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 62, name: 'junta del 11 de diciembre del 2025', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'minuta-aumento-capital-aporte-dinerario.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpeta completa obtenida: {id: '62', name: 'junta del 11 de diciembre del 2025', childrenCount: 2}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Estructura obtenida: {totalJuntas: 1}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Estructura obtenida: {operaciones: {…}, totalJuntas: 1}
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(0), routePath: '/storage/documentos-generados/10/operaciones/', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 🟢 [DocumentosGeneradosView] Mostrando carpetas de operaciones: {currentPath: Array(0), routePath: '/storage/documentos-generados/10/operaciones/', estructuraOperaciones: Proxy(Object), documentosGenerados: {…}, directorio: {…}, …}
+ 🟢 [DocumentosGeneradosView] Carpetas agregadas: (2) [{…}, {…}]
+ 🟢 [useDocumentosGenerados] Documentos cargados exitosamente
+ 📂 [DocumentosGeneradosView] Navegando a carpeta: operaciones-juntas
+ 🟢 [useDocumentosGenerados] Watch detectó cambio de sociedad: {oldId: undefined, newId: '10', sociedadCompleta: Proxy(Object)}
+ 🟢 [useDocumentosGenerados] Cargando documentos para sociedad: 10
+ 🟢 [DocumentosGeneradosStore] Cargando documentos generados para structureId: 10
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraOperaciones...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA OPERACIONES (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] currentPath computed: {routeParamsPath: Array(1), segments: Array(1), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas'}
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: false
+ 🟡 [PreviewModal] versionCode: undefined
+ 🟡 [PreviewModal] document: null
+ 🟡 [PreviewModal] mimeType: undefined
+ ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:79
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bun….js?v=e57cfd2b:6302
+job @ reactivity.esm-bundl….js?v=e57cfd2b:1757
+watch @ reactivity.esm-bundl….js?v=e57cfd2b:1792
+doWatch @ runtime-core.esm-bun….js?v=e57cfd2b:6330
+watch @ runtime-core.esm-bun….js?v=e57cfd2b:6263
+setup @ PreviewModal.vue:37
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+setupStatefulComponent @ runtime-core.esm-bun….js?v=e57cfd2b:8012
+setupComponent @ runtime-core.esm-bun….js?v=e57cfd2b:7973
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5309
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+patchSuspense @ runtime-core.esm-bun….js?v=e57cfd2b:7087
+process @ runtime-core.esm-bun….js?v=e57cfd2b:6885
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4814
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToFolder @ DocumentosGeneradosV…t=1765493006698:448
+onClick @ DocumentosGeneradosV…=1765493006698:1069
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <Teleport to=undefined disabled=false defer=false  ... > 
+  at <MenuPortal disabled=false defer=false forceMount=false  ... > 
+  at <DropdownMenuPortal style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <DropdownMenuContent align="start" class="w-[400px]" style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <PopperRoot data-slot="dropdown-menu" > 
+  at <MenuRoot open=false onUpdate:open=fn dir="ltr"  ... > 
+  at <DropdownMenuRoot data-slot="dropdown-menu" onUpdate:open=fn > 
+  at <DropdownMenu > 
+  at <SocietySelector > 
+  at <[...path] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/storage/documentos-generados/10()/operaciones/junta-accionistas" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/storage/documentos-generados/10/operaciones/junta-accionistas', path: '/storage/documentos-generados/10/operaciones/junta-accionistas', query: {…}, hash: '', name: 'storage-documentos-generados-idSociety-operaciones-path', …}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Default ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot>
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bun…er.js?v=e57cfd2b:50
+renderComponentRoot @ runtime-core.esm-bun….js?v=e57cfd2b:6680
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5492
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:427
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToFolder @ DocumentosGeneradosV…t=1765493006698:448
+onClick @ DocumentosGeneradosV…=1765493006698:1069
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodos encontrados (V2): {directorio: {…}, juntas: {…}}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraJuntas...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA JUNTAS
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER CARPETAS JUNTAS (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodo 'juntas-accionistas' encontrado: {id: '45', name: 'juntas-accionistas', path: '/core/documentos-generados/operaciones/'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas de juntas encontradas: 1
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas: [{…}]
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/62
+ 🔵 [RepositorioDocumentosHttp] nodeId: 62
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 62, name: 'junta del 11 de diciembre del 2025', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'minuta-aumento-capital-aporte-dinerario.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpeta completa obtenida: {id: '62', name: 'junta del 11 de diciembre del 2025', childrenCount: 2}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Estructura obtenida: {totalJuntas: 1}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Estructura obtenida: {operaciones: {…}, totalJuntas: 1}
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(1), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 🟢 [useDocumentosGenerados] Documentos cargados exitosamente
+ 🔵 [DocumentosGeneradosView] currentPath computed: {routeParamsPath: Array(1), segments: Array(1), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas'}
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(1), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 📂 [DocumentosGeneradosView] Navegando a carpeta: carpeta-62
+ 📂 [DocumentosGeneradosView] Cargando documentos de carpeta de junta: 62
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER DOCUMENTOS DE CARPETA
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] carpetaId: 62
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/62
+ 🔵 [RepositorioDocumentosHttp] nodeId: 62
+ 🟢 [useDocumentosGenerados] Watch detectó cambio de sociedad: {oldId: undefined, newId: '10', sociedadCompleta: Proxy(Object)}
+ 🟢 [useDocumentosGenerados] Cargando documentos para sociedad: 10
+ 🟢 [DocumentosGeneradosStore] Cargando documentos generados para structureId: 10
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraOperaciones...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA OPERACIONES (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] currentPath computed: {routeParamsPath: Array(2), segments: Array(2), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62'}
+ 🟡 [DocumentosGeneradosView] Watch detectó cambio a carpeta de junta, cargando: 62
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: false
+ 🟡 [PreviewModal] versionCode: undefined
+ 🟡 [PreviewModal] document: null
+ 🟡 [PreviewModal] mimeType: undefined
+ ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:79
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bun….js?v=e57cfd2b:6302
+job @ reactivity.esm-bundl….js?v=e57cfd2b:1757
+watch @ reactivity.esm-bundl….js?v=e57cfd2b:1792
+doWatch @ runtime-core.esm-bun….js?v=e57cfd2b:6330
+watch @ runtime-core.esm-bun….js?v=e57cfd2b:6263
+setup @ PreviewModal.vue:37
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+setupStatefulComponent @ runtime-core.esm-bun….js?v=e57cfd2b:8012
+setupComponent @ runtime-core.esm-bun….js?v=e57cfd2b:7973
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5309
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+patchSuspense @ runtime-core.esm-bun….js?v=e57cfd2b:7087
+process @ runtime-core.esm-bun….js?v=e57cfd2b:6885
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4814
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToFolder @ DocumentosGeneradosV…t=1765493006698:416
+onClick @ DocumentosGeneradosV…=1765493006698:1069
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <Teleport to=undefined disabled=false defer=false  ... > 
+  at <MenuPortal disabled=false defer=false forceMount=false  ... > 
+  at <DropdownMenuPortal style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <DropdownMenuContent align="start" class="w-[400px]" style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <PopperRoot data-slot="dropdown-menu" > 
+  at <MenuRoot open=false onUpdate:open=fn dir="ltr"  ... > 
+  at <DropdownMenuRoot data-slot="dropdown-menu" onUpdate:open=fn > 
+  at <DropdownMenu > 
+  at <SocietySelector > 
+  at <[...path] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/storage/documentos-generados/10()/operaciones/junta-accionistas,carpeta-62" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62', path: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62', query: {…}, hash: '', name: 'storage-documentos-generados-idSociety-operaciones-path', …}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Default ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot>
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bun…er.js?v=e57cfd2b:50
+renderComponentRoot @ runtime-core.esm-bun….js?v=e57cfd2b:6680
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5492
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:427
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToFolder @ DocumentosGeneradosV…t=1765493006698:416
+onClick @ DocumentosGeneradosV…=1765493006698:1069
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 62, name: 'junta del 11 de diciembre del 2025', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'minuta-aumento-capital-aporte-dinerario.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpeta obtenida: {id: '62', name: 'junta del 11 de diciembre del 2025', type: 'folder', childrenCount: 2}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Hijos encontrados: 2
+ 🟡 [ObtenerDocumentosJuntasUseCase] Detalle de hijos: (2) [{…}, {…}]
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ [DocumentosGeneradosStore] Documentos de carpeta cargados: {carpetaId: '62', cantidad: 2}
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(2), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 🟡 [DocumentosGeneradosView] Nivel 3 - Carpeta de junta: {carpetaId: 'carpeta-62', nodeId: '62', carpetaActual: '62', documentosCarpetaLength: 2}
+ 🟢 [DocumentosGeneradosView] Usando documentos cargados: Proxy(Array) {0: {…}, 1: {…}}
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodos encontrados (V2): {directorio: {…}, juntas: {…}}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraJuntas...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA JUNTAS
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER CARPETAS JUNTAS (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(2), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 🟡 [DocumentosGeneradosView] Nivel 3 - Carpeta de junta: {carpetaId: 'carpeta-62', nodeId: '62', carpetaActual: '62', documentosCarpetaLength: 2}
+ 🟢 [DocumentosGeneradosView] Usando documentos cargados: Proxy(Array) {0: {…}, 1: {…}}
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodo 'juntas-accionistas' encontrado: {id: '45', name: 'juntas-accionistas', path: '/core/documentos-generados/operaciones/'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas de juntas encontradas: 1
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas: [{…}]
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/62
+ 🔵 [RepositorioDocumentosHttp] nodeId: 62
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 62, name: 'junta del 11 de diciembre del 2025', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'minuta-aumento-capital-aporte-dinerario.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpeta completa obtenida: {id: '62', name: 'junta del 11 de diciembre del 2025', childrenCount: 2}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Estructura obtenida: {totalJuntas: 1}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Estructura obtenida: {operaciones: {…}, totalJuntas: 1}
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(2), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 🟡 [DocumentosGeneradosView] Nivel 3 - Carpeta de junta: {carpetaId: 'carpeta-62', nodeId: '62', carpetaActual: '62', documentosCarpetaLength: 2}
+ 🟢 [DocumentosGeneradosView] Usando documentos cargados: Proxy(Array) {0: {…}, 1: {…}}
+ 🟢 [useDocumentosGenerados] Documentos cargados exitosamente
+ 🔵 [DocumentosGeneradosView] Navegando a breadcrumb index: 2
+ 🔵 [DocumentosGeneradosView] Navegando a breadcrumb index: 1
+ 🔵 [DocumentosGeneradosView] Navegando a breadcrumb index: 0
+ 🟢 [useDocumentosGenerados] Watch detectó cambio de sociedad: {oldId: undefined, newId: '10', sociedadCompleta: Proxy(Object)}
+ 🟢 [useDocumentosGenerados] Cargando documentos para sociedad: 10
+ 🟢 [DocumentosGeneradosStore] Cargando documentos generados para structureId: 10
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraOperaciones...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA OPERACIONES (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] currentPath computed: {routeParamsPath: Array(1), segments: Array(1), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas'}
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: false
+ 🟡 [PreviewModal] versionCode: undefined
+ 🟡 [PreviewModal] document: null
+ 🟡 [PreviewModal] mimeType: undefined
+ ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:79
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bun….js?v=e57cfd2b:6302
+job @ reactivity.esm-bundl….js?v=e57cfd2b:1757
+watch @ reactivity.esm-bundl….js?v=e57cfd2b:1792
+doWatch @ runtime-core.esm-bun….js?v=e57cfd2b:6330
+watch @ runtime-core.esm-bun….js?v=e57cfd2b:6263
+setup @ PreviewModal.vue:37
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+setupStatefulComponent @ runtime-core.esm-bun….js?v=e57cfd2b:8012
+setupComponent @ runtime-core.esm-bun….js?v=e57cfd2b:7973
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5309
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+patchSuspense @ runtime-core.esm-bun….js?v=e57cfd2b:7087
+process @ runtime-core.esm-bun….js?v=e57cfd2b:6885
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4814
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToBreadcrumb @ DocumentosGeneradosV…t=1765493006698:488
+onClick @ DocumentosGeneradosV…t=1765493006698:934
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <Teleport to=undefined disabled=false defer=false  ... > 
+  at <MenuPortal disabled=false defer=false forceMount=false  ... > 
+  at <DropdownMenuPortal style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <DropdownMenuContent align="start" class="w-[400px]" style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <PopperRoot data-slot="dropdown-menu" > 
+  at <MenuRoot open=false onUpdate:open=fn dir="ltr"  ... > 
+  at <DropdownMenuRoot data-slot="dropdown-menu" onUpdate:open=fn > 
+  at <DropdownMenu > 
+  at <SocietySelector > 
+  at <[...path] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/storage/documentos-generados/10()/operaciones/junta-accionistas" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/storage/documentos-generados/10/operaciones/junta-accionistas', path: '/storage/documentos-generados/10/operaciones/junta-accionistas', query: {…}, hash: '', name: 'storage-documentos-generados-idSociety-operaciones-path', …}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Default ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot>
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bun…er.js?v=e57cfd2b:50
+renderComponentRoot @ runtime-core.esm-bun….js?v=e57cfd2b:6680
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5492
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:427
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToBreadcrumb @ DocumentosGeneradosV…t=1765493006698:488
+onClick @ DocumentosGeneradosV…t=1765493006698:934
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodos encontrados (V2): {directorio: {…}, juntas: {…}}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraJuntas...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA JUNTAS
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER CARPETAS JUNTAS (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodo 'juntas-accionistas' encontrado: {id: '45', name: 'juntas-accionistas', path: '/core/documentos-generados/operaciones/'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas de juntas encontradas: 1
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas: [{…}]
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/62
+ 🔵 [RepositorioDocumentosHttp] nodeId: 62
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 62, name: 'junta del 11 de diciembre del 2025', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'minuta-aumento-capital-aporte-dinerario.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpeta completa obtenida: {id: '62', name: 'junta del 11 de diciembre del 2025', childrenCount: 2}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Estructura obtenida: {totalJuntas: 1}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Estructura obtenida: {operaciones: {…}, totalJuntas: 1}
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(1), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 🟢 [useDocumentosGenerados] Documentos cargados exitosamente
+ 🔵 [DocumentosGeneradosView] Navegando a breadcrumb index: 1
+ 🔵 [DocumentosGeneradosView] Navegando a breadcrumb index: 1
+ 🔵 [DocumentosGeneradosView] Navegando a breadcrumb index: 0
+ 🟢 [useDocumentosGenerados] Watch detectó cambio de sociedad: {oldId: undefined, newId: '10', sociedadCompleta: Proxy(Object)}
+ 🟢 [useDocumentosGenerados] Cargando documentos para sociedad: 10
+ 🟢 [DocumentosGeneradosStore] Cargando documentos generados para structureId: 10
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraOperaciones...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA OPERACIONES (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] currentPath computed: {routeParamsPath: '', segments: Array(0), routePath: '/storage/documentos-generados/10/operaciones/'}
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: false
+ 🟡 [PreviewModal] versionCode: undefined
+ 🟡 [PreviewModal] document: null
+ 🟡 [PreviewModal] mimeType: undefined
+ ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:79
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bun….js?v=e57cfd2b:6302
+job @ reactivity.esm-bundl….js?v=e57cfd2b:1757
+watch @ reactivity.esm-bundl….js?v=e57cfd2b:1792
+doWatch @ runtime-core.esm-bun….js?v=e57cfd2b:6330
+watch @ runtime-core.esm-bun….js?v=e57cfd2b:6263
+setup @ PreviewModal.vue:37
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+setupStatefulComponent @ runtime-core.esm-bun….js?v=e57cfd2b:8012
+setupComponent @ runtime-core.esm-bun….js?v=e57cfd2b:7973
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5309
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+patchSuspense @ runtime-core.esm-bun….js?v=e57cfd2b:7087
+process @ runtime-core.esm-bun….js?v=e57cfd2b:6885
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4814
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateBack @ DocumentosGeneradosV…t=1765493006698:474
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <Teleport to=undefined disabled=false defer=false  ... > 
+  at <MenuPortal disabled=false defer=false forceMount=false  ... > 
+  at <DropdownMenuPortal style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <DropdownMenuContent align="start" class="w-[400px]" style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <PopperRoot data-slot="dropdown-menu" > 
+  at <MenuRoot open=false onUpdate:open=fn dir="ltr"  ... > 
+  at <DropdownMenuRoot data-slot="dropdown-menu" onUpdate:open=fn > 
+  at <DropdownMenu > 
+  at <SocietySelector > 
+  at <[...path] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/storage/documentos-generados/10()/operaciones/" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/storage/documentos-generados/10/operaciones/', path: '/storage/documentos-generados/10/operaciones/', query: {…}, hash: '', name: 'storage-documentos-generados-idSociety-operaciones-path', …}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Default ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot>
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bun…er.js?v=e57cfd2b:50
+renderComponentRoot @ runtime-core.esm-bun….js?v=e57cfd2b:6680
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5492
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:427
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateBack @ DocumentosGeneradosV…t=1765493006698:474
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodos encontrados (V2): {directorio: {…}, juntas: {…}}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraJuntas...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA JUNTAS
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER CARPETAS JUNTAS (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodo 'juntas-accionistas' encontrado: {id: '45', name: 'juntas-accionistas', path: '/core/documentos-generados/operaciones/'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas de juntas encontradas: 1
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas: [{…}]
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/62
+ 🔵 [RepositorioDocumentosHttp] nodeId: 62
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 62, name: 'junta del 11 de diciembre del 2025', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'minuta-aumento-capital-aporte-dinerario.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpeta completa obtenida: {id: '62', name: 'junta del 11 de diciembre del 2025', childrenCount: 2}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Estructura obtenida: {totalJuntas: 1}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Estructura obtenida: {operaciones: {…}, totalJuntas: 1}
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(0), routePath: '/storage/documentos-generados/10/operaciones/', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 🟢 [DocumentosGeneradosView] Mostrando carpetas de operaciones: {currentPath: Array(0), routePath: '/storage/documentos-generados/10/operaciones/', estructuraOperaciones: Proxy(Object), documentosGenerados: {…}, directorio: {…}, …}
+ 🟢 [DocumentosGeneradosView] Carpetas agregadas: (2) [{…}, {…}]
+ 🟢 [useDocumentosGenerados] Documentos cargados exitosamente
+ 🔵 [DocumentosGeneradosView] Navegando a breadcrumb index: 0
+ 📂 [DocumentosGeneradosView] Navegando a carpeta: operaciones-juntas
+ 🟢 [useDocumentosGenerados] Watch detectó cambio de sociedad: {oldId: undefined, newId: '10', sociedadCompleta: Proxy(Object)}
+ 🟢 [useDocumentosGenerados] Cargando documentos para sociedad: 10
+ 🟢 [DocumentosGeneradosStore] Cargando documentos generados para structureId: 10
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraOperaciones...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA OPERACIONES (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] currentPath computed: {routeParamsPath: Array(1), segments: Array(1), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas'}
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] WATCH TRIGGERED
+ 🟡 [PreviewModal] ========================================
+ 🟡 [PreviewModal] isOpen: false
+ 🟡 [PreviewModal] versionCode: undefined
+ 🟡 [PreviewModal] document: null
+ 🟡 [PreviewModal] mimeType: undefined
+ ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:79
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bun….js?v=e57cfd2b:6302
+job @ reactivity.esm-bundl….js?v=e57cfd2b:1757
+watch @ reactivity.esm-bundl….js?v=e57cfd2b:1792
+doWatch @ runtime-core.esm-bun….js?v=e57cfd2b:6330
+watch @ runtime-core.esm-bun….js?v=e57cfd2b:6263
+setup @ PreviewModal.vue:37
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+setupStatefulComponent @ runtime-core.esm-bun….js?v=e57cfd2b:8012
+setupComponent @ runtime-core.esm-bun….js?v=e57cfd2b:7973
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5309
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bun….js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bun….js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bun….js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bun….js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bun….js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4789
+patchSuspense @ runtime-core.esm-bun….js?v=e57cfd2b:7087
+process @ runtime-core.esm-bun….js?v=e57cfd2b:6885
+patch @ runtime-core.esm-bun….js?v=e57cfd2b:4814
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToFolder @ DocumentosGeneradosV…t=1765493006698:448
+onClick @ DocumentosGeneradosV…=1765493006698:1069
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <Teleport to=undefined disabled=false defer=false  ... > 
+  at <MenuPortal disabled=false defer=false forceMount=false  ... > 
+  at <DropdownMenuPortal style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <DropdownMenuContent align="start" class="w-[400px]" style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <PopperRoot data-slot="dropdown-menu" > 
+  at <MenuRoot open=false onUpdate:open=fn dir="ltr"  ... > 
+  at <DropdownMenuRoot data-slot="dropdown-menu" onUpdate:open=fn > 
+  at <DropdownMenu > 
+  at <SocietySelector > 
+  at <[...path] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/storage/documentos-generados/10()/operaciones/junta-accionistas" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/storage/documentos-generados/10/operaciones/junta-accionistas', path: '/storage/documentos-generados/10/operaciones/junta-accionistas', query: {…}, hash: '', name: 'storage-documentos-generados-idSociety-operaciones-path', …}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Default ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot>
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bun…er.js?v=e57cfd2b:50
+renderComponentRoot @ runtime-core.esm-bun….js?v=e57cfd2b:6680
+componentUpdateFn @ runtime-core.esm-bun….js?v=e57cfd2b:5492
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:405
+flushJobs @ runtime-core.esm-bun…r.js?v=e57cfd2b:427
+Promise.then
+queueFlush @ runtime-core.esm-bun…r.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bun…r.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bun….js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundl….js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToFolder @ DocumentosGeneradosV…t=1765493006698:448
+onClick @ DocumentosGeneradosV…=1765493006698:1069
+callWithErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bun…r.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bund…r.js?v=e57cfd2b:721
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodos encontrados (V2): {directorio: {…}, juntas: {…}}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraJuntas...
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA JUNTAS
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER CARPETAS JUNTAS (V2)
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+ 🔵 [RepositorioDocumentosHttp] structureId: 10
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+ 🟡 [ObtenerDocumentosJuntasUseCase] Nodo 'juntas-accionistas' encontrado: {id: '45', name: 'juntas-accionistas', path: '/core/documentos-generados/operaciones/'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas de juntas encontradas: 1
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas: [{…}]
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/62
+ 🔵 [RepositorioDocumentosHttp] nodeId: 62
+ 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 62, name: 'junta del 11 de diciembre del 2025', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+ 🔵 [RepositorioDocumentosHttp] ========================================
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'minuta-aumento-capital-aporte-dinerario.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+ 🟡 [ObtenerDocumentosJuntasUseCase] Carpeta completa obtenida: {id: '62', name: 'junta del 11 de diciembre del 2025', childrenCount: 2}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟡 [ObtenerDocumentosJuntasUseCase] Estructura obtenida: {totalJuntas: 1}
+ 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+ 🟢 [DocumentosGeneradosStore] Estructura obtenida: {operaciones: {…}, totalJuntas: 1}
+ 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+ 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(1), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+ 🟢 [useDocumentosGenerados] Documentos cargados exitosamente
+ 📂 [DocumentosGeneradosView] Navegando a carpeta: carpeta-62
+DocumentosGeneradosView.vue:530 📂 [DocumentosGeneradosView] Cargando documentos de carpeta de junta: 62
+obtener-documentos-juntas.use-case.ts:133 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+obtener-documentos-juntas.use-case.ts:134 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER DOCUMENTOS DE CARPETA
+obtener-documentos-juntas.use-case.ts:135 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+obtener-documentos-juntas.use-case.ts:136 🟡 [ObtenerDocumentosJuntasUseCase] carpetaId: 62
+repositorio-documentos-http.repository.ts:390 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:391 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+repositorio-documentos-http.repository.ts:392 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:393 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/62
+repositorio-documentos-http.repository.ts:394 🔵 [RepositorioDocumentosHttp] nodeId: 62
+useDocumentosGenerados.ts:25 🟢 [useDocumentosGenerados] Watch detectó cambio de sociedad: {oldId: undefined, newId: '10', sociedadCompleta: Proxy(Object)}
+useDocumentosGenerados.ts:32 🟢 [useDocumentosGenerados] Cargando documentos para sociedad: 10
+documentos-generados.store.ts:51 🟢 [DocumentosGeneradosStore] Cargando documentos generados para structureId: 10
+documentos-generados.store.ts:60 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraOperaciones...
+obtener-documentos-juntas.use-case.ts:190 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+obtener-documentos-juntas.use-case.ts:191 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA OPERACIONES (V2)
+obtener-documentos-juntas.use-case.ts:192 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+obtener-documentos-juntas.use-case.ts:193 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+repositorio-documentos-http.repository.ts:304 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:305 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+repositorio-documentos-http.repository.ts:306 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:307 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+repositorio-documentos-http.repository.ts:308 🔵 [RepositorioDocumentosHttp] structureId: 10
+useDocumentosGenerados.ts:52 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+DocumentosGeneradosView.vue:72 🔵 [DocumentosGeneradosView] currentPath computed: {routeParamsPath: Array(2), segments: Array(2), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62'}
+DocumentosGeneradosView.vue:118 🟡 [DocumentosGeneradosView] Watch detectó cambio a carpeta de junta, cargando: 62
 PreviewModal.vue:56 🟡 [PreviewModal] ========================================
 PreviewModal.vue:57 🟡 [PreviewModal] WATCH TRIGGERED
 PreviewModal.vue:58 🟡 [PreviewModal] ========================================
@@ -1722,105 +5576,476 @@ PreviewModal.vue:59 🟡 [PreviewModal] isOpen: false
 PreviewModal.vue:60 🟡 [PreviewModal] versionCode: undefined
 PreviewModal.vue:61 🟡 [PreviewModal] document: null
 PreviewModal.vue:62 🟡 [PreviewModal] mimeType: undefined
-PreviewModal.vue:103 ⚠️ [PreviewModal] Condiciones no cumplidas: Object
+installHook.js:1 ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
 watch.immediate @ PreviewModal.vue:103
-runtime-core.esm-bundler.js?v=ac832780:50 [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bundler.js?v=e57cfd2b:6302
+job @ reactivity.esm-bundler.js?v=e57cfd2b:1757
+watch @ reactivity.esm-bundler.js?v=e57cfd2b:1792
+doWatch @ runtime-core.esm-bundler.js?v=e57cfd2b:6330
+watch @ runtime-core.esm-bundler.js?v=e57cfd2b:6263
+setup @ PreviewModal.vue:53
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:197
+setupStatefulComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:8012
+setupComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:7973
+mountComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:5309
+processComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bundler.js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bundler.js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bundler.js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bundler.js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bundler.js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bundler.js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bundler.js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bundler.js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bundler.js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bundler.js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4789
+patchSuspense @ runtime-core.esm-bundler.js?v=e57cfd2b:7087
+process @ runtime-core.esm-bundler.js?v=e57cfd2b:6885
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4814
+componentUpdateFn @ runtime-core.esm-bundler.js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bundler.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bundler.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bundler.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bundler.js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundler.js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToFolder @ DocumentosGeneradosView.vue:536
+onClick @ DocumentosGeneradosView.vue:990
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bundler.js?v=e57cfd2b:721
+installHook.js:1 [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
   at <Teleport to=undefined disabled=false defer=false  ... > 
   at <MenuPortal disabled=false defer=false forceMount=false  ... > 
-  at <DropdownMenuPortal style= Object > 
-  at <DropdownMenuContent align="start" class="w-[400px]" style= Object > 
+  at <DropdownMenuPortal style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <DropdownMenuContent align="start" class="w-[400px]" style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
   at <PopperRoot data-slot="dropdown-menu" > 
   at <MenuRoot open=false onUpdate:open=fn dir="ltr"  ... > 
   at <DropdownMenuRoot data-slot="dropdown-menu" onUpdate:open=fn > 
   at <DropdownMenu > 
   at <SocietySelector > 
-  at <Almacen onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
-  at <RouteProvider key="/storage/almacen" vnode= Object route= Object  ... > 
+  at <[...path] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/storage/documentos-generados/10()/operaciones/junta-accionistas,carpeta-62" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62', path: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62', query: {…}, hash: '', name: 'storage-documentos-generados-idSociety-operaciones-path', …}  ... > 
   at <RouterView name=undefined route=undefined > 
   at <NuxtPage > 
-  at <Default ref=Ref< Proxy(Object) > > 
-  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
-  at <LayoutLoader key="default" layoutProps= Object name="default" > 
-  at <NuxtLayoutProvider layoutProps= Object key="default" name="default"  ... > 
+  at <Default ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
   at <NuxtLayout > 
   at <App key=4 > 
   at <NuxtRoot>
-warn$1 @ runtime-core.esm-bundler.js?v=ac832780:50
-repositorio-dashboard.store.ts:74 🟢 [RepositorioDashboardStore] Seleccionando sociedad: 4
-repositorio-dashboard.store.ts:98 🟢 [RepositorioDashboardStore] Sociedad mapeada: Object
-repositorio-dashboard.store.ts:100 🟢 [RepositorioDashboardStore] Sociedad seleccionada actualizada en store
-repositorio-dashboard.store.ts:74 🟢 [RepositorioDashboardStore] Seleccionando sociedad: 5
-repositorio-dashboard.store.ts:98 🟢 [RepositorioDashboardStore] Sociedad mapeada: Object
-repositorio-dashboard.store.ts:100 🟢 [RepositorioDashboardStore] Sociedad seleccionada actualizada en store
-repositorio-dashboard.store.ts:74 🟢 [RepositorioDashboardStore] Seleccionando sociedad: 1
-repositorio-dashboard.store.ts:98 🟢 [RepositorioDashboardStore] Sociedad mapeada: Object
-repositorio-dashboard.store.ts:100 🟢 [RepositorioDashboardStore] Sociedad seleccionada actualizada en store
-Unable to add filesystem: <illegal path>
-useSubirArchivo.ts:18 🟡 [useSubirArchivo] Subiendo archivo...
-subir-archivo.use-case.ts:27 🟡 [SubirArchivoUseCase] ========================================
-subir-archivo.use-case.ts:28 🟡 [SubirArchivoUseCase] SUBIR ARCHIVO
-subir-archivo.use-case.ts:29 🟡 [SubirArchivoUseCase] ========================================
-subir-archivo.use-case.ts:30 🟡 [SubirArchivoUseCase] structureId: 1
-subir-archivo.use-case.ts:31 🟡 [SubirArchivoUseCase] parentNodeId: 
-subir-archivo.use-case.ts:32 🟡 [SubirArchivoUseCase] fileName: Facultad.docx
-subir-archivo.use-case.ts:33 🟡 [SubirArchivoUseCase] fileSize: 13361 bytes
-subir-archivo.use-case.ts:34 🟡 [SubirArchivoUseCase] fileType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
-useSubirArchivo.ts:23 ❌ [useSubirArchivo] Error al subir archivo: Error: structureId y parentNodeId son requeridos
-    at SubirArchivoUseCase.execute (subir-archivo.use-case.ts:42:13)
-    at subirArchivo (useSubirArchivo.ts:19:34)
-    at handleUpload (UploadModal.vue:275:13)
-    at callWithErrorHandling (runtime-core.esm-bundler.js?v=ac832780:197:19)
-    at callWithAsyncErrorHandling (runtime-core.esm-bundler.js?v=ac832780:204:17)
-    at HTMLButtonElement.invoker (runtime-dom.esm-bundler.js?v=ac832780:721:5)
-subirArchivo @ useSubirArchivo.ts:23
-await in subirArchivo
-handleUpload @ UploadModal.vue:275
-callWithErrorHandling @ runtime-core.esm-bundler.js?v=ac832780:197
-callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=ac832780:204
-invoker @ runtime-dom.esm-bundler.js?v=ac832780:721
-UploadModal.vue:300 Error al subir archivos: Error: structureId y parentNodeId son requeridos
-    at SubirArchivoUseCase.execute (subir-archivo.use-case.ts:42:13)
-    at subirArchivo (useSubirArchivo.ts:19:34)
-    at handleUpload (UploadModal.vue:275:13)
-    at callWithErrorHandling (runtime-core.esm-bundler.js?v=ac832780:197:19)
-    at callWithAsyncErrorHandling (runtime-core.esm-bundler.js?v=ac832780:204:17)
-    at HTMLButtonElement.invoker (runtime-dom.esm-bundler.js?v=ac832780:721:5)
-handleUpload @ UploadModal.vue:300
-await in handleUpload
-callWithErrorHandling @ runtime-core.esm-bundler.js?v=ac832780:197
-callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=ac832780:204
-invoker @ runtime-dom.esm-bundler.js?v=ac832780:721
-useSubirArchivo.ts:18 🟡 [useSubirArchivo] Subiendo archivo...
-subir-archivo.use-case.ts:27 🟡 [SubirArchivoUseCase] ========================================
-subir-archivo.use-case.ts:28 🟡 [SubirArchivoUseCase] SUBIR ARCHIVO
-subir-archivo.use-case.ts:29 🟡 [SubirArchivoUseCase] ========================================
-subir-archivo.use-case.ts:30 🟡 [SubirArchivoUseCase] structureId: 1
-subir-archivo.use-case.ts:31 🟡 [SubirArchivoUseCase] parentNodeId: 
-subir-archivo.use-case.ts:32 🟡 [SubirArchivoUseCase] fileName: xxxxxxxx.docx
-subir-archivo.use-case.ts:33 🟡 [SubirArchivoUseCase] fileSize: 13516 bytes
-subir-archivo.use-case.ts:34 🟡 [SubirArchivoUseCase] fileType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
-useSubirArchivo.ts:23 ❌ [useSubirArchivo] Error al subir archivo: Error: structureId y parentNodeId son requeridos
-    at SubirArchivoUseCase.execute (subir-archivo.use-case.ts:42:13)
-    at subirArchivo (useSubirArchivo.ts:19:34)
-    at handleUpload (UploadModal.vue:275:13)
-    at callWithErrorHandling (runtime-core.esm-bundler.js?v=ac832780:197:19)
-    at callWithAsyncErrorHandling (runtime-core.esm-bundler.js?v=ac832780:204:17)
-    at HTMLButtonElement.invoker (runtime-dom.esm-bundler.js?v=ac832780:721:5)
-subirArchivo @ useSubirArchivo.ts:23
-await in subirArchivo
-handleUpload @ UploadModal.vue:275
-callWithErrorHandling @ runtime-core.esm-bundler.js?v=ac832780:197
-callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=ac832780:204
-invoker @ runtime-dom.esm-bundler.js?v=ac832780:721
-UploadModal.vue:300 Error al subir archivos: Error: structureId y parentNodeId son requeridos
-    at SubirArchivoUseCase.execute (subir-archivo.use-case.ts:42:13)
-    at subirArchivo (useSubirArchivo.ts:19:34)
-    at handleUpload (UploadModal.vue:275:13)
-    at callWithErrorHandling (runtime-core.esm-bundler.js?v=ac832780:197:19)
-    at callWithAsyncErrorHandling (runtime-core.esm-bundler.js?v=ac832780:204:17)
-    at HTMLButtonElement.invoker (runtime-dom.esm-bundler.js?v=ac832780:721:5)
-handleUpload @ UploadModal.vue:300
-await in handleUpload
-callWithErrorHandling @ runtime-core.esm-bundler.js?v=ac832780:197
-callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=ac832780:204
-invoker @ runtime-dom.esm-bundler.js?v=ac832780:721
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bundler.js?v=e57cfd2b:50
+renderComponentRoot @ runtime-core.esm-bundler.js?v=e57cfd2b:6680
+componentUpdateFn @ runtime-core.esm-bundler.js?v=e57cfd2b:5492
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bundler.js?v=e57cfd2b:405
+flushJobs @ runtime-core.esm-bundler.js?v=e57cfd2b:427
+Promise.then
+queueFlush @ runtime-core.esm-bundler.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bundler.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bundler.js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundler.js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigateToFolder @ DocumentosGeneradosView.vue:536
+onClick @ DocumentosGeneradosView.vue:990
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bundler.js?v=e57cfd2b:721
+repositorio-documentos-http.repository.ts:405 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 62, name: 'junta del 11 de diciembre del 2025', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+repositorio-documentos-http.repository.ts:428 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-node.mapper.ts:44 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+repositorio-node.mapper.ts:44 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'minuta-aumento-capital-aporte-dinerario.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+obtener-documentos-juntas.use-case.ts:147 🟡 [ObtenerDocumentosJuntasUseCase] Carpeta obtenida: {id: '62', name: 'junta del 11 de diciembre del 2025', type: 'folder', childrenCount: 2}
+obtener-documentos-juntas.use-case.ts:159 🟡 [ObtenerDocumentosJuntasUseCase] Hijos encontrados: 2
+obtener-documentos-juntas.use-case.ts:161 🟡 [ObtenerDocumentosJuntasUseCase] Detalle de hijos: (2) [{…}, {…}]
+obtener-documentos-juntas.use-case.ts:167 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+documentos-generados.store.ts:111 [DocumentosGeneradosStore] Documentos de carpeta cargados: {carpetaId: '62', cantidad: 2}
+DocumentosGeneradosView.vue:156 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(2), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+DocumentosGeneradosView.vue:273 🟡 [DocumentosGeneradosView] Nivel 3 - Carpeta de junta: {carpetaId: 'carpeta-62', nodeId: '62', carpetaActual: '62', documentosCarpetaLength: 2}
+DocumentosGeneradosView.vue:287 🟢 [DocumentosGeneradosView] Usando documentos cargados: Proxy(Array) {0: {…}, 1: {…}}
+repositorio-documentos-http.repository.ts:319 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+repositorio-documentos-http.repository.ts:320 🔵 [RepositorioDocumentosHttp] ========================================
+obtener-documentos-juntas.use-case.ts:198 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+obtener-documentos-juntas.use-case.ts:217 🟡 [ObtenerDocumentosJuntasUseCase] Nodos encontrados (V2): {directorio: {…}, juntas: {…}}
+obtener-documentos-juntas.use-case.ts:221 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+documentos-generados.store.ts:64 🟢 [DocumentosGeneradosStore] Llamando a obtenerEstructuraJuntas...
+obtener-documentos-juntas.use-case.ts:251 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+obtener-documentos-juntas.use-case.ts:252 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA JUNTAS
+obtener-documentos-juntas.use-case.ts:253 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+obtener-documentos-juntas.use-case.ts:254 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+obtener-documentos-juntas.use-case.ts:31 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+obtener-documentos-juntas.use-case.ts:32 🟡 [ObtenerDocumentosJuntasUseCase] OBTENER CARPETAS JUNTAS (V2)
+obtener-documentos-juntas.use-case.ts:33 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+obtener-documentos-juntas.use-case.ts:34 🟡 [ObtenerDocumentosJuntasUseCase] structureId: 10
+repositorio-documentos-http.repository.ts:304 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:305 🔵 [RepositorioDocumentosHttp] OBTENER NODOS CORE
+repositorio-documentos-http.repository.ts:306 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:307 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/core
+repositorio-documentos-http.repository.ts:308 🔵 [RepositorioDocumentosHttp] structureId: 10
+useDocumentosGenerados.ts:52 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+DocumentosGeneradosView.vue:156 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(2), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+DocumentosGeneradosView.vue:273 🟡 [DocumentosGeneradosView] Nivel 3 - Carpeta de junta: {carpetaId: 'carpeta-62', nodeId: '62', carpetaActual: '62', documentosCarpetaLength: 2}
+DocumentosGeneradosView.vue:287 🟢 [DocumentosGeneradosView] Usando documentos cargados: Proxy(Array) {0: {…}, 1: {…}}
+repositorio-documentos-http.repository.ts:319 🔵 [RepositorioDocumentosHttp] Nodos obtenidos: 22
+repositorio-documentos-http.repository.ts:320 🔵 [RepositorioDocumentosHttp] ========================================
+obtener-documentos-juntas.use-case.ts:39 🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core: 22
+obtener-documentos-juntas.use-case.ts:66 🟡 [ObtenerDocumentosJuntasUseCase] Nodo 'juntas-accionistas' encontrado: {id: '45', name: 'juntas-accionistas', path: '/core/documentos-generados/operaciones/'}
+obtener-documentos-juntas.use-case.ts:91 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas de juntas encontradas: 1
+obtener-documentos-juntas.use-case.ts:92 🟡 [ObtenerDocumentosJuntasUseCase] Carpetas: [{…}]
+repositorio-documentos-http.repository.ts:390 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:391 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+repositorio-documentos-http.repository.ts:392 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:393 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/62
+repositorio-documentos-http.repository.ts:394 🔵 [RepositorioDocumentosHttp] nodeId: 62
+repositorio-documentos-http.repository.ts:405 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 62, name: 'junta del 11 de diciembre del 2025', type: 1, childrenCount: 2, hasDocumentVersions: false, …}
+repositorio-documentos-http.repository.ts:428 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-node.mapper.ts:44 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+repositorio-node.mapper.ts:44 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'minuta-aumento-capital-aporte-dinerario.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+obtener-documentos-juntas.use-case.ts:104 🟡 [ObtenerDocumentosJuntasUseCase] Carpeta completa obtenida: {id: '62', name: 'junta del 11 de diciembre del 2025', childrenCount: 2}
+obtener-documentos-juntas.use-case.ts:117 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+obtener-documentos-juntas.use-case.ts:265 🟡 [ObtenerDocumentosJuntasUseCase] Estructura obtenida: {totalJuntas: 1}
+obtener-documentos-juntas.use-case.ts:268 🟡 [ObtenerDocumentosJuntasUseCase] ========================================
+documentos-generados.store.ts:67 🟢 [DocumentosGeneradosStore] Estructura obtenida: {operaciones: {…}, totalJuntas: 1}
+useDocumentosGenerados.ts:52 🔵 [useDocumentosGenerados] documentosGenerados computed: {estructuraJuntas: Proxy(Object), estructuraOperaciones: Proxy(Object)}
+DocumentosGeneradosView.vue:156 🔵 [DocumentosGeneradosView] getCurrentData ejecutado: {currentPath: Array(2), routePath: '/storage/documentos-generados/10/operaciones/junta-accionistas/carpeta-62', routeParams: {…}, documentosGenerados: {…}, estructuraOperaciones: Proxy(Object)}
+DocumentosGeneradosView.vue:273 🟡 [DocumentosGeneradosView] Nivel 3 - Carpeta de junta: {carpetaId: 'carpeta-62', nodeId: '62', carpetaActual: '62', documentosCarpetaLength: 2}
+DocumentosGeneradosView.vue:287 🟢 [DocumentosGeneradosView] Usando documentos cargados: Proxy(Array) {0: {…}, 1: {…}}
+useDocumentosGenerados.ts:35 🟢 [useDocumentosGenerados] Documentos cargados exitosamente
+DocumentosGeneradosView.vue:624 🔵 [DocumentosGeneradosView] Navegando a breadcrumb index: 1
+DocumentosGeneradosView.vue:624 🔵 [DocumentosGeneradosView] Navegando a breadcrumb index: 1
+DocumentosGeneradosView.vue:624 🔵 [DocumentosGeneradosView] Navegando a breadcrumb index: 1
+DocumentosGeneradosView.vue:624 🔵 [DocumentosGeneradosView] Navegando a breadcrumb index: 1
+DocumentosGeneradosView.vue:624 🔵 [DocumentosGeneradosView] Navegando a breadcrumb index: 1
+DocumentosGeneradosView.vue:624 🔵 [DocumentosGeneradosView] Navegando a breadcrumb index: 1
+AlmacenView.vue:197 🔵 [AlmacenView] Ruta cambió: {newPath: Array(0), oldPath: undefined}
+almacenamiento-http.repository.ts:59 🔵 [AlmacenamientoHttp] ========================================
+almacenamiento-http.repository.ts:60 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+almacenamiento-http.repository.ts:61 🔵 [AlmacenamientoHttp] ========================================
+almacenamiento-http.repository.ts:62 🔵 [AlmacenamientoHttp] sociedadId: 10
+almacenamiento-http.repository.ts:63 🔵 [AlmacenamientoHttp] parentId: null
+almacenamiento-http.repository.ts:71 🔵 [AlmacenamientoHttp] Cargando contenido de /core/ (raíz del almacén)
+repositorio-documentos-http.repository.ts:348 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:349 🔵 [RepositorioDocumentosHttp] OBTENER NODOS RAÍZ
+repositorio-documentos-http.repository.ts:350 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:351 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/root
+repositorio-documentos-http.repository.ts:352 🔵 [RepositorioDocumentosHttp] structureId: 10
+AlmacenView.vue:454 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: null, structureId: '10'}
+AlmacenView.vue:468 🔵 [AlmacenView] Obteniendo carpeta /core/ para subir archivos...
+repositorio-documentos-http.repository.ts:348 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:349 🔵 [RepositorioDocumentosHttp] OBTENER NODOS RAÍZ
+repositorio-documentos-http.repository.ts:350 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:351 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/root
+repositorio-documentos-http.repository.ts:352 🔵 [RepositorioDocumentosHttp] structureId: 10
+PreviewModal.vue:56 🟡 [PreviewModal] ========================================
+PreviewModal.vue:57 🟡 [PreviewModal] WATCH TRIGGERED
+PreviewModal.vue:58 🟡 [PreviewModal] ========================================
+PreviewModal.vue:59 🟡 [PreviewModal] isOpen: false
+PreviewModal.vue:60 🟡 [PreviewModal] versionCode: undefined
+PreviewModal.vue:61 🟡 [PreviewModal] document: null
+PreviewModal.vue:62 🟡 [PreviewModal] mimeType: undefined
+installHook.js:1 ⚠️ [PreviewModal] Condiciones no cumplidas: {isOpen: false, hasVersionCode: false, hasMimeType: false}
+overrideMethod @ installHook.js:1
+watch.immediate @ PreviewModal.vue:103
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:204
+baseWatchOptions.call @ runtime-core.esm-bundler.js?v=e57cfd2b:6302
+job @ reactivity.esm-bundler.js?v=e57cfd2b:1757
+watch @ reactivity.esm-bundler.js?v=e57cfd2b:1792
+doWatch @ runtime-core.esm-bundler.js?v=e57cfd2b:6330
+watch @ runtime-core.esm-bundler.js?v=e57cfd2b:6263
+setup @ PreviewModal.vue:53
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:197
+setupStatefulComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:8012
+setupComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:7973
+mountComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:5309
+processComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bundler.js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bundler.js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bundler.js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bundler.js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4789
+mountChildren @ runtime-core.esm-bundler.js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bundler.js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4777
+mountChildren @ runtime-core.esm-bundler.js?v=e57cfd2b:5023
+mountElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4946
+processElement @ runtime-core.esm-bundler.js?v=e57cfd2b:4911
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4777
+componentUpdateFn @ runtime-core.esm-bundler.js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bundler.js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4789
+componentUpdateFn @ runtime-core.esm-bundler.js?v=e57cfd2b:5421
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+setupRenderEffect @ runtime-core.esm-bundler.js?v=e57cfd2b:5549
+mountComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:5323
+processComponent @ runtime-core.esm-bundler.js?v=e57cfd2b:5275
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4789
+patchSuspense @ runtime-core.esm-bundler.js?v=e57cfd2b:7087
+process @ runtime-core.esm-bundler.js?v=e57cfd2b:6885
+patch @ runtime-core.esm-bundler.js?v=e57cfd2b:4814
+componentUpdateFn @ runtime-core.esm-bundler.js?v=e57cfd2b:5501
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bundler.js?v=e57cfd2b:405
+Promise.then
+queueFlush @ runtime-core.esm-bundler.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bundler.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bundler.js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundler.js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigate @ vue-router.mjs?v=e57cfd2b:767
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bundler.js?v=e57cfd2b:721
+installHook.js:1 [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <Teleport to=undefined disabled=false defer=false  ... > 
+  at <MenuPortal disabled=false defer=false forceMount=false  ... > 
+  at <DropdownMenuPortal style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <DropdownMenuContent align="start" class="w-[400px]" style= {fontFamily: 'var(--font-secondary)', backgroundColor: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px'} > 
+  at <PopperRoot data-slot="dropdown-menu" > 
+  at <MenuRoot open=false onUpdate:open=fn dir="ltr"  ... > 
+  at <DropdownMenuRoot data-slot="dropdown-menu" onUpdate:open=fn > 
+  at <DropdownMenu > 
+  at <SocietySelector > 
+  at <Almacen onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/storage/almacen" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/storage/almacen', path: '/storage/almacen', query: {…}, hash: '', name: 'storage-almacen', …}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Default ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot>
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bundler.js?v=e57cfd2b:50
+renderComponentRoot @ runtime-core.esm-bundler.js?v=e57cfd2b:6680
+componentUpdateFn @ runtime-core.esm-bundler.js?v=e57cfd2b:5492
+run @ reactivity.esm-bundler.js?v=e57cfd2b:207
+runIfDirty @ reactivity.esm-bundler.js?v=e57cfd2b:245
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:197
+flushJobs @ runtime-core.esm-bundler.js?v=e57cfd2b:405
+flushJobs @ runtime-core.esm-bundler.js?v=e57cfd2b:427
+Promise.then
+queueFlush @ runtime-core.esm-bundler.js?v=e57cfd2b:319
+queueJob @ runtime-core.esm-bundler.js?v=e57cfd2b:314
+effect2.scheduler @ runtime-core.esm-bundler.js?v=e57cfd2b:5543
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:235
+endBatch @ reactivity.esm-bundler.js?v=e57cfd2b:293
+notify @ reactivity.esm-bundler.js?v=e57cfd2b:568
+trigger @ reactivity.esm-bundler.js?v=e57cfd2b:542
+set value @ reactivity.esm-bundler.js?v=e57cfd2b:1421
+finalizeNavigation @ vue-router.mjs?v=e57cfd2b:1190
+(anonymous) @ vue-router.mjs?v=e57cfd2b:1128
+Promise.then
+pushWithRedirect @ vue-router.mjs?v=e57cfd2b:1115
+push @ vue-router.mjs?v=e57cfd2b:1066
+navigate @ vue-router.mjs?v=e57cfd2b:767
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=e57cfd2b:204
+invoker @ runtime-dom.esm-bundler.js?v=e57cfd2b:721
+AlmacenView.vue:197 🔵 [AlmacenView] Ruta cambió: {newPath: Array(0), oldPath: Array(0)}
+almacenamiento-http.repository.ts:59 🔵 [AlmacenamientoHttp] ========================================
+almacenamiento-http.repository.ts:60 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+almacenamiento-http.repository.ts:61 🔵 [AlmacenamientoHttp] ========================================
+almacenamiento-http.repository.ts:62 🔵 [AlmacenamientoHttp] sociedadId: 10
+almacenamiento-http.repository.ts:63 🔵 [AlmacenamientoHttp] parentId: null
+almacenamiento-http.repository.ts:71 🔵 [AlmacenamientoHttp] Cargando contenido de /core/ (raíz del almacén)
+repositorio-documentos-http.repository.ts:348 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:349 🔵 [RepositorioDocumentosHttp] OBTENER NODOS RAÍZ
+repositorio-documentos-http.repository.ts:350 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:351 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/10/nodes/root
+repositorio-documentos-http.repository.ts:352 🔵 [RepositorioDocumentosHttp] structureId: 10
+repositorio-documentos-http.repository.ts:363 🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos: 2
+repositorio-documentos-http.repository.ts:364 🔵 [RepositorioDocumentosHttp] ========================================
+almacenamiento-http.repository.ts:91 🔵 [AlmacenamientoHttp] Carpeta 'core' encontrada: {id: '39', name: 'core', path: '/'}
+repositorio-documentos-http.repository.ts:390 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:391 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+repositorio-documentos-http.repository.ts:392 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:393 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/39
+repositorio-documentos-http.repository.ts:394 🔵 [RepositorioDocumentosHttp] nodeId: 39
+repositorio-documentos-http.repository.ts:363 🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos: 2
+repositorio-documentos-http.repository.ts:364 🔵 [RepositorioDocumentosHttp] ========================================
+useObtenerCarpetaDocumentosSocietarios.ts:36 🔵 [useObtenerCarpetaDocumentosSocietarios] Nodos raíz obtenidos: 2
+useObtenerCarpetaDocumentosSocietarios.ts:45 🟢 [useObtenerCarpetaDocumentosSocietarios] Carpeta /core/ encontrada: {id: '39', name: 'core', path: '/', code: 'ee3fb899-00cb-4c26-b08a-589beedc688c'}
+AlmacenView.vue:470 🔵 [AlmacenView] Carpeta /core/ obtenida: 39
+repositorio-documentos-http.repository.ts:405 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 39, name: 'core', type: 1, childrenCount: 3, hasDocumentVersions: false, …}
+repositorio-documentos-http.repository.ts:428 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-node.mapper.ts:44 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+almacenamiento-http.repository.ts:112 🔵 [AlmacenamientoHttp] Contenido de /core/ (filtrado): 2 elementos
+almacenamiento-http.repository.ts:129 🔵 [AlmacenamientoHttp] Nodos obtenidos: 2
+almacenamiento-http.repository.ts:130 🔵 [AlmacenamientoHttp] ========================================
+repositorio-documentos-http.repository.ts:363 🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos: 2
+repositorio-documentos-http.repository.ts:364 🔵 [RepositorioDocumentosHttp] ========================================
+almacenamiento-http.repository.ts:91 🔵 [AlmacenamientoHttp] Carpeta 'core' encontrada: {id: '39', name: 'core', path: '/'}
+repositorio-documentos-http.repository.ts:390 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:391 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+repositorio-documentos-http.repository.ts:392 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:393 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/39
+repositorio-documentos-http.repository.ts:394 🔵 [RepositorioDocumentosHttp] nodeId: 39
+repositorio-documentos-http.repository.ts:405 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 39, name: 'core', type: 1, childrenCount: 3, hasDocumentVersions: false, …}
+repositorio-documentos-http.repository.ts:428 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-node.mapper.ts:44 🟡 [RepositorioNodeMapper] MIME type inferido desde nombre: {fileName: 'acta-junta-universal.docx', inferredMimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+almacenamiento-http.repository.ts:112 🔵 [AlmacenamientoHttp] Contenido de /core/ (filtrado): 2 elementos
+almacenamiento-http.repository.ts:129 🔵 [AlmacenamientoHttp] Nodos obtenidos: 2
+almacenamiento-http.repository.ts:130 🔵 [AlmacenamientoHttp] ========================================
+AlmacenView.vue:151 🔵 [AlmacenView] Navegando a carpeta: 78
+AlmacenView.vue:163 🔵 [AlmacenView] Actualizando ruta a: /storage/almacen/10/78
+almacenamiento-http.repository.ts:59 🔵 [AlmacenamientoHttp] ========================================
+almacenamiento-http.repository.ts:60 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+almacenamiento-http.repository.ts:61 🔵 [AlmacenamientoHttp] ========================================
+almacenamiento-http.repository.ts:62 🔵 [AlmacenamientoHttp] sociedadId: 10
+almacenamiento-http.repository.ts:63 🔵 [AlmacenamientoHttp] parentId: 78
+repositorio-documentos-http.repository.ts:390 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:391 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+repositorio-documentos-http.repository.ts:392 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:393 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+repositorio-documentos-http.repository.ts:394 🔵 [RepositorioDocumentosHttp] nodeId: 78
+AlmacenView.vue:197 🔵 [AlmacenView] Ruta cambió: {newPath: Array(1), oldPath: Array(0)}
+repositorio-documentos-http.repository.ts:390 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:391 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+repositorio-documentos-http.repository.ts:392 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:393 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+repositorio-documentos-http.repository.ts:394 🔵 [RepositorioDocumentosHttp] nodeId: 78
+repositorio-documentos-http.repository.ts:405 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+repositorio-documentos-http.repository.ts:428 🔵 [RepositorioDocumentosHttp] ========================================
+almacenamiento-http.repository.ts:129 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+almacenamiento-http.repository.ts:130 🔵 [AlmacenamientoHttp] ========================================
+AlmacenView.vue:454 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: '78', structureId: '10'}
+AlmacenView.vue:464 🔵 [AlmacenView] Usando carpeta actual: 78
+repositorio-documentos-http.repository.ts:405 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+repositorio-documentos-http.repository.ts:428 🔵 [RepositorioDocumentosHttp] ========================================
+almacenamiento-http.repository.ts:59 🔵 [AlmacenamientoHttp] ========================================
+almacenamiento-http.repository.ts:60 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+almacenamiento-http.repository.ts:61 🔵 [AlmacenamientoHttp] ========================================
+almacenamiento-http.repository.ts:62 🔵 [AlmacenamientoHttp] sociedadId: 10
+almacenamiento-http.repository.ts:63 🔵 [AlmacenamientoHttp] parentId: 78
+repositorio-documentos-http.repository.ts:390 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:391 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+repositorio-documentos-http.repository.ts:392 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:393 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/78
+repositorio-documentos-http.repository.ts:394 🔵 [RepositorioDocumentosHttp] nodeId: 78
+repositorio-documentos-http.repository.ts:405 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 78, name: 'kkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+repositorio-documentos-http.repository.ts:428 🔵 [RepositorioDocumentosHttp] ========================================
+almacenamiento-http.repository.ts:129 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+almacenamiento-http.repository.ts:130 🔵 [AlmacenamientoHttp] ========================================
+AlmacenView.vue:151 🔵 [AlmacenView] Navegando a carpeta: 79
+AlmacenView.vue:163 🔵 [AlmacenView] Actualizando ruta a: /storage/almacen/10/78/79
+almacenamiento-http.repository.ts:59 🔵 [AlmacenamientoHttp] ========================================
+almacenamiento-http.repository.ts:60 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+almacenamiento-http.repository.ts:61 🔵 [AlmacenamientoHttp] ========================================
+almacenamiento-http.repository.ts:62 🔵 [AlmacenamientoHttp] sociedadId: 10
+almacenamiento-http.repository.ts:63 🔵 [AlmacenamientoHttp] parentId: 79
+repositorio-documentos-http.repository.ts:390 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:391 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+repositorio-documentos-http.repository.ts:392 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:393 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/79
+repositorio-documentos-http.repository.ts:394 🔵 [RepositorioDocumentosHttp] nodeId: 79
+AlmacenView.vue:197 🔵 [AlmacenView] Ruta cambió: {newPath: Array(2), oldPath: Array(1)}
+repositorio-documentos-http.repository.ts:390 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:391 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+repositorio-documentos-http.repository.ts:392 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:393 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/79
+repositorio-documentos-http.repository.ts:394 🔵 [RepositorioDocumentosHttp] nodeId: 79
+repositorio-documentos-http.repository.ts:405 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 79, name: 'kkkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+repositorio-documentos-http.repository.ts:428 🔵 [RepositorioDocumentosHttp] ========================================
+almacenamiento-http.repository.ts:129 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+almacenamiento-http.repository.ts:130 🔵 [AlmacenamientoHttp] ========================================
+AlmacenView.vue:454 🔵 [AlmacenView] Watch parentNodeIdForUpload: {carpetaId: '79', structureId: '10'}
+AlmacenView.vue:464 🔵 [AlmacenView] Usando carpeta actual: 79
+repositorio-documentos-http.repository.ts:405 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 79, name: 'kkkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+repositorio-documentos-http.repository.ts:428 🔵 [RepositorioDocumentosHttp] ========================================
+almacenamiento-http.repository.ts:59 🔵 [AlmacenamientoHttp] ========================================
+almacenamiento-http.repository.ts:60 🔵 [AlmacenamientoHttp] LIST DOCUMENTOS
+almacenamiento-http.repository.ts:61 🔵 [AlmacenamientoHttp] ========================================
+almacenamiento-http.repository.ts:62 🔵 [AlmacenamientoHttp] sociedadId: 10
+almacenamiento-http.repository.ts:63 🔵 [AlmacenamientoHttp] parentId: 79
+repositorio-documentos-http.repository.ts:390 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:391 🔵 [RepositorioDocumentosHttp] OBTENER NODO POR ID
+repositorio-documentos-http.repository.ts:392 🔵 [RepositorioDocumentosHttp] ========================================
+repositorio-documentos-http.repository.ts:393 🔵 [RepositorioDocumentosHttp] URL: http://localhost:3000/api/v2/repository/society-profile/nodes/79
+repositorio-documentos-http.repository.ts:394 🔵 [RepositorioDocumentosHttp] nodeId: 79
+repositorio-documentos-http.repository.ts:405 🔵 [RepositorioDocumentosHttp] Nodo obtenido: {id: 79, name: 'kkkk', type: 1, childrenCount: 1, hasDocumentVersions: false, …}
+repositorio-documentos-http.repository.ts:428 🔵 [RepositorioDocumentosHttp] ========================================
+almacenamiento-http.repository.ts:129 🔵 [AlmacenamientoHttp] Nodos obtenidos: 1
+almacenamiento-http.repository.ts:130 🔵 [AlmacenamientoHttp] ========================================

@@ -47,8 +47,12 @@ export class AlmacenamientoHttpRepository implements AlmacenamientoRepository {
   /**
    * Lista documentos de una carpeta (o raíz si parentId es null)
    * 
+   * IMPORTANTE: Cuando parentId es null, cargamos el contenido de la carpeta
+   * "Documentos Societarios" (ID 32 o la carpeta con código SOCIETARIO_ROOT).
+   * Esta es la carpeta raíz del almacén.
+   * 
    * ENDPOINT V2: 
-   * - Si parentId es null: GET /api/v2/repository/society-profile/:structureId/nodes/core
+   * - Si parentId es null: Buscar carpeta "Documentos Societarios" y cargar su contenido
    * - Si parentId existe: GET /api/v2/repository/society-profile/nodes/:parentId
    */
   async listDocumentos(sociedadId: string, parentId: string | null): Promise<DocumentoSocietario[]> {
@@ -62,80 +66,54 @@ export class AlmacenamientoHttpRepository implements AlmacenamientoRepository {
       let nodes: RepositorioNode[] = [];
 
       if (parentId === null) {
-        // Si estamos en la raíz, obtener nodos core
-        nodes = await this.repositorioHttp.obtenerNodosCore(sociedadId);
+        // Si estamos en la raíz, cargar el contenido de /core/ directamente
+        // Según la nueva estructura V2, /core/ es la raíz del almacén (Google Drive clone)
+        console.log("🔵 [AlmacenamientoHttp] Cargando contenido de /core/ (raíz del almacén)");
         
-        // Si la sociedad está vacía, retornar array vacío
-        if (nodes.length === 0) {
-          console.log("🔵 [AlmacenamientoHttp] Sociedad vacía, no hay documentos");
+        // 1. Obtener carpetas raíz para encontrar /core/
+        const nodosRaiz = await this.repositorioHttp.obtenerNodosRaiz(sociedadId);
+        
+        if (nodosRaiz.length === 0) {
+          console.log("🔵 [AlmacenamientoHttp] Sociedad vacía, no hay carpetas raíz");
           return [];
         }
 
-        // Filtrar solo los hijos directos de /core/ (no incluir /core/ mismo)
-        // Según la respuesta del backend, los nodos con parentId: 1 son hijos directos de /core/
-        nodes = nodes.filter(node => {
-          // Incluir solo nodos que son hijos directos de /core/
-          // parentId debe ser 1 (hijo directo de /core/)
-          return node.parentId === "1";
+        // 2. Buscar la carpeta "core"
+        const carpetaCore = nodosRaiz.find(node => 
+          node.type === 'folder' && node.name.toLowerCase() === 'core'
+        );
+
+        if (!carpetaCore) {
+          console.log("🔵 [AlmacenamientoHttp] No se encontró la carpeta 'core'");
+          return [];
+        }
+
+        console.log("🔵 [AlmacenamientoHttp] Carpeta 'core' encontrada:", {
+          id: carpetaCore.id,
+          name: carpetaCore.name,
+          path: carpetaCore.path,
         });
 
-        // IMPORTANTE: Filtrar carpetas de "documentos generados"
-        // Estas carpetas NO deben aparecer en el Almacén porque son del sistema
-        // y pertenecen a "Documentos Generados", no al Almacén del usuario
-        nodes = nodes.filter(node => {
-          const path = node.path.toLowerCase();
-          const name = node.name.toLowerCase();
-          
-          // Lista de nombres de carpetas del sistema (documentos generados)
-          const carpetasSistema = [
-            'directorio',
-            'sociedades',
-            'juntas',
-            'historial de registro',
-            'ficha de la sociedad',
-            'registro sociedades',
-            'estados financieros y reparto de dividendos',
-            'aumento capital',
-            'designación y/o remoción',
-            'accionistas',
-            'datos principales',
-            'capital social y acciones',
-            'asignación de acciones',
-            'registro de apoderados',
-            'quorums y mayoría',
-            'régimen de facultades',
-            'estatutos',
-            'gerentes y/o apoderados',
-            'directores',
-            'aporte dinerario',
-            'capitalización de créditos',
-          ];
-          
-          // Excluir si el nombre coincide con carpetas del sistema
-          if (carpetasSistema.includes(name)) {
-            console.log("🔵 [AlmacenamientoHttp] Filtrando carpeta del sistema:", name);
-            return false;
-          }
-          
-          // Excluir si el path contiene rutas de documentos generados
-          if (path.includes('/core/sociedades/') || 
-              path.includes('/core/juntas/') || 
-              path.includes('/core/directorio/')) {
-            console.log("🔵 [AlmacenamientoHttp] Filtrando por path:", path);
-            return false;
-          }
-          
-          // Excluir carpetas que son IDs numéricos (carpetas de juntas por ID, no por fecha)
-          // Estas deberían ser por fecha (ej: "junta 12/12/2023"), no por ID (ej: "4", "8")
-          if (/^\d+$/.test(name)) {
-            console.log("🔵 [AlmacenamientoHttp] Filtrando carpeta numérica (ID):", name);
-            return false;
-          }
-          
-          return true;
-        });
+        // 3. Obtener el contenido de /core/
+        const nodeIdNumber = parseInt(carpetaCore.id, 10);
+        if (isNaN(nodeIdNumber)) {
+          throw new Error(`ID de carpeta inválido: ${carpetaCore.id}`);
+        }
         
-        console.log("🔵 [AlmacenamientoHttp] Nodos después de filtrar:", nodes.length);
+        const node = await this.repositorioHttp.obtenerNodoPorId(nodeIdNumber);
+        if (node && node.children) {
+          // Filtrar solo archivos y carpetas que NO sean "documentos-generados"
+          // porque "documentos-generados" es una carpeta visual que redirige a otra vista
+          nodes = node.children.filter(child => {
+            // Excluir la carpeta "documentos-generados" (es visual, redirige a otra vista)
+            return child.name.toLowerCase() !== 'documentos-generados';
+          });
+          
+          console.log("🔵 [AlmacenamientoHttp] Contenido de /core/ (filtrado):", nodes.length, "elementos");
+        } else {
+          console.log("🔵 [AlmacenamientoHttp] Carpeta /core/ está vacía");
+          nodes = [];
+        }
       } else {
         // Si hay parentId, obtener el nodo con sus hijos
         const nodeIdNumber = parseInt(parentId, 10);
@@ -210,10 +188,18 @@ export class AlmacenamientoHttpRepository implements AlmacenamientoRepository {
     const baseUrl = this.resolveBaseUrl();
     const url = `${baseUrl}/api/v2/repository/society-profile/${sociedadId}/nodes/${parentIdNumber}/folder`;
 
+    console.log("🔵 [AlmacenamientoHttp] URL:", url);
+    console.log("🔵 [AlmacenamientoHttp] Body:", {
+      name: nombre,
+      description: null,
+    });
+
     try {
       const response = await $fetch<{
         success: boolean;
         data: any;
+        message?: string;
+        code?: number;
       }>(url, {
         ...withAuthHeaders(),
         method: 'POST' as const,
@@ -223,34 +209,59 @@ export class AlmacenamientoHttpRepository implements AlmacenamientoRepository {
         },
       });
 
-      if (response.success && response.data) {
-        // Mapear la respuesta a RepositorioNode y luego a CarpetaSistema
-        const node: RepositorioNode = {
-          id: String(response.data.id),
-          code: response.data.code || '',
-          societyId: String(response.data.societyId || sociedadId),
-          parentId: response.data.parentId ? String(response.data.parentId) : null,
-          name: response.data.name,
-          type: response.data.type === 1 ? 'folder' : 'document',
-          path: response.data.path || '',
-          description: response.data.description || null,
-          createdAt: response.data.createdAt || new Date().toISOString(),
-          updatedAt: response.data.updatedAt || new Date().toISOString(),
-          isCore: response.data.isCore || false,
-        };
+      console.log("🔵 [AlmacenamientoHttp] ========================================");
+      console.log("🔵 [AlmacenamientoHttp] RESPUESTA:");
+      console.log("🔵 [AlmacenamientoHttp] response:", JSON.stringify(response, null, 2));
+      console.log("🔵 [AlmacenamientoHttp] ========================================");
 
-        console.log("🟢 [AlmacenamientoHttp] Carpeta creada exitosamente:", node.id);
-        console.log("🔵 [AlmacenamientoHttp] ========================================");
-
-        return DocumentoSocietarioMapper.toCarpetaSistema(node);
+      if (!response) {
+        throw new Error("No se recibió respuesta del servidor");
       }
 
-      throw new Error("La respuesta del servidor no contiene los datos esperados");
+      if (!response.success) {
+        throw new Error(response.message || "Error al crear la carpeta");
+      }
+
+      if (!response.data) {
+        throw new Error("La respuesta del servidor no contiene los datos esperados");
+      }
+
+      // Mapear la respuesta a RepositorioNode y luego a CarpetaSistema
+      const node: RepositorioNode = {
+        id: String(response.data.id),
+        code: response.data.code || '',
+        societyId: String(response.data.societyId || sociedadId),
+        parentId: response.data.parentId ? String(response.data.parentId) : null,
+        name: response.data.name,
+        type: response.data.type === 1 ? 'folder' : 'document',
+        path: response.data.path || '',
+        description: response.data.description || null,
+        createdAt: response.data.createdAt || new Date().toISOString(),
+        updatedAt: response.data.updatedAt || new Date().toISOString(),
+        isCore: response.data.isCore || false,
+      };
+
+      console.log("🟢 [AlmacenamientoHttp] Carpeta creada exitosamente:", {
+        id: node.id,
+        name: node.name,
+        path: node.path,
+      });
+      console.log("🔵 [AlmacenamientoHttp] ========================================");
+
+      return DocumentoSocietarioMapper.toCarpetaSistema(node);
     } catch (error: any) {
-      console.error("🔴 [AlmacenamientoHttp] Error al crear carpeta:", error);
-      throw new Error(
-        `No se pudo crear la carpeta: ${error?.message || "Error desconocido"}`
-      );
+      console.error("🔴 [AlmacenamientoHttp] ========================================");
+      console.error("🔴 [AlmacenamientoHttp] ERROR AL CREAR CARPETA:");
+      console.error("🔴 [AlmacenamientoHttp] URL:", url);
+      console.error("🔴 [AlmacenamientoHttp] Body:", { name: nombre, description: null });
+      console.error("🔴 [AlmacenamientoHttp] Error completo:", error);
+      console.error("🔴 [AlmacenamientoHttp] Error message:", error?.message);
+      console.error("🔴 [AlmacenamientoHttp] Error statusCode:", error?.statusCode);
+      console.error("🔴 [AlmacenamientoHttp] Error data:", error?.data);
+      console.error("🔴 [AlmacenamientoHttp] ========================================");
+      
+      const errorMessage = error?.data?.message || error?.message || "Error desconocido";
+      throw new Error(`No se pudo crear la carpeta: ${errorMessage}`);
     }
   }
 

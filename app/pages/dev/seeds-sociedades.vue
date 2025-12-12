@@ -51,9 +51,26 @@
   import type { ApoderadoDTO } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/dtos/apoderado.dto";
   import type { ClaseApoderadoDTO } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/dtos/clase-apoderado.dto";
   import { CreateApoderadoUseCase } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/create-apoderado.use-case";
+  import { CreateClaseApoderadoUseCase } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/create-clase-apoderado.use-case";
   import { ListClasesApoderadoUseCase } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/list-clases-apoderado.use-case";
+  import { ListApoderadosUseCase } from "~/core/hexag/registros/sociedades/pasos/apoderados/application/use-cases/list-apoderados.use-case";
   import { ApoderadosHttpRepository } from "~/core/hexag/registros/sociedades/pasos/apoderados/infrastructure/repositories/apoderados.http.repository";
   import { ClasesApoderadoEspecialesEnum } from "~/core/presentation/registros/sociedades/pasos/apoderados/types/enums/ClasesApoderadoEspecialesEnum";
+  import type { ClaseApoderadoPayload } from "~/core/hexag/registros/sociedades/pasos/apoderados/domain/entities/clase-apoderado-payload";
+
+  // Régimen de Poderes
+  import { CreateTiposFacultadesUseCase } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/application/use-case/create-tipos-facultades.use-case";
+  import { ListTiposFacultadesUseCase } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/application/use-case/list-tipos-facultades.use-case";
+  import { CreateOtorgamientoPoderUseCase } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/application/use-case/create-otorgamiento-poder.use-case";
+  import { RegimenFacultadesHttpRepository } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/infrastructure/repository/regimen-facultades.http.repository";
+  import type { TipoFacultadPayload } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain/entities/tipo-facultad-payload";
+  import type { CreateOtorgamientoPoderPayload } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain/entities/create-otorgamiento-poder.payload";
+  import type { CreateReglaMonetariaPayload } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain/entities/create-otorgamiento-poder.payload";
+  import type { Firmante } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain/entities/otorgamiento-poderes.entity";
+  import { ScopeUIEnum } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain/enums/ScopeUIEnum";
+  import { EntityCoinUIEnum } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain/enums/EntityCoinUIEnum";
+  import { TipoMontoUIEnum } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain/enums/TipoMontoUIEnum";
+  import { TipoFirmasUIEnum } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain/enums/TipoFirmasUIEnum";
 
   // Valor Nominal
   import { UpdateValorNominalUseCase } from "~/core/hexag/registros/sociedades/application/use-cases/update-valor-nominal.use-case";
@@ -100,10 +117,18 @@
 
   const apoderadosRepo = new ApoderadosHttpRepository();
   const listClasesApoderadoUseCase = new ListClasesApoderadoUseCase(apoderadosRepo);
+  const createClaseApoderadoUseCase = new CreateClaseApoderadoUseCase(apoderadosRepo);
   const apoderadoUseCase = new CreateApoderadoUseCase(apoderadosRepo);
+  const listApoderadosUseCase = new ListApoderadosUseCase(apoderadosRepo);
 
   const valorNominalRepo = new ValorNominalHttpRepository();
   const valorNominalUseCase = new UpdateValorNominalUseCase(valorNominalRepo);
+
+  // Régimen de Poderes
+  const regimenFacultadesRepo = new RegimenFacultadesHttpRepository();
+  const createTipoFacultadUseCase = new CreateTiposFacultadesUseCase(regimenFacultadesRepo);
+  const listTipoFacultadesUseCase = new ListTiposFacultadesUseCase(regimenFacultadesRepo);
+  const createOtorgamientoPoderUseCase = new CreateOtorgamientoPoderUseCase(regimenFacultadesRepo);
 
   // Helper para crear asignación de acciones directamente (aislado del código de producción)
   // Esto evita depender de los use cases que su compañero está desarrollando
@@ -187,7 +212,14 @@
 
   // Datos de prueba
   const generateTestData = (index: number) => {
-    const baseName = `Empresa Test ${index + 1}`;
+    const nombresEmpresas = [
+      "Inversiones del Sur S.A.C.",
+      "Comercial Andina S.A.C.",
+      "Servicios Empresariales S.A.C.",
+      "Construcciones Modernas S.A.C.",
+      "Tecnología Avanzada S.A.C.",
+    ];
+    const baseName = nombresEmpresas[index % nombresEmpresas.length] || `Empresa ${index + 1} S.A.C.`;
     const ruc = `20${String(index + 1).padStart(7, "0")}${String(
       Math.floor(Math.random() * 100)
     ).padStart(2, "0")}`;
@@ -696,6 +728,701 @@
     }
   };
 
+  // Función para generar datos completos (con apoderados, facultades, etc.)
+  const generateTestDataCompleto = (index: number) => {
+    const baseData = generateTestData(index);
+    
+    return {
+      ...baseData,
+      // Clases de apoderados adicionales (además de Gerente General)
+      clasesApoderadoAdicionales: [
+        {
+          id: generateUUID(),
+          nombre: "Apoderado Especial",
+        },
+        {
+          id: generateUUID(),
+          nombre: "Apoderado Judicial",
+        },
+        {
+          id: generateUUID(),
+          nombre: "Apoderado Comercial",
+        },
+      ] as ClaseApoderadoPayload[],
+
+      // Apoderados adicionales (asociados a las clases creadas)
+      apoderadosAdicionales: [
+        {
+          id: generateUUID(),
+          claseApoderadoId: "", // Se llenará después de crear las clases
+          persona: {
+            id: generateUUID(),
+            tipo: "NATURAL",
+            nombre: "Luis",
+            apellidoPaterno: "Martínez",
+            apellidoMaterno: "Torres",
+            numeroDocumento: String(index * 8 + 8).padStart(8, "0"),
+            tipoDocumento: "DNI",
+            fechaNacimiento: "01-01-1982",
+            nacionalidad: "Peruana",
+            estadoCivil: "SOLTERO",
+            direccion: "Av. Apoderado 456",
+            distrito: "Miraflores",
+            provincia: "Lima",
+            departamento: "Lima",
+          } as Persona,
+        },
+        {
+          id: generateUUID(),
+          claseApoderadoId: "", // Se llenará después de crear las clases
+          persona: {
+            id: generateUUID(),
+            tipo: "NATURAL",
+            nombre: "Ana",
+            apellidoPaterno: "Fernández",
+            apellidoMaterno: "Sánchez",
+            numeroDocumento: String(index * 8 + 9).padStart(8, "0"),
+            tipoDocumento: "DNI",
+            fechaNacimiento: "01-01-1985",
+            nacionalidad: "Peruana",
+            estadoCivil: "SOLTERO",
+            direccion: "Av. Apoderado 789",
+            distrito: "San Borja",
+            provincia: "Lima",
+            departamento: "Lima",
+          } as Persona,
+        },
+      ] as ApoderadoDTO[],
+
+      // Otros apoderados (asociados a clase "Otros Apoderados")
+      otrosApoderados: [
+        {
+          id: generateUUID(),
+          claseApoderadoId: "", // Se llenará después de obtener la clase "Otros Apoderados"
+          persona: {
+            id: generateUUID(),
+            tipo: "NATURAL",
+            nombre: "Carlos",
+            apellidoPaterno: "Vargas",
+            apellidoMaterno: "Ramírez",
+            numeroDocumento: String(index * 7 + 7).padStart(8, "0"),
+            tipoDocumento: "DNI",
+            fechaNacimiento: "01-01-1980",
+            nacionalidad: "Peruana",
+            estadoCivil: "SOLTERO",
+            direccion: "Av. Otro Apoderado 123",
+            distrito: "San Isidro",
+            provincia: "Lima",
+            departamento: "Lima",
+          } as Persona,
+        },
+        {
+          id: generateUUID(),
+          claseApoderadoId: "", // Se llenará después de obtener la clase "Otros Apoderados"
+          persona: {
+            id: generateUUID(),
+            tipo: "NATURAL",
+            nombre: "Patricia",
+            apellidoPaterno: "Gómez",
+            apellidoMaterno: "Díaz",
+            numeroDocumento: String(index * 7 + 8).padStart(8, "0"),
+            tipoDocumento: "DNI",
+            fechaNacimiento: "01-01-1983",
+            nacionalidad: "Peruana",
+            estadoCivil: "SOLTERO",
+            direccion: "Av. Otro Apoderado 456",
+            distrito: "La Molina",
+            provincia: "Lima",
+            departamento: "Lima",
+          } as Persona,
+        },
+      ] as ApoderadoDTO[],
+
+      // Tipos de facultades
+      tiposFacultades: [
+        {
+          id: generateUUID(),
+          tipoFacultades: "Poder para Contratar",
+        },
+        {
+          id: generateUUID(),
+          tipoFacultades: "Poder Judicial",
+        },
+        {
+          id: generateUUID(),
+          tipoFacultades: "Poder para Representar",
+        },
+        {
+          id: generateUUID(),
+          tipoFacultades: "Poder para Operaciones Bancarias",
+        },
+        {
+          id: generateUUID(),
+          tipoFacultades: "Poder para Inmuebles",
+        },
+      ] as TipoFacultadPayload[],
+    };
+  };
+
+  // Función para crear sociedad completa (con todos los pasos nuevos)
+  const createSocietyCompleto = async (index: number) => {
+    const testData = generateTestDataCompleto(index);
+    const steps: Record<string, { completed: boolean; error?: string }> = {};
+    currentSocietyIndex.value = index;
+
+    try {
+      // Pasos 0-9: Igual que createSociety (hasta Gerente General)
+      // Paso 0: Crear sociedad (root)
+      currentStep.value = `[Sociedad ${index + 1}] Creando sociedad...`;
+      const result0 = await executeStep("root", "root", async () => {
+        const societyId = await historialStore.crearSociedad();
+        if (!societyId) {
+          throw new Error("No se pudo crear la sociedad");
+        }
+        (testData as any).societyId = societyId;
+      });
+      steps.root = result0;
+      if (!result0.completed) {
+        throw new Error(result0.error || "Error al crear la sociedad");
+      }
+      const societyId = (testData as any).societyId;
+
+      // Paso 1: Datos principales
+      currentStep.value = `[Sociedad ${index + 1}] Paso 1/15: Datos principales...`;
+      steps.datosSociedad = await executeStep("datosSociedad", "datosSociedad", async () => {
+        await datosSociedadUseCase.execute(societyId, testData.datosSociedad);
+      });
+      if (!steps.datosSociedad.completed) throw new Error(steps.datosSociedad.error);
+
+      // Paso 2: Accionistas
+      currentStep.value = `[Sociedad ${index + 1}] Paso 2/18: Accionistas...`;
+      steps.accionistas = await executeStep("accionistas", "accionistas", async () => {
+        const accionistasCreados: string[] = [];
+        for (const accionista of testData.accionistas) {
+          const creado = await accionistasUseCase.execute(societyId, accionista);
+          accionistasCreados.push(creado.id);
+        }
+        (testData as any).accionistasIds = accionistasCreados;
+      });
+      if (!steps.accionistas.completed) throw new Error(steps.accionistas.error);
+
+      // Paso 2.5: Valor nominal
+      currentStep.value = `[Sociedad ${index + 1}] Paso 3/18: Valor nominal...`;
+      steps.valorNominal = await executeStep("valorNominal", "valorNominal", async () => {
+        await valorNominalUseCase.execute(societyId, testData.valorNominal);
+      });
+      if (!steps.valorNominal.completed) throw new Error(steps.valorNominal.error);
+
+      // Paso 3: Acciones
+      currentStep.value = `[Sociedad ${index + 1}] Paso 4/18: Acciones...`;
+      let accionCreadaId: string | null = null;
+      steps.acciones = await executeStep("acciones", "acciones", async () => {
+        await accionesUseCase.execute(societyId, testData.accion);
+        const acciones = await listAccionesUseCase.execute(societyId);
+        const accionComun = acciones.find((a) => a.tipo === TipoAccionEnum.COMUN);
+        if (!accionComun) {
+          throw new Error("No se encontró la acción común creada");
+        }
+        accionCreadaId = accionComun.id;
+        (testData as any).accionId = accionCreadaId;
+      });
+      if (!steps.acciones.completed) throw new Error(steps.acciones.error);
+
+      // Paso 3.5: Asignación de acciones
+      currentStep.value = `[Sociedad ${index + 1}] Paso 5/18: Asignación de acciones...`;
+      steps.asignacionAcciones = await executeStep(
+        "asignacionAcciones",
+        "asignacionAcciones",
+        async () => {
+          const accionistasIds = (testData as any).accionistasIds;
+          const accionId = (testData as any).accionId;
+
+          if (!accionistasIds || accionistasIds.length < 2 || !accionId) {
+            throw new Error("Faltan IDs de accionistas o acción para asignar");
+          }
+
+          await createAsignacionAccionesDirect(societyId, {
+            id: generateUUID(),
+            accionId,
+            accionistaId: accionistasIds[0],
+            cantidadSuscrita: 300,
+            precioPorAccion: 1.0,
+            porcentajePagadoPorAccion: 100,
+            totalDividendosPendientes: 0,
+            pagadoCompletamente: true,
+            capitalSocial: 300 * 1.0,
+            prima: 0,
+          });
+
+          await createAsignacionAccionesDirect(societyId, {
+            id: generateUUID(),
+            accionId,
+            accionistaId: accionistasIds[1],
+            cantidadSuscrita: 200,
+            precioPorAccion: 1.0,
+            porcentajePagadoPorAccion: 100,
+            totalDividendosPendientes: 0,
+            pagadoCompletamente: true,
+            capitalSocial: 200 * 1.0,
+            prima: 0,
+          });
+        }
+      );
+      if (!steps.asignacionAcciones.completed) {
+        console.warn(
+          `[Seeds] Asignación de acciones falló pero continuamos: ${steps.asignacionAcciones.error}`
+        );
+      }
+
+      // Paso 5: Quórums
+      currentStep.value = `[Sociedad ${index + 1}] Paso 6/18: Quórums y mayorías...`;
+      steps.quorums = await executeStep("quorums", "quorums", async () => {
+        await quorumUseCase.execute(societyId, testData.quorum);
+      });
+      if (!steps.quorums.completed) throw new Error(steps.quorums.error);
+
+      // Paso 6: Directores
+      currentStep.value = `[Sociedad ${index + 1}] Paso 7/18: Creando ${testData.directores.length} directores...`;
+      let primerDirectorId: string | null = null;
+      steps.directores = await executeStep("directores", "directores", async () => {
+        const directoresCreados: string[] = [];
+        for (const director of testData.directores) {
+          const directorCreado = await directorUseCase.execute(societyId, director);
+          directoresCreados.push(directorCreado.id);
+          if (!primerDirectorId && directorCreado.rolDirector === TipoDirector.TITULAR) {
+            primerDirectorId = directorCreado.id;
+          }
+        }
+        (testData as any).directoresIds = directoresCreados;
+      });
+      if (!steps.directores.completed) throw new Error(steps.directores.error);
+
+      // Paso 7: Directorio
+      currentStep.value = `[Sociedad ${index + 1}] Paso 8/18: Configuración del directorio...`;
+      steps.directorio = await executeStep("directorio", "directorio", async () => {
+        const directorioConPresidente: DirectorioDTO = {
+          ...testData.directorio,
+          presidenteId: primerDirectorId,
+        };
+        await directorioUseCase.execute(societyId, directorioConPresidente);
+      });
+      if (!steps.directorio.completed) {
+        console.error(`[Seeds] Error configurando directorio: ${steps.directorio.error}`);
+      }
+
+      // Paso 8: Obtener clase "Gerente General"
+      currentStep.value = `[Sociedad ${index + 1}] Paso 9/18: Obteniendo clase Gerente General...`;
+      let claseGerenteGeneral: any = null;
+      const result8 = await executeStep("claseApoderado", "claseApoderado", async () => {
+        const clases = await listClasesApoderadoUseCase.execute(societyId);
+        claseGerenteGeneral = clases.find(
+          (clase) => clase.nombre === ClasesApoderadoEspecialesEnum.GERENTE_GENERAL
+        );
+        if (!claseGerenteGeneral) {
+          throw new Error(
+            `No se encontró la clase "Gerente General". Clases disponibles: ${clases.map((c) => c.nombre).join(", ")}`
+          );
+        }
+      });
+      steps.claseApoderado = result8;
+      if (!result8.completed) {
+        console.error(`[Seeds] Error obteniendo clase de apoderado: ${result8.error}`);
+      }
+
+      // Paso 9: Crear Gerente General
+      currentStep.value = `[Sociedad ${index + 1}] Paso 10/18: Gerente General...`;
+      if (claseGerenteGeneral?.id) {
+        testData.apoderado.claseApoderadoId = claseGerenteGeneral.id;
+        steps.apoderado = await executeStep("apoderado", "apoderado", async () => {
+          await apoderadoUseCase.execute(societyId, testData.apoderado);
+        });
+        if (!steps.apoderado.completed) {
+          console.error(`[Seeds] Error creando gerente general: ${steps.apoderado.error}`);
+        }
+      } else {
+        steps.apoderado = {
+          completed: false,
+          error: "No se pudo obtener la clase 'Gerente General'",
+        };
+      }
+
+      // ========== NUEVOS PASOS ==========
+
+      // Paso 10: Crear clases de apoderados adicionales
+      currentStep.value = `[Sociedad ${index + 1}] Paso 11/18: Creando clases de apoderados...`;
+      steps.clasesApoderadoAdicionales = await executeStep(
+        "clasesApoderadoAdicionales",
+        "clasesApoderadoAdicionales",
+        async () => {
+          const clasesCreadas: string[] = [];
+          for (const clase of testData.clasesApoderadoAdicionales) {
+            const claseCreada = await createClaseApoderadoUseCase.execute(societyId, clase);
+            clasesCreadas.push(claseCreada.id);
+          }
+          (testData as any).clasesApoderadoAdicionalesIds = clasesCreadas;
+        }
+      );
+      if (!steps.clasesApoderadoAdicionales.completed) {
+        console.warn(
+          `[Seeds] Error creando clases de apoderados: ${steps.clasesApoderadoAdicionales.error}`
+        );
+      }
+
+      // Paso 10.5: Crear apoderados adicionales (asociados a las clases creadas)
+      currentStep.value = `[Sociedad ${index + 1}] Paso 12/18: Creando apoderados adicionales...`;
+      steps.apoderadosAdicionales = await executeStep(
+        "apoderadosAdicionales",
+        "apoderadosAdicionales",
+        async () => {
+          const clasesIds = (testData as any).clasesApoderadoAdicionalesIds || [];
+          const apoderadosCreados: string[] = [];
+          
+          for (let i = 0; i < testData.apoderadosAdicionales.length; i++) {
+            const apoderado = testData.apoderadosAdicionales[i];
+            // Asignar a la clase correspondiente (ciclado)
+            apoderado.claseApoderadoId = clasesIds[i % clasesIds.length];
+            await apoderadoUseCase.execute(societyId, apoderado);
+            
+            // Obtener ID después de crear
+            const apoderados = await listApoderadosUseCase.execute(societyId);
+            const apoderadoCreado = apoderados.find(
+              (a) => a.persona.numeroDocumento === apoderado.persona.numeroDocumento
+            );
+            if (apoderadoCreado) {
+              apoderadosCreados.push(apoderadoCreado.id);
+            }
+          }
+          (testData as any).apoderadosAdicionalesIds = apoderadosCreados;
+        }
+      );
+      if (!steps.apoderadosAdicionales.completed) {
+        console.warn(`[Seeds] Error creando apoderados adicionales: ${steps.apoderadosAdicionales.error}`);
+      }
+
+      // Paso 11: Obtener clase "Otros Apoderados" y crear otros apoderados
+      currentStep.value = `[Sociedad ${index + 1}] Paso 13/18: Creando otros apoderados...`;
+      steps.otrosApoderados = await executeStep("otrosApoderados", "otrosApoderados", async () => {
+        // Obtener clase "Otros Apoderados"
+        const clases = await listClasesApoderadoUseCase.execute(societyId);
+        const claseOtrosApoderados = clases.find(
+          (clase) => clase.nombre === ClasesApoderadoEspecialesEnum.OTROS_APODERADOS
+        );
+
+        if (!claseOtrosApoderados) {
+          throw new Error(
+            `No se encontró la clase "Otros Apoderados". Clases disponibles: ${clases.map((c) => c.nombre).join(", ")}`
+          );
+        }
+
+        // Crear otros apoderados
+        const otrosApoderadosCreados: string[] = [];
+        for (const otroApoderado of testData.otrosApoderados) {
+          otroApoderado.claseApoderadoId = claseOtrosApoderados.id;
+          await apoderadoUseCase.execute(societyId, otroApoderado);
+          
+          // Obtener ID después de crear (el backend no lo retorna)
+          const apoderados = await listApoderadosUseCase.execute(societyId);
+          const apoderadoCreado = apoderados.find(
+            (a) => a.persona.numeroDocumento === otroApoderado.persona.numeroDocumento
+          );
+          if (apoderadoCreado) {
+            otrosApoderadosCreados.push(apoderadoCreado.id);
+          }
+        }
+        (testData as any).otrosApoderadosIds = otrosApoderadosCreados;
+      });
+      if (!steps.otrosApoderados.completed) {
+        console.warn(`[Seeds] Error creando otros apoderados: ${steps.otrosApoderados.error}`);
+      }
+
+      // Paso 12: Crear tipos de facultades
+      currentStep.value = `[Sociedad ${index + 1}] Paso 14/18: Creando tipos de facultades...`;
+      steps.tiposFacultades = await executeStep("tiposFacultades", "tiposFacultades", async () => {
+        const tiposCreados: string[] = [];
+        for (const tipo of testData.tiposFacultades) {
+          await createTipoFacultadUseCase.execute(societyId, tipo);
+          
+          // Obtener ID después de crear (el backend no lo retorna)
+          const tipos = await listTipoFacultadesUseCase.execute(societyId);
+          const tipoCreado = tipos.find((t) => t.tipoFacultades === tipo.tipoFacultades);
+          if (tipoCreado) {
+            tiposCreados.push(tipoCreado.id);
+          }
+        }
+        (testData as any).tiposFacultadesIds = tiposCreados;
+      });
+      if (!steps.tiposFacultades.completed) {
+        console.warn(`[Seeds] Error creando tipos de facultades: ${steps.tiposFacultades.error}`);
+      }
+
+      // Paso 13: Asignar facultades a apoderados (por clase) - CON REGLAS MONETARIAS
+      currentStep.value = `[Sociedad ${index + 1}] Paso 15/18: Asignando facultades a apoderados...`;
+      steps.facultadesApoderados = await executeStep(
+        "facultadesApoderados",
+        "facultadesApoderados",
+        async () => {
+          const clasesIds = (testData as any).clasesApoderadoAdicionalesIds || [];
+          const tiposIds = (testData as any).tiposFacultadesIds || [];
+          const claseGerenteId = claseGerenteGeneral?.id;
+          
+          // Obtener todas las clases disponibles para usar como firmantes
+          const todasLasClases = await listClasesApoderadoUseCase.execute(societyId);
+          const clasesDisponiblesParaFirmantes = todasLasClases
+            .filter((c) => c.nombre !== ClasesApoderadoEspecialesEnum.OTROS_APODERADOS)
+            .map((c) => ({ id: c.id, nombre: c.nombre }));
+
+          // Crear múltiples asignaciones (80% con reglas monetarias)
+          const asignaciones: Array<{ claseId: string; tipoId: string; conReglas: boolean }> = [];
+          
+          // Asignar facultades a cada clase
+          for (let i = 0; i < clasesIds.length && i < tiposIds.length; i++) {
+            const conReglas = Math.random() < 0.8; // 80% con reglas
+            asignaciones.push({
+              claseId: clasesIds[i],
+              tipoId: tiposIds[i % tiposIds.length],
+              conReglas,
+            });
+          }
+
+          for (const asignacion of asignaciones) {
+            const fechaInicio = new Date();
+            fechaInicio.setFullYear(2025, 0, 1); // 1 de enero 2025
+            const fechaFin = new Date();
+            fechaFin.setFullYear(2026, 11, 31); // 31 de diciembre 2026
+            
+            const esIrrevocable = Math.random() < 0.5; // 50% irrevocable
+            
+            if (asignacion.conReglas) {
+              // Con reglas monetarias
+              const tipoMoneda = Math.random() < 0.7 ? EntityCoinUIEnum.SOLES : EntityCoinUIEnum.DOLARES;
+              const tieneLimite = Math.random() < 0.6; // 60% con límite
+              const esFirmaConjunta = Math.random() < 0.5; // 50% firma conjunta
+              
+              // Crear firmantes si es firma conjunta
+              let firmantes: Firmante[] = [];
+              if (esFirmaConjunta && clasesDisponiblesParaFirmantes.length > 0) {
+                // Seleccionar 1-2 clases diferentes como firmantes (excluyendo la clase actual)
+                const clasesFirmantes = clasesDisponiblesParaFirmantes
+                  .filter((c) => c.id !== asignacion.claseId && c.id !== claseGerenteId) // Excluir clase actual y gerente si es necesario
+                  .slice(0, Math.min(2, clasesDisponiblesParaFirmantes.length - 1));
+                
+                if (clasesFirmantes.length > 0) {
+                  firmantes = clasesFirmantes.map((clase, idx) => ({
+                    id: generateUUID(),
+                    cantidad: idx + 1, // 1 o 2 firmantes
+                    grupo: clase.id, // ID de la clase
+                  }));
+                }
+              }
+              
+              const reglasMonetarias: CreateReglaMonetariaPayload[] = [
+                {
+                  id: generateUUID(),
+                  tipoMoneda,
+                  montoDesde: 1000,
+                  ...(tieneLimite
+                    ? { tipoLimite: TipoMontoUIEnum.MONTO, montoHasta: 50000 }
+                    : { tipoLimite: TipoMontoUIEnum.SIN_LIMITE }),
+                  ...(esFirmaConjunta && firmantes.length > 0
+                    ? {
+                        tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
+                        firmantes,
+                      }
+                    : { tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA }),
+                },
+              ];
+
+              const payload: CreateOtorgamientoPoderPayload = {
+                id: generateUUID(),
+                poderId: asignacion.tipoId,
+                scope: ScopeUIEnum.CLASS,
+                claseApoderadoId: asignacion.claseId,
+                esIrrevocable,
+                fechaInicio: esIrrevocable ? fechaInicio : new Date(),
+                fechaFin: esIrrevocable ? fechaFin : undefined,
+                tieneReglasFirma: true,
+                reglasMonetarias,
+              };
+              
+              await createOtorgamientoPoderUseCase.execute(societyId, payload);
+            } else {
+              // Sin reglas monetarias
+              const payload: CreateOtorgamientoPoderPayload = {
+                id: generateUUID(),
+                poderId: asignacion.tipoId,
+                scope: ScopeUIEnum.CLASS,
+                claseApoderadoId: asignacion.claseId,
+                esIrrevocable,
+                fechaInicio: esIrrevocable ? fechaInicio : new Date(),
+                fechaFin: esIrrevocable ? fechaFin : undefined,
+                tieneReglasFirma: false,
+              };
+              
+              await createOtorgamientoPoderUseCase.execute(societyId, payload);
+            }
+          }
+        }
+      );
+      if (!steps.facultadesApoderados.completed) {
+        console.warn(
+          `[Seeds] Error asignando facultades a apoderados: ${steps.facultadesApoderados.error}`
+        );
+      }
+
+      // Paso 14: Asignar facultades a otros apoderados - CON REGLAS MONETARIAS
+      currentStep.value = `[Sociedad ${index + 1}] Paso 16/18: Asignando facultades a otros apoderados...`;
+      steps.facultadesOtrosApoderados = await executeStep(
+        "facultadesOtrosApoderados",
+        "facultadesOtrosApoderados",
+        async () => {
+          const otrosApoderadosIds = (testData as any).otrosApoderadosIds || [];
+          const tiposIds = (testData as any).tiposFacultadesIds || [];
+          const claseGerenteId = claseGerenteGeneral?.id;
+          
+          // Obtener todas las clases disponibles para usar como firmantes
+          const todasLasClases = await listClasesApoderadoUseCase.execute(societyId);
+          const clasesDisponiblesParaFirmantes = todasLasClases
+            .filter((c) => c.nombre !== ClasesApoderadoEspecialesEnum.OTROS_APODERADOS)
+            .map((c) => ({ id: c.id, nombre: c.nombre }));
+
+          // Crear asignaciones (80% con reglas monetarias)
+          for (let i = 0; i < otrosApoderadosIds.length && i < tiposIds.length; i++) {
+            const conReglas = Math.random() < 0.8; // 80% con reglas
+            const fechaInicio = new Date();
+            fechaInicio.setFullYear(2025, 0, 1);
+            const fechaFin = new Date();
+            fechaFin.setFullYear(2026, 11, 31);
+            const esIrrevocable = Math.random() < 0.5;
+            
+            if (conReglas) {
+              // Con reglas monetarias
+              const tipoMoneda = Math.random() < 0.7 ? EntityCoinUIEnum.SOLES : EntityCoinUIEnum.DOLARES;
+              const tieneLimite = Math.random() < 0.6;
+              const esFirmaConjunta = Math.random() < 0.5;
+              
+              // Crear firmantes si es firma conjunta
+              let firmantes: Firmante[] = [];
+              if (esFirmaConjunta && clasesDisponiblesParaFirmantes.length > 0) {
+                // Para otros apoderados, pueden usar todas las clases (incluyendo gerente)
+                const clasesFirmantes = clasesDisponiblesParaFirmantes
+                  .slice(0, Math.min(2, clasesDisponiblesParaFirmantes.length));
+                
+                if (clasesFirmantes.length > 0) {
+                  firmantes = clasesFirmantes.map((clase, idx) => ({
+                    id: generateUUID(),
+                    cantidad: idx + 1,
+                    grupo: clase.id,
+                  }));
+                }
+              }
+              
+              const reglasMonetarias: CreateReglaMonetariaPayload[] = [
+                {
+                  id: generateUUID(),
+                  tipoMoneda,
+                  montoDesde: 2000,
+                  ...(tieneLimite
+                    ? { tipoLimite: TipoMontoUIEnum.MONTO, montoHasta: 100000 }
+                    : { tipoLimite: TipoMontoUIEnum.SIN_LIMITE }),
+                  ...(esFirmaConjunta && firmantes.length > 0
+                    ? {
+                        tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA,
+                        firmantes,
+                      }
+                    : { tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA }),
+                },
+              ];
+
+              const payload: CreateOtorgamientoPoderPayload = {
+                id: generateUUID(),
+                poderId: tiposIds[i % tiposIds.length],
+                scope: ScopeUIEnum.ATTORNEY,
+                apoderadoId: otrosApoderadosIds[i],
+                esIrrevocable,
+                fechaInicio: esIrrevocable ? fechaInicio : new Date(),
+                fechaFin: esIrrevocable ? fechaFin : undefined,
+                tieneReglasFirma: true,
+                reglasMonetarias,
+              };
+              
+              await createOtorgamientoPoderUseCase.execute(societyId, payload);
+            } else {
+              // Sin reglas monetarias
+              const payload: CreateOtorgamientoPoderPayload = {
+                id: generateUUID(),
+                poderId: tiposIds[i % tiposIds.length],
+                scope: ScopeUIEnum.ATTORNEY,
+                apoderadoId: otrosApoderadosIds[i],
+                esIrrevocable,
+                fechaInicio: esIrrevocable ? fechaInicio : new Date(),
+                fechaFin: esIrrevocable ? fechaFin : undefined,
+                tieneReglasFirma: false,
+              };
+              
+              await createOtorgamientoPoderUseCase.execute(societyId, payload);
+            }
+          }
+        }
+      );
+      if (!steps.facultadesOtrosApoderados.completed) {
+        console.warn(
+          `[Seeds] Error asignando facultades a otros apoderados: ${steps.facultadesOtrosApoderados.error}`
+        );
+      }
+
+      createdSocieties.value.push({
+        id: societyId,
+        name: testData.datosSociedad.razonSocial,
+        steps,
+      });
+
+      return { success: true, societyId };
+    } catch (error: any) {
+      console.error(`[Seeds] Error creando sociedad completa ${index + 1}:`, error);
+      const errorMsg = error?.message || "Error desconocido";
+      errorMessage.value = `Error en sociedad ${index + 1}: ${errorMsg}`;
+
+      if (!createdSocieties.value.find((s) => s.id === (testData as any).societyId)) {
+        createdSocieties.value.push({
+          id: (testData as any).societyId || `error-${index}`,
+          name: testData.datosSociedad.razonSocial,
+          steps,
+        });
+      }
+
+      return { success: false, error: errorMsg };
+    } finally {
+      if (currentSocietyIndex.value === index) {
+        currentSocietyIndex.value = null;
+      }
+    }
+  };
+
+  // Función para crear múltiples sociedades completas
+  const createMultipleSocietiesCompleto = async (count: number = 5) => {
+    isCreating.value = true;
+    errorMessage.value = null;
+    createdSocieties.value = [];
+    currentStep.value = "";
+
+    try {
+      for (let i = 0; i < count; i++) {
+        await createSocietyCompleto(i);
+        // Pequeña pausa entre creaciones
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+
+      // Recargar historial
+      await historialStore.cargarHistorial();
+    } catch (error: any) {
+      console.error("[Seeds] Error general:", error);
+      errorMessage.value = error?.message || "Error desconocido";
+    } finally {
+      isCreating.value = false;
+      currentStep.value = "";
+    }
+  };
+
   const totalSteps = computed(() => {
     return createdSocieties.value.reduce((acc, society) => {
       return acc + Object.keys(society.steps).length;
@@ -806,6 +1533,18 @@
             <LoaderCircle v-if="isCreating" class="mr-2 h-4 w-4 animate-spin" />
             <Building2 v-else class="mr-2 h-4 w-4" />
             Crear 5 Sociedades de Prueba
+          </Button>
+
+          <Button
+            variant="primary"
+            size="lg"
+            :disabled="isCreating"
+            @click="createMultipleSocietiesCompleto(5)"
+            class="bg-green-600 hover:bg-green-700"
+          >
+            <LoaderCircle v-if="isCreating" class="mr-2 h-4 w-4 animate-spin" />
+            <Building2 v-else class="mr-2 h-4 w-4" />
+            Crear 5 Nuevas Sociedades (Completas)
           </Button>
 
           <Button
@@ -929,6 +1668,36 @@
                           step: society.steps.claseApoderado,
                         },
                         { key: 'apoderado', label: 'Gerente', step: society.steps.apoderado },
+                        {
+                          key: 'clasesApoderadoAdicionales',
+                          label: 'Clases Adicionales',
+                          step: society.steps.clasesApoderadoAdicionales,
+                        },
+                        {
+                          key: 'apoderadosAdicionales',
+                          label: 'Apoderados Adicionales',
+                          step: society.steps.apoderadosAdicionales,
+                        },
+                        {
+                          key: 'otrosApoderados',
+                          label: 'Otros Apoderados',
+                          step: society.steps.otrosApoderados,
+                        },
+                        {
+                          key: 'tiposFacultades',
+                          label: 'Tipos Facultades',
+                          step: society.steps.tiposFacultades,
+                        },
+                        {
+                          key: 'facultadesApoderados',
+                          label: 'Facultades Apoderados',
+                          step: society.steps.facultadesApoderados,
+                        },
+                        {
+                          key: 'facultadesOtrosApoderados',
+                          label: 'Facultades Otros',
+                          step: society.steps.facultadesOtrosApoderados,
+                        },
                       ]"
                       :key="stepInfo.key"
                       class="flex items-center gap-2 rounded-md p-2 transition-colors"

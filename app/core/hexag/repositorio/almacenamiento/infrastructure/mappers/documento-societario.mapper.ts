@@ -13,6 +13,11 @@ export class DocumentoSocietarioMapper {
    * Convierte un RepositorioNode a DocumentoSocietario
    */
   static toDocumentoSocietario(node: RepositorioNode): DocumentoSocietario {
+    // Obtener versionCode de la primera versión si está disponible
+    const versionCode = node.versions && node.versions.length > 0 
+      ? node.versions[0].versionCode 
+      : undefined;
+    
     return {
       id: node.id,
       nombre: node.name,
@@ -21,6 +26,7 @@ export class DocumentoSocietarioMapper {
       fechaModificacion: new Date(node.updatedAt),
       propietario: 'Sistema', // TODO: Obtener del backend si está disponible
       mimeType: node.mimeType,
+      versionCode: versionCode,
     };
   }
 

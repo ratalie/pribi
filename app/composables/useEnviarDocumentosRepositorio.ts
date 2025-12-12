@@ -113,8 +113,8 @@ export function useEnviarDocumentosRepositorio() {
   });
 
   /**
-   * Formatea una fecha ISO a formato legible en español
-   * Ejemplo: "2025-12-10T00:00:00.000Z" -> "10 de diciembre del 2025"
+   * Formatea una fecha ISO a formato legible en español para carpetas de junta
+   * Ejemplo: "2025-12-10T00:00:00.000Z" -> "junta del 10 de diciembre del 2025"
    */
   const formatDateToLegible = (dateISO: string): string => {
     try {
@@ -128,7 +128,7 @@ export function useEnviarDocumentosRepositorio() {
         "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
       ];
       
-      return `${day} de ${meses[month]} del ${year}`;
+      return `junta del ${day} de ${meses[month]} del ${year}`;
     } catch (error) {
       console.error("🔴 [useEnviarDocumentosRepositorio] Error al formatear fecha:", error);
       return "";

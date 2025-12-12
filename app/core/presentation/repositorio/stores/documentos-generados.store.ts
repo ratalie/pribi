@@ -82,8 +82,23 @@ export const useDocumentosGeneradosStore = defineStore('documentos-generados', {
 
     /**
      * Carga los documentos dentro de una carpeta de junta
+     * 
+     * Protección contra loops infinitos: si la carpeta ya está cargada y está vacía,
+     * no volver a cargarla.
      */
     async cargarDocumentosDeCarpeta(carpetaId: string) {
+      // Protección: si ya está cargada la misma carpeta y está vacía, no volver a cargar
+      if (this.carpetaActual === carpetaId && this.documentosCarpeta.length === 0 && this.status === 'idle') {
+        console.log('[DocumentosGeneradosStore] Carpeta ya está cargada y está vacía, evitando recarga:', carpetaId);
+        return;
+      }
+
+      // Si ya está cargando la misma carpeta, no volver a cargar
+      if (this.carpetaActual === carpetaId && this.status === 'loading') {
+        console.log('[DocumentosGeneradosStore] Carpeta ya se está cargando, evitando recarga:', carpetaId);
+        return;
+      }
+
       this.status = 'loading';
       this.errorMessage = null;
       this.carpetaActual = carpetaId;
@@ -93,6 +108,10 @@ export const useDocumentosGeneradosStore = defineStore('documentos-generados', {
         const useCase = new ObtenerDocumentosJuntasUseCase(repository);
         this.documentosCarpeta = await useCase.obtenerDocumentosDeCarpeta(carpetaId);
         this.status = 'idle';
+        console.log('[DocumentosGeneradosStore] Documentos de carpeta cargados:', {
+          carpetaId,
+          cantidad: this.documentosCarpeta.length,
+        });
       } catch (error: any) {
         console.error('[DocumentosGeneradosStore] Error al cargar documentos de carpeta:', error);
         this.status = 'error';

@@ -528,11 +528,20 @@ export class RepositorioDocumentosHttpRepository
     }
   }
 
+  /**
+   * Elimina un nodo (documento o carpeta)
+   * 
+   * ENDPOINT V2: DELETE /api/v2/repository/society-profile/nodes/:nodeId
+   */
   async eliminarNodo(nodeId: number): Promise<void> {
     const baseUrl = this.resolveBaseUrl();
-    const url = `${baseUrl}/api/v2/repository/nodes/${nodeId}`;
+    const url = `${baseUrl}/api/v2/repository/society-profile/nodes/${nodeId}`;
 
-    console.log("🔵 [RepositorioDocumentosHttp] Eliminando nodo:", nodeId);
+    console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔵 [RepositorioDocumentosHttp] ELIMINAR NODO");
+    console.log("🔵 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔵 [RepositorioDocumentosHttp] URL:", url);
+    console.log("🔵 [RepositorioDocumentosHttp] nodeId:", nodeId);
 
     try {
       const response = await fetch(url, {
@@ -542,12 +551,21 @@ export class RepositorioDocumentosHttpRepository
         },
       });
 
-      if (response.status !== 204) {
+      if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Error al eliminar nodo");
+        console.error("🔴 [RepositorioDocumentosHttp] Error response:", errorData);
+        throw new Error(errorData.message || `Error al eliminar nodo: ${response.statusText}`);
       }
+
+      console.log("✅ [RepositorioDocumentosHttp] Nodo eliminado exitosamente");
+      console.log("🔵 [RepositorioDocumentosHttp] ========================================");
     } catch (error: any) {
-      console.error("🔴 [RepositorioDocumentosHttp] Error al eliminar nodo:", error);
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      console.error("🔴 [RepositorioDocumentosHttp] ERROR AL ELIMINAR NODO:");
+      console.error("🔴 [RepositorioDocumentosHttp] URL:", url);
+      console.error("🔴 [RepositorioDocumentosHttp] nodeId:", nodeId);
+      console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
       throw new Error(
         `No se pudo eliminar el nodo: ${error?.message || "Error desconocido"}`
       );

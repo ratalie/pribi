@@ -278,7 +278,8 @@
     }>
   >([]);
 
-  // Función helper para formatear fecha
+  // Función helper para formatear fecha para carpetas de junta
+  // Formato: "junta del 11 de diciembre del 2025"
   const formatDateToLegible = (dateISO: string): string => {
     try {
       const date = new Date(dateISO);
@@ -299,7 +300,7 @@
         "noviembre",
         "diciembre",
       ];
-      return `${day} de ${meses[month]} del ${year}`;
+      return `junta del ${day} de ${meses[month]} del ${year}`;
     } catch {
       return "";
     }

@@ -4,8 +4,17 @@
       <!-- Selector de Sociedades -->
       <SocietySelector />
       
-      <!-- Vista de Almacén -->
-      <AlmacenView />
+      <!-- Redirigir a ruta con sociedad si está seleccionada -->
+      <div v-if="!sociedadSeleccionada" class="text-center py-12">
+        <p class="text-lg text-muted-foreground">
+          Selecciona una sociedad para ver su almacén
+        </p>
+      </div>
+      
+      <div v-else>
+        <!-- Vista de Almacén -->
+        <AlmacenView />
+      </div>
     </div>
   </div>
 </template>
@@ -13,6 +22,24 @@
 <script setup lang="ts">
   import AlmacenView from "~/components/repository/AlmacenView.vue";
   import SocietySelector from "~/components/repository/SocietySelector.vue";
+  import { useRepositorioDashboardStore } from "~/core/presentation/repositorio/stores/repositorio-dashboard.store";
+  import { storeToRefs } from "pinia";
+  import { watch } from "vue";
+
+  const router = useRouter();
+  const dashboardStore = useRepositorioDashboardStore();
+  const { sociedadSeleccionada } = storeToRefs(dashboardStore);
+
+  // Redirigir a ruta dinámica cuando se selecciona una sociedad
+  watch(
+    () => sociedadSeleccionada.value?.id,
+    (sociedadId) => {
+      if (sociedadId) {
+        router.push(`/storage/almacen/${sociedadId}`);
+      }
+    },
+    { immediate: true }
+  );
 
   useHead({
     title: "Almacén - Repositorio - PROBO",

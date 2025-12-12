@@ -25,12 +25,15 @@ import type { AdvancedFilters } from "./types";
 import PreviewModal from "./PreviewModal.vue";
 import UploadModal from "./UploadModal.vue";
 import CreateFolderModal from "./CreateFolderModal.vue";
+import DeleteConfirmModal from "./DeleteConfirmModal.vue";
 // import DocumentCard from "./DocumentCard.vue"; // No usado
 import { useAlmacenamiento } from "~/core/presentation/repositorio/composables/useAlmacenamiento";
 import { useRepositorioDashboardStore } from "~/core/presentation/repositorio/stores/repositorio-dashboard.store";
-import { useObtenerNodoRaiz } from "~/core/presentation/repositorio/composables/useObtenerNodoRaiz";
+import { useObtenerCarpetaDocumentosSocietarios } from "~/core/presentation/repositorio/composables/useObtenerCarpetaDocumentosSocietarios";
+import { RepositorioDocumentosHttpRepository } from "~/core/hexag/repositorio/infrastructure/repositories/repositorio-documentos-http.repository";
 
 const router = useRouter();
+const route = useRoute();
 
 const {
   documentos,
@@ -41,15 +44,16 @@ const {
   carpetas: _carpetas,
   archivos: _archivos,
   cargarDocumentos,
-  navegarACarpeta,
+  navegarACarpeta: _navegarACarpetaStore,
   navegarAtras: _navegarAtras,
   obtenerDocumento,
+  descargarDocumento,
   eliminarDocumento,
   crearCarpeta,
 } = useAlmacenamiento();
 
 const dashboardStore = useRepositorioDashboardStore();
-const { obtenerNodoRaiz } = useObtenerNodoRaiz();
+const { obtenerCarpetaDocumentosSocietarios } = useObtenerCarpetaDocumentosSocietarios();
 
 const searchQuery = ref("");
 const previewModalOpen = ref(false);
@@ -61,15 +65,211 @@ const parentNodeIdForUpload = ref<string | null>(null);
 // Estado de filtros avanzados
 const filters = ref<AdvancedFilters>({ scope: "societarios" });
 
+// Obtener idSociety de la ruta
+const idSociety = computed(() => {
+  const param = route.params.idSociety;
+  if (typeof param === "string") return param;
+  if (Array.isArray(param) && param.length > 0 && typeof param[0] === "string") {
+    return param[0];
+  }
+  return dashboardStore.sociedadSeleccionada?.id;
+});
+
+// Obtener path de la ruta (catch-all)
+const routePath = computed(() => {
+  const path = route.params.path;
+  if (Array.isArray(path)) return path.filter(p => p && typeof p === "string");
+  if (typeof path === "string" && path.trim() !== "") return [path];
+  return [];
+});
+
+// Cache de nombres de carpetas para el breadcrumb
+const folderNamesCache = ref<Record<string, string>>({});
+
+// Breadcrumb sincronizado con la ruta
+const breadcrumbFromRoute = computed(() => {
+  const items: Array<{ id: string; nombre: string }> = [];
+  
+  // Siempre incluir "Almacén" como primer nivel (clickeable para volver a raíz)
+  items.push({
+    id: "almacen",
+    nombre: "Almacén",
+  });
+  
+  // Si estamos en la raíz, solo mostrar "Almacén"
+  if (routePath.value.length === 0) return items;
+  
+  // Construir breadcrumb desde la ruta
+  routePath.value.forEach((folderId) => {
+    // Primero buscar en el cache
+    if (folderNamesCache.value[folderId]) {
+      items.push({
+        id: folderId,
+        nombre: folderNamesCache.value[folderId],
+      });
+      return;
+    }
+    
+    // Buscar el nombre de la carpeta en los documentos actuales
+    const carpeta = documentos.value.find(d => d.id === folderId && d.tipo === "folder");
+    if (carpeta) {
+      folderNamesCache.value[folderId] = carpeta.nombre;
+      items.push({
+        id: folderId,
+        nombre: carpeta.nombre,
+      });
+    } else {
+      // Si no encontramos la carpeta, usar el ID como nombre temporal
+      // y cargar el nombre del backend
+      items.push({
+        id: folderId,
+        nombre: folderNamesCache.value[folderId] || `Carpeta ${folderId}`,
+      });
+      
+      // Cargar el nombre del backend de forma asíncrona
+      loadFolderName(folderId);
+    }
+  });
+  
+  return items;
+});
+
+// Cargar nombre de carpeta del backend
+const loadFolderName = async (folderId: string) => {
+  if (folderNamesCache.value[folderId]) return;
+  
+  try {
+    const repository = new RepositorioDocumentosHttpRepository();
+    const nodeIdNumber = parseInt(folderId, 10);
+    if (!isNaN(nodeIdNumber)) {
+      const node = await repository.obtenerNodoPorId(nodeIdNumber);
+      if (node && node.type === "folder") {
+        folderNamesCache.value[folderId] = node.name;
+      }
+    }
+  } catch (error) {
+    console.error("❌ [AlmacenView] Error al cargar nombre de carpeta:", error);
+  }
+};
+
+// Navegar a carpeta con actualización de ruta
+const navegarACarpeta = async (carpetaId: string) => {
+  console.log("🔵 [AlmacenView] Navegando a carpeta:", carpetaId);
+  
+  if (!idSociety.value) {
+    console.error("❌ [AlmacenView] No hay idSociety en la ruta");
+    return;
+  }
+  
+  // Actualizar la ruta
+  const newPath = [...routePath.value, carpetaId];
+  const pathString = newPath.join("/");
+  const newRoute = `/storage/almacen/${idSociety.value}/${pathString}`;
+  
+  console.log("🔵 [AlmacenView] Actualizando ruta a:", newRoute);
+  router.push(newRoute);
+  
+  // Navegar en el store
+  await _navegarACarpetaStore(carpetaId);
+};
+
+// Navegar a breadcrumb (retroceder)
+const navegarABreadcrumb = async (index: number) => {
+  console.log("🔵 [AlmacenView] Navegando a breadcrumb index:", index);
+  console.log("🔵 [AlmacenView] routePath:", routePath.value);
+  console.log("🔵 [AlmacenView] breadcrumb items:", breadcrumbFromRoute.value);
+  
+  if (!idSociety.value) return;
+  
+  // El breadcrumb tiene "Almacén" como index 0
+  // Necesitamos mapear el índice del breadcrumb al path real
+  
+  if (index === 0) {
+    // Click en "Almacén" → volver a raíz
+    router.push(`/storage/almacen/${idSociety.value}`);
+    await cargarDocumentos(null);
+    return;
+  }
+  
+  // Para índices > 0, necesitamos mapear al path real
+  // index 1 = primera carpeta → routePath[0]
+  // index 2 = segunda carpeta → routePath[0] + routePath[1]
+  // etc.
+  
+  const targetPath = routePath.value.slice(0, index - 1); // -1 porque index 0 es "Almacén"
+  
+  if (targetPath.length === 0) {
+    // Volver a raíz
+    router.push(`/storage/almacen/${idSociety.value}`);
+    await cargarDocumentos(null);
+  } else {
+    // Navegar a la carpeta específica
+    const pathString = targetPath.join("/");
+    router.push(`/storage/almacen/${idSociety.value}/${pathString}`);
+    
+    // Cargar documentos de la carpeta objetivo
+    const carpetaId = targetPath[targetPath.length - 1];
+    await _navegarACarpetaStore(carpetaId);
+  }
+};
+
+// Sincronizar ruta con store cuando cambia la ruta
+watch(
+  () => [routePath.value, idSociety.value],
+  async ([newPath, societyId], [oldPath]) => {
+    console.log("🔵 [AlmacenView] Ruta cambió:", { newPath, oldPath, societyId });
+    
+    if (!societyId) {
+      console.log("🔵 [AlmacenView] No hay societyId, esperando...");
+      return;
+    }
+    
+    // Limpiar cache si cambió el path completamente
+    if (oldPath && oldPath.length > 0 && newPath.length === 0) {
+      folderNamesCache.value = {};
+    }
+    
+    try {
+      if (newPath.length === 0) {
+        // Estamos en la raíz
+        console.log("🔵 [AlmacenView] Cargando documentos de raíz...");
+        await cargarDocumentos(null);
+      } else {
+        // Cargar nombres de todas las carpetas del path si no están en cache
+        for (const folderId of newPath) {
+          if (!folderNamesCache.value[folderId]) {
+            await loadFolderName(folderId);
+          }
+        }
+        
+        // Navegar a la última carpeta del path
+        const carpetaId = newPath[newPath.length - 1];
+        console.log("🔵 [AlmacenView] Navegando a carpeta:", carpetaId);
+        await _navegarACarpetaStore(carpetaId);
+      }
+    } catch (error: any) {
+      console.error("❌ [AlmacenView] Error al sincronizar ruta:", error);
+    }
+  },
+  { immediate: true }
+);
+
 // Cargar documentos cuando cambie la sociedad
 watch(
   () => dashboardStore.sociedadSeleccionada?.id,
   async (sociedadId) => {
-    if (sociedadId) {
+    if (sociedadId && idSociety.value !== sociedadId) {
+      // Redirigir a la nueva ruta con la sociedad correcta
+      const currentPath = routePath.value.join("/");
+      if (currentPath) {
+        router.push(`/storage/almacen/${sociedadId}/${currentPath}`);
+      } else {
+        router.push(`/storage/almacen/${sociedadId}`);
+      }
+    } else if (sociedadId) {
       await cargarDocumentos(carpetaActual.value);
     }
-  },
-  { immediate: true }
+  }
 );
 
 // Filtrar documentos por búsqueda
@@ -85,41 +285,155 @@ const handleDocumentClick = async (doc: any) => {
   if (doc.tipo === "folder") {
     await navegarACarpeta(doc.id);
   } else {
-    const documento = await obtenerDocumento(doc.id);
-    if (documento) {
+    try {
+      console.log("🔵 [AlmacenView] Obteniendo documento para preview:", doc.id);
+      
+      // Si el documento ya tiene versionCode, usarlo directamente
+      if (doc.versionCode && doc.mimeType) {
+        console.log("🟢 [AlmacenView] Usando versionCode del documento:", doc.versionCode);
+        selectedDocument.value = {
+          name: doc.nombre,
+          type: doc.mimeType || "documento",
+          owner: doc.propietario || "Sistema",
+          dateModified: doc.fechaModificacion || new Date(),
+          size: doc.tamaño,
+          versionCode: doc.versionCode,
+          mimeType: doc.mimeType,
+        };
+        previewModalOpen.value = true;
+        return;
+      }
+      
+      // Si no tiene versionCode, obtener el nodo completo del backend
+      console.log("🟡 [AlmacenView] No hay versionCode, obteniendo nodo completo...");
+      const repository = new RepositorioDocumentosHttpRepository();
+      const nodeIdNumber = parseInt(doc.id, 10);
+      
+      if (isNaN(nodeIdNumber)) {
+        throw new Error(`ID de documento inválido: ${doc.id}`);
+      }
+      
+      const node = await repository.obtenerNodoPorId(nodeIdNumber);
+      
+      if (!node) {
+        throw new Error("No se pudo obtener el documento del servidor");
+      }
+      
+      if (node.type !== "document") {
+        throw new Error("El nodo no es un documento");
+      }
+      
+      // Obtener versionCode de las versiones del nodo
+      let versionCode: string | undefined;
+      if (node.versions && node.versions.length > 0) {
+        versionCode = node.versions[0].versionCode;
+        console.log("🟢 [AlmacenView] versionCode obtenido del nodo:", versionCode);
+      }
+      
+      if (!versionCode) {
+        console.error("❌ [AlmacenView] No se pudo obtener versionCode del documento");
+        alert("No se pudo obtener la versión del documento para previsualizar");
+        return;
+      }
+      
       selectedDocument.value = {
-        name: documento.nombre,
-        type: documento.mimeType || "documento",
-        owner: documento.propietario,
-        dateModified: documento.fechaModificacion,
-        size: documento.tamaño,
+        name: node.name,
+        type: node.mimeType || "documento",
+        owner: "Sistema",
+        dateModified: new Date(node.updatedAt),
+        size: node.sizeInBytes,
+        versionCode: versionCode,
+        mimeType: node.mimeType,
       };
       previewModalOpen.value = true;
+    } catch (error: any) {
+      console.error("❌ [AlmacenView] Error al obtener documento:", error);
+      alert(`Error al abrir el documento: ${error?.message || "Error desconocido"}`);
     }
   }
 };
 
+const deleteConfirmModalOpen = ref(false);
+const itemToDelete = ref<any>(null);
+
 const handleDelete = async (doc: any) => {
-  if (confirm(`¿Estás seguro de eliminar "${doc.nombre}"?`)) {
-    await eliminarDocumento(doc.id);
+  itemToDelete.value = doc;
+  deleteConfirmModalOpen.value = true;
+};
+
+const confirmDelete = async () => {
+  if (!itemToDelete.value) return;
+  
+  try {
+    console.log("🔵 [AlmacenView] Eliminando:", itemToDelete.value);
+    await eliminarDocumento(itemToDelete.value.id);
     await cargarDocumentos(carpetaActual.value);
+    deleteConfirmModalOpen.value = false;
+    itemToDelete.value = null;
+  } catch (error: any) {
+    console.error("❌ [AlmacenView] Error al eliminar:", error);
+    alert(`Error al eliminar: ${error?.message || "Error desconocido"}`);
   }
 };
 
 const handleDownload = async (doc: any) => {
-  // TODO: Implementar descarga usando useDescargarDocumento
-  console.log("Descargar:", doc);
+  try {
+    console.log("🔵 [AlmacenView] Descargando documento:", doc.id);
+    await descargarDocumento(doc.id);
+    console.log("✅ [AlmacenView] Documento descargado exitosamente");
+  } catch (error: any) {
+    console.error("❌ [AlmacenView] Error al descargar:", error);
+    alert(`Error al descargar el documento: ${error?.message || "Error desconocido"}`);
+  }
 };
 
 const handleCreateFolder = async (folderName: string) => {
   try {
+    console.log("🔵 [AlmacenView] Creando carpeta:", folderName);
+    console.log("🔵 [AlmacenView] carpetaActual:", carpetaActual.value);
+    console.log("🔵 [AlmacenView] sociedadSeleccionada:", dashboardStore.sociedadSeleccionada?.id);
+    
+    // Si estamos en la raíz (carpetaActual es null), usar la carpeta /core/
+    let parentId = carpetaActual.value;
+    
+    if (!parentId && dashboardStore.sociedadSeleccionada?.id) {
+      console.log("🔵 [AlmacenView] Obteniendo carpeta /core/...");
+      console.log("🔵 [AlmacenView] structureId:", dashboardStore.sociedadSeleccionada.id);
+      try {
+        parentId = await obtenerCarpetaDocumentosSocietarios(dashboardStore.sociedadSeleccionada.id);
+        console.log("🔵 [AlmacenView] Carpeta /core/ obtenida:", parentId);
+        
+        if (!parentId) {
+          const errorMsg = "No se pudo obtener la carpeta /core/ para crear la carpeta. La sociedad puede no tener la estructura inicializada. Por favor, contacta al administrador.";
+          console.error("🔴 [AlmacenView]", errorMsg);
+          alert(errorMsg);
+          return;
+        }
+      } catch (error: any) {
+        console.error("🔴 [AlmacenView] Error al obtener carpeta /core/:", error);
+        const errorMsg = `No se pudo obtener la carpeta /core/ para crear la carpeta: ${error?.message || "Error desconocido"}. Asegúrate de que la sociedad tenga la estructura configurada.`;
+        alert(errorMsg);
+        return;
+      }
+    }
+    
+    if (!parentId) {
+      const errorMsg = "No se pudo obtener la carpeta /core/ para crear la carpeta. Asegúrate de que la sociedad tenga la estructura configurada.";
+      console.error("🔴 [AlmacenView]", errorMsg);
+      alert(errorMsg);
+      return;
+    }
+    
+    console.log("🔵 [AlmacenView] Creando carpeta con parentId:", parentId);
     await crearCarpeta({
       nombre: folderName,
-      parentId: carpetaActual.value,
+      parentId: parentId,
     });
+    console.log("✅ [AlmacenView] Carpeta creada exitosamente");
     await cargarDocumentos(carpetaActual.value);
-  } catch (error) {
-    console.error("Error al crear carpeta:", error);
+  } catch (error: any) {
+    console.error("🔴 [AlmacenView] Error al crear carpeta:", error);
+    alert(`Error al crear la carpeta: ${error?.message || "Error desconocido"}`);
   }
 };
 
@@ -131,6 +445,27 @@ const navigateToDocumentosGenerados = () => {
 
 const navegarARaiz = async () => {
   await cargarDocumentos(null);
+};
+
+const handleUploadClick = () => {
+  if (!parentNodeIdForUpload.value) {
+    console.warn("⚠️ [AlmacenView] No se puede subir: parentNodeIdForUpload es null");
+    alert("No se pudo obtener la carpeta destino. Por favor, recarga la página.");
+    return;
+  }
+  
+  if (!dashboardStore.sociedadSeleccionada?.id) {
+    console.warn("⚠️ [AlmacenView] No se puede subir: no hay sociedad seleccionada");
+    alert("Por favor, selecciona una sociedad primero.");
+    return;
+  }
+  
+  console.log("🔵 [AlmacenView] Abriendo modal de subida:", {
+    structureId: dashboardStore.sociedadSeleccionada.id,
+    parentNodeId: parentNodeIdForUpload.value,
+  });
+  
+  uploadModalOpen.value = true;
 };
 
 const handleUploadSuccess = async () => {
@@ -159,22 +494,41 @@ const formatSize = (bytes?: number) => {
 };
 
 // Obtener el parentNodeId para subir archivos
-// Si estamos en la raíz (carpetaActual es null), necesitamos obtener el nodo raíz
+// Si estamos en la raíz (carpetaActual es null), necesitamos obtener la carpeta /core/
 watch(
   () => [carpetaActual.value, dashboardStore.sociedadSeleccionada?.id],
   async ([carpetaId, structureId]) => {
+    console.log("🔵 [AlmacenView] Watch parentNodeIdForUpload:", { carpetaId, structureId });
+    
     if (!structureId) {
+      console.log("🔵 [AlmacenView] No hay structureId, limpiando parentNodeIdForUpload");
       parentNodeIdForUpload.value = null;
       return;
     }
 
     if (carpetaId) {
       // Si hay carpeta actual, usar su ID
+      console.log("🔵 [AlmacenView] Usando carpeta actual:", carpetaId);
       parentNodeIdForUpload.value = carpetaId;
     } else {
-      // Si estamos en la raíz, obtener el nodo raíz del backend
-      const nodoRaizId = await obtenerNodoRaiz(structureId);
-      parentNodeIdForUpload.value = nodoRaizId;
+      // Si estamos en la raíz, obtener la carpeta /core/
+      console.log("🔵 [AlmacenView] Obteniendo carpeta /core/ para subir archivos...");
+      console.log("🔵 [AlmacenView] structureId:", structureId);
+      try {
+        const carpetaCoreId = await obtenerCarpetaDocumentosSocietarios(structureId);
+        console.log("🔵 [AlmacenView] Carpeta /core/ obtenida:", carpetaCoreId);
+        parentNodeIdForUpload.value = carpetaCoreId;
+        
+        if (!carpetaCoreId) {
+          console.warn("⚠️ [AlmacenView] No se pudo obtener la carpeta /core/. El botón de subir no funcionará.");
+          console.warn("⚠️ [AlmacenView] La sociedad puede no tener la estructura inicializada.");
+        }
+      } catch (error: any) {
+        console.error("🔴 [AlmacenView] Error al obtener carpeta /core/:", error);
+        console.error("🔴 [AlmacenView] structureId usado:", structureId);
+        parentNodeIdForUpload.value = null;
+        console.warn("⚠️ [AlmacenView] No se pudo obtener la carpeta /core/. El botón de subir no funcionará.");
+      }
     }
   },
   { immediate: true }
@@ -194,45 +548,41 @@ watch(
             class="w-5 h-5"
             :style="{ color: 'var(--primary-700)' }"
           />
-          <button
-            class="text-sm hover:underline"
-            :style="{
-              color: carpetaActual ? 'var(--primary-700)' : 'var(--text-primary)',
-              fontFamily: 'var(--font-secondary)',
-            }"
-            @click="navegarARaiz"
-          >
-            Almacén
-          </button>
-          <template v-if="breadcrumb.length > 0">
-            <ChevronRight
-              class="w-4 h-4"
-              :style="{ color: 'var(--text-muted)' }"
-            />
+          <template v-if="breadcrumbFromRoute.length > 0">
             <button
-              v-for="(item, index) in breadcrumb"
-              :key="item.id"
-              class="flex items-center gap-2 text-sm hover:underline"
+              v-for="(item, index) in breadcrumbFromRoute"
+              :key="`${item.id}-${index}`"
+              class="flex items-center gap-2 text-sm transition-colors"
+              :class="index === breadcrumbFromRoute.length - 1 ? '' : 'hover:underline'"
               :style="{
                 color:
-                  index === breadcrumb.length - 1
+                  index === breadcrumbFromRoute.length - 1
                     ? 'var(--text-primary)'
                     : 'var(--primary-700)',
                 fontFamily: 'var(--font-secondary)',
+                cursor: index === breadcrumbFromRoute.length - 1 ? 'default' : 'pointer',
               }"
-              @click="
-                index < breadcrumb.length - 1
-                  ? navegarACarpeta(item.id)
-                  : null
-              "
+              :disabled="index === breadcrumbFromRoute.length - 1"
+              @click="navegarABreadcrumb(index)"
             >
               {{ item.nombre }}
               <ChevronRight
-                v-if="index < breadcrumb.length - 1"
+                v-if="index < breadcrumbFromRoute.length - 1"
                 class="w-4 h-4"
                 :style="{ color: 'var(--text-muted)' }"
               />
             </button>
+          </template>
+          <template v-else>
+            <span
+              class="text-sm"
+              :style="{
+                color: 'var(--text-primary)',
+                fontFamily: 'var(--font-secondary)',
+              }"
+            >
+              Almacén
+            </span>
           </template>
         </div>
 
@@ -283,12 +633,13 @@ watch(
 
             <!-- Botón Subir -->
             <button
-              @click="uploadModalOpen = true"
-              class="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border hover:shadow-md transition-all"
+              @click="handleUploadClick"
+              class="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               :style="{
                 borderColor: 'var(--border-light)',
                 fontFamily: 'var(--font-secondary)',
               }"
+              :disabled="!parentNodeIdForUpload"
             >
               <Upload class="w-4 h-4" />
               <span>Subir</span>
@@ -327,6 +678,46 @@ watch(
         v-else-if="vista === 'grid'"
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
       >
+        <!-- Carpeta visual "Documentos Generados" (solo en raíz) -->
+        <div
+          v-if="!carpetaActual && dashboardStore.sociedadSeleccionada?.id"
+          class="bg-white rounded-xl p-4 border hover:shadow-md transition-all cursor-pointer group relative"
+          :style="{ borderColor: 'var(--border-light)' }"
+          @click="navigateToDocumentosGenerados"
+        >
+          <!-- Icono -->
+          <div class="flex items-center justify-center mb-3">
+            <div
+              class="p-4 rounded-lg"
+              style="background-color: #EEF2FF"
+            >
+              <Folder
+                class="w-8 h-8"
+                :style="{ color: 'var(--primary-700)' }"
+              />
+            </div>
+          </div>
+
+          <!-- Nombre -->
+          <h4
+            class="text-sm font-medium truncate mb-2"
+            :style="{
+              color: 'var(--text-primary)',
+              fontFamily: 'var(--font-secondary)',
+            }"
+          >
+            Documentos Generados
+          </h4>
+
+          <!-- Metadata -->
+          <div class="text-xs space-y-1">
+            <p :style="{ color: 'var(--text-muted)' }">
+              Sistema
+            </p>
+          </div>
+        </div>
+
+        <!-- Documentos reales -->
         <div
           v-for="doc in documentosFiltrados"
           :key="doc.id"
@@ -481,7 +872,7 @@ watch(
             </tr>
           </thead>
           <tbody>
-            <!-- Fila especial: Documentos Generados (solo en raíz) -->
+            <!-- Fila especial: Documentos Generados (solo en raíz) - Carpeta visual -->
             <tr
               v-if="!carpetaActual && dashboardStore.sociedadSeleccionada?.id"
               class="border-b hover:bg-gray-50 cursor-pointer transition-colors"
@@ -672,6 +1063,18 @@ watch(
           previewModalOpen = false;
           selectedDocument = null;
         "
+      />
+
+      <!-- Delete Confirm Modal -->
+      <DeleteConfirmModal
+        :is-open="deleteConfirmModalOpen"
+        :item-name="itemToDelete?.nombre || ''"
+        :item-type="itemToDelete?.tipo === 'folder' ? 'folder' : 'file'"
+        @close="
+          deleteConfirmModalOpen = false;
+          itemToDelete = null;
+        "
+        @confirm="confirmDelete"
       />
 
       <!-- Upload Modal -->
