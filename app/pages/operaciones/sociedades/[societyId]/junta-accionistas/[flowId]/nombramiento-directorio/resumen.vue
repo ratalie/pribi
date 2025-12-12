@@ -9,9 +9,10 @@
 </template>
 
 <script setup lang="ts">
-import SummarySectionRenderer from "@/components/juntas/SummarySectionRenderer.vue";
+  import SummarySectionRenderer from "@/components/juntas/SummarySectionRenderer.vue";
 
-definePageMeta({
-  layout: "default",
-});
+  definePageMeta({
+    layout: "registros",
+    flowLayoutJuntas: true,
+  });
 </script>
