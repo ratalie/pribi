@@ -177,8 +177,8 @@ export class GetDatosCompletosJuntaUseCase {
     const totalAcciones = asistencias.reduce((sum, a) => sum + (a.asistio ? a.accionesConDerechoVoto : 0), 0);
     const totalAccionesSociedad = snapshot.shareAllocations.reduce((sum, a) => sum + a.cantidadSuscrita, 0);
     const porcentajeQuorum = totalAccionesSociedad > 0 ? (totalAcciones / totalAccionesSociedad) * 100 : 0;
-    // Usar quorumMinimoSimple como valor por defecto
-    const quorumMinimo = snapshot.quorums?.quorumMinimoSimple || 50;
+    // Usar mayoriasAcuerdosSimple como valor por defecto
+    const quorumMinimo = snapshot.quorums?.mayoriasAcuerdosSimple || 50;
     const cumpleQuorum = porcentajeQuorum >= quorumMinimo;
 
     // 13. Convertir TipoJunta enum a string literal

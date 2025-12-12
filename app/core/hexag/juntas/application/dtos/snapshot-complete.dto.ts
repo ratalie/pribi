@@ -259,8 +259,8 @@ export interface Quorum {
   primeraConvocatoriaCalificada: number;
   segundaConvocatoriaSimple: number;
   segundaConvocatoriaCalificada: number;
-  quorumMinimoSimple: number;
-  quorumMinimoCalificado: number;
+  mayoriasAcuerdosSimple: number; // Antes: quorumMinimoSimple
+  mayoriasAcuerdosCalificado: number; // Antes: quorumMinimoCalificado
 }
 
 // Acuerdos Societarios
