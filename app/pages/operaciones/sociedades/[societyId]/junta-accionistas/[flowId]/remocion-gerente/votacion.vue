@@ -24,15 +24,6 @@
   import { useVotacionRemocionController } from "~/core/presentation/juntas/puntos-acuerdo/remocion-gerente/votacion/composables/useVotacionRemocionController";
   import MetodoVotacio from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/components/votacion/MetodoVotacio.vue";
 
-  /**
-   * Página: Votación (Sub-sección de Remoción de Gerente)
-   *
-   * Sección dentro del sub-step "Remoción de Gerente".
-   * Se muestra en el sidebar derecho como sección navegable.
-   *
-   * Ruta: /operaciones/junta-accionistas/[id]/remocion-gerente/votacion
-   */
-
   definePageMeta({
     layout: "registros",
     flowLayoutJuntas: true,

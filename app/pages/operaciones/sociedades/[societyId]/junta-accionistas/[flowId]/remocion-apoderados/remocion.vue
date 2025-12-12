@@ -110,6 +110,9 @@
       apoderados: apoderados.value,
     });
   });
+
+  // Configurar el botón "Siguiente"
+  useJuntasFlowNext(() => {});
 </script>
 
 <template>
