@@ -33,6 +33,7 @@ import { useObtenerCarpetaDocumentosSocietarios } from "~/core/presentation/repo
 import { RepositorioDocumentosHttpRepository } from "~/core/hexag/repositorio/infrastructure/repositories/repositorio-documentos-http.repository";
 
 const router = useRouter();
+const route = useRoute();
 
 const {
   documentos,
@@ -43,7 +44,7 @@ const {
   carpetas: _carpetas,
   archivos: _archivos,
   cargarDocumentos,
-  navegarACarpeta,
+  navegarACarpeta: _navegarACarpetaStore,
   navegarAtras: _navegarAtras,
   obtenerDocumento,
   descargarDocumento,
@@ -64,15 +65,211 @@ const parentNodeIdForUpload = ref<string | null>(null);
 // Estado de filtros avanzados
 const filters = ref<AdvancedFilters>({ scope: "societarios" });
 
+// Obtener idSociety de la ruta
+const idSociety = computed(() => {
+  const param = route.params.idSociety;
+  if (typeof param === "string") return param;
+  if (Array.isArray(param) && param.length > 0 && typeof param[0] === "string") {
+    return param[0];
+  }
+  return dashboardStore.sociedadSeleccionada?.id;
+});
+
+// Obtener path de la ruta (catch-all)
+const routePath = computed(() => {
+  const path = route.params.path;
+  if (Array.isArray(path)) return path.filter(p => p && typeof p === "string");
+  if (typeof path === "string" && path.trim() !== "") return [path];
+  return [];
+});
+
+// Cache de nombres de carpetas para el breadcrumb
+const folderNamesCache = ref<Record<string, string>>({});
+
+// Breadcrumb sincronizado con la ruta
+const breadcrumbFromRoute = computed(() => {
+  const items: Array<{ id: string; nombre: string }> = [];
+  
+  // Siempre incluir "Almacén" como primer nivel (clickeable para volver a raíz)
+  items.push({
+    id: "almacen",
+    nombre: "Almacén",
+  });
+  
+  // Si estamos en la raíz, solo mostrar "Almacén"
+  if (routePath.value.length === 0) return items;
+  
+  // Construir breadcrumb desde la ruta
+  routePath.value.forEach((folderId) => {
+    // Primero buscar en el cache
+    if (folderNamesCache.value[folderId]) {
+      items.push({
+        id: folderId,
+        nombre: folderNamesCache.value[folderId],
+      });
+      return;
+    }
+    
+    // Buscar el nombre de la carpeta en los documentos actuales
+    const carpeta = documentos.value.find(d => d.id === folderId && d.tipo === "folder");
+    if (carpeta) {
+      folderNamesCache.value[folderId] = carpeta.nombre;
+      items.push({
+        id: folderId,
+        nombre: carpeta.nombre,
+      });
+    } else {
+      // Si no encontramos la carpeta, usar el ID como nombre temporal
+      // y cargar el nombre del backend
+      items.push({
+        id: folderId,
+        nombre: folderNamesCache.value[folderId] || `Carpeta ${folderId}`,
+      });
+      
+      // Cargar el nombre del backend de forma asíncrona
+      loadFolderName(folderId);
+    }
+  });
+  
+  return items;
+});
+
+// Cargar nombre de carpeta del backend
+const loadFolderName = async (folderId: string) => {
+  if (folderNamesCache.value[folderId]) return;
+  
+  try {
+    const repository = new RepositorioDocumentosHttpRepository();
+    const nodeIdNumber = parseInt(folderId, 10);
+    if (!isNaN(nodeIdNumber)) {
+      const node = await repository.obtenerNodoPorId(nodeIdNumber);
+      if (node && node.type === "folder") {
+        folderNamesCache.value[folderId] = node.name;
+      }
+    }
+  } catch (error) {
+    console.error("❌ [AlmacenView] Error al cargar nombre de carpeta:", error);
+  }
+};
+
+// Navegar a carpeta con actualización de ruta
+const navegarACarpeta = async (carpetaId: string) => {
+  console.log("🔵 [AlmacenView] Navegando a carpeta:", carpetaId);
+  
+  if (!idSociety.value) {
+    console.error("❌ [AlmacenView] No hay idSociety en la ruta");
+    return;
+  }
+  
+  // Actualizar la ruta
+  const newPath = [...routePath.value, carpetaId];
+  const pathString = newPath.join("/");
+  const newRoute = `/storage/almacen/${idSociety.value}/${pathString}`;
+  
+  console.log("🔵 [AlmacenView] Actualizando ruta a:", newRoute);
+  router.push(newRoute);
+  
+  // Navegar en el store
+  await _navegarACarpetaStore(carpetaId);
+};
+
+// Navegar a breadcrumb (retroceder)
+const navegarABreadcrumb = async (index: number) => {
+  console.log("🔵 [AlmacenView] Navegando a breadcrumb index:", index);
+  console.log("🔵 [AlmacenView] routePath:", routePath.value);
+  console.log("🔵 [AlmacenView] breadcrumb items:", breadcrumbFromRoute.value);
+  
+  if (!idSociety.value) return;
+  
+  // El breadcrumb tiene "Almacén" como index 0
+  // Necesitamos mapear el índice del breadcrumb al path real
+  
+  if (index === 0) {
+    // Click en "Almacén" → volver a raíz
+    router.push(`/storage/almacen/${idSociety.value}`);
+    await cargarDocumentos(null);
+    return;
+  }
+  
+  // Para índices > 0, necesitamos mapear al path real
+  // index 1 = primera carpeta → routePath[0]
+  // index 2 = segunda carpeta → routePath[0] + routePath[1]
+  // etc.
+  
+  const targetPath = routePath.value.slice(0, index - 1); // -1 porque index 0 es "Almacén"
+  
+  if (targetPath.length === 0) {
+    // Volver a raíz
+    router.push(`/storage/almacen/${idSociety.value}`);
+    await cargarDocumentos(null);
+  } else {
+    // Navegar a la carpeta específica
+    const pathString = targetPath.join("/");
+    router.push(`/storage/almacen/${idSociety.value}/${pathString}`);
+    
+    // Cargar documentos de la carpeta objetivo
+    const carpetaId = targetPath[targetPath.length - 1];
+    await _navegarACarpetaStore(carpetaId);
+  }
+};
+
+// Sincronizar ruta con store cuando cambia la ruta
+watch(
+  () => [routePath.value, idSociety.value],
+  async ([newPath, societyId], [oldPath]) => {
+    console.log("🔵 [AlmacenView] Ruta cambió:", { newPath, oldPath, societyId });
+    
+    if (!societyId) {
+      console.log("🔵 [AlmacenView] No hay societyId, esperando...");
+      return;
+    }
+    
+    // Limpiar cache si cambió el path completamente
+    if (oldPath && oldPath.length > 0 && newPath.length === 0) {
+      folderNamesCache.value = {};
+    }
+    
+    try {
+      if (newPath.length === 0) {
+        // Estamos en la raíz
+        console.log("🔵 [AlmacenView] Cargando documentos de raíz...");
+        await cargarDocumentos(null);
+      } else {
+        // Cargar nombres de todas las carpetas del path si no están en cache
+        for (const folderId of newPath) {
+          if (!folderNamesCache.value[folderId]) {
+            await loadFolderName(folderId);
+          }
+        }
+        
+        // Navegar a la última carpeta del path
+        const carpetaId = newPath[newPath.length - 1];
+        console.log("🔵 [AlmacenView] Navegando a carpeta:", carpetaId);
+        await _navegarACarpetaStore(carpetaId);
+      }
+    } catch (error: any) {
+      console.error("❌ [AlmacenView] Error al sincronizar ruta:", error);
+    }
+  },
+  { immediate: true }
+);
+
 // Cargar documentos cuando cambie la sociedad
 watch(
   () => dashboardStore.sociedadSeleccionada?.id,
   async (sociedadId) => {
-    if (sociedadId) {
+    if (sociedadId && idSociety.value !== sociedadId) {
+      // Redirigir a la nueva ruta con la sociedad correcta
+      const currentPath = routePath.value.join("/");
+      if (currentPath) {
+        router.push(`/storage/almacen/${sociedadId}/${currentPath}`);
+      } else {
+        router.push(`/storage/almacen/${sociedadId}`);
+      }
+    } else if (sociedadId) {
       await cargarDocumentos(carpetaActual.value);
     }
-  },
-  { immediate: true }
+  }
 );
 
 // Filtrar documentos por búsqueda
@@ -201,8 +398,23 @@ const handleCreateFolder = async (folderName: string) => {
     
     if (!parentId && dashboardStore.sociedadSeleccionada?.id) {
       console.log("🔵 [AlmacenView] Obteniendo carpeta /core/...");
-      parentId = await obtenerCarpetaDocumentosSocietarios(dashboardStore.sociedadSeleccionada.id);
-      console.log("🔵 [AlmacenView] Carpeta /core/ obtenida:", parentId);
+      console.log("🔵 [AlmacenView] structureId:", dashboardStore.sociedadSeleccionada.id);
+      try {
+        parentId = await obtenerCarpetaDocumentosSocietarios(dashboardStore.sociedadSeleccionada.id);
+        console.log("🔵 [AlmacenView] Carpeta /core/ obtenida:", parentId);
+        
+        if (!parentId) {
+          const errorMsg = "No se pudo obtener la carpeta /core/ para crear la carpeta. La sociedad puede no tener la estructura inicializada. Por favor, contacta al administrador.";
+          console.error("🔴 [AlmacenView]", errorMsg);
+          alert(errorMsg);
+          return;
+        }
+      } catch (error: any) {
+        console.error("🔴 [AlmacenView] Error al obtener carpeta /core/:", error);
+        const errorMsg = `No se pudo obtener la carpeta /core/ para crear la carpeta: ${error?.message || "Error desconocido"}. Asegúrate de que la sociedad tenga la estructura configurada.`;
+        alert(errorMsg);
+        return;
+      }
     }
     
     if (!parentId) {
@@ -301,11 +513,20 @@ watch(
     } else {
       // Si estamos en la raíz, obtener la carpeta /core/
       console.log("🔵 [AlmacenView] Obteniendo carpeta /core/ para subir archivos...");
-      const carpetaCoreId = await obtenerCarpetaDocumentosSocietarios(structureId);
-      console.log("🔵 [AlmacenView] Carpeta /core/ obtenida:", carpetaCoreId);
-      parentNodeIdForUpload.value = carpetaCoreId;
-      
-      if (!carpetaCoreId) {
+      console.log("🔵 [AlmacenView] structureId:", structureId);
+      try {
+        const carpetaCoreId = await obtenerCarpetaDocumentosSocietarios(structureId);
+        console.log("🔵 [AlmacenView] Carpeta /core/ obtenida:", carpetaCoreId);
+        parentNodeIdForUpload.value = carpetaCoreId;
+        
+        if (!carpetaCoreId) {
+          console.warn("⚠️ [AlmacenView] No se pudo obtener la carpeta /core/. El botón de subir no funcionará.");
+          console.warn("⚠️ [AlmacenView] La sociedad puede no tener la estructura inicializada.");
+        }
+      } catch (error: any) {
+        console.error("🔴 [AlmacenView] Error al obtener carpeta /core/:", error);
+        console.error("🔴 [AlmacenView] structureId usado:", structureId);
+        parentNodeIdForUpload.value = null;
         console.warn("⚠️ [AlmacenView] No se pudo obtener la carpeta /core/. El botón de subir no funcionará.");
       }
     }
@@ -327,45 +548,41 @@ watch(
             class="w-5 h-5"
             :style="{ color: 'var(--primary-700)' }"
           />
-          <button
-            class="text-sm hover:underline"
-            :style="{
-              color: carpetaActual ? 'var(--primary-700)' : 'var(--text-primary)',
-              fontFamily: 'var(--font-secondary)',
-            }"
-            @click="navegarARaiz"
-          >
-            Almacén
-          </button>
-          <template v-if="breadcrumb.length > 0">
-            <ChevronRight
-              class="w-4 h-4"
-              :style="{ color: 'var(--text-muted)' }"
-            />
+          <template v-if="breadcrumbFromRoute.length > 0">
             <button
-              v-for="(item, index) in breadcrumb"
-              :key="item.id"
-              class="flex items-center gap-2 text-sm hover:underline"
+              v-for="(item, index) in breadcrumbFromRoute"
+              :key="`${item.id}-${index}`"
+              class="flex items-center gap-2 text-sm transition-colors"
+              :class="index === breadcrumbFromRoute.length - 1 ? '' : 'hover:underline'"
               :style="{
                 color:
-                  index === breadcrumb.length - 1
+                  index === breadcrumbFromRoute.length - 1
                     ? 'var(--text-primary)'
                     : 'var(--primary-700)',
                 fontFamily: 'var(--font-secondary)',
+                cursor: index === breadcrumbFromRoute.length - 1 ? 'default' : 'pointer',
               }"
-              @click="
-                index < breadcrumb.length - 1
-                  ? navegarACarpeta(item.id)
-                  : null
-              "
+              :disabled="index === breadcrumbFromRoute.length - 1"
+              @click="navegarABreadcrumb(index)"
             >
               {{ item.nombre }}
               <ChevronRight
-                v-if="index < breadcrumb.length - 1"
+                v-if="index < breadcrumbFromRoute.length - 1"
                 class="w-4 h-4"
                 :style="{ color: 'var(--text-muted)' }"
               />
             </button>
+          </template>
+          <template v-else>
+            <span
+              class="text-sm"
+              :style="{
+                color: 'var(--text-primary)',
+                fontFamily: 'var(--font-secondary)',
+              }"
+            >
+              Almacén
+            </span>
           </template>
         </div>
 

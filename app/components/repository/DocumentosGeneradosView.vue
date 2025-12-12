@@ -25,6 +25,7 @@
   import { useDocumentosGenerados } from "~/core/presentation/repositorio/composables/useDocumentosGenerados";
   import { useEliminarDocumento } from "~/core/presentation/repositorio/composables/useEliminarDocumento";
   import { useRepositorioDashboardStore } from "~/core/presentation/repositorio/stores/repositorio-dashboard.store";
+  import { RepositorioDocumentosHttpRepository } from "~/core/hexag/repositorio/infrastructure/repositories/repositorio-documentos-http.repository";
   import AdvancedSearchBar from "./AdvancedSearchBar.vue";
   import PreviewModal from "./PreviewModal.vue";
   import type { AdvancedFilters } from "./types";
@@ -371,56 +372,113 @@
     return { folders, files };
   });
 
-  // Breadcrumb
+  // Cache de nombres de carpetas para el breadcrumb
+  const folderNamesCache = ref<Record<string, string>>({});
+
+  // Breadcrumb sincronizado con la ruta
   const breadcrumb = computed(() => {
     const items: Array<{ id: string; nombre: string }> = [];
 
+    // Siempre incluir "Documentos Generados" como primer nivel (clickeable para volver al index)
+    items.push({
+      id: "documentos-generados",
+      nombre: "Documentos Generados",
+    });
+
+    // Siempre incluir "Operaciones" como segundo nivel
+    items.push({
+      id: "operaciones",
+      nombre: documentosGenerados.value?.operaciones?.nombre || "Operaciones",
+    });
+
     if (currentPath.value.length === 0) return items;
 
-    // Nivel 1: operaciones
-    if (currentPath.value[0] === "operaciones") {
-      items.push({
-        id: "operaciones",
-        nombre: documentosGenerados.value?.operaciones?.nombre || "Operaciones",
-      });
+    // Nivel 1: junta-accionistas o directorio
+    if (currentPath.value.length > 0) {
+      const nivel1 = currentPath.value[0];
+      if (nivel1 === "junta-accionistas") {
+        items.push({
+          id: "junta-accionistas",
+          nombre: documentosGenerados.value?.operaciones?.carpetas?.juntas?.nombre || "Juntas de Accionistas",
+        });
+      } else if (nivel1 === "directorio") {
+        items.push({
+          id: "directorio",
+          nombre: documentosGenerados.value?.operaciones?.carpetas?.directorio?.nombre || "Directorio",
+        });
+      }
     }
 
-    // Nivel 2: juntas
-    if (currentPath.value.length > 1 && currentPath.value[1] === "juntas") {
-      items.push({
-        id: "operaciones-juntas",
-        nombre: documentosGenerados.value?.operaciones?.carpetas?.juntas?.nombre || "Juntas",
-      });
-    }
-
-    // Nivel 3: carpeta de junta específica
-    if (currentPath.value.length > 2) {
-      const carpetaId = currentPath.value[2];
+    // Nivel 2: carpeta de junta específica (carpeta-XX)
+    if (currentPath.value.length > 1) {
+      const carpetaId = currentPath.value[1];
       if (carpetaId && typeof carpetaId === "string" && carpetaId.startsWith("carpeta-")) {
         const nodeId = carpetaId.replace("carpeta-", "");
-        const juntas = documentosGenerados.value?.operaciones?.carpetas?.juntas?.juntas || [];
-        const carpeta = juntas.find((j: any) => (j.nodeId || j.id) === nodeId);
-        if (carpeta) {
+        
+        // Buscar en cache primero
+        if (folderNamesCache.value[carpetaId]) {
           items.push({
             id: carpetaId,
-            nombre: carpeta.nombre,
+            nombre: folderNamesCache.value[carpetaId],
           });
+        } else {
+          // Buscar en juntas
+          const juntas = documentosGenerados.value?.operaciones?.carpetas?.juntas?.juntas || [];
+          const carpeta = juntas.find((j: any) => (j.nodeId || j.id) === nodeId);
+          if (carpeta) {
+            folderNamesCache.value[carpetaId] = carpeta.nombre;
+            items.push({
+              id: carpetaId,
+              nombre: carpeta.nombre,
+            });
+          } else {
+            // Cargar del backend si no está en cache
+            loadFolderNameForBreadcrumb(carpetaId, nodeId);
+            items.push({
+              id: carpetaId,
+              nombre: folderNamesCache.value[carpetaId] || `Carpeta ${nodeId}`,
+            });
+          }
         }
       }
     }
 
-    // Nivel 4: carpeta de documentos dentro de junta
-    if (currentPath.value.length > 3) {
-      const carpetaDocumentosId = currentPath.value[3];
-      // Buscar el nombre de la carpeta de documentos en documentosCarpeta
-      if (carpetaActual.value === carpetaDocumentosId && documentosCarpeta.value.length > 0) {
-        const carpetaDoc = documentosCarpeta.value.find(
-          (item) => item.id === carpetaDocumentosId && item.type === "folder"
-        );
-        if (carpetaDoc) {
+    // Nivel 3: carpeta de documentos dentro de junta
+    if (currentPath.value.length > 2) {
+      const carpetaDocumentosId = currentPath.value[2];
+      
+      // Buscar en cache primero
+      if (folderNamesCache.value[carpetaDocumentosId]) {
+        items.push({
+          id: carpetaDocumentosId,
+          nombre: folderNamesCache.value[carpetaDocumentosId],
+        });
+      } else {
+        // Buscar en documentosCarpeta
+        if (carpetaActual.value === carpetaDocumentosId && documentosCarpeta.value.length > 0) {
+          const carpetaDoc = documentosCarpeta.value.find(
+            (item) => item.id === carpetaDocumentosId && item.type === "folder"
+          );
+          if (carpetaDoc) {
+            folderNamesCache.value[carpetaDocumentosId] = carpetaDoc.name;
+            items.push({
+              id: carpetaDocumentosId,
+              nombre: carpetaDoc.name,
+            });
+          } else {
+            // Cargar del backend
+            loadFolderNameForBreadcrumb(carpetaDocumentosId, carpetaDocumentosId);
+            items.push({
+              id: carpetaDocumentosId,
+              nombre: folderNamesCache.value[carpetaDocumentosId] || `Carpeta ${carpetaDocumentosId}`,
+            });
+          }
+        } else {
+          // Cargar del backend
+          loadFolderNameForBreadcrumb(carpetaDocumentosId, carpetaDocumentosId);
           items.push({
-            id: `${currentPath.value[2]}-${carpetaDocumentosId}`,
-            nombre: carpetaDoc.name,
+            id: carpetaDocumentosId,
+            nombre: folderNamesCache.value[carpetaDocumentosId] || `Carpeta ${carpetaDocumentosId}`,
           });
         }
       }
@@ -428,6 +486,24 @@
 
     return items;
   });
+
+  // Cargar nombre de carpeta del backend para breadcrumb
+  const loadFolderNameForBreadcrumb = async (carpetaId: string, nodeId: string) => {
+    if (folderNamesCache.value[carpetaId]) return;
+    
+    try {
+      const repository = new RepositorioDocumentosHttpRepository();
+      const nodeIdNumber = parseInt(nodeId, 10);
+      if (!isNaN(nodeIdNumber)) {
+        const node = await repository.obtenerNodoPorId(nodeIdNumber);
+        if (node && node.type === "folder") {
+          folderNamesCache.value[carpetaId] = node.name;
+        }
+      }
+    } catch (error) {
+      console.error("❌ [DocumentosGeneradosView] Error al cargar nombre de carpeta:", error);
+    }
+  };
 
   // Filtrar por búsqueda
   const filteredData = computed(() => {
@@ -535,16 +611,62 @@
 
   // Navegar hacia atrás
   const navigateBack = () => {
-    currentPath.value = currentPath.value.slice(0, -1);
-    // Si salimos de una carpeta de junta, limpiar documentos cargados
-    if (currentPath.value.length < 3) {
-      // El composable manejará la limpieza si es necesario
+    if (!idSociety.value) return;
+    
+    const newPath = currentPath.value.slice(0, -1);
+    
+    if (newPath.length === 0) {
+      // Volver a operaciones
+      router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/`);
+    } else {
+      // Construir nueva ruta
+      const pathString = newPath.join("/");
+      router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/${pathString}`);
     }
   };
 
-  // Navegar a breadcrumb
-  const navigateToBreadcrumb = (index: number) => {
-    currentPath.value = currentPath.value.slice(0, index + 1);
+  // Navegar a breadcrumb (retroceder)
+  const navigateToBreadcrumb = async (index: number) => {
+    console.log("🔵 [DocumentosGeneradosView] Navegando a breadcrumb index:", index);
+    console.log("🔵 [DocumentosGeneradosView] currentPath:", currentPath.value);
+    console.log("🔵 [DocumentosGeneradosView] breadcrumb items:", breadcrumb.value);
+    
+    if (!idSociety.value) return;
+    
+    // El breadcrumb tiene:
+    // index 0 = "Documentos Generados" → /storage/documentos-generados/{id}/operaciones/
+    // index 1 = "Operaciones" → /storage/documentos-generados/{id}/operaciones/
+    // index 2 = "Juntas de Accionistas" → currentPath[0]
+    // index 3 = "carpeta-XX" → currentPath[0] + currentPath[1]
+    // index 4 = carpeta de documentos → currentPath[0] + currentPath[1] + currentPath[2]
+    
+    if (index === 0) {
+      // Click en "Documentos Generados" → volver al index (que redirige a operaciones)
+      router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/`);
+      return;
+    }
+    
+    if (index === 1) {
+      // Click en "Operaciones" → volver a /operaciones/
+      router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/`);
+      return;
+    }
+    
+    // Para índices > 1, necesitamos mapear al path real
+    // index 2 = "Juntas de Accionistas" → currentPath[0]
+    // index 3 = "carpeta-XX" → currentPath[0] + currentPath[1]
+    // index 4 = carpeta de documentos → currentPath[0] + currentPath[1] + currentPath[2]
+    
+    const targetPath = currentPath.value.slice(0, index - 1); // -1 porque index 0 y 1 son "Documentos Generados" y "Operaciones"
+    
+    if (targetPath.length === 0) {
+      // Volver a operaciones
+      router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/`);
+    } else {
+      // Construir nueva ruta
+      const pathString = targetPath.join("/");
+      router.push(`/storage/documentos-generados/${idSociety.value}/operaciones/${pathString}`);
+    }
   };
 
   // Click en documento
@@ -777,28 +899,21 @@
       <div class="mb-6">
         <div class="flex items-center gap-2 mb-4">
           <FolderOpen class="w-5 h-5" :style="{ color: 'var(--primary-700)' }" />
-          <span
-            class="text-sm"
-            :style="{
-              color: 'var(--text-primary)',
-              fontFamily: 'var(--font-secondary)',
-            }"
-          >
-            Documentos Generados
-          </span>
           <template v-if="breadcrumb.length > 0">
-            <ChevronRight class="w-4 h-4" :style="{ color: 'var(--text-muted)' }" />
             <button
               v-for="(item, index) in breadcrumb"
-              :key="item.id"
-              class="flex items-center gap-2 text-sm hover:underline"
+              :key="`${item.id}-${index}`"
+              class="flex items-center gap-2 text-sm transition-colors"
+              :class="index === breadcrumb.length - 1 ? '' : 'hover:underline'"
               :style="{
                 color:
                   index === breadcrumb.length - 1
                     ? 'var(--text-primary)'
                     : 'var(--primary-700)',
                 fontFamily: 'var(--font-secondary)',
+                cursor: index === breadcrumb.length - 1 ? 'default' : 'pointer',
               }"
+              :disabled="index === breadcrumb.length - 1"
               @click="navigateToBreadcrumb(index)"
             >
               {{ item.nombre }}
@@ -808,6 +923,17 @@
                 :style="{ color: 'var(--text-muted)' }"
               />
             </button>
+          </template>
+          <template v-else>
+            <span
+              class="text-sm"
+              :style="{
+                color: 'var(--text-primary)',
+                fontFamily: 'var(--font-secondary)',
+              }"
+            >
+              Documentos Generados
+            </span>
           </template>
         </div>
 

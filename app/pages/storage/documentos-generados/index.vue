@@ -4,13 +4,14 @@
       <!-- Selector de Sociedades -->
       <SocietySelector />
       
-      <!-- Vista inicial: mostrar categorías (operaciones, registros) -->
+      <!-- Redirigir automáticamente si hay sociedad seleccionada -->
       <div v-if="!sociedadSeleccionada" class="text-center py-12">
         <p class="text-lg text-muted-foreground">
           Selecciona una sociedad para ver sus documentos generados
         </p>
       </div>
       
+      <!-- Mostrar vista de categorías si no hay redirección automática -->
       <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
         <!-- Carpeta Operaciones -->
         <button
@@ -42,12 +43,15 @@ import { Folder } from "lucide-vue-next";
 import SocietySelector from "~/components/repository/SocietySelector.vue";
 import { useRepositorioDashboardStore } from "~/core/presentation/repositorio/stores/repositorio-dashboard.store";
 import { storeToRefs } from "pinia";
-import { computed } from "vue";
+import { watch, onMounted } from "vue";
 
 const router = useRouter();
+const route = useRoute();
 const dashboardStore = useRepositorioDashboardStore();
 const { sociedadSeleccionada } = storeToRefs(dashboardStore);
 
+// NO redirigir automáticamente - dejar que el usuario elija
+// Solo redirigir si viene de otra ruta y ya tiene sociedad seleccionada
 const navigateToOperaciones = () => {
   if (sociedadSeleccionada.value?.id) {
     router.push(`/storage/documentos-generados/${sociedadSeleccionada.value.id}/operaciones/`);

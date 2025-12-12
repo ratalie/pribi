@@ -30,10 +30,21 @@ export function useObtenerCarpetaDocumentosSocietarios() {
     try {
       const repository = new RepositorioDocumentosHttpRepository();
       
+      console.log("🔵 [useObtenerCarpetaDocumentosSocietarios] ========================================");
+      console.log("🔵 [useObtenerCarpetaDocumentosSocietarios] Obteniendo carpeta /core/");
+      console.log("🔵 [useObtenerCarpetaDocumentosSocietarios] structureId:", structureId);
+      console.log("🔵 [useObtenerCarpetaDocumentosSocietarios] ========================================");
+      
       // Según la nueva estructura V2, /core/ es la raíz del almacén
       // Se obtiene de /nodes/root buscando el nodo con name === "core"
       const nodosRaiz = await repository.obtenerNodosRaiz(structureId);
       console.log("🔵 [useObtenerCarpetaDocumentosSocietarios] Nodos raíz obtenidos:", nodosRaiz.length);
+      
+      if (nodosRaiz.length === 0) {
+        console.warn("⚠️ [useObtenerCarpetaDocumentosSocietarios] No se encontraron nodos raíz. La sociedad puede no tener la estructura inicializada.");
+        console.warn("⚠️ [useObtenerCarpetaDocumentosSocietarios] structureId usado:", structureId);
+        return null;
+      }
       
       // Buscar la carpeta "core"
       const carpetaCore = nodosRaiz.find(node => 
