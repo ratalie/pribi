@@ -206,12 +206,6 @@
     return disponibles;
   };
 
-  // Verificar si se aprobó (más del 50% a favor)
-  const seAprobo = computed(() => {
-    // TODO: Implementar lógica de aprobación basada en votos asignados
-    return false;
-  });
-
   // Candidatos en empate (para el modal)
   const candidatosEnEmpate = computed(() => {
     const candidatos = directoresStore.directoresTitularesCandidatos;
@@ -360,30 +354,6 @@
         </div>
       </div>
     </SimpleCard>
-
-    <!-- Resultado de la votación -->
-    <div class="flex flex-col gap-4">
-      <p class="t-h5 font-semibold font-secondary text-gray-800">Resultados de la votación</p>
-      <div
-        :class="[
-          'w-full rounded-[8px] border border-primary-25 flex justify-center items-center',
-          'bg-primary-25 py-4 px-6',
-        ]"
-      >
-        <p class="font-secondary t-t2 text-primary-800">
-          <template v-if="seAprobo">
-            Se
-            <span class="font-semibold">aprobó</span>
-            {{ mensajeAprobacion }}
-          </template>
-          <template v-else>
-            No se
-            <span class="font-semibold">aprobó</span>
-            {{ mensajeAprobacion }}
-          </template>
-        </p>
-      </div>
-    </div>
 
     <!-- Modal de Empate -->
     <BaseModal v-model="isModalEmpateOpen" size="sm">

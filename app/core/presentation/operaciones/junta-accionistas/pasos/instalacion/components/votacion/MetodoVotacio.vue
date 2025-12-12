@@ -24,12 +24,23 @@
     modelValue?: string;
     votantes?: Votante[] | any; // ✅ Aceptar también ComputedRef
     textoVotacion?: string | any; // ✅ Aceptar también ComputedRef
+    title?: string;
+    subtitle?: string;
+    titleColor?: string;
+    preguntas?: string[] | any; // ✅ Aceptar también ComputedRef
+    accionistas?: string[] | any; // ✅ Legacy: array de strings de nombres de accionistas
   }
 
   const props = withDefaults(defineProps<Props>(), {
     modelValue: "unanimidad",
     votantes: () => [],
     textoVotacion: "",
+    title: "Votación del aumento de capital",
+    subtitle:
+      "Votación para aprobar el aumento capital realizado mediante aportes dinerarios.",
+    titleColor: "",
+    preguntas: () => [],
+    accionistas: () => [],
   });
 
   // ✅ Extraer valores si son computed
@@ -37,16 +48,32 @@
     const v = props.votantes;
     if (!v) return [];
     if (Array.isArray(v)) return v;
-    if (typeof v === 'object' && 'value' in v) return (v as any).value || [];
+    if (typeof v === "object" && "value" in v) return (v as any).value || [];
     return [];
   });
 
   const textoVotacionValue = computed(() => {
     const t = props.textoVotacion;
     if (!t) return "";
-    if (typeof t === 'string') return t;
-    if (typeof t === 'object' && 'value' in t) return (t as any).value || "";
+    if (typeof t === "string") return t;
+    if (typeof t === "object" && "value" in t) return (t as any).value || "";
     return "";
+  });
+
+  const preguntasValue = computed(() => {
+    const p = props.preguntas;
+    if (!p) return [];
+    if (Array.isArray(p)) return p;
+    if (typeof p === "object" && "value" in p) return (p as any).value || [];
+    return [];
+  });
+
+  const accionistasValue = computed(() => {
+    const a = props.accionistas;
+    if (!a) return [];
+    if (Array.isArray(a)) return a;
+    if (typeof a === "object" && "value" in a) return (a as any).value || [];
+    return [];
   });
 
   const emit = defineEmits<{
@@ -82,8 +109,9 @@
 <template>
   <SlotWrapper>
     <TitleH2
-      title="Votación del aumento de capital"
-      subtitle="Votación para aprobar el aumento capital realizado mediante aportes dinerarios."
+      :title="props.title"
+      :subtitle="props.subtitle"
+      :title-color="props.titleColor || ''"
     />
 
     <p class="t-h5 text-gray-800 font-primary">Método de votación</p>
@@ -167,10 +195,11 @@
       <MayoriaVotacion
         v-if="selectedMethod === 'mayoria'"
         :votantes="votantesValue"
+        :accionistas="accionistasValue"
         :texto-votacion="textoVotacionValue"
+        :preguntas="preguntasValue"
         @cambiar-voto="(accionistaId, valor) => emit('cambiar-voto', accionistaId, valor)"
       />
     </div>
-
   </SlotWrapper>
 </template>
