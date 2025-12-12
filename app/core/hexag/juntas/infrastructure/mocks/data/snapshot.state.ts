@@ -161,8 +161,8 @@ export async function getSnapshotMock(
           primeraConvocatoriaCalificada: quorum.primeraConvocatoriaCalificada || 67,
           segundaConvocatoriaSimple: quorum.segundaConvocatoriaSimple || 40,
           segundaConvocatoriaCalificada: quorum.segundaConvocatoriaCalificada || 60,
-          quorumMinimoSimple: quorum.quorumMinimoSimple || 10,
-          quorumMinimoCalificado: quorum.quorumMinimoCalificado || 20,
+          mayoriasAcuerdosSimple: quorum.mayoriasAcuerdosSimple || quorum.quorumMinimoSimple || 10,
+          mayoriasAcuerdosCalificado: quorum.mayoriasAcuerdosCalificado || quorum.quorumMinimoCalificado || 20,
         }
       : null,
 

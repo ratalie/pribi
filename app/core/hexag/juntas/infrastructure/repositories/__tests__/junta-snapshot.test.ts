@@ -137,8 +137,8 @@ describe("Snapshot Completo de Junta - Con Datos Conocidos", () => {
     
     // Si se configuró, validar estructura
     if (snapshot.quorums !== null && snapshot.quorums !== undefined) {
-      expect(snapshot.quorums).toHaveProperty("quorumMinimoSimple");
-      expect(snapshot.quorums).toHaveProperty("quorumMinimoCalificado");
+      expect(snapshot.quorums).toHaveProperty("mayoriasAcuerdosSimple");
+      expect(snapshot.quorums).toHaveProperty("mayoriasAcuerdosCalificado");
     }
   });
 

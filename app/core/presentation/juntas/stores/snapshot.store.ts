@@ -101,8 +101,8 @@ export const useSnapshotStore = defineStore('snapshot', {
      * - primeraConvocatoriaCalificada
      * - segundaConvocatoriaSimple
      * - segundaConvocatoriaCalificada
-     * - quorumMinimoSimple
-     * - quorumMinimoCalificado
+     * - mayoriasAcuerdosSimple (para aprobar acuerdos simples)
+     * - mayoriasAcuerdosCalificado (para aprobar acuerdos calificados)
      */
     quorums(): Quorum | null {
       return this.snapshot?.quorums || null;

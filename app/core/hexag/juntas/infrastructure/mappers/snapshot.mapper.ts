@@ -385,11 +385,11 @@ export class SnapshotMapper {
       segundaConvocatoriaCalificada: Number(
         backendQuorums.qualifiedSecondCall || backendQuorums.segundaConvocatoriaCalificada || 0
       ),
-      quorumMinimoSimple: Number(
-        backendQuorums.simpleQuorumMinimum || backendQuorums.quorumMinimoSimple || 0
+      mayoriasAcuerdosSimple: Number(
+        backendQuorums.mayoriasAcuerdosSimple || backendQuorums.simpleQuorumMinimum || backendQuorums.quorumMinimoSimple || 0
       ),
-      quorumMinimoCalificado: Number(
-        backendQuorums.qualifiedQuorumMinimum || backendQuorums.quorumMinimoCalificado || 0
+      mayoriasAcuerdosCalificado: Number(
+        backendQuorums.mayoriasAcuerdosCalificado || backendQuorums.qualifiedQuorumMinimum || backendQuorums.quorumMinimoCalificado || 0
       ),
     };
   }
