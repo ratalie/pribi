@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="text-2xl font-bold">{{ title }}</h2>
+    <h2 :class="['text-2xl font-bold', titleColor || '']">{{ title }}</h2>
     <p
       v-if="subtitle"
       class="text-sm text-muted-foreground"
@@ -23,9 +23,11 @@
     title: string;
     subtitle?: string;
     variant?: Titles;
+    titleColor?: string;
   }
   withDefaults(defineProps<Props>(), {
     subtitle: "",
     variant: undefined,
+    titleColor: "",
   });
 </script>
