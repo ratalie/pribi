@@ -24,18 +24,16 @@
     if (props.isDisabled) {
       return;
     }
-    if (!isOpcionA.value) {
-      emit("update:modelValue", "opcion-a");
-    }
+    // Siempre emitir para asegurar reactividad, incluso si ya está seleccionado
+    emit("update:modelValue", "opcion-a");
   };
 
   const handleClickOpcionB = () => {
     if (props.isDisabled) {
       return;
     }
-    if (!isOpcionB.value) {
-      emit("update:modelValue", "opcion-b");
-    }
+    // Siempre emitir para asegurar reactividad, incluso si ya está seleccionado
+    emit("update:modelValue", "opcion-b");
   };
 </script>
 

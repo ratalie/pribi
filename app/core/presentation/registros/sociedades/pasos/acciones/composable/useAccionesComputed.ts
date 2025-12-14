@@ -1,7 +1,8 @@
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { getColumns, type TableColumn } from "~/components/base/tables/getColumns";
 import { useConfirmDelete } from "~/composables/useConfirmDelete";
 import { TipoAccionEnum } from "~/core/hexag/registros/sociedades/pasos/acciones/domain";
+import type { TipoAccionesSociedad } from "~/core/hexag/registros/sociedades/application/dtos/valor-nominal.dto";
 import {
   useAccionesComunesStore,
   type AccionesComunesState,
@@ -88,14 +89,106 @@ export const useAccionesComputed = (profileId: string) => {
     isValorNominalModalOpen.value = false;
   };
 
-  const handleSaveValorNominal = async (valor: number) => {
+  // Estado para el modal de confirmación de cambio de tipo
+  const isConfirmChangeTypeModalOpen = ref(false);
+  const pendingTipoAcciones = ref<"opcion-a" | "opcion-b" | null>(null);
+  const pendingValor = ref(0);
+  const switchTabsChangeResolver = ref<((value: boolean) => void) | null>(null);
+
+  // Handler para cuando se cambia el switchTabs en el modal
+  const handleSwitchTabsChange = async (
+    newValue: "opcion-a" | "opcion-b",
+    oldValue: "opcion-a" | "opcion-b"
+  ): Promise<boolean> => {
+    // Mapear a TipoAccionesSociedad
+    const tipoNuevo: TipoAccionesSociedad =
+      newValue === "opcion-a" ? "COMUNES_SIN_DERECHO_VOTO" : "CON_CLASES";
+    const tipoActual = valorNominalStore.tipoAccionesSociedad;
+
+    // Verificar si hay acciones existentes y si el tipo está cambiando
+    const hayAcciones = registroAccionesStore.acciones.length > 0;
+    const tipoEstaCambiando = tipoActual !== null && tipoActual !== tipoNuevo;
+
+    // Si el tipo está cambiando y hay acciones, mostrar confirmación
+    if (tipoEstaCambiando && hayAcciones) {
+      // Revertir el cambio temporalmente
+      switchTabs.value = oldValue;
+      pendingTipoAcciones.value = newValue;
+
+      // Retornar una Promise que se resuelve cuando el usuario confirma o cancela
+      return new Promise((resolve) => {
+        switchTabsChangeResolver.value = resolve;
+        isConfirmChangeTypeModalOpen.value = true;
+      });
+    }
+
+    // Si no hay cambio de tipo o no hay acciones, permitir el cambio
+    return true;
+  };
+
+  const handleSaveValorNominal = async (
+    valor: number,
+    tipoAccionesSociedad?: "opcion-a" | "opcion-b"
+  ) => {
     try {
-      await valorNominalStore.update(profileId, valor);
+      // Mapear opcion-a/opcion-b a TipoAccionesSociedad
+      const tipoAcciones: TipoAccionesSociedad =
+        tipoAccionesSociedad === "opcion-a"
+          ? "COMUNES_SIN_DERECHO_VOTO"
+          : tipoAccionesSociedad === "opcion-b"
+          ? "CON_CLASES"
+          : undefined;
+
+      await valorNominalStore.update(profileId, valor, tipoAcciones);
+
+      // Actualizar switchTabs según el tipo guardado
+      if (tipoAccionesSociedad) {
+        switchTabs.value = tipoAccionesSociedad;
+      }
 
       closeValorNominalModal();
     } catch (error) {
       console.error("[useAccionesComputed] Error al guardar valor nominal:", error);
+      throw error;
     }
+  };
+
+  const handleConfirmChangeType = async () => {
+    if (pendingTipoAcciones.value !== null && switchTabsChangeResolver.value) {
+      try {
+        // Eliminar todas las acciones antes de permitir el cambio
+        await registroAccionesStore.removeAllAcciones(profileId);
+        
+        // Aplicar el cambio de switchTabs
+        switchTabs.value = pendingTipoAcciones.value;
+        
+        // Resolver la Promise con true para permitir el cambio
+        switchTabsChangeResolver.value(true);
+      } catch (error) {
+        console.error("[useAccionesComputed] Error al confirmar cambio de tipo:", error);
+        // Resolver con false en caso de error
+        switchTabsChangeResolver.value?.(false);
+      } finally {
+        // Limpiar estado
+        isConfirmChangeTypeModalOpen.value = false;
+        pendingTipoAcciones.value = null;
+        pendingValor.value = 0;
+        switchTabsChangeResolver.value = null;
+      }
+    }
+  };
+
+  const handleCancelChangeType = () => {
+    // Resolver la Promise con false para cancelar el cambio
+    if (switchTabsChangeResolver.value) {
+      switchTabsChangeResolver.value(false);
+    }
+    
+    // Limpiar estado
+    isConfirmChangeTypeModalOpen.value = false;
+    pendingTipoAcciones.value = null;
+    pendingValor.value = 0;
+    switchTabsChangeResolver.value = null;
   };
 
   // Funciones de modal de acciones
@@ -235,25 +328,18 @@ export const useAccionesComputed = (profileId: string) => {
 
   useFlowLayoutNext(() => {});
 
-  watch(
-    () => registroAccionesStore.acciones,
-    (newVal) => {
-      const tipoAcciones = newVal.every((accion) => accion.tipo === TipoAccionEnum.CLASES);
-
-      if (tipoAcciones) {
-        switchTabs.value = "opcion-b";
-      } else {
-        switchTabs.value = "opcion-a";
-      }
-    },
-    { immediate: true }
-  );
-
   onMounted(async () => {
     await Promise.all([
       registroAccionesStore.loadAcciones(profileId),
       valorNominalStore.load(profileId),
     ]);
+
+    // Después de cargar, sincronizar switchTabs con el tipo del store
+    if (valorNominalStore.tipoAccionesSociedad === "COMUNES_SIN_DERECHO_VOTO") {
+      switchTabs.value = "opcion-a";
+    } else if (valorNominalStore.tipoAccionesSociedad === "CON_CLASES") {
+      switchTabs.value = "opcion-b";
+    }
   });
 
   return {
@@ -281,5 +367,10 @@ export const useAccionesComputed = (profileId: string) => {
     valorNominalStore,
     // Modal de confirmación de eliminación
     confirmDelete,
+    // Modal de confirmación de cambio de tipo
+    isConfirmChangeTypeModalOpen,
+    handleConfirmChangeType,
+    handleCancelChangeType,
+    handleSwitchTabsChange,
   };
 };

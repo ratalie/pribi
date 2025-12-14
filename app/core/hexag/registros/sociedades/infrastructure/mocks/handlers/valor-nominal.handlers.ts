@@ -41,7 +41,10 @@ export const valorNominalHandlers = [
     }
 
     const societyId = id as string;
-    const body = (await request.json()) as { valorNominal: number } | undefined;
+    const body = (await request.json()) as {
+      valorNominal: number;
+      tipoAccionesSociedad?: "COMUNES_SIN_DERECHO_VOTO" | "CON_CLASES" | null;
+    } | undefined;
 
     if (!body || typeof body.valorNominal !== "number") {
       return HttpResponse.json(
@@ -55,18 +58,21 @@ export const valorNominalHandlers = [
       body,
     });
 
-    const valorNominal = await updateValorNominalMock(societyId, body.valorNominal);
+    const result = await updateValorNominalMock(
+      societyId,
+      body.valorNominal,
+      body.tipoAccionesSociedad
+    );
 
     const responsePayload = {
       success: true,
       message: "Valor nominal actualizado correctamente (mock).",
       code: 200,
-      data: valorNominal,
     };
 
     console.debug("[MSW][ValorNominal] Response PUT", {
       societyId,
-      valorNominal,
+      result,
       payload: responsePayload,
     });
 

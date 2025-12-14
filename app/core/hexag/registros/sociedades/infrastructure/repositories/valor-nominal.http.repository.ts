@@ -1,6 +1,6 @@
 import type { BackendApiResponse } from "~/core/shared/http/api-response.types";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
-import type { ValorNominalDTO } from "../../application/dtos/valor-nominal.dto";
+import type { ValorNominalDTO, ValorNominalResponseDTO } from "../../application/dtos/valor-nominal.dto";
 import type { ValorNominal } from "../../domain/entities/valor-nominal.entity";
 import type { ValorNominalRepository } from "../../domain/ports/valor-nominal.repository";
 
@@ -27,17 +27,23 @@ export class ValorNominalHttpRepository implements ValorNominalRepository {
     const config = withAuthHeaders({ method: "GET" as const });
 
     try {
-      const response = await $fetch<BackendApiResponse<number>>(url, config);
+      const response = await $fetch<BackendApiResponse<ValorNominalResponseDTO>>(url, config);
 
       if (response?.data !== undefined) {
-        return response.data;
+        return {
+          valorNominal: response.data.valorNominal,
+          tipoAccionesSociedad: response.data.tipoAccionesSociedad ?? null,
+        };
       }
       throw new Error(response.message || "Error al obtener el valor nominal");
     } catch (error: any) {
       // Si el backend devuelve 404, significa que no hay valor nominal aún
       const statusCode = error?.statusCode ?? error?.response?.status ?? null;
       if (statusCode === 404) {
-        return 0;
+        return {
+          valorNominal: 0,
+          tipoAccionesSociedad: null,
+        };
       }
       throw error;
     }

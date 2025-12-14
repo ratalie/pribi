@@ -6,12 +6,12 @@ import type { ValorNominalDTO } from "../../application/dtos/valor-nominal.dto";
  */
 export interface ValorNominalRepository {
   /**
-   * Obtiene el valor nominal de una sociedad.
+   * Obtiene el valor nominal y tipo de acciones de una sociedad.
    */
   get(profileId: string): Promise<ValorNominal>;
 
   /**
-   * Actualiza el valor nominal de una sociedad.
+   * Actualiza el valor nominal y tipo de acciones de una sociedad.
    */
   update(profileId: string, payload: ValorNominalDTO): Promise<void>;
 }

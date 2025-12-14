@@ -1,45 +1,55 @@
+import type { ValorNominalResponseDTO } from "~/core/hexag/registros/sociedades/application/dtos/valor-nominal.dto";
+
 /**
  * Estado en memoria para valor nominal (MSW)
  */
 
-// Key: societyProfileId, Value: valorNominal (número)
-const valorNominalState = new Map<string, number>();
+// Key: societyProfileId, Value: { valorNominal, tipoAccionesSociedad }
+const valorNominalState = new Map<string, ValorNominalResponseDTO>();
 
 /**
- * Obtiene el valor nominal de una sociedad
+ * Obtiene el valor nominal y tipo de acciones de una sociedad
  */
-export async function getValorNominalMock(societyId: string): Promise<number> {
-  const valor = valorNominalState.get(societyId);
+export async function getValorNominalMock(societyId: string): Promise<ValorNominalResponseDTO> {
+  const data = valorNominalState.get(societyId);
   
   console.debug("[MSW][ValorNominalState] get", {
     societyId,
-    valor: valor ?? 0,
+    data: data ?? { valorNominal: 0, tipoAccionesSociedad: null },
   });
 
-  return valor ?? 0; // Por defecto 0
+  return data ?? { valorNominal: 0, tipoAccionesSociedad: null }; // Por defecto
 }
 
 /**
- * Actualiza el valor nominal de una sociedad
+ * Actualiza el valor nominal y tipo de acciones de una sociedad
  */
 export async function updateValorNominalMock(
   societyId: string,
-  valorNominal: number
-): Promise<number> {
+  valorNominal: number,
+  tipoAccionesSociedad?: "COMUNES_SIN_DERECHO_VOTO" | "CON_CLASES" | null
+): Promise<ValorNominalResponseDTO> {
+  const current = valorNominalState.get(societyId);
+  
   console.debug("[MSW][ValorNominalState] update:before", {
     societyId,
-    current: valorNominalState.get(societyId) ?? 0,
-    new: valorNominal,
+    current: current ?? { valorNominal: 0, tipoAccionesSociedad: null },
+    new: { valorNominal, tipoAccionesSociedad },
   });
 
-  valorNominalState.set(societyId, valorNominal);
+  const newData: ValorNominalResponseDTO = {
+    valorNominal,
+    tipoAccionesSociedad: tipoAccionesSociedad ?? current?.tipoAccionesSociedad ?? null,
+  };
+
+  valorNominalState.set(societyId, newData);
 
   console.debug("[MSW][ValorNominalState] update:after", {
     societyId,
-    valor: valorNominal,
+    data: newData,
   });
 
-  return valorNominal;
+  return newData;
 }
 
 /**

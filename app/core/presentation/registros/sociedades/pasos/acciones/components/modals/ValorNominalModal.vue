@@ -2,7 +2,7 @@
   import Moneda from "@/assets/icons/Moneda.svg";
   import { useVModel } from "@vueuse/core";
   import { useField } from "vee-validate";
-  import { computed, ref } from "vue";
+  import { computed, nextTick, ref, watch } from "vue";
   import { z } from "zod";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
@@ -11,32 +11,41 @@
   interface Props {
     modelValue?: boolean;
     valorNominal?: number;
+    tipoAccionesSociedad?: "opcion-a" | "opcion-b" | null;
     switchTabs?: "opcion-a" | "opcion-b";
-    handleSaveValorNominal: (valor: number) => Promise<void>;
+    handleSaveValorNominal: (valor: number, tipoAccionesSociedad?: "opcion-a" | "opcion-b") => Promise<void>;
+    onSwitchTabsChange?: (newValue: "opcion-a" | "opcion-b", oldValue: "opcion-a" | "opcion-b") => Promise<boolean>; // Retorna true si se permite el cambio, false si se cancela
   }
 
   const props = withDefaults(defineProps<Props>(), {
     valorNominal: 0,
+    tipoAccionesSociedad: null,
   });
 
   const emits = defineEmits<{
     (e: "update:modelValue", value: boolean): void;
     (e: "update:switchTabs", value: "opcion-a" | "opcion-b"): void;
     (e: "close"): void;
+    (e: "switch-tabs-change", newValue: "opcion-a" | "opcion-b", oldValue: "opcion-a" | "opcion-b"): void;
   }>();
 
   const modelValue = useVModel(props, "modelValue", emits, {
     passive: true,
   });
 
+  // Usar useVModel para switchTabs para sincronización bidireccional correcta
   const switchTabs = useVModel(props, "switchTabs", emits, {
     passive: true,
+    defaultValue: "opcion-a",
   });
 
   // Valor temporal local (no emite hasta guardar)
   const valorNominalTemporal = ref(0);
   const valorNominalInput = ref("");
   const isLoading = ref(false);
+
+  // Guardar el valor inicial del tipo de acciones para detectar cambios
+  const tipoAccionesInicial = ref<"opcion-a" | "opcion-b" | null>(null);
 
   // Schema de validación con Zod
   const valorNominalSchema = z
@@ -99,6 +108,7 @@
     () => modelValue.value,
     (isOpen) => {
       if (isOpen) {
+        // Cargar valor nominal
         valorNominalTemporal.value = props.valorNominal;
 
         if (props.valorNominal > 0) {
@@ -108,6 +118,63 @@
         } else {
           valorNominalInput.value = "";
         }
+
+        // Sincronizar switchTabs con el tipo de acciones del prop o mantener el actual
+        const tipoInicial = props.tipoAccionesSociedad || props.switchTabs || "opcion-a";
+        switchTabs.value = tipoInicial;
+        tipoAccionesInicial.value = tipoInicial; // Guardar el valor inicial
+      }
+    }
+  );
+
+  // Observar cambios en los props cuando el modal está abierto (solo para valor nominal)
+  watch(
+    () => props.valorNominal,
+    (newValor) => {
+      if (modelValue.value) {
+        // Si el modal está abierto, actualizar el valor nominal
+        valorNominalTemporal.value = newValor ?? 0;
+
+        if (newValor && newValor > 0) {
+          const paddedValue = padDecimals(newValor.toString());
+          valorNominalInput.value = formatNumber(paddedValue);
+          valorValidado.value = newValor;
+        } else {
+          valorNominalInput.value = "";
+        }
+      }
+    }
+  );
+
+  // Observar cambios en switchTabs para mostrar advertencia si es necesario
+  watch(
+    () => switchTabs.value,
+    async (newValue, oldValue) => {
+      // Solo procesar si el modal está abierto y el valor realmente cambió
+      if (!modelValue.value || newValue === oldValue) {
+        return;
+      }
+
+      // Si hay un callback, usarlo para verificar si se permite el cambio
+      if (props.onSwitchTabsChange) {
+        try {
+          const permitirCambio = await props.onSwitchTabsChange(newValue, oldValue);
+          if (!permitirCambio) {
+            // Revertir el cambio si no se permite (usuario canceló)
+            // Usar nextTick para evitar conflictos de reactividad
+            await nextTick();
+            switchTabs.value = oldValue;
+            return;
+          }
+        } catch (error) {
+          console.error("[ValorNominalModal] Error al verificar cambio de switchTabs:", error);
+          // En caso de error, revertir el cambio
+          await nextTick();
+          switchTabs.value = oldValue;
+        }
+      } else {
+        // Si no hay callback, emitir evento para que el padre lo maneje
+        emits("switch-tabs-change", newValue, oldValue);
       }
     }
   );
@@ -130,7 +197,8 @@
       setTouched(true);
       isLoading.value = true;
 
-      await props.handleSaveValorNominal(valorNominalTemporal.value);
+      // Pasar el tipo de acciones seleccionado junto con el valor nominal
+      await props.handleSaveValorNominal(valorNominalTemporal.value, switchTabs.value);
 
       valorNominalTemporal.value = 0;
       valorNominalInput.value = "";

@@ -1,6 +1,10 @@
+import type { TipoAccionesSociedad } from "../../application/dtos/valor-nominal.dto";
+
 /**
- * Entidad de dominio que representa el valor nominal de una sociedad.
- * Es simplemente un número que representa el valor nominal de las acciones.
+ * Entidad de dominio que representa el valor nominal y tipo de acciones de una sociedad.
  */
-export type ValorNominal = number;
+export interface ValorNominal {
+  valorNominal: number;
+  tipoAccionesSociedad: TipoAccionesSociedad;
+}
 
