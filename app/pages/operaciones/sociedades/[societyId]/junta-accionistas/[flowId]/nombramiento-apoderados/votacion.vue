@@ -1,18 +1,113 @@
 <template>
-  <SlotWrapper>
-    <TitleH2
-      title="Votación"
-      subtitle="Registra el resultado de la votación y observaciones sobre el nombramiento."
-    />
-    <div class="flex flex-col gap-10">
-      <BlankContainer />
-    </div>
-  </SlotWrapper>
+  <div v-if="isLoading" class="flex items-center justify-center p-8">
+    <p class="text-gray-600">Cargando votación...</p>
+  </div>
+  <div v-else-if="error" class="flex items-center justify-center p-8">
+    <p class="text-red-600">Error: {{ error }}</p>
+  </div>
+  <MetodoVotacio
+    v-else
+    v-model="metodoVotacion"
+    title="Votación de Nombramiento de Apoderados"
+    subtitle="Registra el resultado de la votación sobre el nombramiento de los apoderados seleccionados."
+    :preguntas="preguntas"
+    :votantes="votantes"
+    :mensaje-aprobacion="mensajeAprobacion"
+    @cambiar-tipo="handleCambiarTipo"
+    @cambiar-voto="handleCambiarVoto"
+  />
 </template>
 
 <script setup lang="ts">
+  import { computed, ref } from "vue";
+  import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
+  import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
+  import { useVotacionNombramientoApoderadosController } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-apoderados/votacion/composables/useVotacionNombramientoApoderadosController";
+  import MetodoVotacio from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/components/votacion/MetodoVotacio.vue";
+
+  /**
+   * Página: Votación (Sub-sección de Nombramiento de Apoderados)
+   *
+   * Sección dentro del sub-step "Nombramiento de Apoderados".
+   * Se muestra en el sidebar derecho como sección navegable.
+   *
+   * Ruta: /operaciones/junta-accionistas/[id]/nombramiento-apoderados/votacion
+   */
+
   definePageMeta({
     layout: "registros",
     flowLayoutJuntas: true,
+  });
+
+  const controller = useVotacionNombramientoApoderadosController();
+
+  // ✅ Obtener props del controller
+  const isLoading = controller.isLoading;
+  const error = controller.error;
+
+  // ✅ Extraer valores de los computed
+  const votantes = computed(() => {
+    const votantesValue = controller.votantes;
+    if (votantesValue && typeof votantesValue === "object" && "value" in votantesValue) {
+      const value = (votantesValue as any).value;
+      return Array.isArray(value) ? value : [];
+    }
+    if (Array.isArray(votantesValue)) {
+      return votantesValue;
+    }
+    return [];
+  });
+
+  const preguntas = computed(() => {
+    const preguntasValue = controller.preguntas;
+    if (preguntasValue && typeof preguntasValue === "object" && "value" in preguntasValue) {
+      const value = (preguntasValue as any).value;
+      return Array.isArray(value) ? value : [];
+    }
+    if (Array.isArray(preguntasValue)) {
+      return preguntasValue;
+    }
+    return [];
+  });
+
+  const mensajeAprobacion = computed(() => {
+    const mensajeValue = controller.mensajeAprobacion;
+    if (mensajeValue && typeof mensajeValue === "object" && "value" in mensajeValue) {
+      const value = (mensajeValue as any).value;
+      return typeof value === "string" ? value : "";
+    }
+    if (typeof mensajeValue === "string") {
+      return mensajeValue;
+    }
+    return "";
+  });
+
+  // Método de votación (unanimidad/mayoría) controlado localmente (sin depender del backend)
+  const metodoVotacion = ref<"unanimidad" | "mayoria">("unanimidad");
+
+  function handleCambiarTipo(tipo: "unanimidad" | "mayoria") {
+    controller.cambiarTipoAprobacion(tipo);
+  }
+
+  function handleCambiarVoto(
+    accionistaId: string,
+    valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION",
+    preguntaIndex?: number
+  ) {
+    const voteValue =
+      valor === "A_FAVOR"
+        ? VoteValue.A_FAVOR
+        : valor === "EN_CONTRA"
+        ? VoteValue.EN_CONTRA
+        : VoteValue.ABSTENCION;
+
+    // Usar el índice de la pregunta si está disponible, sino usar 0 por defecto
+    const itemIndex = preguntaIndex !== undefined ? preguntaIndex : 0;
+    controller.setVoto(itemIndex, accionistaId, voteValue as VoteValue);
+  }
+
+  // Configurar el botón "Siguiente"
+  useJuntasFlowNext(async () => {
+    await controller.guardarVotacion();
   });
 </script>
