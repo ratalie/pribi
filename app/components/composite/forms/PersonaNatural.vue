@@ -2,6 +2,7 @@
   import SearchInputZod from "~/components/base/inputs/text/ui/SearchInputZod.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import TextInputZod from "~/components/base/inputs/text/ui/TextInputZod.vue";
+  import { countriesOptions } from "~/constants/inputs/countries-options";
   import { tipoDocumentoOptions } from "~/constants/inputs/document-type";
   import {
     apellidoMaternoNaturalSchema,
@@ -51,7 +52,7 @@
       name="pais_pasaporte"
       label="País de pasaporte"
       placeholder="Selecciona el país de pasaporte"
-      :options="[{ id: 1, value: 'Peru', label: 'Peru' }]"
+      :options="countriesOptions"
       :schema="paisPasaporteNaturalSchema"
     />
 

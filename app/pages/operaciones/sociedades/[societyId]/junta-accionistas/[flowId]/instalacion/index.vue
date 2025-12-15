@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import SlotWrapper from "~/components/containers/SlotWrapper.vue";
-  import TitleH2 from "~/components/titles/TitleH2.vue";
   import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
   import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
   import AsistenciaRepresentacionSection from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/components/AsistenciaRepresentacionSection.vue";
@@ -37,11 +36,6 @@
 
 <template>
   <SlotWrapper>
-    <TitleH2
-      title="Instalación de la Junta"
-      subtitle="Registra la asistencia de accionistas, representación y designación de la mesa directiva."
-    />
-
     <!-- Esperar a que el snapshot esté cargado -->
     <div
       v-if="snapshotStore.status === 'loading'"
