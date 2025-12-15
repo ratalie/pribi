@@ -1,15 +1,25 @@
 <template>
-  <label class="flex items-start gap-3 cursor-pointer group">
+  <label
+    :class="[
+      'flex items-start gap-3 cursor-pointer group px-3 py-1 rounded transition-colors',
+      isSelected ? 'bg-primary-50' : '',
+    ]"
+  >
     <Checkbox
       :model-value="isSelected"
       @update:model-value="handleToggle"
-      class="mt-0.5"
+      :class="[
+        'mt-0.5 !border-gray-600',
+        isSelected
+          ? '!bg-primary-400 !border-primary-400 data-[state=checked]:!bg-primary-400 data-[state=checked]:!border-primary-400'
+          : '',
+      ]"
     />
     <span
-      class="text-sm group-hover:text-primary-700 transition-colors font-secondary"
-      :style="{
-        color: isSelected ? 'var(--primary-700, #7c3aed)' : 'var(--text-secondary, #4b5563)',
-      }"
+      :class="[
+        'text-sm transition-colors font-secondary',
+        isSelected ? 'text-primary-400' : 'text-gray-600',
+      ]"
     >
       {{ puntoTitle }}
     </span>
@@ -49,4 +59,3 @@
     handleTogglePunto(props.puntoId, !!checked);
   };
 </script>
-
