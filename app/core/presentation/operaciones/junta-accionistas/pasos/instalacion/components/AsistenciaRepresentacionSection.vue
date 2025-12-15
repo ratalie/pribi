@@ -2,8 +2,6 @@
   import { storeToRefs } from "pinia";
   import { computed, ref } from "vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
-  import CardTitle from "~/components/base/cards/CardTitle.vue";
-  import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import DataTableDropDown from "~/components/base/tables/DataTableDropDown.vue";
   import Checkbox from "~/components/ui/checkbox/Checkbox.vue";
   import Table from "~/components/ui/table/Table.vue";
@@ -227,10 +225,10 @@
 </script>
 
 <template>
-  <SimpleCard>
-    <CardTitle
+  <div class="flex flex-col gap-5">
+    <TitleH4
       title="Asistencia y Representación en la Junta"
-      body="Marque la asistencia de los socios y agregue representantes si es que se requiere."
+      subtitle="Marque la asistencia de los socios y agregue representantes si es que se requiere."
     />
 
     <!-- TABLA DE ASISTENCIA -->
@@ -406,14 +404,14 @@
         </TableBody>
       </Table>
     </div>
+  </div>
 
-    <!-- MODAL DE REPRESENTANTE -->
-    <RepresentanteModal
-      v-model:is-open="isRepresentanteModalOpen"
-      :accionista-id="selectedAccionistaId"
-      :representante-data="representanteDataToEdit"
-      @close="closeRepresentanteModal"
-      @save="saveRepresentante"
-    />
-  </SimpleCard>
+  <!-- MODAL DE REPRESENTANTE -->
+  <RepresentanteModal
+    v-model:is-open="isRepresentanteModalOpen"
+    :accionista-id="selectedAccionistaId"
+    :representante-data="representanteDataToEdit"
+    @close="closeRepresentanteModal"
+    @save="saveRepresentante"
+  />
 </template>

@@ -46,7 +46,7 @@
 
     <div
       v-else-if="snapshotStore.snapshot && meetingDetailsStore.meetingDetails"
-      class="flex flex-col gap-10"
+      class="flex flex-col gap-12"
     >
       <!-- ========================================
            SECCIÓN 1: Detalles de la Celebración

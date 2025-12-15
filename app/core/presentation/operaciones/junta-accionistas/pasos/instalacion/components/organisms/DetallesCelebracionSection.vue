@@ -8,10 +8,9 @@
 
     <!-- SOLO JUNTA GENERAL: Selector de convocatoria -->
     <div
-      v-if="tipoJunta === TipoJunta.GENERAL"
       class="flex flex-col lg:flex-row gap-6 lg:gap-[45px] p-8 bg-white rounded-lg border border-gray-200"
     >
-      <div class="flex flex-col gap-4 flex-1 min-w-0">
+      <div v-if="tipoJunta === TipoJunta.GENERAL" class="flex flex-col gap-4 flex-1 min-w-0">
         <SelectInputZod
           name="convocatoriaInstalada"
           v-model="convocatoriaInstalada"
