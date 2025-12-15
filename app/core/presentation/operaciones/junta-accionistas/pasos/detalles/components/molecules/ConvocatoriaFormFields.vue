@@ -14,7 +14,7 @@
     <div
       :class="[
         'flex flex-col gap-5',
-        borderInputs ? 'p-6 bg-white rounded-lg border border-gray-200' : '',
+        borderInputs ? 'p-8 bg-white rounded-lg border border-gray-200' : '',
       ]"
     >
       <div class="flex flex-col gap-2">

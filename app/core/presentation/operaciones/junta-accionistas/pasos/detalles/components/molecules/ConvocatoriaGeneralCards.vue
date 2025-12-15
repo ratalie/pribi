@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col gap-5">
+  <div class="flex flex-col gap-8">
     <!-- Primera Convocatoria -->
-    <div class="flex flex-col gap-5 p-6 bg-white rounded-lg border border-gray-200">
+    <div class="flex flex-col gap-5 p-8 bg-white rounded-lg border border-gray-200">
       <ConvocatoriaFormFields
         prefix="primera"
         :modo="primeraModo"
@@ -22,7 +22,7 @@
     </div>
 
     <!-- Segunda Convocatoria -->
-    <div class="flex flex-col gap-5 p-6 bg-white rounded-lg border border-gray-200">
+    <div class="flex flex-col gap-5 p-8 bg-white rounded-lg border border-gray-200">
       <ConvocatoriaFormFields
         prefix="segunda"
         :modo="segundaModo"
