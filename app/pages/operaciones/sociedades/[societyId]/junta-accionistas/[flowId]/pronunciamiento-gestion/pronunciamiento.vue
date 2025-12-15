@@ -13,7 +13,7 @@
   import { computed } from "vue";
   import { useRoute } from "vue-router";
   import { useToast } from "~/components/ui/toast/use-toast";
-  import CargaResultadosGestionManager from "~/core/presentation/operaciones/junta-accionistas/pasos/pronunciamiento-gestion/CargaResultadosGestionManager.vue";
+  import CargaResultadosGestionManager from "~/core/presentation/juntas/puntos-acuerdo/pronunciamiento-gestion/components/CargaResultadosGestionManager.vue";
   import { usePronunciamientoStore } from "~/core/presentation/juntas/puntos-acuerdo/pronunciamiento-gestion/stores/usePronunciamientoStore";
   import { usePronunciamientoController } from "~/core/presentation/juntas/puntos-acuerdo/pronunciamiento-gestion/composables/usePronunciamientoController";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";

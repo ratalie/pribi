@@ -16,8 +16,8 @@
   import { computed, onMounted } from "vue";
   import { useRoute } from "vue-router";
   import SlotWrapper from "~/components/containers/SlotWrapper.vue";
-  import ConvocatoriaJuntaSection from "~/components/juntas/detalles/ConvocatoriaJuntaSection.vue";
-  import TipoJuntaSection from "~/components/juntas/detalles/TipoJuntaSection.vue";
+  import ConvocatoriaJuntaSection from "~/core/presentation/operaciones/junta-accionistas/pasos/detalles/components/organisms/ConvocatoriaJuntaSection.vue";
+  import TipoJuntaSection from "~/core/presentation/operaciones/junta-accionistas/pasos/detalles/components/organisms/TipoJuntaSection.vue";
   import TitleH2 from "~/components/titles/TitleH2.vue";
   import { useToast } from "~/components/ui/toast/use-toast";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";

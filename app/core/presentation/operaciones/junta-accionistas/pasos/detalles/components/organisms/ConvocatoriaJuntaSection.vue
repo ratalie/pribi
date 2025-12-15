@@ -47,12 +47,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import TitleH4 from '~/components/titles/TitleH4.vue';
-import ConvocatoriaUniversalCard from './molecules/ConvocatoriaUniversalCard.vue';
-import ConvocatoriaGeneralCards from './molecules/ConvocatoriaGeneralCards.vue';
+import ConvocatoriaUniversalCard from '../molecules/ConvocatoriaUniversalCard.vue';
+import ConvocatoriaGeneralCards from '../molecules/ConvocatoriaGeneralCards.vue';
 import Titles from '~/types/enums/Titles.enum';
 import { TipoJunta } from '~/core/hexag/juntas/domain/enums/tipo-junta.enum';
 import { useMeetingDetailsStore } from '~/core/presentation/juntas/stores/meeting-details.store';
-import { useConvocatoria } from './composables/useConvocatoria';
+import { useConvocatoria } from '../../composables/useConvocatoria';
 
 const store = useMeetingDetailsStore();
 
@@ -64,3 +64,4 @@ const convocatoriaUniversal = useConvocatoria('detalle', tipoJuntaValue);
 const convocatoriaPrimera = useConvocatoria('primera', tipoJuntaValue);
 const convocatoriaSegunda = useConvocatoria('segunda', tipoJuntaValue);
 </script>
+

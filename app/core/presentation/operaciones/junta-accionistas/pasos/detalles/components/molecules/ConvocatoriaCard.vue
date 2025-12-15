@@ -60,10 +60,10 @@ import LabeledCardSwitch from '~/components/base/Switch/LabeledCardSwitch.vue';
 import TextInputZod from '~/components/base/inputs/text/ui/TextInputZod.vue';
 import DateInputZod from '~/components/base/inputs/text/ui/DateInputZod.vue';
 import TimeInputZod from '~/components/base/inputs/text/ui/TimeInputZod.vue';
-import ConvocatoriaInfoBanner from './atoms/ConvocatoriaInfoBanner.vue';
+import ConvocatoriaInfoBanner from '../atoms/ConvocatoriaInfoBanner.vue';
 import Titles from '~/types/enums/Titles.enum';
 import { ModoReunion } from '~/core/hexag/juntas/domain/enums/modo-reunion.enum';
-import { useConvocatoriaValidation } from './composables/useConvocatoriaValidation';
+import { useConvocatoriaValidation } from '../../composables/useConvocatoriaValidation';
 
 interface Props {
   title: string;
@@ -129,3 +129,4 @@ const horaValue = computed({
   set: (value) => emit('update:hora', value),
 });
 </script>
+
