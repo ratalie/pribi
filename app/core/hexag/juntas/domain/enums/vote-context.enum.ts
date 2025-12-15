@@ -10,7 +10,8 @@ export enum VoteContext {
   DESIGNACION_DIRECTORES = "DESIGNACION_DIRECTORES",
   REMOCION_GERENTE = "REMOCION_GERENTE",
   DESIGNACION_GERENTE = "DESIGNACION_GERENTE",
-  DIVIDENDOS = "DIVIDENDOS",
+  DIVIDENDOS = "DIVIDENDOS", // Para aplicación de resultados
+  GESTION_SOCIAL = "GESTION_SOCIAL", // Para pronunciamiento de gestión social y resultados económicos
 }
 
 

@@ -1,12 +1,5 @@
 <template>
-  <div class="flex flex-col gap-5 p-6 bg-white rounded-lg border border-gray-200">
-    <!-- Título de la Convocatoria -->
-    <TitleH4
-      :title="title"
-      :subtitle="subtitle"
-      :variant="Titles.WITH_SUBTITLE_SPACING"
-    />
-
+  <div class="flex flex-col gap-5">
     <!-- Modalidad (Presencial/Virtual) -->
     <div class="flex flex-col gap-2">
       <label class="t-t2 font-secondary font-bold text-gray-800">
@@ -48,26 +41,22 @@
       />
     </div>
 
-    <!-- Banner de información (solo para convocatorias) -->
+    <!-- Banner de información (opcional) -->
     <ConvocatoriaInfoBanner v-if="showInfoBanner && infoBannerText" :text="infoBannerText" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import TitleH4 from '~/components/titles/TitleH4.vue';
 import LabeledCardSwitch from '~/components/base/Switch/LabeledCardSwitch.vue';
 import TextInputZod from '~/components/base/inputs/text/ui/TextInputZod.vue';
 import DateInputZod from '~/components/base/inputs/text/ui/DateInputZod.vue';
 import TimeInputZod from '~/components/base/inputs/text/ui/TimeInputZod.vue';
-import ConvocatoriaInfoBanner from './atoms/ConvocatoriaInfoBanner.vue';
-import Titles from '~/types/enums/Titles.enum';
+import ConvocatoriaInfoBanner from '../atoms/ConvocatoriaInfoBanner.vue';
 import { ModoReunion } from '~/core/hexag/juntas/domain/enums/modo-reunion.enum';
-import { useConvocatoriaValidation } from './composables/useConvocatoriaValidation';
+import { useConvocatoriaValidation } from '../composables/useConvocatoriaValidation';
 
 interface Props {
-  title: string;
-  subtitle: string;
   prefix: string; // 'primera' o 'segunda' o 'detalle'
   modo: ModoReunion;
   direccion: string;
@@ -75,15 +64,11 @@ interface Props {
   hora?: string;
   showInfoBanner?: boolean;
   infoBannerText?: string;
-  isPrimeraConvocatoria?: boolean;
-  isSegundaConvocatoria?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   showInfoBanner: false,
   infoBannerText: '',
-  isPrimeraConvocatoria: false,
-  isSegundaConvocatoria: false,
 });
 
 const emit = defineEmits<{
@@ -129,3 +114,4 @@ const horaValue = computed({
   set: (value) => emit('update:hora', value),
 });
 </script>
+

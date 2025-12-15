@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import SeleccionPuntosAgenda from "~/components/juntas/SeleccionPuntosAgenda.vue";
+  import SeleccionPuntosAgendaContainer from "~/components/juntas/seleccion-agenda/SeleccionPuntosAgendaContainer.vue";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { AgendaItemsMapper } from "~/core/hexag/juntas/infrastructure/mappers/agenda-items.mapper";
   import { useAgendaItemsStore } from "~/core/presentation/juntas/stores/agenda-items.store";
@@ -45,6 +45,12 @@
     // Validar que al menos un punto esté seleccionado
     const selectedPuntos = juntasFlowStore.getDynamicSubSteps;
 
+    console.log("🔍 [seleccion-agenda/index] Validando puntos seleccionados:", {
+      selectedPuntos,
+      length: selectedPuntos.length,
+      storeState: juntasFlowStore.selectedSubSteps,
+    });
+
     if (selectedPuntos.length === 0) {
       throw new Error("Debes seleccionar al menos un punto de agenda para continuar.");
     }
@@ -72,7 +78,7 @@
 <template>
   <section class="h-full flex flex-col">
     <div class="flex-1 min-h-0">
-      <SeleccionPuntosAgenda :society-id="societyId" :flow-id="flowId" />
+      <SeleccionPuntosAgendaContainer :society-id="societyId" :flow-id="flowId" />
     </div>
   </section>
 </template>
