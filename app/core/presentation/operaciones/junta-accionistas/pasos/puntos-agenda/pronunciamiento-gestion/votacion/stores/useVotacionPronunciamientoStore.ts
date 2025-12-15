@@ -229,8 +229,21 @@ export const useVotacionPronunciamientoStore = defineStore("votacionPronunciamie
           VoteContext.GESTION_SOCIAL
         );
 
+        // Si no hay sesión (404), es normal - se creará al guardar
+        if (!this.sesionVotacion) {
+          console.log("[Store][VotacionPronunciamiento] No hay votación existente, se creará al guardar");
+        }
+
         this.status = "idle";
       } catch (error: any) {
+        // Si es 404, no existe la sesión (es normal)
+        if (error.statusCode === 404 || error.status === 404) {
+          console.log("[Store][VotacionPronunciamiento] No hay votación existente (404), se creará al guardar");
+          this.sesionVotacion = null;
+          this.status = "idle";
+          return;
+        }
+
         this.status = "error";
         this.errorMessage = error.message || "Error al cargar votación";
         console.error("[Store][VotacionPronunciamiento] Error al cargar:", error);

@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="bg-white rounded-xl p-6 shadow-sm"
-    style="border: 1px solid var(--border-light)"
-  >
+  <div class="bg-white rounded-xl p-6 shadow-sm" style="border: 1px solid var(--border-light)">
     <h3
       class="text-base mb-4"
       style="color: var(--text-primary); font-family: var(--font-primary); font-weight: 600"
@@ -16,7 +13,7 @@
         :key="documento.id"
         :documento="documento"
         :is-selected="isDocumentoSelected(documento.id)"
-        @descargar="handleDescargar"
+        @descargar="$emit('descargar', $event)"
         @toggle-selection="$emit('toggle-selection', $event)"
       />
     </div>
@@ -24,18 +21,17 @@
 </template>
 
 <script setup lang="ts">
-import DocumentoItem from "./DocumentoItem.vue";
-import type { Documento } from "~/core/hexag/documentos/domain/entities/documento.entity";
+  import type { Documento } from "~/core/hexag/documentos/domain/entities/documento.entity";
+  import DocumentoItem from "./DocumentoItem.vue";
 
-defineProps<{
-  titulo: string;
-  documentos: Documento[];
-  isDocumentoSelected: (id: string) => boolean;
-}>();
+  defineProps<{
+    titulo: string;
+    documentos: Documento[];
+    isDocumentoSelected: (id: string) => boolean;
+  }>();
 
-defineEmits<{
-  descargar: [documento: Documento];
-  "toggle-selection": [documentoId: string];
-}>();
+  defineEmits<{
+    descargar: [documento: Documento];
+    "toggle-selection": [documentoId: string];
+  }>();
 </script>
-

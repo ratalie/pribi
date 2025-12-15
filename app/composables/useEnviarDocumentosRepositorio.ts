@@ -1,17 +1,17 @@
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
-import { useDownloadData } from "./useDownloadData";
-import { useDocumentosGeneradosStore } from "~/core/presentation/juntas/documentos/stores/documentos-generados.store";
-import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
-import { EnviarDocumentosRepositorioUseCase } from "~/core/hexag/repositorio/application/use-cases/enviar-documentos-repositorio.use-case";
-import { RepositorioDocumentosHttpRepository } from "~/core/hexag/repositorio/infrastructure/repositories/repositorio-documentos-http.repository";
 import { useToast } from "~/components/ui/toast/use-toast";
 import type { Documento } from "~/core/hexag/documentos/domain/entities/documento.entity";
 import { OrdenConvocatoria } from "~/core/hexag/juntas/domain/enums/orden-convocatoria.enum";
+import { EnviarDocumentosRepositorioUseCase } from "~/core/hexag/repositorio/application/use-cases/enviar-documentos-repositorio.use-case";
+import { RepositorioDocumentosHttpRepository } from "~/core/hexag/repositorio/infrastructure/repositories/repositorio-documentos-http.repository";
+import { useDocumentosGeneradosStore } from "~/core/presentation/juntas/documentos/stores/documentos-generados.store";
+import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
+import { useDownloadData } from "./useDownloadData";
 
 /**
  * Composable para enviar documentos al repositorio
- * 
+ *
  * Gestiona el envío de documentos generados al repositorio documental
  */
 export function useEnviarDocumentosRepositorio() {
@@ -59,12 +59,14 @@ export function useEnviarDocumentosRepositorio() {
   // Obtener fecha de instalación de la junta según lógica de negocio:
   // - JUNTA_UNIVERSAL: siempre usa firstCall.date
   // - JUNTA_GENERAL: usa firstCall.date o secondCall.date según instaladaEnConvocatoria
-  // 
+  //
   // instaladaEnConvocatoria viene del paso "instalación de la junta" y está en meetingDetailsStore
   const fechaJunta = computed(() => {
     const meetingDetailsFromDownload = downloadData.value?.meetingDetails;
     if (!meetingDetailsFromDownload) {
-      console.error("🔴 [useEnviarDocumentosRepositorio] No hay meetingDetails en downloadData");
+      console.error(
+        "🔴 [useEnviarDocumentosRepositorio] No hay meetingDetails en downloadData"
+      );
       return "";
     }
 
@@ -76,10 +78,14 @@ export function useEnviarDocumentosRepositorio() {
       // Junta Universal: siempre usa primera convocatoria
       const dateISO = meetingDetailsFromDownload.firstCall?.date;
       if (!dateISO) {
-        console.error("🔴 [useEnviarDocumentosRepositorio] No hay fecha de primera convocatoria para Junta Universal");
+        console.error(
+          "🔴 [useEnviarDocumentosRepositorio] No hay fecha de primera convocatoria para Junta Universal"
+        );
         return "";
       }
-      console.log("🔵 [useEnviarDocumentosRepositorio] Junta Universal: usando firstCall.date");
+      console.log(
+        "🔵 [useEnviarDocumentosRepositorio] Junta Universal: usando firstCall.date"
+      );
       return formatDateToLegible(dateISO);
     }
 
@@ -87,27 +93,42 @@ export function useEnviarDocumentosRepositorio() {
     // instaladaEnConvocatoria viene del paso "instalación de la junta"
     // Puede ser OrdenConvocatoria.PRIMERA o OrdenConvocatoria.SEGUNDA
     const meetingDetailsFromStore = meetingDetailsStore.meetingDetails;
-    const instaladaEnConvocatoria = meetingDetailsFromStore?.instaladaEnConvocatoria || OrdenConvocatoria.PRIMERA;
-    
-    console.log("🔵 [useEnviarDocumentosRepositorio] Junta General - instaladaEnConvocatoria:", instaladaEnConvocatoria);
-    console.log("🔵 [useEnviarDocumentosRepositorio] meetingDetailsFromStore:", meetingDetailsFromStore);
+    const instaladaEnConvocatoria =
+      meetingDetailsFromStore?.instaladaEnConvocatoria || OrdenConvocatoria.PRIMERA;
+
+    console.log(
+      "🔵 [useEnviarDocumentosRepositorio] Junta General - instaladaEnConvocatoria:",
+      instaladaEnConvocatoria
+    );
+    console.log(
+      "🔵 [useEnviarDocumentosRepositorio] meetingDetailsFromStore:",
+      meetingDetailsFromStore
+    );
 
     if (instaladaEnConvocatoria === OrdenConvocatoria.PRIMERA) {
       const dateISO = meetingDetailsFromDownload.firstCall?.date;
       if (!dateISO) {
-        console.error("🔴 [useEnviarDocumentosRepositorio] No hay fecha de primera convocatoria");
+        console.error(
+          "🔴 [useEnviarDocumentosRepositorio] No hay fecha de primera convocatoria"
+        );
         return "";
       }
-      console.log("🔵 [useEnviarDocumentosRepositorio] Junta General (PRIMERA): usando firstCall.date");
+      console.log(
+        "🔵 [useEnviarDocumentosRepositorio] Junta General (PRIMERA): usando firstCall.date"
+      );
       return formatDateToLegible(dateISO);
     } else {
       // SEGUNDA convocatoria
       const dateISO = meetingDetailsFromDownload.secondCall?.date;
       if (!dateISO) {
-        console.error("🔴 [useEnviarDocumentosRepositorio] No hay fecha de segunda convocatoria");
+        console.error(
+          "🔴 [useEnviarDocumentosRepositorio] No hay fecha de segunda convocatoria"
+        );
         return "";
       }
-      console.log("🔵 [useEnviarDocumentosRepositorio] Junta General (SEGUNDA): usando secondCall.date");
+      console.log(
+        "🔵 [useEnviarDocumentosRepositorio] Junta General (SEGUNDA): usando secondCall.date"
+      );
       return formatDateToLegible(dateISO);
     }
   });
@@ -122,12 +143,22 @@ export function useEnviarDocumentosRepositorio() {
       const day = date.getDate();
       const month = date.getMonth();
       const year = date.getFullYear();
-      
+
       const meses = [
-        "enero", "febrero", "marzo", "abril", "mayo", "junio",
-        "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+        "enero",
+        "febrero",
+        "marzo",
+        "abril",
+        "mayo",
+        "junio",
+        "julio",
+        "agosto",
+        "septiembre",
+        "octubre",
+        "noviembre",
+        "diciembre",
       ];
-      
+
       return `junta del ${day} de ${meses[month]} del ${year}`;
     } catch (error) {
       console.error("🔴 [useEnviarDocumentosRepositorio] Error al formatear fecha:", error);
@@ -140,10 +171,14 @@ export function useEnviarDocumentosRepositorio() {
    * @param documentosEspecificos - Documentos específicos a enviar. Si no se proporciona, envía todos del store.
    */
   const enviarDocumentos = async (documentosEspecificos?: Documento[]) => {
-    console.log("🟣 [useEnviarDocumentosRepositorio] ========================================");
+    console.log(
+      "🟣 [useEnviarDocumentosRepositorio] ========================================"
+    );
     console.log("🟣 [useEnviarDocumentosRepositorio] ENVIAR DOCUMENTOS - INICIO");
-    console.log("🟣 [useEnviarDocumentosRepositorio] ========================================");
-    
+    console.log(
+      "🟣 [useEnviarDocumentosRepositorio] ========================================"
+    );
+
     const currentStructureId = structureId.value;
     const currentFlowId = flowId.value;
 
@@ -160,15 +195,18 @@ export function useEnviarDocumentosRepositorio() {
       console.error("🔴 [useEnviarDocumentosRepositorio] ERROR: Faltan parámetros:", missing);
       throw new Error(
         `No se encontraron los siguientes parámetros en la ruta: ${missing.join(", ")}. ` +
-        `Ruta actual: ${route.path}`
+          `Ruta actual: ${route.path}`
       );
     }
 
     // Usar documentos específicos si se proporcionan, sino usar todos del store
     const documentos = documentosEspecificos || documentosStore.documentos;
     console.log("🟣 [useEnviarDocumentosRepositorio] Documentos a enviar:", documentos.length);
-    console.log("🟣 [useEnviarDocumentosRepositorio] Usando documentos específicos:", !!documentosEspecificos);
-    
+    console.log(
+      "🟣 [useEnviarDocumentosRepositorio] Usando documentos específicos:",
+      !!documentosEspecificos
+    );
+
     if (documentos.length === 0) {
       console.error("🔴 [useEnviarDocumentosRepositorio] ERROR: No hay documentos");
       throw new Error("No hay documentos para enviar");
@@ -184,16 +222,16 @@ export function useEnviarDocumentosRepositorio() {
       const useCase = new EnviarDocumentosRepositorioUseCase(repository);
 
       console.log("🟣 [useEnviarDocumentosRepositorio] Ejecutando use case...");
-      console.log("🟣 [useEnviarDocumentosRepositorio] fechaJunta (legible):", fechaJunta.value);
-      console.log("🟣 [useEnviarDocumentosRepositorio] NOTA: Los documentos se subirán directamente a la carpeta de la junta y se renombrará con la fecha");
-      // Ejecutar envío - Pasamos fechaJunta para renombrar la carpeta
-      await useCase.execute(
-        currentStructureId,
-        currentFlowId,
-        documentos,
+      console.log(
+        "🟣 [useEnviarDocumentosRepositorio] fechaJunta (legible):",
         fechaJunta.value
       );
-      
+      console.log(
+        "🟣 [useEnviarDocumentosRepositorio] NOTA: Los documentos se subirán directamente a la carpeta de la junta y se renombrará con la fecha"
+      );
+      // Ejecutar envío - Pasamos fechaJunta para renombrar la carpeta
+      await useCase.execute(currentStructureId, currentFlowId, documentos, fechaJunta.value);
+
       console.log("🟣 [useEnviarDocumentosRepositorio] ✅ Use case ejecutado exitosamente");
 
       // Mostrar éxito
@@ -204,19 +242,26 @@ export function useEnviarDocumentosRepositorio() {
         description: "Los documentos se han enviado al repositorio documental",
         variant: "success",
       });
-      console.log("🟣 [useEnviarDocumentosRepositorio] ========================================");
+      console.log(
+        "🟣 [useEnviarDocumentosRepositorio] ========================================"
+      );
       console.log("✅ [useEnviarDocumentosRepositorio] PROCESO COMPLETADO EXITOSAMENTE");
-      console.log("🟣 [useEnviarDocumentosRepositorio] ========================================");
+      console.log(
+        "🟣 [useEnviarDocumentosRepositorio] ========================================"
+      );
     } catch (error: any) {
-      console.error("🔴 [useEnviarDocumentosRepositorio] ========================================");
+      console.error(
+        "🔴 [useEnviarDocumentosRepositorio] ========================================"
+      );
       console.error("🔴 [useEnviarDocumentosRepositorio] ERROR EN ENVÍO:");
       console.error("🔴 [useEnviarDocumentosRepositorio] Error completo:", error);
       console.error("🔴 [useEnviarDocumentosRepositorio] Error message:", error?.message);
       console.error("🔴 [useEnviarDocumentosRepositorio] Error stack:", error?.stack);
-      console.error("🔴 [useEnviarDocumentosRepositorio] ========================================");
-      
-      const message =
-        error?.message || "Error al enviar documentos al repositorio";
+      console.error(
+        "🔴 [useEnviarDocumentosRepositorio] ========================================"
+      );
+
+      const message = error?.message || "Error al enviar documentos al repositorio";
       errorMessage.value = message;
       const toast = useToast();
       toast.toast({
@@ -235,6 +280,6 @@ export function useEnviarDocumentosRepositorio() {
     isUploading,
     errorMessage,
     enviarDocumentos,
+    fechaJunta, // Exponer fechaJunta para uso en componentes
   };
 }
-
