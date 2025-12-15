@@ -21,7 +21,7 @@
           </template>
         </CardTitle>
 
-        <ApoderadosTable :items="apoderados" :actions="apoderadoActions" />
+        <NombramientoApoderadosTable :items="apoderados" :actions="apoderadoActions" />
       </SimpleCard>
 
       <!-- Tabla de Otros Apoderados -->
@@ -38,7 +38,10 @@
           </template>
         </CardTitle>
 
-        <OtrosApoderadosTable :items="otrosApoderados" :actions="otroApoderadoActions" />
+        <NombramientoOtrosApoderadosTable
+          :items="otrosApoderados"
+          :actions="otroApoderadoActions"
+        />
       </SimpleCard>
 
       <!-- Modal para Apoderados -->
@@ -75,13 +78,13 @@
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import SlotWrapper from "~/components/containers/SlotWrapper.vue";
   import TitleH2 from "~/components/titles/TitleH2.vue";
-  import ApoderadosTable from "~/core/presentation/registros/sociedades/pasos/apoderados/components/ApoderadosTable.vue";
-  import OtrosApoderadosTable from "~/core/presentation/registros/sociedades/pasos/apoderados/components/OtrosApoderadosTable.vue";
   import RegistroApoderadoModal from "~/core/presentation/registros/sociedades/pasos/apoderados/components/modals/RegistroApoderadoModal.vue";
   import { ClasesApoderadoEspecialesEnum } from "~/core/presentation/registros/sociedades/pasos/apoderados/types/enums/ClasesApoderadoEspecialesEnum";
   import type { ApoderadoRow } from "~/core/presentation/registros/sociedades/pasos/apoderados/types/types";
   import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
   import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
+  import NombramientoApoderadosTable from "./components/NombramientoApoderadosTable.vue";
+  import NombramientoOtrosApoderadosTable from "./components/NombramientoOtrosApoderadosTable.vue";
 
   definePageMeta({
     layout: "registros",
