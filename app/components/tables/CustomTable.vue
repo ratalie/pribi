@@ -1,19 +1,17 @@
 <script setup lang="ts">
-import type { CustomTableProps } from "~/types/tables/table-config";
-import TableRow from "./TableRow.vue";
-import TableSkeleton from "./TableSkeleton.vue";
-import TableEmpty from "./TableEmpty.vue";
+  import type { CustomTableProps } from "~/types/tables/table-config";
+  import TableEmpty from "./TableEmpty.vue";
+  import TableRow from "./TableRow.vue";
+  import TableSkeleton from "./TableSkeleton.vue";
 
-interface Props extends CustomTableProps {}
+  const props = defineProps<CustomTableProps>();
 
-const props = defineProps<Props>();
-
-const getRowId = (row: any, index: number): string | number => {
-  if (props.getRowId) {
-    return props.getRowId(row);
-  }
-  return row.id ?? row.idSociety ?? row.idFlow ?? index;
-};
+  const getRowId = (row: any, index: number): string | number => {
+    if (props.getRowId) {
+      return props.getRowId(row);
+    }
+    return row.id ?? row.idSociety ?? row.idFlow ?? index;
+  };
 </script>
 
 <template>
@@ -26,12 +24,7 @@ const getRowId = (row: any, index: number): string | number => {
     ]"
   >
     <!-- Header -->
-    <div
-      :class="[
-        props.config.gridClass,
-        'border-b-[1px] border-gray-300 py-4 pr-16 gap-2',
-      ]"
-    >
+    <div :class="[props.config.gridClass, 'border-b border-gray-300 py-4 pr-16 gap-2']">
       <div v-for="column in props.config.columns" :key="column.id">
         <span
           v-if="column.label"
@@ -45,18 +38,11 @@ const getRowId = (row: any, index: number): string | number => {
 
     <!-- Loading State -->
     <div v-if="props.isLoading">
-      <TableSkeleton
-        v-for="i in 4"
-        :key="i"
-        :config="props.config"
-      />
+      <TableSkeleton v-for="i in 4" :key="i" :config="props.config" />
     </div>
 
     <!-- Empty State -->
-    <TableEmpty
-      v-else-if="props.data.length === 0"
-      :message="props.emptyMessage"
-    />
+    <TableEmpty v-else-if="props.data.length === 0" :message="props.emptyMessage" />
 
     <!-- Data Rows -->
     <div v-else>
@@ -72,15 +58,11 @@ const getRowId = (row: any, index: number): string | number => {
       >
         <!-- Slots para renderizado personalizado -->
         <template
-          v-for="column in props.config.columns"
-          :key="`slot-${column.key}`"
-          #[`cell-${column.key}`]="{ rowData, column }"
+          v-for="col in props.config.columns"
+          :key="`slot-${col.key}`"
+          #[`cell-${col.key}`]="{ rowData, column: colData }"
         >
-          <slot
-            :name="`cell-${column.key}`"
-            :rowData="rowData"
-            :column="column"
-          />
+          <slot :name="`cell-${col.key}`" :row-data="rowData" :column="colData" />
         </template>
       </TableRow>
     </div>
@@ -88,26 +70,25 @@ const getRowId = (row: any, index: number): string | number => {
 </template>
 
 <style scoped>
-.scroll-container {
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 #f1f5f9;
-}
+  .scroll-container {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+  }
 
-.scroll-container::-webkit-scrollbar {
-  width: 8px;
-}
+  .scroll-container::-webkit-scrollbar {
+    width: 8px;
+  }
 
-.scroll-container::-webkit-scrollbar-track {
-  background: #f1f5f9;
-}
+  .scroll-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
 
-.scroll-container::-webkit-scrollbar-thumb {
-  background-color: #cbd5e1;
-  border-radius: 4px;
-}
+  .scroll-container::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 4px;
+  }
 
-.scroll-container::-webkit-scrollbar-thumb:hover {
-  background-color: #94a3b8;
-}
+  .scroll-container::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+  }
 </style>
-

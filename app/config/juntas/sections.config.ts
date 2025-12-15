@@ -1,6 +1,6 @@
 /**
  * Configuración de secciones para cada sub-step
- * 
+ *
  * Define las secciones que aparecen en el sidebar derecho para cada acuerdo
  */
 
@@ -9,10 +9,7 @@ import type { SectionItem } from "~/types/junta-navigation.types";
 /**
  * Mapeo de sub-steps a sus secciones base (sin estados)
  */
-export const SUB_STEP_SECTIONS_MAP: Record<
-  string,
-  Array<Omit<SectionItem, "status">>
-> = {
+export const SUB_STEP_SECTIONS_MAP: Record<string, Array<Omit<SectionItem, "status">>> = {
   "aporte-dinerarios": [
     {
       id: "aporte-dinerario",
@@ -331,6 +328,82 @@ export const SUB_STEP_SECTIONS_MAP: Record<
       navigationType: "route",
     },
   ],
+  "nombramiento-directores": [
+    {
+      id: "nombramiento-directores",
+      title: "Nombramiento de Directores",
+      description: "Vista general",
+      navigationType: "route",
+    },
+    {
+      id: "nombramiento",
+      title: "Nombramiento",
+      description: "Registra los directores propuestos",
+      navigationType: "route",
+    },
+    {
+      id: "votacion",
+      title: "Votación",
+      description: "Registra la votación",
+      navigationType: "route",
+    },
+    {
+      id: "presidente",
+      title: "Presidente",
+      description: "Define el presidente del directorio",
+      navigationType: "route",
+    },
+    {
+      id: "resumen",
+      title: "Resumen",
+      description: "Revisa el resumen",
+      navigationType: "route",
+    },
+  ],
+  "nombramiento-directorio": [
+    {
+      id: "nombramiento-directorio",
+      title: "Nombramiento de Directorio",
+      description: "Vista general",
+      navigationType: "route",
+    },
+    {
+      id: "nombramiento",
+      title: "Configuración del directorio",
+      description: "Detalla la propuesta de directorio",
+      navigationType: "route",
+    },
+    {
+      id: "cantidad",
+      title: "Votacion para la configuración del directorio",
+      description: "Establece el número de integrantes",
+      navigationType: "route",
+    },
+    {
+      id: "directores",
+      title: "Designación de Directores",
+      description: "Designa los directores del directorio",
+      navigationType: "route",
+    },
+    {
+      id: "votacion",
+      title: "Votación para la designación",
+      description: "Registra la aprobación o rechazo de los directores",
+      navigationType: "route",
+    },
+    {
+      id: "presidente",
+      title: "Presidente del directorio",
+      description: "Registra el presidente del directorio",
+      navigationType: "route",
+    },
+    {
+      id: "resumen",
+      title: "Resumen",
+      description: "Revisa el resumen",
+      navigationType: "route",
+    },
+  ],
 };
 
 /**
@@ -367,4 +440,3 @@ export function applySectionStatuses(
     }
   });
 }
-

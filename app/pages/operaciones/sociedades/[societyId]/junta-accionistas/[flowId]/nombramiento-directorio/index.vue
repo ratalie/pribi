@@ -7,7 +7,8 @@
 
     <div class="flex flex-col gap-8">
       <p class="text-sm text-muted-foreground">
-        Consulta esta introducción y sigue los pasos detallados desde el panel derecho para completar el proceso.
+        Consulta esta introducción y sigue los pasos detallados desde el panel derecho para
+        completar el proceso.
       </p>
       <BlankContainer />
     </div>

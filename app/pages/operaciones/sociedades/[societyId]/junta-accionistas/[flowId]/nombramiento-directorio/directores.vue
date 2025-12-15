@@ -126,13 +126,13 @@
 
 <script setup lang="ts">
   import type { ColumnDef } from "@tanstack/vue-table";
-import { Info, UserPlus } from "lucide-vue-next";
-import { computed, h, ref, watch } from "vue";
-import SimpleCard from "~/components/base/cards/SimpleCard.vue";
-import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
-import DesignarDirectorModal from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/components/DesignarDirectorModal.vue";
-import DesignarSuplenteAlternoModal from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/components/DesignarSuplenteAlternoModal.vue";
-import { useDirectoresStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/composables/useDirectoresStore";
+  import { Info, UserPlus } from "lucide-vue-next";
+  import { computed, h, ref, watch } from "vue";
+  import SimpleCard from "~/components/base/cards/SimpleCard.vue";
+  import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
+  import DesignarDirectorModal from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/components/DesignarDirectorModal.vue";
+  import DesignarSuplenteAlternoModal from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/components/DesignarSuplenteAlternoModal.vue";
+  import { useDirectoresStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/composables/useDirectoresStore";
 
   definePageMeta({
     layout: "registros",

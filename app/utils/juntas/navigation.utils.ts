@@ -2,7 +2,10 @@
  * Utilidades para navegación en el flujo de Juntas
  */
 
-import { getSectionRoutesForSubStep, getParentSectionForAnchor } from "~/config/juntas/navigation-routes.config";
+import {
+  getParentSectionForAnchor,
+  getSectionRoutesForSubStep,
+} from "~/config/juntas/navigation-routes.config";
 import { getBaseSectionsForSubStep } from "~/config/juntas/sections.config";
 import { buildBasePath } from "./route-detection.utils";
 
@@ -71,7 +74,7 @@ export function findParentSectionForAnchor(
 
   const basePath = buildBasePath(societyId, flowId);
   const sections = getBaseSectionsForSubStep(subStepId);
-  
+
   return getParentSectionForAnchor(anchorId, subStepId, basePath, sections);
 }
 
@@ -115,7 +118,10 @@ export function detectCurrentSection(
     if (path.includes("/pronunciamiento-gestion/pronunciamiento")) return "pronunciamiento";
     if (path.includes("/pronunciamiento-gestion/votacion")) return "votacion";
     if (path.includes("/pronunciamiento-gestion/resumen")) return "resumen";
-    if (path.includes("/pronunciamiento-gestion") && !path.includes("/pronunciamiento-gestion/")) {
+    if (
+      path.includes("/pronunciamiento-gestion") &&
+      !path.includes("/pronunciamiento-gestion/")
+    ) {
       return "pronunciamiento-gestion";
     }
   }
@@ -124,8 +130,39 @@ export function detectCurrentSection(
     if (path.includes("/nombramiento-auditores/nombramiento")) return "nombramiento";
     if (path.includes("/nombramiento-auditores/votacion")) return "votacion";
     if (path.includes("/nombramiento-auditores/resumen")) return "resumen";
-    if (path.includes("/nombramiento-auditores") && !path.includes("/nombramiento-auditores/")) {
+    if (
+      path.includes("/nombramiento-auditores") &&
+      !path.includes("/nombramiento-auditores/")
+    ) {
       return "nombramiento-auditores";
+    }
+  }
+
+  if (subStepId === "nombramiento-directores") {
+    if (path.includes("/nombramiento-directores/presidente")) return "presidente";
+    if (path.includes("/nombramiento-directores/nombramiento")) return "nombramiento";
+    if (path.includes("/nombramiento-directores/votacion")) return "votacion";
+    if (path.includes("/nombramiento-directores/resumen")) return "resumen";
+    if (
+      path.includes("/nombramiento-directores") &&
+      !path.includes("/nombramiento-directores/")
+    ) {
+      return "nombramiento-directores";
+    }
+  }
+
+  if (subStepId === "nombramiento-directorio") {
+    if (path.includes("/nombramiento-directorio/cantidad")) return "cantidad";
+    if (path.includes("/nombramiento-directorio/nombramiento")) return "nombramiento";
+    if (path.includes("/nombramiento-directorio/directores")) return "directores";
+    if (path.includes("/nombramiento-directorio/votacion")) return "votacion";
+    if (path.includes("/nombramiento-directorio/presidente")) return "presidente";
+    if (path.includes("/nombramiento-directorio/resumen")) return "resumen";
+    if (
+      path.includes("/nombramiento-directorio") &&
+      !path.includes("/nombramiento-directorio/")
+    ) {
+      return "nombramiento-directorio";
     }
   }
 
@@ -200,4 +237,3 @@ export function detectCurrentSection(
 
   return "";
 }
-
