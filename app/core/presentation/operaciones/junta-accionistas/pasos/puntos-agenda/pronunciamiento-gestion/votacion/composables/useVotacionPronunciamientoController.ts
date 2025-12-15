@@ -1,16 +1,16 @@
-import { onMounted, onActivated, computed, ref } from "vue";
+import { computed, onActivated, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { useVotacionPronunciamientoStore } from "../stores/useVotacionPronunciamientoStore";
-import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
-import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 import { VoteAgreementType } from "~/core/hexag/juntas/domain/enums/vote-agreement-type.enum";
-import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
 import { VoteContext } from "~/core/hexag/juntas/domain/enums/vote-context.enum";
 import { VoteMode } from "~/core/hexag/juntas/domain/enums/vote-mode.enum";
+import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
+import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
+import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
+import { useVotacionPronunciamientoStore } from "../stores/useVotacionPronunciamientoStore";
 
 /**
  * Controller para la vista de Votación de Pronunciamiento de Gestión Social
- * 
+ *
  * Orquesta:
  * - Carga de datos (asistentes, snapshot)
  * - Carga/creación de sesión de votación
@@ -46,9 +46,13 @@ export function useVotacionPronunciamientoController() {
       // 2. Cargar asistentes (para obtener votantes - solo los que asistieron)
       console.log("[DEBUG][VotacionPronunciamientoController] Cargando asistentes...");
       await asistenciaStore.loadAsistencias(societyId.value, flowId.value);
-      console.log("[DEBUG][VotacionPronunciamientoController] Asistentes cargados:", asistenciaStore.asistencias);
-      console.log("[DEBUG][VotacionPronunciamientoController] Asistentes que asistieron:", 
-        asistenciaStore.asistencias.filter(a => a.asistio)
+      console.log(
+        "[DEBUG][VotacionPronunciamientoController] Asistentes cargados:",
+        asistenciaStore.asistencias
+      );
+      console.log(
+        "[DEBUG][VotacionPronunciamientoController] Asistentes que asistieron:",
+        asistenciaStore.asistencias.filter((a) => a.asistio)
       );
 
       // 3. ✅ SOLO CARGAR votación existente (NO crear automáticamente)
@@ -64,17 +68,28 @@ export function useVotacionPronunciamientoController() {
       } catch (error: any) {
         // Si no existe (404), es normal - se creará al guardar
         if (error.statusCode === 404 || error.status === 404) {
-          console.log("[DEBUG][VotacionPronunciamientoController] No hay votación existente (404), se creará al guardar");
+          console.log(
+            "[DEBUG][VotacionPronunciamientoController] No hay votación existente (404), se creará al guardar"
+          );
         } else {
-          console.error("[Controller][VotacionPronunciamiento] Error al cargar votación:", error);
+          console.error(
+            "[Controller][VotacionPronunciamiento] Error al cargar votación:",
+            error
+          );
         }
       }
-      
+
       // ✅ DEBUG: Estado final después de carga
       console.log("[DEBUG][VotacionPronunciamientoController] Carga de datos completada:", {
         hasVotacion: votacionStore.hasVotacion,
         hasItem: !!votacionStore.itemVotacion,
         votantesCount: votantes.value.length,
+        votosCount: votacionStore.itemVotacion?.votos.length || 0,
+        votos:
+          votacionStore.itemVotacion?.votos.map((v) => ({
+            accionistaId: v.accionistaId,
+            valor: v.valor,
+          })) || [],
       });
     } catch (error: any) {
       console.error("[Controller][VotacionPronunciamiento] Error al cargar datos:", error);
@@ -91,9 +106,9 @@ export function useVotacionPronunciamientoController() {
   const votantes = computed(() => {
     const asistentes = asistenciaStore.asistenciasEnriquecidas;
     const filtrados = asistentes.filter((a) => a.asistio);
-    
+
     console.log("[DEBUG][VotacionPronunciamientoController] Votantes filtrados:", filtrados);
-    
+
     return filtrados.map((a) => ({
       id: a.id, // ID del registro de asistencia
       accionistaId: a.accionista.id, // ✅ ID del accionista (para votos)
@@ -116,12 +131,15 @@ export function useVotacionPronunciamientoController() {
 
   /**
    * Obtener voto de un accionista
+   * ✅ Computed para que sea reactivo cuando cambie el store
    */
-  function getVoto(accionistaId: string): VoteValue | null {
-    const voto = votacionStore.getVotoByAccionista(accionistaId);
-    if (!voto) return null;
-    return voto.valor as VoteValue;
-  }
+  const getVoto = computed(() => {
+    return (accionistaId: string): VoteValue | null => {
+      const voto = votacionStore.getVotoByAccionista(accionistaId);
+      if (!voto) return null;
+      return voto.valor as VoteValue;
+    };
+  });
 
   /**
    * Establecer voto de un accionista (SOLO actualiza estado local, NO guarda, NO hace fetch)
@@ -130,11 +148,13 @@ export function useVotacionPronunciamientoController() {
   function setVoto(accionistaId: string, valor: VoteValue) {
     // ✅ Si no hay sesión, crear en memoria (NO guardar todavía)
     if (!votacionStore.sesionVotacion) {
-      console.log("[DEBUG][VotacionPronunciamientoController] Creando sesión en memoria al votar (no guardada todavía)");
+      console.log(
+        "[DEBUG][VotacionPronunciamientoController] Creando sesión en memoria al votar (no guardada todavía)"
+      );
       const sessionId = votacionStore.generateUuid();
       const itemId = votacionStore.generateUuid();
       const textoVotacionValue = textoVotacion.value;
-      
+
       votacionStore.sesionVotacion = {
         id: sessionId,
         contexto: VoteContext.GESTION_SOCIAL,
@@ -144,7 +164,8 @@ export function useVotacionPronunciamientoController() {
             id: itemId,
             orden: 0,
             label: textoVotacionValue,
-            descripción: "Votación sobre la aprobación de la memoria, los estados financieros y la gestión social presentados en la junta",
+            descripción:
+              "Votación sobre la aprobación de la memoria, los estados financieros y la gestión social presentados en la junta",
             tipoAprobacion: VoteAgreementType.SOMETIDO_A_VOTACION, // Por defecto mayoría al votar
             votos: [],
           },
@@ -154,15 +175,18 @@ export function useVotacionPronunciamientoController() {
 
     // ✅ Si hay sesión pero no hay item, crear item en memoria
     if (!votacionStore.itemVotacion) {
-      console.log("[DEBUG][VotacionPronunciamientoController] Creando item en memoria al votar (no guardado todavía)");
+      console.log(
+        "[DEBUG][VotacionPronunciamientoController] Creando item en memoria al votar (no guardado todavía)"
+      );
       const itemId = votacionStore.generateUuid();
       const textoVotacionValue = textoVotacion.value;
-      
+
       votacionStore.sesionVotacion.items.push({
         id: itemId,
         orden: 0,
         label: textoVotacionValue,
-        descripción: "Votación sobre la aprobación de la memoria, los estados financieros y la gestión social presentados en la junta",
+        descripción:
+          "Votación sobre la aprobación de la memoria, los estados financieros y la gestión social presentados en la junta",
         tipoAprobacion: VoteAgreementType.SOMETIDO_A_VOTACION, // Por defecto mayoría al votar
         votos: [],
       });
@@ -204,14 +228,66 @@ export function useVotacionPronunciamientoController() {
    * Cambiar tipo de votación (unanimidad/mayoría)
    */
   async function cambiarTipo(tipo: "unanimidad" | "mayoria") {
-    if (!votacionStore.itemVotacion) {
-      console.warn("[Controller][VotacionPronunciamiento] No hay item de votación para cambiar tipo");
+    // ✅ Si no hay sesión, crear en memoria
+    if (!votacionStore.sesionVotacion) {
+      console.log(
+        "[DEBUG][VotacionPronunciamientoController] Creando sesión en memoria al cambiar tipo"
+      );
+      const sessionId = votacionStore.generateUuid();
+      const itemId = votacionStore.generateUuid();
+      const textoVotacionValue = textoVotacion.value;
+
+      votacionStore.sesionVotacion = {
+        id: sessionId,
+        contexto: VoteContext.GESTION_SOCIAL,
+        modo: VoteMode.SIMPLE,
+        items: [
+          {
+            id: itemId,
+            orden: 0,
+            label: textoVotacionValue,
+            descripción:
+              "Votación sobre la aprobación de la memoria, los estados financieros y la gestión social presentados en la junta",
+            tipoAprobacion:
+              tipo === "unanimidad"
+                ? VoteAgreementType.APROBADO_POR_TODOS
+                : VoteAgreementType.SOMETIDO_A_VOTACION,
+            votos: [],
+          },
+        ],
+      };
+      console.log("[DEBUG][VotacionPronunciamientoController] Sesión creada con tipo:", tipo);
       return;
     }
 
-    const tipoAprobacion = tipo === "unanimidad"
-      ? VoteAgreementType.APROBADO_POR_TODOS
-      : VoteAgreementType.SOMETIDO_A_VOTACION;
+    // ✅ Si hay sesión pero no hay item, crear item
+    if (!votacionStore.itemVotacion) {
+      console.log(
+        "[DEBUG][VotacionPronunciamientoController] Creando item en memoria al cambiar tipo"
+      );
+      const itemId = votacionStore.generateUuid();
+      const textoVotacionValue = textoVotacion.value;
+
+      votacionStore.sesionVotacion.items.push({
+        id: itemId,
+        orden: 0,
+        label: textoVotacionValue,
+        descripción:
+          "Votación sobre la aprobación de la memoria, los estados financieros y la gestión social presentados en la junta",
+        tipoAprobacion:
+          tipo === "unanimidad"
+            ? VoteAgreementType.APROBADO_POR_TODOS
+            : VoteAgreementType.SOMETIDO_A_VOTACION,
+        votos: [],
+      });
+      console.log("[DEBUG][VotacionPronunciamientoController] Item creado con tipo:", tipo);
+      return;
+    }
+
+    const tipoAprobacion =
+      tipo === "unanimidad"
+        ? VoteAgreementType.APROBADO_POR_TODOS
+        : VoteAgreementType.SOMETIDO_A_VOTACION;
 
     // Si cambia a unanimidad, limpiar votos (no se necesitan)
     if (tipo === "unanimidad") {
@@ -246,16 +322,46 @@ export function useVotacionPronunciamientoController() {
       const descripcion = item.descripción;
       const tipoAprobacion = item.tipoAprobacion || VoteAgreementType.SOMETIDO_A_VOTACION;
 
-      // Preparar votos para enviar
-      const votos = item.votos.map((v) => ({
-        id: v.id,
-        accionistaId: v.accionistaId,
-        valor: v.valor,
-      }));
+      // ✅ Preparar votos para enviar
+      let votos: Array<{ id: string; accionistaId: string; valor: string | number }>;
+
+      // ✅ Si es unanimidad, generar todos los votos a favor automáticamente
+      if (tipoAprobacion === VoteAgreementType.APROBADO_POR_TODOS) {
+        console.log(
+          "[DEBUG][VotacionPronunciamientoController] Es unanimidad - generando todos los votos a favor"
+        );
+        votos = votantes.value.map((votante) => ({
+          id: votacionStore.generateUuid(),
+          accionistaId: votante.accionistaId,
+          valor: VoteValue.A_FAVOR,
+        }));
+        console.log(
+          "[DEBUG][VotacionPronunciamientoController] Votos generados para unanimidad:",
+          votos.length
+        );
+      } else {
+        // ✅ Si es sometida a votos, usar los votos del usuario
+        votos = item.votos.map((v) => ({
+          id: v.id,
+          accionistaId: v.accionistaId,
+          valor: v.valor,
+        }));
+
+        // Validar que haya votos
+        if (votos.length === 0) {
+          throw new Error("Debe registrar al menos un voto para votación por mayoría");
+        }
+        console.log(
+          "[DEBUG][VotacionPronunciamientoController] Es sometida a votos - usando votos del usuario:",
+          votos.length
+        );
+      }
 
       // Si ya existe en backend, actualizar
       if (votacionStore.hasVotacion) {
-        console.log("[DEBUG][VotacionPronunciamientoController] Actualizando votación existente");
+        console.log(
+          "[DEBUG][VotacionPronunciamientoController] Actualizando votación existente"
+        );
         await votacionStore.updateItemConVotos(
           societyId.value,
           flowId.value,
@@ -320,12 +426,10 @@ export function useVotacionPronunciamientoController() {
     textoVotacion,
 
     // Métodos
-    getVoto,
+    getVoto: getVoto, // ✅ Pasar el computed directamente
     setVoto,
     cambiarTipo,
     guardarVotacion,
     loadData,
   };
 }
-
-

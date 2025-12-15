@@ -15,6 +15,7 @@
     mensaje-aprobacion="la propuesta de aplicación de los resultados del ejercicio."
     :votantes="votantes"
     :texto-votacion="textoVotacion"
+    :get-voto="getVoto"
     @cambiar-tipo="handleCambiarTipo"
     @cambiar-voto="handleCambiarVoto"
   />
@@ -52,6 +53,7 @@ import { useVotacionAplicacionResultadosStore } from "~/core/presentation/operac
   // ✅ Usar directamente los computed del controller
   const votantes = controller.votantes;
   const textoVotacion = controller.textoVotacion;
+  const getVoto = controller.getVoto;
 
   // Método de votación (unanimidad/mayoría)
   const metodoVotacion = computed({

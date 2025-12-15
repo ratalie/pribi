@@ -31,6 +31,7 @@
     accionistas?: string[];
     votantes?: Votante[] | any; // Aceptar también ComputedRef
     textoVotacion?: string | any; // Aceptar también ComputedRef
+    getVoto?: (accionistaId: string) => "A_FAVOR" | "EN_CONTRA" | "ABSTENCION" | null; // Función para obtener voto
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -191,6 +192,7 @@
         :mensaje-aprobacion="props.mensajeAprobacion"
         :votantes="votantesValue"
         :texto-votacion="textoVotacionValue"
+        :get-voto="props.getVoto"
         @cambiar-voto="(accionistaId, valor) => emit('cambiar-voto', accionistaId, valor)"
       />
     </div>

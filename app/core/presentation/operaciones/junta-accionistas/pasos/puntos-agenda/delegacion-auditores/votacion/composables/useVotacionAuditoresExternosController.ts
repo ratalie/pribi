@@ -6,22 +6,24 @@ import { VoteMode } from "~/core/hexag/juntas/domain/enums/vote-mode.enum";
 import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
 import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
-import { useVotacionAplicacionResultadosStore } from "../stores/useVotacionAplicacionResultadosStore";
+import { useAuditoresExternosStore } from "../../stores/useAuditoresExternosStore";
+import { useVotacionAuditoresExternosStore } from "../stores/useVotacionAuditoresExternosStore";
 
 /**
- * Controller para la vista de Votación de Aplicación de Resultados
+ * Controller para la vista de Votación de Designación de Auditores Externos
  *
  * Orquesta:
- * - Carga de datos (asistentes, snapshot)
+ * - Carga de datos (asistentes, snapshot, datos del auditor)
  * - Carga/creación de sesión de votación
- * - Generación de texto de votación
+ * - Generación de texto de votación (con nombre del auditor)
  * - Guardado de votos
  */
-export function useVotacionAplicacionResultadosController() {
+export function useVotacionAuditoresExternosController() {
   const route = useRoute();
-  const votacionStore = useVotacionAplicacionResultadosStore();
+  const votacionStore = useVotacionAuditoresExternosStore();
   const asistenciaStore = useAsistenciaStore();
   const snapshotStore = useSnapshotStore();
+  const auditoresStore = useAuditoresExternosStore();
 
   const societyId = computed(() => Number(route.params.societyId));
   const flowId = computed(() => Number(route.params.flowId));
@@ -43,23 +45,28 @@ export function useVotacionAplicacionResultadosController() {
         await snapshotStore.loadSnapshot(societyId.value, flowId.value);
       }
 
-      // 2. Cargar asistentes (para obtener votantes - solo los que asistieron)
-      console.log("[DEBUG][VotacionAplicacionResultadosController] Cargando asistentes...");
+      // 2. Cargar datos del auditor (para obtener el nombre)
+      // Nota: El store de auditores ya debería estar cargado desde la vista anterior
+      // pero lo cargamos por si acaso
+      if (!auditoresStore.hasData) {
+        // Si no hay datos, no podemos continuar (necesitamos el nombre del auditor)
+        console.warn(
+          "[Controller][VotacionAuditoresExternos] No hay datos del auditor cargados"
+        );
+      }
+
+      // 3. Cargar asistentes (para obtener votantes - solo los que asistieron)
+      console.log("[DEBUG][VotacionAuditoresExternosController] Cargando asistentes...");
       await asistenciaStore.loadAsistencias(societyId.value, flowId.value);
       console.log(
-        "[DEBUG][VotacionAplicacionResultadosController] Asistentes cargados:",
+        "[DEBUG][VotacionAuditoresExternosController] Asistentes cargados:",
         asistenciaStore.asistencias
       );
-      console.log(
-        "[DEBUG][VotacionAplicacionResultadosController] Asistentes que asistieron:",
-        asistenciaStore.asistencias.filter((a) => a.asistio)
-      );
 
-      // 3. ✅ SOLO CARGAR votación existente (NO crear automáticamente)
-      // La votación se creará/actualizará cuando el usuario haga click en "Siguiente"
+      // 4. ✅ SOLO CARGAR votación existente (NO crear automáticamente)
       try {
         await votacionStore.loadVotacion(societyId.value, flowId.value);
-        console.log("[DEBUG][VotacionAplicacionResultadosController] Votación cargada:", {
+        console.log("[DEBUG][VotacionAuditoresExternosController] Votación cargada:", {
           hasVotacion: votacionStore.hasVotacion,
           hasItem: !!votacionStore.itemVotacion,
           itemId: votacionStore.itemVotacion?.id,
@@ -69,30 +76,24 @@ export function useVotacionAplicacionResultadosController() {
         // Si no existe (404), es normal - se creará al guardar
         if (error.statusCode === 404 || error.status === 404) {
           console.log(
-            "[DEBUG][VotacionAplicacionResultadosController] No hay votación existente (404), se creará al guardar"
+            "[DEBUG][VotacionAuditoresExternosController] No hay votación existente (404), se creará al guardar"
           );
         } else {
           console.error(
-            "[Controller][VotacionAplicacionResultados] Error al cargar votación:",
+            "[Controller][VotacionAuditoresExternos] Error al cargar votación:",
             error
           );
         }
       }
 
-      // ✅ DEBUG: Estado final después de carga
-      console.log(
-        "[DEBUG][VotacionAplicacionResultadosController] Carga de datos completada:",
-        {
-          hasVotacion: votacionStore.hasVotacion,
-          hasItem: !!votacionStore.itemVotacion,
-          votantesCount: votantes.value.length,
-        }
-      );
+      console.log("[DEBUG][VotacionAuditoresExternosController] Carga de datos completada:", {
+        hasVotacion: votacionStore.hasVotacion,
+        hasItem: !!votacionStore.itemVotacion,
+        votantesCount: votantes.value.length,
+        nombreAuditor: auditoresStore.nombreCompletoAuditor,
+      });
     } catch (error: any) {
-      console.error(
-        "[Controller][VotacionAplicacionResultados] Error al cargar datos:",
-        error
-      );
+      console.error("[Controller][VotacionAuditoresExternos] Error al cargar datos:", error);
       error.value = error.message || "Error al cargar datos";
       throw error;
     } finally {
@@ -107,10 +108,7 @@ export function useVotacionAplicacionResultadosController() {
     const asistentes = asistenciaStore.asistenciasEnriquecidas;
     const filtrados = asistentes.filter((a) => a.asistio);
 
-    console.log(
-      "[DEBUG][VotacionAplicacionResultadosController] Votantes filtrados:",
-      filtrados
-    );
+    console.log("[DEBUG][VotacionAuditoresExternosController] Votantes filtrados:", filtrados);
 
     return filtrados.map((a) => ({
       id: a.id, // ID del registro de asistencia
@@ -122,14 +120,15 @@ export function useVotacionAplicacionResultadosController() {
   });
 
   /**
-   * Obtener texto de votación
+   * Obtener texto de votación (con nombre del auditor)
    */
   const textoVotacion = computed(() => {
     if (votacionStore.itemVotacion) {
       return votacionStore.itemVotacion.label;
     }
-    // Texto por defecto para aplicación de resultados
-    return "¿Se aprueba la propuesta de aplicación de los resultados del ejercicio?";
+    // Texto por defecto con nombre del auditor
+    const nombreAuditor = auditoresStore.nombreCompletoAuditor || "el auditor externo";
+    return `¿Se aprueba la designación de ${nombreAuditor} como auditor externo?`;
   });
 
   /**
@@ -146,13 +145,12 @@ export function useVotacionAplicacionResultadosController() {
 
   /**
    * Establecer voto de un accionista (SOLO actualiza estado local, NO guarda, NO hace fetch)
-   * ⚠️ IMPORTANTE: Si no hay sesión/item, se crea en memoria (se guardará al hacer "Siguiente")
    */
   function setVoto(accionistaId: string, valor: VoteValue) {
     // ✅ Si no hay sesión, crear en memoria (NO guardar todavía)
     if (!votacionStore.sesionVotacion) {
       console.log(
-        "[DEBUG][VotacionAplicacionResultadosController] Creando sesión en memoria al votar (no guardada todavía)"
+        "[DEBUG][VotacionAuditoresExternosController] Creando sesión en memoria al votar (no guardada todavía)"
       );
       const sessionId = votacionStore.generateUuid();
       const itemId = votacionStore.generateUuid();
@@ -160,15 +158,16 @@ export function useVotacionAplicacionResultadosController() {
 
       votacionStore.sesionVotacion = {
         id: sessionId,
-        contexto: VoteContext.APLICACION_UTILIDADES,
+        contexto: VoteContext.DESIGNACION_AUDITORES,
         modo: VoteMode.SIMPLE,
         items: [
           {
             id: itemId,
             orden: 0,
             label: textoVotacionValue,
-            descripción:
-              "Votación sobre la aprobación de la propuesta de aplicación de los resultados del ejercicio",
+            descripción: `Votación sobre la designación de ${
+              auditoresStore.nombreCompletoAuditor || "el auditor externo"
+            } como auditor externo`,
             tipoAprobacion: VoteAgreementType.SOMETIDO_A_VOTACION, // Por defecto mayoría al votar
             votos: [],
           },
@@ -179,7 +178,7 @@ export function useVotacionAplicacionResultadosController() {
     // ✅ Si hay sesión pero no hay item, crear item en memoria
     if (!votacionStore.itemVotacion) {
       console.log(
-        "[DEBUG][VotacionAplicacionResultadosController] Creando item en memoria al votar (no guardado todavía)"
+        "[DEBUG][VotacionAuditoresExternosController] Creando item en memoria al votar (no guardado todavía)"
       );
       const itemId = votacionStore.generateUuid();
       const textoVotacionValue = textoVotacion.value;
@@ -188,8 +187,9 @@ export function useVotacionAplicacionResultadosController() {
         id: itemId,
         orden: 0,
         label: textoVotacionValue,
-        descripción:
-          "Votación sobre la aprobación de la propuesta de aplicación de los resultados del ejercicio",
+        descripción: `Votación sobre la designación de ${
+          auditoresStore.nombreCompletoAuditor || "el auditor externo"
+        } como auditor externo`,
         tipoAprobacion: VoteAgreementType.SOMETIDO_A_VOTACION, // Por defecto mayoría al votar
         votos: [],
       });
@@ -197,7 +197,7 @@ export function useVotacionAplicacionResultadosController() {
 
     const item = votacionStore.itemVotacion;
     if (!item) {
-      console.error("[Controller][VotacionAplicacionResultados] No se pudo crear item");
+      console.error("[Controller][VotacionAuditoresExternos] No se pudo crear item");
       return;
     }
 
@@ -208,7 +208,7 @@ export function useVotacionAplicacionResultadosController() {
       // Actualizar voto existente en estado local
       votoExistente.valor = valor as string | number;
       console.log(
-        "[DEBUG][VotacionAplicacionResultadosController] Voto actualizado en memoria:",
+        "[DEBUG][VotacionAuditoresExternosController] Voto actualizado en memoria:",
         {
           accionistaId,
           valor,
@@ -222,14 +222,11 @@ export function useVotacionAplicacionResultadosController() {
         accionistaId,
         valor: valor as string | number,
       });
-      console.log(
-        "[DEBUG][VotacionAplicacionResultadosController] Voto agregado en memoria:",
-        {
-          accionistaId,
-          valor,
-          voteId,
-        }
-      );
+      console.log("[DEBUG][VotacionAuditoresExternosController] Voto agregado en memoria:", {
+        accionistaId,
+        valor,
+        voteId,
+      });
     }
   }
 
@@ -240,7 +237,7 @@ export function useVotacionAplicacionResultadosController() {
     // ✅ Si no hay sesión, crear en memoria
     if (!votacionStore.sesionVotacion) {
       console.log(
-        "[DEBUG][VotacionAplicacionResultadosController] Creando sesión en memoria al cambiar tipo"
+        "[DEBUG][VotacionAuditoresExternosController] Creando sesión en memoria al cambiar tipo"
       );
       const sessionId = votacionStore.generateUuid();
       const itemId = votacionStore.generateUuid();
@@ -248,15 +245,16 @@ export function useVotacionAplicacionResultadosController() {
 
       votacionStore.sesionVotacion = {
         id: sessionId,
-        contexto: VoteContext.APLICACION_UTILIDADES,
+        contexto: VoteContext.DESIGNACION_AUDITORES,
         modo: VoteMode.SIMPLE,
         items: [
           {
             id: itemId,
             orden: 0,
             label: textoVotacionValue,
-            descripción:
-              "Votación sobre la aprobación de la aplicación de resultados económicos",
+            descripción: `Votación sobre la designación de ${
+              auditoresStore.nombreCompletoAuditor || "el auditor externo"
+            } como auditor externo`,
             tipoAprobacion:
               tipo === "unanimidad"
                 ? VoteAgreementType.APROBADO_POR_TODOS
@@ -266,7 +264,7 @@ export function useVotacionAplicacionResultadosController() {
         ],
       };
       console.log(
-        "[DEBUG][VotacionAplicacionResultadosController] Sesión creada con tipo:",
+        "[DEBUG][VotacionAuditoresExternosController] Sesión creada con tipo:",
         tipo
       );
       return;
@@ -275,7 +273,7 @@ export function useVotacionAplicacionResultadosController() {
     // ✅ Si hay sesión pero no hay item, crear item
     if (!votacionStore.itemVotacion) {
       console.log(
-        "[DEBUG][VotacionAplicacionResultadosController] Creando item en memoria al cambiar tipo"
+        "[DEBUG][VotacionAuditoresExternosController] Creando item en memoria al cambiar tipo"
       );
       const itemId = votacionStore.generateUuid();
       const textoVotacionValue = textoVotacion.value;
@@ -284,17 +282,16 @@ export function useVotacionAplicacionResultadosController() {
         id: itemId,
         orden: 0,
         label: textoVotacionValue,
-        descripción: "Votación sobre la aprobación de la aplicación de resultados económicos",
+        descripción: `Votación sobre la designación de ${
+          auditoresStore.nombreCompletoAuditor || "el auditor externo"
+        } como auditor externo`,
         tipoAprobacion:
           tipo === "unanimidad"
             ? VoteAgreementType.APROBADO_POR_TODOS
             : VoteAgreementType.SOMETIDO_A_VOTACION,
         votos: [],
       });
-      console.log(
-        "[DEBUG][VotacionAplicacionResultadosController] Item creado con tipo:",
-        tipo
-      );
+      console.log("[DEBUG][VotacionAuditoresExternosController] Item creado con tipo:", tipo);
       return;
     }
 
@@ -311,7 +308,7 @@ export function useVotacionAplicacionResultadosController() {
     // Actualizar tipo de aprobación en memoria
     votacionStore.itemVotacion.tipoAprobacion = tipoAprobacion;
 
-    console.log("[DEBUG][VotacionAplicacionResultadosController] Tipo de votación cambiado:", {
+    console.log("[DEBUG][VotacionAuditoresExternosController] Tipo de votación cambiado:", {
       tipo,
       tipoAprobacion,
     });
@@ -342,7 +339,7 @@ export function useVotacionAplicacionResultadosController() {
       // ✅ Si es unanimidad, generar todos los votos a favor automáticamente
       if (tipoAprobacion === VoteAgreementType.APROBADO_POR_TODOS) {
         console.log(
-          "[DEBUG][VotacionAplicacionResultadosController] Es unanimidad - generando todos los votos a favor"
+          "[DEBUG][VotacionAuditoresExternosController] Es unanimidad - generando todos los votos a favor"
         );
         votos = votantes.value.map((votante) => ({
           id: votacionStore.generateUuid(),
@@ -350,7 +347,7 @@ export function useVotacionAplicacionResultadosController() {
           valor: VoteValue.A_FAVOR,
         }));
         console.log(
-          "[DEBUG][VotacionAplicacionResultadosController] Votos generados para unanimidad:",
+          "[DEBUG][VotacionAuditoresExternosController] Votos generados para unanimidad:",
           votos.length
         );
       } else {
@@ -366,7 +363,7 @@ export function useVotacionAplicacionResultadosController() {
           throw new Error("Debe registrar al menos un voto para votación por mayoría");
         }
         console.log(
-          "[DEBUG][VotacionAplicacionResultadosController] Es sometida a votos - usando votos del usuario:",
+          "[DEBUG][VotacionAuditoresExternosController] Es sometida a votos - usando votos del usuario:",
           votos.length
         );
       }
@@ -374,7 +371,7 @@ export function useVotacionAplicacionResultadosController() {
       // Si ya existe en backend, actualizar
       if (votacionStore.hasVotacion) {
         console.log(
-          "[DEBUG][VotacionAplicacionResultadosController] Actualizando votación existente"
+          "[DEBUG][VotacionAuditoresExternosController] Actualizando votación existente"
         );
         await votacionStore.updateItemConVotos(
           societyId.value,
@@ -387,7 +384,7 @@ export function useVotacionAplicacionResultadosController() {
         );
       } else {
         // Si no existe, crear nueva
-        console.log("[DEBUG][VotacionAplicacionResultadosController] Creando nueva votación");
+        console.log("[DEBUG][VotacionAuditoresExternosController] Creando nueva votación");
         await votacionStore.createVotacion(
           societyId.value,
           flowId.value,
@@ -411,11 +408,11 @@ export function useVotacionAplicacionResultadosController() {
       }
 
       console.log(
-        "[DEBUG][VotacionAplicacionResultadosController] Votación guardada exitosamente"
+        "[DEBUG][VotacionAuditoresExternosController] Votación guardada exitosamente"
       );
     } catch (error: any) {
       console.error(
-        "[Controller][VotacionAplicacionResultados] Error al guardar votación:",
+        "[Controller][VotacionAuditoresExternos] Error al guardar votación:",
         error
       );
       error.value = error.message || "Error al guardar votación";

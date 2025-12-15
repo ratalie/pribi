@@ -190,6 +190,7 @@
     mensajeAprobacion?: string;
     votantes?: Votante[] | any; // Aceptar también ComputedRef
     textoVotacion?: string | any; // Aceptar también ComputedRef
+    getVoto?: (accionistaId: string) => "A_FAVOR" | "EN_CONTRA" | "ABSTENCION" | null; // Función para obtener voto
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -204,13 +205,15 @@
     mensajeAprobacion: "la propuesta de Aumento de Capital mediante Aportes Dinerarios.",
     votantes: () => [],
     textoVotacion: "",
+    getVoto: undefined,
   });
 
   const emit = defineEmits<{
     "cambiar-voto": [accionistaId: string, valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION"];
   }>();
 
-  const votacionStore = useVotacionStore();
+  // ✅ Usar store solo si no hay función getVoto (legacy)
+  const votacionStore = props.getVoto ? null : useVotacionStore();
 
   // Usar votantes si están disponibles, sino usar accionistas (legacy)
   const listaVotantes = computed(() => {
@@ -285,16 +288,38 @@
       .map(() => Array(listaVotantes.value.length).fill(null))
   );
 
-  // Cargar votos existentes del store
+  // Cargar votos existentes del store o función getVoto
   const cargarVotosExistentes = () => {
     console.log("[MayoriaVotacion] cargarVotosExistentes() ejecutado");
-    console.log("[MayoriaVotacion] hasVotacion:", votacionStore.hasVotacion);
-    console.log("[MayoriaVotacion] itemVotacion:", votacionStore.itemVotacion);
+    console.log("[MayoriaVotacion] tiene getVoto:", !!props.getVoto);
     console.log("[MayoriaVotacion] listaVotantes:", listaVotantes.value);
 
-    if (votacionStore.hasVotacion && votacionStore.itemVotacion) {
+    // ✅ Si hay función getVoto, usarla (nuevo método)
+    if (props.getVoto) {
+      console.log("[MayoriaVotacion] Usando función getVoto para cargar votos");
+      // ✅ Extraer función si es computed
+      const getVotoFn = typeof props.getVoto === "function" 
+        ? props.getVoto 
+        : (props.getVoto as any)?.value || props.getVoto;
+      
+      listaVotantes.value.forEach((votante, index) => {
+        const voto = getVotoFn(votante.accionistaId);
+        console.log(`[MayoriaVotacion] Votante ${index} (${votante.accionistaId}):`, {
+          voto,
+        });
+        if (voto && votos.value[0]) {
+          votos.value[0][index] = voto as Voto;
+          console.log(`[MayoriaVotacion] Voto cargado para votante ${index}:`, voto);
+        }
+      });
+      console.log("[MayoriaVotacion] Votos cargados:", votos.value[0]);
+      return;
+    }
+
+    // ✅ Legacy: usar store (solo si no hay función getVoto)
+    if (votacionStore && votacionStore.hasVotacion && votacionStore.itemVotacion) {
       const item = votacionStore.itemVotacion;
-      console.log("[MayoriaVotacion] Item de votación encontrado:", {
+      console.log("[MayoriaVotacion] Item de votación encontrado (legacy):", {
         id: item.id,
         votosCount: item.votos.length,
         votos: item.votos,
@@ -321,15 +346,64 @@
   // Cargar votos al montar
   cargarVotosExistentes();
 
-  // ✅ Observar cambios en el store para recargar votos cuando se carguen del backend
+  // ✅ Observar cambios en el store para recargar votos cuando se carguen del backend (solo legacy)
+  if (votacionStore) {
+    watch(
+      () => [votacionStore.hasVotacion, votacionStore.itemVotacion?.votos],
+      () => {
+        console.log("[MayoriaVotacion] Store cambió, recargando votos...");
+        cargarVotosExistentes();
+      },
+      { deep: true, immediate: false }
+    );
+  }
+
+  // ✅ Observar cambios en votantes y recargar votos cuando cambien (para ambos casos)
   watch(
-    () => [votacionStore.hasVotacion, votacionStore.itemVotacion?.votos],
+    () => listaVotantes.value,
     () => {
-      console.log("[MayoriaVotacion] Store cambió, recargando votos...");
+      console.log("[MayoriaVotacion] Votantes cambiaron, recargando votos...");
+      // Reinicializar array de votos con el nuevo tamaño
+      votos.value = Array(preguntas.value.length)
+        .fill(null)
+        .map(() => Array(listaVotantes.value.length).fill(null));
       cargarVotosExistentes();
     },
     { deep: true, immediate: false }
   );
+
+  // ✅ Observar cambios en getVoto para recargar votos cuando se carguen del backend
+  // Observamos los resultados de getVoto para cada votante
+  if (props.getVoto) {
+    // Extraer función si es computed
+    const getVotoFn = typeof props.getVoto === "function" 
+      ? props.getVoto 
+      : (props.getVoto as any)?.value || props.getVoto;
+    
+    watch(
+      () => {
+        // Crear un array de votos actuales usando getVoto
+        return listaVotantes.value.map(v => getVotoFn(v.accionistaId));
+      },
+      (nuevosVotos) => {
+        console.log("[MayoriaVotacion] Votos cambiaron (a través de getVoto), recargando...", nuevosVotos);
+        cargarVotosExistentes();
+      },
+      { deep: true, immediate: false }
+    );
+    
+    // ✅ También observar el computed directamente si es un computed
+    if (props.getVoto && typeof props.getVoto === "object" && "value" in props.getVoto) {
+      watch(
+        () => props.getVoto,
+        () => {
+          console.log("[MayoriaVotacion] getVoto computed cambió, recargando votos...");
+          cargarVotosExistentes();
+        },
+        { deep: true, immediate: false }
+      );
+    }
+  }
 
   // ✅ También observar cuando cambian los votantes (por si se cargan después)
   watch(

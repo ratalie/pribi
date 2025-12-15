@@ -15,6 +15,7 @@
     mensaje-aprobacion="la memoria, los estados financieros y la gestión social presentados en la junta."
     :votantes="votantes"
     :texto-votacion="textoVotacion"
+    :get-voto="getVoto"
     @cambiar-tipo="handleCambiarTipo"
     @cambiar-voto="handleCambiarVoto"
   />
@@ -52,6 +53,7 @@ import { useVotacionPronunciamientoStore } from "~/core/presentation/operaciones
   // ✅ Usar directamente los computed del controller
   const votantes = controller.votantes;
   const textoVotacion = controller.textoVotacion;
+  const getVoto = controller.getVoto;
 
   // Método de votación (unanimidad/mayoría)
   const metodoVotacion = computed({
