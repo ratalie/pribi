@@ -14,3 +14,4 @@
   import TitleH4 from "~/components/titles/TitleH4.vue";
   import Titles from "~/types/enums/Titles.enum";
 </script>
+

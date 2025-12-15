@@ -1,11 +1,11 @@
 import { computed, ref } from "vue";
-import { useRoute } from "vue-router";
 import type { ExternalAuditorDTO } from "~/core/hexag/juntas/application/dtos/external-auditor.dto";
 import { GetExternalAuditorUseCase } from "~/core/hexag/juntas/application/use-cases/get-external-auditor.use-case";
 import { SaveExternalAuditorUseCase } from "~/core/hexag/juntas/application/use-cases/save-external-auditor.use-case";
 import { ExternalAuditorMapper } from "~/core/hexag/juntas/infrastructure/mappers/external-auditor.mapper";
 import { ExternalAuditorHttpRepository } from "~/core/hexag/juntas/infrastructure/repositories/external-auditor-http.repository";
 import { useAuditoresExternosStore } from "../stores/useAuditoresExternosStore";
+import { useJuntasRouteParams } from "~/core/presentation/juntas/composables/useJuntasRouteParams";
 
 /**
  * Controller para Auditores Externos
@@ -16,8 +16,10 @@ import { useAuditoresExternosStore } from "../stores/useAuditoresExternosStore";
  * - Sincronización entre store y backend
  */
 export function useAuditoresExternosController() {
-  const route = useRoute();
   const store = useAuditoresExternosStore();
+
+  // Obtener IDs de la ruta (compartido)
+  const { societyId, flowIdNumber } = useJuntasRouteParams();
 
   // Repositorio y casos de uso
   const repository = new ExternalAuditorHttpRepository();
@@ -27,25 +29,6 @@ export function useAuditoresExternosController() {
   // Estados
   const isLoading = ref(false);
   const error = ref<string | null>(null);
-
-  // Obtener IDs de la ruta
-  const societyId = computed(() => {
-    const param = route.params.societyId;
-    if (typeof param === "string") return parseInt(param, 10);
-    if (Array.isArray(param) && param.length > 0 && typeof param[0] === "string") {
-      return parseInt(param[0], 10);
-    }
-    return null;
-  });
-
-  const flowId = computed(() => {
-    const param = route.params.flowId;
-    if (typeof param === "string") return parseInt(param, 10);
-    if (Array.isArray(param) && param.length > 0 && typeof param[0] === "string") {
-      return parseInt(param[0], 10);
-    }
-    return null;
-  });
 
   /**
    * Mapear DTO del backend a Entity y cargar en store
@@ -67,7 +50,7 @@ export function useAuditoresExternosController() {
    * Cargar datos desde el backend
    */
   async function cargarDatos() {
-    if (!societyId.value || !flowId.value) {
+    if (!societyId.value || !flowIdNumber.value) {
       console.warn("[Controller][AuditoresExternos] No hay societyId o flowId");
       return;
     }
@@ -76,7 +59,7 @@ export function useAuditoresExternosController() {
       isLoading.value = true;
       error.value = null;
 
-      const dto = await obtenerUseCase.execute(societyId.value, flowId.value);
+      const dto = await obtenerUseCase.execute(societyId.value, flowIdNumber.value);
 
       if (dto) {
         mapDTOToStore(dto);
@@ -110,7 +93,7 @@ export function useAuditoresExternosController() {
    * Guardar datos al backend
    */
   async function guardarDatos() {
-    if (!societyId.value || !flowId.value) {
+    if (!societyId.value || !flowIdNumber.value) {
       throw new Error("No hay societyId o flowId");
     }
 
@@ -132,7 +115,7 @@ export function useAuditoresExternosController() {
       error.value = null;
 
       const dto = mapStoreToDTO();
-      await guardarUseCase.execute(societyId.value, flowId.value, dto);
+      await guardarUseCase.execute(societyId.value, flowIdNumber.value, dto);
 
       console.log("[Controller][AuditoresExternos] Datos guardados exitosamente");
     } catch (error: any) {
@@ -149,6 +132,20 @@ export function useAuditoresExternosController() {
     }
   }
 
+  /**
+   * Handler completo para el botón "Siguiente"
+   * Incluye validación de IDs y guardado
+   */
+  const handleNext = async (societyIdValue: number | null, flowIdValue: number | null): Promise<void> => {
+    // Validar IDs
+    if (!societyIdValue || !flowIdValue) {
+      throw new Error("No se pudo identificar la sociedad o la junta. Por favor, recarga la página.");
+    }
+
+    // Guardar (incluye validaciones internas)
+    await guardarDatos();
+  };
+
   return {
     // Estados
     isLoading,
@@ -160,6 +157,7 @@ export function useAuditoresExternosController() {
     // Métodos
     cargarDatos,
     guardarDatos,
+    handleNext,
   };
 }
 

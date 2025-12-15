@@ -24,8 +24,8 @@
   import { computed } from "vue";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
-  import { useVotacionPronunciamientoController } from "~/core/presentation/juntas/puntos-acuerdo/pronunciamiento-gestion/votacion/composables/useVotacionPronunciamientoController";
-  import { useVotacionPronunciamientoStore } from "~/core/presentation/juntas/puntos-acuerdo/pronunciamiento-gestion/votacion/stores/useVotacionPronunciamientoStore";
+import { useVotacionPronunciamientoController } from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/pronunciamiento-gestion/votacion/composables/useVotacionPronunciamientoController";
+import { useVotacionPronunciamientoStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/pronunciamiento-gestion/votacion/stores/useVotacionPronunciamientoStore";
   import MetodoVotacio from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/components/votacion/MetodoVotacio.vue";
 
   /**

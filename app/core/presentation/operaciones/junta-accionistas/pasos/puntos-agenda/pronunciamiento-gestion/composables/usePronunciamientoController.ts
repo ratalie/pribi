@@ -1,5 +1,4 @@
-import { ref, computed, watch } from "vue";
-import { useRoute } from "vue-router";
+import { ref, computed } from "vue";
 import { usePronunciamientoStore } from "../stores/usePronunciamientoStore";
 import type { FileMetadata } from "../stores/usePronunciamientoStore";
 import { GuardarFinancialReportDocumentUseCase } from "~/core/hexag/juntas/application/use-cases/guardar-financial-report-document.use-case";
@@ -10,6 +9,8 @@ import type {
   UpdateFinancialReportDocumentRequestDTO,
   FinancialReportDocumentResponseDTO,
 } from "~/core/hexag/juntas/application/dtos/financial-report-document.dto";
+import { useJuntasRouteParams } from "~/core/presentation/juntas/composables/useJuntasRouteParams";
+import { useToast } from "~/components/ui/toast/use-toast";
 
 /**
  * Helper para generar UUID (compatible con navegador y Node.js)
@@ -35,8 +36,11 @@ function generateUUID(): string {
  * - Sincronización entre store y backend
  */
 export function usePronunciamientoController() {
-  const route = useRoute();
   const store = usePronunciamientoStore();
+  const { toast } = useToast();
+
+  // Obtener IDs de la ruta (compartido)
+  const { societyId, flowIdNumber } = useJuntasRouteParams();
 
   // Repositorio y casos de uso
   const repository = new FinancialReportDocumentHttpRepository();
@@ -46,25 +50,6 @@ export function usePronunciamientoController() {
   // Estados
   const isLoading = ref(false);
   const error = ref<string | null>(null);
-
-  // Obtener IDs de la ruta
-  const societyId = computed(() => {
-    const param = route.params.societyId;
-    if (typeof param === "string") return parseInt(param, 10);
-    if (Array.isArray(param) && param.length > 0 && typeof param[0] === "string") {
-      return parseInt(param[0], 10);
-    }
-    return null;
-  });
-
-  const flowId = computed(() => {
-    const param = route.params.flowId;
-    if (typeof param === "string") return parseInt(param, 10);
-    if (Array.isArray(param) && param.length > 0 && typeof param[0] === "string") {
-      return parseInt(param[0], 10);
-    }
-    return null;
-  });
 
   /**
    * Mapear FileMetadata del store a archivoId (string)
@@ -132,8 +117,8 @@ export function usePronunciamientoController() {
     // Verificar si ya existe un reporte financiero
     let existente: FinancialReportDocumentResponseDTO | null = null;
     try {
-      if (societyId.value && flowId.value) {
-        existente = await obtenerUseCase.ejecutar(societyId.value, flowId.value);
+      if (societyId.value && flowIdNumber.value) {
+        existente = await obtenerUseCase.ejecutar(societyId.value, flowIdNumber.value);
       }
     } catch (error) {
       // Si no existe (404), existente será null
@@ -220,7 +205,7 @@ export function usePronunciamientoController() {
    * Cargar datos desde el backend
    */
   const cargarDatos = async () => {
-    if (!societyId.value || !flowId.value) {
+    if (!societyId.value || !flowIdNumber.value) {
       console.warn("⚠️ [PronunciamientoController] societyId o flowId no disponible");
       return;
     }
@@ -229,7 +214,7 @@ export function usePronunciamientoController() {
     error.value = null;
 
     try {
-      const response = await obtenerUseCase.ejecutar(societyId.value, flowId.value);
+      const response = await obtenerUseCase.ejecutar(societyId.value, flowIdNumber.value);
 
       if (response) {
         mapResponseToStore(response);
@@ -246,7 +231,7 @@ export function usePronunciamientoController() {
    * Guardar datos al backend
    */
   const guardarDatos = async () => {
-    if (!societyId.value || !flowId.value) {
+    if (!societyId.value || !flowIdNumber.value) {
       console.warn("⚠️ [PronunciamientoController] societyId o flowId no disponible");
       return;
     }
@@ -257,13 +242,60 @@ export function usePronunciamientoController() {
     try {
       const dto = await mapStoreToDTO();
       console.log("📤 [PronunciamientoController] DTO generado:", JSON.stringify(dto, null, 2));
-      await guardarUseCase.ejecutar(societyId.value, flowId.value, dto);
+      await guardarUseCase.ejecutar(societyId.value, flowIdNumber.value, dto);
     } catch (err: any) {
       console.error("🔴 [PronunciamientoController] Error al guardar datos:", err);
       error.value = err?.message || "Error al guardar los datos";
       throw err;
     } finally {
       isLoading.value = false;
+    }
+  };
+
+  /**
+   * Handler completo para el botón "Siguiente"
+   * Incluye validación de IDs, validación de datos y guardado
+   */
+  const handleNext = async (societyIdValue: number | null, flowIdValue: number | null): Promise<void> => {
+    // Validar IDs
+    if (!societyIdValue || !flowIdValue) {
+      const error = new Error("Faltan los IDs de la sociedad o flujo");
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+      throw error;
+    }
+
+    // Validar que se pueda avanzar
+    if (!store.validateNextPath) {
+      const error = new Error(
+        "Debes completar todos los campos requeridos. Si habilitaste Memoria Anual o algún Estado Financiero, debes subir al menos un archivo."
+      );
+      toast({
+        variant: "destructive",
+        title: "Error de validación",
+        description: error.message,
+      });
+      throw error;
+    }
+
+    // Guardar
+    try {
+      await guardarDatos();
+      toast({
+        variant: "success",
+        title: "Éxito",
+        description: "Documentos guardados correctamente",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error?.message || "Error al guardar los documentos",
+      });
+      throw error;
     }
   };
 
@@ -275,6 +307,7 @@ export function usePronunciamientoController() {
     // Métodos
     cargarDatos,
     guardarDatos,
+    handleNext,
   };
 }
 

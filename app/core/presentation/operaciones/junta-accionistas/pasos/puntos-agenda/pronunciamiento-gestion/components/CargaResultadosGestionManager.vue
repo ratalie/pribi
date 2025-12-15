@@ -9,9 +9,9 @@
   import BaseInput from "~/components/base/inputs/text/BaseInput.vue";
   import BaseModal from "~/components/base/modal/BaseModal.vue";
   import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
-  import { usePronunciamientoStore } from "~/core/presentation/juntas/puntos-acuerdo/pronunciamiento-gestion/stores/usePronunciamientoStore";
-  import { usePronunciamientoController } from "~/core/presentation/juntas/puntos-acuerdo/pronunciamiento-gestion/composables/usePronunciamientoController";
-  import type { FileMetadata } from "~/core/presentation/juntas/puntos-acuerdo/pronunciamiento-gestion/stores/usePronunciamientoStore";
+  import { usePronunciamientoStore } from "../stores/usePronunciamientoStore";
+  import { usePronunciamientoController } from "../composables/usePronunciamientoController";
+  import type { FileMetadata } from "../stores/usePronunciamientoStore";
 
   const route = useRoute();
   const pronunciamientoStore = usePronunciamientoStore();

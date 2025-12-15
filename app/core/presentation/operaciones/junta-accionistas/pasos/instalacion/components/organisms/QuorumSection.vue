@@ -137,4 +137,3 @@ const getLabelPunto = (puntoId: string): string => {
 };
 </script>
 
-

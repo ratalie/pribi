@@ -15,7 +15,7 @@
   import { computed, ref } from "vue";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import MetodoVotacio from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/components/votacion/MetodoVotacio.vue";
-  import { useAuditoresStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-auditores/composables/useAuditoresStore";
+  import { useAuditoresExternosStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/delegacion-auditores/stores/useAuditoresExternosStore";
 
   /**
    * Página: Votación (Sub-sección de Nombramiento de Auditores)
@@ -31,25 +31,26 @@
     flowLayoutJuntas: true,
   });
 
-  const { nombreAuditor } = useAuditoresStore();
+  const auditoresStore = useAuditoresExternosStore();
+  const nombreAuditor = computed(() => auditoresStore.nombreCompletoAuditor);
   const metodoVotacion = ref("unanimidad");
 
   // Mensaje de unanimidad con el nombre del auditor
   const mensajeUnanimidad = computed(() => {
-    const nombre = nombreAuditor.value || "Julio Raúl Solar";
+    const nombre = nombreAuditor.value || "el auditor externo";
     return `Confirmo que todos los accionistas están de acuerdo con la designación de ${nombre} como auditor externo.`;
   });
 
   // Mensaje de aprobación para voto por mayoría con el nombre del auditor
   const mensajeAprobacion = computed(() => {
-    const nombre = nombreAuditor.value || "Julio Raúl Solar Ramirez";
+    const nombre = nombreAuditor.value || "el auditor externo";
     return `la propuesta de la designación de ${nombre} como auditor externo.`;
   });
 
   // Pregunta para voto por mayoría con el nombre del auditor
   const preguntas = computed(() => {
     const nombre = nombreAuditor.value || "el auditor externo";
-    return [`¿Se aprueba la designación de ${nombre} como auditor externos?`];
+    return [`¿Se aprueba la designación de ${nombre} como auditor externo?`];
   });
 
   // Accionistas (hardcodeados por el momento)

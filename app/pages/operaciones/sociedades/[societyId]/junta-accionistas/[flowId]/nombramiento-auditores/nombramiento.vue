@@ -11,15 +11,14 @@
 </template>
 
 <script setup lang="ts">
-  import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
-  import { useAuditoresExternosController } from "~/core/presentation/juntas/puntos-acuerdo/delegacion-auditores/composables/useAuditoresExternosController";
-  import AuditoresExternosManager from "~/core/presentation/juntas/puntos-acuerdo/delegacion-auditores/components/AuditoresExternosManager.vue";
+  import AuditoresExternosManager from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/delegacion-auditores/components/AuditoresExternosManager.vue";
+  import { useAuditoresExternosPage } from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/delegacion-auditores/composables/useAuditoresExternosPage";
 
   /**
    * Página: Designación de Auditores Externos
-   * 
+   *
    * Sub-step del Paso 4 (Puntos de Acuerdo).
-   * 
+   *
    * Ruta: /operaciones/junta-accionistas/[id]/nombramiento-auditores/nombramiento
    */
 
@@ -28,16 +27,6 @@
     flowLayoutJuntas: true,
   });
 
-  const { guardarDatos } = useAuditoresExternosController();
-
-  // Configurar el botón "Siguiente"
-  useJuntasFlowNext(async () => {
-    try {
-      await guardarDatos();
-      // Si se guarda exitosamente, permite navegar al siguiente paso
-    } catch (error: any) {
-      console.error("[AuditoresExternos] Error al guardar:", error);
-      throw error; // Esto previene la navegación si hay error
-    }
-  });
+  // ✅ Solo una línea: orquesta TODO
+  useAuditoresExternosPage();
 </script>
