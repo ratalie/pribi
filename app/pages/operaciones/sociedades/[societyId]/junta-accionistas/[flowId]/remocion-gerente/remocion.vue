@@ -183,6 +183,7 @@
         </div>
       </template>
 
+      <!-- Persona jurídica -->
       <template v-if="tipoPersona === 'juridica'">
         <div
           v-if="personaJuridica.seConstituyoEnPeru"
