@@ -10,7 +10,7 @@
   });
 
   const paddingClass = computed(() => {
-    return props.variant === "sm" ? "py-[16px] px-[32px]" : "py-12 px-10";
+    return props.variant === "sm" ? "py-[16px] px-[32px]" : "";
   });
 </script>
 

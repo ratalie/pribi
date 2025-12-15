@@ -182,6 +182,7 @@
       };
     };
     nombreCompleto?: string;
+    accionesConDerechoVoto?: number; // ✅ Acciones con derecho a voto del accionista
   }
 
   interface Props {
@@ -209,7 +210,11 @@
   });
 
   const emit = defineEmits<{
-    "cambiar-voto": [accionistaId: string, valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION"];
+    "cambiar-voto": [
+      accionistaId: string,
+      valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION",
+      preguntaIndex?: number
+    ];
   }>();
 
   // ✅ Usar store solo si no hay función getVoto (legacy)
@@ -291,8 +296,10 @@
   // Cargar votos existentes del store o función getVoto
   const cargarVotosExistentes = () => {
     console.log("[MayoriaVotacion] cargarVotosExistentes() ejecutado");
-    console.log("[MayoriaVotacion] tiene getVoto:", !!props.getVoto);
+    console.log("[MayoriaVotacion] hasVotacion:", votacionStore.hasVotacion);
+    console.log("[MayoriaVotacion] sesionVotacion:", votacionStore.sesionVotacion);
     console.log("[MayoriaVotacion] listaVotantes:", listaVotantes.value);
+    console.log("[MayoriaVotacion] preguntas count:", preguntas.value.length);
 
     // ✅ Si hay función getVoto, usarla (nuevo método)
     if (props.getVoto) {
@@ -317,29 +324,49 @@
     }
 
     // ✅ Legacy: usar store (solo si no hay función getVoto)
-    if (votacionStore && votacionStore.hasVotacion && votacionStore.itemVotacion) {
-      const item = votacionStore.itemVotacion;
-      console.log("[MayoriaVotacion] Item de votación encontrado (legacy):", {
-        id: item.id,
-        votosCount: item.votos.length,
-        votos: item.votos,
+    if (votacionStore && votacionStore.hasVotacion && votacionStore.sesionVotacion) {
+      const sesion = votacionStore.sesionVotacion;
+      console.log("[MayoriaVotacion] Sesión de votación encontrada (legacy):", {
+        id: sesion.id,
+        itemsCount: sesion.items.length,
+        items: sesion.items.map((item) => ({
+          id: item.id,
+          label: item.label,
+          votosCount: item.votos.length,
+        })),
       });
 
-      listaVotantes.value.forEach((votante, index) => {
-        const voto = votacionStore.getVotoByAccionista(votante.accionistaId);
-        console.log(`[MayoriaVotacion] Votante ${index} (${votante.accionistaId}):`, {
-          voto,
-          valor: voto?.valor,
-        });
-        if (voto && votos.value[0]) {
-          votos.value[0][index] = voto.valor as Voto;
-          console.log(`[MayoriaVotacion] Voto cargado para votante ${index}:`, voto.valor);
+      // ✅ Cargar votos para cada pregunta (item)
+      preguntas.value.forEach((pregunta, preguntaIndex) => {
+        const item = sesion.items[preguntaIndex];
+        if (!item) {
+          console.warn(`[MayoriaVotacion] No hay item para pregunta ${preguntaIndex}`);
+          return;
         }
+
+        console.log(
+          `[MayoriaVotacion] Cargando votos para pregunta ${preguntaIndex} (item ${item.id}):`,
+          {
+            votosCount: item.votos.length,
+            votos: item.votos,
+          }
+        );
+
+        listaVotantes.value.forEach((votante, accionistaIndex) => {
+          const voto = item.votos.find((v) => v.accionistaId === votante.accionistaId);
+          if (voto && votos.value[preguntaIndex]) {
+            votos.value[preguntaIndex][accionistaIndex] = voto.valor as Voto;
+            console.log(
+              `[MayoriaVotacion] Voto cargado para pregunta ${preguntaIndex}, votante ${accionistaIndex}:`,
+              voto.valor
+            );
+          }
+        });
       });
 
-      console.log("[MayoriaVotacion] Votos cargados:", votos.value[0]);
+      console.log("[MayoriaVotacion] Votos cargados para todas las preguntas:", votos.value);
     } else {
-      console.log("[MayoriaVotacion] No hay votación o item de votación");
+      console.log("[MayoriaVotacion] No hay votación o sesión de votación");
     }
   };
 
@@ -349,7 +376,11 @@
   // ✅ Observar cambios en el store para recargar votos cuando se carguen del backend (solo legacy)
   if (votacionStore) {
     watch(
-      () => [votacionStore.hasVotacion, votacionStore.itemVotacion?.votos],
+      () => [
+      votacionStore.hasVotacion,
+      votacionStore.sesionVotacion?.items,
+      listaVotantes.value.length,
+    ],
       () => {
         console.log("[MayoriaVotacion] Store cambió, recargando votos...");
         cargarVotosExistentes();
@@ -441,9 +472,9 @@
       votos.value[preguntaIndex][accionistaIndex] = currentVoto;
     }
 
-    // Emitir evento para guardar en el store
+    // Emitir evento para guardar en el store (incluir índice de pregunta)
     if (currentVoto) {
-      emit("cambiar-voto", votante.accionistaId, currentVoto);
+      emit("cambiar-voto", votante.accionistaId, currentVoto, preguntaIndex);
     }
   };
 
@@ -451,24 +482,73 @@
     return votos.value[preguntaIndex]?.[accionistaIndex] || null;
   };
 
-  // Calcular porcentajes por pregunta
+  // Calcular porcentajes por pregunta basados en ACCIONES, no en número de votantes
   const getPorcentajeAFavor = (preguntaIndex: number) => {
     if (listaVotantes.value.length === 0) return 0;
-    const votosAFavor = votos.value[preguntaIndex]?.filter((v) => v === "A_FAVOR").length || 0;
-    return (votosAFavor / listaVotantes.value.length) * 100;
+
+    // Calcular total de acciones con derecho a voto de todos los votantes
+    const totalAcciones = listaVotantes.value.reduce(
+      (sum, votante) => sum + (votante.accionesConDerechoVoto || 0),
+      0
+    );
+
+    if (totalAcciones === 0) return 0;
+
+    // Sumar acciones de votantes que votaron a favor
+    const accionesAFavor = listaVotantes.value.reduce((sum, votante, index) => {
+      const voto = votos.value[preguntaIndex]?.[index];
+      if (voto === "A_FAVOR") {
+        return sum + (votante.accionesConDerechoVoto || 0);
+      }
+      return sum;
+    }, 0);
+
+    return (accionesAFavor / totalAcciones) * 100;
   };
 
   const getPorcentajeEnContra = (preguntaIndex: number) => {
     if (listaVotantes.value.length === 0) return 0;
-    const votosEnContra =
-      votos.value[preguntaIndex]?.filter((v) => v === "EN_CONTRA").length || 0;
-    return (votosEnContra / listaVotantes.value.length) * 100;
+
+    // Calcular total de acciones con derecho a voto de todos los votantes
+    const totalAcciones = listaVotantes.value.reduce(
+      (sum, votante) => sum + (votante.accionesConDerechoVoto || 0),
+      0
+    );
+
+    if (totalAcciones === 0) return 0;
+
+    // Sumar acciones de votantes que votaron en contra
+    const accionesEnContra = listaVotantes.value.reduce((sum, votante, index) => {
+      const voto = votos.value[preguntaIndex]?.[index];
+      if (voto === "EN_CONTRA") {
+        return sum + (votante.accionesConDerechoVoto || 0);
+      }
+      return sum;
+    }, 0);
+
+    return (accionesEnContra / totalAcciones) * 100;
   };
 
   const getPorcentajeAbstencion = (preguntaIndex: number) => {
     if (listaVotantes.value.length === 0) return 0;
-    const votosAbstencion =
-      votos.value[preguntaIndex]?.filter((v) => v === "ABSTENCION").length || 0;
-    return (votosAbstencion / listaVotantes.value.length) * 100;
+
+    // Calcular total de acciones con derecho a voto de todos los votantes
+    const totalAcciones = listaVotantes.value.reduce(
+      (sum, votante) => sum + (votante.accionesConDerechoVoto || 0),
+      0
+    );
+
+    if (totalAcciones === 0) return 0;
+
+    // Sumar acciones de votantes que se abstuvieron
+    const accionesAbstencion = listaVotantes.value.reduce((sum, votante, index) => {
+      const voto = votos.value[preguntaIndex]?.[index];
+      if (voto === "ABSTENCION") {
+        return sum + (votante.accionesConDerechoVoto || 0);
+      }
+      return sum;
+    }, 0);
+
+    return (accionesAbstencion / totalAcciones) * 100;
   };
 </script>

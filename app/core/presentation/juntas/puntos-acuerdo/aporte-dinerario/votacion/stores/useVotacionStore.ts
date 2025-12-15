@@ -1,21 +1,24 @@
 import { defineStore } from "pinia";
-import type { VoteSession } from "~/core/hexag/juntas/domain/entities/vote-session.entity";
-import type { VoteItem } from "~/core/hexag/juntas/domain/entities/vote-item.entity";
+import { CreateVoteSessionUseCase } from "~/core/hexag/juntas/application/use-cases/create-vote-session.use-case";
+import { GetVoteSessionUseCase } from "~/core/hexag/juntas/application/use-cases/get-vote-session.use-case";
+import { UpdateVoteSessionUseCase } from "~/core/hexag/juntas/application/use-cases/update-vote-session.use-case";
+import {
+  TipoAcuerdo,
+  getTipoAcuerdo,
+} from "~/core/hexag/juntas/domain/constants/agenda-classification.constants";
 import type { VoteEntry } from "~/core/hexag/juntas/domain/entities/vote-entry.entity";
+import type { VoteItem } from "~/core/hexag/juntas/domain/entities/vote-item.entity";
+import type { VoteSession } from "~/core/hexag/juntas/domain/entities/vote-session.entity";
+import { VoteAgreementType } from "~/core/hexag/juntas/domain/enums/vote-agreement-type.enum";
 import { VoteContext } from "~/core/hexag/juntas/domain/enums/vote-context.enum";
 import { VoteMode } from "~/core/hexag/juntas/domain/enums/vote-mode.enum";
-import { VoteAgreementType } from "~/core/hexag/juntas/domain/enums/vote-agreement-type.enum";
 import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
-import { GetVoteSessionUseCase } from "~/core/hexag/juntas/application/use-cases/get-vote-session.use-case";
-import { CreateVoteSessionUseCase } from "~/core/hexag/juntas/application/use-cases/create-vote-session.use-case";
-import { UpdateVoteSessionUseCase } from "~/core/hexag/juntas/application/use-cases/update-vote-session.use-case";
 import { VoteHttpRepository } from "~/core/hexag/juntas/infrastructure/repositories/vote.http.repository";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
-import { TipoAcuerdo, getTipoAcuerdo } from "~/core/hexag/juntas/domain/constants/agenda-classification.constants";
 
 /**
  * Store para gestionar Votaciones de Aporte Dinerario
- * 
+ *
  * ⚠️ IMPORTANTE: Usa Option API de Pinia (NO Composition API)
  */
 export const useVotacionStore = defineStore("votacion", {
@@ -54,14 +57,16 @@ export const useVotacionStore = defineStore("votacion", {
     /**
      * Obtiene el voto de un accionista específico
      */
-    getVotoByAccionista: (state) => (accionistaId: string): VoteEntry | null => {
-      if (!state.sesionVotacion || state.sesionVotacion.items.length === 0) {
-        return null;
-      }
-      const item = state.sesionVotacion.items[0];
-      if (!item) return null;
-      return item.votos.find((v) => v.accionistaId === accionistaId) || null;
-    },
+    getVotoByAccionista:
+      (state) =>
+      (accionistaId: string): VoteEntry | null => {
+        if (!state.sesionVotacion || state.sesionVotacion.items.length === 0) {
+          return null;
+        }
+        const item = state.sesionVotacion.items[0];
+        if (!item) return null;
+        return item.votos.find((v) => v.accionistaId === accionistaId) || null;
+      },
 
     /**
      * Indica si es unanimidad (APROBADO_POR_TODOS)
@@ -81,45 +86,46 @@ export const useVotacionStore = defineStore("votacion", {
 
     /**
      * Calcula el resultado de la votación
-     * 
+     *
      * @param puntoId - ID del punto de agenda (ej: "aporte-dinerarios")
      * @returns Resultado completo de la votación con aprobación, porcentajes, etc.
      */
     getResult: (state) => (puntoId: string) => {
       // 1. Obtener snapshot store
       const snapshotStore = useSnapshotStore();
-      
+
       // 2. Obtener accionistas con derecho a voto
       const accionistasConDerechoVoto = snapshotStore.accionistasConDerechoVoto;
-      
+
       // 3. Obtener votos del store
       const votos = state.sesionVotacion?.items?.[0]?.votos || [];
-      
+
       // 4. Determinar tipo de acuerdo (SIMPLE o CALIFICADO)
       const tipoAcuerdo = getTipoAcuerdo(puntoId);
-      
+
       // 5. Obtener quorum mínimo requerido (mayorías para acuerdos)
       const quorums = snapshotStore.quorums;
-      const quorumMinimoRequerido = tipoAcuerdo === TipoAcuerdo.CALIFICADO
-        ? (quorums?.mayoriasAcuerdosCalificado || 60)
-        : (quorums?.mayoriasAcuerdosSimple || 50);
-      
+      const quorumMinimoRequerido =
+        tipoAcuerdo === TipoAcuerdo.CALIFICADO
+          ? quorums?.mayoriasAcuerdosCalificado || 60
+          : quorums?.mayoriasAcuerdosSimple || 50;
+
       // 6. Calcular acciones por tipo de voto
       let accionesAFavor = 0;
       let accionesEnContra = 0;
       let accionesAbstencion = 0;
       let accionesSinVoto = 0;
-      
+
       // Mapa para acceder rápido a acciones por accionista
       const accionesPorAccionista = new Map<string, number>();
       accionistasConDerechoVoto.forEach((acc) => {
         accionesPorAccionista.set(acc.shareholder.id, acc.totalAcciones);
       });
-      
+
       // Calcular acciones por tipo de voto
       votos.forEach((voto) => {
         const acciones = accionesPorAccionista.get(voto.accionistaId) || 0;
-        
+
         if (voto.valor === VoteValue.A_FAVOR) {
           accionesAFavor += acciones;
         } else if (voto.valor === VoteValue.EN_CONTRA) {
@@ -128,7 +134,7 @@ export const useVotacionStore = defineStore("votacion", {
           accionesAbstencion += acciones;
         }
       });
-      
+
       // Calcular acciones sin voto (accionistas que no votaron)
       accionistasConDerechoVoto.forEach((acc) => {
         const tieneVoto = votos.some((v) => v.accionistaId === acc.shareholder.id);
@@ -136,64 +142,69 @@ export const useVotacionStore = defineStore("votacion", {
           accionesSinVoto += acc.totalAcciones;
         }
       });
-      
+
       // 7. Calcular total de acciones con derecho a voto
       const totalAccionesConDerechoVoto = accionistasConDerechoVoto.reduce(
         (sum, acc) => sum + acc.totalAcciones,
         0
       );
-      
+
       // 8. Calcular porcentajes
-      const porcentajeAFavor = totalAccionesConDerechoVoto > 0
-        ? (accionesAFavor / totalAccionesConDerechoVoto) * 100
-        : 0;
-      
-      const porcentajeEnContra = totalAccionesConDerechoVoto > 0
-        ? (accionesEnContra / totalAccionesConDerechoVoto) * 100
-        : 0;
-      
-      const porcentajeAbstencion = totalAccionesConDerechoVoto > 0
-        ? (accionesAbstencion / totalAccionesConDerechoVoto) * 100
-        : 0;
-      
-      const porcentajeSinVoto = totalAccionesConDerechoVoto > 0
-        ? (accionesSinVoto / totalAccionesConDerechoVoto) * 100
-        : 0;
-      
+      const porcentajeAFavor =
+        totalAccionesConDerechoVoto > 0
+          ? (accionesAFavor / totalAccionesConDerechoVoto) * 100
+          : 0;
+
+      const porcentajeEnContra =
+        totalAccionesConDerechoVoto > 0
+          ? (accionesEnContra / totalAccionesConDerechoVoto) * 100
+          : 0;
+
+      const porcentajeAbstencion =
+        totalAccionesConDerechoVoto > 0
+          ? (accionesAbstencion / totalAccionesConDerechoVoto) * 100
+          : 0;
+
+      const porcentajeSinVoto =
+        totalAccionesConDerechoVoto > 0
+          ? (accionesSinVoto / totalAccionesConDerechoVoto) * 100
+          : 0;
+
       // 9. Determinar si está aprobado
       const aprobado = porcentajeAFavor >= quorumMinimoRequerido;
-      
+
       // 10. Calcular total de acciones que votaron
       const accionesVotantes = accionesAFavor + accionesEnContra + accionesAbstencion;
-      const porcentajeVotantes = totalAccionesConDerechoVoto > 0
-        ? (accionesVotantes / totalAccionesConDerechoVoto) * 100
-        : 0;
-      
+      const porcentajeVotantes =
+        totalAccionesConDerechoVoto > 0
+          ? (accionesVotantes / totalAccionesConDerechoVoto) * 100
+          : 0;
+
       return {
         // Tipo de acuerdo
         tipoAcuerdo,
         quorumMinimoRequerido,
-        
+
         // Totales
         totalAccionesConDerechoVoto,
         accionesVotantes,
         porcentajeVotantes,
-        
+
         // Resultados por tipo de voto
         accionesAFavor,
         accionesEnContra,
         accionesAbstencion,
         accionesSinVoto,
-        
+
         // Porcentajes
         porcentajeAFavor,
         porcentajeEnContra,
         porcentajeAbstencion,
         porcentajeSinVoto,
-        
+
         // Aprobación
         aprobado,
-        
+
         // Detalles adicionales
         totalVotantes: votos.length,
         totalAccionistas: accionistasConDerechoVoto.length,
@@ -204,19 +215,19 @@ export const useVotacionStore = defineStore("votacion", {
   actions: {
     /**
      * Cargar sesión de votación desde el backend
+     *
+     * @param societyId - ID de la sociedad
+     * @param flowId - ID del flujo
+     * @param contexto - Contexto de votación (VoteContext)
      */
-    async loadVotacion(societyId: number, flowId: number) {
+    async loadVotacion(societyId: number, flowId: number, contexto: VoteContext) {
       this.status = "loading";
       this.errorMessage = null;
 
       try {
         const repository = new VoteHttpRepository();
         const useCase = new GetVoteSessionUseCase(repository);
-        this.sesionVotacion = await useCase.execute(
-          societyId,
-          flowId,
-          VoteContext.APORTES_DINERARIOS
-        );
+        this.sesionVotacion = await useCase.execute(societyId, flowId, contexto);
 
         this.status = "idle";
       } catch (error: any) {
@@ -230,6 +241,14 @@ export const useVotacionStore = defineStore("votacion", {
     /**
      * Crear nueva sesión de votación
      * ⚠️ IMPORTANTE: tipoAprobacion ahora está en el item, no en la sesión
+     *
+     * @param societyId - ID de la sociedad
+     * @param flowId - ID del flujo
+     * @param itemId - ID del item de votación
+     * @param label - Texto de la votación
+     * @param descripcion - Descripción de la votación
+     * @param tipoAprobacion - Tipo de aprobación (unanimidad/mayoría)
+     * @param contexto - Contexto de votación (VoteContext)
      */
     async createVotacion(
       societyId: number,
@@ -237,7 +256,8 @@ export const useVotacionStore = defineStore("votacion", {
       itemId: string,
       label: string,
       descripcion?: string,
-      tipoAprobacion: VoteAgreementType = VoteAgreementType.APROBADO_POR_TODOS // ✅ Por defecto: UNANIMIDAD
+      tipoAprobacion: VoteAgreementType = VoteAgreementType.APROBADO_POR_TODOS, // ✅ Por defecto: UNANIMIDAD
+      contexto: VoteContext = VoteContext.APORTES_DINERARIOS // ✅ Por defecto para retrocompatibilidad
     ) {
       this.status = "loading";
       this.errorMessage = null;
@@ -261,7 +281,7 @@ export const useVotacionStore = defineStore("votacion", {
 
           this.sesionVotacion = {
             id: sessionId,
-            contexto: VoteContext.APORTES_DINERARIOS,
+            contexto, // ✅ Usar contexto pasado como parámetro
             modo: VoteMode.SIMPLE,
             items: [item],
           };
@@ -273,6 +293,17 @@ export const useVotacionStore = defineStore("votacion", {
             item.label = label;
             item.descripción = descripcion;
             item.tipoAprobacion = tipoAprobacion;
+          }
+          // ⚠️ IMPORTANTE: Asegurar que el contexto sea correcto (sobrescribir si es diferente)
+          if (this.sesionVotacion.contexto !== contexto) {
+            console.warn(
+              "[Store][Votacion] ⚠️ Contexto de sesión en memoria diferente al pasado como parámetro, corrigiendo...",
+              {
+                contextoEnMemoria: this.sesionVotacion.contexto,
+                contextoPasado: contexto,
+              }
+            );
+            this.sesionVotacion.contexto = contexto;
           }
         }
 
@@ -323,12 +354,19 @@ export const useVotacionStore = defineStore("votacion", {
 
     /**
      * Agregar un nuevo voto
+     *
+     * @param societyId - ID de la sociedad
+     * @param flowId - ID del flujo
+     * @param accionistaId - ID del accionista
+     * @param valor - Valor del voto
+     * @param contexto - Contexto de votación (VoteContext)
      */
     async addVote(
       societyId: number,
       flowId: number,
       accionistaId: string,
-      valor: VoteValue | number
+      valor: VoteValue | number,
+      contexto: VoteContext = VoteContext.APORTES_DINERARIOS // ✅ Por defecto para retrocompatibilidad
     ) {
       if (!this.sesionVotacion || this.sesionVotacion.items.length === 0) {
         throw new Error("No hay sesión de votación activa");
@@ -344,7 +382,7 @@ export const useVotacionStore = defineStore("votacion", {
         const repository = new VoteHttpRepository();
         const useCase = new UpdateVoteSessionUseCase(repository);
 
-        await useCase.execute(societyId, flowId, VoteContext.APORTES_DINERARIOS, [
+        await useCase.execute(societyId, flowId, contexto, [
           {
             accion: "updateVote",
             itemId: item.id,
@@ -374,12 +412,19 @@ export const useVotacionStore = defineStore("votacion", {
 
     /**
      * Actualizar un voto existente
+     *
+     * @param societyId - ID de la sociedad
+     * @param flowId - ID del flujo
+     * @param voteId - ID del voto
+     * @param valor - Valor del voto
+     * @param contexto - Contexto de votación (VoteContext)
      */
     async updateVote(
       societyId: number,
       flowId: number,
       voteId: string,
-      valor: VoteValue | number
+      valor: VoteValue | number,
+      contexto: VoteContext = VoteContext.APORTES_DINERARIOS // ✅ Por defecto para retrocompatibilidad
     ) {
       if (!this.sesionVotacion || this.sesionVotacion.items.length === 0) {
         throw new Error("No hay sesión de votación activa");
@@ -394,7 +439,7 @@ export const useVotacionStore = defineStore("votacion", {
         const repository = new VoteHttpRepository();
         const useCase = new UpdateVoteSessionUseCase(repository);
 
-        await useCase.execute(societyId, flowId, VoteContext.APORTES_DINERARIOS, [
+        await useCase.execute(societyId, flowId, contexto, [
           {
             accion: "updateVote",
             itemId: item.id,
@@ -421,8 +466,18 @@ export const useVotacionStore = defineStore("votacion", {
 
     /**
      * Eliminar un voto
+     *
+     * @param societyId - ID de la sociedad
+     * @param flowId - ID del flujo
+     * @param voteId - ID del voto
+     * @param contexto - Contexto de votación (VoteContext)
      */
-    async removeVote(societyId: number, flowId: number, voteId: string) {
+    async removeVote(
+      societyId: number,
+      flowId: number,
+      voteId: string,
+      contexto: VoteContext = VoteContext.APORTES_DINERARIOS // ✅ Por defecto para retrocompatibilidad
+    ) {
       if (!this.sesionVotacion || this.sesionVotacion.items.length === 0) {
         throw new Error("No hay sesión de votación activa");
       }
@@ -436,7 +491,7 @@ export const useVotacionStore = defineStore("votacion", {
         const repository = new VoteHttpRepository();
         const useCase = new UpdateVoteSessionUseCase(repository);
 
-        await useCase.execute(societyId, flowId, VoteContext.APORTES_DINERARIOS, [
+        await useCase.execute(societyId, flowId, contexto, [
           {
             accion: "updateVote",
             itemId: item.id,
@@ -464,6 +519,14 @@ export const useVotacionStore = defineStore("votacion", {
      * Agregar item de votación a una sesión existente (cuando items: [])
      * ⚠️ IMPORTANTE: tipoAprobacion ahora está en el item, no en la sesión
      * ⚠️ IMPORTANTE: Si es unanimidad, NO enviar votos (o enviar vacío según backend)
+     *
+     * @param societyId - ID de la sociedad
+     * @param flowId - ID del flujo
+     * @param itemId - ID del item de votación
+     * @param label - Texto de la votación
+     * @param descripcion - Descripción de la votación
+     * @param tipoAprobacion - Tipo de aprobación (unanimidad/mayoría)
+     * @param contexto - Contexto de votación (VoteContext)
      */
     async addVoteItem(
       societyId: number,
@@ -471,7 +534,8 @@ export const useVotacionStore = defineStore("votacion", {
       itemId: string,
       label: string,
       descripcion?: string,
-      tipoAprobacion: VoteAgreementType = VoteAgreementType.APROBADO_POR_TODOS
+      tipoAprobacion: VoteAgreementType = VoteAgreementType.APROBADO_POR_TODOS,
+      contexto: VoteContext = VoteContext.APORTES_DINERARIOS // ✅ Por defecto para retrocompatibilidad
     ) {
       if (!this.sesionVotacion) {
         throw new Error("No hay sesión de votación activa");
@@ -500,14 +564,12 @@ export const useVotacionStore = defineStore("votacion", {
         }
         // Si es unanimidad, no enviamos el campo votos
 
-        console.log("[Store][Votacion] Agregando item con payload:", JSON.stringify(itemPayload, null, 2));
-
-        await useCase.execute(
-          societyId,
-          flowId,
-          VoteContext.APORTES_DINERARIOS,
-          [itemPayload]
+        console.log(
+          "[Store][Votacion] Agregando item con payload:",
+          JSON.stringify(itemPayload, null, 2)
         );
+
+        await useCase.execute(societyId, flowId, contexto, [itemPayload]);
 
         // Actualizar estado local
         this.sesionVotacion.items.push({
@@ -532,6 +594,15 @@ export const useVotacionStore = defineStore("votacion", {
     /**
      * Agregar item con votos en un solo request (PUT con accion: "add")
      * ⚠️ IMPORTANTE: Usa "add" porque "update" no crea el item si no existe
+     *
+     * @param societyId - ID de la sociedad
+     * @param flowId - ID del flujo
+     * @param itemId - ID del item de votación
+     * @param label - Texto de la votación
+     * @param descripcion - Descripción de la votación
+     * @param tipoAprobacion - Tipo de aprobación (unanimidad/mayoría)
+     * @param votos - Array de votos
+     * @param contexto - Contexto de votación (VoteContext)
      */
     async addVoteItemConVotos(
       societyId: number,
@@ -540,7 +611,8 @@ export const useVotacionStore = defineStore("votacion", {
       label: string,
       descripcion: string | undefined,
       tipoAprobacion: VoteAgreementType,
-      votos: Array<{ id: string; accionistaId: string; valor: string | number }>
+      votos: Array<{ id: string; accionistaId: string; valor: string | number }>,
+      contexto: VoteContext = VoteContext.APORTES_DINERARIOS // ✅ Por defecto para retrocompatibilidad
     ) {
       if (!this.sesionVotacion) {
         throw new Error("No hay sesión de votación activa");
@@ -571,14 +643,12 @@ export const useVotacionStore = defineStore("votacion", {
           }));
         }
 
-        console.log("[Store][Votacion] Agregando item con votos (un solo request):", JSON.stringify(itemPayload, null, 2));
-
-        await useCase.execute(
-          societyId,
-          flowId,
-          VoteContext.APORTES_DINERARIOS,
-          [itemPayload]
+        console.log(
+          "[Store][Votacion] Agregando item con votos (un solo request):",
+          JSON.stringify(itemPayload, null, 2)
         );
+
+        await useCase.execute(societyId, flowId, contexto, [itemPayload]);
 
         // Actualizar estado local
         const existingItem = this.sesionVotacion.items.find((i) => i.id === itemId);
@@ -614,6 +684,15 @@ export const useVotacionStore = defineStore("votacion", {
     /**
      * Actualizar item existente con votos en un solo request (PUT con accion: "add")
      * ⚠️ IMPORTANTE: Usa "add" porque reemplaza todo el item (según diagnóstico del backend)
+     *
+     * @param societyId - ID de la sociedad
+     * @param flowId - ID del flujo
+     * @param itemId - ID del item de votación
+     * @param label - Texto de la votación
+     * @param descripcion - Descripción de la votación
+     * @param tipoAprobacion - Tipo de aprobación (unanimidad/mayoría)
+     * @param votos - Array de votos
+     * @param contexto - Contexto de votación (VoteContext)
      */
     async updateItemConVotos(
       societyId: number,
@@ -622,7 +701,8 @@ export const useVotacionStore = defineStore("votacion", {
       label: string,
       descripcion: string | undefined,
       tipoAprobacion: VoteAgreementType,
-      votos: Array<{ id: string; accionistaId: string; valor: string | number }>
+      votos: Array<{ id: string; accionistaId: string; valor: string | number }>,
+      contexto: VoteContext = VoteContext.APORTES_DINERARIOS // ✅ Por defecto para retrocompatibilidad
     ) {
       if (!this.sesionVotacion || !this.itemVotacion) {
         throw new Error("No hay sesión de votación activa o no hay item");
@@ -655,14 +735,12 @@ export const useVotacionStore = defineStore("votacion", {
           }));
         }
 
-        console.log("[Store][Votacion] Actualizando item con votos (un solo request):", JSON.stringify(itemPayload, null, 2));
-
-        await useCase.execute(
-          societyId,
-          flowId,
-          VoteContext.APORTES_DINERARIOS,
-          [itemPayload]
+        console.log(
+          "[Store][Votacion] Actualizando item con votos (un solo request):",
+          JSON.stringify(itemPayload, null, 2)
         );
+
+        await useCase.execute(societyId, flowId, contexto, [itemPayload]);
 
         // Actualizar estado local
         const item = this.itemVotacion;
@@ -683,11 +761,17 @@ export const useVotacionStore = defineStore("votacion", {
     /**
      * Actualizar tipo de aprobación (unanimidad/sometida a votación)
      * ⚠️ DEPRECATED: Usar updateItemConVotos en su lugar para enviar todo en un solo request
+     *
+     * @param societyId - ID de la sociedad
+     * @param flowId - ID del flujo
+     * @param tipoAprobacion - Tipo de aprobación (unanimidad/mayoría)
+     * @param contexto - Contexto de votación (VoteContext)
      */
     async updateTipoAprobacion(
       societyId: number,
       flowId: number,
-      tipoAprobacion: VoteAgreementType
+      tipoAprobacion: VoteAgreementType,
+      contexto: VoteContext = VoteContext.APORTES_DINERARIOS // ✅ Por defecto para retrocompatibilidad
     ) {
       if (!this.sesionVotacion || !this.itemVotacion) {
         throw new Error("No hay sesión de votación activa o no hay item");
@@ -700,21 +784,16 @@ export const useVotacionStore = defineStore("votacion", {
         const useCase = new UpdateVoteSessionUseCase(repository);
 
         // ✅ Usar accion: 'update' con tipoAprobacion en el item
-        await useCase.execute(
-          societyId,
-          flowId,
-          VoteContext.APORTES_DINERARIOS,
-          [
-            {
-              accion: "update",
-              id: item.id,
-              orden: item.orden,
-              label: item.label,
-              descripción: item.descripción,
-              tipoAprobacion, // ✅ AQUÍ, en el item con accion: 'update'
-            },
-          ]
-        );
+        await useCase.execute(societyId, flowId, contexto, [
+          {
+            accion: "update",
+            id: item.id,
+            orden: item.orden,
+            label: item.label,
+            descripción: item.descripción,
+            tipoAprobacion, // ✅ AQUÍ, en el item con accion: 'update'
+          },
+        ]);
 
         // Actualizar estado local
         item.tipoAprobacion = tipoAprobacion;
@@ -744,4 +823,3 @@ export const useVotacionStore = defineStore("votacion", {
     },
   },
 });
-
