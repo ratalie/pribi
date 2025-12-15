@@ -19,10 +19,9 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from "vue";
+  import { computed, ref } from "vue";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
-  import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/stores/useVotacionStore";
   import { useVotacionRemocionApoderadosController } from "~/core/presentation/juntas/puntos-acuerdo/remocion-apoderados/votacion/composables/useVotacionRemocionApoderadosController";
   import MetodoVotacio from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/components/votacion/MetodoVotacio.vue";
 
@@ -41,7 +40,6 @@
   });
 
   const controller = useVotacionRemocionApoderadosController();
-  const votacionStore = useVotacionStore();
 
   // ✅ Obtener props del controller
   const isLoading = controller.isLoading;
@@ -84,19 +82,8 @@
     return "";
   });
 
-  // Método de votación (unanimidad/mayoría) basado en tipoAprobacion
-  const metodoVotacion = computed({
-    get: () => {
-      if (!votacionStore.hasVotacion) return "unanimidad"; // Por defecto
-      // Verificar el tipoAprobacion del primer item (todos deberían tener el mismo)
-      const firstItem = votacionStore.sesionVotacion?.items[0];
-      if (!firstItem) return "unanimidad";
-      return firstItem.tipoAprobacion === "APROBADO_POR_TODOS" ? "unanimidad" : "mayoria";
-    },
-    set: (value: string) => {
-      controller.cambiarTipoAprobacion(value as "unanimidad" | "mayoria");
-    },
-  });
+  // Método de votación (unanimidad/mayoría) controlado localmente (sin depender del backend)
+  const metodoVotacion = ref<"unanimidad" | "mayoria">("unanimidad");
 
   function handleCambiarTipo(tipo: "unanimidad" | "mayoria") {
     controller.cambiarTipoAprobacion(tipo);
