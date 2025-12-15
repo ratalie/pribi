@@ -23,22 +23,22 @@
 
         <!-- Toggle Junta Obligatoria -->
         <JuntaObligatoriaToggle
-          :is-enabled="isJuntaObligatoria"
-          @toggle="$emit('toggle-junta-obligatoria')"
+          :is-enabled="juntaObligatoria.isJuntaObligatoria.value"
+          @toggle="juntaObligatoria.toggleJuntaObligatoria()"
         />
       </div>
 
       <!-- Categorías con Checkboxes -->
       <div class="space-y-4">
         <CategoriaPuntosList
-          v-for="(puntos, categoria) in puntosPorCategoria"
+          v-for="(puntos, categoria) in categorias.puntosPorCategoria.value"
           :key="categoria"
           :categoria="categoria"
           :puntos="puntos"
-          :selected-puntos="selectedPuntos"
-          :is-expanded="isCategoryExpanded(categoria)"
-          @toggle-category="$emit('toggle-category', categoria)"
-          @toggle-punto="(puntoId: string, checked: boolean) => $emit('toggle-punto', puntoId, checked)"
+          :selected-puntos="puntosAgenda.selectedPuntos.value"
+          :is-expanded="categorias.isCategoryExpanded(categoria)"
+          @toggle-category="categorias.toggleCategory(categoria)"
+          @toggle-punto="handleTogglePunto"
         />
       </div>
     </div>
@@ -47,21 +47,19 @@
 
 <script setup lang="ts">
   import JuntaObligatoriaToggle from "../atoms/JuntaObligatoriaToggle.vue";
-  import type { PuntoAgenda } from "../composables/usePuntosAgenda";
   import CategoriaPuntosList from "../molecules/CategoriaPuntosList.vue";
+  import { useSeleccionAgendaSetup } from "../../composables/useSeleccionAgendaSetup";
 
-  interface Props {
-    puntosPorCategoria: Record<string, PuntoAgenda[]>;
-    selectedPuntos: string[];
-    isJuntaObligatoria: boolean;
-    isCategoryExpanded: (categoria: string) => boolean;
-  }
+  // Obtener composables compartidos
+  const { puntosAgenda, categorias, juntaObligatoria } = useSeleccionAgendaSetup();
 
-  defineProps<Props>();
-
-  defineEmits<{
-    "toggle-junta-obligatoria": [];
-    "toggle-category": [categoria: string];
-    "toggle-punto": [puntoId: string, checked: boolean];
-  }>();
+  const handleTogglePunto = (puntoId: string, checked: boolean) => {
+    if (checked) {
+      puntosAgenda.addPunto(puntoId);
+    } else {
+      puntosAgenda.removePunto(puntoId);
+    }
+    // Sincronizar junta obligatoria después de cambiar puntos
+    juntaObligatoria.syncFromPuntos();
+  };
 </script>

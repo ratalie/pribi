@@ -8,15 +8,9 @@
  */
 
 import type { usePuntosAgenda } from "./usePuntosAgenda";
+import { PUNTOS_JUNTA_OBLIGATORIA } from "../types/puntos-agenda.types";
 
 type PuntosAgendaReturn = ReturnType<typeof usePuntosAgenda>;
-
-// Puntos obligatorios para Junta Obligatoria Anual
-export const PUNTOS_JUNTA_OBLIGATORIA = [
-  "pronunciamiento-gestion",
-  "aplicacion-resultados",
-  "delegacion-auditores",
-] as const;
 
 export function useJuntaObligatoria(puntosAgenda: PuntosAgendaReturn) {
   const isJuntaObligatoria = ref(false);

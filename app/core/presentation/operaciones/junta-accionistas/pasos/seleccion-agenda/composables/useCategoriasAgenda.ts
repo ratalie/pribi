@@ -7,8 +7,8 @@
  * - Toggle de categorías
  */
 
-import type { PuntoAgenda } from "./usePuntosAgenda";
-import { PUNTOS_AGENDA } from "./usePuntosAgenda";
+import type { PuntoAgenda } from "../types/puntos-agenda.types";
+import { PUNTOS_AGENDA } from "../types/puntos-agenda.types";
 
 export function useCategoriasAgenda() {
   // Estado de categorías expandidas (por defecto todas expandidas)

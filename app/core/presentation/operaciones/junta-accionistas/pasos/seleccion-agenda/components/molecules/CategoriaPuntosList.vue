@@ -24,7 +24,7 @@
 <script setup lang="ts">
   import CategoriaHeader from "../atoms/CategoriaHeader.vue";
   import PuntoAgendaCheckbox from "../atoms/PuntoAgendaCheckbox.vue";
-  import type { PuntoAgenda } from "../composables/usePuntosAgenda";
+  import type { PuntoAgenda } from "../../types/puntos-agenda.types";
 
   interface Props {
     categoria: string;
@@ -52,3 +52,4 @@
     emit("toggle-punto", puntoId, checked);
   };
 </script>
+

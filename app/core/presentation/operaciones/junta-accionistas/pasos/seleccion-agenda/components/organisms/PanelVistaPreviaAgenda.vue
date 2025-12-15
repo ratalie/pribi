@@ -18,30 +18,23 @@
       </div>
 
       <!-- Alerta Junta Obligatoria -->
-      <JuntaObligatoriaBanner :is-enabled="isJuntaObligatoria" />
+      <JuntaObligatoriaBanner :is-enabled="juntaObligatoria.isJuntaObligatoria.value" />
 
       <!-- Lista de Agenda -->
       <AgendaPreviewList
-        :agenda-ordenada="agendaOrdenada"
-        :agenda-por-categoria="agendaPorCategoria"
-        :get-punto-number="getPuntoNumber"
+        :agenda-ordenada="agendaPreview.agendaOrdenada.value"
+        :agenda-por-categoria="agendaPreview.agendaPorCategoria.value"
+        :get-punto-number="agendaPreview.getPuntoNumber"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { PuntoAgenda } from "../composables/usePuntosAgenda";
 import JuntaObligatoriaBanner from "../molecules/JuntaObligatoriaBanner.vue";
 import AgendaPreviewList from "../molecules/AgendaPreviewList.vue";
+import { useSeleccionAgendaSetup } from "../../composables/useSeleccionAgendaSetup";
 
-interface Props {
-  agendaOrdenada: PuntoAgenda[];
-  agendaPorCategoria: Record<string, PuntoAgenda[]>;
-  isJuntaObligatoria: boolean;
-  getPuntoNumber: (puntoId: string) => number;
-}
-
-defineProps<Props>();
+// Obtener composables compartidos
+const { agendaPreview, juntaObligatoria } = useSeleccionAgendaSetup();
 </script>
-

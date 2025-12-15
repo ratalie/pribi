@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import type { PuntoAgenda } from "../composables/usePuntosAgenda";
+import type { PuntoAgenda } from "../../types/puntos-agenda.types";
 import AgendaItemPreview from "../atoms/AgendaItemPreview.vue";
 
 interface Props {
