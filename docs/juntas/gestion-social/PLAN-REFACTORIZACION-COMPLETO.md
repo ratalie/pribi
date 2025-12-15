@@ -184,3 +184,4 @@ composables/
   usePage(); // ✅ Solo una línea
 </script>
 ```
+

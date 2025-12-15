@@ -13,3 +13,4 @@ export interface ExternalAuditor {
   auditorExterno?: AuditorExterno; // Opcional: solo si responsableDesignacion es JUNTA_DE_ACCIONISTAS
 }
 
+

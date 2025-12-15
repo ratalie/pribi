@@ -322,11 +322,23 @@ export function useVotacionAplicacionResultadosController() {
    * Se llama cuando el usuario hace click en "Siguiente"
    */
   async function guardarVotacion() {
+    console.log("🚀 [VotacionAplicacionResultadosController] guardarVotacion() llamado");
     try {
       isLoading.value = true;
       error.value = null;
 
+      console.log("[DEBUG][VotacionAplicacionResultadosController] Estado antes de guardar:", {
+        hasSesion: !!votacionStore.sesionVotacion,
+        hasItem: !!votacionStore.itemVotacion,
+        hasVotacion: votacionStore.hasVotacion,
+        itemId: votacionStore.itemVotacion?.id,
+        tipoAprobacion: votacionStore.itemVotacion?.tipoAprobacion,
+        votosCount: votacionStore.itemVotacion?.votos.length || 0,
+        votantesCount: votantes.value.length,
+      });
+
       if (!votacionStore.sesionVotacion || !votacionStore.itemVotacion) {
+        console.error("[DEBUG][VotacionAplicacionResultadosController] No hay sesión o item");
         throw new Error("No hay sesión de votación para guardar");
       }
 

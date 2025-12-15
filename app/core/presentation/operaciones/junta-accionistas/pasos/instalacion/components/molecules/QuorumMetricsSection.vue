@@ -81,3 +81,4 @@
   const cumpleSimple = computed(() => props.quorum.cumpleQuorumSimple);
   const cumpleCalificado = computed(() => props.quorum.cumpleQuorumCalificado);
 </script>
+

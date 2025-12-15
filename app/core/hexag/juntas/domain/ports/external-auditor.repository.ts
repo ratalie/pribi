@@ -23,3 +23,4 @@ export interface ExternalAuditorRepository {
   actualizar(societyId: number, flowId: number, dto: ExternalAuditorDTO): Promise<void>;
 }
 
+
