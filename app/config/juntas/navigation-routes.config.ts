@@ -146,33 +146,6 @@ export function getNombramientoDirectorioRoutes(basePath: string): Record<string
   };
 }
 
-/**
- * Mapeo de secciones a rutas para "nombramiento-directores"
- */
-export function getNombramientoDirectoresRoutes(basePath: string): Record<string, string> {
-  return {
-    "nombramiento-directores": `${basePath}/nombramiento-directores`,
-    nombramiento: `${basePath}/nombramiento-directores/nombramiento`,
-    votacion: `${basePath}/nombramiento-directores/votacion`,
-    presidente: `${basePath}/nombramiento-directores/presidente`,
-    resumen: `${basePath}/nombramiento-directores/resumen`,
-  };
-}
-
-/**
- * Mapeo de secciones a rutas para "nombramiento-directorio"
- */
-export function getNombramientoDirectorioRoutes(basePath: string): Record<string, string> {
-  return {
-    "nombramiento-directorio": `${basePath}/nombramiento-directorio`,
-    nombramiento: `${basePath}/nombramiento-directorio/nombramiento`,
-    cantidad: `${basePath}/nombramiento-directorio/cantidad`,
-    directores: `${basePath}/nombramiento-directorio/directores`,
-    votacion: `${basePath}/nombramiento-directorio/votacion`,
-    presidente: `${basePath}/nombramiento-directorio/presidente`,
-    resumen: `${basePath}/nombramiento-directorio/resumen`,
-  };
-}
 
 /**
  * Obtiene el mapeo de rutas para un sub-step

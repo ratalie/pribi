@@ -27,21 +27,15 @@
     titleColor?: string;
     mensajeUnanimidad?: string;
     mensajeAprobacion?: string;
-    preguntas?: string[];
-    accionistas?: string[];
+    preguntas?: string[] | any; // ✅ Aceptar también ComputedRef
+    accionistas?: string[] | any; // ✅ Legacy: array de strings de nombres de accionistas
     votantes?: Votante[] | any; // Aceptar también ComputedRef
     textoVotacion?: string | any; // Aceptar también ComputedRef
     getVoto?: (accionistaId: string) => "A_FAVOR" | "EN_CONTRA" | "ABSTENCION" | null; // Función para obtener voto
-    title?: string;
-    subtitle?: string;
-    titleColor?: string;
-    preguntas?: string[] | any; // ✅ Aceptar también ComputedRef
-    accionistas?: string[] | any; // ✅ Legacy: array de strings de nombres de accionistas
   }
 
   const props = withDefaults(defineProps<Props>(), {
     modelValue: "unanimidad",
-    // Defaults legacy
     title: "Votación del aumento de capital",
     subtitle:
       "Votación para aprobar el aumento capital realizado mediante aportes dinerarios.",
@@ -51,15 +45,8 @@
     mensajeAprobacion: "la propuesta de Aumento de Capital mediante Aportes Dinerarios.",
     preguntas: () => [],
     accionistas: () => [],
-    // Defaults nuevos
     votantes: () => [],
     textoVotacion: "",
-    title: "Votación del aumento de capital",
-    subtitle:
-      "Votación para aprobar el aumento capital realizado mediante aportes dinerarios.",
-    titleColor: "",
-    preguntas: () => [],
-    accionistas: () => [],
   });
 
   // Extraer valores si son computed (para props nuevas)
@@ -214,8 +201,6 @@
       />
       <MayoriaVotacion
         v-if="selectedMethod === 'mayoria'"
-        :preguntas="props.preguntas"
-        :accionistas="props.accionistas"
         :mensaje-aprobacion="props.mensajeAprobacion"
         :votantes="votantesValue"
         :accionistas="accionistasValue"
