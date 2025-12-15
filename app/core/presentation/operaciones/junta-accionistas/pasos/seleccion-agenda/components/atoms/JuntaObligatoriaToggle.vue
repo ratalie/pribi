@@ -8,7 +8,7 @@
     </label>
     <button
       type="button"
-      @click="$emit('toggle')"
+      @click="handleToggle"
       class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
       :style="{
         backgroundColor: isEnabled
@@ -50,15 +50,17 @@
 
 <script setup lang="ts">
 import { Info } from "lucide-vue-next";
+import { usePanelSeleccionPuntos } from "../../composables/usePanelSeleccionPuntos";
 
-interface Props {
-  isEnabled: boolean;
-}
+// Obtener composables compartidos
+const { juntaObligatoria, handleToggleJuntaObligatoria } = usePanelSeleccionPuntos();
 
-defineProps<Props>();
+const isEnabled = computed(() => {
+  return juntaObligatoria.isJuntaObligatoria.value;
+});
 
-defineEmits<{
-  toggle: [];
-}>();
+const handleToggle = () => {
+  handleToggleJuntaObligatoria();
+};
 </script>
 

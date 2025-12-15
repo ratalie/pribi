@@ -477,3 +477,4 @@ export const useVotacionAplicacionResultadosStore = defineStore("votacionAplicac
   },
 });
 
+

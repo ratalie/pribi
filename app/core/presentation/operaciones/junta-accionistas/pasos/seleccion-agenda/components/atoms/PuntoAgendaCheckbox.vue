@@ -2,7 +2,7 @@
   <label class="flex items-start gap-3 cursor-pointer group">
     <Checkbox
       :model-value="isSelected"
-      @update:model-value="(checked) => emit('toggle', !!checked)"
+      @update:model-value="handleToggle"
       class="mt-0.5"
     />
     <span
@@ -11,24 +11,42 @@
         color: isSelected ? 'var(--primary-700, #7c3aed)' : 'var(--text-secondary, #4b5563)',
       }"
     >
-      {{ title }}
+      {{ puntoTitle }}
     </span>
   </label>
 </template>
 
 <script setup lang="ts">
   import Checkbox from "~/components/ui/checkbox/Checkbox.vue";
+  import { usePanelSeleccionPuntos } from "../../composables/usePanelSeleccionPuntos";
+  import { PUNTOS_AGENDA } from "../../types/puntos-agenda.types";
 
   interface Props {
     puntoId: string;
-    title: string;
-    isSelected: boolean;
   }
 
-  defineProps<Props>();
+  const props = defineProps<Props>();
 
-  const emit = defineEmits<{
-    toggle: [checked: boolean];
-  }>();
+  // Obtener composables compartidos
+  const { puntosAgenda, handleTogglePunto } = usePanelSeleccionPuntos();
+
+  // Obtener información del punto
+  const punto = computed(() => {
+    return PUNTOS_AGENDA.find((p) => p.id === props.puntoId);
+  });
+
+  const puntoTitle = computed(() => {
+    return punto.value?.title || "";
+  });
+
+  // Verificar si el punto está seleccionado
+  const isSelected = computed(() => {
+    return puntosAgenda.selectedPuntos.value.includes(props.puntoId);
+  });
+
+  // Handler para toggle
+  const handleToggle = (checked: boolean | string) => {
+    handleTogglePunto(props.puntoId, !!checked);
+  };
 </script>
 

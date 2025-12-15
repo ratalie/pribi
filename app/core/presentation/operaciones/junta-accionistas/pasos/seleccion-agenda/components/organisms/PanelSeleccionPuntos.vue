@@ -22,10 +22,7 @@
         </div>
 
         <!-- Toggle Junta Obligatoria -->
-        <JuntaObligatoriaToggle
-          :is-enabled="juntaObligatoria.isJuntaObligatoria.value"
-          @toggle="juntaObligatoria.toggleJuntaObligatoria()"
-        />
+        <JuntaObligatoriaToggle />
       </div>
 
       <!-- Categorías con Checkboxes -->
@@ -34,11 +31,6 @@
           v-for="(puntos, categoria) in categorias.puntosPorCategoria.value"
           :key="categoria"
           :categoria="categoria"
-          :puntos="puntos"
-          :selected-puntos="puntosAgenda.selectedPuntos.value"
-          :is-expanded="categorias.isCategoryExpanded(categoria)"
-          @toggle-category="categorias.toggleCategory(categoria)"
-          @toggle-punto="handleTogglePunto"
         />
       </div>
     </div>
@@ -46,20 +38,10 @@
 </template>
 
 <script setup lang="ts">
+  import { usePanelSeleccionPuntos } from "../../composables/usePanelSeleccionPuntos";
   import JuntaObligatoriaToggle from "../atoms/JuntaObligatoriaToggle.vue";
   import CategoriaPuntosList from "../molecules/CategoriaPuntosList.vue";
-  import { useSeleccionAgendaSetup } from "../../composables/useSeleccionAgendaSetup";
 
-  // Obtener composables compartidos
-  const { puntosAgenda, categorias, juntaObligatoria } = useSeleccionAgendaSetup();
-
-  const handleTogglePunto = (puntoId: string, checked: boolean) => {
-    if (checked) {
-      puntosAgenda.addPunto(puntoId);
-    } else {
-      puntosAgenda.removePunto(puntoId);
-    }
-    // Sincronizar junta obligatoria después de cambiar puntos
-    juntaObligatoria.syncFromPuntos();
-  };
+  // Composable que maneja toda la lógica del panel
+  const { categorias } = usePanelSeleccionPuntos();
 </script>

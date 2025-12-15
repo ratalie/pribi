@@ -1,11 +1,7 @@
 <template>
   <div>
     <!-- Category Header -->
-    <CategoriaHeader
-      :categoria="categoria"
-      :is-expanded="isExpanded"
-      @toggle="$emit('toggle-category')"
-    />
+    <CategoriaHeader :categoria="categoria" />
 
     <!-- Puntos -->
     <div v-if="isExpanded" class="ml-6 mt-2 space-y-3">
@@ -13,9 +9,6 @@
         v-for="punto in puntos"
         :key="punto.id"
         :punto-id="punto.id"
-        :title="punto.title"
-        :is-selected="isPuntoSelected(punto.id)"
-        @toggle="(checked: boolean) => handleTogglePunto(punto.id, checked)"
       />
     </div>
   </div>
@@ -24,32 +17,26 @@
 <script setup lang="ts">
   import CategoriaHeader from "../atoms/CategoriaHeader.vue";
   import PuntoAgendaCheckbox from "../atoms/PuntoAgendaCheckbox.vue";
-  import type { PuntoAgenda } from "../../types/puntos-agenda.types";
+  import { usePanelSeleccionPuntos } from "../../composables/usePanelSeleccionPuntos";
+  import { PUNTOS_AGENDA } from "../../types/puntos-agenda.types";
 
   interface Props {
     categoria: string;
-    puntos: PuntoAgenda[];
-    selectedPuntos: string[];
-    isExpanded: boolean;
   }
 
   const props = defineProps<Props>();
 
-  const emit = defineEmits<{
-    "toggle-category": [];
-    "toggle-punto": [puntoId: string, checked: boolean];
-  }>();
+  // Obtener composables compartidos
+  const { categorias } = usePanelSeleccionPuntos();
 
-  // Usar computed directamente para mejor reactividad
-  // Vue detectará automáticamente cuando cambie props.selectedPuntos
-  const isPuntoSelected = (puntoId: string): boolean => {
-    return props.selectedPuntos.includes(puntoId);
-  };
+  // Obtener puntos de esta categoría
+  const puntos = computed(() => {
+    return PUNTOS_AGENDA.filter((p) => p.category === props.categoria);
+  });
 
-  // Handler para el toggle del punto
-  const handleTogglePunto = (puntoId: string, checked: boolean) => {
-    console.log(`🟡 [CategoriaPuntosList] Toggle punto:`, { puntoId, checked });
-    emit("toggle-punto", puntoId, checked);
-  };
+  // Verificar si la categoría está expandida
+  const isExpanded = computed(() => {
+    return categorias.isCategoryExpanded(props.categoria);
+  });
 </script>
 

@@ -17,3 +17,4 @@ export class GetExternalAuditorUseCase {
     return await this.repository.obtener(societyId, flowId);
   }
 }
+

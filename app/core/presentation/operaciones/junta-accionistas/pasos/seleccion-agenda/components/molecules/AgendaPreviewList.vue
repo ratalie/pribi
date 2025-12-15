@@ -11,7 +11,7 @@
 
   <div v-else class="space-y-3">
     <!-- Grupos por categoría -->
-    <template v-for="(puntos, categoria) in agendaPorCategoria" :key="categoria">
+    <template v-for="(puntos, categoria) in agendaPreview.agendaPorCategoria.value" :key="categoria">
       <!-- Título de categoría -->
       <p
         class="text-xs mb-2 font-secondary font-semibold"
@@ -25,8 +25,6 @@
           v-for="punto in puntos"
           :key="punto.id"
           :punto-id="punto.id"
-          :title="punto.title"
-          :numero="getPuntoNumber(punto.id)"
         />
       </div>
     </template>
@@ -34,19 +32,14 @@
 </template>
 
 <script setup lang="ts">
-import type { PuntoAgenda } from "../../types/puntos-agenda.types";
 import AgendaItemPreview from "../atoms/AgendaItemPreview.vue";
+import { useSeleccionAgendaSetup } from "../../composables/useSeleccionAgendaSetup";
 
-interface Props {
-  agendaOrdenada: PuntoAgenda[];
-  agendaPorCategoria: Record<string, PuntoAgenda[]>;
-  getPuntoNumber: (puntoId: string) => number;
-}
-
-const props = defineProps<Props>();
+// Obtener composables compartidos
+const { agendaPreview } = useSeleccionAgendaSetup();
 
 const hasPuntos = computed(() => {
-  return props.agendaOrdenada.length > 0;
+  return agendaPreview.agendaOrdenada.value.length > 0;
 });
 </script>
 

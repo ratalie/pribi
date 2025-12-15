@@ -34,3 +34,4 @@ export interface ApplicationOfResultsRepository {
   ): Promise<void>;
 }
 
+

@@ -17,3 +17,4 @@ export class CreateExternalAuditorUseCase {
     await this.repository.crear(societyId, flowId, dto);
   }
 }
+

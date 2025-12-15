@@ -9,7 +9,6 @@
  */
 
 import { useJuntasFlowStore } from "~/stores/useJuntasFlowStore";
-import type { PuntoAgenda } from "../types/puntos-agenda.types";
 import { PUNTOS_AGENDA } from "../types/puntos-agenda.types";
 
 export function usePuntosAgenda() {
@@ -54,13 +53,9 @@ export function usePuntosAgenda() {
    * Agregar punto si no está seleccionado
    */
   const addPunto = (puntoId: string) => {
-    console.log(`🟢 [usePuntosAgenda] addPunto:`, { puntoId, current: selectedPuntos.value });
     if (!selectedPuntos.value.includes(puntoId)) {
       selectedPuntos.value.push(puntoId);
-      console.log(`🟢 [usePuntosAgenda] Después de agregar:`, selectedPuntos.value);
       juntasFlowStore.updateDynamicSubSteps([...selectedPuntos.value]);
-    } else {
-      console.log(`🟡 [usePuntosAgenda] Punto ya estaba seleccionado:`, puntoId);
     }
   };
 
@@ -68,12 +63,7 @@ export function usePuntosAgenda() {
    * Remover punto si está seleccionado
    */
   const removePunto = (puntoId: string) => {
-    console.log(`🔴 [usePuntosAgenda] removePunto:`, {
-      puntoId,
-      current: selectedPuntos.value,
-    });
     selectedPuntos.value = selectedPuntos.value.filter((id) => id !== puntoId);
-    console.log(`🔴 [usePuntosAgenda] Después de remover:`, selectedPuntos.value);
     juntasFlowStore.updateDynamicSubSteps([...selectedPuntos.value]);
   };
 

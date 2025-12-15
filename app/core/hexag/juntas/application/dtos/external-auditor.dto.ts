@@ -33,3 +33,4 @@ export interface ExternalAuditorResponseDTO {
   data?: ExternalAuditorDTO;
   code: number;
 }
+

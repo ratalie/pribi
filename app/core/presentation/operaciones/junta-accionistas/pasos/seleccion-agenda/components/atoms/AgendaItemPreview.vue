@@ -19,18 +19,36 @@
       class="flex-1 font-secondary"
       style="color: var(--text-secondary, #4b5563)"
     >
-      {{ title }}
+      {{ puntoTitle }}
     </span>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useSeleccionAgendaSetup } from "../../composables/useSeleccionAgendaSetup";
+import { PUNTOS_AGENDA } from "../../types/puntos-agenda.types";
+
 interface Props {
   puntoId: string;
-  title: string;
-  numero: number;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
+
+// Obtener composables compartidos
+const { agendaPreview } = useSeleccionAgendaSetup();
+
+// Obtener información del punto
+const punto = computed(() => {
+  return PUNTOS_AGENDA.find((p) => p.id === props.puntoId);
+});
+
+const puntoTitle = computed(() => {
+  return punto.value?.title || "";
+});
+
+// Obtener número de orden
+const numero = computed(() => {
+  return agendaPreview.getPuntoNumber(props.puntoId);
+});
 </script>
 

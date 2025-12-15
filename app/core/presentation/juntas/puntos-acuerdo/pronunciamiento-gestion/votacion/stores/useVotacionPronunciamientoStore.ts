@@ -506,3 +506,4 @@ export const useVotacionPronunciamientoStore = defineStore("votacionPronunciamie
   },
 });
 
+

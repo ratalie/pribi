@@ -17,3 +17,4 @@ export class UpdateExternalAuditorUseCase {
     await this.repository.actualizar(societyId, flowId, dto);
   }
 }
+
