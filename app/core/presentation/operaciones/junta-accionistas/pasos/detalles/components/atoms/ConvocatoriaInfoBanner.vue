@@ -1,25 +1,39 @@
 <template>
   <div
     v-if="text"
-    class="flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg"
+    class="flex items-center gap-[11px] px-[10px] py-[11px] rounded-[5px]"
+    :style="{
+      backgroundColor: '#c2e2ff',
+    }"
   >
-    <Info class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-    <p class="t-b2 font-secondary text-blue-800">
+    <Info
+      class="w-[14px] h-[14px] shrink-0"
+      :style="{
+        color: '#0B76B7',
+      }"
+    />
+    <p
+      class="font-secondary font-medium shrink-0"
+      :style="{
+        fontSize: '12px',
+        lineHeight: '16px',
+        color: '#676472',
+      }"
+    >
       {{ text }}
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Info } from 'lucide-vue-next';
+  import { Info } from "lucide-vue-next";
 
-interface Props {
-  text: string;
-  variant?: 'info' | 'warning';
-}
+  interface Props {
+    text: string;
+    variant?: "info" | "warning";
+  }
 
-withDefaults(defineProps<Props>(), {
-  variant: 'info',
-});
+  withDefaults(defineProps<Props>(), {
+    variant: "info",
+  });
 </script>
-
