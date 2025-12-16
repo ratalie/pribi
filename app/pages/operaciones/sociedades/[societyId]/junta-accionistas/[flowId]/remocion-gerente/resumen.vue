@@ -38,12 +38,31 @@
         cargo="Gerente General"
       />
     </template>
+
+    <!-- Datos de la remoción -->
+    <div v-if="resultado" class="flex flex-col gap-6 mt-8">
+      <p class="t-h4 text-gray-600 font-primary font-semibold mb-4">Datos de la remoción</p>
+
+      <!-- Tabla: Gerente General -->
+      <div class="flex flex-col gap-4">
+        <p class="font-primary t-h6 text-gray-600 font-semibold">Gerente General</p>
+        <SimpleTable :columns="columnsGerente" :data="datosGerente" />
+      </div>
+
+      <!-- Tabla: Representante (solo si existe) -->
+      <div v-if="datosRepresentante.length > 0" class="flex flex-col gap-4">
+        <p class="font-primary t-h6 text-gray-600 font-semibold">Representante</p>
+        <SimpleTable :columns="columnsRepresentante" :data="datosRepresentante" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted } from "vue";
+  import type { ColumnDef } from "@tanstack/vue-table";
+  import { computed, h, onMounted } from "vue";
   import { useRoute } from "vue-router";
+  import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import VotacionResultadoCard from "~/components/juntas/VotacionResultadoCard.vue";
   import { VoteContext } from "~/core/hexag/juntas/domain/enums/vote-context.enum";
   import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/stores/useVotacionStore";
@@ -101,5 +120,99 @@
 
     const nombreCompleto = votacionRemocionStore.getNombreCompletoGerente(gerente.persona);
     return nombreCompleto ? [nombreCompleto] : [];
+  });
+
+  // Columnas para la tabla del gerente
+  const columnsGerente: ColumnDef<any>[] = [
+    {
+      accessorKey: "nombreRazonSocial",
+      header: () => h("div", { class: "text-center" }, "Nombre/Razón Social"),
+      cell: ({ row }) => h("div", { class: "text-center" }, row.original.nombreRazonSocial),
+    },
+    {
+      accessorKey: "tipoDocumento",
+      header: () => h("div", { class: "text-center" }, "Tipo de Documento"),
+      cell: ({ row }) => h("div", { class: "text-center" }, row.original.tipoDocumento),
+    },
+    {
+      accessorKey: "numeroDocumento",
+      header: () => h("div", { class: "text-center" }, "No. de Documento"),
+      cell: ({ row }) => h("div", { class: "text-center" }, row.original.numeroDocumento),
+    },
+  ];
+
+  // Columnas para la tabla del representante
+  const columnsRepresentante: ColumnDef<any>[] = [
+    {
+      accessorKey: "nombreRazonSocial",
+      header: () => h("div", { class: "text-center" }, "Nombre/Razón Social"),
+      cell: ({ row }) => h("div", { class: "text-center" }, row.original.nombreRazonSocial),
+    },
+    {
+      accessorKey: "tipoDocumento",
+      header: () => h("div", { class: "text-center" }, "Tipo de Documento"),
+      cell: ({ row }) => h("div", { class: "text-center" }, row.original.tipoDocumento),
+    },
+    {
+      accessorKey: "numeroDocumento",
+      header: () => h("div", { class: "text-center" }, "No. de Documento"),
+      cell: ({ row }) => h("div", { class: "text-center" }, row.original.numeroDocumento),
+    },
+  ];
+
+  // Datos del gerente para la tabla
+  const datosGerente = computed(() => {
+    const gerente = snapshotStore.snapshot?.gerenteGeneral;
+    if (!gerente) return [];
+
+    const persona = gerente.persona;
+    let nombreRazonSocial = "";
+    let tipoDocumento = "";
+    let numeroDocumento = "";
+
+    if (persona.tipo === "NATURAL") {
+      nombreRazonSocial = `${persona.nombre} ${persona.apellidoPaterno} ${
+        persona.apellidoMaterno || ""
+      }`.trim();
+      tipoDocumento = persona.tipoDocumento;
+      numeroDocumento = persona.numeroDocumento;
+    } else {
+      nombreRazonSocial = persona.razonSocial;
+      tipoDocumento = persona.tipoDocumento;
+      numeroDocumento = persona.numeroDocumento;
+    }
+
+    return [
+      {
+        nombreRazonSocial,
+        tipoDocumento,
+        numeroDocumento,
+      },
+    ];
+  });
+
+  // Datos del representante para la tabla (solo si existe)
+  const datosRepresentante = computed(() => {
+    const gerente = snapshotStore.snapshot?.gerenteGeneral;
+    if (!gerente) return [];
+
+    const persona = gerente.persona;
+    // Si es persona jurídica, verificar si tiene representante
+    // Por ahora, asumimos que si es persona jurídica podría tener representante
+    // pero no está claro en la estructura actual, así que retornamos array vacío
+    // TODO: Verificar si el gerente tiene representante cuando esté disponible en el snapshot
+    if (persona.tipo === "JURIDICA") {
+      // Si en el futuro el snapshot incluye representante, se puede acceder aquí
+      // const representante = (persona as any).representante;
+      // if (representante) {
+      //   return [{
+      //     nombreRazonSocial: representante.nombre || representante.razonSocial,
+      //     tipoDocumento: representante.tipoDocumento,
+      //     numeroDocumento: representante.numeroDocumento,
+      //   }];
+      // }
+    }
+
+    return [];
   });
 </script>
