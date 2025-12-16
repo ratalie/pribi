@@ -176,7 +176,7 @@ export const useJuntasNavbarRoutes = () => {
       "nombramiento-gerente": "nombramiento-gerente",
       "nombramiento-apoderados": "nombramiento-apoderados",
       "nombramiento-directores": "nombramiento-directores",
-      "nombramiento-directorio": "nombramiento-nuevo-directorio",
+      "nombramiento-directorio": "nombramiento-directorio",
       "pronunciamiento-gestion": "pronunciamiento-gestion",
       "aplicacion-resultados": "aplicacion-resultados",
       "nombramiento-auditores": "delegacion-auditores",

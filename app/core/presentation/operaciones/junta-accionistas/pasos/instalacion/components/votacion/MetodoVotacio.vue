@@ -27,8 +27,8 @@
     titleColor?: string;
     mensajeUnanimidad?: string;
     mensajeAprobacion?: string;
-    preguntas?: string[];
-    accionistas?: string[];
+    preguntas?: string[] | any; // ✅ Aceptar también ComputedRef
+    accionistas?: string[] | any; // ✅ Legacy: array de strings de nombres de accionistas
     votantes?: Votante[] | any; // Aceptar también ComputedRef
     textoVotacion?: string | any; // Aceptar también ComputedRef
     getVoto?: (accionistaId: string) => "A_FAVOR" | "EN_CONTRA" | "ABSTENCION" | null; // Función para obtener voto
@@ -36,7 +36,6 @@
 
   const props = withDefaults(defineProps<Props>(), {
     modelValue: "unanimidad",
-    // Defaults legacy
     title: "Votación del aumento de capital",
     subtitle:
       "Votación para aprobar el aumento capital realizado mediante aportes dinerarios.",
@@ -46,7 +45,6 @@
     mensajeAprobacion: "la propuesta de Aumento de Capital mediante Aportes Dinerarios.",
     preguntas: () => [],
     accionistas: () => [],
-    // Defaults nuevos
     votantes: () => [],
     textoVotacion: "",
   });
@@ -68,10 +66,30 @@
     return "";
   });
 
+  const preguntasValue = computed(() => {
+    const p = props.preguntas;
+    if (!p) return [];
+    if (Array.isArray(p)) return p;
+    if (typeof p === "object" && "value" in p) return (p as any).value || [];
+    return [];
+  });
+
+  const accionistasValue = computed(() => {
+    const a = props.accionistas;
+    if (!a) return [];
+    if (Array.isArray(a)) return a;
+    if (typeof a === "object" && "value" in a) return (a as any).value || [];
+    return [];
+  });
+
   const emit = defineEmits<{
     "update:modelValue": [value: string];
     "cambiar-tipo": [tipo: "unanimidad" | "mayoria"];
-    "cambiar-voto": [accionistaId: string, valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION"];
+    "cambiar-voto": [
+      accionistaId: string,
+      valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION",
+      preguntaIndex?: number
+    ];
   }>();
 
   const selectedMethod = computed({
@@ -187,13 +205,16 @@
       />
       <MayoriaVotacion
         v-if="selectedMethod === 'mayoria'"
-        :preguntas="props.preguntas"
-        :accionistas="props.accionistas"
         :mensaje-aprobacion="props.mensajeAprobacion"
         :votantes="votantesValue"
+        :accionistas="accionistasValue"
         :texto-votacion="textoVotacionValue"
         :get-voto="props.getVoto"
-        @cambiar-voto="(accionistaId, valor) => emit('cambiar-voto', accionistaId, valor)"
+        :preguntas="preguntasValue"
+        @cambiar-voto="
+          (accionistaId, valor, preguntaIndex) =>
+            emit('cambiar-voto', accionistaId, valor, preguntaIndex)
+        "
       />
     </div>
   </SlotWrapper>

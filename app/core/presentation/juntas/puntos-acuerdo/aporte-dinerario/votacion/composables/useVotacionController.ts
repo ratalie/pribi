@@ -1,19 +1,19 @@
-import { onMounted, onActivated, computed, ref } from "vue";
+import { computed, onActivated, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { useVotacionStore } from "../stores/useVotacionStore";
-import { useVotacionAportesStore } from "../stores/useVotacionAportesStore";
-import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
-import { useAportesManagerStore } from "../../aportes/stores/useAportesManagerStore";
-import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 import { VoteAgreementType } from "~/core/hexag/juntas/domain/enums/vote-agreement-type.enum";
-import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
 import { VoteContext } from "~/core/hexag/juntas/domain/enums/vote-context.enum";
 import { VoteMode } from "~/core/hexag/juntas/domain/enums/vote-mode.enum";
+import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
+import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
+import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
+import { useAportesManagerStore } from "../../aportes/stores/useAportesManagerStore";
+import { useVotacionAportesStore } from "../stores/useVotacionAportesStore";
+import { useVotacionStore } from "../stores/useVotacionStore";
 
 /**
  * Controller para la vista de Votación de Aporte Dinerario
- * 
+ *
  * Orquesta:
  * - Carga de datos (asistentes, aportes, snapshot)
  * - Carga/creación de sesión de votación
@@ -42,9 +42,9 @@ export function useVotacionController() {
     try {
       const baseUrl = resolveBaseUrl();
       const url = `${baseUrl}/api/v2/society-profile/${societyId.value}/register-assembly/${flowId.value}/participants`;
-      
+
       console.log("[DEBUG][VotacionController] Cargando participantes desde:", url);
-      
+
       const response = await $fetch<{
         success: boolean;
         message: string;
@@ -56,7 +56,10 @@ export function useVotacionController() {
 
       if (response.success && Array.isArray(response.data)) {
         participantes.value = response.data;
-        console.log("[DEBUG][VotacionController] Participantes cargados:", participantes.value.length);
+        console.log(
+          "[DEBUG][VotacionController] Participantes cargados:",
+          participantes.value.length
+        );
       }
     } catch (error: any) {
       console.error("[Controller][Votacion] Error al cargar participantes:", error);
@@ -71,9 +74,9 @@ export function useVotacionController() {
     try {
       const baseUrl = resolveBaseUrl();
       const url = `${baseUrl}/api/v2/society-profile/${societyId.value}/register-assembly/${flowId.value}/contributions`;
-      
+
       console.log("[DEBUG][VotacionController] Cargando contribuciones desde:", url);
-      
+
       const response = await $fetch<{
         success: boolean;
         message: string;
@@ -85,7 +88,10 @@ export function useVotacionController() {
 
       if (response.success && Array.isArray(response.data)) {
         contribuciones.value = response.data;
-        console.log("[DEBUG][VotacionController] Contribuciones cargadas:", contribuciones.value.length);
+        console.log(
+          "[DEBUG][VotacionController] Contribuciones cargadas:",
+          contribuciones.value.length
+        );
       }
     } catch (error: any) {
       console.error("[Controller][Votacion] Error al cargar contribuciones:", error);
@@ -126,9 +132,13 @@ export function useVotacionController() {
       // 2. Cargar asistentes (para obtener votantes - solo los que asistieron)
       console.log("[DEBUG][VotacionController] Cargando asistentes...");
       await asistenciaStore.loadAsistencias(societyId.value, flowId.value);
-      console.log("[DEBUG][VotacionController] Asistentes cargados:", asistenciaStore.asistencias);
-      console.log("[DEBUG][VotacionController] Asistentes que asistieron:", 
-        asistenciaStore.asistencias.filter(a => a.asistio)
+      console.log(
+        "[DEBUG][VotacionController] Asistentes cargados:",
+        asistenciaStore.asistencias
+      );
+      console.log(
+        "[DEBUG][VotacionController] Asistentes que asistieron:",
+        asistenciaStore.asistencias.filter((a) => a.asistio)
       );
 
       // 3. Cargar participantes (aportantes) - para mostrar en la vista
@@ -138,7 +148,7 @@ export function useVotacionController() {
 
       // 4. Cargar aportes (contribuciones) - para calcular capital después
       await aportesStore.loadAportes(String(societyId.value), String(flowId.value));
-      
+
       // Cargar contribuciones para mostrar en la vista
       await loadContribuciones();
 
@@ -148,13 +158,17 @@ export function useVotacionController() {
       // 6. ✅ SOLO CARGAR votación existente (NO crear automáticamente)
       // La votación se creará/actualizará cuando el usuario haga click en "Siguiente"
       try {
-        await votacionStore.loadVotacion(societyId.value, flowId.value);
+        await votacionStore.loadVotacion(
+          societyId.value,
+          flowId.value,
+          VoteContext.APORTES_DINERARIOS
+        );
         console.log("[DEBUG][VotacionController] Votación cargada:", {
           hasVotacion: votacionStore.hasVotacion,
           hasItem: !!votacionStore.itemVotacion,
           itemId: votacionStore.itemVotacion?.id,
           votosCount: votacionStore.itemVotacion?.votos.length || 0,
-          votos: votacionStore.itemVotacion?.votos.map(v => ({
+          votos: votacionStore.itemVotacion?.votos.map((v) => ({
             id: v.id,
             accionistaId: v.accionistaId,
             valor: v.valor,
@@ -163,12 +177,14 @@ export function useVotacionController() {
       } catch (error: any) {
         // Si no existe (404), es normal - se creará al guardar
         if (error.statusCode === 404 || error.status === 404) {
-          console.log("[DEBUG][VotacionController] No hay votación existente (404), se creará al guardar");
+          console.log(
+            "[DEBUG][VotacionController] No hay votación existente (404), se creará al guardar"
+          );
         } else {
           console.error("[Controller][Votacion] Error al cargar votación:", error);
         }
       }
-      
+
       // ✅ DEBUG: Estado final después de carga
       console.log("[DEBUG][VotacionController] Carga de datos completada:", {
         hasVotacion: votacionStore.hasVotacion,
@@ -189,9 +205,9 @@ export function useVotacionController() {
   const votantes = computed(() => {
     const asistentes = asistenciaStore.asistenciasEnriquecidas;
     const filtrados = asistentes.filter((a) => a.asistio);
-    
+
     console.log("[DEBUG][VotacionController] Votantes filtrados:", filtrados);
-    
+
     return filtrados.map((a) => ({
       id: a.id, // ID del registro de asistencia
       accionistaId: a.accionista.id, // ✅ ID del accionista (para votos)
@@ -227,11 +243,13 @@ export function useVotacionController() {
   function setVoto(accionistaId: string, valor: VoteValue) {
     // ✅ Si no hay sesión, crear en memoria (NO guardar todavía)
     if (!votacionStore.sesionVotacion) {
-      console.log("[DEBUG][VotacionController] Creando sesión en memoria al votar (no guardada todavía)");
+      console.log(
+        "[DEBUG][VotacionController] Creando sesión en memoria al votar (no guardada todavía)"
+      );
       const sessionId = votacionStore.generateUuid();
       const itemId = votacionStore.generateUuid();
       const textoVotacionValue = votacionAportesStore.textoVotacion;
-      
+
       votacionStore.sesionVotacion = {
         id: sessionId,
         contexto: VoteContext.APORTES_DINERARIOS,
@@ -251,10 +269,12 @@ export function useVotacionController() {
 
     // ✅ Si hay sesión pero no hay item, crear item en memoria
     if (!votacionStore.itemVotacion) {
-      console.log("[DEBUG][VotacionController] Creando item en memoria al votar (no guardado todavía)");
+      console.log(
+        "[DEBUG][VotacionController] Creando item en memoria al votar (no guardado todavía)"
+      );
       const itemId = votacionStore.generateUuid();
       const textoVotacionValue = votacionAportesStore.textoVotacion;
-      
+
       votacionStore.sesionVotacion.items.push({
         id: itemId,
         orden: 0,
@@ -317,11 +337,13 @@ export function useVotacionController() {
 
     // ✅ Si no hay sesión, crear en memoria (NO guardar todavía)
     if (!votacionStore.sesionVotacion) {
-      console.log("[DEBUG][VotacionController] Creando sesión en memoria (no guardada todavía)");
+      console.log(
+        "[DEBUG][VotacionController] Creando sesión en memoria (no guardada todavía)"
+      );
       const sessionId = votacionStore.generateUuid();
       const itemId = votacionStore.generateUuid();
       const textoVotacionValue = votacionAportesStore.textoVotacion;
-      
+
       votacionStore.sesionVotacion = {
         id: sessionId,
         contexto: VoteContext.APORTES_DINERARIOS,
@@ -340,10 +362,12 @@ export function useVotacionController() {
     } else {
       // ✅ Si hay sesión pero no hay item, crear item en memoria
       if (!votacionStore.itemVotacion) {
-        console.log("[DEBUG][VotacionController] Creando item en memoria (no guardado todavía)");
+        console.log(
+          "[DEBUG][VotacionController] Creando item en memoria (no guardado todavía)"
+        );
         const itemId = votacionStore.generateUuid();
         const textoVotacionValue = votacionAportesStore.textoVotacion;
-        
+
         votacionStore.sesionVotacion.items.push({
           id: itemId,
           orden: 0,
@@ -368,7 +392,7 @@ export function useVotacionController() {
   /**
    * Guardar votación (para useJuntasFlowNext)
    * ⚠️ IMPORTANTE: Esta función se ejecuta SOLO cuando el usuario hace click en "Siguiente"
-   * 
+   *
    * Lógica:
    * 1. Si no hay sesión/item en memoria, crearlos con datos actuales
    * 2. Si es unanimidad: generar todos los votos a favor automáticamente
@@ -376,7 +400,9 @@ export function useVotacionController() {
    * 4. Crear o actualizar la votación en el backend
    */
   async function guardarVotacion() {
-    console.log("[DEBUG][VotacionController] guardarVotacion() ejecutado - Iniciando guardado...");
+    console.log(
+      "[DEBUG][VotacionController] guardarVotacion() ejecutado - Iniciando guardado..."
+    );
 
     // ✅ 1. Asegurar que hay sesión/item en memoria (crear si no existe)
     if (!votacionStore.sesionVotacion) {
@@ -384,7 +410,7 @@ export function useVotacionController() {
       const sessionId = votacionStore.generateUuid();
       const itemId = votacionStore.generateUuid();
       const textoVotacionValue = votacionAportesStore.textoVotacion;
-      
+
       votacionStore.sesionVotacion = {
         id: sessionId,
         contexto: VoteContext.APORTES_DINERARIOS,
@@ -407,7 +433,7 @@ export function useVotacionController() {
       console.log("[DEBUG][VotacionController] No hay item en memoria, creando...");
       const itemId = votacionStore.generateUuid();
       const textoVotacionValue = votacionAportesStore.textoVotacion;
-      
+
       votacionStore.sesionVotacion.items.push({
         id: itemId,
         orden: 0,
@@ -430,22 +456,30 @@ export function useVotacionController() {
     try {
       // ✅ 2. Si es unanimidad, generar todos los votos a favor automáticamente
       if (tipoAprobacion === VoteAgreementType.APROBADO_POR_TODOS) {
-        console.log("[DEBUG][VotacionController] Es unanimidad - generando todos los votos a favor");
-        
+        console.log(
+          "[DEBUG][VotacionController] Es unanimidad - generando todos los votos a favor"
+        );
+
         // Limpiar votos existentes y generar nuevos para todos los votantes
         finalItem.votos = votantes.value.map((votante) => ({
           id: votacionStore.generateUuid(),
           accionistaId: votante.accionistaId,
           valor: VoteValue.A_FAVOR,
         }));
-        
-        console.log("[DEBUG][VotacionController] Votos generados para unanimidad:", finalItem.votos.length);
+
+        console.log(
+          "[DEBUG][VotacionController] Votos generados para unanimidad:",
+          finalItem.votos.length
+        );
       } else {
         // ✅ 3. Si es sometida a votos, validar que haya votos
         if (finalItem.votos.length === 0) {
           throw new Error("Debe registrar al menos un voto para votación por mayoría");
         }
-        console.log("[DEBUG][VotacionController] Es sometida a votos - usando votos del usuario:", finalItem.votos.length);
+        console.log(
+          "[DEBUG][VotacionController] Es sometida a votos - usando votos del usuario:",
+          finalItem.votos.length
+        );
       }
 
       // ✅ 4. Actualizar la sesión en memoria con los votos generados/seleccionados
@@ -458,12 +492,12 @@ export function useVotacionController() {
         itemEnSesion.tipoAprobacion = finalItem.tipoAprobacion;
         itemEnSesion.votos = finalItem.votos; // ✅ Actualizar con votos generados/seleccionados
       }
-      
+
       // ✅ 5. Crear o actualizar la votación en el backend
       // ⚠️ IMPORTANTE: Enviar TODO en un solo request (item + votos)
       const existeEnBackend = votacionStore.hasVotacion;
       const itemExisteEnBackend = existeEnBackend && !!votacionStore.itemVotacion;
-      
+
       console.log("[DEBUG][VotacionController] Estado antes de guardar:", {
         existeEnBackend,
         itemExisteEnBackend,
@@ -472,34 +506,39 @@ export function useVotacionController() {
         tipoAprobacion,
         votosCount: finalItem.votos.length,
       });
-      
+
       if (!existeEnBackend) {
         // ✅ Crear nueva votación con POST (incluyendo item + votos en un solo request)
-        console.log("[DEBUG][VotacionController] Creando nueva votación en backend (POST con todo)...");
+        console.log(
+          "[DEBUG][VotacionController] Creando nueva votación en backend (POST con todo)..."
+        );
         console.log("[DEBUG][VotacionController] Datos a crear:", {
           sessionId: votacionStore.sesionVotacion!.id,
           itemId: finalItem.id,
           tipoAprobacion,
           votosCount: finalItem.votos.length,
         });
-        
+
         // ✅ Asegurar que la sesión en memoria tenga los votos antes de crear
         votacionStore.sesionVotacion!.items[0] = finalItem;
-        
+
         await votacionStore.createVotacion(
           societyId.value,
           flowId.value,
           finalItem.id,
           finalItem.label,
           finalItem.descripción,
-          tipoAprobacion
+          tipoAprobacion,
+          VoteContext.APORTES_DINERARIOS
         );
-        
+
         console.log("[DEBUG][VotacionController] Votación creada exitosamente");
       } else if (!itemExisteEnBackend) {
         // ✅ Sesión existe pero item no existe: usar PUT con accion: "add" (incluyendo votos)
-        console.log("[DEBUG][VotacionController] Agregando item a sesión existente (PUT con accion: 'add' incluyendo votos)...");
-        
+        console.log(
+          "[DEBUG][VotacionController] Agregando item a sesión existente (PUT con accion: 'add' incluyendo votos)..."
+        );
+
         await votacionStore.addVoteItemConVotos(
           societyId.value,
           flowId.value,
@@ -507,15 +546,18 @@ export function useVotacionController() {
           finalItem.label,
           finalItem.descripción,
           tipoAprobacion,
-          finalItem.votos
+          finalItem.votos,
+          VoteContext.APORTES_DINERARIOS
         );
-        
+
         console.log("[DEBUG][VotacionController] Item agregado exitosamente");
       } else {
         // ✅ Sesión e item existen: usar PUT con accion: "add" para reemplazar todo (incluyendo votos)
         // ⚠️ IMPORTANTE: Enviar todo en un solo request
-        console.log("[DEBUG][VotacionController] Actualizando item existente (PUT con accion: 'add' incluyendo votos)...");
-        
+        console.log(
+          "[DEBUG][VotacionController] Actualizando item existente (PUT con accion: 'add' incluyendo votos)..."
+        );
+
         await votacionStore.updateItemConVotos(
           societyId.value,
           flowId.value,
@@ -523,9 +565,10 @@ export function useVotacionController() {
           finalItem.label,
           finalItem.descripción,
           tipoAprobacion,
-          finalItem.votos
+          finalItem.votos,
+          VoteContext.APORTES_DINERARIOS
         );
-        
+
         console.log("[DEBUG][VotacionController] Item actualizado exitosamente");
       }
 
@@ -573,4 +616,3 @@ export function useVotacionController() {
     loadData,
   };
 }
-

@@ -4,10 +4,10 @@ import { useRoute } from "vue-router";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
 import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
-import { useAportesManagerStore, type Aportante as AportanteFromStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/aportes/stores/useAportesManagerStore";
-import { useAportesStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/aportes/stores/useAportesStore";
-import AportesTable from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/aportes/components/tables/AportesTable.vue";
-import AporteModal from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/aportes/components/modals/AporteModal.vue";
+import { useAportesManagerStore, type Aportante as AportanteFromStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/aporte-dinerario/stores/useAportesManagerStore";
+import { useAportesStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/aporte-dinerario/stores/useAportesStore";
+import AportesTable from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/aporte-dinerario/components/molecules/AportesTable.vue";
+import AporteModal from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/aporte-dinerario/components/molecules/AporteModal.vue";
 import { Coins } from "lucide-vue-next";
 
 /**

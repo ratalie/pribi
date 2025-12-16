@@ -214,7 +214,7 @@
   const route = useRoute();
   const documentosStore = useDocumentosGeneradosStore();
   const meetingDetailsStore = useMeetingDetailsStore();
-  const { enviarDocumentos, isUploading, errorMessage } = useEnviarDocumentosRepositorio();
+  const { enviarDocumentos, isUploading, errorMessage, fechaJunta } = useEnviarDocumentosRepositorio();
   const { filtrarDuplicados } = useDocumentosDuplicados();
 
   const documentos = computed(() => documentosStore.documentos);
@@ -415,12 +415,19 @@
         throw new Error("No se encontraron structureId o flowId en la ruta");
       }
 
-      // 1. Obtener fecha de junta
-      const fechaJunta = obtenerFechaJunta();
+      // 1. Obtener fecha de junta del composable (que tiene la lógica correcta)
+      const fechaJuntaValue = fechaJunta.value;
+      
+      if (!fechaJuntaValue) {
+        console.error("🔴 [JuntaDocumentosGenerados] No se pudo obtener la fecha de la junta");
+        console.error("🔴 [JuntaDocumentosGenerados] downloadData:", downloadData.value);
+        console.error("🔴 [JuntaDocumentosGenerados] meetingDetailsStore:", meetingDetailsStore.meetingDetails);
+        throw new Error("No se pudo obtener la fecha de la junta. Por favor, verifica que la junta tenga una fecha configurada.");
+      }
 
       // 2. Obtener o crear carpeta de junta (necesitamos el folderId)
       const repositorio = new RepositorioDocumentosHttpRepository();
-      const folderId = await repositorio.obtenerFolderIdJunta(structureId, flowId, fechaJunta);
+      const folderId = await repositorio.obtenerFolderIdJunta(structureId, flowId, fechaJuntaValue);
 
       // 3. Verificar duplicados
       console.log("🔍 [JuntaDocumentosGenerados] Verificando duplicados...");
@@ -490,6 +497,11 @@
         const structureId = route.params.societyId as string;
         const flowId = route.params.flowId as string;
         const fechaJunta = obtenerFechaJunta();
+        
+        if (!fechaJunta) {
+          throw new Error("No se pudo obtener la fecha de la junta. Por favor, verifica que la junta tenga una fecha configurada.");
+        }
+        
         const repositorio2 = new RepositorioDocumentosHttpRepository();
         const folderId = await repositorio2.obtenerFolderIdJunta(
           structureId,
@@ -530,6 +542,11 @@
       const structureId = route.params.societyId as string;
       const flowId = route.params.flowId as string;
       const fechaJunta = obtenerFechaJunta();
+      
+      if (!fechaJunta) {
+        throw new Error("No se pudo obtener la fecha de la junta. Por favor, verifica que la junta tenga una fecha configurada.");
+      }
+      
       const repositorio = new RepositorioDocumentosHttpRepository();
       const folderId = await repositorio.obtenerFolderIdJunta(structureId, flowId, fechaJunta);
 

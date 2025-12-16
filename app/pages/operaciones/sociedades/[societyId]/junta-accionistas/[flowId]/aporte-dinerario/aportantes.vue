@@ -12,7 +12,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
 import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
-import AportanteModal from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/aportantes/components/AportanteModal.vue";
+import AportanteModal from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/aporte-dinerario/components/molecules/AportanteModal.vue";
 
 /**
  * VISTA: Aportantes para Aporte Dinerario

@@ -146,6 +146,7 @@ export function getNombramientoDirectorioRoutes(basePath: string): Record<string
   };
 }
 
+
 /**
  * Obtiene el mapeo de rutas para un sub-step
  */
@@ -175,6 +176,10 @@ export function getSectionRoutesForSubStep(
     case "nombramiento-directores":
       return getNombramientoDirectoresRoutes(basePath);
     case "nombramiento-nuevo-directorio":
+      return getNombramientoDirectorioRoutes(basePath);
+    case "nombramiento-directores":
+      return getNombramientoDirectoresRoutes(basePath);
+    case "nombramiento-directorio":
       return getNombramientoDirectorioRoutes(basePath);
     default:
       return null;
