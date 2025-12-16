@@ -1,10 +1,5 @@
 <template>
   <SlotWrapper>
-    <TitleH2
-      title="Detalles de la Junta"
-      subtitle="Configura los datos esenciales de la junta antes de iniciar el flujo."
-    />
-
     <div class="flex flex-col gap-10">
       <TipoJuntaSection />
       <ConvocatoriaJuntaSection />
@@ -16,12 +11,11 @@
   import { computed, onMounted } from "vue";
   import { useRoute } from "vue-router";
   import SlotWrapper from "~/components/containers/SlotWrapper.vue";
-  import ConvocatoriaJuntaSection from "~/core/presentation/operaciones/junta-accionistas/pasos/detalles/components/organisms/ConvocatoriaJuntaSection.vue";
-  import TipoJuntaSection from "~/core/presentation/operaciones/junta-accionistas/pasos/detalles/components/organisms/TipoJuntaSection.vue";
-  import TitleH2 from "~/components/titles/TitleH2.vue";
   import { useToast } from "~/components/ui/toast/use-toast";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
+  import ConvocatoriaJuntaSection from "~/core/presentation/operaciones/junta-accionistas/pasos/detalles/components/organisms/ConvocatoriaJuntaSection.vue";
+  import TipoJuntaSection from "~/core/presentation/operaciones/junta-accionistas/pasos/detalles/components/organisms/TipoJuntaSection.vue";
 
   /**
    * Página: Detalles de la Junta

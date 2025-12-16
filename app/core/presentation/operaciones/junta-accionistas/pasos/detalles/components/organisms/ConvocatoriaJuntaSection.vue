@@ -1,9 +1,9 @@
 <template>
   <section id="convocatoria" class="flex flex-col gap-5">
     <TitleH4
+      v-if="tipoJuntaValue !== TipoJunta.UNIVERSAL"
       title="Convocatoria"
       subtitle="Indica el lugar, fecha y hora de realización de la primera convocatoría"
-      :variant="Titles.WITH_SUBTITLE_SPACING"
     />
 
     <!-- JUNTA UNIVERSAL: Solo 1 detalle -->
@@ -45,23 +45,21 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import TitleH4 from '~/components/titles/TitleH4.vue';
-import ConvocatoriaUniversalCard from '../molecules/ConvocatoriaUniversalCard.vue';
-import ConvocatoriaGeneralCards from '../molecules/ConvocatoriaGeneralCards.vue';
-import Titles from '~/types/enums/Titles.enum';
-import { TipoJunta } from '~/core/hexag/juntas/domain/enums/tipo-junta.enum';
-import { useMeetingDetailsStore } from '~/core/presentation/juntas/stores/meeting-details.store';
-import { useConvocatoria } from '../../composables/useConvocatoria';
+  import { computed } from "vue";
+  import TitleH4 from "~/components/titles/TitleH4.vue";
+  import { TipoJunta } from "~/core/hexag/juntas/domain/enums/tipo-junta.enum";
+  import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
+  import { useConvocatoria } from "../../composables/useConvocatoria";
+  import ConvocatoriaGeneralCards from "../molecules/ConvocatoriaGeneralCards.vue";
+  import ConvocatoriaUniversalCard from "../molecules/ConvocatoriaUniversalCard.vue";
 
-const store = useMeetingDetailsStore();
+  const store = useMeetingDetailsStore();
 
-// Obtener tipo de junta
-const tipoJuntaValue = computed(() => store.meetingDetails?.tipoJunta || TipoJunta.GENERAL);
+  // Obtener tipo de junta
+  const tipoJuntaValue = computed(() => store.meetingDetails?.tipoJunta || TipoJunta.GENERAL);
 
-// Usar composables reutilizables para eliminar código duplicado
-const convocatoriaUniversal = useConvocatoria('detalle', tipoJuntaValue);
-const convocatoriaPrimera = useConvocatoria('primera', tipoJuntaValue);
-const convocatoriaSegunda = useConvocatoria('segunda', tipoJuntaValue);
+  // Usar composables reutilizables para eliminar código duplicado
+  const convocatoriaUniversal = useConvocatoria("detalle", tipoJuntaValue);
+  const convocatoriaPrimera = useConvocatoria("primera", tipoJuntaValue);
+  const convocatoriaSegunda = useConvocatoria("segunda", tipoJuntaValue);
 </script>
-

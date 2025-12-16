@@ -1,8 +1,6 @@
 <script setup lang="ts">
   import { computed, onMounted, ref, watch } from "vue";
   import { z } from "zod";
-  import CardTitle from "~/components/base/cards/CardTitle.vue";
-  import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
   import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
   import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
@@ -31,11 +29,6 @@
    * ✅ FUENTE: snapshot.directory
    */
   const directorio = computed(() => snapshotStore.snapshot?.directory || null);
-
-  /**
-   * ¿Tiene directorio configurado?
-   */
-  const tieneDirectorio = computed(() => directorio.value !== null);
 
   /**
    * Gerente General del snapshot
@@ -91,10 +84,10 @@
         personId: personId,
         nombre: a.nombreCompleto,
       });
-      
+
       return {
-        id: personId,  // ✅ ID de la persona (lo que espera el backend)
-        value: personId,  // ✅ ID de la persona (lo que espera el backend)
+        id: personId, // ✅ ID de la persona (lo que espera el backend)
+        value: personId, // ✅ ID de la persona (lo que espera el backend)
         label: a.nombreCompleto,
       };
     });
@@ -185,20 +178,20 @@
       if (presidenteMode.value === "readonly" && directorio.value) {
         const directorId = directorio.value.presidenteId || "";
         const director = directores.value.find((d) => d.id === directorId);
-        
+
         if (director && director.persona) {
           const personId = director.persona.id;
           console.log("🔍 [presidenteId.get] READONLY mode:", {
             directorId,
             personId: personId,
           });
-          return personId;  // ✅ Devolver ID de la persona
+          return personId; // ✅ Devolver ID de la persona
         }
-        
+
         console.warn("⚠️ [presidenteId.get] READONLY pero director no encontrado");
         return "";
       }
-      
+
       // Si es selector, devolver del meeting-details
       const id = meetingDetailsStore.meetingDetails?.presidenteId || "";
       console.log("🔍 [presidenteId.get] SELECTOR mode, usando meeting-details:", id);
@@ -226,7 +219,9 @@
    * ✅ Solo se usa cuando es READONLY para cambiar si asistió o no
    * ✅ Default FALSE para respetar valor del backend
    */
-  const presidenteAsistio = ref(meetingDetailsStore.meetingDetails?.presidenteAsistio ?? false);
+  const presidenteAsistio = ref(
+    meetingDetailsStore.meetingDetails?.presidenteAsistio ?? false
+  );
 
   // Sincronizar con el store cuando cambie
   watch(
@@ -237,7 +232,7 @@
         isUndefined: newValue === undefined,
         valorAnterior: presidenteAsistio.value,
       });
-      
+
       if (newValue !== undefined) {
         presidenteAsistio.value = newValue;
         console.log("✅ [presidenteAsistio] Actualizado a:", newValue);
@@ -255,22 +250,26 @@
    *    - Y hay un presidenteId que NO es el del directorio
    */
   const presidenteReemplazoId = ref("");
-  
+
   // ✅ INICIALIZAR reemplazo desde el backend
   console.log("🔍 [presidenteReemplazoId] Verificando inicialización:", {
     presidenteAsistio: meetingDetailsStore.meetingDetails?.presidenteAsistio,
     presidenteId: meetingDetailsStore.meetingDetails?.presidenteId,
     presidenteDirectorioId: directorio.value?.presidenteId,
-    sonDiferentes: meetingDetailsStore.meetingDetails?.presidenteId !== directorio.value?.presidenteId,
+    sonDiferentes:
+      meetingDetailsStore.meetingDetails?.presidenteId !== directorio.value?.presidenteId,
   });
-  
+
   if (
     meetingDetailsStore.meetingDetails?.presidenteAsistio === false &&
     meetingDetailsStore.meetingDetails?.presidenteId &&
     meetingDetailsStore.meetingDetails.presidenteId !== directorio.value?.presidenteId
   ) {
     presidenteReemplazoId.value = meetingDetailsStore.meetingDetails.presidenteId;
-    console.log("✅ [presidenteReemplazoId] Inicializado desde backend:", presidenteReemplazoId.value);
+    console.log(
+      "✅ [presidenteReemplazoId] Inicializado desde backend:",
+      presidenteReemplazoId.value
+    );
   }
 
   // Función para manejar el cambio del switch
@@ -302,7 +301,7 @@
       });
     }
   });
-  
+
   // ✅ Watch para sincronizar reemplazo cuando el store cambie (después de cargar backend)
   watch(
     () => [
@@ -314,7 +313,7 @@
       // Si NO asistió Y el ID es diferente al del directorio, es un reemplazo
       if (
         presidenteAsistioStore === false &&
-        typeof presidenteIdStore === 'string' &&
+        typeof presidenteIdStore === "string" &&
         presidenteIdStore !== presidenteDirectorioId
       ) {
         presidenteReemplazoId.value = presidenteIdStore;
@@ -417,13 +416,13 @@
             apoderadoId: gerenteGeneral.value.id,
             personId: personId,
           });
-          return personId;  // ✅ Devolver ID de la persona
+          return personId; // ✅ Devolver ID de la persona
         }
-        
+
         console.warn("⚠️ [secretarioId.get] READONLY pero gerente no tiene persona");
         return "";
       }
-      
+
       // Si es selector, devolver del meeting-details
       const id = meetingDetailsStore.meetingDetails?.secretarioId || "";
       console.log("🔍 [secretarioId.get] SELECTOR mode, usando meeting-details:", id);
@@ -451,7 +450,9 @@
    * ✅ REF sincronizado con el store
    * ✅ Default FALSE para respetar valor del backend
    */
-  const secretarioAsistio = ref(meetingDetailsStore.meetingDetails?.secretarioAsistio ?? false);
+  const secretarioAsistio = ref(
+    meetingDetailsStore.meetingDetails?.secretarioAsistio ?? false
+  );
 
   // Sincronizar con el store cuando cambie
   watch(
@@ -462,7 +463,7 @@
         isUndefined: newValue === undefined,
         valorAnterior: secretarioAsistio.value,
       });
-      
+
       if (newValue !== undefined) {
         secretarioAsistio.value = newValue;
         console.log("✅ [secretarioAsistio] Actualizado a:", newValue);
@@ -480,22 +481,26 @@
    *    - Y hay un secretarioId que NO es el del gerente general
    */
   const secretarioReemplazoId = ref("");
-  
+
   // ✅ INICIALIZAR reemplazo desde el backend
   console.log("🔍 [secretarioReemplazoId] Verificando inicialización:", {
     secretarioAsistio: meetingDetailsStore.meetingDetails?.secretarioAsistio,
     secretarioId: meetingDetailsStore.meetingDetails?.secretarioId,
     secretarioGerenteId: gerenteGeneral.value?.persona?.id,
-    sonDiferentes: meetingDetailsStore.meetingDetails?.secretarioId !== gerenteGeneral.value?.persona?.id,
+    sonDiferentes:
+      meetingDetailsStore.meetingDetails?.secretarioId !== gerenteGeneral.value?.persona?.id,
   });
-  
+
   if (
     meetingDetailsStore.meetingDetails?.secretarioAsistio === false &&
     meetingDetailsStore.meetingDetails?.secretarioId &&
     meetingDetailsStore.meetingDetails.secretarioId !== gerenteGeneral.value?.persona?.id
   ) {
     secretarioReemplazoId.value = meetingDetailsStore.meetingDetails.secretarioId;
-    console.log("✅ [secretarioReemplazoId] Inicializado desde backend:", secretarioReemplazoId.value);
+    console.log(
+      "✅ [secretarioReemplazoId] Inicializado desde backend:",
+      secretarioReemplazoId.value
+    );
   }
 
   // Función para manejar el cambio del switch
@@ -527,7 +532,7 @@
       });
     }
   });
-  
+
   // ✅ Watch para sincronizar reemplazo cuando el store cambie (después de cargar backend)
   watch(
     () => [
@@ -539,7 +544,7 @@
       // Si NO asistió Y el ID es diferente al del gerente general, es un reemplazo
       if (
         secretarioAsistioStore === false &&
-        typeof secretarioIdStore === 'string' &&
+        typeof secretarioIdStore === "string" &&
         secretarioIdStore !== secretarioGerenteId
       ) {
         secretarioReemplazoId.value = secretarioIdStore;
@@ -556,46 +561,6 @@
   // LIFECYCLE
   // ========================================
   onMounted(() => {
-    console.log("╔═══════════════════════════════════════════════════════════════╗");
-    console.log("║  🏛️ [MesaDirectiva] MONTADO - INICIANDO DEBUG              ║");
-    console.log("╚═══════════════════════════════════════════════════════════════╝");
-
-    console.log("🟦 [onMounted] presidenteAsistio.value:", presidenteAsistio.value);
-    console.log("🟦 [onMounted] secretarioAsistio.value:", secretarioAsistio.value);
-
-    console.log("📦 [MesaDirectiva] Snapshot completo:", snapshotStore.snapshot);
-    console.log("📦 [MesaDirectiva] Snapshot Store (computed):", {
-      tieneDirectorio: tieneDirectorio.value,
-      directorio: directorio.value,
-      presidenteDirectorio: snapshotStore.presidenteDirectorio,
-      directores: snapshotStore.directores,
-      attorneys: snapshotStore.snapshot?.attorneys,
-      gerenteGeneral: gerenteGeneral.value,
-    });
-
-    console.log("🎯 [MesaDirectiva] PRESIDENTE:", {
-      mode: presidenteMode.value,
-      presidenteId: presidenteId.value,
-      presidenteNombre: presidenteNombre.value,
-      presidenteAsistio: presidenteAsistio.value,
-      "directorio.presidentePreside": directorio.value?.presidentePreside,
-      "directorio.presidenteId": directorio.value?.presidenteId,
-    });
-
-    console.log("🎯 [MesaDirectiva] SECRETARIO:", {
-      mode: secretarioMode.value,
-      secretarioId: secretarioId.value,
-      secretarioNombre: secretarioNombre.value,
-      secretarioAsistio: secretarioAsistio.value,
-      "directorio.secretarioAsignado": directorio.value?.secretarioAsignado,
-      "gerenteGeneral.id": gerenteGeneral.value?.id,
-    });
-
-    console.log("👥 [MesaDirectiva] Asistentes presentes:", {
-      total: asistentesOptions.value.length,
-      options: asistentesOptions.value,
-    });
-
     // ========================================
     // AUTO-ACTUALIZAR IDs EN MEETING-DETAILS
     // ========================================
@@ -607,28 +572,16 @@
     // PRESIDENTE: Auto-actualizar si es readonly
     if (presidenteMode.value === "readonly" && directorio.value?.presidenteId) {
       const presidenteIdFromDirectorio = directorio.value.presidenteId;
-      console.log(
-        "✅ [MesaDirectiva] Auto-actualizando presidenteId (READONLY):",
-        presidenteIdFromDirectorio
-      );
-      console.log("   → Director:", presidenteNombre.value);
 
       meetingDetailsStore.patchMeetingDetails({
         presidenteId: presidenteIdFromDirectorio,
         presidenteAsistio: true, // Por defecto se asume que asiste
       });
-    } else {
-      console.log("ℹ️ [MesaDirectiva] Presidente en modo SELECTOR - No auto-actualiza");
     }
 
     // SECRETARIO: Auto-actualizar si es readonly
     if (secretarioMode.value === "readonly" && gerenteGeneral.value?.id) {
       const secretarioIdFromGerente = gerenteGeneral.value.id;
-      console.log(
-        "✅ [MesaDirectiva] Auto-actualizando secretarioId (READONLY):",
-        secretarioIdFromGerente
-      );
-      console.log("   → Gerente:", secretarioNombre.value);
 
       meetingDetailsStore.patchMeetingDetails({
         secretarioId: secretarioIdFromGerente,
@@ -637,45 +590,6 @@
     } else {
       console.log("ℹ️ [MesaDirectiva] Secretario en modo SELECTOR - No auto-actualiza");
     }
-
-    console.log("📊 [MesaDirectiva] Estado final:", {
-      presidenteMode: presidenteMode.value,
-      presidenteId: presidenteId.value,
-      presidenteNombre: presidenteNombre.value,
-      secretarioMode: secretarioMode.value,
-      secretarioId: secretarioId.value,
-      secretarioNombre: secretarioNombre.value,
-    });
-  });
-
-  // DEBUG: Mostrar info cuando cambia el directorio o gerente
-  watch([directorio, gerenteGeneral, asistentesOptions], () => {
-    console.log("\n╔═══════════════════════════════════════════════════════════════╗");
-    console.log("║  🐛 DEBUG Mesa Directiva                                     ║");
-    console.log("╚═══════════════════════════════════════════════════════════════╝");
-
-    console.log("\n📊 Snapshot Data:");
-    console.log("  • Tiene directorio:", tieneDirectorio.value);
-    console.log("  • presidentePreside:", directorio.value?.presidentePreside);
-    console.log("  • presidenteId (directorio):", directorio.value?.presidenteId);
-    console.log("  • secretarioAsignado:", directorio.value?.secretarioAsignado);
-    console.log("  • gerenteGeneral.id:", gerenteGeneral.value?.id);
-
-    console.log("\n🎭 Modos:");
-    console.log("  • Presidente Mode:", presidenteMode.value);
-    console.log("  • Secretario Mode:", secretarioMode.value);
-
-    console.log("\n👤 Designaciones:");
-    console.log("  • Presidente:", presidenteNombre.value || "NO ASIGNADO");
-    console.log("  • Secretario:", secretarioNombre.value || "NO ASIGNADO");
-
-    console.log("\n👥 Asistentes disponibles:", asistentesOptions.value.length);
-    console.log(
-      "  • Lista:",
-      asistentesOptions.value.map((a) => a.label)
-    );
-
-    console.log("\n╚═══════════════════════════════════════════════════════════════╝\n");
   });
 </script>
 
@@ -687,10 +601,10 @@
     <span class="text-slate-500">Cargando mesa directiva...</span>
   </div>
 
-  <SimpleCard v-else class="flex flex-col gap-8">
-    <CardTitle
+  <div v-else class="flex flex-col gap-8">
+    <TitleH4
       title="Presidente y Secretario de la Junta"
-      body="Elija al Presidente y al Secretario de la junta."
+      subtitle="Elija al Presidente y al Secretario de la junta."
     />
 
     <!-- GRID DE 2 COLUMNAS -->
@@ -737,7 +651,6 @@
           <template v-if="presidenteMode === 'readonly'">
             <template v-if="presidenteAsistio">
               <!-- ASISTIÓ: Mostrar nombre bloqueado -->
-              <label class="text-sm font-medium text-gray-700">Nombre completo</label>
               <input
                 type="text"
                 :value="presidenteNombre"
@@ -776,16 +689,6 @@
               Seleccione quién ejercerá el rol de Presidente
             </span>
           </template>
-        </div>
-
-        <!-- DEBUG TEMPORAL -->
-        <div class="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs">
-          <p><strong>🐛 DEBUG Presidente:</strong></p>
-          <p>Mode: {{ presidenteMode }}</p>
-          <p>Asistió: {{ presidenteAsistio }}</p>
-          <p>ID: {{ presidenteId }}</p>
-          <p>Nombre: {{ presidenteNombre || "(vacío)" }}</p>
-          <p>Asistentes disponibles: {{ asistentesOptions.length }}</p>
         </div>
       </div>
 
@@ -831,7 +734,6 @@
           <template v-if="secretarioMode === 'readonly'">
             <template v-if="secretarioAsistio">
               <!-- ASISTIÓ: Mostrar nombre bloqueado -->
-              <label class="text-sm font-medium text-gray-700">Nombre completo</label>
               <input
                 type="text"
                 :value="secretarioNombre"
@@ -871,18 +773,7 @@
             </span>
           </template>
         </div>
-
-        <!-- DEBUG TEMPORAL -->
-        <div class="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs">
-          <p><strong>🐛 DEBUG Secretario:</strong></p>
-          <p>Mode: {{ secretarioMode }}</p>
-          <p>Asistió: {{ secretarioAsistio }}</p>
-          <p>ID: {{ secretarioId }}</p>
-          <p>Nombre: {{ secretarioNombre || "(vacío)" }}</p>
-          <p>Gerente General: {{ gerenteGeneral ? "Sí" : "No" }}</p>
-          <p>Asistentes disponibles: {{ asistentesOptions.length }}</p>
-        </div>
       </div>
     </div>
-  </SimpleCard>
+  </div>
 </template>
