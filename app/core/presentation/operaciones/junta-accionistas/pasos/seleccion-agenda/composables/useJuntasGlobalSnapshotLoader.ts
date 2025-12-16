@@ -77,12 +77,35 @@ export function useJuntasGlobalSnapshotLoader() {
       return;
     }
 
-    // Verificar si el store ya tiene snapshot cargado para este flowId
-    if (snapshotStore.snapshot) {
+    // Si el snapshot es de otro flowId, limpiarlo antes de cargar
+    if (
+      snapshotStore.snapshot &&
+      (snapshotStore.currentFlowId !== flowId || snapshotStore.currentSocietyId !== societyId)
+    ) {
       console.debug(
-        "[useJuntasGlobalSnapshotLoader] Snapshot ya está cargado, omitiendo carga duplicada...",
+        "[useJuntasGlobalSnapshotLoader] Snapshot es de otro flowId/societyId, limpiando antes de cargar...",
+        {
+          currentFlowId: snapshotStore.currentFlowId,
+          newFlowId: flowId,
+          currentSocietyId: snapshotStore.currentSocietyId,
+          newSocietyId: societyId,
+        }
+      );
+      // Limpiar snapshot anterior
+      snapshotStore.clearSnapshot();
+    }
+
+    // Verificar si el store ya tiene snapshot cargado para este flowId
+    if (
+      snapshotStore.snapshot &&
+      snapshotStore.currentFlowId === flowId &&
+      snapshotStore.currentSocietyId === societyId
+    ) {
+      console.debug(
+        "[useJuntasGlobalSnapshotLoader] Snapshot ya está cargado para este flowId, omitiendo carga duplicada...",
         {
           flowId,
+          societyId,
           hasSnapshot: !!snapshotStore.snapshot,
         }
       );
@@ -152,6 +175,8 @@ export function useJuntasGlobalSnapshotLoader() {
   const resetLoader = () => {
     lastLoadedFlowId = null;
     isLoadingGlobal = false;
+    // Limpiar snapshot si cambia el flowId
+    snapshotStore.clearSnapshot();
   };
 
   // Observar cambios en la ruta para recargar si cambia el flowId

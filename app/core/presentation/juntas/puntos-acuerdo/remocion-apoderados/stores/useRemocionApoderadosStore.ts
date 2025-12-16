@@ -88,8 +88,46 @@ export const useRemocionApoderadosStore = defineStore("remocionApoderados", {
     },
 
     /**
-     * Crear candidatos a remoción en backend
-     * POST /removal-attorney (múltiples llamadas, una por apoderado)
+     * ✅ FUNCIÓN ÚNICA: Actualizar estado de apoderado (marcar/desmarcar)
+     * PUT /removal-attorney - Hace TODO: crear, actualizar, desmarcar
+     *
+     * @param candidatoEstado - "CANDIDATO" (marcar), "DESMARCAR" (desmarcar), "ELEGIDO", "NO_ELEGIDO"
+     */
+    async actualizarEstado(
+      societyId: number,
+      flowId: number,
+      attorneyId: string,
+      candidatoEstado: "CANDIDATO" | "ELEGIDO" | "NO_ELEGIDO" | "DESMARCAR"
+    ): Promise<void> {
+      this.status = "loading";
+      this.errorMessage = null;
+
+      try {
+        const repository = new RemovalAttorneyHttpRepository();
+        const useCase = new CreateRemovalAttorneyCandidateUseCase(repository);
+
+        // ✅ PUT hace todo automáticamente (crea si no existe, actualiza si existe)
+        await useCase.execute(societyId, flowId, attorneyId, candidatoEstado);
+
+        console.log(
+          `[Store][RemocionApoderados] ✅ Estado actualizado para apoderado ${attorneyId}: ${candidatoEstado}`
+        );
+
+        // Recargar candidatos para obtener datos actualizados
+        await this.loadApoderados(societyId, flowId);
+
+        this.status = "idle";
+      } catch (error: any) {
+        console.error("[Store][RemocionApoderados] Error al actualizar estado:", error);
+        this.status = "error";
+        this.errorMessage = error.message || "Error al actualizar estado";
+        throw error;
+      }
+    },
+
+    /**
+     * @deprecated Usar actualizarEstado() en su lugar
+     * Crear candidatos a remoción en backend (múltiples)
      */
     async createCandidatos(
       societyId: number,
@@ -105,49 +143,21 @@ export const useRemocionApoderadosStore = defineStore("remocionApoderados", {
       this.errorMessage = null;
 
       try {
-        const repository = new RemovalAttorneyHttpRepository();
-        const useCase = new CreateRemovalAttorneyCandidateUseCase(repository);
-
-        // Crear candidatos uno por uno
-        // ✅ IMPORTANTE: Continuar aunque falle uno (para poder crear los demás)
-        const errores: Array<{ attorneyId: string; error: any }> = [];
+        // ✅ Usar la función única para cada apoderado
         for (const attorneyId of attorneyIds) {
           try {
-            await useCase.execute(societyId, flowId, attorneyId, "CANDIDATO");
-            console.log(
-              `[Store][RemocionApoderados] ✅ Candidato creado para apoderado: ${attorneyId}`
-            );
+            await this.actualizarEstado(societyId, flowId, attorneyId, "CANDIDATO");
           } catch (error: any) {
-            // Si es 401, es problema de autenticación (continuar con los demás)
-            // Si es otro error, también continuar pero registrar
             console.error(
-              `[Store][RemocionApoderados] ⚠️ Error al crear candidato para ${attorneyId}:`,
+              `[Store][RemocionApoderados] ⚠️ Error al marcar apoderado ${attorneyId}:`,
               error
             );
-            errores.push({ attorneyId, error });
             // Continuar con el siguiente
           }
         }
 
-        // Si todos fallaron, lanzar error
-        if (errores.length === attorneyIds.length) {
-          const primerError = errores[0]?.error;
-          throw primerError || new Error("Error al crear todos los candidatos");
-        }
-
-        // Si algunos fallaron, advertir pero continuar
-        if (errores.length > 0) {
-          console.warn(
-            `[Store][RemocionApoderados] ⚠️ ${errores.length} de ${attorneyIds.length} candidatos fallaron al crear:`,
-            errores.map((e) => e.attorneyId)
-          );
-        }
-
         // Guardar selección en state
         this.apoderadosSeleccionados = attorneyIds;
-
-        // Recargar candidatos para obtener datos actualizados
-        await this.loadApoderados(societyId, flowId);
 
         console.log("[Store][RemocionApoderados] Candidatos creados exitosamente:", {
           count: attorneyIds.length,
@@ -155,10 +165,7 @@ export const useRemocionApoderadosStore = defineStore("remocionApoderados", {
 
         this.status = "idle";
       } catch (error: any) {
-        console.error(
-          "[Store][RemocionApoderados] Error al crear candidatos:",
-          error
-        );
+        console.error("[Store][RemocionApoderados] Error al crear candidatos:", error);
         this.status = "error";
         this.errorMessage = error.message || "Error al crear candidatos";
         throw error;
@@ -166,8 +173,8 @@ export const useRemocionApoderadosStore = defineStore("remocionApoderados", {
     },
 
     /**
+     * @deprecated Usar actualizarEstado() en su lugar
      * Actualizar estado de candidato después de votación
-     * PUT /removal-attorney
      */
     async updateEstadoCandidato(
       societyId: number,
@@ -175,40 +182,8 @@ export const useRemocionApoderadosStore = defineStore("remocionApoderados", {
       attorneyId: string,
       estado: "ELEGIDO" | "NO_ELEGIDO"
     ): Promise<void> {
-      this.status = "loading";
-      this.errorMessage = null;
-
-      try {
-        const repository = new RemovalAttorneyHttpRepository();
-        const useCase = new UpdateRemovalAttorneyCandidateUseCase(repository);
-        await useCase.execute(societyId, flowId, attorneyId, estado);
-
-        console.log(
-          `[Store][RemocionApoderados] Estado actualizado para apoderado ${attorneyId}: ${estado}`
-        );
-
-        // Actualizar estado local del candidato
-        // ✅ El id del registro de remoción ES el attorneyId que se necesita
-        const candidato = this.candidatos.find((c) => c.id === attorneyId);
-        if (candidato && candidato.attorneyFlowActions.length > 0) {
-          candidato.attorneyFlowActions[0].candidateStatus =
-            estado === "ELEGIDO" ? "ELECTED" : "NOT_ELECTED";
-        }
-        // También actualizar candidateStatus directamente
-        if (candidato) {
-          candidato.candidateStatus = estado === "ELEGIDO" ? "ELECTED" : "NOT_ELECTED";
-        }
-
-        this.status = "idle";
-      } catch (error: any) {
-        console.error(
-          "[Store][RemocionApoderados] Error al actualizar estado:",
-          error
-        );
-        this.status = "error";
-        this.errorMessage = error.message || "Error al actualizar estado";
-        throw error;
-      }
+      // ✅ Redirigir a la función única
+      await this.actualizarEstado(societyId, flowId, attorneyId, estado);
     },
 
     /**

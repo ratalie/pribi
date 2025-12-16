@@ -4,14 +4,15 @@
  */
 
 /**
- * DTO para crear candidato a remoción (POST Request)
+ * DTO para crear/actualizar candidato a remoción (PUT Request)
+ * ✅ PUT hace TODO: crear, actualizar, desmarcar
  */
 export interface CreateRemovalAttorneyDTO {
   /** UUID del apoderado existente a remover */
   attorneyId: string;
 
-  /** Estado del candidato */
-  candidatoEstado: "CANDIDATO" | "DESIGNADO_DIRECTAMENTE";
+  /** Estado del candidato - PUT hace todo automáticamente */
+  candidatoEstado: "CANDIDATO" | "ELEGIDO" | "NO_ELEGIDO" | "DESMARCAR";
 }
 
 /**

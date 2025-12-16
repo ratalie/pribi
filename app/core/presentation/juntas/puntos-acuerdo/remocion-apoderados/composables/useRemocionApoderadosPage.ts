@@ -1,4 +1,4 @@
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 import { useRemocionApoderadosStore } from "../stores/useRemocionApoderadosStore";
@@ -126,50 +126,105 @@ export function useRemocionApoderadosPage() {
   }
 
   /**
-   * Actualizar estado de checkboxes
+   * ✅ FUNCIÓN ÚNICA: Actualizar estado cuando se hace check/uncheck
+   * PUT se ejecuta automáticamente cuando cambia el checkbox
    */
-  function updateCheckedItems(checkedItems: boolean) {
-    apoderados.value.forEach((apoderado) => {
-      apoderado.checked = checkedItems;
-    });
-  }
-
-  /**
-   * Guardar selección y crear candidatos + votaciones
-   */
-  async function guardarSeleccion(): Promise<void> {
+  async function toggleApoderados(attorneyId: string, checked: boolean) {
     const societyId = Number(route.params.societyId);
     const flowId = Number(route.params.flowId);
 
-    // Obtener IDs de apoderados seleccionados
-    const apoderadosSeleccionados = apoderados.value.filter((a) => a.checked).map((a) => a.id);
+    // ✅ PUT hace TODO: marcar (CANDIDATO) o desmarcar (DESMARCAR)
+    const estado = checked ? "CANDIDATO" : "DESMARCAR";
+    await remocionStore.actualizarEstado(societyId, flowId, attorneyId, estado);
 
-    if (apoderadosSeleccionados.length === 0) {
-      throw new Error("Debe seleccionar al menos un apoderado para remover");
+    // Actualizar estado local
+    const apoderado = apoderados.value.find((a) => a.id === attorneyId);
+    if (apoderado) {
+      apoderado.checked = checked;
     }
-
-    console.log("[RemocionApoderados] Guardando candidatos:", {
-      total: apoderadosSeleccionados.length,
-      ids: apoderadosSeleccionados,
-      apoderados: apoderados.value
-        .filter((a) => a.checked)
-        .map((a) => ({ id: a.id, nombre: a.nombre, checked: a.checked })),
-    });
-
-    // ✅ SOLO crear candidatos en backend
-    // La votación se creará/actualizará cuando el usuario haga clic en "Siguiente" desde la vista de votación
-    await remocionStore.createCandidatos(societyId, flowId, apoderadosSeleccionados);
-
-    console.log("[RemocionApoderados] Candidatos creados exitosamente");
   }
+
+  /**
+   * Actualizar estado de checkboxes (todos a la vez)
+   */
+  async function updateCheckedItems(checkedItems: boolean) {
+    const societyId = Number(route.params.societyId);
+    const flowId = Number(route.params.flowId);
+
+    const estado = checkedItems ? "CANDIDATO" : "DESMARCAR";
+
+    // Actualizar todos los apoderados
+    for (const apoderado of apoderados.value) {
+      try {
+        await remocionStore.actualizarEstado(societyId, flowId, apoderado.id, estado);
+        apoderado.checked = checkedItems;
+      } catch (error: any) {
+        console.error(
+          `[RemocionApoderados] Error al actualizar apoderado ${apoderado.id}:`,
+          error
+        );
+      }
+    }
+  }
+
+  /**
+   * Guardar selección (legacy - mantener para compatibilidad)
+   * Ya no es necesario porque PUT se ejecuta automáticamente en check/uncheck
+   */
+  async function guardarSeleccion(): Promise<void> {
+    // ✅ Ya no hace nada porque PUT se ejecuta automáticamente
+    // Solo recargar para asegurar que tenemos el estado más reciente
+    const societyId = Number(route.params.societyId);
+    const flowId = Number(route.params.flowId);
+    await remocionStore.loadApoderados(societyId, flowId);
+    console.log("[RemocionApoderados] Selección guardada (PUT ya se ejecutó automáticamente)");
+  }
+
+  // ✅ Watcher: Ejecutar PUT automáticamente cuando cambia un checkbox individual
+  const previousCheckedState = ref<Map<string, boolean>>(new Map());
+
+  watch(
+    () => apoderados.value.map((a) => ({ id: a.id, checked: a.checked })),
+    (newState) => {
+      const societyId = Number(route.params.societyId);
+      const flowId = Number(route.params.flowId);
+
+      if (!societyId || !flowId) return;
+
+      // Comparar con el estado anterior
+      newState.forEach(({ id, checked }) => {
+        const previousChecked = previousCheckedState.value.get(id);
+        if (previousChecked !== undefined && previousChecked !== checked) {
+          // ✅ PUT automático cuando cambia el checkbox
+          const estado = checked ? "CANDIDATO" : "DESMARCAR";
+          remocionStore.actualizarEstado(societyId, flowId, id, estado).catch((error) => {
+            console.error(`[RemocionApoderados] Error al actualizar apoderado ${id}:`, error);
+            // Revertir el cambio si falla
+            const apoderado = apoderados.value.find((a) => a.id === id);
+            if (apoderado) {
+              apoderado.checked = previousChecked;
+            }
+          });
+        }
+        previousCheckedState.value.set(id, checked);
+      });
+    },
+    { deep: true }
+  );
 
   // Cargar apoderados al montar
   onMounted(() => {
-    loadApoderados();
+    loadApoderados().then(() => {
+      // Inicializar estado anterior después de cargar
+      apoderados.value.forEach((a) => {
+        previousCheckedState.value.set(a.id, a.checked);
+      });
+    });
   });
 
   return {
     apoderados: computed(() => apoderados.value),
+    toggleApoderados, // ✅ Función para toggle manual (opcional)
     updateCheckedItems,
     guardarSeleccion,
     loadApoderados,

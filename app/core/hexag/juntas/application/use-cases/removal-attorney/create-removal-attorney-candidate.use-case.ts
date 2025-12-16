@@ -11,13 +11,14 @@ export class CreateRemovalAttorneyCandidateUseCase {
   constructor(private readonly repository: RemovalAttorneyRepository) {}
 
   /**
-   * Ejecutar: Crear candidato a remoción
+   * Ejecutar: Crear/Actualizar candidato a remoción
+   * ✅ PUT hace TODO: crear, actualizar, desmarcar
    */
   async execute(
     societyId: number,
     flowId: number,
     attorneyId: string,
-    estado: "CANDIDATO" | "DESIGNADO_DIRECTAMENTE"
+    estado: "CANDIDATO" | "ELEGIDO" | "NO_ELEGIDO" | "DESMARCAR"
   ): Promise<void> {
     const dto: CreateRemovalAttorneyDTO = {
       attorneyId,
