@@ -1,4 +1,4 @@
-import { computed, onActivated, onMounted } from "vue";
+import { computed, nextTick, onActivated, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import type { Shareholder } from "~/core/hexag/juntas/application/dtos/snapshot-complete.dto";
 import { VoteAgreementType } from "~/core/hexag/juntas/domain/enums/vote-agreement-type.enum";
@@ -9,6 +9,7 @@ import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/apor
 import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 import { useVotacionRemocionApoderadosStore } from "../stores/useVotacionRemocionApoderadosStore";
+import { useRemocionApoderadosStore } from "../../stores/useRemocionApoderadosStore";
 
 /**
  * Controller para la vista de Votación de Remoción de Apoderados
@@ -24,6 +25,7 @@ export function useVotacionRemocionApoderadosController() {
   const route = useRoute();
   const votacionStore = useVotacionStore();
   const votacionRemocionApoderadosStore = useVotacionRemocionApoderadosStore();
+  const remocionStore = useRemocionApoderadosStore();
   const asistenciaStore = useAsistenciaStore();
   const snapshotStore = useSnapshotStore();
 
@@ -48,9 +50,16 @@ export function useVotacionRemocionApoderadosController() {
         asistenciaStore.asistencias
       );
 
-      // 3. Cargar votación existente (si existe)
+      // 3. Cargar candidatos si no están cargados
+      if (remocionStore.candidatos.length === 0 && remocionStore.apoderadosSeleccionados.length > 0) {
+        console.log(
+          "[DEBUG][VotacionRemocionApoderadosController] Cargando candidatos desde backend..."
+        );
+        await remocionStore.loadApoderados(societyId.value, flowId.value);
+      }
 
-      /*       try {
+      // 4. Cargar votación existente (si existe)
+      try {
         await votacionStore.loadVotacion(
           societyId.value,
           flowId.value,
@@ -62,7 +71,7 @@ export function useVotacionRemocionApoderadosController() {
           contexto: votacionStore.sesionVotacion?.contexto,
         });
 
-        // ✅ 4. Verificar que el contexto de la sesión cargada sea correcto
+        // ✅ 5. Verificar que el contexto de la sesión cargada sea correcto
         if (
           votacionStore.sesionVotacion &&
           votacionStore.sesionVotacion.contexto !== VoteContext.REMOCION_APODERADOS
@@ -78,7 +87,7 @@ export function useVotacionRemocionApoderadosController() {
           votacionStore.sesionVotacion = null;
         }
 
-        // ✅ 5. Sincronizar votos con votantes actuales para cada item
+        // ✅ 6. Sincronizar votos con votantes actuales para cada item
         if (votacionStore.hasVotacion && votacionStore.sesionVotacion) {
           await nextTick();
           sincronizarVotosConVotantesActuales();
@@ -94,7 +103,7 @@ export function useVotacionRemocionApoderadosController() {
             error
           );
         }
-      } */
+      }
     } catch (error: any) {
       console.error("[Controller][VotacionRemocionApoderados] Error al cargar datos:", error);
       throw error;
@@ -452,6 +461,70 @@ export function useVotacionRemocionApoderadosController() {
 
       console.log(
         "[DEBUG][VotacionRemocionApoderadosController] Guardado completado exitosamente"
+      );
+
+      // ✅ 4. Actualizar estados de candidatos según resultado de votación
+      console.log(
+        "[DEBUG][VotacionRemocionApoderadosController] Actualizando estados de candidatos..."
+      );
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        
+        // Obtener attorneyId desde los candidatos cargados
+        const candidato = remocionStore.candidatos[i];
+        if (!candidato) {
+          console.warn(
+            `[Controller][VotacionRemocionApoderados] No hay candidato para item ${i}`
+          );
+          continue;
+        }
+        
+        const attorneyId = candidato.attorneyId;
+
+        // Calcular porcentaje a favor
+        const totalAcciones = votantes.value.reduce(
+          (sum, v) => sum + (v.accionesConDerechoVoto || 0),
+          0
+        );
+
+        if (totalAcciones === 0) {
+          console.warn(
+            `[Controller][VotacionRemocionApoderados] Total acciones es 0 para item ${i}`
+          );
+          continue;
+        }
+
+        const accionesAFavor = item.votos
+          .filter((v) => v.valor === VoteValue.A_FAVOR)
+          .reduce((sum, v) => {
+            const votante = votantes.value.find(
+              (vt) => vt.accionistaId === v.accionistaId
+            );
+            return sum + (votante?.accionesConDerechoVoto || 0);
+          }, 0);
+
+        const porcentajeAFavor =
+          totalAcciones > 0 ? (accionesAFavor / totalAcciones) * 100 : 0;
+
+        // Determinar estado según porcentaje
+        const estado = porcentajeAFavor > 50 ? "ELEGIDO" : "NO_ELEGIDO";
+
+        // Actualizar estado en backend
+        await remocionStore.updateEstadoCandidato(
+          societyId.value,
+          flowId.value,
+          attorneyId,
+          estado
+        );
+
+        console.log(
+          `[Controller][VotacionRemocionApoderados] Apoderado ${attorneyId}: ${porcentajeAFavor.toFixed(2)}% a favor → ${estado}`
+        );
+      }
+
+      console.log(
+        "[DEBUG][VotacionRemocionApoderadosController] Estados actualizados exitosamente"
       );
     } catch (error: any) {
       console.error(

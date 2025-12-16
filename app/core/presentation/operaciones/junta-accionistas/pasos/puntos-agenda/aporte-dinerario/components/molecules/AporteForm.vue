@@ -7,7 +7,7 @@ import SimpleSwitchYesNo from "~/components/base/Switch/SimpleSwitchYesNo.vue";
 import NumberInputZod from "~/components/base/inputs/number/ui/NumberInputZod.vue";
 import SelectInputZod from "~/components/base/inputs/text/ui/SelectInputZod.vue";
 import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
-import { useAportesStore } from "../../../stores/useAportesStore";
+import { useAportesStore } from "../../stores/useAportesStore";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 import {
   accionIdSchema,
@@ -22,7 +22,7 @@ import {
   tipoMonedaSchema,
   totalPasivoSchema,
   porcentajePagadoSchema,
-} from "../../../schemas/modalAporte";
+} from "../../schemas/modalAporte";
 import { UploadFileUseCase } from "~/core/shared/infrastructure/file-storage/application/use-cases/upload-file.use-case";
 import { AwsFileStorageRepository } from "~/core/shared/infrastructure/file-storage/infrastructure/repositories/aws-file-storage.repository";
 import { useRoute } from "vue-router";

@@ -1,5 +1,7 @@
 <script setup lang="ts">
   import { onMounted, ref } from "vue";
+  import { useRoute } from "vue-router";
+  import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import CheckboxTable from "~/components/base/tables/checkbox-table/CheckboxTable.vue";
   import type { TableColumn } from "~/components/base/tables/getColumns";
   import { getColumns } from "~/components/base/tables/getColumns";
@@ -10,6 +12,7 @@
     PersonaNatural,
   } from "~/core/hexag/juntas/application/dtos/snapshot-complete.dto";
   import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
+  import { useRemocionApoderadosStore } from "~/core/presentation/juntas/puntos-acuerdo/remocion-apoderados/stores/useRemocionApoderadosStore";
 
   definePageMeta({
     layout: "registros",
@@ -34,7 +37,9 @@
 
   const columns = getColumns(apoderadosHeaders);
 
+  const route = useRoute();
   const snapshotStore = useSnapshotStore();
+  const remocionStore = useRemocionApoderadosStore();
   const apoderados = ref<ApoderadosTableRow[]>([]);
 
   function updateCheckedItems(checkedItems: boolean) {
@@ -112,7 +117,29 @@
   });
 
   // Configurar el botón "Siguiente"
-  useJuntasFlowNext(() => {});
+  useJuntasFlowNext(async () => {
+    const societyId = Number(route.params.societyId);
+    const flowId = Number(route.params.flowId);
+
+    // Obtener IDs de apoderados seleccionados
+    const apoderadosSeleccionados = apoderados.value
+      .filter((a) => a.checked)
+      .map((a) => a.id);
+
+    if (apoderadosSeleccionados.length === 0) {
+      throw new Error("Debe seleccionar al menos un apoderado para remover");
+    }
+
+    console.log(
+      "[RemocionApoderados] Guardando candidatos:",
+      apoderadosSeleccionados
+    );
+
+    // Crear candidatos en backend
+    await remocionStore.createCandidatos(societyId, flowId, apoderadosSeleccionados);
+
+    console.log("[RemocionApoderados] Candidatos creados exitosamente");
+  });
 </script>
 
 <template>

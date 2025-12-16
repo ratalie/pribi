@@ -1,40 +1,32 @@
 import { defineStore } from "pinia";
+import { useRemocionApoderadosStore } from "../../stores/useRemocionApoderadosStore";
 
 /**
  * Store para datos de votación de remoción de apoderados
  *
  * Responsabilidades:
  * - Generar textos de votación dinámicos por apoderado
- * - Gestionar lista de apoderados a remover (hardcodeada por ahora)
+ * - Obtener lista de apoderados desde el store de remoción
+ *
+ * ⚠️ IMPORTANTE: Usa Option API de Pinia (NO Composition API)
  */
 
 /**
- * ⚠️ DATOS MOCK - Temporal hasta que tengamos el endpoint
- * TODO: Reemplazar con GET que obtenga los apoderados seleccionados
+ * Helper: Obtener nombre completo de una persona
  */
-interface ApoderadoParaRemover {
-  id: string;
+function getNombreCompletoPersona(persona: {
   nombre: string;
-  puesto: string; // Clase de apoderado (ej: "Apoderado Especial", "Apoderado Judicial")
+  apellidoPaterno: string;
+  apellidoMaterno?: string | null;
+  razonSocial?: string | null;
+}): string {
+  if (persona.razonSocial) {
+    return persona.razonSocial;
+  }
+  return `${persona.nombre} ${persona.apellidoPaterno} ${
+    persona.apellidoMaterno || ""
+  }`.trim();
 }
-
-const APODERADOS_MOCK: ApoderadoParaRemover[] = [
-  {
-    id: "mock-1",
-    nombre: "Luis Martínez Torres",
-    puesto: "Apoderado Especial",
-  },
-  {
-    id: "mock-2",
-    nombre: "Ana Fernández Sánchez",
-    puesto: "Apoderado Judicial",
-  },
-  {
-    id: "mock-3",
-    nombre: "Carlos Vargas Ramírez",
-    puesto: "Apoderado Comercial",
-  },
-];
 
 export const useVotacionRemocionApoderadosStore = defineStore("votacionRemocionApoderados", {
   state: () => ({
@@ -43,14 +35,32 @@ export const useVotacionRemocionApoderadosStore = defineStore("votacionRemocionA
 
   getters: {
     /**
-     * Obtiene la lista de apoderados para remover
-     * ⚠️ MOCK: Por ahora retorna datos hardcodeados
-     * TODO: Reemplazar con GET que obtenga los apoderados seleccionados
+     * Obtiene la lista de apoderados para remover desde el store de remoción
+     * ✅ Reemplaza datos MOCK con datos reales
      */
-    apoderadosParaRemover(): ApoderadoParaRemover[] {
-      // ⚠️ TEMPORAL: Retornar datos mock
-      // TODO: Implementar GET para obtener apoderados seleccionados
-      return APODERADOS_MOCK;
+    apoderadosParaRemover() {
+      const remocionStore = useRemocionApoderadosStore();
+
+      // Si hay candidatos cargados, usarlos
+      if (remocionStore.candidatos.length > 0) {
+        return remocionStore.candidatos.map((c) => ({
+          id: c.attorneyId,
+          nombre: getNombreCompletoPersona(c.persona),
+          puesto: c.claseApoderado.nombre,
+        }));
+      }
+
+      // Si hay seleccionados pero no candidatos cargados, retornar array vacío
+      // (los candidatos se cargarán después de crearlos)
+      if (remocionStore.apoderadosSeleccionados.length > 0) {
+        console.warn(
+          "[Store][VotacionRemocionApoderados] Hay seleccionados pero no candidatos cargados. Cargar candidatos primero."
+        );
+        return [];
+      }
+
+      // Fallback: retornar array vacío (no hay apoderados seleccionados)
+      return [];
     },
 
     /**

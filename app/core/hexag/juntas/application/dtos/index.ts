@@ -34,4 +34,11 @@ export type {
   MeetingCallDto,
   GeneralMeetingConfigDto,
 } from "./meeting-details.dto";
+export type {
+  RemovalAttorneyResponseDTO,
+  CreateRemovalAttorneyDTO,
+  UpdateRemovalAttorneyDTO,
+  RemovalAttorneyListResponse,
+  RemovalAttorneyActionResponse,
+} from "./removal-attorney.dto";
 

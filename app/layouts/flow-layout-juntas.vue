@@ -3,6 +3,7 @@
   import FlowLayoutJuntasFooterWrapper from "~/components/flow-layout-juntas/FlowLayoutJuntasFooterWrapper.vue";
   import FlowLayoutJuntasHeader from "~/components/flow-layout-juntas/FlowLayoutJuntasHeader.vue";
   import FlowLayoutJuntasSidebar from "~/components/flow-layout-juntas/FlowLayoutJuntasSidebar.vue";
+  import { useJuntasGlobalAgendaLoader } from "~/core/presentation/operaciones/junta-accionistas/pasos/seleccion-agenda/composables/useJuntasGlobalAgendaLoader";
 
   /**
    * FlowLayoutJuntas - Layout para el flujo de Juntas de Accionistas
@@ -23,7 +24,13 @@
    * Todos los componentes son auto-gestionados (no reciben props):
    * - Cada componente importa internamente los composables que necesita
    * - El layout solo orquesta la estructura visual
+   *
+   * IMPORTANTE: Este layout carga automáticamente los puntos de agenda
+   * para que estén disponibles en cualquier página del flujo.
    */
+
+  // Cargar automáticamente los puntos de agenda al montar el layout
+  useJuntasGlobalAgendaLoader();
 </script>
 
 <template>
