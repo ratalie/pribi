@@ -172,11 +172,6 @@ export const SUB_STEP_SECTIONS_MAP: Record<string, Array<Omit<SectionItem, "stat
       navigationType: "route",
     },
     {
-      id: "otorgamiento-facultades",
-      title: "Otorgamiento de Facultades",
-      navigationType: "route",
-    },
-    {
       id: "votacion",
       title: "Votación",
       navigationType: "route",

@@ -16,7 +16,6 @@ export const remocionApoderadosContenidoItem: FlowItem = {
     children: [
       "remocion-apoderados-remocion",
       "remocion-apoderados-seleccion",
-      "remocion-apoderados-otorgamiento-facultades",
       "remocion-apoderados-votacion",
     ],
   },

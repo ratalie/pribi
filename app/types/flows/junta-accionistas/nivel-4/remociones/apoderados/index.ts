@@ -1,4 +1,3 @@
-export { remocionApoderadosOtorgamientoFacultadesItem } from "./otorgamiento-facultades.item";
 export {
   remocionApoderadosRemocionItem,
   remocionApoderadosSeleccionItem,

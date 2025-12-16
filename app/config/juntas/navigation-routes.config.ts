@@ -74,7 +74,6 @@ export function getRemocionApoderadosRoutes(basePath: string): Record<string, st
   return {
     "remocion-apoderados": `${basePath}/remocion-apoderados`,
     remocion: `${basePath}/remocion-apoderados/remocion`,
-    "otorgamiento-facultades": `${basePath}/remocion-apoderados/remocion`,
     votacion: `${basePath}/remocion-apoderados/votacion`,
     resumen: `${basePath}/remocion-apoderados/resumen`,
   };
