@@ -1,11 +1,7 @@
 import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { VoteAgreementType } from "~/core/hexag/juntas/domain/enums/vote-agreement-type.enum";
-import { VoteContext } from "~/core/hexag/juntas/domain/enums/vote-context.enum";
-import { VoteMode } from "~/core/hexag/juntas/domain/enums/vote-mode.enum";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 import { useRemocionApoderadosStore } from "../stores/useRemocionApoderadosStore";
-import { useVotacionRemocionApoderadosStore } from "../votacion/stores/useVotacionRemocionApoderadosStore";
 
 export interface ApoderadosTableRow {
   id: string;
@@ -29,7 +25,6 @@ export function useRemocionApoderadosPage() {
   const route = useRoute();
   const snapshotStore = useSnapshotStore();
   const remocionStore = useRemocionApoderadosStore();
-  const votacionStore = useVotacionRemocionApoderadosStore();
 
   const apoderados = ref<ApoderadosTableRow[]>([]);
 
@@ -68,39 +63,45 @@ export function useRemocionApoderadosPage() {
         snapshot.attorneyClasses.map((clase) => [clase.id, clase.name])
       );
 
-      // ✅ 3. Mapear TODOS los apoderados del backend (sin filtrar)
-      const apoderadosAgrupados: ApoderadosTableRow[] = candidatos.map((candidato) => {
-        // Obtener nombre de la clase
-        const nombreClase = clasesMap.get(candidato.attorneyClassId) || "Sin clase";
+      // ✅ 3. Mapear apoderados del backend, EXCLUYENDO "Gerente General"
+      const apoderadosAgrupados: ApoderadosTableRow[] = candidatos
+        .filter((candidato) => {
+          const nombreClase = clasesMap.get(candidato.attorneyClassId) || "";
+          // ✅ EXCLUIR "Gerente General"
+          return nombreClase !== "Gerente General";
+        })
+        .map((candidato) => {
+          // Obtener nombre de la clase
+          const nombreClase = clasesMap.get(candidato.attorneyClassId) || "Sin clase";
 
-        // Obtener datos de la persona
-        let nombre = "";
-        let tipoDocumento = "";
-        let numeroDocumento = "";
+          // Obtener datos de la persona
+          let nombre = "";
+          let tipoDocumento = "";
+          let numeroDocumento = "";
 
-        if (candidato.person.type === "NATURAL" && candidato.person.natural) {
-          const natural = candidato.person.natural;
-          nombre = `${natural.firstName} ${natural.lastNamePaternal} ${
-            natural.lastNameMaternal || ""
-          }`.trim();
-          tipoDocumento = natural.typeDocument;
-          numeroDocumento = natural.documentNumber;
-        } else if (candidato.person.type === "JURIDIC" && candidato.person.juridic) {
-          const juridic = candidato.person.juridic;
-          nombre = juridic.businessName;
-          tipoDocumento = juridic.typeDocument;
-          numeroDocumento = juridic.documentNumber;
-        }
+          if (candidato.person.type === "NATURAL" && candidato.person.natural) {
+            const natural = candidato.person.natural;
+            nombre = `${natural.firstName} ${natural.lastNamePaternal} ${
+              natural.lastNameMaternal || ""
+            }`.trim();
+            tipoDocumento = natural.typeDocument;
+            numeroDocumento = natural.documentNumber;
+          } else if (candidato.person.type === "JURIDIC" && candidato.person.juridic) {
+            const juridic = candidato.person.juridic;
+            nombre = juridic.businessName;
+            tipoDocumento = juridic.typeDocument;
+            numeroDocumento = juridic.documentNumber;
+          }
 
-        return {
-          id: candidato.id, // ✅ Usar id del backend (no attorneyId)
-          checked: candidato.isCandidate || false, // ✅ Marcar como checked si es candidato
-          clase_apoderado: nombreClase,
-          nombre,
-          tipo_documento: tipoDocumento,
-          numero_documento: numeroDocumento,
-        };
-      });
+          return {
+            id: candidato.id, // ✅ Usar id del backend (no attorneyId)
+            checked: candidato.isCandidate || false, // ✅ Marcar como checked si es candidato
+            clase_apoderado: nombreClase,
+            nombre,
+            tipo_documento: tipoDocumento,
+            numero_documento: numeroDocumento,
+          };
+        });
 
       // ✅ 4. Ordenar por clase de apoderado y luego por nombre
       apoderadosAgrupados.sort((a, b) => {
@@ -155,144 +156,11 @@ export function useRemocionApoderadosPage() {
         .map((a) => ({ id: a.id, nombre: a.nombre, checked: a.checked })),
     });
 
-    // 1. Crear candidatos en backend
+    // ✅ SOLO crear candidatos en backend
+    // La votación se creará/actualizará cuando el usuario haga clic en "Siguiente" desde la vista de votación
     await remocionStore.createCandidatos(societyId, flowId, apoderadosSeleccionados);
 
     console.log("[RemocionApoderados] Candidatos creados exitosamente");
-
-    // 2. Obtener datos de los apoderados seleccionados para crear las preguntas
-    const apoderadosSeleccionadosData = apoderados.value.filter((a) => a.checked);
-
-    // 3. ✅ PRIMERO: Intentar cargar la votación existente desde el backend (GET)
-    // Esto asegura que siempre tengamos el estado más reciente antes de crear/actualizar
-    console.log(
-      "[RemocionApoderados] Intentando cargar votación existente (GET) antes de crear/actualizar..."
-    );
-    try {
-      await votacionStore.loadVotacion(societyId, flowId);
-      console.log("[RemocionApoderados] GET ejecutado, estado:", {
-        hasVotacion: votacionStore.hasVotacion,
-        itemsCount: votacionStore.items.length,
-        contexto: votacionStore.sesionVotacion?.contexto,
-      });
-    } catch (error: any) {
-      // Si es 404, no existe la sesión (es normal - se creará)
-      if (error.statusCode === 404 || error.status === 404) {
-        console.log("[RemocionApoderados] No hay votación existente (404), se creará");
-      } else {
-        console.error(
-          "[RemocionApoderados] Error al cargar votación antes de guardar:",
-          error
-        );
-        // Continuar de todas formas (puede que no exista aún)
-      }
-    }
-
-    // 4. Crear votaciones (una por cada apoderado seleccionado)
-    console.log(
-      "[RemocionApoderados] Creando votaciones para",
-      apoderadosSeleccionadosData.length,
-      "apoderados"
-    );
-
-    // Crear items desde los apoderados seleccionados
-    const items = apoderadosSeleccionadosData.map((apoderado, index) => ({
-      id: votacionStore.generateUuid(),
-      orden: index,
-      label: `Se aprueba la remoción del apoderado ${apoderado.nombre} de sus funciones como ${apoderado.clase_apoderado}.`,
-      descripción: `Votación sobre la remoción del apoderado ${apoderado.nombre}`,
-      tipoAprobacion: VoteAgreementType.SOMETIDO_A_VOTACION,
-      votos: [], // Votos vacíos inicialmente
-    }));
-
-    // ✅ Si no hay sesión en memoria, crearla
-    if (!votacionStore.sesionVotacion) {
-      const sessionId = votacionStore.generateUuid();
-      votacionStore.sesionVotacion = {
-        id: sessionId,
-        contexto: VoteContext.REMOCION_APODERADOS,
-        modo: VoteMode.SIMPLE,
-        items: items,
-      };
-      console.log("[RemocionApoderados] Sesión creada en memoria:", {
-        sessionId,
-        itemsCount: items.length,
-        items: items.map((item) => ({ id: item.id, label: item.label, orden: item.orden })),
-      });
-    } else {
-      // ✅ Si ya existe sesión, actualizar items (mantener votos existentes si los hay)
-      console.log("[RemocionApoderados] Sesión existente, actualizando items...");
-      votacionStore.sesionVotacion.items = items;
-      // Asegurar que el contexto sea correcto
-      votacionStore.sesionVotacion.contexto = VoteContext.REMOCION_APODERADOS;
-    }
-
-    // ✅ 5. Crear o actualizar la votación en el backend
-    const existeEnBackend = votacionStore.hasVotacion;
-    const firstItem = items[0];
-    if (!firstItem) {
-      throw new Error("No hay items para crear votación");
-    }
-
-    if (!existeEnBackend) {
-      // Crear nueva sesión
-      console.log("[RemocionApoderados] Creando nueva sesión en backend (POST)...");
-      await votacionStore.createVotacion(
-        societyId,
-        flowId,
-        firstItem.id,
-        firstItem.label,
-        firstItem.descripción,
-        firstItem.tipoAprobacion
-      );
-
-      console.log(
-        `[RemocionApoderados] Primera votación creada para apoderado: ${apoderadosSeleccionadosData[0]?.nombre}`
-      );
-
-      // ✅ Agregar items restantes solo si estamos creando una nueva sesión
-      for (let i = 1; i < items.length; i++) {
-        const item = items[i];
-        if (!item) continue;
-
-        await votacionStore.addVoteItemConVotos(
-          societyId,
-          flowId,
-          item.id,
-          item.label,
-          item.descripción,
-          item.tipoAprobacion,
-          [] // Votos vacíos inicialmente
-        );
-      }
-    } else {
-      // Actualizar sesión existente
-      console.log("[RemocionApoderados] Actualizando sesión existente en backend (PUT)...");
-      // Actualizar todos los items
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        if (!item) continue;
-
-        await votacionStore.updateItemConVotos(
-          societyId,
-          flowId,
-          item.id,
-          item.label,
-          item.descripción,
-          item.tipoAprobacion,
-          (item.votos || []).map((v: any) => ({
-            id: v.id,
-            accionistaId: v.accionistaId,
-            valor: v.valor,
-          }))
-        );
-      }
-    }
-
-    console.log(
-      "[RemocionApoderados] Votaciones procesadas exitosamente:",
-      apoderadosSeleccionadosData.length
-    );
   }
 
   // Cargar apoderados al montar

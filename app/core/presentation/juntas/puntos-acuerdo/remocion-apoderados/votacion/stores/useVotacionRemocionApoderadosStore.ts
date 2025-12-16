@@ -75,15 +75,21 @@ export const useVotacionRemocionApoderadosStore = defineStore("votacionRemocionA
     getVotoByAccionista:
       (state) =>
       (accionistaId: string): VoteEntry | null => {
-        return state.sesionVotacion?.items?.[0]?.votos.find((v) => v.accionistaId === accionistaId) || null;
+        return (
+          state.sesionVotacion?.items?.[0]?.votos.find(
+            (v) => v.accionistaId === accionistaId
+          ) || null
+        );
       },
 
     /**
      * ✅ Obtiene un item por índice
      */
-    getItemByIndex: (state) => (index: number): VoteItem | null => {
-      return state.sesionVotacion?.items[index] || null;
-    },
+    getItemByIndex:
+      (state) =>
+      (index: number): VoteItem | null => {
+        return state.sesionVotacion?.items[index] || null;
+      },
 
     /**
      * Indica si es unanimidad (APROBADO_POR_TODOS) - para el primer item
@@ -108,127 +114,129 @@ export const useVotacionRemocionApoderadosStore = defineStore("votacionRemocionA
      * @param itemIndex - Índice del item (pregunta) - por defecto 0
      * @returns Resultado completo de la votación con aprobación, porcentajes, etc.
      */
-    getResult: (state) => (puntoId: string, itemIndex: number = 0) => {
-      // 1. Obtener snapshot store
-      const snapshotStore = useSnapshotStore();
+    getResult:
+      (state) =>
+      (puntoId: string, itemIndex: number = 0) => {
+        // 1. Obtener snapshot store
+        const snapshotStore = useSnapshotStore();
 
-      // 2. Obtener accionistas con derecho a voto
-      const accionistasConDerechoVoto = snapshotStore.accionistasConDerechoVoto;
+        // 2. Obtener accionistas con derecho a voto
+        const accionistasConDerechoVoto = snapshotStore.accionistasConDerechoVoto;
 
-      // 3. Obtener votos del item específico
-      const item = state.sesionVotacion?.items[itemIndex];
-      const votos = item?.votos || [];
+        // 3. Obtener votos del item específico
+        const item = state.sesionVotacion?.items[itemIndex];
+        const votos = item?.votos || [];
 
-      // 4. Determinar tipo de acuerdo (SIMPLE o CALIFICADO)
-      const tipoAcuerdo = getTipoAcuerdo(puntoId);
+        // 4. Determinar tipo de acuerdo (SIMPLE o CALIFICADO)
+        const tipoAcuerdo = getTipoAcuerdo(puntoId);
 
-      // 5. Obtener quorum mínimo requerido (mayorías para acuerdos)
-      const quorums = snapshotStore.quorums;
-      const quorumMinimoRequerido =
-        tipoAcuerdo === TipoAcuerdo.CALIFICADO
-          ? quorums?.mayoriasAcuerdosCalificado || 60
-          : quorums?.mayoriasAcuerdosSimple || 50;
+        // 5. Obtener quorum mínimo requerido (mayorías para acuerdos)
+        const quorums = snapshotStore.quorums;
+        const quorumMinimoRequerido =
+          tipoAcuerdo === TipoAcuerdo.CALIFICADO
+            ? quorums?.mayoriasAcuerdosCalificado || 60
+            : quorums?.mayoriasAcuerdosSimple || 50;
 
-      // 6. Calcular acciones por tipo de voto
-      let accionesAFavor = 0;
-      let accionesEnContra = 0;
-      let accionesAbstencion = 0;
-      let accionesSinVoto = 0;
+        // 6. Calcular acciones por tipo de voto
+        let accionesAFavor = 0;
+        let accionesEnContra = 0;
+        let accionesAbstencion = 0;
+        let accionesSinVoto = 0;
 
-      // Mapa para acceder rápido a acciones por accionista
-      const accionesPorAccionista = new Map<string, number>();
-      accionistasConDerechoVoto.forEach((acc) => {
-        accionesPorAccionista.set(acc.shareholder.id, acc.totalAcciones);
-      });
+        // Mapa para acceder rápido a acciones por accionista
+        const accionesPorAccionista = new Map<string, number>();
+        accionistasConDerechoVoto.forEach((acc) => {
+          accionesPorAccionista.set(acc.shareholder.id, acc.totalAcciones);
+        });
 
-      // Calcular acciones por tipo de voto
-      votos.forEach((voto) => {
-        const acciones = accionesPorAccionista.get(voto.accionistaId) || 0;
+        // Calcular acciones por tipo de voto
+        votos.forEach((voto) => {
+          const acciones = accionesPorAccionista.get(voto.accionistaId) || 0;
 
-        if (voto.valor === VoteValue.A_FAVOR) {
-          accionesAFavor += acciones;
-        } else if (voto.valor === VoteValue.EN_CONTRA) {
-          accionesEnContra += acciones;
-        } else if (voto.valor === VoteValue.ABSTENCION) {
-          accionesAbstencion += acciones;
-        }
-      });
+          if (voto.valor === VoteValue.A_FAVOR) {
+            accionesAFavor += acciones;
+          } else if (voto.valor === VoteValue.EN_CONTRA) {
+            accionesEnContra += acciones;
+          } else if (voto.valor === VoteValue.ABSTENCION) {
+            accionesAbstencion += acciones;
+          }
+        });
 
-      // Calcular acciones sin voto (accionistas que no votaron)
-      accionistasConDerechoVoto.forEach((acc) => {
-        const tieneVoto = votos.some((v) => v.accionistaId === acc.shareholder.id);
-        if (!tieneVoto) {
-          accionesSinVoto += acc.totalAcciones;
-        }
-      });
+        // Calcular acciones sin voto (accionistas que no votaron)
+        accionistasConDerechoVoto.forEach((acc) => {
+          const tieneVoto = votos.some((v) => v.accionistaId === acc.shareholder.id);
+          if (!tieneVoto) {
+            accionesSinVoto += acc.totalAcciones;
+          }
+        });
 
-      // 7. Calcular total de acciones con derecho a voto
-      const totalAccionesConDerechoVoto = accionistasConDerechoVoto.reduce(
-        (sum, acc) => sum + acc.totalAcciones,
-        0
-      );
+        // 7. Calcular total de acciones con derecho a voto
+        const totalAccionesConDerechoVoto = accionistasConDerechoVoto.reduce(
+          (sum, acc) => sum + acc.totalAcciones,
+          0
+        );
 
-      // 8. Calcular porcentajes
-      const porcentajeAFavor =
-        totalAccionesConDerechoVoto > 0
-          ? (accionesAFavor / totalAccionesConDerechoVoto) * 100
-          : 0;
+        // 8. Calcular porcentajes
+        const porcentajeAFavor =
+          totalAccionesConDerechoVoto > 0
+            ? (accionesAFavor / totalAccionesConDerechoVoto) * 100
+            : 0;
 
-      const porcentajeEnContra =
-        totalAccionesConDerechoVoto > 0
-          ? (accionesEnContra / totalAccionesConDerechoVoto) * 100
-          : 0;
+        const porcentajeEnContra =
+          totalAccionesConDerechoVoto > 0
+            ? (accionesEnContra / totalAccionesConDerechoVoto) * 100
+            : 0;
 
-      const porcentajeAbstencion =
-        totalAccionesConDerechoVoto > 0
-          ? (accionesAbstencion / totalAccionesConDerechoVoto) * 100
-          : 0;
+        const porcentajeAbstencion =
+          totalAccionesConDerechoVoto > 0
+            ? (accionesAbstencion / totalAccionesConDerechoVoto) * 100
+            : 0;
 
-      const porcentajeSinVoto =
-        totalAccionesConDerechoVoto > 0
-          ? (accionesSinVoto / totalAccionesConDerechoVoto) * 100
-          : 0;
+        const porcentajeSinVoto =
+          totalAccionesConDerechoVoto > 0
+            ? (accionesSinVoto / totalAccionesConDerechoVoto) * 100
+            : 0;
 
-      // 9. Determinar si está aprobado
-      const aprobado = porcentajeAFavor >= quorumMinimoRequerido;
+        // 9. Determinar si está aprobado
+        const aprobado = porcentajeAFavor >= quorumMinimoRequerido;
 
-      // 10. Calcular total de acciones que votaron
-      const accionesVotantes = accionesAFavor + accionesEnContra + accionesAbstencion;
-      const porcentajeVotantes =
-        totalAccionesConDerechoVoto > 0
-          ? (accionesVotantes / totalAccionesConDerechoVoto) * 100
-          : 0;
+        // 10. Calcular total de acciones que votaron
+        const accionesVotantes = accionesAFavor + accionesEnContra + accionesAbstencion;
+        const porcentajeVotantes =
+          totalAccionesConDerechoVoto > 0
+            ? (accionesVotantes / totalAccionesConDerechoVoto) * 100
+            : 0;
 
-      return {
-        // Tipo de acuerdo
-        tipoAcuerdo,
-        quorumMinimoRequerido,
+        return {
+          // Tipo de acuerdo
+          tipoAcuerdo,
+          quorumMinimoRequerido,
 
-        // Totales
-        totalAccionesConDerechoVoto,
-        accionesVotantes,
-        porcentajeVotantes,
+          // Totales
+          totalAccionesConDerechoVoto,
+          accionesVotantes,
+          porcentajeVotantes,
 
-        // Resultados por tipo de voto
-        accionesAFavor,
-        accionesEnContra,
-        accionesAbstencion,
-        accionesSinVoto,
+          // Resultados por tipo de voto
+          accionesAFavor,
+          accionesEnContra,
+          accionesAbstencion,
+          accionesSinVoto,
 
-        // Porcentajes
-        porcentajeAFavor,
-        porcentajeEnContra,
-        porcentajeAbstencion,
-        porcentajeSinVoto,
+          // Porcentajes
+          porcentajeAFavor,
+          porcentajeEnContra,
+          porcentajeAbstencion,
+          porcentajeSinVoto,
 
-        // Aprobación
-        aprobado,
+          // Aprobación
+          aprobado,
 
-        // Detalles adicionales
-        totalVotantes: votos.length,
-        totalAccionistas: accionistasConDerechoVoto.length,
-      };
-    },
+          // Detalles adicionales
+          totalVotantes: votos.length,
+          totalAccionistas: accionistasConDerechoVoto.length,
+        };
+      },
   },
 
   actions: {
@@ -250,14 +258,18 @@ export const useVotacionRemocionApoderadosStore = defineStore("votacionRemocionA
 
         // Si no hay sesión (404), es normal - se creará al guardar
         if (!this.sesionVotacion) {
-          console.log("[Store][VotacionRemocionApoderados] No hay votación existente, se creará al guardar");
+          console.log(
+            "[Store][VotacionRemocionApoderados] No hay votación existente, se creará al guardar"
+          );
         }
 
         this.status = "idle";
       } catch (error: any) {
         // Si es 404, no existe la sesión (es normal)
         if (error.statusCode === 404 || error.status === 404) {
-          console.log("[Store][VotacionRemocionApoderados] No hay votación existente (404), se creará al guardar");
+          console.log(
+            "[Store][VotacionRemocionApoderados] No hay votación existente (404), se creará al guardar"
+          );
           this.sesionVotacion = null;
           this.status = "idle";
           return;
@@ -445,9 +457,14 @@ export const useVotacionRemocionApoderadosStore = defineStore("votacionRemocionA
           votos: [],
         };
 
-        console.log("[Store][VotacionRemocionApoderados] Agregando item:", JSON.stringify(itemPayload, null, 2));
+        console.log(
+          "[Store][VotacionRemocionApoderados] Agregando item:",
+          JSON.stringify(itemPayload, null, 2)
+        );
 
-        await useCase.execute(societyId, flowId, VoteContext.REMOCION_APODERADOS, [itemPayload]);
+        await useCase.execute(societyId, flowId, VoteContext.REMOCION_APODERADOS, [
+          itemPayload,
+        ]);
 
         // Actualizar estado local
         this.sesionVotacion.items.push({
@@ -500,7 +517,10 @@ export const useVotacionRemocionApoderadosStore = defineStore("votacionRemocionA
         // Actualizar estado local
         item.tipoAprobacion = tipoAprobacion;
       } catch (error: any) {
-        console.error("[Store][VotacionRemocionApoderados] Error al actualizar tipo de aprobación:", error);
+        console.error(
+          "[Store][VotacionRemocionApoderados] Error al actualizar tipo de aprobación:",
+          error
+        );
         throw error;
       }
     },
@@ -606,22 +626,22 @@ export const useVotacionRemocionApoderadosStore = defineStore("votacionRemocionA
           label,
           descripción: descripcion,
           tipoAprobacion,
-        };
-
-        if (votos.length > 0) {
-          itemPayload.votos = votos.map((voto) => ({
+          // ✅ SIEMPRE incluir votos (aunque esté vacío) - requerido por backend
+          votos: votos.map((voto) => ({
             id: voto.id,
             accionistaId: voto.accionistaId,
             valor: voto.valor,
-          }));
-        }
+          })),
+        };
 
         console.log(
           "[Store][VotacionRemocionApoderados] Agregando item con votos:",
           JSON.stringify(itemPayload, null, 2)
         );
 
-        await useCase.execute(societyId, flowId, VoteContext.REMOCION_APODERADOS, [itemPayload]);
+        await useCase.execute(societyId, flowId, VoteContext.REMOCION_APODERADOS, [
+          itemPayload,
+        ]);
 
         if (existingItem) {
           existingItem.label = label;
@@ -647,7 +667,10 @@ export const useVotacionRemocionApoderadosStore = defineStore("votacionRemocionA
           });
         }
       } catch (error: any) {
-        console.error("[Store][VotacionRemocionApoderados] Error al agregar item con votos:", error);
+        console.error(
+          "[Store][VotacionRemocionApoderados] Error al agregar item con votos:",
+          error
+        );
         throw error;
       }
     },
@@ -684,22 +707,22 @@ export const useVotacionRemocionApoderadosStore = defineStore("votacionRemocionA
           label,
           descripción: descripcion,
           tipoAprobacion,
-        };
-
-        if (votos.length > 0) {
-          itemPayload.votos = votos.map((voto) => ({
+          // ✅ SIEMPRE incluir votos (aunque esté vacío) - requerido por backend
+          votos: votos.map((voto) => ({
             id: voto.id,
             accionistaId: voto.accionistaId,
             valor: voto.valor,
-          }));
-        }
+          })),
+        };
 
         console.log(
           "[Store][VotacionRemocionApoderados] Actualizando item con votos:",
           JSON.stringify(itemPayload, null, 2)
         );
 
-        await useCase.execute(societyId, flowId, VoteContext.REMOCION_APODERADOS, [itemPayload]);
+        await useCase.execute(societyId, flowId, VoteContext.REMOCION_APODERADOS, [
+          itemPayload,
+        ]);
 
         // Actualizar estado local
         item.label = label;
@@ -711,7 +734,10 @@ export const useVotacionRemocionApoderadosStore = defineStore("votacionRemocionA
           valor: v.valor,
         }));
       } catch (error: any) {
-        console.error("[Store][VotacionRemocionApoderados] Error al actualizar item con votos:", error);
+        console.error(
+          "[Store][VotacionRemocionApoderados] Error al actualizar item con votos:",
+          error
+        );
         throw error;
       }
     },
