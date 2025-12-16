@@ -16,7 +16,25 @@
 </template>
 
 <script setup lang="ts">
+  import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
+
+  /**
+   * Página: Capitalización de Créditos (Introducción)
+   *
+   * Sub-step del Paso 4 (Puntos de Acuerdo).
+   * Este sub-step tiene secciones que se muestran en el sidebar derecho.
+   *
+   * Ruta: /operaciones/sociedades/[societyId]/junta-accionistas/[flowId]/capitalizacion-creditos
+   */
+
   definePageMeta({
-    layout: "default",
+    layout: "registros",
+    flowLayoutJuntas: true,
+  });
+
+  // Configurar el botón "Siguiente"
+  useJuntasFlowNext(async () => {
+    // Esta es solo una página de introducción, no requiere guardado
+    // El botón "Siguiente" navegará automáticamente a la siguiente sección
   });
 </script>

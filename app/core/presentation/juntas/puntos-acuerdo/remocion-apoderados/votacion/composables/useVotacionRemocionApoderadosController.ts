@@ -1,15 +1,14 @@
-import { computed, nextTick, onActivated, onMounted } from "vue";
+import { computed, nextTick, onActivated, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import type { Shareholder } from "~/core/hexag/juntas/application/dtos/snapshot-complete.dto";
 import { VoteAgreementType } from "~/core/hexag/juntas/domain/enums/vote-agreement-type.enum";
 import { VoteContext } from "~/core/hexag/juntas/domain/enums/vote-context.enum";
 import { VoteMode } from "~/core/hexag/juntas/domain/enums/vote-mode.enum";
 import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
-import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/stores/useVotacionStore";
 import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
-import { useVotacionRemocionApoderadosStore } from "../stores/useVotacionRemocionApoderadosStore";
 import { useRemocionApoderadosStore } from "../../stores/useRemocionApoderadosStore";
+import { useVotacionRemocionApoderadosStore } from "../stores/useVotacionRemocionApoderadosStore";
 
 /**
  * Controller para la vista de Votación de Remoción de Apoderados
@@ -23,8 +22,7 @@ import { useRemocionApoderadosStore } from "../../stores/useRemocionApoderadosSt
  */
 export function useVotacionRemocionApoderadosController() {
   const route = useRoute();
-  const votacionStore = useVotacionStore();
-  const votacionRemocionApoderadosStore = useVotacionRemocionApoderadosStore();
+  const votacionStore = useVotacionRemocionApoderadosStore(); // ✅ Store dedicado
   const remocionStore = useRemocionApoderadosStore();
   const asistenciaStore = useAsistenciaStore();
   const snapshotStore = useSnapshotStore();
@@ -32,12 +30,19 @@ export function useVotacionRemocionApoderadosController() {
   const societyId = computed(() => Number(route.params.societyId));
   const flowId = computed(() => Number(route.params.flowId));
 
+  // Estados
+  const isLoading = ref(false);
+  const error = ref<string | null>(null);
+
   /**
    * Cargar todos los datos necesarios
    */
   async function loadData() {
     try {
-      // 1. Cargar snapshot (ya está cargado, pero verificamos)
+      isLoading.value = true;
+      error.value = null;
+
+      // 1. Cargar snapshot
       if (!snapshotStore.snapshot) {
         await snapshotStore.loadSnapshot(societyId.value, flowId.value);
       }
@@ -51,48 +56,86 @@ export function useVotacionRemocionApoderadosController() {
       );
 
       // 3. Cargar candidatos si no están cargados
-      if (remocionStore.candidatos.length === 0 && remocionStore.apoderadosSeleccionados.length > 0) {
+      if (remocionStore.candidatos.length === 0) {
         console.log(
           "[DEBUG][VotacionRemocionApoderadosController] Cargando candidatos desde backend..."
         );
-        await remocionStore.loadApoderados(societyId.value, flowId.value);
+        try {
+          await remocionStore.loadApoderados(societyId.value, flowId.value);
+          console.log(
+            "[DEBUG][VotacionRemocionApoderadosController] Candidatos cargados:",
+            remocionStore.candidatos.length
+          );
+        } catch (error: any) {
+          console.warn(
+            "[DEBUG][VotacionRemocionApoderadosController] Error al cargar candidatos:",
+            error
+          );
+          // Continuar aunque falle (puede que no haya candidatos aún)
+        }
       }
 
-      // 4. Cargar votación existente (si existe)
+      // 4. ✅ SOLO CARGAR votación existente (NO crear automáticamente)
+      // La votación se creará/actualizará cuando el usuario haga click en "Siguiente"
       try {
-        await votacionStore.loadVotacion(
-          societyId.value,
-          flowId.value,
-          VoteContext.REMOCION_APODERADOS
-        );
+        await votacionStore.loadVotacion(societyId.value, flowId.value);
         console.log("[DEBUG][VotacionRemocionApoderadosController] Votación cargada:", {
           hasVotacion: votacionStore.hasVotacion,
-          itemsCount: votacionStore.sesionVotacion?.items.length || 0,
-          contexto: votacionStore.sesionVotacion?.contexto,
+          itemsCount: votacionStore.items.length,
+          items: votacionStore.items.map((item) => ({
+            id: item.id,
+            label: item.label,
+            orden: item.orden,
+          })),
         });
 
-        // ✅ 5. Verificar que el contexto de la sesión cargada sea correcto
+        // ✅ Si la sesión existe pero no tiene items, crear items desde candidatos
         if (
-          votacionStore.sesionVotacion &&
-          votacionStore.sesionVotacion.contexto !== VoteContext.REMOCION_APODERADOS
+          votacionStore.hasVotacion &&
+          votacionStore.items.length === 0 &&
+          remocionStore.candidatos.length > 0
         ) {
-          console.error(
-            "[DEBUG][VotacionRemocionApoderadosController] ⚠️ ERROR: Sesión cargada tiene contexto incorrecto:",
-            {
-              contextoEsperado: VoteContext.REMOCION_APODERADOS,
-              contextoObtenido: votacionStore.sesionVotacion.contexto,
-            }
+          console.log(
+            "[DEBUG][VotacionRemocionApoderadosController] Sesión sin items, creando items desde candidatos..."
           );
-          // Limpiar la sesión incorrecta para evitar conflictos
-          votacionStore.sesionVotacion = null;
+
+          // Crear items desde candidatos
+          const items = remocionStore.candidatos.map((candidato, index) => {
+            const nombre =
+              candidato.persona.razonSocial ||
+              `${candidato.persona.nombre} ${candidato.persona.apellidoPaterno} ${
+                candidato.persona.apellidoMaterno || ""
+              }`.trim();
+            const label = `Se aprueba la remoción del apoderado ${nombre} de sus funciones como ${candidato.claseApoderado.nombre}.`;
+
+            return {
+              id: votacionStore.generateUuid(),
+              orden: index,
+              label,
+              descripción: `Votación sobre la remoción del apoderado ${nombre}`,
+              tipoAprobacion: VoteAgreementType.SOMETIDO_A_VOTACION,
+              votos: [],
+            };
+          });
+
+          // Agregar items a la sesión en memoria
+          if (votacionStore.sesionVotacion) {
+            votacionStore.sesionVotacion.items = items;
+          }
+
+          console.log(
+            "[DEBUG][VotacionRemocionApoderadosController] Items creados en memoria:",
+            items.length
+          );
         }
 
-        // ✅ 6. Sincronizar votos con votantes actuales para cada item
+        // ✅ Sincronizar votos con votantes actuales para cada item
         if (votacionStore.hasVotacion && votacionStore.sesionVotacion) {
           await nextTick();
           sincronizarVotosConVotantesActuales();
         }
       } catch (error: any) {
+        // Si no existe (404), es normal - se creará al guardar
         if (error.statusCode === 404 || error.status === 404) {
           console.log(
             "[DEBUG][VotacionRemocionApoderadosController] No hay votación existente (404), se creará al guardar"
@@ -102,11 +145,22 @@ export function useVotacionRemocionApoderadosController() {
             "[Controller][VotacionRemocionApoderados] Error al cargar votación:",
             error
           );
+          error.value = error.message || "Error al cargar votación";
         }
       }
+
+      // ✅ DEBUG: Estado final después de carga
+      console.log("[DEBUG][VotacionRemocionApoderadosController] Carga de datos completada:", {
+        hasVotacion: votacionStore.hasVotacion,
+        itemsCount: votacionStore.items.length,
+        votantesCount: votantes.value.length,
+      });
     } catch (error: any) {
       console.error("[Controller][VotacionRemocionApoderados] Error al cargar datos:", error);
+      error.value = error.message || "Error al cargar datos";
       throw error;
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -203,17 +257,60 @@ export function useVotacionRemocionApoderadosController() {
   });
 
   /**
-   * Obtener preguntas de votación (hardcodeadas desde el store)
+   * Obtener preguntas de votación desde la sesión de votación del backend
+   * Si no hay sesión, generar desde candidatos
+   * ✅ Store dedicado siempre tiene contexto correcto (no necesita validación)
    */
   const preguntas = computed(() => {
-    return votacionRemocionApoderadosStore.preguntasVotacion;
+    // ✅ Prioridad 1: Usar items de la sesión de votación del backend
+    if (votacionStore.items.length > 0) {
+      const items = votacionStore.items;
+      // Ordenar por orden si existe
+      const itemsOrdenados = [...items].sort((a, b) => (a.orden || 0) - (b.orden || 0));
+      const preguntasFromItems = itemsOrdenados.map((item) => item.label);
+
+      console.log("[DEBUG][VotacionRemocionApoderadosController] ✅ Preguntas desde sesión:", {
+        itemsCount: items.length,
+        preguntas: preguntasFromItems,
+      });
+
+      return preguntasFromItems;
+    }
+
+    // ✅ Prioridad 2: Si hay candidatos, generar preguntas desde candidatos
+    if (remocionStore.candidatos.length > 0) {
+      const preguntasFromCandidatos = remocionStore.candidatos.map((c) => {
+        const nombre =
+          c.persona.razonSocial ||
+          `${c.persona.nombre} ${c.persona.apellidoPaterno} ${
+            c.persona.apellidoMaterno || ""
+          }`.trim();
+        return `Se aprueba la remoción del apoderado ${nombre} de sus funciones como ${c.claseApoderado.nombre}.`;
+      });
+
+      console.log(
+        "[DEBUG][VotacionRemocionApoderadosController] ✅ Preguntas desde candidatos:",
+        {
+          candidatosCount: remocionStore.candidatos.length,
+          preguntas: preguntasFromCandidatos,
+        }
+      );
+
+      return preguntasFromCandidatos;
+    }
+
+    // ⚠️ ÚLTIMO RECURSO: Si no hay preguntas en ningún lado, retornar array vacío
+    console.warn(
+      "[DEBUG][VotacionRemocionApoderadosController] ⚠️ No hay preguntas disponibles. Retornando array vacío."
+    );
+    return [];
   });
 
   /**
    * Obtener mensaje de aprobación
    */
   const mensajeAprobacion = computed(() => {
-    return votacionRemocionApoderadosStore.mensajeAprobacion;
+    return "la remoción de los apoderados seleccionados.";
   });
 
   /**
@@ -228,7 +325,7 @@ export function useVotacionRemocionApoderadosController() {
     const accionistasIdsActuales = new Set(votantesActuales.map((v) => v.accionistaId));
 
     // Sincronizar votos para cada item
-    votacionStore.sesionVotacion.items.forEach((item) => {
+    votacionStore.items.forEach((item) => {
       const votosAntes = item.votos.length;
 
       const votosSincronizados = item.votos.filter((voto) =>
@@ -250,21 +347,38 @@ export function useVotacionRemocionApoderadosController() {
 
   /**
    * Obtener voto de un accionista para un item específico
+   *
+   * @param preguntaIndex - Índice del item (pregunta)
+   * @param accionistaId - ID del accionista
+   * @returns Valor del voto o null si no existe
    */
-  function getVoto(itemIndex: number, accionistaId: string): VoteValue | null {
-    if (!votacionStore.sesionVotacion) return null;
-    const item = votacionStore.sesionVotacion.items[itemIndex];
-    if (!item) return null;
+  function getVoto(preguntaIndex: number, accionistaId: string): VoteValue | null {
+    const voto = votacionStore.getVotoByAccionistaAndItem(accionistaId, preguntaIndex);
+    return voto?.valor as VoteValue | null;
+  }
 
-    const voto = item.votos.find((v) => v.accionistaId === accionistaId);
-    if (!voto) return null;
-    return voto.valor as VoteValue;
+  /**
+   * Función adaptada para el componente MayoriaVotacion
+   *
+   * ⚠️ IMPORTANTE: MayoriaVotacion carga votos directamente desde el store cuando hay múltiples preguntas.
+   * Esta función solo se usa para compatibilidad con el modo legacy (una sola pregunta).
+   *
+   * Para múltiples preguntas, MayoriaVotacion usa el store directamente y pasa preguntaIndex
+   * en el evento @cambiar-voto, que se maneja en handleCambiarVoto de la vista.
+   *
+   * @param accionistaId - ID del accionista
+   * @returns Valor del voto o null si no existe (solo para primera pregunta)
+   */
+  function getVotoForComponent(accionistaId: string): VoteValue | null {
+    // Para remoción de apoderados, siempre usar el primer item (pregunta)
+    // El componente manejará múltiples preguntas internamente usando el store
+    return getVoto(0, accionistaId);
   }
 
   /**
    * Establecer voto de un accionista para un item específico
    */
-  function setVoto(itemIndex: number, accionistaId: string, valor: VoteValue) {
+  async function setVoto(preguntaIndex: number, accionistaId: string, valor: VoteValue) {
     // ✅ Si no hay sesión, crear en memoria con todos los items
     if (!votacionStore.sesionVotacion) {
       const sessionId = votacionStore.generateUuid();
@@ -285,31 +399,20 @@ export function useVotacionRemocionApoderadosController() {
       };
     }
 
-    const item = votacionStore.sesionVotacion.items[itemIndex];
-    if (!item) {
-      console.error(`[Controller][VotacionRemocionApoderados] Item ${itemIndex} no existe`);
-      return;
-    }
-
-    // Actualizar o agregar voto
-    const votoExistente = item.votos.find((v) => v.accionistaId === accionistaId);
-
-    if (votoExistente) {
-      votoExistente.valor = valor as string | number;
-    } else {
-      const voteId = votacionStore.generateUuid();
-      item.votos.push({
-        id: voteId,
-        accionistaId,
-        valor: valor as string | number,
-      });
-    }
+    // ✅ Usar el store dedicado para agregar/actualizar voto
+    await votacionStore.addOrUpdateVoteForItem(
+      societyId.value,
+      flowId.value,
+      preguntaIndex,
+      accionistaId,
+      valor
+    );
   }
 
   /**
    * Cambiar tipo de aprobación para TODOS los items
    */
-  function cambiarTipoAprobacion(tipo: "unanimidad" | "mayoria") {
+  async function cambiarTipoAprobacion(tipo: "unanimidad" | "mayoria") {
     const tipoAprobacion =
       tipo === "unanimidad"
         ? VoteAgreementType.APROBADO_POR_TODOS
@@ -334,29 +437,60 @@ export function useVotacionRemocionApoderadosController() {
         })),
       };
     } else {
-      // Actualizar tipoAprobacion en todos los items
-      votacionStore.sesionVotacion.items.forEach((item) => {
-        item.tipoAprobacion = tipoAprobacion;
-      });
+      // Actualizar tipoAprobacion en todos los items usando el store
+      for (let i = 0; i < votacionStore.items.length; i++) {
+        await votacionStore.updateTipoAprobacion(
+          societyId.value,
+          flowId.value,
+          i,
+          tipoAprobacion
+        );
+      }
     }
   }
 
   /**
    * Guardar votación (para useJuntasFlowNext)
    * ⚠️ IMPORTANTE: Maneja MÚLTIPLES items (uno por apoderado)
+   * 
+   * ✅ IMPORTANTE: Primero intenta cargar la votación existente (GET) antes de crear (POST)
    */
   async function guardarVotacion() {
     console.log("[DEBUG][VotacionRemocionApoderadosController] guardarVotacion() ejecutado");
 
+    // ✅ 1. PRIMERO: Intentar cargar la votación existente desde el backend (GET)
+    // Esto asegura que siempre tengamos el estado más reciente antes de crear/actualizar
+    try {
+      await votacionStore.loadVotacion(societyId.value, flowId.value);
+      console.log("[DEBUG][VotacionRemocionApoderadosController] GET ejecutado, estado:", {
+        hasVotacion: votacionStore.hasVotacion,
+        itemsCount: votacionStore.items.length,
+        contexto: votacionStore.sesionVotacion?.contexto,
+      });
+    } catch (error: any) {
+      // Si es 404, no existe la sesión (es normal - se creará)
+      if (error.statusCode === 404 || error.status === 404) {
+        console.log(
+          "[DEBUG][VotacionRemocionApoderadosController] No hay votación existente (404), se creará"
+        );
+      } else {
+        console.error(
+          "[Controller][VotacionRemocionApoderados] Error al cargar votación antes de guardar:",
+          error
+        );
+        // Continuar de todas formas (puede que no exista aún)
+      }
+    }
+
     const preguntasValue = preguntas.value;
 
-    // ✅ 1. Asegurar que hay sesión en memoria
+    // ✅ 2. Asegurar que hay sesión en memoria con contexto correcto
     if (!votacionStore.sesionVotacion) {
       const sessionId = votacionStore.generateUuid();
 
       votacionStore.sesionVotacion = {
         id: sessionId,
-        contexto: VoteContext.REMOCION_APODERADOS,
+        contexto: VoteContext.REMOCION_APODERADOS, // ✅ Contexto explícito
         modo: VoteMode.SIMPLE,
         items: preguntasValue.map((pregunta, index) => ({
           id: votacionStore.generateUuid(),
@@ -368,14 +502,21 @@ export function useVotacionRemocionApoderadosController() {
         })),
       };
     } else {
-      // Asegurar que el contexto sea correcto
+      // ✅ Asegurar que el contexto de la sesión existente sea correcto
       if (votacionStore.sesionVotacion.contexto !== VoteContext.REMOCION_APODERADOS) {
+        console.warn(
+          "[DEBUG][VotacionRemocionApoderadosController] ⚠️ Contexto incorrecto en sesión existente, corrigiendo...",
+          {
+            contextoActual: votacionStore.sesionVotacion.contexto,
+            contextoCorrecto: VoteContext.REMOCION_APODERADOS,
+          }
+        );
         votacionStore.sesionVotacion.contexto = VoteContext.REMOCION_APODERADOS;
       }
 
       // Asegurar que hay items para todas las preguntas
-      while (votacionStore.sesionVotacion.items.length < preguntasValue.length) {
-        const index = votacionStore.sesionVotacion.items.length;
+      while (votacionStore.items.length < preguntasValue.length) {
+        const index = votacionStore.items.length;
         votacionStore.sesionVotacion.items.push({
           id: votacionStore.generateUuid(),
           orden: index,
@@ -387,9 +528,9 @@ export function useVotacionRemocionApoderadosController() {
       }
     }
 
-    const items = votacionStore.sesionVotacion.items;
+    const items = votacionStore.items;
 
-    // ✅ 2. Procesar cada item: generar votos si es unanimidad
+    // ✅ 3. Procesar cada item: generar votos si es unanimidad
     items.forEach((item, index) => {
       const tipoAprobacion = item.tipoAprobacion || VoteAgreementType.APROBADO_POR_TODOS;
 
@@ -411,50 +552,63 @@ export function useVotacionRemocionApoderadosController() {
       }
     });
 
-    // ✅ 3. Crear o actualizar la votación en el backend
+    // ✅ 4. Crear o actualizar la votación en el backend
     const existeEnBackend = votacionStore.hasVotacion;
 
     try {
       if (!existeEnBackend) {
         // Crear nueva sesión con todos los items
         const firstItem = items[0];
+        if (!firstItem) {
+          throw new Error("No hay items para crear votación");
+        }
+
         await votacionStore.createVotacion(
           societyId.value,
           flowId.value,
-          firstItem?.id || "",
-          firstItem?.label || "",
-          firstItem?.descripción || "",
-          firstItem?.tipoAprobacion || VoteAgreementType.APROBADO_POR_TODOS,
-          VoteContext.REMOCION_APODERADOS
+          firstItem.id,
+          firstItem.label,
+          firstItem.descripción,
+          firstItem.tipoAprobacion || VoteAgreementType.SOMETIDO_A_VOTACION
         );
 
         // Agregar los items restantes
         for (let i = 1; i < items.length; i++) {
           const item = items[i];
+          if (!item) continue;
+
           await votacionStore.addVoteItemConVotos(
             societyId.value,
             flowId.value,
-            item?.id || "",
-            item?.label || "",
-            item?.descripción || "",
-            item?.tipoAprobacion || VoteAgreementType.APROBADO_POR_TODOS,
-            item?.votos || [],
-            VoteContext.REMOCION_APODERADOS
+            item.id,
+            item.label,
+            item.descripción,
+            item.tipoAprobacion || VoteAgreementType.SOMETIDO_A_VOTACION,
+            item.votos.map((v) => ({
+              id: v.id,
+              accionistaId: v.accionistaId,
+              valor: v.valor,
+            }))
           );
         }
       } else {
         // Actualizar todos los items existentes
         for (let i = 0; i < items.length; i++) {
           const item = items[i];
+          if (!item) continue;
+
           await votacionStore.updateItemConVotos(
             societyId.value,
             flowId.value,
-            item?.id || "",
-            item?.label || "",
-            item?.descripción || "",
-            item?.tipoAprobacion || VoteAgreementType.APROBADO_POR_TODOS,
-            item?.votos || [],
-            VoteContext.REMOCION_APODERADOS
+            item.id,
+            item.label,
+            item.descripción,
+            item.tipoAprobacion || VoteAgreementType.SOMETIDO_A_VOTACION,
+            item.votos.map((v) => ({
+              id: v.id,
+              accionistaId: v.accionistaId,
+              valor: v.valor,
+            }))
           );
         }
       }
@@ -470,7 +624,13 @@ export function useVotacionRemocionApoderadosController() {
 
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
-        
+        if (!item) {
+          console.warn(
+            `[Controller][VotacionRemocionApoderados] No hay item para índice ${i}`
+          );
+          continue;
+        }
+
         // Obtener attorneyId desde los candidatos cargados
         const candidato = remocionStore.candidatos[i];
         if (!candidato) {
@@ -479,7 +639,7 @@ export function useVotacionRemocionApoderadosController() {
           );
           continue;
         }
-        
+
         const attorneyId = candidato.attorneyId;
 
         // Calcular porcentaje a favor
@@ -498,9 +658,7 @@ export function useVotacionRemocionApoderadosController() {
         const accionesAFavor = item.votos
           .filter((v) => v.valor === VoteValue.A_FAVOR)
           .reduce((sum, v) => {
-            const votante = votantes.value.find(
-              (vt) => vt.accionistaId === v.accionistaId
-            );
+            const votante = votantes.value.find((vt) => vt.accionistaId === v.accionistaId);
             return sum + (votante?.accionesConDerechoVoto || 0);
           }, 0);
 
@@ -519,7 +677,9 @@ export function useVotacionRemocionApoderadosController() {
         );
 
         console.log(
-          `[Controller][VotacionRemocionApoderados] Apoderado ${attorneyId}: ${porcentajeAFavor.toFixed(2)}% a favor → ${estado}`
+          `[Controller][VotacionRemocionApoderados] Apoderado ${attorneyId}: ${porcentajeAFavor.toFixed(
+            2
+          )}% a favor → ${estado}`
         );
       }
 
@@ -542,9 +702,9 @@ export function useVotacionRemocionApoderadosController() {
 
   // Recargar al activar (si cambia de ruta y vuelve)
   onActivated(() => {
-    if (!votacionStore.hasVotacion) {
-      loadData();
-    }
+    // ✅ Siempre recargar para asegurar que los datos estén actualizados
+    // Especialmente importante si se navega desde otra página
+    loadData();
   });
 
   return {
@@ -554,9 +714,11 @@ export function useVotacionRemocionApoderadosController() {
     mensajeAprobacion,
     isLoading: computed(() => votacionStore.status === "loading"),
     error: computed(() => votacionStore.errorMessage),
+    votacionStore, // ✅ Exponer store dedicado para que MayoriaVotacion lo use
 
     // Métodos
     getVoto,
+    getVotoForComponent, // ✅ Función adaptada para el componente
     setVoto,
     cambiarTipoAprobacion,
     guardarVotacion,

@@ -108,10 +108,37 @@ export const useRemocionApoderadosStore = defineStore("remocionApoderados", {
         const useCase = new CreateRemovalAttorneyCandidateUseCase(repository);
 
         // Crear candidatos uno por uno
+        // ✅ IMPORTANTE: Continuar aunque falle uno (para poder crear los demás)
+        const errores: Array<{ attorneyId: string; error: any }> = [];
         for (const attorneyId of attorneyIds) {
-          await useCase.execute(societyId, flowId, attorneyId, "CANDIDATO");
-          console.log(
-            `[Store][RemocionApoderados] Candidato creado para apoderado: ${attorneyId}`
+          try {
+            await useCase.execute(societyId, flowId, attorneyId, "CANDIDATO");
+            console.log(
+              `[Store][RemocionApoderados] ✅ Candidato creado para apoderado: ${attorneyId}`
+            );
+          } catch (error: any) {
+            // Si es 401, es problema de autenticación (continuar con los demás)
+            // Si es otro error, también continuar pero registrar
+            console.error(
+              `[Store][RemocionApoderados] ⚠️ Error al crear candidato para ${attorneyId}:`,
+              error
+            );
+            errores.push({ attorneyId, error });
+            // Continuar con el siguiente
+          }
+        }
+
+        // Si todos fallaron, lanzar error
+        if (errores.length === attorneyIds.length) {
+          const primerError = errores[0]?.error;
+          throw primerError || new Error("Error al crear todos los candidatos");
+        }
+
+        // Si algunos fallaron, advertir pero continuar
+        if (errores.length > 0) {
+          console.warn(
+            `[Store][RemocionApoderados] ⚠️ ${errores.length} de ${attorneyIds.length} candidatos fallaron al crear:`,
+            errores.map((e) => e.attorneyId)
           );
         }
 

@@ -13,6 +13,8 @@
     :preguntas="preguntas"
     :votantes="votantes"
     :mensaje-aprobacion="mensajeAprobacion"
+    :get-voto="getVotoForComponent"
+    :votacion-store="votacionStore"
     @cambiar-tipo="handleCambiarTipo"
     @cambiar-voto="handleCambiarVoto"
   />
@@ -40,10 +42,12 @@
   });
 
   const controller = useVotacionRemocionApoderadosController();
+  const votacionStore = controller.votacionStore; // ✅ Store dedicado para MayoriaVotacion
 
   // ✅ Obtener props del controller
   const isLoading = controller.isLoading;
   const error = controller.error;
+  const getVotoForComponent = controller.getVotoForComponent;
 
   // ✅ Extraer valores de los computed
   const votantes = computed(() => {

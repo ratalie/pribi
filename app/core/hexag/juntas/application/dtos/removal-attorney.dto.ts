@@ -27,30 +27,39 @@ export interface UpdateRemovalAttorneyDTO {
 
 /**
  * DTO de respuesta al obtener apoderados para remoción (GET Response)
+ * ✅ Estructura real del backend
  */
 export interface RemovalAttorneyResponseDTO {
   /** UUID del registro de remoción */
   id: string;
 
-  /** UUID del apoderado */
-  attorneyId: string;
+  /** UUID de la clase de apoderado */
+  attorneyClassId: string;
 
   /** Datos de la persona */
-  persona: {
+  person: {
     id: string;
-    nombre: string;
-    apellidoPaterno: string;
-    apellidoMaterno?: string | null;
-    razonSocial?: string | null;
-    tipoDocumento: string;
-    numeroDocumento: string;
-    paisEmision?: string | null;
-  };
-
-  /** Clase de apoderado */
-  claseApoderado: {
-    id: string;
-    nombre: string;
+    type: "NATURAL" | "JURIDIC";
+    natural: {
+      firstName: string;
+      lastNamePaternal: string;
+      lastNameMaternal: string | null;
+      typeDocument: string;
+      documentNumber: string;
+      issuingCountry: string | null;
+      maritalStatus: string | null;
+      maritalRegime: string | null;
+      documentNumberConyuge: string | null;
+      firstNameConyuge: string | null;
+      lastNamePaternalConyuge: string | null;
+      lastNameMaternalConyuge: string | null;
+    } | null;
+    juridic: {
+      businessName: string;
+      typeDocument: string;
+      documentNumber: string;
+      issuingCountry: string | null;
+    } | null;
   };
 
   /** Acciones del flujo */
@@ -59,6 +68,15 @@ export interface RemovalAttorneyResponseDTO {
     candidateStatus: "CANDIDATE" | "REMOVED" | "ELECTED" | "NOT_ELECTED";
     actionSetId: string;
   }>;
+
+  /** Indica si es candidato */
+  isCandidate: boolean;
+
+  /** Estado del candidato */
+  candidateStatus: "CANDIDATE" | "REMOVED" | "ELECTED" | "NOT_ELECTED" | null;
+
+  /** ID de la acción del flujo */
+  flowActionId: string | null;
 }
 
 /**

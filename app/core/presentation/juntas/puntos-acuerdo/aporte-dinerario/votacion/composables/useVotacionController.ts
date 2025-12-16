@@ -9,7 +9,7 @@ import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.sto
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
 import { useAportesManagerStore } from "../../aportes/stores/useAportesManagerStore";
 import { useVotacionAportesStore } from "../stores/useVotacionAportesStore";
-import { useVotacionStore } from "../stores/useVotacionStore";
+import { useVotacionStore } from "~/core/presentation/juntas/stores/votacion.store";
 
 /**
  * Controller para la vista de Votación de Aporte Dinerario
