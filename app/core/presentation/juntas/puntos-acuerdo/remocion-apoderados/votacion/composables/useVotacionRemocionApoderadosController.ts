@@ -89,24 +89,43 @@ export function useVotacionRemocionApoderadosController() {
           })),
         });
 
-        // ✅ Si la sesión existe pero no tiene items, crear items desde candidatos
+        // ✅ Si la sesión existe pero no tiene items, crear items desde candidatos (solo los que tienen isCandidate: true)
+        const candidatosFiltrados = remocionStore.candidatos.filter(
+          (c) => c.isCandidate === true
+        );
+
         if (
           votacionStore.hasVotacion &&
           votacionStore.items.length === 0 &&
-          remocionStore.candidatos.length > 0
+          candidatosFiltrados.length > 0
         ) {
           console.log(
             "[DEBUG][VotacionRemocionApoderadosController] Sesión sin items, creando items desde candidatos..."
           );
 
-          // Crear items desde candidatos
-          const items = remocionStore.candidatos.map((candidato, index) => {
-            const nombre =
-              candidato.persona.razonSocial ||
-              `${candidato.persona.nombre} ${candidato.persona.apellidoPaterno} ${
-                candidato.persona.apellidoMaterno || ""
+          // Obtener nombres de clases desde snapshot
+          const snapshot = snapshotStore.snapshot;
+          const clasesMap = new Map(
+            snapshot?.attorneyClasses?.map((clase) => [clase.id, clase.name]) || []
+          );
+
+          // Crear items desde candidatos filtrados
+          const items = candidatosFiltrados.map((candidato, index) => {
+            // Obtener nombre de la persona
+            let nombre = "";
+            if (candidato.person.type === "NATURAL" && candidato.person.natural) {
+              const natural = candidato.person.natural;
+              nombre = `${natural.firstName} ${natural.lastNamePaternal} ${
+                natural.lastNameMaternal || ""
               }`.trim();
-            const label = `Se aprueba la remoción del apoderado ${nombre} de sus funciones como ${candidato.claseApoderado.nombre}.`;
+            } else if (candidato.person.type === "JURIDIC" && candidato.person.juridic) {
+              nombre = candidato.person.juridic.businessName;
+            }
+
+            // Obtener nombre de la clase
+            const nombreClase = clasesMap.get(candidato.attorneyClassId) || "Apoderado";
+
+            const label = `Se aprueba la remoción del apoderado ${nombre} de sus funciones como ${nombreClase}.`;
 
             return {
               id: votacionStore.generateUuid(),
@@ -125,7 +144,11 @@ export function useVotacionRemocionApoderadosController() {
 
           console.log(
             "[DEBUG][VotacionRemocionApoderadosController] Items creados en memoria:",
-            items.length
+            {
+              candidatosTotal: remocionStore.candidatos.length,
+              candidatosFiltrados: candidatosFiltrados.length,
+              itemsCreados: items.length,
+            }
           );
         }
 
@@ -263,35 +286,59 @@ export function useVotacionRemocionApoderadosController() {
    */
   const preguntas = computed(() => {
     // ✅ Prioridad 1: Usar items de la sesión de votación del backend
-    if (votacionStore.items.length > 0) {
-      const items = votacionStore.items;
+    const items = votacionStore.items;
+    if (items.length > 0) {
       // Ordenar por orden si existe
       const itemsOrdenados = [...items].sort((a, b) => (a.orden || 0) - (b.orden || 0));
       const preguntasFromItems = itemsOrdenados.map((item) => item.label);
 
       console.log("[DEBUG][VotacionRemocionApoderadosController] ✅ Preguntas desde sesión:", {
         itemsCount: items.length,
+        items: items.map((item) => ({
+          id: item.id,
+          orden: item.orden,
+          label: item.label,
+          votosCount: item.votos?.length || 0,
+        })),
         preguntas: preguntasFromItems,
       });
 
       return preguntasFromItems;
     }
 
-    // ✅ Prioridad 2: Si hay candidatos, generar preguntas desde candidatos
-    if (remocionStore.candidatos.length > 0) {
-      const preguntasFromCandidatos = remocionStore.candidatos.map((c) => {
-        const nombre =
-          c.persona.razonSocial ||
-          `${c.persona.nombre} ${c.persona.apellidoPaterno} ${
-            c.persona.apellidoMaterno || ""
+    // ✅ Prioridad 2: Si hay candidatos, generar preguntas desde candidatos (solo los que tienen isCandidate: true)
+    const candidatosFiltrados = remocionStore.candidatos.filter((c) => c.isCandidate === true);
+
+    if (candidatosFiltrados.length > 0) {
+      // Obtener nombres de clases desde snapshot
+      const snapshot = snapshotStore.snapshot;
+      const clasesMap = new Map(
+        snapshot?.attorneyClasses?.map((clase) => [clase.id, clase.name]) || []
+      );
+
+      const preguntasFromCandidatos = candidatosFiltrados.map((c) => {
+        // Obtener nombre de la persona
+        let nombre = "";
+        if (c.person.type === "NATURAL" && c.person.natural) {
+          const natural = c.person.natural;
+          nombre = `${natural.firstName} ${natural.lastNamePaternal} ${
+            natural.lastNameMaternal || ""
           }`.trim();
-        return `Se aprueba la remoción del apoderado ${nombre} de sus funciones como ${c.claseApoderado.nombre}.`;
+        } else if (c.person.type === "JURIDIC" && c.person.juridic) {
+          nombre = c.person.juridic.businessName;
+        }
+
+        // Obtener nombre de la clase
+        const nombreClase = clasesMap.get(c.attorneyClassId) || "Apoderado";
+
+        return `Se aprueba la remoción del apoderado ${nombre} de sus funciones como ${nombreClase}.`;
       });
 
       console.log(
         "[DEBUG][VotacionRemocionApoderadosController] ✅ Preguntas desde candidatos:",
         {
-          candidatosCount: remocionStore.candidatos.length,
+          candidatosTotal: remocionStore.candidatos.length,
+          candidatosFiltrados: candidatosFiltrados.length,
           preguntas: preguntasFromCandidatos,
         }
       );
@@ -410,7 +457,46 @@ export function useVotacionRemocionApoderadosController() {
   }
 
   /**
-   * Cambiar tipo de aprobación para TODOS los items
+   * Cambiar tipo de aprobación para un item específico
+   */
+  async function cambiarTipoAprobacionItem(itemIndex: number, tipo: "unanimidad" | "mayoria") {
+    const tipoAprobacion =
+      tipo === "unanimidad"
+        ? VoteAgreementType.APROBADO_POR_TODOS
+        : VoteAgreementType.SOMETIDO_A_VOTACION;
+
+    // ✅ Si no hay sesión, crear en memoria con todos los items
+    if (!votacionStore.sesionVotacion) {
+      const sessionId = votacionStore.generateUuid();
+      const preguntasValue = preguntas.value;
+
+      votacionStore.sesionVotacion = {
+        id: sessionId,
+        contexto: VoteContext.REMOCION_APODERADOS,
+        modo: VoteMode.SIMPLE,
+        items: preguntasValue.map((pregunta, index) => ({
+          id: votacionStore.generateUuid(),
+          orden: index,
+          label: pregunta,
+          descripción: `Votación sobre la remoción del apoderado ${index + 1}`,
+          tipoAprobacion:
+            index === itemIndex ? tipoAprobacion : VoteAgreementType.SOMETIDO_A_VOTACION,
+          votos: [],
+        })),
+      };
+    } else {
+      // Actualizar tipoAprobacion en el item específico usando el store
+      await votacionStore.updateTipoAprobacion(
+        societyId.value,
+        flowId.value,
+        itemIndex,
+        tipoAprobacion
+      );
+    }
+  }
+
+  /**
+   * Cambiar tipo de aprobación para TODOS los items (legacy - mantener para compatibilidad)
    */
   async function cambiarTipoAprobacion(tipo: "unanimidad" | "mayoria") {
     const tipoAprobacion =
@@ -452,7 +538,7 @@ export function useVotacionRemocionApoderadosController() {
   /**
    * Guardar votación (para useJuntasFlowNext)
    * ⚠️ IMPORTANTE: Maneja MÚLTIPLES items (uno por apoderado)
-   * 
+   *
    * ✅ IMPORTANTE: Primero intenta cargar la votación existente (GET) antes de crear (POST)
    */
   async function guardarVotacion() {
@@ -622,6 +708,11 @@ export function useVotacionRemocionApoderadosController() {
         "[DEBUG][VotacionRemocionApoderadosController] Actualizando estados de candidatos..."
       );
 
+      // ✅ Filtrar solo candidatos (isCandidate: true) y mapear con items
+      const candidatosFiltrados = remocionStore.candidatos.filter(
+        (c) => c.isCandidate === true
+      );
+
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
         if (!item) {
@@ -631,8 +722,8 @@ export function useVotacionRemocionApoderadosController() {
           continue;
         }
 
-        // Obtener attorneyId desde los candidatos cargados
-        const candidato = remocionStore.candidatos[i];
+        // ✅ Obtener candidato por índice (solo los que tienen isCandidate: true)
+        const candidato = candidatosFiltrados[i];
         if (!candidato) {
           console.warn(
             `[Controller][VotacionRemocionApoderados] No hay candidato para item ${i}`
@@ -640,7 +731,8 @@ export function useVotacionRemocionApoderadosController() {
           continue;
         }
 
-        const attorneyId = candidato.attorneyId;
+        // ✅ El id del registro de remoción ES el attorneyId que se necesita
+        const attorneyId = candidato.id;
 
         // Calcular porcentaje a favor
         const totalAcciones = votantes.value.reduce(
@@ -721,6 +813,7 @@ export function useVotacionRemocionApoderadosController() {
     getVotoForComponent, // ✅ Función adaptada para el componente
     setVoto,
     cambiarTipoAprobacion,
+    cambiarTipoAprobacionItem, // ✅ Cambiar tipo por item específico
     guardarVotacion,
     loadData,
   };

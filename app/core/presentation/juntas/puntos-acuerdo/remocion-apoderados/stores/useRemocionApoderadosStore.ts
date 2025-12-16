@@ -52,9 +52,10 @@ export const useRemocionApoderadosStore = defineStore("remocionApoderados", {
 
     /**
      * Obtener apoderado por ID
+     * ✅ El id del registro de remoción ES el attorneyId que se necesita
      */
     getApoderadoById: (state) => (attorneyId: string) => {
-      return state.candidatos.find((c) => c.attorneyId === attorneyId);
+      return state.candidatos.find((c) => c.id === attorneyId);
     },
   },
 
@@ -187,10 +188,15 @@ export const useRemocionApoderadosStore = defineStore("remocionApoderados", {
         );
 
         // Actualizar estado local del candidato
-        const candidato = this.candidatos.find((c) => c.attorneyId === attorneyId);
+        // ✅ El id del registro de remoción ES el attorneyId que se necesita
+        const candidato = this.candidatos.find((c) => c.id === attorneyId);
         if (candidato && candidato.attorneyFlowActions.length > 0) {
           candidato.attorneyFlowActions[0].candidateStatus =
             estado === "ELEGIDO" ? "ELECTED" : "NOT_ELECTED";
+        }
+        // También actualizar candidateStatus directamente
+        if (candidato) {
+          candidato.candidateStatus = estado === "ELEGIDO" ? "ELECTED" : "NOT_ELECTED";
         }
 
         this.status = "idle";

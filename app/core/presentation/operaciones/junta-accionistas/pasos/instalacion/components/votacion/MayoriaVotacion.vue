@@ -535,6 +535,25 @@
     }
   );
 
+  // ✅ Observar cambios en preguntas para reinicializar array de votos
+  watch(
+    () => preguntas.value.length,
+    (newLength, oldLength) => {
+      if (newLength !== oldLength) {
+        console.log(
+          `[MayoriaVotacion] Número de preguntas cambió de ${oldLength} a ${newLength}, reinicializando votos...`
+        );
+        // Reinicializar array de votos con el nuevo tamaño
+        votos.value = Array(newLength)
+          .fill(null)
+          .map(() => Array(listaVotantes.value.length).fill(null));
+        // Recargar votos existentes
+        cargarVotosExistentes();
+      }
+    },
+    { immediate: false }
+  );
+
   const opcionesVoto = [
     {
       id: "A_FAVOR" as const,
