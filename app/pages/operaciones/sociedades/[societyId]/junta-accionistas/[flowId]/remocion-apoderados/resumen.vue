@@ -105,6 +105,17 @@
         </div>
       </div>
     </div>
+
+    <!-- Datos de la remoción -->
+    <div class="flex flex-col gap-6 mt-8">
+      <p class="t-h4 text-gray-800 font-primary font-semibold mb-4">Datos de la remoción</p>
+
+      <!-- Tabla: Apoderados -->
+      <div class="flex flex-col gap-4">
+        <p class="font-primary t-h6 text-gray-800 font-semibold">Apoderados</p>
+        <SimpleTable :columns="columnsApoderados" :data="apoderadosRemovidos" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -112,6 +123,7 @@
   import { ArrowRight } from "lucide-vue-next";
   import { computed, onMounted } from "vue";
   import { useRoute } from "vue-router";
+  import { getColumns } from "~/components/base/tables/getColumns";
   import VotacionResultadoCard from "~/components/juntas/VotacionResultadoCard.vue";
   import {
     TipoAcuerdo,
@@ -145,6 +157,7 @@
       }
 
       // Cargar votación, una vez q este el guardado correctamente descomentar estas lineas
+
       /*       await votacionStore.loadVotacion(
         societyId.value,
         flowId.value,
@@ -348,7 +361,22 @@
    * Obtiene los apoderados removidos con sus datos completos
    */
   const apoderadosRemovidos = computed(() => {
-    return [];
+    return [
+      {
+        id: "1",
+        clase_apoderado: "Persona Natural",
+        nombre: "Juan Perez",
+        tipo_documento: "DNI",
+        numero_documento: "12345678",
+      },
+      {
+        id: "2",
+        clase_apoderado: "Persona Natural",
+        nombre: "Maria Lopez",
+        tipo_documento: "DNI",
+        numero_documento: "1234567890",
+      },
+    ];
   });
 
   /**
@@ -364,4 +392,36 @@
   const totalApoderadosDespues = computed(() => {
     return 0;
   });
+
+  //columnas para la tabla de apoderados
+  const columnsApoderados = getColumns<ApoderadoRemovido>([
+    {
+      key: "clase_apoderado",
+      label: "Clase de Apoderado",
+      type: "text",
+    },
+    {
+      key: "nombre",
+      label: "Nombre / Razón Social",
+      type: "text",
+    },
+    {
+      key: "tipo_documento",
+      label: "Tipo de Documento",
+      type: "text",
+    },
+    {
+      key: "numero_documento",
+      label: "Número de Documento",
+      type: "text",
+    },
+  ]);
+
+  interface ApoderadoRemovido {
+    id: string;
+    clase_apoderado: string;
+    nombre: string;
+    tipo_documento: string;
+    numero_documento: string;
+  }
 </script>
