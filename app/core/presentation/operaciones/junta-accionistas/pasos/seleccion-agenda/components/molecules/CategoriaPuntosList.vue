@@ -4,7 +4,7 @@
     <CategoriaHeader :categoria="categoria" />
 
     <!-- Puntos -->
-    <div v-if="isExpanded" class="ml-6 mt-2 space-y-3">
+    <div v-if="isExpanded" class="ml-6 mt-2">
       <PuntoAgendaCheckbox
         v-for="punto in puntos"
         :key="punto.id"

@@ -60,7 +60,10 @@
       >
         <p
           v-if="props.titleDropdown"
-          :class="['t-t2 font-primary font-bold text-gray-500 leading-snug', props.titleClass]"
+          :class="[
+            't-t2 font-primary font-semibold text-gray-500 leading-snug',
+            props.titleClass,
+          ]"
         >
           {{ props.titleDropdown }}
         </p>
