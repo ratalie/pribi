@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-4">
     <!-- Subtitle -->
-    <p class="t-h4 text-gray-800 font-primary font-semibold mb-4 mt-10">
+    <p v-if="subtitle" class="t-h4 text-gray-800 font-primary font-semibold mb-4 mt-10">
       {{ subtitle }}
     </p>
 

@@ -7,7 +7,7 @@
   </div>
   <MetodoVotacio
     v-else
-    v-model="metodoVotacion"
+    v-model="votacionRemocionApoderadosStore.metodoVotacion"
     title="Votación de Remoción de Apoderados"
     subtitle="Registra el resultado de la votación sobre la remoción de los apoderados seleccionados."
     :preguntas="preguntas"
@@ -19,10 +19,11 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref } from "vue";
+  import { computed } from "vue";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
   import { useVotacionRemocionApoderadosController } from "~/core/presentation/juntas/puntos-acuerdo/remocion-apoderados/votacion/composables/useVotacionRemocionApoderadosController";
+  import { useVotacionRemocionApoderadosStore } from "~/core/presentation/juntas/puntos-acuerdo/remocion-apoderados/votacion/stores/useVotacionRemocionApoderadosStore";
   import MetodoVotacio from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/components/votacion/MetodoVotacio.vue";
 
   /**
@@ -40,6 +41,7 @@
   });
 
   const controller = useVotacionRemocionApoderadosController();
+  const votacionRemocionApoderadosStore = useVotacionRemocionApoderadosStore();
 
   // ✅ Obtener props del controller
   const isLoading = controller.isLoading;
@@ -81,9 +83,6 @@
     }
     return "";
   });
-
-  // Método de votación (unanimidad/mayoría) controlado localmente (sin depender del backend)
-  const metodoVotacion = ref<"unanimidad" | "mayoria">("unanimidad");
 
   function handleCambiarTipo(tipo: "unanimidad" | "mayoria") {
     controller.cambiarTipoAprobacion(tipo);
