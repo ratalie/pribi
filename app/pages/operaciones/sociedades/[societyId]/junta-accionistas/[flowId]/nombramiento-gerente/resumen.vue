@@ -68,41 +68,44 @@
         <Table v-if="facultadesGerente.length > 0">
           <TableHeader>
             <TableRow class="h-12">
-              <TableHead class="font-primary text-gray-800 t-t2 font-semibold">
+              <TableHead class="font-primary text-gray-800 t-t2 font-semibold text-center">
                 Tipo de Poder
               </TableHead>
-              <TableHead class="font-primary text-gray-800 t-t2 font-semibold">
+              <TableHead class="font-primary text-gray-800 t-t2 font-semibold text-center">
                 Vigencia
               </TableHead>
-              <TableHead class="font-primary text-gray-800 t-t2 font-semibold">
+              <TableHead class="font-primary text-gray-800 t-t2 font-semibold text-center">
                 Reglas Monetarias
               </TableHead>
+              <TableHead
+                class="font-primary text-gray-800 t-t2 font-semibold text-center"
+              ></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <template v-for="facultad in facultadesGerente" :key="facultad.id">
               <TableRow class="h-16">
-                <TableCell class="font-secondary text-gray-700 t-t2 font-medium">
+                <TableCell class="font-secondary text-gray-700 t-t2 font-medium text-center">
                   {{ facultad.facultad }}
                 </TableCell>
-                <TableCell class="font-secondary text-gray-700 t-t2 font-medium">
+                <TableCell class="font-secondary text-gray-700 t-t2 font-medium text-center">
                   {{ facultad.vigencia }}
                 </TableCell>
-                <TableCell class="font-secondary text-gray-700 t-t2 font-medium">
-                  <div class="flex items-center gap-2">
-                    <span>{{ facultad.reglas_firma }}</span>
-                    <BaseButton
-                      v-if="facultad.reglas_y_limites && facultad.reglas_y_limites.length > 0"
-                      variant="ghost"
-                      class="w-8 h-8 p-0"
-                      @click="toggleFacultad(facultad.id)"
-                    >
-                      <component
-                        :is="expandedFacultades.has(facultad.id) ? ChevronDown : ChevronRight"
-                        class="w-4 h-4"
-                      />
-                    </BaseButton>
-                  </div>
+                <TableCell class="font-secondary text-gray-700 t-t2 font-medium text-center">
+                  {{ facultad.reglas_firma }}
+                </TableCell>
+                <TableCell class="font-secondary text-gray-700 t-t2 font-medium text-center">
+                  <BaseButton
+                    v-if="facultad.reglas_y_limites && facultad.reglas_y_limites.length > 0"
+                    variant="ghost"
+                    class="w-full flex justify-center items-center"
+                    @click="toggleFacultad(facultad.id)"
+                  >
+                    <component
+                      :is="expandedFacultades.has(facultad.id) ? ChevronDown : ChevronRight"
+                      class="w-4 h-4"
+                    />
+                  </BaseButton>
                 </TableCell>
               </TableRow>
 
@@ -115,7 +118,7 @@
                 "
                 class="border-x rounded-lg"
               >
-                <TableCell :colspan="3" class="bg-gray-50 py-1">
+                <TableCell :colspan="4" class="bg-gray-50 py-1">
                   <div class="w-full flex items-center">
                     <div class="flex-1 text-center">
                       <p class="font-primary text-primary-800 t-t1 font-semibold">
@@ -141,23 +144,33 @@
                   facultad.reglas_y_limites.length > 0
                 "
               >
-                <TableCell :colspan="3" class="py-0 border-x border-b rounded-b-lg">
+                <TableCell :colspan="4" class="py-0 border-x border-b rounded-b-lg">
                   <Table>
                     <TableHeader class="border-b">
                       <TableRow class="h-8">
-                        <TableHead class="font-primary text-gray-800 t-t2 font-semibold">
+                        <TableHead
+                          class="font-primary text-gray-800 t-t2 font-semibold text-center"
+                        >
                           ID
                         </TableHead>
-                        <TableHead class="font-primary text-gray-800 t-t2 font-semibold">
+                        <TableHead
+                          class="font-primary text-gray-800 t-t2 font-semibold text-center"
+                        >
                           Desde
                         </TableHead>
-                        <TableHead class="font-primary text-gray-800 t-t2 font-semibold">
+                        <TableHead
+                          class="font-primary text-gray-800 t-t2 font-semibold text-center"
+                        >
                           Hasta
                         </TableHead>
-                        <TableHead class="font-primary text-gray-800 t-t2 font-semibold">
+                        <TableHead
+                          class="font-primary text-gray-800 t-t2 font-semibold text-center"
+                        >
                           Tipo de Firma
                         </TableHead>
-                        <TableHead class="font-primary text-gray-800 t-t2 font-semibold">
+                        <TableHead
+                          class="font-primary text-gray-800 t-t2 font-semibold text-center"
+                        >
                           Firmantes
                         </TableHead>
                       </TableRow>
@@ -168,20 +181,28 @@
                         :key="regla.id"
                         class="h-12"
                       >
-                        <TableCell class="font-secondary text-gray-700 t-t2 font-medium">
+                        <TableCell
+                          class="font-secondary text-gray-700 t-t2 font-medium text-center"
+                        >
                           {{ regla.table_id }}
                         </TableCell>
-                        <TableCell class="font-secondary text-gray-700 t-t2 font-medium">
+                        <TableCell
+                          class="font-secondary text-gray-700 t-t2 font-medium text-center"
+                        >
                           {{ regla.desde }}
                         </TableCell>
-                        <TableCell class="font-secondary text-gray-700 t-t2 font-medium">
+                        <TableCell
+                          class="font-secondary text-gray-700 t-t2 font-medium text-center"
+                        >
                           {{ regla.hasta }}
                         </TableCell>
-                        <TableCell class="font-secondary text-gray-700 t-t2 font-medium">
+                        <TableCell
+                          class="font-secondary text-gray-700 t-t2 font-medium text-center"
+                        >
                           {{ regla.tipo_firma }}
                         </TableCell>
                         <TableCell
-                          class="flex flex-col gap-1 font-secondary text-gray-700 t-t2 font-medium"
+                          class="flex flex-col gap-1 font-secondary text-gray-700 t-t2 font-medium text-center items-center"
                         >
                           <template v-if="regla.firmantes && regla.firmantes.length > 0">
                             <span v-for="firmante in regla.firmantes" :key="firmante.id">
