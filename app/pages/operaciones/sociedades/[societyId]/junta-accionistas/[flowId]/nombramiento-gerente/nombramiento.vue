@@ -1,6 +1,8 @@
 <script setup lang="ts">
+  import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { countriesOptions } from "~/constants/inputs/countries-options";
   import { tipoDocumentoOptions } from "~/constants/inputs/document-type";
+  import { useNombramientoGerenteStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-gerente/stores/useNombramientoGerenteStore";
   import {
     apellidoMaternoNaturalSchema,
     apellidoPaternoNaturalSchema,
@@ -26,6 +28,8 @@
     layout: "registros",
     flowLayoutJuntas: true,
   });
+
+  const nombramientoStore = useNombramientoGerenteStore();
 
   const personaNaturalDefaultValues = {
     tipoDocumento: "",
@@ -59,6 +63,30 @@
 
   const personaNatural = ref(personaNaturalDefaultValues);
   const personaJuridica = ref(personaJuridicaDefaultValues);
+
+  // Guardar datos del gerente en el store cuando se hace clic en "Siguiente"
+  useJuntasFlowNext(() => {
+    // Preparar datos del representante si es persona jurídica y tiene representante
+    const representante =
+      tipoPersona.value === "juridica" && personaJuridica.value.tieneRepresentante
+        ? {
+            tipoDocumento: personaNatural.value.tipoDocumento,
+            numeroDocumento: personaNatural.value.numeroDocumento,
+            nombre: personaNatural.value.nombre,
+            apellidoPaterno: personaNatural.value.apellidoPaterno,
+            apellidoMaterno: personaNatural.value.apellidoMaterno,
+            paisPasaporte: personaNatural.value.paisPasaporte,
+          }
+        : null;
+
+    // Guardar en el store
+    nombramientoStore.setGerenteNombrado({
+      tipoPersona: tipoPersona.value,
+      personaNatural: tipoPersona.value === "natural" ? { ...personaNatural.value } : null,
+      personaJuridica: tipoPersona.value === "juridica" ? { ...personaJuridica.value } : null,
+      representante,
+    });
+  });
 </script>
 
 <template>

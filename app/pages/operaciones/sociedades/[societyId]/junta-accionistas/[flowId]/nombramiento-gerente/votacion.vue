@@ -13,13 +13,16 @@
     :preguntas="[pregunta]"
     :votantes="votantes"
     :mensaje-aprobacion="mensajeAprobacion"
+    :mensaje-unanimidad="mensajeUnanimidad"
     @cambiar-tipo="handleCambiarTipo"
     @cambiar-voto="handleCambiarVoto"
   />
 </template>
 
 <script setup lang="ts">
-  import { useVotacionPage } from "~/composables/useVotacionPage";
+  import { computed } from "vue";
+  import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
+  import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
   import { useVotacionNombramientoGerenteController } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-gerente/votacion/composables/useVotacionNombramientoGerenteController";
   import MetodoVotacio from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/components/votacion/MetodoVotacio.vue";
 
@@ -39,15 +42,99 @@
 
   const controller = useVotacionNombramientoGerenteController();
 
-  // ✅ Usar composable reutilizable para lógica común
-  const {
-    isLoading,
-    error,
-    votantes,
-    pregunta,
-    mensajeAprobacion,
-    metodoVotacion,
-    handleCambiarTipo,
-    handleCambiarVoto,
-  } = useVotacionPage(controller);
+  // ✅ Obtener props del controller
+  const isLoading = controller.isLoading;
+  const error = controller.error;
+
+  // ✅ Extraer valores de los computed
+  const votantes = computed(() => {
+    const votantesValue = controller.votantes;
+    if (votantesValue && typeof votantesValue === "object" && "value" in votantesValue) {
+      const value = (votantesValue as any).value;
+      return Array.isArray(value) ? value : [];
+    }
+    if (Array.isArray(votantesValue)) {
+      return votantesValue;
+    }
+    return [];
+  });
+
+  const pregunta = computed(() => {
+    const preguntaValue = controller.pregunta;
+    if (preguntaValue && typeof preguntaValue === "object" && "value" in preguntaValue) {
+      const value = (preguntaValue as any).value;
+      return typeof value === "string" ? value : "";
+    }
+    if (typeof preguntaValue === "string") {
+      return preguntaValue;
+    }
+    return "";
+  });
+
+  const mensajeAprobacion = computed(() => {
+    const mensajeValue = controller.mensajeAprobacion;
+    if (mensajeValue && typeof mensajeValue === "object" && "value" in mensajeValue) {
+      const value = (mensajeValue as any).value;
+      return typeof value === "string" ? value : "";
+    }
+    if (typeof mensajeValue === "string") {
+      return mensajeValue;
+    }
+    return "";
+  });
+
+  const mensajeUnanimidad = computed(() => {
+    const mensajeValue = controller.mensajeUnanimidad;
+    if (mensajeValue && typeof mensajeValue === "object" && "value" in mensajeValue) {
+      const value = (mensajeValue as any).value;
+      return typeof value === "string" ? value : "";
+    }
+    if (typeof mensajeValue === "string") {
+      return mensajeValue;
+    }
+    return "";
+  });
+
+  // Método de votación (unanimidad/mayoría) - lee del store
+  const metodoVotacion = computed({
+    get: () => {
+      const esUnanimidadValue = controller.esUnanimidad;
+      // Si esUnanimidad es un computed, extraer su valor
+      if (
+        esUnanimidadValue &&
+        typeof esUnanimidadValue === "object" &&
+        "value" in esUnanimidadValue
+      ) {
+        return (esUnanimidadValue as any).value ? "unanimidad" : "mayoria";
+      }
+      // Si es un boolean directo
+      return esUnanimidadValue ? "unanimidad" : "mayoria";
+    },
+    set: (tipo: "unanimidad" | "mayoria") => {
+      controller.cambiarTipoAprobacion(tipo);
+    },
+  });
+
+  function handleCambiarTipo(tipo: "unanimidad" | "mayoria") {
+    controller.cambiarTipoAprobacion(tipo);
+  }
+
+  function handleCambiarVoto(
+    accionistaId: string,
+    valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION"
+  ) {
+    const voteValue =
+      valor === "A_FAVOR"
+        ? VoteValue.A_FAVOR
+        : valor === "EN_CONTRA"
+        ? VoteValue.EN_CONTRA
+        : VoteValue.ABSTENCION;
+
+    controller.setVoto(accionistaId, voteValue as VoteValue);
+  }
+
+  // Configurar el botón "Siguiente"
+  useJuntasFlowNext(async () => {
+    await controller.guardarVotacion();
+  });
 </script>

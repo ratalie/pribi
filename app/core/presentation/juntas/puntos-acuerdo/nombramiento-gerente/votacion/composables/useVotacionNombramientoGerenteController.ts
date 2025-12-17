@@ -10,6 +10,7 @@ import { VoteContext } from "~/core/hexag/juntas/domain/enums/vote-context.enum"
 import { VoteMode } from "~/core/hexag/juntas/domain/enums/vote-mode.enum";
 import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
 import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/stores/useVotacionStore";
+import { useNombramientoGerenteStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-gerente/stores/useNombramientoGerenteStore";
 import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 
@@ -27,6 +28,7 @@ export function useVotacionNombramientoGerenteController() {
   const votacionStore = useVotacionStore();
   const asistenciaStore = useAsistenciaStore();
   const snapshotStore = useSnapshotStore();
+  const nombramientoStore = useNombramientoGerenteStore();
 
   const societyId = computed(() => Number(route.params.societyId));
   const flowId = computed(() => Number(route.params.flowId));
@@ -216,25 +218,61 @@ export function useVotacionNombramientoGerenteController() {
   });
 
   /**
-   * Generar pregunta de votación usando datos del gerente del snapshot
+   * Generar pregunta de votación usando datos del gerente
+   * Prioriza el store de nombramiento, si no existe usa el snapshot
    */
   const pregunta = computed(() => {
-    const gerente = snapshotStore.snapshot?.gerenteGeneral;
-
-    if (!gerente) {
-      return "Se aprueba el nombramiento del gerente general.";
+    // 1. Intentar obtener del store de nombramiento (gerente propuesto)
+    if (nombramientoStore.tieneGerenteNombrado) {
+      const nombreGerente = nombramientoStore.nombreCompletoGerente;
+      if (nombreGerente) {
+        return `Se aprueba el nombramiento del gerente general ${nombreGerente} en sus funciones como gerente general de la sociedad.`;
+      }
     }
 
-    const nombreGerente = getNombreCompletoGerente(gerente.persona);
+    // 2. Fallback: usar el snapshot (gerente actual del backend)
+    const gerente = snapshotStore.snapshot?.gerenteGeneral;
+    if (gerente) {
+      const nombreGerente = getNombreCompletoGerente(gerente.persona);
+      return `Se aprueba el nombramiento del gerente general ${nombreGerente} en sus funciones como gerente general de la sociedad.`;
+    }
 
-    return `Se aprueba el nombramiento del gerente general ${nombreGerente} en sus funciones como gerente general de la sociedad.`;
+    // 3. Si no hay gerente, mensaje genérico
+    return "Se aprueba el nombramiento del gerente general.";
   });
 
   /**
-   * Mensaje de aprobación
+   * Mensaje de aprobación para unanimidad
+   * Incluye el nombre del gerente propuesto del store
    */
   const mensajeAprobacion = computed(() => {
     return "el nombramiento del gerente general.";
+  });
+
+  /**
+   * Mensaje completo de unanimidad con nombre del gerente
+   * Formato: "Confirmo que todos los accionistas están de acuerdo con realizar la designación de {{nombre}} en el cargo de Gerente General y la asignación de los poderes otorgados."
+   */
+  const mensajeUnanimidad = computed(() => {
+    // Obtener nombre del gerente del store (gerente propuesto)
+    let nombreGerente = "";
+
+    if (nombramientoStore.tieneGerenteNombrado) {
+      nombreGerente = nombramientoStore.nombreCompletoGerente;
+    } else {
+      // Fallback: usar el snapshot (gerente actual del backend)
+      const gerente = snapshotStore.snapshot?.gerenteGeneral;
+      if (gerente) {
+        nombreGerente = getNombreCompletoGerente(gerente.persona);
+      }
+    }
+
+    if (nombreGerente) {
+      return `Confirmo que todos los accionistas están de acuerdo con realizar la designación de ${nombreGerente} en el cargo de Gerente General y la asignación de los poderes otorgados.`;
+    }
+
+    // Si no hay nombre, mensaje genérico
+    return "Confirmo que todos los accionistas están de acuerdo con realizar la designación del gerente general en el cargo de Gerente General y la asignación de los poderes otorgados.";
   });
 
   /**
@@ -654,6 +692,7 @@ export function useVotacionNombramientoGerenteController() {
     votantes,
     pregunta,
     mensajeAprobacion,
+    mensajeUnanimidad,
     isLoading: computed(() => votacionStore.status === "loading" || isLoading.value),
     error: computed(() => votacionStore.errorMessage || error.value),
     esUnanimidad: computed(() => votacionStore.esUnanimidad),

@@ -40,7 +40,7 @@
     </template>
 
     <!-- Datos del nombramiento -->
-    <div v-if="resultado" class="flex flex-col gap-6 mt-8">
+    <div v-if="resultado && datosGerente.length > 0" class="flex flex-col gap-6 mt-8">
       <p class="t-h4 text-gray-600 font-primary font-semibold mb-4">Datos del nombramiento</p>
 
       <!-- Tabla: Gerente General -->
@@ -66,7 +66,7 @@
   import VotacionResultadoCard from "~/components/juntas/VotacionResultadoCard.vue";
   import { VoteContext } from "~/core/hexag/juntas/domain/enums/vote-context.enum";
   import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/stores/useVotacionStore";
-  import { useVotacionNombramientoGerenteController } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-gerente/votacion/composables/useVotacionNombramientoGerenteController";
+  import { useNombramientoGerenteStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-gerente/stores/useNombramientoGerenteStore";
   import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 
   definePageMeta({
@@ -76,7 +76,7 @@
 
   const route = useRoute();
   const votacionStore = useVotacionStore();
-  const controller = useVotacionNombramientoGerenteController();
+  const nombramientoStore = useNombramientoGerenteStore();
   const snapshotStore = useSnapshotStore();
 
   const societyId = computed(() => Number(route.params.societyId));
@@ -85,10 +85,8 @@
   // Cargar datos
   onMounted(async () => {
     try {
-      // Cargar snapshot para obtener nombre del gerente
-      if (!snapshotStore.snapshot) {
-        await snapshotStore.loadSnapshot(societyId.value, flowId.value);
-      }
+      // Cargar snapshot
+      await snapshotStore.loadSnapshot(societyId.value, flowId.value);
 
       // Cargar votación
       await votacionStore.loadVotacion(
@@ -124,8 +122,17 @@
     }
   }
 
-  // Obtener nombres del gerente
+  // Obtener nombres del gerente (prioriza store, luego snapshot)
   const nombresGerente = computed(() => {
+    // 1. Intentar obtener del store de nombramiento (gerente propuesto)
+    if (nombramientoStore.tieneGerenteNombrado) {
+      const nombreCompleto = nombramientoStore.nombreCompletoGerente;
+      if (nombreCompleto) {
+        return [nombreCompleto];
+      }
+    }
+
+    // 2. Fallback: usar el snapshot (gerente actual del backend)
     const gerente = snapshotStore.snapshot?.gerenteGeneral;
     if (!gerente) return [];
 
@@ -171,8 +178,39 @@
     },
   ];
 
-  // Datos del gerente para la tabla
+  // Datos del gerente para la tabla (prioriza store, luego snapshot)
   const datosGerente = computed(() => {
+    // 1. Intentar obtener del store de nombramiento
+    if (nombramientoStore.tieneGerenteNombrado && nombramientoStore.gerenteNombrado) {
+      const gerente = nombramientoStore.gerenteNombrado;
+      let nombreRazonSocial = "";
+      let tipoDocumento = "";
+      let numeroDocumento = "";
+
+      if (gerente.tipoPersona === "natural" && gerente.personaNatural) {
+        nombreRazonSocial = `${gerente.personaNatural.nombre} ${
+          gerente.personaNatural.apellidoPaterno
+        } ${gerente.personaNatural.apellidoMaterno || ""}`.trim();
+        tipoDocumento = gerente.personaNatural.tipoDocumento;
+        numeroDocumento = gerente.personaNatural.numeroDocumento;
+      } else if (gerente.tipoPersona === "juridica" && gerente.personaJuridica) {
+        nombreRazonSocial = gerente.personaJuridica.razonSocial;
+        tipoDocumento = gerente.personaJuridica.tipoDocumento;
+        numeroDocumento = gerente.personaJuridica.numeroDocumento;
+      }
+
+      if (nombreRazonSocial) {
+        return [
+          {
+            nombreRazonSocial,
+            tipoDocumento,
+            numeroDocumento,
+          },
+        ];
+      }
+    }
+
+    // 2. Fallback: usar el snapshot
     const gerente = snapshotStore.snapshot?.gerenteGeneral;
     if (!gerente) return [];
 
@@ -202,26 +240,26 @@
     ];
   });
 
-  // Datos del representante para la tabla (solo si existe)
+  // Datos del representante para la tabla (solo si existe en el store)
   const datosRepresentante = computed(() => {
-    const gerente = snapshotStore.snapshot?.gerenteGeneral;
-    if (!gerente) return [];
+    if (
+      nombramientoStore.tieneGerenteNombrado &&
+      nombramientoStore.gerenteNombrado?.representante
+    ) {
+      const representante = nombramientoStore.gerenteNombrado.representante;
+      if (representante) {
+        const nombreRazonSocial = `${representante.nombre} ${representante.apellidoPaterno} ${
+          representante.apellidoMaterno || ""
+        }`.trim();
 
-    const persona = gerente.persona;
-    // Si es persona jurídica, verificar si tiene representante
-    // Por ahora, asumimos que si es persona jurídica podría tener representante
-    // pero no está claro en la estructura actual, así que retornamos array vacío
-    // TODO: Verificar si el gerente tiene representante cuando esté disponible en el snapshot
-    if (persona.tipo === "JURIDICA") {
-      // Si en el futuro el snapshot incluye representante, se puede acceder aquí
-      // const representante = (persona as any).representante;
-      // if (representante) {
-      //   return [{
-      //     nombreRazonSocial: representante.nombre || representante.razonSocial,
-      //     tipoDocumento: representante.tipoDocumento,
-      //     numeroDocumento: representante.numeroDocumento,
-      //   }];
-      // }
+        return [
+          {
+            nombreRazonSocial,
+            tipoDocumento: representante.tipoDocumento,
+            numeroDocumento: representante.numeroDocumento,
+          },
+        ];
+      }
     }
 
     return [];
