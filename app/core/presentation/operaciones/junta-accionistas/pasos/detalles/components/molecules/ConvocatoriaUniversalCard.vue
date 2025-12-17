@@ -1,12 +1,5 @@
 <template>
-  <div class="flex flex-col gap-5 p-6 bg-white rounded-lg border border-gray-200">
-    <!-- Título de la Convocatoria -->
-    <TitleH4
-      :title="title"
-      :subtitle="subtitle"
-      :variant="Titles.WITH_SUBTITLE_SPACING"
-    />
-
+  <div>
     <!-- Campos del formulario -->
     <ConvocatoriaFormFields
       prefix="detalle"
@@ -14,6 +7,8 @@
       :direccion="direccion"
       :fecha="fecha"
       :hora="hora"
+      :meta-data-ui="metaDataUi"
+      :border-inputs="true"
       @update:modo="$emit('update:modo', $event)"
       @update:direccion="$emit('update:direccion', $event)"
       @update:fecha="$emit('update:fecha', $event)"
@@ -23,27 +18,29 @@
 </template>
 
 <script setup lang="ts">
-import TitleH4 from '~/components/titles/TitleH4.vue';
-import ConvocatoriaFormFields from './ConvocatoriaFormFields.vue';
-import Titles from '~/types/enums/Titles.enum';
-import { ModoReunion } from '~/core/hexag/juntas/domain/enums/modo-reunion.enum';
+  import type { ModoReunion } from "~/core/hexag/juntas/domain/enums/modo-reunion.enum";
+  import ConvocatoriaFormFields from "./ConvocatoriaFormFields.vue";
 
-interface Props {
-  title: string;
-  subtitle: string;
-  modo: ModoReunion;
-  direccion: string;
-  fecha?: string;
-  hora?: string;
-}
+  interface Props {
+    title: string;
+    subtitle: string;
+    modo: ModoReunion;
+    direccion: string;
+    fecha?: string;
+    hora?: string;
+  }
 
-defineProps<Props>();
+  defineProps<Props>();
 
-defineEmits<{
-  'update:modo': [value: ModoReunion];
-  'update:direccion': [value: string];
-  'update:fecha': [value: string];
-  'update:hora': [value: string];
-}>();
+  defineEmits<{
+    "update:modo": [value: ModoReunion];
+    "update:direccion": [value: string];
+    "update:fecha": [value: string];
+    "update:hora": [value: string];
+  }>();
+
+  const metaDataUi = {
+    title_1: "Detalles de la Junta",
+    subtitle_1: "Indica el lugar, fecha y hora de realización de la junta",
+  };
 </script>
-

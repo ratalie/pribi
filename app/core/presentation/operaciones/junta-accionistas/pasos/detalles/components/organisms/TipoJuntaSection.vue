@@ -1,12 +1,14 @@
 <template>
   <section id="tipo-junta" class="flex flex-col gap-5">
-    <TitleH4
-      title="Tipo de Junta"
-      subtitle="Seleccione el tipo de junta a realizar:"
-      :variant="Titles.WITH_SUBTITLE_SPACING"
-    />
+    <TitleH4 title="Tipo de Junta" :variant="Titles.WITH_SUBTITLE_SPACING" />
 
-    <LabeledCardSwitch v-model="tipoJunta" :options="tipoJuntaOptions" :columns="2" />
+    <div class="grid grid-cols-2 gap-5 border border-gray-200 rounded-lg py-5 px-8">
+      <p class="t-t1 flex items-center font-secondary font-semibold text-gray-700">
+        Seleccione el tipo de junta a realizar:
+      </p>
+
+      <LabeledCardSwitch v-model="tipoJunta" :options="tipoJuntaOptions" :columns="2" />
+    </div>
   </section>
 </template>
 

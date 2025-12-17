@@ -1,6 +1,6 @@
 /**
  * Composable para gestionar la lógica de tipo de junta
- * 
+ *
  * Responsabilidades:
  * - Gestionar selección de tipo de junta
  * - Limpiar segundaConvocatoria al cambiar a Universal
@@ -8,9 +8,9 @@
  * - Sincronizar con store
  */
 
-import { TipoJunta } from '~/core/hexag/juntas/domain/enums/tipo-junta.enum';
-import { useMeetingDetailsStore } from '~/core/presentation/juntas/stores/meeting-details.store';
-import type { MeetingDetails } from '~/core/hexag/juntas/domain/entities/meeting-details.entity';
+import type { MeetingDetails } from "~/core/hexag/juntas/domain/entities/meeting-details.entity";
+import { TipoJunta } from "~/core/hexag/juntas/domain/enums/tipo-junta.enum";
+import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
 
 export function useTipoJunta() {
   const store = useMeetingDetailsStore();
@@ -20,14 +20,12 @@ export function useTipoJunta() {
    */
   const tipoJuntaOptions = [
     {
-      label: 'Junta Universal',
+      label: "Junta Universal",
       value: TipoJunta.UNIVERSAL,
-      description: 'No requiere convocatoria previa',
     },
     {
-      label: 'Junta General',
+      label: "Junta General",
       value: TipoJunta.GENERAL,
-      description: 'Requiere convocatoria con plazos establecidos',
     },
   ];
 
@@ -52,14 +50,16 @@ export function useTipoJunta() {
         };
       } else {
         const tipoAnterior = store.meetingDetails.tipoJunta;
-        
+
         // ⚠️ IMPORTANTE: Usar patchMeetingDetails para mantener reactividad
         const updates: Partial<MeetingDetails> = { tipoJunta: value };
 
         // Si cambia de GENERAL a UNIVERSAL, limpiar segundaConvocatoria
         // El backend rechaza segundaConvocatoria para Universal
         if (tipoAnterior === TipoJunta.GENERAL && value === TipoJunta.UNIVERSAL) {
-          console.log("🧹 [useTipoJunta] Limpiando segundaConvocatoria al cambiar a Universal");
+          console.log(
+            "🧹 [useTipoJunta] Limpiando segundaConvocatoria al cambiar a Universal"
+          );
           updates.segundaConvocatoria = undefined;
           updates.instaladaEnConvocatoria = undefined;
         }
@@ -80,4 +80,3 @@ export function useTipoJunta() {
     tipoJuntaOptions,
   };
 }
-
