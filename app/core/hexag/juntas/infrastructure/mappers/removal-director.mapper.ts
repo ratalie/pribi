@@ -72,6 +72,8 @@ export class RemovalDirectorMapper {
       firstFlowAction?.candidateStatus ||
       (backendData.isCandidate ? "CANDIDATE" : null);
 
+    // ✅ Versión simplificada: Solo mapear los 3 campos necesarios del backend
+    // El backend devuelve: isCandidate, candidateStatus, flowActionId
     return {
       id: backendData.id || "",
       persona,
@@ -86,8 +88,13 @@ export class RemovalDirectorMapper {
         candidateStatus: action.candidateStatus,
         actionSetId: action.actionSetId,
       })),
+      // ✅ Solo 3 campos necesarios según documentación simplificada
       candidateStatus: candidateStatus || null,
       flowActionId: firstFlowAction?.id || null,
+      // ✅ Campos nuevos (opcionales, no se usan pero se mantienen para compatibilidad)
+      isRemovalCandidate: undefined,
+      isRemoved: undefined,
+      removalStatus: undefined,
     };
   }
 

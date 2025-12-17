@@ -90,19 +90,10 @@ export function useVotacionRemocionDirectoresController() {
           })),
         });
 
-        // ✅ Si la sesión existe pero no tiene items, crear items desde candidatos (solo los que tienen isCandidate: true)
+        // ✅ Verificar sincronización automática del backend
+        // Si hay candidatos marcados pero no hay items, el backend debería haberlos creado automáticamente
         const candidatosFiltrados = remocionStore.candidatos.filter(
           (c) => c.isCandidate === true
-        );
-
-        console.log(
-          "[DEBUG][VotacionRemocionDirectoresController] Verificando si crear items:",
-          {
-            hasVotacion: votacionStore.hasVotacion,
-            itemsCount: votacionStore.items.length,
-            candidatosFiltrados: candidatosFiltrados.length,
-            candidatosTotal: remocionStore.candidatos.length,
-          }
         );
 
         if (
@@ -110,92 +101,23 @@ export function useVotacionRemocionDirectoresController() {
           votacionStore.items.length === 0 &&
           candidatosFiltrados.length > 0
         ) {
-          console.log(
-            "[DEBUG][VotacionRemocionDirectoresController] Sesión sin items, creando items desde candidatos..."
+          console.warn(
+            "[DEBUG][VotacionRemocionDirectoresController] ⚠️ Hay candidatos marcados pero no hay items de votación. " +
+            "El backend debería haber creado los items automáticamente. Recargando..."
           );
-
-          // Crear items desde candidatos filtrados
-          const items = candidatosFiltrados.map((candidato, index) => {
-            // Obtener nombre de la persona
-            let nombre = "";
-            if (candidato.persona) {
-              nombre = `${candidato.persona.nombre} ${candidato.persona.apellidoPaterno} ${
-                candidato.persona.apellidoMaterno || ""
-              }`.trim();
-            }
-
-            // Obtener rol del director
-            const rolDirector = candidato.rolDirector || "Director";
-
-            const label = `Se aprueba la remoción del director ${nombre} de sus funciones como ${rolDirector}.`;
-
-            return {
-              id: votacionStore.generateUuid(),
-              orden: index,
-              label,
-              descripción: `Votación sobre la remoción del director ${nombre}`,
-              tipoAprobacion: VoteAgreementType.SOMETIDO_A_VOTACION,
-              votos: [],
-            };
-          });
-
-          // ✅ Agregar items a la sesión en memoria
-          if (votacionStore.sesionVotacion) {
-            votacionStore.sesionVotacion.items = items;
-          }
-
-          // ✅ IMPORTANTE: Guardar items en el backend
-          console.log(
-            "[DEBUG][VotacionRemocionDirectoresController] Guardando items en backend..."
-          );
-          try {
-            // Crear el primer item
-            if (items.length > 0) {
-              const firstItem = items[0];
-              if (firstItem) {
-                await votacionStore.createVotacion(
-                  societyId.value,
-                  flowId.value,
-                  firstItem.id,
-                  firstItem.label,
-                  firstItem.descripción,
-                  firstItem.tipoAprobacion
-                );
-
-                // Agregar los items restantes
-                for (let i = 1; i < items.length; i++) {
-                  const item = items[i];
-                  if (!item) continue;
-
-                  await votacionStore.addVoteItemConVotos(
-                    societyId.value,
-                    flowId.value,
-                    item.id,
-                    item.label,
-                    item.descripción,
-                    item.tipoAprobacion,
-                    [] // Sin votos inicialmente
-                  );
-                }
-
-                console.log(
-                  "[DEBUG][VotacionRemocionDirectoresController] ✅ Items guardados en backend exitosamente"
-                );
-              }
-            }
-          } catch (error: any) {
+          
+          // Recargar votación (el backend debería haber creado los items automáticamente)
+          await votacionStore.loadVotacion(societyId.value, flowId.value);
+          
+          // Si aún no hay items después de recargar, hay un problema
+          if (votacionStore.items.length === 0) {
             console.error(
-              "[DEBUG][VotacionRemocionDirectoresController] ⚠️ Error al guardar items en backend:",
-              error
+              "[DEBUG][VotacionRemocionDirectoresController] ❌ Los items de votación no se crearon automáticamente. " +
+              "Por favor, verifique que los directores estén correctamente marcados."
             );
-            // Continuar aunque falle (los items están en memoria)
+            // No lanzar error aquí, solo mostrar warning en consola
+            // El usuario puede continuar y el backend debería crear los items al guardar
           }
-
-          console.log("[DEBUG][VotacionRemocionDirectoresController] Items creados:", {
-            candidatosTotal: remocionStore.candidatos.length,
-            candidatosFiltrados: candidatosFiltrados.length,
-            itemsCreados: items.length,
-          });
         }
 
         // ✅ Sincronizar votos con votantes actuales para cada item
@@ -331,8 +253,19 @@ export function useVotacionRemocionDirectoresController() {
    * ✅ Store dedicado siempre tiene contexto correcto (no necesita validación)
    */
   const preguntas = computed(() => {
+    console.log("[DEBUG][VotacionRemocionDirectoresController] 🔄 Computed preguntas ejecutado");
+
     // ✅ Prioridad 1: Usar items de la sesión de votación del backend
     const items = votacionStore.items;
+    console.log("[DEBUG][VotacionRemocionDirectoresController] Items de votación:", {
+      itemsCount: items.length,
+      items: items.map((item) => ({
+        id: item.id,
+        orden: item.orden,
+        label: item.label,
+      })),
+    });
+
     if (items.length > 0) {
       // Ordenar por orden si existe
       const itemsOrdenados = [...items].sort((a, b) => (a.orden || 0) - (b.orden || 0));
@@ -340,12 +273,6 @@ export function useVotacionRemocionDirectoresController() {
 
       console.log("[DEBUG][VotacionRemocionDirectoresController] ✅ Preguntas desde sesión:", {
         itemsCount: items.length,
-        items: items.map((item) => ({
-          id: item.id,
-          orden: item.orden,
-          label: item.label,
-          votosCount: item.votos?.length || 0,
-        })),
         preguntas: preguntasFromItems,
       });
 
@@ -353,7 +280,27 @@ export function useVotacionRemocionDirectoresController() {
     }
 
     // ✅ Prioridad 2: Si hay candidatos, generar preguntas desde candidatos (solo los que tienen isCandidate: true)
+    console.log("[DEBUG][VotacionRemocionDirectoresController] Candidatos en store:", {
+      candidatosTotal: remocionStore.candidatos.length,
+      candidatos: remocionStore.candidatos.map((c) => ({
+        id: c.id,
+        isCandidate: c.isCandidate,
+        candidateStatus: c.candidateStatus,
+        persona: c.persona,
+        rolDirector: c.rolDirector,
+      })),
+    });
+
     const candidatosFiltrados = remocionStore.candidatos.filter((c) => c.isCandidate === true);
+
+    console.log("[DEBUG][VotacionRemocionDirectoresController] Candidatos filtrados:", {
+      count: candidatosFiltrados.length,
+      candidatos: candidatosFiltrados.map((c) => ({
+        id: c.id,
+        nombre: c.persona ? `${c.persona.nombre} ${c.persona.apellidoPaterno}` : "Sin nombre",
+        rolDirector: c.rolDirector,
+      })),
+    });
 
     if (candidatosFiltrados.length > 0) {
       const preguntasFromCandidatos = candidatosFiltrados.map((c) => {
@@ -363,6 +310,10 @@ export function useVotacionRemocionDirectoresController() {
           nombre = `${c.persona.nombre} ${c.persona.apellidoPaterno} ${
             c.persona.apellidoMaterno || ""
           }`.trim();
+        } else {
+          console.warn(
+            `[DEBUG][VotacionRemocionDirectoresController] ⚠️ Director ${c.id} no tiene persona`
+          );
         }
 
         // Obtener rol del director
@@ -385,7 +336,12 @@ export function useVotacionRemocionDirectoresController() {
 
     // ⚠️ ÚLTIMO RECURSO: Si no hay preguntas en ningún lado, retornar array vacío
     console.warn(
-      "[DEBUG][VotacionRemocionDirectoresController] ⚠️ No hay preguntas disponibles. Retornando array vacío."
+      "[DEBUG][VotacionRemocionDirectoresController] ⚠️ No hay preguntas disponibles. Retornando array vacío.",
+      {
+        itemsCount: items.length,
+        candidatosTotal: remocionStore.candidatos.length,
+        candidatosFiltrados: candidatosFiltrados.length,
+      }
     );
     return [];
   });
@@ -675,65 +631,54 @@ export function useVotacionRemocionDirectoresController() {
       }
     });
 
-    // ✅ 4. Crear o actualizar la votación en el backend
-    const existeEnBackend = votacionStore.hasVotacion;
+    // ✅ 4. Verificar que la sesión existe (el backend debería haberla creado automáticamente)
+    // Si no existe, recargar una vez más por si acaso
+    if (!votacionStore.hasVotacion) {
+      // Verificar si hay candidatos marcados
+      const candidatosFiltrados = remocionStore.candidatos.filter(
+        (c) => c.isCandidate === true
+      );
+      
+      if (candidatosFiltrados.length === 0) {
+        throw new Error("No hay directores seleccionados para remoción.");
+      }
+      
+      // El backend debería haber creado la sesión automáticamente
+      // Intentar recargar una vez más
+      console.warn(
+        "[DEBUG][VotacionRemocionDirectoresController] ⚠️ Sesión no existe. Recargando..."
+      );
+      await votacionStore.loadVotacion(societyId.value, flowId.value);
+      
+      if (!votacionStore.hasVotacion) {
+        throw new Error(
+          "La sesión de votación no existe. " +
+          "El backend debería haberla creado automáticamente al marcar los directores. " +
+          "Por favor, recargue la página o contacte al administrador."
+        );
+      }
+    }
 
+    // ✅ 5. Actualizar solo los votos (NO crear items - el backend ya los creó automáticamente)
     try {
-      if (!existeEnBackend) {
-        // Crear nueva sesión con todos los items
-        const firstItem = items[0];
-        if (!firstItem) {
-          throw new Error("No hay items para crear votación");
-        }
+      // Actualizar todos los items existentes (solo votos, no crear items)
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (!item) continue;
 
-        await votacionStore.createVotacion(
+        await votacionStore.updateItemConVotos(
           societyId.value,
           flowId.value,
-          firstItem.id,
-          firstItem.label,
-          firstItem.descripción,
-          firstItem.tipoAprobacion || VoteAgreementType.SOMETIDO_A_VOTACION
+          item.id,
+          item.label,
+          item.descripción,
+          item.tipoAprobacion || VoteAgreementType.SOMETIDO_A_VOTACION,
+          item.votos.map((v) => ({
+            id: v.id,
+            accionistaId: v.accionistaId,
+            valor: v.valor,
+          }))
         );
-
-        // Agregar los items restantes
-        for (let i = 1; i < items.length; i++) {
-          const item = items[i];
-          if (!item) continue;
-
-          await votacionStore.addVoteItemConVotos(
-            societyId.value,
-            flowId.value,
-            item.id,
-            item.label,
-            item.descripción,
-            item.tipoAprobacion || VoteAgreementType.SOMETIDO_A_VOTACION,
-            item.votos.map((v) => ({
-              id: v.id,
-              accionistaId: v.accionistaId,
-              valor: v.valor,
-            }))
-          );
-        }
-      } else {
-        // Actualizar todos los items existentes
-        for (let i = 0; i < items.length; i++) {
-          const item = items[i];
-          if (!item) continue;
-
-          await votacionStore.updateItemConVotos(
-            societyId.value,
-            flowId.value,
-            item.id,
-            item.label,
-            item.descripción,
-            item.tipoAprobacion || VoteAgreementType.SOMETIDO_A_VOTACION,
-            item.votos.map((v) => ({
-              id: v.id,
-              accionistaId: v.accionistaId,
-              valor: v.valor,
-            }))
-          );
-        }
       }
 
       console.log(

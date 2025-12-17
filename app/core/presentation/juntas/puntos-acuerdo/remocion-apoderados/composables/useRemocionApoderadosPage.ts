@@ -126,87 +126,58 @@ export function useRemocionApoderadosPage() {
   }
 
   /**
-   * ✅ FUNCIÓN ÚNICA: Actualizar estado cuando se hace check/uncheck
-   * PUT se ejecuta automáticamente cuando cambia el checkbox
+   * Actualizar estado de checkboxes (solo local, PUT se ejecuta automáticamente)
    */
-  async function toggleApoderados(attorneyId: string, checked: boolean) {
-    const societyId = Number(route.params.societyId);
-    const flowId = Number(route.params.flowId);
-
-    // ✅ PUT hace TODO: marcar (CANDIDATO) o desmarcar (DESMARCAR)
-    const estado = checked ? "CANDIDATO" : "DESMARCAR";
-    await remocionStore.actualizarEstado(societyId, flowId, attorneyId, estado);
-
-    // Actualizar estado local
-    const apoderado = apoderados.value.find((a) => a.id === attorneyId);
-    if (apoderado) {
-      apoderado.checked = checked;
-    }
-  }
-
-  /**
-   * Actualizar estado de checkboxes (todos a la vez)
-   */
-  async function updateCheckedItems(checkedItems: boolean) {
-    const societyId = Number(route.params.societyId);
-    const flowId = Number(route.params.flowId);
-
-    const estado = checkedItems ? "CANDIDATO" : "DESMARCAR";
-
-    // Actualizar todos los apoderados
-    for (const apoderado of apoderados.value) {
-      try {
-        await remocionStore.actualizarEstado(societyId, flowId, apoderado.id, estado);
-        apoderado.checked = checkedItems;
-      } catch (error: any) {
-        console.error(
-          `[RemocionApoderados] Error al actualizar apoderado ${apoderado.id}:`,
-          error
-        );
-      }
-    }
+  function updateCheckedItems(checkedItems: boolean) {
+    apoderados.value.forEach((apoderado) => {
+      apoderado.checked = checkedItems;
+    });
   }
 
   /**
    * Guardar selección (legacy - mantener para compatibilidad)
-   * Ya no es necesario porque PUT se ejecuta automáticamente en check/uncheck
+   * PUT se ejecuta automáticamente en check/uncheck, esto solo recarga
    */
   async function guardarSeleccion(): Promise<void> {
-    // ✅ Ya no hace nada porque PUT se ejecuta automáticamente
-    // Solo recargar para asegurar que tenemos el estado más reciente
     const societyId = Number(route.params.societyId);
     const flowId = Number(route.params.flowId);
+    // Solo recargar para asegurar que tenemos el estado más reciente
     await remocionStore.loadApoderados(societyId, flowId);
     console.log("[RemocionApoderados] Selección guardada (PUT ya se ejecutó automáticamente)");
   }
 
   // ✅ Watcher: Ejecutar PUT automáticamente cuando cambia un checkbox individual
   const previousCheckedState = ref<Map<string, boolean>>(new Map());
+  const isInitializing = ref(false);
 
   watch(
-    () => apoderados.value.map((a) => ({ id: a.id, checked: a.checked })),
-    (newState) => {
+    () => apoderados.value,
+    (newApoderados) => {
       const societyId = Number(route.params.societyId);
       const flowId = Number(route.params.flowId);
 
       if (!societyId || !flowId) return;
+      if (isInitializing.value) return; // No ejecutar durante inicialización
 
       // Comparar con el estado anterior
-      newState.forEach(({ id, checked }) => {
-        const previousChecked = previousCheckedState.value.get(id);
-        if (previousChecked !== undefined && previousChecked !== checked) {
+      newApoderados.forEach((apoderado) => {
+        const previousChecked = previousCheckedState.value.get(apoderado.id);
+        if (previousChecked !== undefined && previousChecked !== apoderado.checked) {
+          console.log(
+            `[RemocionApoderados] Checkbox cambió para apoderado ${apoderado.id}: ${previousChecked} -> ${apoderado.checked}`
+          );
           // ✅ PUT automático cuando cambia el checkbox
-          const estado = checked ? "CANDIDATO" : "DESMARCAR";
-          remocionStore.actualizarEstado(societyId, flowId, id, estado).catch((error) => {
-            console.error(`[RemocionApoderados] Error al actualizar apoderado ${id}:`, error);
+          const estado = apoderado.checked ? "CANDIDATO" : "DESMARCAR";
+          remocionStore.actualizarEstado(societyId, flowId, apoderado.id, estado).catch((error) => {
+            console.error(`[RemocionApoderados] Error al actualizar apoderado ${apoderado.id}:`, error);
             // Revertir el cambio si falla
-            const apoderado = apoderados.value.find((a) => a.id === id);
-            if (apoderado) {
-              apoderado.checked = previousChecked;
+            const apoderadoToRevert = apoderados.value.find((a) => a.id === apoderado.id);
+            if (apoderadoToRevert) {
+              apoderadoToRevert.checked = previousChecked;
             }
           });
         }
-        previousCheckedState.value.set(id, checked);
+        previousCheckedState.value.set(apoderado.id, apoderado.checked);
       });
     },
     { deep: true }
@@ -214,17 +185,18 @@ export function useRemocionApoderadosPage() {
 
   // Cargar apoderados al montar
   onMounted(() => {
+    isInitializing.value = true;
     loadApoderados().then(() => {
       // Inicializar estado anterior después de cargar
       apoderados.value.forEach((a) => {
         previousCheckedState.value.set(a.id, a.checked);
       });
+      isInitializing.value = false;
     });
   });
 
   return {
     apoderados: computed(() => apoderados.value),
-    toggleApoderados, // ✅ Función para toggle manual (opcional)
     updateCheckedItems,
     guardarSeleccion,
     loadApoderados,

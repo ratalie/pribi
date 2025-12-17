@@ -8,6 +8,7 @@ import type {
   RemovalAttorneyActionResponse,
 } from "../../application/dtos/removal-attorney.dto";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
+import { RemovalAttorneyMapper } from "../mappers/removal-attorney.mapper";
 
 /**
  * Implementación HTTP del repositorio de Remoción de Apoderados
@@ -85,7 +86,15 @@ export class RemovalAttorneyHttpRepository implements RemovalAttorneyRepository 
         return [];
       }
 
-      return response.data;
+      // Mapear respuesta del backend al DTO esperado
+      const mappedData = RemovalAttorneyMapper.fromBackendResponseArray(response.data);
+
+      console.debug("[Repository][RemovalAttorneyHttp] Apoderados mapeados:", {
+        originalCount: response.data.length,
+        mappedCount: mappedData.length,
+      });
+
+      return mappedData;
     } catch (error: any) {
       // Si es 404, no hay apoderados (es normal)
       if (error.statusCode === 404 || error.status === 404) {

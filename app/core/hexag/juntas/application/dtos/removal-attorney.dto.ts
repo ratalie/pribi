@@ -78,6 +78,14 @@ export interface RemovalAttorneyResponseDTO {
 
   /** ID de la acción del flujo */
   flowActionId: string | null;
+
+  // ✅ Campos nuevos y descriptivos (para REMOVAL)
+  /** true si está marcado para remoción (CANDIDATE) */
+  isRemovalCandidate?: boolean;
+  /** true si ya fue votado (ELECTED o NOT_ELECTED) */
+  isRemoved?: boolean;
+  /** Estado de remoción: PENDIENTE_VOTACION | REMOVIDO | NO_REMOVIDO | null */
+  removalStatus?: "PENDIENTE_VOTACION" | "REMOVIDO" | "NO_REMOVIDO" | null;
 }
 
 /**

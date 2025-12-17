@@ -89,7 +89,8 @@ export function useVotacionRemocionApoderadosController() {
           })),
         });
 
-        // ✅ Si la sesión existe pero no tiene items, crear items desde candidatos (solo los que tienen isCandidate: true)
+        // ✅ Verificar sincronización automática del backend
+        // Si hay candidatos marcados pero no hay items, el backend debería haberlos creado automáticamente
         const candidatosFiltrados = remocionStore.candidatos.filter(
           (c) => c.isCandidate === true
         );
@@ -99,57 +100,23 @@ export function useVotacionRemocionApoderadosController() {
           votacionStore.items.length === 0 &&
           candidatosFiltrados.length > 0
         ) {
-          console.log(
-            "[DEBUG][VotacionRemocionApoderadosController] Sesión sin items, creando items desde candidatos..."
+          console.warn(
+            "[DEBUG][VotacionRemocionApoderadosController] ⚠️ Hay candidatos marcados pero no hay items de votación. " +
+              "El backend debería haber creado los items automáticamente. Recargando..."
           );
 
-          // Obtener nombres de clases desde snapshot
-          const snapshot = snapshotStore.snapshot;
-          const clasesMap = new Map(
-            snapshot?.attorneyClasses?.map((clase) => [clase.id, clase.name]) || []
-          );
+          // Recargar votación (el backend debería haber creado los items automáticamente)
+          await votacionStore.loadVotacion(societyId.value, flowId.value);
 
-          // Crear items desde candidatos filtrados
-          const items = candidatosFiltrados.map((candidato, index) => {
-            // Obtener nombre de la persona
-            let nombre = "";
-            if (candidato.person.type === "NATURAL" && candidato.person.natural) {
-              const natural = candidato.person.natural;
-              nombre = `${natural.firstName} ${natural.lastNamePaternal} ${
-                natural.lastNameMaternal || ""
-              }`.trim();
-            } else if (candidato.person.type === "JURIDIC" && candidato.person.juridic) {
-              nombre = candidato.person.juridic.businessName;
-            }
-
-            // Obtener nombre de la clase
-            const nombreClase = clasesMap.get(candidato.attorneyClassId) || "Apoderado";
-
-            const label = `Se aprueba la remoción del apoderado ${nombre} de sus funciones como ${nombreClase}.`;
-
-            return {
-              id: votacionStore.generateUuid(),
-              orden: index,
-              label,
-              descripción: `Votación sobre la remoción del apoderado ${nombre}`,
-              tipoAprobacion: VoteAgreementType.SOMETIDO_A_VOTACION,
-              votos: [],
-            };
-          });
-
-          // Agregar items a la sesión en memoria
-          if (votacionStore.sesionVotacion) {
-            votacionStore.sesionVotacion.items = items;
+          // Si aún no hay items después de recargar, hay un problema
+          if (votacionStore.items.length === 0) {
+            console.error(
+              "[DEBUG][VotacionRemocionApoderadosController] ❌ Los items de votación no se crearon automáticamente. " +
+                "Por favor, verifique que los apoderados estén correctamente marcados."
+            );
+            // No lanzar error aquí, solo mostrar warning en consola
+            // El usuario puede continuar y el backend debería crear los items al guardar
           }
-
-          console.log(
-            "[DEBUG][VotacionRemocionApoderadosController] Items creados en memoria:",
-            {
-              candidatosTotal: remocionStore.candidatos.length,
-              candidatosFiltrados: candidatosFiltrados.length,
-              itemsCreados: items.length,
-            }
-          );
         }
 
         // ✅ Sincronizar votos con votantes actuales para cada item
@@ -638,65 +605,54 @@ export function useVotacionRemocionApoderadosController() {
       }
     });
 
-    // ✅ 4. Crear o actualizar la votación en el backend
-    const existeEnBackend = votacionStore.hasVotacion;
+    // ✅ 4. Verificar que la sesión existe (el backend debería haberla creado automáticamente)
+    // Si no existe, recargar una vez más por si acaso
+    if (!votacionStore.hasVotacion) {
+      // Verificar si hay candidatos marcados
+      const candidatosFiltrados = remocionStore.candidatos.filter(
+        (c) => c.isCandidate === true
+      );
 
+      if (candidatosFiltrados.length === 0) {
+        throw new Error("No hay apoderados seleccionados para remoción.");
+      }
+
+      // El backend debería haber creado la sesión automáticamente
+      // Intentar recargar una vez más
+      console.warn(
+        "[DEBUG][VotacionRemocionApoderadosController] ⚠️ Sesión no existe. Recargando..."
+      );
+      await votacionStore.loadVotacion(societyId.value, flowId.value);
+
+      if (!votacionStore.hasVotacion) {
+        throw new Error(
+          "La sesión de votación no existe. " +
+            "El backend debería haberla creado automáticamente al marcar los apoderados. " +
+            "Por favor, recargue la página o contacte al administrador."
+        );
+      }
+    }
+
+    // ✅ 5. Actualizar solo los votos (NO crear items - el backend ya los creó automáticamente)
     try {
-      if (!existeEnBackend) {
-        // Crear nueva sesión con todos los items
-        const firstItem = items[0];
-        if (!firstItem) {
-          throw new Error("No hay items para crear votación");
-        }
+      // Actualizar todos los items existentes (solo votos, no crear items)
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (!item) continue;
 
-        await votacionStore.createVotacion(
+        await votacionStore.updateItemConVotos(
           societyId.value,
           flowId.value,
-          firstItem.id,
-          firstItem.label,
-          firstItem.descripción,
-          firstItem.tipoAprobacion || VoteAgreementType.SOMETIDO_A_VOTACION
+          item.id,
+          item.label,
+          item.descripción,
+          item.tipoAprobacion || VoteAgreementType.SOMETIDO_A_VOTACION,
+          item.votos.map((v) => ({
+            id: v.id,
+            accionistaId: v.accionistaId,
+            valor: v.valor,
+          }))
         );
-
-        // Agregar los items restantes
-        for (let i = 1; i < items.length; i++) {
-          const item = items[i];
-          if (!item) continue;
-
-          await votacionStore.addVoteItemConVotos(
-            societyId.value,
-            flowId.value,
-            item.id,
-            item.label,
-            item.descripción,
-            item.tipoAprobacion || VoteAgreementType.SOMETIDO_A_VOTACION,
-            item.votos.map((v) => ({
-              id: v.id,
-              accionistaId: v.accionistaId,
-              valor: v.valor,
-            }))
-          );
-        }
-      } else {
-        // Actualizar todos los items existentes
-        for (let i = 0; i < items.length; i++) {
-          const item = items[i];
-          if (!item) continue;
-
-          await votacionStore.updateItemConVotos(
-            societyId.value,
-            flowId.value,
-            item.id,
-            item.label,
-            item.descripción,
-            item.tipoAprobacion || VoteAgreementType.SOMETIDO_A_VOTACION,
-            item.votos.map((v) => ({
-              id: v.id,
-              accionistaId: v.accionistaId,
-              valor: v.valor,
-            }))
-          );
-        }
       }
 
       console.log(

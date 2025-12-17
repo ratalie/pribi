@@ -133,93 +133,51 @@ export function useRemocionDirectoresPage() {
   });
 
   /**
-   * ✅ FUNCIÓN ÚNICA: Actualizar estado cuando se hace check/uncheck
-   * PUT se ejecuta automáticamente cuando cambia el checkbox
+   * Actualizar estado de checkboxes para Titulares (solo local, PUT se ejecuta automáticamente)
    */
-  async function toggleDirectores(directorId: string, checked: boolean) {
-    const societyId = Number(route.params.societyId);
-    const flowId = Number(route.params.flowId);
-
-    // ✅ PUT hace TODO: marcar (CANDIDATO) o desmarcar (DESMARCAR)
-    const estado = checked ? "CANDIDATO" : "DESMARCAR";
-    await remocionStore.actualizarEstado(societyId, flowId, directorId, estado);
-
-    // Actualizar estado local
-    const director = directores.value.find((d) => d.id === directorId);
-    if (director) {
-      director.checked = checked;
-    }
+  function updateCheckedItemsTitulares(checkedItems: boolean) {
+    directores.value.forEach((director) => {
+      if (director.rol_director === "TITULAR") {
+        director.checked = checkedItems;
+      }
+    });
   }
 
   /**
-   * Actualizar estado de checkboxes para Titulares (todos a la vez)
+   * Actualizar estado de checkboxes para Suplentes y Alternos (solo local, PUT se ejecuta automáticamente)
    */
-  async function updateCheckedItemsTitulares(checkedItems: boolean) {
-    const societyId = Number(route.params.societyId);
-    const flowId = Number(route.params.flowId);
-
-    const titulares = directores.value.filter((d) => d.rol_director === "TITULAR");
-    const estado = checkedItems ? "CANDIDATO" : "DESMARCAR";
-
-    // Actualizar todos los titulares
-    for (const director of titulares) {
-      try {
-        await remocionStore.actualizarEstado(societyId, flowId, director.id, estado);
+  function updateCheckedItemsSuplentes(checkedItems: boolean) {
+    directores.value.forEach((director) => {
+      if (director.rol_director === "SUPLENTE" || director.rol_director === "ALTERNO") {
         director.checked = checkedItems;
-      } catch (error: any) {
-        console.error(
-          `[RemocionDirectores] Error al actualizar director ${director.id}:`,
-          error
-        );
       }
-    }
-  }
-
-  /**
-   * Actualizar estado de checkboxes para Suplentes y Alternos (todos a la vez)
-   */
-  async function updateCheckedItemsSuplentes(checkedItems: boolean) {
-    const societyId = Number(route.params.societyId);
-    const flowId = Number(route.params.flowId);
-
-    const suplentes = directores.value.filter(
-      (d) => d.rol_director === "SUPLENTE" || d.rol_director === "ALTERNO"
-    );
-    const estado = checkedItems ? "CANDIDATO" : "DESMARCAR";
-
-    // Actualizar todos los suplentes/alternos
-    for (const director of suplentes) {
-      try {
-        await remocionStore.actualizarEstado(societyId, flowId, director.id, estado);
-        director.checked = checkedItems;
-      } catch (error: any) {
-        console.error(
-          `[RemocionDirectores] Error al actualizar director ${director.id}:`,
-          error
-        );
-      }
-    }
+    });
   }
 
   /**
    * Guardar selección (legacy - mantener para compatibilidad)
-   * Ya no es necesario porque PUT se ejecuta automáticamente en check/uncheck
+   * PUT se ejecuta automáticamente en check/uncheck, esto solo recarga
    */
   async function guardarSeleccion(): Promise<void> {
-    // ✅ Ya no hace nada porque PUT se ejecuta automáticamente
-    // Solo recargar para asegurar que tenemos el estado más reciente
     const societyId = Number(route.params.societyId);
     const flowId = Number(route.params.flowId);
+    // Solo recargar para asegurar que tenemos el estado más reciente
     await remocionStore.loadDirectores(societyId, flowId);
     console.log("[RemocionDirectores] Selección guardada (PUT ya se ejecutó automáticamente)");
   }
 
   // ✅ Watcher: Ejecutar PUT automáticamente cuando cambia un checkbox individual
   const previousCheckedState = ref<Map<string, boolean>>(new Map());
+  const isInitializing = ref(true); // Flag para evitar ejecutar PUT durante carga inicial
 
   watch(
     () => directores.value.map((d) => ({ id: d.id, checked: d.checked })),
     (newState) => {
+      // ✅ NO ejecutar PUT durante la carga inicial
+      if (isInitializing.value) {
+        return;
+      }
+
       const societyId = Number(route.params.societyId);
       const flowId = Number(route.params.flowId);
 
@@ -231,6 +189,7 @@ export function useRemocionDirectoresPage() {
         if (previousChecked !== undefined && previousChecked !== checked) {
           // ✅ PUT automático cuando cambia el checkbox
           const estado = checked ? "CANDIDATO" : "DESMARCAR";
+          console.log(`[RemocionDirectores] Checkbox cambiado para director ${id}: ${estado}`);
           remocionStore.actualizarEstado(societyId, flowId, id, estado).catch((error) => {
             console.error(`[RemocionDirectores] Error al actualizar director ${id}:`, error);
             // Revertir el cambio si falla
@@ -243,7 +202,7 @@ export function useRemocionDirectoresPage() {
         previousCheckedState.value.set(id, checked);
       });
     },
-    { deep: true }
+    { deep: true, immediate: false }
   );
 
   // Cargar directores al montar
@@ -253,6 +212,9 @@ export function useRemocionDirectoresPage() {
       directores.value.forEach((d) => {
         previousCheckedState.value.set(d.id, d.checked);
       });
+      // ✅ Habilitar watcher después de inicializar
+      isInitializing.value = false;
+      console.log("[RemocionDirectores] Watcher habilitado, PUT automático activo");
     });
   });
 
@@ -260,7 +222,6 @@ export function useRemocionDirectoresPage() {
     directores: computed(() => directores.value),
     directoresTitulares,
     directoresSuplentesAlternos,
-    toggleDirectores, // ✅ Función para toggle manual (opcional)
     updateCheckedItemsTitulares,
     updateCheckedItemsSuplentes,
     guardarSeleccion,

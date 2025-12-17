@@ -145,6 +145,18 @@ export function getNombramientoDirectorioRoutes(basePath: string): Record<string
   };
 }
 
+/**
+ * Mapeo de secciones a rutas para "capitalizacion-creditos"
+ */
+export function getCapitalizacionCreditosRoutes(basePath: string): Record<string, string> {
+  return {
+    "capitalizacion-creditos": `${basePath}/capitalizacion-creditos`,
+    acreedores: `${basePath}/capitalizacion-creditos/acreedores`,
+    creditos: `${basePath}/capitalizacion-creditos/creditos`,
+    votacion: `${basePath}/capitalizacion-creditos/votacion`,
+    resumen: `${basePath}/capitalizacion-creditos/resumen`,
+  };
+}
 
 /**
  * Obtiene el mapeo de rutas para un sub-step
@@ -176,10 +188,10 @@ export function getSectionRoutesForSubStep(
       return getNombramientoDirectoresRoutes(basePath);
     case "nombramiento-nuevo-directorio":
       return getNombramientoDirectorioRoutes(basePath);
-    case "nombramiento-directores":
-      return getNombramientoDirectoresRoutes(basePath);
     case "nombramiento-directorio":
       return getNombramientoDirectorioRoutes(basePath);
+    case "capitalizacion-creditos":
+      return getCapitalizacionCreditosRoutes(basePath);
     default:
       return null;
   }
