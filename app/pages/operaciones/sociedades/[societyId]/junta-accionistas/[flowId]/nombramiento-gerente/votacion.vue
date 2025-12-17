@@ -19,9 +19,10 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref } from "vue";
+  import { computed } from "vue";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
+  import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/stores/useVotacionStore";
   import { useVotacionNombramientoGerenteController } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-gerente/votacion/composables/useVotacionNombramientoGerenteController";
   import MetodoVotacio from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/components/votacion/MetodoVotacio.vue";
 
@@ -40,6 +41,7 @@
   });
 
   const controller = useVotacionNombramientoGerenteController();
+  const votacionStore = useVotacionStore();
 
   // ✅ Obtener props del controller
   const isLoading = controller.isLoading;
@@ -82,10 +84,20 @@
     return "";
   });
 
-  // Método de votación (unanimidad/mayoría) controlado localmente (sin depender del backend)
-  const metodoVotacion = ref<"unanimidad" | "mayoria">("unanimidad");
+  // Método de votación (unanimidad/mayoría) basado en tipoAprobacion del store
+  const metodoVotacion = computed({
+    get: () => {
+      if (!votacionStore.hasVotacion) return "unanimidad"; // Por defecto
+      return votacionStore.esUnanimidad ? "unanimidad" : "mayoria";
+    },
+    set: (value: string) => {
+      // Solo actualizar estado local, NO guardar
+      controller.cambiarTipoAprobacion(value as "unanimidad" | "mayoria");
+    },
+  });
 
   function handleCambiarTipo(tipo: "unanimidad" | "mayoria") {
+    // Solo actualizar estado local, NO guardar
     controller.cambiarTipoAprobacion(tipo);
   }
 
