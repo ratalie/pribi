@@ -166,7 +166,7 @@
 <script setup lang="ts">
   import { computed, ref, watch } from "vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
-  import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/stores/useVotacionStore";
+  import { useVotacionStore } from "~/core/presentation/juntas/stores/votacion.store";
 
   interface Votante {
     id: string;
@@ -192,6 +192,7 @@
     votantes?: Votante[] | any; // Aceptar también ComputedRef
     textoVotacion?: string | any; // Aceptar también ComputedRef
     getVoto?: (accionistaId: string) => "A_FAVOR" | "EN_CONTRA" | "ABSTENCION" | null; // Función para obtener voto
+    votacionStore?: any; // ✅ Store dedicado opcional (para múltiples preguntas)
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -217,8 +218,8 @@
     ];
   }>();
 
-  // ✅ Usar store solo si no hay función getVoto (legacy)
-  const votacionStore = props.getVoto ? null : useVotacionStore();
+  // ✅ Usar store dedicado si se pasa como prop, sino usar store compartido solo si no hay función getVoto (legacy)
+  const votacionStore = props.votacionStore || (props.getVoto ? null : useVotacionStore());
 
   // Usar votantes si están disponibles, sino usar accionistas (legacy)
   const listaVotantes = computed(() => {
@@ -246,6 +247,7 @@
           id: v.id,
           accionistaId: v.accionistaId,
           nombreCompleto: v.nombreCompleto,
+          accionesConDerechoVoto: v.accionesConDerechoVoto, // ✅ Verificar que esté presente
         });
       });
       return votantesValue;
@@ -274,14 +276,32 @@
 
   // Usar texto dinámico si está disponible
   const preguntas = computed(() => {
+    // ✅ Prioridad 1: Usar textoVotacion si está disponible
     if (props.textoVotacion) {
-      return [props.textoVotacion];
+      const textoValue =
+        typeof props.textoVotacion === "object" && "value" in props.textoVotacion
+          ? (props.textoVotacion as any).value
+          : props.textoVotacion;
+      if (textoValue && typeof textoValue === "string" && textoValue.trim() !== "") {
+        return [textoValue];
+      }
     }
-    return props.preguntas.length > 0
+
+    // ✅ Prioridad 2: Usar preguntas pasadas como prop
+    const preguntasValue = Array.isArray(props.preguntas)
       ? props.preguntas
-      : [
-          "¿Se aprueba el aumento de capital vía Aportes Dinerarios por S/ 2,000, mediante la emisión de 2,000 acciones nuevas de valor nominal S/ 1. El capital social se incrementa de S/ 1,000 a S/ 3,000, y el número de acciones de 1,000 a 3,000.?",
-        ];
+      : typeof props.preguntas === "object" && "value" in props.preguntas
+      ? (props.preguntas as any).value || []
+      : [];
+
+    if (Array.isArray(preguntasValue) && preguntasValue.length > 0) {
+      return preguntasValue;
+    }
+
+    // ✅ Prioridad 3: Retornar array vacío (NO usar fallback hardcodeado)
+    // Si no hay preguntas, el componente debe mostrar un estado vacío o error
+    console.warn("[MayoriaVotacion] No hay preguntas disponibles. Retornando array vacío.");
+    return [];
   });
 
   type Voto = "A_FAVOR" | "EN_CONTRA" | "ABSTENCION" | null;
@@ -293,80 +313,139 @@
       .map(() => Array(listaVotantes.value.length).fill(null))
   );
 
+  // Flag para evitar loops infinitos en watchers
+  const isLoadingVotos = ref(false);
+  // Guardar el último estado de votos para comparar (evitar recargas innecesarias)
+  const ultimosVotos = ref<(Voto | null)[]>([]);
+
   // Cargar votos existentes del store o función getVoto
   const cargarVotosExistentes = () => {
-    console.log("[MayoriaVotacion] cargarVotosExistentes() ejecutado");
-    console.log("[MayoriaVotacion] hasVotacion:", votacionStore.hasVotacion);
-    console.log("[MayoriaVotacion] sesionVotacion:", votacionStore.sesionVotacion);
-    console.log("[MayoriaVotacion] listaVotantes:", listaVotantes.value);
-    console.log("[MayoriaVotacion] preguntas count:", preguntas.value.length);
-
-    // ✅ Si hay función getVoto, usarla (nuevo método)
-    if (props.getVoto) {
-      console.log("[MayoriaVotacion] Usando función getVoto para cargar votos");
-      // ✅ Extraer función si es computed
-      const getVotoFn = typeof props.getVoto === "function" 
-        ? props.getVoto 
-        : (props.getVoto as any)?.value || props.getVoto;
-      
-      listaVotantes.value.forEach((votante, index) => {
-        const voto = getVotoFn(votante.accionistaId);
-        console.log(`[MayoriaVotacion] Votante ${index} (${votante.accionistaId}):`, {
-          voto,
-        });
-        if (voto && votos.value[0]) {
-          votos.value[0][index] = voto as Voto;
-          console.log(`[MayoriaVotacion] Voto cargado para votante ${index}:`, voto);
-        }
-      });
-      console.log("[MayoriaVotacion] Votos cargados:", votos.value[0]);
+    // Evitar recargas si ya se está cargando
+    if (isLoadingVotos.value) {
+      console.log("[MayoriaVotacion] Ya se está cargando, ignorando recarga...");
       return;
     }
 
-    // ✅ Legacy: usar store (solo si no hay función getVoto)
-    if (votacionStore && votacionStore.hasVotacion && votacionStore.sesionVotacion) {
-      const sesion = votacionStore.sesionVotacion;
-      console.log("[MayoriaVotacion] Sesión de votación encontrada (legacy):", {
-        id: sesion.id,
-        itemsCount: sesion.items.length,
-        items: sesion.items.map((item) => ({
-          id: item.id,
-          label: item.label,
-          votosCount: item.votos.length,
-        })),
-      });
+    isLoadingVotos.value = true;
+    console.log("[MayoriaVotacion] cargarVotosExistentes() ejecutado");
+    if (votacionStore) {
+      console.log("[MayoriaVotacion] hasVotacion:", votacionStore.hasVotacion);
+      console.log("[MayoriaVotacion] sesionVotacion:", votacionStore.sesionVotacion);
+    }
+    console.log("[MayoriaVotacion] listaVotantes:", listaVotantes.value);
+    console.log("[MayoriaVotacion] preguntas count:", preguntas.value.length);
 
-      // ✅ Cargar votos para cada pregunta (item)
-      preguntas.value.forEach((pregunta, preguntaIndex) => {
-        const item = sesion.items[preguntaIndex];
-        if (!item) {
-          console.warn(`[MayoriaVotacion] No hay item para pregunta ${preguntaIndex}`);
+    try {
+      // ✅ Si hay función getVoto, intentar usarla primero
+      // Pero si hay múltiples preguntas, usar el store directamente (más eficiente)
+      if (props.getVoto && preguntas.value.length === 1) {
+        console.log(
+          "[MayoriaVotacion] Usando función getVoto para cargar votos (una pregunta)"
+        );
+        // ✅ Extraer función si es computed
+        const getVotoFn =
+          typeof props.getVoto === "function"
+            ? props.getVoto
+            : (props.getVoto as any)?.value || props.getVoto;
+
+        // Asegurar que el array de votos existe
+        if (!votos.value[0]) {
+          votos.value[0] = Array(listaVotantes.value.length).fill(null);
+        }
+
+        const votosCargados: (Voto | null)[] = [];
+        listaVotantes.value.forEach((votante, index) => {
+          const voto = getVotoFn(votante.accionistaId);
+          votosCargados.push(voto);
+          console.log(`[MayoriaVotacion] Votante ${index} (${votante.accionistaId}):`, {
+            voto,
+          });
+          if (votos.value[0]) {
+            votos.value[0][index] = voto as Voto;
+            if (voto) {
+              console.log(`[MayoriaVotacion] Voto cargado para votante ${index}:`, voto);
+            }
+          }
+        });
+        // Actualizar último estado para evitar recargas innecesarias
+        ultimosVotos.value = votosCargados;
+        console.log("[MayoriaVotacion] Votos cargados:", votos.value[0]);
+        return;
+      }
+
+      // ✅ Si hay múltiples preguntas, usar el store directamente (más eficiente)
+      if (preguntas.value.length > 1 && votacionStore) {
+        console.log(
+          "[MayoriaVotacion] Múltiples preguntas detectadas, usando store directamente"
+        );
+        // Continuar con la lógica del store más abajo
+      }
+
+      // ✅ Legacy: usar store (solo si no hay función getVoto)
+      // ⚠️ IMPORTANTE: Validar contexto antes de usar datos del store
+      if (votacionStore && votacionStore.hasVotacion && votacionStore.sesionVotacion) {
+        const sesion = votacionStore.sesionVotacion;
+
+        // ✅ Validar que el número de items coincida con el número de preguntas
+        // Esto evita cargar datos de otro flujo (ej: aporte dinerario tiene 1 pregunta, remoción apoderados tiene múltiples)
+        if (sesion.items.length !== preguntas.value.length) {
+          console.warn(
+            "[MayoriaVotacion] ⚠️ Número de items no coincide con número de preguntas, no cargando votos:",
+            {
+              itemsCount: sesion.items.length,
+              preguntasCount: preguntas.value.length,
+              contexto: sesion.contexto,
+            }
+          );
           return;
         }
 
-        console.log(
-          `[MayoriaVotacion] Cargando votos para pregunta ${preguntaIndex} (item ${item.id}):`,
-          {
+        console.log("[MayoriaVotacion] Sesión de votación encontrada (legacy):", {
+          id: sesion.id,
+          contexto: sesion.contexto,
+          itemsCount: sesion.items.length,
+          items: sesion.items.map((item: any) => ({
+            id: item.id,
+            label: item.label,
             votosCount: item.votos.length,
-            votos: item.votos,
-          }
-        );
-
-        listaVotantes.value.forEach((votante, accionistaIndex) => {
-          const voto = item.votos.find((v) => v.accionistaId === votante.accionistaId);
-          if (voto && votos.value[preguntaIndex]) {
-            votos.value[preguntaIndex][accionistaIndex] = voto.valor as Voto;
-            console.log(
-              `[MayoriaVotacion] Voto cargado para pregunta ${preguntaIndex}, votante ${accionistaIndex}:`,
-              voto.valor
-            );
-          }
+          })),
         });
-      });
 
-      console.log("[MayoriaVotacion] Votos cargados para todas las preguntas:", votos.value);
-    } else {
-      console.log("[MayoriaVotacion] No hay votación o sesión de votación");
+        // ✅ Cargar votos para cada pregunta (item)
+        preguntas.value.forEach((pregunta, preguntaIndex) => {
+          const item = sesion.items[preguntaIndex];
+          if (!item) {
+            console.warn(`[MayoriaVotacion] No hay item para pregunta ${preguntaIndex}`);
+            return;
+          }
+
+          console.log(
+            `[MayoriaVotacion] Cargando votos para pregunta ${preguntaIndex} (item ${item.id}):`,
+            {
+              votosCount: item.votos.length,
+              votos: item.votos,
+            }
+          );
+
+          listaVotantes.value.forEach((votante, accionistaIndex) => {
+            const voto = item.votos.find((v: any) => v.accionistaId === votante.accionistaId);
+            const votosPregunta = votos.value[preguntaIndex];
+            if (voto && votosPregunta) {
+              votosPregunta[accionistaIndex] = voto.valor as Voto;
+              console.log(
+                `[MayoriaVotacion] Voto cargado para pregunta ${preguntaIndex}, votante ${accionistaIndex}:`,
+                voto.valor
+              );
+            }
+          });
+        });
+
+        console.log("[MayoriaVotacion] Votos cargados para todas las preguntas:", votos.value);
+      } else {
+        console.log("[MayoriaVotacion] No hay votación o sesión de votación");
+      }
+    } finally {
+      isLoadingVotos.value = false;
     }
   };
 
@@ -377,10 +456,10 @@
   if (votacionStore) {
     watch(
       () => [
-      votacionStore.hasVotacion,
-      votacionStore.sesionVotacion?.items,
-      listaVotantes.value.length,
-    ],
+        votacionStore.hasVotacion,
+        votacionStore.sesionVotacion?.items,
+        listaVotantes.value.length,
+      ],
       () => {
         console.log("[MayoriaVotacion] Store cambió, recargando votos...");
         cargarVotosExistentes();
@@ -407,22 +486,33 @@
   // Observamos los resultados de getVoto para cada votante
   if (props.getVoto) {
     // Extraer función si es computed
-    const getVotoFn = typeof props.getVoto === "function" 
-      ? props.getVoto 
-      : (props.getVoto as any)?.value || props.getVoto;
-    
+    const getVotoFn =
+      typeof props.getVoto === "function"
+        ? props.getVoto
+        : (props.getVoto as any)?.value || props.getVoto;
+
     watch(
       () => {
         // Crear un array de votos actuales usando getVoto
-        return listaVotantes.value.map(v => getVotoFn(v.accionistaId));
+        return listaVotantes.value.map((v) => getVotoFn(v.accionistaId));
       },
       (nuevosVotos) => {
-        console.log("[MayoriaVotacion] Votos cambiaron (a través de getVoto), recargando...", nuevosVotos);
-        cargarVotosExistentes();
+        // Comparar con el estado anterior para evitar recargas innecesarias
+        const votosCambiaron =
+          JSON.stringify(nuevosVotos) !== JSON.stringify(ultimosVotos.value);
+
+        if (votosCambiaron) {
+          console.log(
+            "[MayoriaVotacion] Votos cambiaron (a través de getVoto), recargando...",
+            nuevosVotos
+          );
+          ultimosVotos.value = nuevosVotos;
+          cargarVotosExistentes();
+        }
       },
       { deep: true, immediate: false }
     );
-    
+
     // ✅ También observar el computed directamente si es un computed
     if (props.getVoto && typeof props.getVoto === "object" && "value" in props.getVoto) {
       watch(
@@ -443,6 +533,25 @@
       console.log("[MayoriaVotacion] Votantes cambiaron, recargando votos...");
       cargarVotosExistentes();
     }
+  );
+
+  // ✅ Observar cambios en preguntas para reinicializar array de votos
+  watch(
+    () => preguntas.value.length,
+    (newLength, oldLength) => {
+      if (newLength !== oldLength) {
+        console.log(
+          `[MayoriaVotacion] Número de preguntas cambió de ${oldLength} a ${newLength}, reinicializando votos...`
+        );
+        // Reinicializar array de votos con el nuevo tamaño
+        votos.value = Array(newLength)
+          .fill(null)
+          .map(() => Array(listaVotantes.value.length).fill(null));
+        // Recargar votos existentes
+        cargarVotosExistentes();
+      }
+    },
+    { immediate: false }
   );
 
   const opcionesVoto = [
@@ -467,10 +576,16 @@
     const votante = listaVotantes.value[accionistaIndex];
     if (!votante) return;
 
-    const currentVoto = votos.value[preguntaIndex]?.[accionistaIndex] === voto ? null : voto;
-    if (votos.value[preguntaIndex]) {
-      votos.value[preguntaIndex][accionistaIndex] = currentVoto;
+    // Asegurar que el array de votos existe para esta pregunta
+    if (!votos.value[preguntaIndex]) {
+      votos.value[preguntaIndex] = Array(listaVotantes.value.length).fill(null);
     }
+
+    const votosPregunta = votos.value[preguntaIndex];
+    if (!votosPregunta) return;
+
+    const currentVoto = votosPregunta[accionistaIndex] === voto ? null : voto;
+    votosPregunta[accionistaIndex] = currentVoto;
 
     // Emitir evento para guardar en el store (incluir índice de pregunta)
     if (currentVoto) {
@@ -492,7 +607,22 @@
       0
     );
 
-    if (totalAcciones === 0) return 0;
+    console.log(`[MayoriaVotacion] getPorcentajeAFavor(${preguntaIndex}):`, {
+      totalAcciones,
+      votantesCount: listaVotantes.value.length,
+      accionesPorVotante: listaVotantes.value.map((v, i) => ({
+        nombre: v.nombreCompleto,
+        acciones: v.accionesConDerechoVoto || 0,
+        voto: votos.value[preguntaIndex]?.[i],
+      })),
+    });
+
+    if (totalAcciones === 0) {
+      console.warn(
+        `[MayoriaVotacion] getPorcentajeAFavor(${preguntaIndex}): totalAcciones es 0`
+      );
+      return 0;
+    }
 
     // Sumar acciones de votantes que votaron a favor
     const accionesAFavor = listaVotantes.value.reduce((sum, votante, index) => {
@@ -503,7 +633,14 @@
       return sum;
     }, 0);
 
-    return (accionesAFavor / totalAcciones) * 100;
+    const porcentaje = (accionesAFavor / totalAcciones) * 100;
+    console.log(`[MayoriaVotacion] getPorcentajeAFavor(${preguntaIndex}) resultado:`, {
+      accionesAFavor,
+      totalAcciones,
+      porcentaje: porcentaje.toFixed(2) + "%",
+    });
+
+    return porcentaje;
   };
 
   const getPorcentajeEnContra = (preguntaIndex: number) => {
@@ -526,7 +663,14 @@
       return sum;
     }, 0);
 
-    return (accionesEnContra / totalAcciones) * 100;
+    const porcentaje = (accionesEnContra / totalAcciones) * 100;
+    console.log(`[MayoriaVotacion] getPorcentajeEnContra(${preguntaIndex}) resultado:`, {
+      accionesEnContra,
+      totalAcciones,
+      porcentaje: porcentaje.toFixed(2) + "%",
+    });
+
+    return porcentaje;
   };
 
   const getPorcentajeAbstencion = (preguntaIndex: number) => {
@@ -549,6 +693,13 @@
       return sum;
     }, 0);
 
-    return (accionesAbstencion / totalAcciones) * 100;
+    const porcentaje = (accionesAbstencion / totalAcciones) * 100;
+    console.log(`[MayoriaVotacion] getPorcentajeAbstencion(${preguntaIndex}) resultado:`, {
+      accionesAbstencion,
+      totalAcciones,
+      porcentaje: porcentaje.toFixed(2) + "%",
+    });
+
+    return porcentaje;
   };
 </script>

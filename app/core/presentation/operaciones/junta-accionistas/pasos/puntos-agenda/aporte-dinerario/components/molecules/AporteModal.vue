@@ -4,7 +4,7 @@ import { computed, watch } from "vue";
 import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
 import CardTitle from "~/components/base/cards/CardTitle.vue";
 import BaseModal from "~/components/base/modal/BaseModal.vue";
-import { useAportesStore } from "../../../stores/useAportesStore";
+import { useAportesStore } from "../../stores/useAportesStore";
 import AporteForm from "./AporteForm.vue";
 
 interface Props {

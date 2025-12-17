@@ -235,5 +235,18 @@ export function detectCurrentSection(
     }
   }
 
+  if (subStepId === "capitalizacion-creditos") {
+    if (path.includes("/capitalizacion-creditos/acreedores")) return "acreedores";
+    if (path.includes("/capitalizacion-creditos/creditos")) return "creditos";
+    if (path.includes("/capitalizacion-creditos/votacion")) return "votacion";
+    if (path.includes("/capitalizacion-creditos/resumen")) return "resumen";
+    if (
+      path.includes("/capitalizacion-creditos") &&
+      !path.includes("/capitalizacion-creditos/")
+    ) {
+      return "capitalizacion-creditos";
+    }
+  }
+
   return "";
 }

@@ -5,6 +5,18 @@
   import MayoriaVotacionDirectorio from "./MayoriaVotacionDirectorio.vue";
   import UnanimidadVotacionDirectorio from "./UnanimidadVotacionDirectorio.vue";
 
+  interface Accion {
+    derecho_voto: boolean;
+    tipo: string;
+    cantidad: number;
+  }
+
+  interface Accionista {
+    nombre: string;
+    acciones: Accion[];
+    presidente?: boolean;
+  }
+
   interface Props {
     modelValue?: string;
     candidatosSeleccionados?: string[];
@@ -12,7 +24,7 @@
     subtitle?: string;
     titleColor?: string;
     preguntas?: string[];
-    accionistas?: string[];
+    accionistas?: string[] | Accionista[];
     mensajeAprobacion?: string;
   }
 
