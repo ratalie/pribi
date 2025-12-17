@@ -113,10 +113,11 @@ export function useJuntasGlobalSnapshotLoader() {
       return;
     }
 
-    // Si ya se intentó cargar para este flowId, no recargar
-    if (lastLoadedFlowId === flowIdString) {
+    // Si ya se intentó cargar para este flowId Y el snapshot está cargado, no recargar
+    // Pero si falló la carga anterior, permitir reintentar
+    if (lastLoadedFlowId === flowIdString && snapshotStore.snapshot) {
       console.debug(
-        "[useJuntasGlobalSnapshotLoader] Ya se intentó cargar para este flowId, omitiendo...",
+        "[useJuntasGlobalSnapshotLoader] Ya se intentó cargar para este flowId y hay snapshot, omitiendo...",
         { flowId }
       );
       return;

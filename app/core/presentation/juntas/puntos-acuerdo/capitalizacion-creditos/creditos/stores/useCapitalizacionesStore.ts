@@ -208,3 +208,5 @@ export const useCapitalizacionesStore = defineStore("capitalizaciones", {
   },
 });
 
+
+

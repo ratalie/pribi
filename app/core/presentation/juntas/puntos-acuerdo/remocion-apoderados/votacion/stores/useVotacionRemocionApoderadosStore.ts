@@ -79,8 +79,8 @@ export const useVotacionRemocionApoderadosStore = defineStore("votacionRemocionA
           state.sesionVotacion?.items?.[0]?.votos.find(
             (v) => v.accionistaId === accionistaId
           ) || null
-        );
-      },
+      );
+    },
 
     /**
      * ✅ Obtiene un item por índice

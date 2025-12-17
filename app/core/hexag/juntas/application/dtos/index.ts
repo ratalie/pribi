@@ -28,6 +28,15 @@ export type {
   RemovalAttorneyResponseDTO,
   UpdateRemovalAttorneyDTO,
 } from "./removal-attorney.dto";
+export type {
+  CreateDesignationAttorneyDTO,
+  DesignationAttorneyActionResponse,
+  DesignationAttorneyListResponse,
+  DesignationAttorneyResponseDTO,
+  PersonJuridicDTO,
+  PersonNaturalDTO,
+  UpdateDesignationAttorneyDTO,
+} from "./designation-attorney.dto";
 export type { RemovalManagerResponseDTO } from "./removal-manager.dto";
 export {
   isPersonaFideicomiso,
