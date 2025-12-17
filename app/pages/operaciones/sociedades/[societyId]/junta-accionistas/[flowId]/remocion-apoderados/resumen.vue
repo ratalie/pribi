@@ -8,7 +8,11 @@
     />
     <!-- Si es unanimidad o hay un solo apoderado: una sola card -->
     <VotacionResultadoCard
-      v-if="resultado && (esUnanimidad || nombresApoderados.length <= 1)"
+      v-if="
+        resultado &&
+        (votacionRemocionApoderadosStore.metodoVotacion === 'unanimidad' ||
+          nombresApoderados.length <= 1)
+      "
       tipo="remocion"
       :es-unanimidad="esUnanimidad"
       :aprobado="resultado.aprobado"
@@ -23,7 +27,11 @@
 
     <!-- Si es mayoría y hay múltiples apoderados: una card por cada apoderado con su resultado específico -->
     <template
-      v-if="!esUnanimidad && nombresApoderados.length > 1 && resultadosPorItem.length > 0"
+      v-if="
+        votacionRemocionApoderadosStore.metodoVotacion === 'mayoria' &&
+        nombresApoderados.length > 1 &&
+        resultadosPorItem.length > 0
+      "
     >
       <div class="flex flex-col gap-4">
         <p class="t-h4 text-gray-800 font-primary font-semibold">Resultados de la votación</p>
@@ -312,25 +320,38 @@
 
   // Obtener resultado consolidado de la votación (para unanimidad o un solo apoderado)
   const resultado = computed(() => {
+    const metodoVotacion = votacionRemocionApoderadosStore.metodoVotacion;
+
+    // Si es unanimidad
+    if (metodoVotacion === "unanimidad") {
+      // Si no hay sesión, retornar null
+      if (!votacionStore.hasVotacion || !votacionStore.sesionVotacion) {
+        return null;
+      }
+
+      const items = votacionStore.sesionVotacion.items;
+      if (items.length === 0) return null;
+
+      // Verificar si el primer item tiene votos
+      const primerItem = items[0];
+      if (!primerItem || !primerItem.votos || primerItem.votos.length === 0) {
+        return null;
+      }
+
+      // Si hay un solo item, calcular resultado directamente
+      if (items.length === 1) {
+        return calcularResultadoItem(items[0]);
+      }
+
+      return calcularResultadoItem(items[0]);
+    }
+
+    // Si es mayoría, verificar si hay sesión
     if (!votacionStore.hasVotacion || !votacionStore.sesionVotacion) return null;
 
     const items = votacionStore.sesionVotacion.items;
     if (items.length === 0) return null;
 
-    // Si hay un solo item, calcular resultado directamente
-    if (items.length === 1) {
-      return calcularResultadoItem(items[0]);
-    }
-
-    // Si es unanimidad, consolidar todos los votos (todos votan lo mismo para todos los apoderados)
-    if (esUnanimidad.value) {
-      // Para unanimidad, todos los items deberían tener los mismos votos
-      // Usamos el primer item para calcular el resultado consolidado
-      return calcularResultadoItem(items[0]);
-    }
-
-    // Para mayoría con múltiples items, NO consolidamos aquí
-    // Se calculará por item individualmente en resultadosPorItem
     return null;
   });
 

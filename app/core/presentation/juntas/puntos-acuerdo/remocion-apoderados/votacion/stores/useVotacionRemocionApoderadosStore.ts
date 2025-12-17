@@ -37,8 +37,8 @@ const APODERADOS_MOCK: ApoderadoParaRemover[] = [
 ];
 
 export const useVotacionRemocionApoderadosStore = defineStore("votacionRemocionApoderados", {
-  state: () => ({
-    // Estado vacío por ahora, todo se calcula en getters
+  state: (): { metodoVotacion: "unanimidad" | "mayoria" } => ({
+    metodoVotacion: "unanimidad",
   }),
 
   getters: {
