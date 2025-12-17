@@ -37,7 +37,7 @@
     representanteLegal,
     isLoading,
     error,
-    actualizarGerente,
+    guardarGerente,
   } = useNombramientoGerentePage();
 
   const personaOptions = [
@@ -45,9 +45,9 @@
     { value: "juridica", label: "Persona Jurídica", description: "" },
   ];
 
-  // ✅ Configurar botón "Siguiente" para actualizar gerente (PUT)
+  // ✅ Configurar botón "Siguiente" para guardar gerente (POST o PUT según corresponda)
   useJuntasFlowNext(async () => {
-    await actualizarGerente();
+    await guardarGerente();
   });
 </script>
 

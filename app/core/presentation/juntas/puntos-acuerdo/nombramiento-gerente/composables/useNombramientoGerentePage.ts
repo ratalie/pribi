@@ -1,8 +1,11 @@
 import { computed, onActivated, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { useNombramientoGerenteStore } from "../stores/useNombramientoGerenteStore";
+import type {
+  PersonJuridicDTO,
+  PersonNaturalDTO,
+} from "~/core/hexag/juntas/application/dtos/designation-attorney.dto";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
-import type { PersonNaturalDTO, PersonJuridicDTO } from "~/core/hexag/juntas/application/dtos/designation-attorney.dto";
+import { useNombramientoGerenteStore } from "../stores/useNombramientoGerenteStore";
 
 /**
  * Composable para la página de Nombramiento de Gerente General
@@ -63,12 +66,12 @@ export function useNombramientoGerentePage() {
 
   /**
    * Cargar datos del gerente general
-   * 
+   *
    * Flujo:
    * 1. Cargar snapshot (necesario para obtener attorneyClassId y comparar person.id)
    * 2. GET /designation-attorney para verificar si existe un nuevo gerente
    * 3. Si existe → cargar datos en formulario
-   * 4. Si NO existe → crear uno nuevo con POST (datos vacíos)
+   * 4. Si NO existe → dejar formulario vacío (se creará con POST cuando el usuario haga clic en "Siguiente")
    */
   async function loadData() {
     try {
@@ -80,18 +83,16 @@ export function useNombramientoGerentePage() {
       // 2. GET /designation-attorney para verificar si existe un nuevo gerente
       await nombramientoStore.loadGerente(societyId.value, flowId.value);
 
-      // 3. Si NO existe un nuevo gerente, crear uno vacío con POST
-      if (!nombramientoStore.gerenteDesignado) {
-        console.log(
-          "[Composable][NombramientoGerente] No hay nuevo gerente, creando uno vacío..."
-        );
-        await nombramientoStore.createGerenteVacio(societyId.value, flowId.value);
-      }
-
-      // 4. Si hay gerente designado, cargar datos en el formulario
+      // 3. Si hay gerente designado, cargar datos en el formulario
       if (nombramientoStore.gerenteDesignado) {
         const gerente = nombramientoStore.gerenteDesignado;
         const person = gerente.person;
+
+        console.log("[Composable][NombramientoGerente] Cargando datos del nuevo gerente:", {
+          gerenteId: gerente.id,
+          personId: person.id,
+          tipo: person.type,
+        });
 
         if (person.type === "NATURAL" && person.natural) {
           tipoPersona.value = "natural";
@@ -119,6 +120,10 @@ export function useNombramientoGerentePage() {
             tieneRepresentante: false,
           };
         }
+      } else {
+        console.log(
+          "[Composable][NombramientoGerente] No hay nuevo gerente, formulario vacío (se creará con POST al hacer clic en 'Siguiente')"
+        );
       }
     } catch (err: any) {
       console.error("[Composable][NombramientoGerente] Error al cargar datos:", err);
@@ -127,11 +132,13 @@ export function useNombramientoGerentePage() {
   }
 
   /**
-   * Actualizar gerente general (PUT)
-   * PUT /designation-attorney
-   * Siempre se usa PUT al hacer clic en "Siguiente"
+   * Guardar gerente general (POST o PUT según corresponda)
+   *
+   * Flujo:
+   * 1. Si NO hay gerente designado → POST (crear nuevo gerente con datos del formulario)
+   * 2. Si YA hay gerente designado → PUT (actualizar gerente existente con datos del formulario)
    */
-  async function actualizarGerente(): Promise<void> {
+  async function guardarGerente(): Promise<void> {
     try {
       let person: PersonNaturalDTO | PersonJuridicDTO;
 
@@ -202,9 +209,24 @@ export function useNombramientoGerentePage() {
         };
       }
 
-      await nombramientoStore.updateGerente(societyId.value, flowId.value, person);
+      // Verificar si ya existe un nuevo gerente (diferente al del snapshot)
+      const tieneNuevoGerente = nombramientoStore.hasGerenteDesignado;
+
+      if (tieneNuevoGerente) {
+        // Ya existe un nuevo gerente → PUT (actualizar)
+        console.log(
+          "[Composable][NombramientoGerente] Ya existe nuevo gerente, actualizando con PUT..."
+        );
+        await nombramientoStore.updateGerente(societyId.value, flowId.value, person);
+      } else {
+        // No existe nuevo gerente → POST (crear)
+        console.log(
+          "[Composable][NombramientoGerente] No existe nuevo gerente, creando con POST..."
+        );
+        await nombramientoStore.createGerente(societyId.value, flowId.value, person);
+      }
     } catch (error: any) {
-      console.error("[Composable][NombramientoGerente] Error al crear gerente:", error);
+      console.error("[Composable][NombramientoGerente] Error al guardar gerente:", error);
       throw error;
     }
   }
@@ -233,7 +255,6 @@ export function useNombramientoGerentePage() {
 
     // Métodos
     loadData,
-    actualizarGerente,
+    guardarGerente,
   };
 }
-

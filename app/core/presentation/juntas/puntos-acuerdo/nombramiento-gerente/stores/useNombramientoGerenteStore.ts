@@ -295,13 +295,13 @@ export const useNombramientoGerenteStore = defineStore("nombramientoGerente", {
     /**
      * Actualizar gerente general (PUT)
      * PUT /designation-attorney
-     * Siempre se usa PUT al hacer clic en "Siguiente"
+     * Se ejecuta cuando el usuario hace clic en "Siguiente" y YA existe un nuevo gerente
      *
      * Actualiza:
      * - Estado del candidato a "CANDIDATO"
      * - Datos de la persona (si el backend lo acepta)
      *
-     * ⚠️ IMPORTANTE: El attorneyId debe ser el ID del gerente del snapshot, no el del gerente designado
+     * ⚠️ IMPORTANTE: El attorneyId debe ser el ID del NUEVO gerente (el que se creó), no el del snapshot
      */
     async updateGerente(
       societyId: number,
@@ -312,15 +312,7 @@ export const useNombramientoGerenteStore = defineStore("nombramientoGerente", {
       this.errorMessage = null;
 
       try {
-        // ⚠️ Obtener attorneyId del gerente del snapshot (requerido por el backend)
-        const snapshotAttorneyId = this.getGerenteGeneralSnapshotAttorneyId();
-        if (!snapshotAttorneyId) {
-          throw new Error(
-            "No se pudo obtener el ID del gerente general del snapshot. Por favor, verifique que el snapshot esté cargado."
-          );
-        }
-
-        // Verificar que existe un gerente designado (para obtener attorneyClassId)
+        // Verificar que existe un gerente designado (el nuevo gerente creado)
         if (!this.gerenteDesignado) {
           throw new Error(
             "No hay un gerente general designado. Por favor, complete el formulario primero."
@@ -331,19 +323,20 @@ export const useNombramientoGerenteStore = defineStore("nombramientoGerente", {
         const updateUseCase = new UpdateDesignationAttorneyUseCase(repository);
 
         // PUT actualiza estado y datos de la persona
+        // ⚠️ El attorneyId debe ser el del NUEVO gerente (el que se creó con POST)
         // ⚠️ El mapper necesita attorneyClassId, lo obtenemos del gerente designado
-        // ⚠️ El attorneyId debe ser el del snapshot (requerido por el backend)
         const dto = {
-          attorneyId: snapshotAttorneyId, // ⚠️ ID del gerente del snapshot (requerido)
+          attorneyId: this.gerenteDesignado.id, // ⚠️ ID del NUEVO gerente (el que se creó)
           attorneyClassId: this.gerenteDesignado.attorneyClassId, // Necesario para el mapper
           candidatoEstado: "CANDIDATO" as const,
           person, // Incluir datos de la persona para actualizar (sin campos de cónyuge)
         };
 
         console.log("[Store][NombramientoGerente] Actualizando gerente con:", {
-          attorneyId: snapshotAttorneyId,
+          attorneyId: this.gerenteDesignado.id,
           attorneyClassId: this.gerenteDesignado.attorneyClassId,
           hasPerson: !!person,
+          nuevoGerenteId: this.gerenteDesignado.id,
         });
 
         await updateUseCase.execute(societyId, flowId, dto);
