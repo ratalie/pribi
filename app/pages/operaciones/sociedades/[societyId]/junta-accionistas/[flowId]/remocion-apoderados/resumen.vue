@@ -139,9 +139,9 @@
   } from "~/core/hexag/juntas/domain/constants/agenda-classification.constants";
   import { VoteAgreementType } from "~/core/hexag/juntas/domain/enums/vote-agreement-type.enum";
   import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
-  import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/stores/useVotacionStore";
   import { useVotacionRemocionApoderadosStore } from "~/core/presentation/juntas/puntos-acuerdo/remocion-apoderados/votacion/stores/useVotacionRemocionApoderadosStore";
   import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
+  import { useVotacionStore } from "~/core/presentation/juntas/stores/votacion.store";
 
   definePageMeta({
     layout: "registros",

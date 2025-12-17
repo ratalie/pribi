@@ -65,9 +65,9 @@
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import VotacionResultadoCard from "~/components/juntas/VotacionResultadoCard.vue";
   import { VoteContext } from "~/core/hexag/juntas/domain/enums/vote-context.enum";
-  import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/stores/useVotacionStore";
   import { useVotacionRemocionStore } from "~/core/presentation/juntas/puntos-acuerdo/remocion-gerente/votacion/stores/useVotacionRemocionStore";
   import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
+  import { useVotacionStore } from "~/core/presentation/juntas/stores/votacion.store";
 
   definePageMeta({
     layout: "registros",
