@@ -286,33 +286,6 @@ export const SUB_STEP_SECTIONS_MAP: Record<string, Array<Omit<SectionItem, "stat
       navigationType: "route",
     },
   ],
-  "nombramiento-directores": [
-    {
-      id: "nombramiento-directores",
-      title: "Nombramiento de Directores",
-      navigationType: "route",
-    },
-    {
-      id: "nombramiento",
-      title: "Registro de Directores",
-      navigationType: "route",
-    },
-    {
-      id: "votacion",
-      title: "Votación de la Designación",
-      navigationType: "route",
-    },
-    {
-      id: "presidente",
-      title: "Presidente del Directorio",
-      navigationType: "route",
-    },
-    {
-      id: "resumen",
-      title: "Resumen",
-      navigationType: "route",
-    },
-  ],
   "nombramiento-nuevo-directorio": [
     {
       id: "nombramiento-directorio",

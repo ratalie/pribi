@@ -21,10 +21,12 @@
       separatorLine?: boolean;
       onClick: (id: string) => void;
     }[];
+    getActionDisabled?: (itemId: string, actionLabel: string) => boolean;
   }
 
   const props = withDefaults(defineProps<Props>(), {
     titleMenu: undefined,
+    getActionDisabled: undefined,
   });
 </script>
 
@@ -67,7 +69,7 @@
             <TableCell
               class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
             >
-              <Checkbox :model-value="true" :is-disabled="true" />
+              <Checkbox v-model="item.checked" :is-disabled="false" />
             </TableCell>
             <TableCell
               class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
@@ -95,6 +97,7 @@
                 :item-id="item.id"
                 :title-menu="props.titleMenu"
                 :actions="props.actions"
+                :get-action-disabled="props.getActionDisabled"
               />
             </TableCell>
           </TableRow>

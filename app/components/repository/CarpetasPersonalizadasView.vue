@@ -45,6 +45,7 @@ const searchQuery = ref("");
 const createModalOpen = ref(false);
 const newCarpetaNombre = ref("");
 const newCarpetaDescripcion = ref("");
+const newCarpetaIsChatIA = ref(false);
 const selectedFolderId = ref<string | null>(null);
 const vista = ref<"grid" | "list">("grid");
 const previewModalOpen = ref(false);
@@ -102,10 +103,12 @@ const handleCreateCarpeta = async () => {
   await crearCarpeta({
     nombre: newCarpetaNombre.value,
     descripcion: newCarpetaDescripcion.value || undefined,
+    isChatIA: newCarpetaIsChatIA.value,
   });
 
   newCarpetaNombre.value = "";
   newCarpetaDescripcion.value = "";
+  newCarpetaIsChatIA.value = false;
   createModalOpen.value = false;
 };
 
@@ -1027,6 +1030,36 @@ const formatDate = (date: Date) => {
                       fontFamily: 'var(--font-secondary)',
                     }"
                   />
+                </div>
+                <div>
+                  <label class="flex items-start gap-3 cursor-pointer">
+                    <input
+                      v-model="newCarpetaIsChatIA"
+                      type="checkbox"
+                      class="mt-1 w-4 h-4 rounded border-gray-300 text-primary-700 focus:ring-primary-500"
+                      :style="{
+                        accentColor: 'var(--primary-700)',
+                      }"
+                    />
+                    <div>
+                      <span
+                        class="block text-sm"
+                        :style="{
+                          color: 'var(--text-primary)',
+                          fontFamily: 'var(--font-secondary)',
+                          fontWeight: 500,
+                        }"
+                      >
+                        Habilitar chat con IA
+                      </span>
+                      <p
+                        class="text-xs mt-1"
+                        :style="{ color: 'var(--text-muted)' }"
+                      >
+                        Permite consultar documentos de esta carpeta mediante chat con IA
+                      </p>
+                    </div>
+                  </label>
                 </div>
               </div>
               <div

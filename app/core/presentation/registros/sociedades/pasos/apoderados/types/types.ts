@@ -15,6 +15,7 @@ export interface GerenteGeneralRow {
 
 export interface ApoderadoRow {
   id: string;
+  checked?: boolean; // Estado del checkbox (para nombramiento de apoderados)
   claseApoderadoNombre: string;
   nombre: string;
   tipoDocumento: TipoDocumentosEnum;

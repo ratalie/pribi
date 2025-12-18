@@ -5,6 +5,7 @@ export interface CarpetaPersonalizadaDTO {
   id: string;
   nombre: string;
   descripcion?: string;
+  isChatIA: boolean;
   fechaCreacion: string;
   fechaModificacion: string;
   creadorId: string;
@@ -18,6 +19,7 @@ export interface CarpetaPersonalizadaDTO {
 export interface CreateCarpetaDTO {
   nombre: string;
   descripcion?: string;
+  isChatIA?: boolean;
 }
 
 /**
@@ -26,5 +28,6 @@ export interface CreateCarpetaDTO {
 export interface UpdateCarpetaDTO {
   nombre: string;
   descripcion?: string;
+  isChatIA?: boolean;
 }
 

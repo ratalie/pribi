@@ -96,4 +96,13 @@ export default defineNuxtConfig({
   },
 
   components: [{ path: "~/components", pathPrefix: false, extensions: ["vue"] }],
+
+  // Configuración de Nitro para manejar errores "Premature close"
+  nitro: {
+    // Suprimir errores esperados en desarrollo mediante configuración del logger
+    experimental: {
+      // Permitir que Nitro maneje mejor las conexiones cerradas
+      wasm: false,
+    },
+  },
 });

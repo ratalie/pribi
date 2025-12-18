@@ -18,12 +18,12 @@ export interface CarpetasPersonalizadasRepository {
   /**
    * Crea una nueva carpeta personalizada
    */
-  create(sociedadId: string, nombre: string, descripcion?: string): Promise<CarpetaPersonalizada>;
+  create(sociedadId: string, nombre: string, descripcion?: string, isChatIA?: boolean): Promise<CarpetaPersonalizada>;
 
   /**
    * Actualiza una carpeta personalizada
    */
-  update(sociedadId: string, carpetaId: string, nombre: string, descripcion?: string): Promise<CarpetaPersonalizada>;
+  update(sociedadId: string, carpetaId: string, nombre: string, descripcion?: string, isChatIA?: boolean): Promise<CarpetaPersonalizada>;
 
   /**
    * Elimina una carpeta personalizada

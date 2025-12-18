@@ -19,22 +19,17 @@ export interface DesignationAttorneyRepository {
    * POST /api/v2/society-profile/:societyId/register-assembly/:flowId/designation-attorney
    * Crea nuevo apoderado y AttorneyFlowAction con candidateStatus: CANDIDATE o DIRECT_APPOINTED
    */
-  create(
-    societyId: number,
-    flowId: number,
-    dto: CreateDesignationAttorneyDTO
-  ): Promise<void>;
+  create(societyId: number, flowId: number, dto: CreateDesignationAttorneyDTO): Promise<void>;
 
   /**
    * Actualizar estado de apoderado designado
    * PUT /api/v2/society-profile/:societyId/register-assembly/:flowId/designation-attorney
    */
-  update(
-    societyId: number,
-    flowId: number,
-    dto: UpdateDesignationAttorneyDTO
-  ): Promise<void>;
+  update(societyId: number, flowId: number, dto: UpdateDesignationAttorneyDTO): Promise<void>;
+
+  /**
+   * Eliminar apoderado designado
+   * DELETE /api/v2/society-profile/:societyId/register-assembly/:flowId/designation-attorney/:designationId
+   */
+  delete(societyId: number, flowId: number, designationId: string): Promise<void>;
 }
-
-
-

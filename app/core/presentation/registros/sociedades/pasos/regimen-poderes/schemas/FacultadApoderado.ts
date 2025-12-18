@@ -16,6 +16,11 @@ export const selectCantidadFirmantesSchema = z
   .string()
   .nonempty("La cantidad de firmantes es obligatoria");
 
+export const cantidadFirmantesLibreSchema = z
+  .number()
+  .int("La cantidad debe ser un número entero")
+  .min(1, "La cantidad debe ser mayor a 0");
+
 export const selectGrupoFirmantesSchema = z
   .string()
   .nonempty("El grupo de firmantes es obligatorio");

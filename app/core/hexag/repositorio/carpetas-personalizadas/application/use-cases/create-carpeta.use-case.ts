@@ -9,7 +9,7 @@ export class CreateCarpetaUseCase {
   constructor(private readonly repository: CarpetasPersonalizadasRepository) {}
 
   async execute(sociedadId: string, dto: CreateCarpetaDTO): Promise<CarpetaPersonalizada> {
-    return this.repository.create(sociedadId, dto.nombre, dto.descripcion);
+    return this.repository.create(sociedadId, dto.nombre, dto.descripcion, dto.isChatIA ?? false);
   }
 }
 

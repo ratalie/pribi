@@ -19,14 +19,17 @@
         label: string;
         icon?: string;
         separatorLine?: boolean;
+        disabled?: boolean;
         onClick: (id: string) => void;
       }[];
       iconType?: "vertical" | "horizontal";
       actionsLabelText?: string;
+      getActionDisabled?: (itemId: string, actionLabel: string) => boolean;
     }>(),
     {
       iconType: "horizontal",
       actionsLabelText: undefined,
+      getActionDisabled: undefined,
     }
   );
 
@@ -58,6 +61,10 @@
       <DropdownMenuLabel v-if="titleMenu">{{ titleMenu }}</DropdownMenuLabel>
       <template v-for="(action, index) in actionsList" :key="action.label">
         <DropdownMenuItem
+          :disabled="
+            action.disabled ||
+            (props.getActionDisabled && props.getActionDisabled(itemId, action.label))
+          "
           class="flex items-center gap-3 text-gray-700 font-secondary t-t2 font-medium dark:text-gray-900"
           @click="action.onClick(itemId)"
         >

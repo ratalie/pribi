@@ -32,10 +32,13 @@
    */
 
   // Cargar automáticamente los puntos de agenda al montar el layout
+  console.log("🔷 [flow-layout-juntas] Layout montado, inicializando loaders...");
   useJuntasGlobalAgendaLoader();
 
   // Cargar automáticamente el snapshot completo al montar el layout
+  console.log("🔷 [flow-layout-juntas] Llamando useJuntasGlobalSnapshotLoader()...");
   useJuntasGlobalSnapshotLoader();
+  console.log("🔷 [flow-layout-juntas] useJuntasGlobalSnapshotLoader() llamado");
 </script>
 
 <template>
