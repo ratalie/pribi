@@ -21,7 +21,11 @@
           </template>
         </CardTitle>
 
-        <NombramientoApoderadosTable :items="apoderados" :actions="apoderadoActions" />
+        <NombramientoApoderadosTable
+          :items="apoderados"
+          :actions="apoderadoActions"
+          :get-action-disabled="getActionDisabledApoderado"
+        />
       </SimpleCard>
 
       <!-- Tabla de Otros Apoderados -->
@@ -41,6 +45,7 @@
         <NombramientoOtrosApoderadosTable
           :items="otrosApoderadosComputed"
           :actions="otroApoderadoActions"
+          :get-action-disabled="getActionDisabledOtroApoderado"
         />
       </SimpleCard>
 
@@ -73,6 +78,7 @@
 
 <script setup lang="ts">
   import { computed, onMounted, ref } from "vue";
+  import { useRoute } from "vue-router";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
@@ -81,6 +87,7 @@
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { useNombramientoApoderadosPage } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-apoderados/composables/useNombramientoApoderadosPage";
   import { useNombramientoApoderadosStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-apoderados/stores/useNombramientoApoderadosStore";
+  import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
   import RegistroApoderadoModal from "~/core/presentation/registros/sociedades/pasos/apoderados/components/modals/RegistroApoderadoModal.vue";
   import { ClasesApoderadoEspecialesEnum } from "~/core/presentation/registros/sociedades/pasos/apoderados/types/enums/ClasesApoderadoEspecialesEnum";
   import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
@@ -109,6 +116,7 @@
   } = useNombramientoApoderadosPage();
 
   const nombramientoStore = useNombramientoApoderadosStore();
+  const snapshotStore = useSnapshotStore();
 
   // ✅ Usar datos del composable (conectado al backend)
   const apoderados = computed(() => apoderadosNormales.value);
@@ -172,7 +180,27 @@
     }
   };
 
+  // ✅ Determinar si un apoderado es del snapshot (no editable/eliminable)
+  const esApoderadoDelSnapshot = (apoderadoId: string): boolean => {
+    const snapshot = snapshotStore.snapshot;
+    if (!snapshot?.attorneys) return false;
+
+    // Buscar el apoderado en apoderados designados
+    const apoderado = nombramientoStore.apoderadosDesignados.find((a) => a.id === apoderadoId);
+    if (!apoderado) return false;
+
+    // Verificar si el personaId del apoderado está en el snapshot
+    const personaId = apoderado.person.id;
+    return snapshot.attorneys.some((att) => att.persona?.id === personaId);
+  };
+
   const handleEditarApoderado = (apoderadoId: string) => {
+    // ✅ No permitir editar apoderados del snapshot
+    if (esApoderadoDelSnapshot(apoderadoId)) {
+      console.log("⚠️ No se puede editar un apoderado del snapshot:", apoderadoId);
+      return;
+    }
+
     const apoderado = apoderados.value.find((a) => a.id === apoderadoId);
     if (!apoderado) return;
 
@@ -202,9 +230,35 @@
     isOpenModalApoderado.value = true;
   };
 
-  const handleEliminarApoderado = (apoderadoId: string) => {
-    // TODO: Implementar eliminación desde backend si es necesario
+  const handleEliminarApoderado = async (apoderadoId: string) => {
+    // ✅ No permitir eliminar apoderados del snapshot
+    if (esApoderadoDelSnapshot(apoderadoId)) {
+      console.log("⚠️ No se puede eliminar un apoderado del snapshot:", apoderadoId);
+      return;
+    }
+
     console.log("Eliminar apoderado:", apoderadoId);
+
+    const route = useRoute();
+    const societyId = Number(route.params.societyId);
+    const flowId = Number(route.params.flowId);
+
+    try {
+      await nombramientoStore.deleteApoderado(societyId, flowId, apoderadoId);
+      console.log("✅ Apoderado eliminado exitosamente");
+    } catch (error) {
+      console.error("Error al eliminar apoderado:", error);
+      // TODO: Mostrar notificación de error al usuario
+    }
+  };
+
+  // ✅ Función para determinar si una acción debe estar deshabilitada (apoderados normales)
+  const getActionDisabledApoderado = (apoderadoId: string, actionLabel: string): boolean => {
+    // Solo deshabilitar editar/eliminar si es del snapshot
+    if (actionLabel === "Editar" || actionLabel === "Eliminar") {
+      return esApoderadoDelSnapshot(apoderadoId);
+    }
+    return false;
   };
 
   const apoderadoActions = [
@@ -263,7 +317,47 @@
     }
   };
 
+  const handleEliminarOtroApoderado = async (apoderadoId: string) => {
+    // ✅ No permitir eliminar apoderados del snapshot
+    if (esApoderadoDelSnapshot(apoderadoId)) {
+      console.log("⚠️ No se puede eliminar un apoderado del snapshot:", apoderadoId);
+      return;
+    }
+
+    console.log("Eliminar otro apoderado:", apoderadoId);
+
+    const route = useRoute();
+    const societyId = Number(route.params.societyId);
+    const flowId = Number(route.params.flowId);
+
+    try {
+      await nombramientoStore.deleteApoderado(societyId, flowId, apoderadoId);
+      console.log("✅ Otro apoderado eliminado exitosamente");
+    } catch (error) {
+      console.error("Error al eliminar otro apoderado:", error);
+      // TODO: Mostrar notificación de error al usuario
+    }
+  };
+
+  // ✅ Función para determinar si una acción debe estar deshabilitada (otros apoderados)
+  const getActionDisabledOtroApoderado = (
+    apoderadoId: string,
+    actionLabel: string
+  ): boolean => {
+    // Solo deshabilitar editar/eliminar si es del snapshot
+    if (actionLabel === "Editar" || actionLabel === "Eliminar") {
+      return esApoderadoDelSnapshot(apoderadoId);
+    }
+    return false;
+  };
+
   const handleEditarOtroApoderado = (apoderadoId: string) => {
+    // ✅ No permitir editar apoderados del snapshot
+    if (esApoderadoDelSnapshot(apoderadoId)) {
+      console.log("⚠️ No se puede editar un apoderado del snapshot:", apoderadoId);
+      return;
+    }
+
     const apoderado = otrosApoderados.value.find((a) => a.id === apoderadoId);
     if (!apoderado) return;
 
@@ -292,11 +386,6 @@
     editingOtroApoderadoId.value = apoderadoId;
     modeModalOtroApoderado.value = "editar";
     isOpenModalOtroApoderado.value = true;
-  };
-
-  const handleEliminarOtroApoderado = (apoderadoId: string) => {
-    // TODO: Implementar eliminación desde backend si es necesario
-    console.log("Eliminar otro apoderado:", apoderadoId);
   };
 
   const otroApoderadoActions = [

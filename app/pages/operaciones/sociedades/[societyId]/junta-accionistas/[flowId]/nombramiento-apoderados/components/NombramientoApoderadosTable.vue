@@ -21,10 +21,12 @@
       separatorLine?: boolean;
       onClick: (id: string) => void;
     }[];
+    getActionDisabled?: (itemId: string, actionLabel: string) => boolean;
   }
 
   const props = withDefaults(defineProps<Props>(), {
     titleMenu: undefined,
+    getActionDisabled: undefined,
   });
 </script>
 
@@ -95,6 +97,7 @@
                 :item-id="item.id"
                 :title-menu="props.titleMenu"
                 :actions="props.actions"
+                :get-action-disabled="props.getActionDisabled"
               />
             </TableCell>
           </TableRow>

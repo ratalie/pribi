@@ -1,13 +1,13 @@
 import type { FetchOptions } from "ofetch";
-import type { DesignationAttorneyRepository } from "../../domain/ports/designation-attorney.repository";
-import type {
-  DesignationAttorneyResponseDTO,
-  CreateDesignationAttorneyDTO,
-  UpdateDesignationAttorneyDTO,
-  DesignationAttorneyListResponse,
-  DesignationAttorneyActionResponse,
-} from "../../application/dtos/designation-attorney.dto";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
+import type {
+  CreateDesignationAttorneyDTO,
+  DesignationAttorneyActionResponse,
+  DesignationAttorneyListResponse,
+  DesignationAttorneyResponseDTO,
+  UpdateDesignationAttorneyDTO,
+} from "../../application/dtos/designation-attorney.dto";
+import type { DesignationAttorneyRepository } from "../../domain/ports/designation-attorney.repository";
 import { DesignationAttorneyMapper } from "../mappers/designation-attorney.mapper";
 
 /**
@@ -195,5 +195,46 @@ export class DesignationAttorneyHttpRepository implements DesignationAttorneyRep
       throw error;
     }
   }
-}
 
+  /**
+   * DELETE - Eliminar apoderado designado
+   */
+  async delete(societyId: number, flowId: number, designationId: string): Promise<void> {
+    const baseUrl = this.resolveDesignationAttorneyUrl(societyId, flowId);
+    const url = `${baseUrl}/${designationId}`;
+    const authConfig = withAuthHeaders() as FetchOptions & {
+      headers?: Record<string, string>;
+    };
+    const requestConfig = {
+      ...authConfig,
+      method: "DELETE" as const,
+    };
+
+    console.debug("[Repository][DesignationAttorneyHttp] delete() request", {
+      url,
+      societyId,
+      flowId,
+      designationId,
+    });
+
+    try {
+      const response = await $fetch<DesignationAttorneyActionResponse>(url, requestConfig);
+
+      console.debug("[Repository][DesignationAttorneyHttp] delete() response", {
+        success: response?.success,
+        message: response?.message,
+      });
+
+      if (!response.success) {
+        throw new Error(response.message || "Error al eliminar apoderado designado");
+      }
+    } catch (error: any) {
+      console.error("[Repository][DesignationAttorneyHttp] delete() error", {
+        url,
+        error: error.message || error,
+        status: error.status || error.statusCode,
+      });
+      throw error;
+    }
+  }
+}

@@ -6,6 +6,7 @@ import type {
   UpdateDesignationAttorneyDTO,
 } from "~/core/hexag/juntas/application/dtos/designation-attorney.dto";
 import { CreateDesignationAttorneyUseCase } from "~/core/hexag/juntas/application/use-cases/designation-attorney/create-designation-attorney.use-case";
+import { DeleteDesignationAttorneyUseCase } from "~/core/hexag/juntas/application/use-cases/designation-attorney/delete-designation-attorney.use-case";
 import { GetDesignationAttorneyUseCase } from "~/core/hexag/juntas/application/use-cases/designation-attorney/get-designation-attorney.use-case";
 import { UpdateDesignationAttorneyUseCase } from "~/core/hexag/juntas/application/use-cases/designation-attorney/update-designation-attorney.use-case";
 import { DesignationAttorneyHttpRepository } from "~/core/hexag/juntas/infrastructure/repositories/designation-attorney.http.repository";
@@ -332,6 +333,44 @@ export const useNombramientoApoderadosStore = defineStore("nombramientoApoderado
       }
 
       return null;
+    },
+
+    /**
+     * Eliminar apoderado designado
+     * DELETE /designation-attorney/:designationId
+     */
+    async deleteApoderado(
+      societyId: number,
+      flowId: number,
+      designationId: string
+    ): Promise<void> {
+      this.status = "loading";
+      this.errorMessage = null;
+
+      try {
+        const repository = new DesignationAttorneyHttpRepository();
+        const useCase = new DeleteDesignationAttorneyUseCase(repository);
+
+        console.log(
+          `[Store][NombramientoApoderados] Eliminando apoderado designado ${designationId}`
+        );
+
+        await useCase.execute(societyId, flowId, designationId);
+
+        console.log(
+          `[Store][NombramientoApoderados] ✅ Apoderado designado ${designationId} eliminado exitosamente`
+        );
+
+        // Recargar apoderados para actualizar la lista
+        await this.loadApoderadosDesignados(societyId, flowId);
+
+        this.status = "idle";
+      } catch (error: any) {
+        console.error("[Store][NombramientoApoderados] Error al eliminar apoderado:", error);
+        this.status = "error";
+        this.errorMessage = error.message || "Error al eliminar apoderado";
+        throw error;
+      }
     },
   },
 });
