@@ -5,8 +5,9 @@ puntos-acuerdo.ts:104 🔵 [puntos-acuerdo] Acuerdos individuales encontrados: (
 flow-layout-juntas.vue:35 🔷 [flow-layout-juntas] Layout montado, inicializando loaders...
 flow-layout-juntas.vue:39 🔷 [flow-layout-juntas] Llamando useJuntasGlobalSnapshotLoader()...
 useJuntasGlobalSnapshotLoader.ts:24 🔵 [useJuntasGlobalSnapshotLoader] Composable inicializado
-useJuntasGlobalSnapshotLoader.ts:28 🔵 [useJuntasGlobalSnapshotLoader] Ruta actual: {path: '/operaciones/sociedades/5/junta-accionistas/3/nombramiento-gerente/otorgamiento', params: {…}, fullPath: '/operaciones/sociedades/5/junta-accionistas/3/nombramiento-gerente/otorgamiento'}
-useJuntasGlobalSnapshotLoader.ts:290 🔵 [useJuntasGlobalSnapshotLoader] Composable configurado, esperando onMounted...
+useJuntasGlobalSnapshotLoader.ts:34 📦 [useJuntasGlobalSnapshotLoader] Snapshot encontrado en localStorage: {hasSnapshot: false, storedFlowId: undefined, storedSocietyId: undefined, storeStatus: undefined}
+useJuntasGlobalSnapshotLoader.ts:49 🔵 [useJuntasGlobalSnapshotLoader] Ruta actual: {path: '/operaciones/sociedades/5/junta-accionistas/3/nombramiento-gerente/otorgamiento', params: {…}, fullPath: '/operaciones/sociedades/5/junta-accionistas/3/nombramiento-gerente/otorgamiento'}
+useJuntasGlobalSnapshotLoader.ts:375 🔵 [useJuntasGlobalSnapshotLoader] Composable configurado, esperando onMounted...
 flow-layout-juntas.vue:41 🔷 [flow-layout-juntas] useJuntasGlobalSnapshotLoader() llamado
 useJuntasNavbarRoutes.ts:231 🟠 [useJuntasNavbarRoutes] Ruta cambiada: /operaciones/sociedades/5/junta-accionistas/3/nombramiento-gerente/otorgamiento
 junta-navigation.ts:248 🟡 [juntaNavigation] dynamicSubSteps desde store: Proxy(Array) {}
@@ -85,7 +86,7 @@ useTheme.ts:26 🔧 [applyTheme] INICIO
 useTheme.ts:27   📝 Theme solicitado: light
 useTheme.ts:28   🌍 true: true
 useTheme.ts:36   ✅ Estamos en CLIENT - procediendo...
-useTheme.ts:39   📄 document.documentElement: <html style=​"--vsc-domain:​ "localhost";​ --vueuse-safe-area-top:​ env(safe-area-inset-top, 0px)​;​ --vueuse-safe-area-right:​ env(safe-area-inset-right, 0px)​;​ --vueuse-safe-area-bottom:​ env(safe-area-inset-bottom, 0px)​;​ --vueuse-safe-area-left:​ env(safe-area-inset-left, 0px)​;​" class=​"light" dir=​"ltr" lang=​"es">​<head>​…​</head>​<body>​…​</body>​</html>​
+useTheme.ts:39   📄 document.documentElement: <html style=​"--vsc-domain:​ "localhost";​ --vueuse-safe-area-top:​ env(safe-area-inset-top, 0px)​;​ --vueuse-safe-area-right:​ env(safe-area-inset-right, 0px)​;​ --vueuse-safe-area-bottom:​ env(safe-area-inset-bottom, 0px)​;​ --vueuse-safe-area-left:​ env(safe-area-inset-left, 0px)​;​" class=​"light" dir=​"ltr" lang=​"es">​<head>​…​</head>​<body style=​"pointer-events:​ none;​ overflow:​ hidden;​">​…​</body>​<div id=​"__nuxt" data-v-app>​…​</div>​<div id=​"teleports" data-aria-hidden=​"true" aria-hidden=​"true">​</div>​<script type=​"application/​json" data-nuxt-logs=​"nuxt-app">​[[]]​</script>​<script type=​"application/​json" data-nuxt-data=​"nuxt-app" data-ssr=​"false" id=​"__NUXT_DATA__">​[{"serverRendered":1},false]​</script>​<script>​…​</script>​<style data-aria-hidden=​"true" aria-hidden=​"true">​…​</style>​<div id=​"vue-tracer-overlay" style=​"position:​ fixed;​ inset:​ 0px;​ z-index:​ 999999;​ pointer-events:​ none;​ opacity:​ 0;​ transition:​ 0.15s;​" data-aria-hidden=​"true" aria-hidden=​"true">​…​</div>​<nuxt-devtools-inspect-panel style=​"z-index:​ 999999;​ position:​ fixed;​" data-aria-hidden=​"true" aria-hidden=​"true">​…​</nuxt-devtools-inspect-panel>​<div id=​"nuxt-devtools-container" data-v-inspector-ignore=​"true" data-aria-hidden=​"true" aria-hidden=​"true">​…​</div>​<div data-v-ed0ae124 class=​"pointer-events-none fixed z-[9999]​ flex max-w-full flex-col gap-3 p-4 top-4 right-4 items-end" data-aria-hidden=​"true" aria-hidden=​"true">​</div>​flex<!----><!----><!----><div data-state=​"open" data-slot=​"dialog-overlay" class=​"data-[state=open]​:​animate-in data-[state=closed]​:​animate-out data-[state=closed]​:​fade-out-0 data-[state=open]​:​fade-in-0 fixed inset-0 z-50 bg-black/​80" style=​"pointer-events:​ auto;​" data-aria-hidden=​"true" aria-hidden=​"true">​</div>​<div data-dismissable-layer tabindex=​"-1" data-slot=​"dialog-content" class=​"bg-background data-[state=open]​:​animate-in data-[state=closed]​:​animate-out data-[state=closed]​:​fade-out-0 data-[state=open]​:​fade-in-0 data-[state=closed]​:​zoom-out-95 data-[state=open]​:​zoom-in-95 fixed top-[50%]​ left-[50%]​ z-50 w-full max-w-[calc(100%-2rem)​]​ translate-x-[-50%]​ translate-y-[-50%]​ rounded-lg border shadow-lg duration-200 sm:​max-w-lg flex flex-col max-h-[800px]​ min-w-[1042px]​" id role=​"dialog" aria-labelledby=​"reka-dialog-title-v-0-0-8" data-state=​"open" style=​"pointer-events:​ auto;​">​…​</div>​flex<!-- componentes de titulo ocultos para poder los nuestros q son custom --><span aria-hidden=​"true" style=​"position:​ absolute;​ border:​ 0px;​ width:​ 1px;​ height:​ 1px;​ padding:​ 0px;​ margin:​ -1px;​ overflow:​ hidden;​ clip:​ rect(0px, 0px, 0px, 0px)​;​ clip-path:​ inset(50%)​;​ white-space:​ nowrap;​ overflow-wrap:​ normal;​ top:​ -1px;​ left:​ -1px;​">​…​</span>​<!--v-if--><form novalidate class=​"flex flex-col flex-1 min-h-0">​…​</form>​flex<div class=​"flex-1 min-h-0 overflow-auto px-14 py-16">​…​</div>​scroll<div class=​"flex flex-col gap-10">​…​</div>​flex<div class=​"flex w-full">​…​</div>​flex<div class=​"grid grid-cols-2 gap-10">​…​</div>​grid<div class=​"flex w-full justify-end flex-col relative">​…​</div>​flex<div class=​"flex flex-col gap-5 w-full">​…​</div>​flex<label for=​"facultad" class=​"t-t2 font-secondary text-gray-800 font-bold">​Tipo de facultad​</label>​<button data-slot=​"select-trigger" data-size=​"default" class=​"border-input data-[placeholder]​:​text-muted-foreground [&_svg:​not([class*='text-']​)​]​:​text-muted-foreground aria-invalid:​ring-destructive/​20 dark:​aria-invalid:​ring-destructive/​40 aria-invalid:​border-destructive dark:​bg-input/​30 dark:​hover:​bg-input/​50 flex items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow]​ outline-none disabled:​cursor-not-allowed disabled:​opacity-50 data-[size=default]​:​h-9 data-[size=sm]​:​h-8 *:​data-[slot=select-value]​:​line-clamp-1 *:​data-[slot=select-value]​:​flex *:​data-[slot=select-value]​:​items-center *:​data-[slot=select-value]​:​gap-2 [&_svg]​:​pointer-events-none [&_svg]​:​shrink-0 [&_svg:​not([class*='size-']​)​]​:​size-4 w-full !border-gray-500 data-[state=open]​:​!border-gray-700 data-[state=open]​:​!border-2 data-[state=open]​:​!ring-2 data-[state=open]​:​!ring-[var(--color-outline-ring)​]​ data-[state=open]​:​!ring-offset-4 *:​data-[slot=select-value]​:​font-secondary *:​data-[slot=select-value]​:​text-gray-700 !h-[40px]​ t-t2 disabled:​!bg-gray-200 disabled:​!cursor-not-allowed disabled:​!opacity-100" role=​"combobox" type=​"button" aria-controls=​"reka-select-content-v-0-0-10" aria-expanded=​"false" aria-required=​"false" aria-autocomplete=​"none" disabled dir=​"ltr" data-state=​"closed" data-disabled>​…​</button>​flex<!--teleport start--><!--teleport end--><select aria-hidden=​"true" tabindex=​"-1" disabled value=​"8445baf7-525d-4571-8abe-1116ecefd6fa" style=​"position:​ absolute;​ border:​ 0px;​ width:​ 1px;​ height:​ 1px;​ padding:​ 0px;​ margin:​ -1px;​ overflow:​ hidden;​ clip:​ rect(0px, 0px, 0px, 0px)​;​ clip-path:​ inset(50%)​;​ white-space:​ nowrap;​ overflow-wrap:​ normal;​ top:​ -1px;​ left:​ -1px;​">​…​</select>​</div>​<!--v-if--></div>​</div>​<!-- Reglas de firmas y límites monetarios --><div class=​"h-full border border-gray-100 rounded-xl flex flex-col">​…​</div>​flex<div class=​"border-b border-b-gray-100">​…​</div>​<div>​…​</div>​<div class>​…​</div>​<div class=​"p-5 flex flex-col gap-6">​…​</div>​flex<div class=​"grid grid-cols-2 gap-10">​…​</div>​grid<div class=​"flex w-full justify-end flex-col relative">​…​</div>​flex<div class=​"flex flex-col gap-5 w-full">​…​</div>​flex<label for=​"moneda" class=​"t-t2 font-secondary text-gray-800 font-bold">​Tipo de Moneda​</label>​<button data-slot=​"select-trigger" data-size=​"default" class=​"border-input data-[placeholder]​:​text-muted-foreground [&_svg:​not([class*='text-']​)​]​:​text-muted-foreground aria-invalid:​ring-destructive/​20 dark:​aria-invalid:​ring-destructive/​40 aria-invalid:​border-destructive dark:​bg-input/​30 dark:​hover:​bg-input/​50 flex items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow]​ outline-none disabled:​cursor-not-allowed disabled:​opacity-50 data-[size=default]​:​h-9 data-[size=sm]​:​h-8 *:​data-[slot=select-value]​:​line-clamp-1 *:​data-[slot=select-value]​:​flex *:​data-[slot=select-value]​:​items-center *:​data-[slot=select-value]​:​gap-2 [&_svg]​:​pointer-events-none [&_svg]​:​shrink-0 [&_svg:​not([class*='size-']​)​]​:​size-4 w-full !border-gray-500 data-[state=open]​:​!border-gray-700 data-[state=open]​:​!border-2 data-[state=open]​:​!ring-2 data-[state=open]​:​!ring-[var(--color-outline-ring)​]​ data-[state=open]​:​!ring-offset-4 *:​data-[slot=select-value]​:​font-secondary *:​data-[slot=select-value]​:​text-gray-700 !h-[40px]​ t-t2" role=​"combobox" type=​"button" aria-controls=​"reka-select-content-v-0-0-11" aria-expanded=​"false" aria-required=​"false" aria-autocomplete=​"none" dir=​"ltr" data-state=​"closed">​…​</button>​flex<!--teleport start--><!--teleport end--><select aria-hidden=​"true" tabindex=​"-1" value=​"Soles" style=​"position:​ absolute;​ border:​ 0px;​ width:​ 1px;​ height:​ 1px;​ padding:​ 0px;​ margin:​ -1px;​ overflow:​ hidden;​ clip:​ rect(0px, 0px, 0px, 0px)​;​ clip-path:​ inset(50%)​;​ white-space:​ nowrap;​ overflow-wrap:​ normal;​ top:​ -1px;​ left:​ -1px;​">​…​</select>​</div>​<!--v-if--></div>​</div>​<div class=​"flex flex-col gap-4 border p-4 rounded-md bg-gray-25">​…​</div>​flex<div class=​"flex justify-center items-center gap-2">​…​</div>​flex<span class=​"t-t2 font-secondary text-gray-700 font-medium">​De​</span>​<div class=​"flex w-full justify-end flex-col relative">​…​</div>​flex<span class=​"t-t2 font-secondary text-gray-700 font-medium">​Hasta​</span>​<!-- Si el tipo de monto es monto, mostrar el select y el input --><!-- Si el tipo de monto es sin límite, mostrar el div con el texto y el botón --><div class=​"w-full h-[40px]​ inline-flex items-center gap-[5px]​ px-3 rounded-[8px]​ border border-primary-500 bg-[#F1EEFF]​">​…​</div>​flex<span class=​"t-t2 font-secondary text-gray-700 font-medium">​es​</span>​<div class=​"flex w-full justify-end flex-col relative">​…​</div>​flex<div class=​"flex flex-col gap-5 w-full">​…​</div>​flex<!--v-if--><button data-slot=​"select-trigger" data-size=​"default" class=​"border-input data-[placeholder]​:​text-muted-foreground [&_svg:​not([class*='text-']​)​]​:​text-muted-foreground aria-invalid:​ring-destructive/​20 dark:​aria-invalid:​ring-destructive/​40 aria-invalid:​border-destructive dark:​bg-input/​30 dark:​hover:​bg-input/​50 flex items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow]​ outline-none disabled:​cursor-not-allowed disabled:​opacity-50 data-[size=default]​:​h-9 data-[size=sm]​:​h-8 *:​data-[slot=select-value]​:​line-clamp-1 *:​data-[slot=select-value]​:​flex *:​data-[slot=select-value]​:​items-center *:​data-[slot=select-value]​:​gap-2 [&_svg]​:​pointer-events-none [&_svg]​:​shrink-0 [&_svg:​not([class*='size-']​)​]​:​size-4 w-full !border-gray-500 data-[state=open]​:​!border-gray-700 data-[state=open]​:​!border-2 data-[state=open]​:​!ring-2 data-[state=open]​:​!ring-[var(--color-outline-ring)​]​ data-[state=open]​:​!ring-offset-4 *:​data-[slot=select-value]​:​font-secondary *:​data-[slot=select-value]​:​text-gray-700 !h-[40px]​ t-t2" role=​"combobox" type=​"button" aria-controls=​"reka-select-content-v-0-0-12" aria-expanded=​"false" aria-required=​"false" aria-autocomplete=​"none" dir=​"ltr" data-state=​"closed">​…​</button>​flex<!--teleport start--><!--teleport end--><select aria-hidden=​"true" tabindex=​"-1" value=​"a sola firma" style=​"position:​ absolute;​ border:​ 0px;​ width:​ 1px;​ height:​ 1px;​ padding:​ 0px;​ margin:​ -1px;​ overflow:​ hidden;​ clip:​ rect(0px, 0px, 0px, 0px)​;​ clip-path:​ inset(50%)​;​ white-space:​ nowrap;​ overflow-wrap:​ normal;​ top:​ -1px;​ left:​ -1px;​">​…​</select>​</div>​<!--v-if--></div>​<!-- Solo mostrar el botón de eliminar si hay más de un límite --><!-- Se necesita al menos un límite monetario --><!--v-if--></div>​<!-- Firmantes --><!--v-if--></div>​<button data-slot=​"button" class=​"inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-md text-sm font-secondary font-medium transition-all disabled:​pointer-events-none disabled:​opacity-50 shrink-0 [&_svg]​:​shrink-0 outline-none focus-visible:​border-ring focus-visible:​ring-ring/​50 focus-visible:​ring-[3px]​ aria-invalid:​ring-destructive/​20 dark:​aria-invalid:​ring-destructive/​40 aria-invalid:​border-destructive active:​scale-[0.98]​ active:​transition-transform active:​duration-100 border h-9 px px-4 py-2 has-[>svg]​:​px-3 border-gray-300 text-gray-700 hover:​bg-gray-100 hover:​text-gray-800" type=​"button">​…​</button>​flex</div>​</div>​</div>​</div>​<!-- ¿Este poder es irrevocable? --><div class=​"h-full border border-gray-100 rounded-xl flex flex-col">​…​</div>​flex</div>​</div>​<div class=​"flex items-center gap-3 h-[92px]​ min-h-[92px]​ shrink-0 border-t">​…​</div>​flex</form>​</div>​<!----><!----><!----><!----><!----><!----><div>​…​</div>​<div>​…​</div>​<div>​…​</div>​</body>​</html>​
 useTheme.ts:40   📄 tagName: HTML
 useTheme.ts:49   📊 ESTADO ANTES:
 useTheme.ts:50     - className: ""
@@ -112,21 +113,21 @@ useTheme.ts:203 ✅ [onMounted] CONFIGURACIÓN COMPLETA
 useTheme.ts:204 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 useOtorgamientoPoderesController.ts:322 🔵 [OtorgamientoPoderes] loadData iniciado {societyId: 5, flowId: 3}
 useOtorgamientoPoderesController.ts:328 🔵 [OtorgamientoPoderes] Cargando poderes disponibles...
-useJuntasGlobalSnapshotLoader.ts:284 🔵 [useJuntasGlobalSnapshotLoader] onMounted() ejecutado, llamando initialize()...
-useJuntasGlobalSnapshotLoader.ts:214 🔵 [useJuntasGlobalSnapshotLoader] initialize() INICIADO
-useJuntasGlobalSnapshotLoader.ts:43 🔵 [useJuntasGlobalSnapshotLoader] isJuntasFlowRoute() {hasPath: true, hasSocietyId: true, hasFlowId: true, result: true, path: '/operaciones/sociedades/5/junta-accionistas/3/nombramiento-gerente/otorgamiento', …}
-useJuntasGlobalSnapshotLoader.ts:217 🔵 [useJuntasGlobalSnapshotLoader] isJuntasFlowRoute() result: true
-useJuntasGlobalSnapshotLoader.ts:63 🔵 [useJuntasGlobalSnapshotLoader] getRouteIds() - Params raw: {societyIdParam: '5', flowIdParam: '3', societyIdType: 'string', flowIdType: 'string'}
-useJuntasGlobalSnapshotLoader.ts:89 🔵 [useJuntasGlobalSnapshotLoader] getRouteIds() - Result: {societyId: 5, flowId: 3}
-useJuntasGlobalSnapshotLoader.ts:228 🔵 [useJuntasGlobalSnapshotLoader] IDs obtenidos: {societyId: 5, flowId: 3}
-useJuntasGlobalSnapshotLoader.ts:238 🟢 [useJuntasGlobalSnapshotLoader] Llamando loadFromBackend()... {societyId: 5, flowId: 3}
-useJuntasGlobalSnapshotLoader.ts:98 🟢 [useJuntasGlobalSnapshotLoader] loadFromBackend() INICIADO {societyId: 5, flowId: 3, isLoadingGlobal: false, lastLoadedFlowId: null}
-useJuntasGlobalSnapshotLoader.ts:135 🟢 [useJuntasGlobalSnapshotLoader] Verificando estado del store: {hasSnapshot: true, currentFlowId: 3, currentSocietyId: 5, requestedFlowId: 3, requestedSocietyId: 5, …}
-installHook.js:1 🟡 [useJuntasGlobalSnapshotLoader] Snapshot ya está cargado para este flowId, omitiendo carga duplicada... {flowId: 3, societyId: 5, hasSnapshot: true}
+useJuntasGlobalSnapshotLoader.ts:369 🔵 [useJuntasGlobalSnapshotLoader] onMounted() ejecutado, llamando initialize()...
+useJuntasGlobalSnapshotLoader.ts:277 🔵 [useJuntasGlobalSnapshotLoader] initialize() INICIADO
+useJuntasGlobalSnapshotLoader.ts:64 🔵 [useJuntasGlobalSnapshotLoader] isJuntasFlowRoute() {hasPath: true, hasSocietyId: true, hasFlowId: true, result: true, path: '/operaciones/sociedades/5/junta-accionistas/3/nombramiento-gerente/otorgamiento', …}
+useJuntasGlobalSnapshotLoader.ts:280 🔵 [useJuntasGlobalSnapshotLoader] isJuntasFlowRoute() result: true
+useJuntasGlobalSnapshotLoader.ts:84 🔵 [useJuntasGlobalSnapshotLoader] getRouteIds() - Params raw: {societyIdParam: '5', flowIdParam: '3', societyIdType: 'string', flowIdType: 'string'}
+useJuntasGlobalSnapshotLoader.ts:110 🔵 [useJuntasGlobalSnapshotLoader] getRouteIds() - Result: {societyId: 5, flowId: 3}
+useJuntasGlobalSnapshotLoader.ts:291 🔵 [useJuntasGlobalSnapshotLoader] IDs obtenidos: {societyId: 5, flowId: 3}
+useJuntasGlobalSnapshotLoader.ts:301 🟢 [useJuntasGlobalSnapshotLoader] Llamando loadFromBackend()... {societyId: 5, flowId: 3}
+useJuntasGlobalSnapshotLoader.ts:124 🟢 [useJuntasGlobalSnapshotLoader] loadFromBackend() INICIADO {societyId: 5, flowId: 3, forceReload: false, isLoadingGlobal: false, lastLoadedFlowId: null}
+useJuntasGlobalSnapshotLoader.ts:187 🟢 [useJuntasGlobalSnapshotLoader] Verificando estado del store: {hasSnapshot: true, currentFlowId: 3, currentSocietyId: 5, requestedFlowId: 3, requestedSocietyId: 5, …}
+installHook.js:1 🟡 [useJuntasGlobalSnapshotLoader] Snapshot ya está cargado para este flowId, omitiendo carga duplicada... {flowId: 3, societyId: 5, hasSnapshot: true, fromLocalStorage: false, forceReload: false, …}
 overrideMethod @ installHook.js:1
-loadFromBackend @ useJuntasGlobalSnapshotLoader.ts:150
-initialize @ useJuntasGlobalSnapshotLoader.ts:244
-(anonymous) @ useJuntasGlobalSnapshotLoader.ts:287
+loadFromBackend @ useJuntasGlobalSnapshotLoader.ts:198
+initialize @ useJuntasGlobalSnapshotLoader.ts:307
+(anonymous) @ useJuntasGlobalSnapshotLoader.ts:372
 (anonymous) @ runtime-core.esm-bundler.js?v=878b61f7:2902
 callWithErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:197
 callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:204
@@ -265,15 +266,26 @@ patch @ runtime-core.esm-bundler.js?v=878b61f7:4789
 render @ runtime-core.esm-bundler.js?v=878b61f7:6086
 mount @ runtime-core.esm-bundler.js?v=878b61f7:4021
 app.mount @ runtime-dom.esm-bundler.js?v=878b61f7:1774
-initApp @ entry.js?v=878b61f7:65
+initApp @ entry.js?t=1766063850664&v=878b61f7:65
 await in initApp
-(anonymous) @ entry.js?v=878b61f7:73
+(anonymous) @ entry.js?t=1766063850664&v=878b61f7:73
+useJuntasGlobalSnapshotLoader.ts:211 💡 [useJuntasGlobalSnapshotLoader] Para forzar recarga, ejecuta en consola: const snapshotStore = useSnapshotStore(); snapshotStore.clearSnapshot(); location.reload();
 prepare.js:1 🍍 "juntasNavbar" store installed 🆕
 prepare.js:1 🍍 "otorgamientoPoderes" store installed 🆕
 prepare.js:1 🍍 "nombramientoGerente" store installed 🆕
 prepare.js:1 🍍 "apoderadoFacultad" store installed 🆕
 prepare.js:1 🍍 "auth" store installed 🆕
-useJuntasGlobalSnapshotLoader.ts:246 🔵 [useJuntasGlobalSnapshotLoader] initialize() COMPLETADO
+useJuntasGlobalSnapshotLoader.ts:309 🔵 [useJuntasGlobalSnapshotLoader] initialize() COMPLETADO
+useJuntasGlobalSnapshotLoader.ts:310 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+useJuntasGlobalSnapshotLoader.ts:311 📊 RESUMEN - Estado del Snapshot Loader:
+useJuntasGlobalSnapshotLoader.ts:312   • Composable ejecutado: ✅
+useJuntasGlobalSnapshotLoader.ts:313   • Ruta detectada: ✅
+useJuntasGlobalSnapshotLoader.ts:314   • IDs extraídos: {societyId: 5, flowId: 3}
+useJuntasGlobalSnapshotLoader.ts:315   • Snapshot en store: ✅ (existe)
+useJuntasGlobalSnapshotLoader.ts:319   • Snapshot flowId: 3
+useJuntasGlobalSnapshotLoader.ts:320   • Snapshot societyId: 5
+useJuntasGlobalSnapshotLoader.ts:321   • FETCH EJECUTADO: ❌ NO (ya existe en store)
+useJuntasGlobalSnapshotLoader.ts:331 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 useOtorgamientoPoderesController.ts:330 ✅ [OtorgamientoPoderes] Poderes cargados: 5
 useOtorgamientoPoderesController.ts:338 🔵 [OtorgamientoPoderes] Estableciendo snapshot powerGrants: 5
 useOtorgamientoPoderesController.ts:348 🔵 [OtorgamientoPoderes] Cargando otorgamientos actuales...
@@ -393,5 +405,243 @@ useJuntasSidebarExpansion.ts:38 🔴 [useJuntasSidebarExpansion] currentStepId:
 useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
 useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
 useJuntasNavbarRoutes.ts:365 🟠 [useJuntasNavbarRoutes] computed steps ejecutado, store steps: 6
-useOtorgamientoPoderesController.ts:350 ✅ [OtorgamientoPoderes] Otorgamientos cargados: 6
+useOtorgamientoPoderesController.ts:350 ✅ [OtorgamientoPoderes] Otorgamientos cargados: 9
 useOtorgamientoPoderesController.ts:354 ✅ [OtorgamientoPoderes] loadData completado exitosamente
+useOtorgamientoPoderesController.ts:322 🔵 [OtorgamientoPoderes] loadData iniciado {societyId: 5, flowId: 3}
+useOtorgamientoPoderesController.ts:328 🔵 [OtorgamientoPoderes] Cargando poderes disponibles...
+useOtorgamientoPoderesController.ts:330 ✅ [OtorgamientoPoderes] Poderes cargados: 5
+useOtorgamientoPoderesController.ts:338 🔵 [OtorgamientoPoderes] Estableciendo snapshot powerGrants: 5
+useOtorgamientoPoderesController.ts:348 🔵 [OtorgamientoPoderes] Cargando otorgamientos actuales...
+useOtorgamientoPoderesController.ts:350 ✅ [OtorgamientoPoderes] Otorgamientos cargados: 9
+useOtorgamientoPoderesController.ts:354 ✅ [OtorgamientoPoderes] loadData completado exitosamente
+useOtorgamientoPoderesController.ts:322 🔵 [OtorgamientoPoderes] loadData iniciado {societyId: 5, flowId: 3}
+useOtorgamientoPoderesController.ts:328 🔵 [OtorgamientoPoderes] Cargando poderes disponibles...
+useOtorgamientoPoderesController.ts:330 ✅ [OtorgamientoPoderes] Poderes cargados: 5
+useOtorgamientoPoderesController.ts:338 🔵 [OtorgamientoPoderes] Estableciendo snapshot powerGrants: 5
+useOtorgamientoPoderesController.ts:348 🔵 [OtorgamientoPoderes] Cargando otorgamientos actuales...
+useOtorgamientoPoderesController.ts:350 ✅ [OtorgamientoPoderes] Otorgamientos cargados: 9
+useOtorgamientoPoderesController.ts:354 ✅ [OtorgamientoPoderes] loadData completado exitosamente
+useOtorgamientoPoderesController.ts:418 🔵 [OtorgamientoPoderes] cargarFacultadParaEditar - Store adapter: {tipoFacultadesCount: 5, facultadId: 'a4b49d86-95d6-4a5f-9b9b-b5028421a67f', facultadTipoNombre: 'Poder para Operaciones Bancarias'}
+prepare.js:1 🍍 "regimenFacultades" store installed 🆕
+installHook.js:1 [Vue warn]: Unhandled error during execution of render function 
+  at <SimpleCardDropDown > 
+  at <ReglasLimitesCard > 
+  at <Form class="flex flex-col flex-1 min-h-0" onSubmit=fn onInvalidSubmit=fn > 
+  at <Primitive ref=fn<forwardRef> as-child=false as=undefined  ... > 
+  at <DismissableLayer tabindex="-1" onKeydown=fn<handleKeyDown> data-slot="dialog-content"  ... > 
+  at <PrimitiveSlot tabindex="-1" onKeydown=fn<handleKeyDown> data-slot="dialog-content"  ... > 
+  at <Primitive ref_key="currentRef" ref=Ref< Proxy(Object) {…} > tabindex="-1"  ... > 
+  at <FocusScope as-child="" loop="" trapped=true  ... > 
+  at <DialogContentImpl as=undefined forceMount=false trapFocus=false  ... > 
+  at <DialogContentModal key=0 ref=fn<ref> forceMount=false  ... > 
+  at <Presence present=true data-slot="dialog-content" aria-describedby=undefined  ... > 
+  at <DialogContent data-slot="dialog-content" onEscapeKeyDown=fn onPointerDownOutside=fn  ... > 
+  at <Teleport disabled=false defer=false forceMount=false  ... > 
+  at <DialogPortal > 
+  at <BaseDialogContent class="flex flex-col max-h-[800px] min-w-[1042px]" > 
+  at <DialogRoot data-slot="dialog" open=true onUpdate:open=fn > 
+  at <Dialog open=true onUpdate:open=fn<onOpenChange> > 
+  at <BaseModal modelValue=true onUpdate:modelValue=fn size="lg"  ... > 
+  at <FacultadApoderadoModal modelValue=true onUpdate:modelValue=fn mode="editar"  ... > 
+  at <SlotWrapper > 
+  at <Otorgamiento onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/operaciones/sociedades/5()/junta-accionistas/3()/nombramiento-gerente/otorgamiento" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/operaciones/sociedades/5/junta-accionistas/3/nombramiento-gerente/otorgamiento', hash: '', query: {…}, name: 'operaciones-sociedades-societyId-junta-accionistas-flowId-nombramiento-gerente-otorgamiento', path: '/operaciones/sociedades/5/junta-accionistas/3/nombramiento-gerente/otorgamiento', …}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <FlowLayoutJuntasContent has-right-sidebar=true final-sections= (5) [{…}, {…}, {…}, {…}, {…}] current-section-id="otorgamiento"  ... > 
+  at <FlowLayoutJuntasContentWrapper > 
+  at <FlowLayoutJuntas ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="flow-layout-juntas" layoutProps= {ref: RefImpl} name="flow-layout-juntas" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="flow-layout-juntas" name="flow-layout-juntas"  ... > 
+  at <NuxtLayout name="flow-layout-juntas" > 
+  at <Registros ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="registros" layoutProps= {ref: RefImpl} name="registros" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="registros" name="registros"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot>
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bundler.js?v=878b61f7:50
+logError @ runtime-core.esm-bundler.js?v=878b61f7:261
+handleError @ runtime-core.esm-bundler.js?v=878b61f7:253
+renderComponentRoot @ runtime-core.esm-bundler.js?v=878b61f7:6645
+componentUpdateFn @ runtime-core.esm-bundler.js?v=878b61f7:5492
+run @ reactivity.esm-bundler.js?v=878b61f7:207
+runIfDirty @ reactivity.esm-bundler.js?v=878b61f7:245
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:197
+flushJobs @ runtime-core.esm-bundler.js?v=878b61f7:405
+Promise.then
+queueFlush @ runtime-core.esm-bundler.js?v=878b61f7:319
+queueJob @ runtime-core.esm-bundler.js?v=878b61f7:314
+baseWatchOptions.scheduler @ runtime-core.esm-bundler.js?v=878b61f7:6314
+effect2.scheduler @ reactivity.esm-bundler.js?v=878b61f7:1773
+trigger @ reactivity.esm-bundler.js?v=878b61f7:235
+endBatch @ reactivity.esm-bundler.js?v=878b61f7:293
+notify @ reactivity.esm-bundler.js?v=878b61f7:568
+trigger @ reactivity.esm-bundler.js?v=878b61f7:542
+set value @ reactivity.esm-bundler.js?v=878b61f7:1421
+set @ reactivity.esm-bundler.js?v=878b61f7:1459
+_mergeProps.onUpdate:modelValue._cache.<computed>._cache.<computed> @ BaseInputSelect.vue:68
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:204
+emit @ runtime-core.esm-bundler.js?v=878b61f7:6493
+(anonymous) @ runtime-core.esm-bundler.js?v=878b61f7:8204
+result.<computed> @ reka-ui.js?v=878b61f7:3615
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:204
+emit @ runtime-core.esm-bundler.js?v=878b61f7:6493
+(anonymous) @ runtime-core.esm-bundler.js?v=878b61f7:8204
+triggerEmit @ reka-ui.js?v=878b61f7:1148
+set @ reka-ui.js?v=878b61f7:1180
+set value @ reactivity.esm-bundler.js?v=878b61f7:1584
+handleValueChange @ reka-ui.js?v=878b61f7:28495
+handleSelect2 @ reka-ui.js?v=878b61f7:29493
+await in handleSelect2
+handleAndDispatchCustomEvent @ reka-ui.js?v=878b61f7:100
+handleSelectCustomEvent @ reka-ui.js?v=878b61f7:29486
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:204
+invoker @ runtime-dom.esm-bundler.js?v=878b61f7:721
+installHook.js:1 [Vue warn]: Unhandled error during execution of component update 
+  at <SimpleCardDropDown > 
+  at <ReglasLimitesCard > 
+  at <Form class="flex flex-col flex-1 min-h-0" onSubmit=fn onInvalidSubmit=fn > 
+  at <Primitive ref=fn<forwardRef> as-child=false as=undefined  ... > 
+  at <DismissableLayer tabindex="-1" onKeydown=fn<handleKeyDown> data-slot="dialog-content"  ... > 
+  at <PrimitiveSlot tabindex="-1" onKeydown=fn<handleKeyDown> data-slot="dialog-content"  ... > 
+  at <Primitive ref_key="currentRef" ref=Ref< Proxy(Object) {…} > tabindex="-1"  ... > 
+  at <FocusScope as-child="" loop="" trapped=true  ... > 
+  at <DialogContentImpl as=undefined forceMount=false trapFocus=false  ... > 
+  at <DialogContentModal key=0 ref=fn<ref> forceMount=false  ... > 
+  at <Presence present=true data-slot="dialog-content" aria-describedby=undefined  ... > 
+  at <DialogContent data-slot="dialog-content" onEscapeKeyDown=fn onPointerDownOutside=fn  ... > 
+  at <Teleport disabled=false defer=false forceMount=false  ... > 
+  at <DialogPortal > 
+  at <BaseDialogContent class="flex flex-col max-h-[800px] min-w-[1042px]" > 
+  at <DialogRoot data-slot="dialog" open=true onUpdate:open=fn > 
+  at <Dialog open=true onUpdate:open=fn<onOpenChange> > 
+  at <BaseModal modelValue=true onUpdate:modelValue=fn size="lg"  ... > 
+  at <FacultadApoderadoModal modelValue=true onUpdate:modelValue=fn mode="editar"  ... > 
+  at <SlotWrapper > 
+  at <Otorgamiento onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <RouteProvider key="/operaciones/sociedades/5()/junta-accionistas/3()/nombramiento-gerente/otorgamiento" vnode= {__v_isVNode: true, __v_skip: true, type: {…}, props: {…}, key: null, …} route= {fullPath: '/operaciones/sociedades/5/junta-accionistas/3/nombramiento-gerente/otorgamiento', hash: '', query: {…}, name: 'operaciones-sociedades-societyId-junta-accionistas-flowId-nombramiento-gerente-otorgamiento', path: '/operaciones/sociedades/5/junta-accionistas/3/nombramiento-gerente/otorgamiento', …}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <FlowLayoutJuntasContent has-right-sidebar=true final-sections= (5) [{…}, {…}, {…}, {…}, {…}] current-section-id="otorgamiento"  ... > 
+  at <FlowLayoutJuntasContentWrapper > 
+  at <FlowLayoutJuntas ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="flow-layout-juntas" layoutProps= {ref: RefImpl} name="flow-layout-juntas" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="flow-layout-juntas" name="flow-layout-juntas"  ... > 
+  at <NuxtLayout name="flow-layout-juntas" > 
+  at <Registros ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) {__v_skip: true} > > 
+  at <LayoutLoader key="registros" layoutProps= {ref: RefImpl} name="registros" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="registros" name="registros"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot>
+overrideMethod @ installHook.js:1
+warn$1 @ runtime-core.esm-bundler.js?v=878b61f7:50
+logError @ runtime-core.esm-bundler.js?v=878b61f7:261
+handleError @ runtime-core.esm-bundler.js?v=878b61f7:253
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:199
+flushJobs @ runtime-core.esm-bundler.js?v=878b61f7:405
+Promise.then
+queueFlush @ runtime-core.esm-bundler.js?v=878b61f7:319
+queueJob @ runtime-core.esm-bundler.js?v=878b61f7:314
+baseWatchOptions.scheduler @ runtime-core.esm-bundler.js?v=878b61f7:6314
+effect2.scheduler @ reactivity.esm-bundler.js?v=878b61f7:1773
+trigger @ reactivity.esm-bundler.js?v=878b61f7:235
+endBatch @ reactivity.esm-bundler.js?v=878b61f7:293
+notify @ reactivity.esm-bundler.js?v=878b61f7:568
+trigger @ reactivity.esm-bundler.js?v=878b61f7:542
+set value @ reactivity.esm-bundler.js?v=878b61f7:1421
+set @ reactivity.esm-bundler.js?v=878b61f7:1459
+_mergeProps.onUpdate:modelValue._cache.<computed>._cache.<computed> @ BaseInputSelect.vue:68
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:204
+emit @ runtime-core.esm-bundler.js?v=878b61f7:6493
+(anonymous) @ runtime-core.esm-bundler.js?v=878b61f7:8204
+result.<computed> @ reka-ui.js?v=878b61f7:3615
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:204
+emit @ runtime-core.esm-bundler.js?v=878b61f7:6493
+(anonymous) @ runtime-core.esm-bundler.js?v=878b61f7:8204
+triggerEmit @ reka-ui.js?v=878b61f7:1148
+set @ reka-ui.js?v=878b61f7:1180
+set value @ reactivity.esm-bundler.js?v=878b61f7:1584
+handleValueChange @ reka-ui.js?v=878b61f7:28495
+handleSelect2 @ reka-ui.js?v=878b61f7:29493
+await in handleSelect2
+handleAndDispatchCustomEvent @ reka-ui.js?v=878b61f7:100
+handleSelectCustomEvent @ reka-ui.js?v=878b61f7:29486
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:204
+invoker @ runtime-dom.esm-bundler.js?v=878b61f7:721
+useApoderadoFacultadStore.ts?t=1766063849752:75 Uncaught (in promise) TypeError: this.usarInputLibreCantidadFirmantes is not a function
+    at Proxy.cantidadFirmantesOptions (useApoderadoFacultadStore.ts?t=1766063849752:75:16)
+    at ComputedRefImpl.fn (pinia.mjs?v=878b61f7:954:30)
+    at refreshComputed (reactivity.esm-bundler.js?v=878b61f7:361:29)
+    at get value (reactivity.esm-bundler.js?v=878b61f7:1576:5)
+    at MutableReactiveHandler.get (reactivity.esm-bundler.js?v=878b61f7:936:68)
+    at Proxy.getCantidadFirmantesOptions (ReglasLimitesCard.vue:39:44)
+    at ReglasLimitesCard.vue:332:31
+    at renderList (runtime-core.esm-bundler.js?v=878b61f7:2991:16)
+    at ReglasLimitesCard.vue:362:19
+    at renderList (runtime-core.esm-bundler.js?v=878b61f7:2991:16)
+cantidadFirmantesOptions @ useApoderadoFacultadStore.ts?t=1766063849752:75
+(anonymous) @ pinia.mjs?v=878b61f7:954
+refreshComputed @ reactivity.esm-bundler.js?v=878b61f7:361
+get value @ reactivity.esm-bundler.js?v=878b61f7:1576
+get @ reactivity.esm-bundler.js?v=878b61f7:936
+getCantidadFirmantesOptions @ ReglasLimitesCard.vue:39
+(anonymous) @ ReglasLimitesCard.vue:332
+renderList @ runtime-core.esm-bundler.js?v=878b61f7:2991
+(anonymous) @ ReglasLimitesCard.vue:362
+renderList @ runtime-core.esm-bundler.js?v=878b61f7:2991
+(anonymous) @ ReglasLimitesCard.vue:374
+renderFnWithContext @ runtime-core.esm-bundler.js?v=878b61f7:702
+slots.<computed> @ runtime-core.esm-bundler.js?v=878b61f7:3037
+renderSlot @ runtime-core.esm-bundler.js?v=878b61f7:3067
+_sfc_render @ SimpleCardDropDown.vue:26
+renderComponentRoot @ runtime-core.esm-bundler.js?v=878b61f7:6609
+componentUpdateFn @ runtime-core.esm-bundler.js?v=878b61f7:5492
+run @ reactivity.esm-bundler.js?v=878b61f7:207
+runIfDirty @ reactivity.esm-bundler.js?v=878b61f7:245
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:197
+flushJobs @ runtime-core.esm-bundler.js?v=878b61f7:405
+Promise.then
+queueFlush @ runtime-core.esm-bundler.js?v=878b61f7:319
+queueJob @ runtime-core.esm-bundler.js?v=878b61f7:314
+baseWatchOptions.scheduler @ runtime-core.esm-bundler.js?v=878b61f7:6314
+effect2.scheduler @ reactivity.esm-bundler.js?v=878b61f7:1773
+trigger @ reactivity.esm-bundler.js?v=878b61f7:235
+endBatch @ reactivity.esm-bundler.js?v=878b61f7:293
+notify @ reactivity.esm-bundler.js?v=878b61f7:568
+trigger @ reactivity.esm-bundler.js?v=878b61f7:542
+set value @ reactivity.esm-bundler.js?v=878b61f7:1421
+set @ reactivity.esm-bundler.js?v=878b61f7:1459
+_mergeProps.onUpdate:modelValue._cache.<computed>._cache.<computed> @ BaseInputSelect.vue:68
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:204
+emit @ runtime-core.esm-bundler.js?v=878b61f7:6493
+(anonymous) @ runtime-core.esm-bundler.js?v=878b61f7:8204
+result.<computed> @ reka-ui.js?v=878b61f7:3615
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:204
+emit @ runtime-core.esm-bundler.js?v=878b61f7:6493
+(anonymous) @ runtime-core.esm-bundler.js?v=878b61f7:8204
+triggerEmit @ reka-ui.js?v=878b61f7:1148
+set @ reka-ui.js?v=878b61f7:1180
+set value @ reactivity.esm-bundler.js?v=878b61f7:1584
+handleValueChange @ reka-ui.js?v=878b61f7:28495
+handleSelect2 @ reka-ui.js?v=878b61f7:29493
+await in handleSelect2
+handleAndDispatchCustomEvent @ reka-ui.js?v=878b61f7:100
+handleSelectCustomEvent @ reka-ui.js?v=878b61f7:29486
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=878b61f7:204
+invoker @ runtime-dom.esm-bundler.js?v=878b61f7:721

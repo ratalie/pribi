@@ -86,7 +86,9 @@ export const useApoderadoFacultadStore = defineStore("apoderadoFacultad", {
 
     cantidadFirmantesOptions(): BaseSelectOption[] | null {
       // Si debe usarse input libre (Gerente General), retornar null
-      if (this.usarInputLibreCantidadFirmantes) {
+      // Acceder al getter como propiedad (los getters de Pinia son propiedades computadas)
+      const debeUsarInputLibre = this.usarInputLibreCantidadFirmantes;
+      if (debeUsarInputLibre) {
         return null; // null indica que debe usarse input libre
       }
 
