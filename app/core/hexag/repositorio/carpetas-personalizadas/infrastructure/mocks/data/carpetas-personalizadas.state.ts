@@ -22,6 +22,7 @@ const initMockData = () => {
     id: 'personal-1',
     nombre: 'Due Diligence Cliente ABC',
     descripcion: 'Documentos relacionados con due diligence del cliente ABC',
+    isChatIA: true,
     fechaCreacion: new Date('2024-11-20'),
     fechaModificacion: new Date('2024-11-29'),
     creadorId: 'user-1',
@@ -33,6 +34,7 @@ const initMockData = () => {
     id: 'personal-2',
     nombre: 'Proyecto Expansión Regional',
     descripcion: 'Documentos del proyecto de expansión regional',
+    isChatIA: false,
     fechaCreacion: new Date('2024-11-15'),
     fechaModificacion: new Date('2024-11-25'),
     creadorId: 'user-1',
@@ -44,6 +46,7 @@ const initMockData = () => {
     id: 'personal-3',
     nombre: 'Auditoría 2024',
     descripcion: 'Documentos de auditoría anual 2024',
+    isChatIA: true,
     fechaCreacion: new Date('2024-11-10'),
     fechaModificacion: new Date('2024-11-20'),
     creadorId: 'user-2',
@@ -138,7 +141,8 @@ export async function getCarpetaMock(
 export async function createCarpetaMock(
   sociedadId: string,
   nombre: string,
-  descripcion?: string
+  descripcion?: string,
+  isChatIA?: boolean
 ): Promise<CarpetaPersonalizada> {
   await new Promise((resolve) => setTimeout(resolve, 150));
 
@@ -147,6 +151,7 @@ export async function createCarpetaMock(
     id,
     nombre,
     descripcion,
+    isChatIA: isChatIA ?? false,
     fechaCreacion: now(),
     fechaModificacion: now(),
     creadorId: 'user-1', // Mock user
@@ -167,7 +172,8 @@ export async function updateCarpetaMock(
   sociedadId: string,
   carpetaId: string,
   nombre: string,
-  descripcion?: string
+  descripcion?: string,
+  isChatIA?: boolean
 ): Promise<CarpetaPersonalizada> {
   await new Promise((resolve) => setTimeout(resolve, 150));
 
@@ -180,6 +186,7 @@ export async function updateCarpetaMock(
     ...carpeta,
     nombre,
     descripcion,
+    isChatIA: isChatIA !== undefined ? isChatIA : carpeta.isChatIA,
     fechaModificacion: now(),
   };
 

@@ -5,6 +5,7 @@ export interface CarpetaPersonalizada {
   id: string;
   nombre: string;
   descripcion?: string;
+  isChatIA: boolean;
   fechaCreacion: Date;
   fechaModificacion: Date;
   creadorId: string;

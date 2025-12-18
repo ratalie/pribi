@@ -12,7 +12,7 @@ import type { CarpetaPersonalizada } from '~/core/hexag/repositorio/carpetas-per
 import type { EnlaceDocumento } from '~/core/hexag/repositorio/carpetas-personalizadas/domain/entities/enlace-documento.entity';
 import type { CreateCarpetaDTO } from '~/core/hexag/repositorio/carpetas-personalizadas/application/dtos/carpeta-personalizada.dto';
 import type { CreateEnlaceDTO } from '~/core/hexag/repositorio/carpetas-personalizadas/application/dtos/enlace-documento.dto';
-import { CarpetasPersonalizadasMockRepository } from '~/core/hexag/repositorio/carpetas-personalizadas/infrastructure';
+import { CarpetasPersonalizadasHttpRepository } from '~/core/hexag/repositorio/carpetas-personalizadas/infrastructure';
 
 type Status = 'idle' | 'loading' | 'saving' | 'error';
 
@@ -59,7 +59,7 @@ export const useCarpetasPersonalizadasStore = defineStore('carpetas-personalizad
       this.errorMessage = null;
 
       try {
-        const repository = new CarpetasPersonalizadasMockRepository();
+        const repository = new CarpetasPersonalizadasHttpRepository();
         const useCase = new ListCarpetasUseCase(repository);
         const carpetas = await useCase.execute(id);
 
@@ -86,7 +86,7 @@ export const useCarpetasPersonalizadasStore = defineStore('carpetas-personalizad
       this.errorMessage = null;
 
       try {
-        const repository = new CarpetasPersonalizadasMockRepository();
+        const repository = new CarpetasPersonalizadasHttpRepository();
         const useCase = new GetCarpetaDetailUseCase(repository);
         const { carpeta, enlaces } = await useCase.execute(id, carpetaId);
 
@@ -114,7 +114,7 @@ export const useCarpetasPersonalizadasStore = defineStore('carpetas-personalizad
       this.errorMessage = null;
 
       try {
-        const repository = new CarpetasPersonalizadasMockRepository();
+        const repository = new CarpetasPersonalizadasHttpRepository();
         const useCase = new CreateCarpetaUseCase(repository);
         const carpeta = await useCase.execute(id, dto);
 
@@ -144,7 +144,7 @@ export const useCarpetasPersonalizadasStore = defineStore('carpetas-personalizad
       this.errorMessage = null;
 
       try {
-        const repository = new CarpetasPersonalizadasMockRepository();
+        const repository = new CarpetasPersonalizadasHttpRepository();
         const useCase = new UpdateCarpetaUseCase(repository);
         const carpeta = await useCase.execute(id, carpetaId, dto);
 
@@ -183,7 +183,7 @@ export const useCarpetasPersonalizadasStore = defineStore('carpetas-personalizad
       this.errorMessage = null;
 
       try {
-        const repository = new CarpetasPersonalizadasMockRepository();
+        const repository = new CarpetasPersonalizadasHttpRepository();
         const useCase = new DeleteCarpetaUseCase(repository);
         await useCase.execute(id, carpetaId);
 
@@ -223,7 +223,7 @@ export const useCarpetasPersonalizadasStore = defineStore('carpetas-personalizad
       this.errorMessage = null;
 
       try {
-        const repository = new CarpetasPersonalizadasMockRepository();
+        const repository = new CarpetasPersonalizadasHttpRepository();
         const useCase = new AddEnlaceUseCase(repository);
         const enlace = await useCase.execute(id, this.carpetaActual.id, dto);
 
@@ -270,7 +270,7 @@ export const useCarpetasPersonalizadasStore = defineStore('carpetas-personalizad
       this.errorMessage = null;
 
       try {
-        const repository = new CarpetasPersonalizadasMockRepository();
+        const repository = new CarpetasPersonalizadasHttpRepository();
         const useCase = new RemoveEnlaceUseCase(repository);
         await useCase.execute(id, this.carpetaActual.id, enlaceId);
 

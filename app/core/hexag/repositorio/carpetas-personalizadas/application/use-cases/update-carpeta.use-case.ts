@@ -9,7 +9,7 @@ export class UpdateCarpetaUseCase {
   constructor(private readonly repository: CarpetasPersonalizadasRepository) {}
 
   async execute(sociedadId: string, carpetaId: string, dto: UpdateCarpetaDTO): Promise<CarpetaPersonalizada> {
-    return this.repository.update(sociedadId, carpetaId, dto.nombre, dto.descripcion);
+    return this.repository.update(sociedadId, carpetaId, dto.nombre, dto.descripcion, dto.isChatIA);
   }
 }
 

@@ -24,12 +24,12 @@ export class CarpetasPersonalizadasMockRepository implements CarpetasPersonaliza
     return getCarpetaMock(sociedadId, carpetaId);
   }
 
-  async create(sociedadId: string, nombre: string, descripcion?: string): Promise<CarpetaPersonalizada> {
-    return createCarpetaMock(sociedadId, nombre, descripcion);
+  async create(sociedadId: string, nombre: string, descripcion?: string, isChatIA?: boolean): Promise<CarpetaPersonalizada> {
+    return createCarpetaMock(sociedadId, nombre, descripcion, isChatIA);
   }
 
-  async update(sociedadId: string, carpetaId: string, nombre: string, descripcion?: string): Promise<CarpetaPersonalizada> {
-    return updateCarpetaMock(sociedadId, carpetaId, nombre, descripcion);
+  async update(sociedadId: string, carpetaId: string, nombre: string, descripcion?: string, isChatIA?: boolean): Promise<CarpetaPersonalizada> {
+    return updateCarpetaMock(sociedadId, carpetaId, nombre, descripcion, isChatIA);
   }
 
   async delete(sociedadId: string, carpetaId: string): Promise<void> {
