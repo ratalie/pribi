@@ -1,6 +1,8 @@
 <script setup lang="ts">
+  import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { countriesOptions } from "~/constants/inputs/countries-options";
   import { tipoDocumentoOptions } from "~/constants/inputs/document-type";
+  import { useNombramientoGerentePage } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-gerente/composables/useNombramientoGerentePage";
   import {
     apellidoMaternoNaturalSchema,
     apellidoPaternoNaturalSchema,
@@ -21,8 +23,6 @@
     tipoDocumentoAccSchema,
   } from "~/schemas/registro-sociedades/accionistasSchemas";
   import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
-  import { useNombramientoGerentePage } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-gerente/composables/useNombramientoGerentePage";
-  import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
 
   definePageMeta({
     layout: "registros",
@@ -30,15 +30,8 @@
   });
 
   // ✅ Usar composable para gestión de datos
-  const {
-    tipoPersona,
-    personaNatural,
-    personaJuridica,
-    representanteLegal,
-    isLoading,
-    error,
-    guardarGerente,
-  } = useNombramientoGerentePage();
+  const { tipoPersona, personaNatural, personaJuridica, representanteLegal, guardarGerente } =
+    useNombramientoGerentePage();
 
   const personaOptions = [
     { value: "natural", label: "Persona Natural", description: "" },

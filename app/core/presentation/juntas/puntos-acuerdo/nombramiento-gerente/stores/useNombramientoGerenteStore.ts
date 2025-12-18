@@ -46,6 +46,117 @@ export const useNombramientoGerenteStore = defineStore("nombramientoGerente", {
     },
 
     /**
+     * ✅ COMPATIBILIDAD: Verificar si hay un gerente nombrado
+     * Alias para mantener compatibilidad con código existente
+     */
+    tieneGerenteNombrado(): boolean {
+      return this.gerenteDesignado !== null;
+    },
+
+    /**
+     * ✅ COMPATIBILIDAD: Obtener nombre completo del gerente nombrado
+     * Convierte gerenteDesignado (DTO) al formato esperado por resumen.vue y controller
+     */
+    nombreCompletoGerente(): string {
+      if (!this.gerenteDesignado || !this.gerenteDesignado.person) return "";
+
+      const person = this.gerenteDesignado.person;
+      if (person.type === "NATURAL" && person.natural) {
+        return `${person.natural.firstName} ${person.natural.lastNamePaternal} ${
+          person.natural.lastNameMaternal || ""
+        }`.trim();
+      } else if (person.type === "JURIDIC" && person.juridic) {
+        return person.juridic.businessName;
+      }
+
+      return "";
+    },
+
+    /**
+     * ✅ COMPATIBILIDAD: Obtener gerente nombrado en formato legacy
+     * Convierte gerenteDesignado (DTO) al formato esperado por resumen.vue
+     */
+    gerenteNombrado(): {
+      nombreCompleto: string;
+      tipoPersona: "natural" | "juridica";
+      personaNatural: {
+        tipoDocumento: string;
+        numeroDocumento: string;
+        nombre: string;
+        apellidoPaterno: string;
+        apellidoMaterno: string;
+        paisPasaporte?: string;
+      } | null;
+      personaJuridica: {
+        seConstituyoEnPeru: boolean;
+        tipoDocumento: string;
+        numeroDocumento: string;
+        razonSocial: string;
+        nombreComercial?: string;
+        direccion: string;
+        distrito?: string;
+        provincia?: string;
+        departamento?: string;
+        paisOrigen?: string;
+        tieneRepresentante: boolean;
+      } | null;
+      representante?: {
+        tipoDocumento: string;
+        numeroDocumento: string;
+        nombre: string;
+        apellidoPaterno: string;
+        apellidoMaterno: string;
+        paisPasaporte?: string;
+      } | null;
+    } | null {
+      if (!this.gerenteDesignado || !this.gerenteDesignado.person) return null;
+
+      const person = this.gerenteDesignado.person;
+      const nombreCompleto = this.nombreCompletoGerente;
+
+      if (person.type === "NATURAL" && person.natural) {
+        return {
+          nombreCompleto,
+          tipoPersona: "natural" as const,
+          personaNatural: {
+            tipoDocumento: person.natural.typeDocument,
+            numeroDocumento: person.natural.documentNumber,
+            nombre: person.natural.firstName,
+            apellidoPaterno: person.natural.lastNamePaternal,
+            apellidoMaterno: person.natural.lastNameMaternal || "",
+            paisPasaporte: person.natural.issuingCountry || undefined,
+          },
+          personaJuridica: null,
+          representante: null, // TODO: Si el backend incluye representante en el DTO, mapearlo aquí
+        };
+      } else if (person.type === "JURIDIC" && person.juridic) {
+        // ⚠️ NOTA: El DTO no incluye todos los campos de persona jurídica (dirección, distrito, etc.)
+        // Por ahora, mapeamos solo los campos disponibles
+        return {
+          nombreCompleto,
+          tipoPersona: "juridica" as const,
+          personaNatural: null,
+          personaJuridica: {
+            seConstituyoEnPeru: true, // ⚠️ Asumimos que está constituido en Perú si tiene RUC
+            tipoDocumento: person.juridic.typeDocument,
+            numeroDocumento: person.juridic.documentNumber,
+            razonSocial: person.juridic.businessName,
+            nombreComercial: undefined, // No está en el DTO
+            direccion: "", // No está en el DTO
+            distrito: undefined,
+            provincia: undefined,
+            departamento: undefined,
+            paisOrigen: person.juridic.issuingCountry || undefined,
+            tieneRepresentante: false, // ⚠️ No está en el DTO, asumimos false por defecto
+          },
+          representante: null, // TODO: Si el backend incluye representante en el DTO, mapearlo aquí
+        };
+      }
+
+      return null;
+    },
+
+    /**
      * Obtener attorneyClassId de clase "Gerente General" desde snapshot
      */
     getGerenteGeneralClassId(): string | null {

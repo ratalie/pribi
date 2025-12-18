@@ -1,9 +1,10 @@
 <script setup lang="ts">
-  import { ref } from "vue";
+  import { ref, watch } from "vue";
   import type { BaseSelectOption } from "~/components/base/inputs/text/BaseInputSelect.vue";
   import SlotWrapper from "~/components/containers/SlotWrapper.vue";
   import TitleH2 from "~/components/titles/TitleH2.vue";
   import { TipoFirmasUIEnum } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
+  import { useOtorgamientoPoderesStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-gerente/stores/useOtorgamientoPoderesStore";
   import FacultadesApoderados from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/components/FacultadesApoderados.vue";
   import FacultadApoderadoModal from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/components/modals/FacultadApoderadoModal.vue";
   import { useApoderadoFacultadStore } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/stores/modal/useApoderadoFacultadStore";
@@ -58,6 +59,16 @@
   const apoderadoSeleccionadoId = ref<string | null>(null);
   const facultadSeleccionadaId = ref<string | null>(null);
   const apoderadoFacultadStore = useApoderadoFacultadStore();
+  const otorgamientoStore = useOtorgamientoPoderesStore();
+
+  // Sincronizar con el store cuando cambie apoderadosFacultades
+  watch(
+    () => apoderadosFacultades.value,
+    (newValue) => {
+      otorgamientoStore.setApoderadosFacultades(newValue);
+    },
+    { deep: true, immediate: true }
+  );
 
   const openModalFacultadApoderado = (idApoderado: string) => {
     // Resetear estado del modal para creación

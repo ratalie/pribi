@@ -1,25 +1,26 @@
 <template>
-  <div v-if="isLoading" class="flex items-center justify-center p-8">
-    <p class="text-gray-600">Cargando votación...</p>
+  <div>
+    <div v-if="isLoading" class="flex items-center justify-center p-8">
+      <p class="text-gray-600">Cargando votación...</p>
+    </div>
+    <!-- ⚠️ Mostrar siempre el componente, incluso si hay errores (errores no críticos) -->
+    <MetodoVotacio
+      v-if="!isLoading"
+      v-model="metodoVotacion"
+      title="Votación de Nombramiento de Gerente"
+      subtitle="Registra el resultado de la votación sobre el nombramiento del gerente general."
+      :preguntas="[pregunta]"
+      :votantes="votantes"
+      :mensaje-aprobacion="mensajeAprobacion"
+      :mensaje-unanimidad="mensajeUnanimidad"
+      @cambiar-tipo="handleCambiarTipo"
+      @cambiar-voto="handleCambiarVoto"
+    />
   </div>
-  <div v-else-if="error" class="flex items-center justify-center p-8">
-    <p class="text-red-600">Error: {{ error }}</p>
-  </div>
-  <MetodoVotacio
-    v-else
-    v-model="metodoVotacion"
-    title="Votación de Nombramiento de Gerente"
-    subtitle="Registra el resultado de la votación sobre el nombramiento del gerente general."
-    :preguntas="[pregunta]"
-    :votantes="votantes"
-    :mensaje-aprobacion="mensajeAprobacion"
-    @cambiar-tipo="handleCambiarTipo"
-    @cambiar-voto="handleCambiarVoto"
-  />
 </template>
 
 <script setup lang="ts">
-  import { computed, ref } from "vue";
+  import { computed } from "vue";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
   import { useVotacionNombramientoGerenteController } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-gerente/votacion/composables/useVotacionNombramientoGerenteController";
@@ -43,7 +44,7 @@
 
   // ✅ Obtener props del controller
   const isLoading = controller.isLoading;
-  const error = controller.error;
+  // const error = controller.error; // ⚠️ No se usa, errores no bloquean el renderizado
 
   // ✅ Extraer valores de los computed
   const votantes = computed(() => {
@@ -82,8 +83,37 @@
     return "";
   });
 
-  // Método de votación (unanimidad/mayoría) controlado localmente (sin depender del backend)
-  const metodoVotacion = ref<"unanimidad" | "mayoria">("unanimidad");
+  const mensajeUnanimidad = computed(() => {
+    const mensajeValue = controller.mensajeUnanimidad;
+    if (mensajeValue && typeof mensajeValue === "object" && "value" in mensajeValue) {
+      const value = (mensajeValue as any).value;
+      return typeof value === "string" ? value : "";
+    }
+    if (typeof mensajeValue === "string") {
+      return mensajeValue;
+    }
+    return "";
+  });
+
+  // Método de votación (unanimidad/mayoría) - lee del store
+  const metodoVotacion = computed({
+    get: () => {
+      const esUnanimidadValue = controller.esUnanimidad;
+      // Si esUnanimidad es un computed, extraer su valor
+      if (
+        esUnanimidadValue &&
+        typeof esUnanimidadValue === "object" &&
+        "value" in esUnanimidadValue
+      ) {
+        return (esUnanimidadValue as any).value ? "unanimidad" : "mayoria";
+      }
+      // Si es un boolean directo
+      return esUnanimidadValue ? "unanimidad" : "mayoria";
+    },
+    set: (tipo: "unanimidad" | "mayoria") => {
+      controller.cambiarTipoAprobacion(tipo);
+    },
+  });
 
   function handleCambiarTipo(tipo: "unanimidad" | "mayoria") {
     controller.cambiarTipoAprobacion(tipo);
