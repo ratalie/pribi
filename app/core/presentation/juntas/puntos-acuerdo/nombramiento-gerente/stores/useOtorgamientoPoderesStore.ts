@@ -3,8 +3,15 @@ import type { ApoderadoFacultadRow } from "~/core/presentation/registros/socieda
 
 /**
  * Store simple para almacenar los poderes/facultades del gerente nombrado
+ * ⚠️ IMPORTANTE: Usa persistencia en localStorage para mantener datos entre navegaciones
  */
 export const useOtorgamientoPoderesStore = defineStore("otorgamientoPoderes", {
+  // ✅ PERSISTENCIA: Guardar en localStorage
+  persist: {
+    storage: typeof window !== "undefined" ? localStorage : undefined,
+    key: "probo-otorgamiento-poderes-gerente",
+  },
+
   state: () => ({
     apoderadosFacultades: [] as ApoderadoFacultadRow[],
   }),

@@ -18,7 +18,7 @@ import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.sto
 
 /**
  * Store compartido para gestionar Votaciones
- * 
+ *
  * Usado por:
  * - Aporte Dinerario
  * - Remoción de Apoderados
@@ -26,8 +26,15 @@ import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.sto
  * - Otros flujos de votación
  *
  * ⚠️ IMPORTANTE: Usa Option API de Pinia (NO Composition API)
+ * ✅ PERSISTENCIA: Guardar en localStorage para mantener datos entre navegaciones
  */
 export const useVotacionStore = defineStore("votacion", {
+  // ✅ PERSISTENCIA: Guardar en localStorage
+  persist: {
+    storage: typeof window !== "undefined" ? localStorage : undefined,
+    key: "probo-votacion",
+  },
+
   state: () => ({
     sesionVotacion: null as VoteSession | null,
     status: "idle" as "idle" | "loading" | "error",
@@ -833,6 +840,3 @@ export const useVotacionStore = defineStore("votacion", {
     },
   },
 });
-
-
-

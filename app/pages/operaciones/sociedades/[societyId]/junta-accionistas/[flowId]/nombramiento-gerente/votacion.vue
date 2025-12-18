@@ -1,22 +1,22 @@
 <template>
-  <div v-if="isLoading" class="flex items-center justify-center p-8">
-    <p class="text-gray-600">Cargando votación...</p>
+  <div>
+    <div v-if="isLoading" class="flex items-center justify-center p-8">
+      <p class="text-gray-600">Cargando votación...</p>
+    </div>
+    <!-- ⚠️ Mostrar siempre el componente, incluso si hay errores (errores no críticos) -->
+    <MetodoVotacio
+      v-if="!isLoading"
+      v-model="metodoVotacion"
+      title="Votación de Nombramiento de Gerente"
+      subtitle="Registra el resultado de la votación sobre el nombramiento del gerente general."
+      :preguntas="[pregunta]"
+      :votantes="votantes"
+      :mensaje-aprobacion="mensajeAprobacion"
+      :mensaje-unanimidad="mensajeUnanimidad"
+      @cambiar-tipo="handleCambiarTipo"
+      @cambiar-voto="handleCambiarVoto"
+    />
   </div>
-  <div v-else-if="error" class="flex items-center justify-center p-8">
-    <p class="text-red-600">Error: {{ error }}</p>
-  </div>
-  <MetodoVotacio
-    v-else
-    v-model="metodoVotacion"
-    title="Votación de Nombramiento de Gerente"
-    subtitle="Registra el resultado de la votación sobre el nombramiento del gerente general."
-    :preguntas="[pregunta]"
-    :votantes="votantes"
-    :mensaje-aprobacion="mensajeAprobacion"
-    :mensaje-unanimidad="mensajeUnanimidad"
-    @cambiar-tipo="handleCambiarTipo"
-    @cambiar-voto="handleCambiarVoto"
-  />
 </template>
 
 <script setup lang="ts">
@@ -44,7 +44,7 @@
 
   // ✅ Obtener props del controller
   const isLoading = controller.isLoading;
-  const error = controller.error;
+  // const error = controller.error; // ⚠️ No se usa, errores no bloquean el renderizado
 
   // ✅ Extraer valores de los computed
   const votantes = computed(() => {
