@@ -39,7 +39,7 @@
         </CardTitle>
 
         <NombramientoOtrosApoderadosTable
-          :items="otrosApoderados"
+          :items="otrosApoderadosComputed"
           :actions="otroApoderadoActions"
         />
       </SimpleCard>
@@ -72,17 +72,18 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from "vue";
+  import { computed, onMounted, ref } from "vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
   import CardTitle from "~/components/base/cards/CardTitle.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import SlotWrapper from "~/components/containers/SlotWrapper.vue";
   import TitleH2 from "~/components/titles/TitleH2.vue";
+  import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
+  import { useNombramientoApoderadosPage } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-apoderados/composables/useNombramientoApoderadosPage";
+  import { useNombramientoApoderadosStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-apoderados/stores/useNombramientoApoderadosStore";
   import RegistroApoderadoModal from "~/core/presentation/registros/sociedades/pasos/apoderados/components/modals/RegistroApoderadoModal.vue";
   import { ClasesApoderadoEspecialesEnum } from "~/core/presentation/registros/sociedades/pasos/apoderados/types/enums/ClasesApoderadoEspecialesEnum";
-  import type { ApoderadoRow } from "~/core/presentation/registros/sociedades/pasos/apoderados/types/types";
   import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
-  import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
   import NombramientoApoderadosTable from "./components/NombramientoApoderadosTable.vue";
   import NombramientoOtrosApoderadosTable from "./components/NombramientoOtrosApoderadosTable.vue";
 
@@ -91,34 +92,28 @@
     flowLayoutJuntas: true,
   });
 
-  // ========== ESTADO LOCAL PARA APODERADOS ==========
-  const apoderados = ref<ApoderadoRow[]>([
-    {
-      id: "apod-1",
-      claseApoderadoNombre: "Apoderado Especial",
-      nombre: "Juan Pérez García",
-      tipoDocumento: TipoDocumentosEnum.DNI,
-      numeroDocumento: "12345678",
-    },
-  ]);
+  // ✅ Composable para datos del backend
+  const {
+    isLoading,
+    clasesApoderadosOptions,
+    apoderadosNormales,
+    otrosApoderados,
+    loadData,
+    guardarApoderado,
+    claseApoderadoSeleccionada,
+    tipoPersona,
+    personaNatural,
+    personaJuridica,
+    representanteLegal,
+    limpiarFormulario,
+  } = useNombramientoApoderadosPage();
 
-  // ========== ESTADO LOCAL PARA OTROS APODERADOS ==========
-  const otrosApoderados = ref<ApoderadoRow[]>([
-    {
-      id: "otro-apod-1",
-      claseApoderadoNombre: "Otros Apoderados",
-      nombre: "María López Sánchez",
-      tipoDocumento: TipoDocumentosEnum.DNI,
-      numeroDocumento: "87654321",
-    },
-  ]);
+  const nombramientoStore = useNombramientoApoderadosStore();
 
-  // ========== CLASES DE APODERADO (EJEMPLO) ==========
-  const claseOptions = ref([
-    { id: "clase-1", value: "clase-1", label: "Apoderado Especial" },
-    { id: "clase-2", value: "clase-2", label: "Apoderado Judicial" },
-    { id: "clase-3", value: "clase-3", label: "Apoderado Comercial" },
-  ]);
+  // ✅ Usar datos del composable (conectado al backend)
+  const apoderados = computed(() => apoderadosNormales.value);
+  const otrosApoderadosComputed = computed(() => otrosApoderados.value);
+  const claseOptions = computed(() => clasesApoderadosOptions.value);
 
   // ========== STORE PARA EL FORMULARIO ==========
   const personaNaturalStore = usePersonaNaturalStore();
@@ -157,42 +152,24 @@
     personaNaturalStore.$reset();
   };
 
-  const handleSubmitApoderado = () => {
+  const handleSubmitApoderado = async () => {
     if (!selectedClaseId.value) {
       handleCloseModalApoderado();
       return;
     }
 
-    const claseSeleccionada = claseOptions.value.find((c) => c.id === selectedClaseId.value);
-    if (!claseSeleccionada) {
+    // Usar el composable para guardar
+    claseApoderadoSeleccionada.value = selectedClaseId.value;
+    isLoadingApoderado.value = true;
+
+    try {
+      await guardarApoderado();
       handleCloseModalApoderado();
-      return;
+    } catch (error) {
+      console.error("Error al guardar apoderado:", error);
+    } finally {
+      isLoadingApoderado.value = false;
     }
-
-    const nombreCompleto = `${personaNaturalStore.nombre} ${
-      personaNaturalStore.apellidoPaterno
-    } ${personaNaturalStore.apellidoMaterno || ""}`.trim();
-
-    if (modeModalApoderado.value === "crear") {
-      const nuevoApoderado: ApoderadoRow = {
-        id: `apod-${Math.random().toString(36).slice(2)}`,
-        claseApoderadoNombre: claseSeleccionada.label,
-        nombre: nombreCompleto,
-        tipoDocumento: personaNaturalStore.tipoDocumento as TipoDocumentosEnum,
-        numeroDocumento: personaNaturalStore.numeroDocumento,
-      };
-      apoderados.value.push(nuevoApoderado);
-    } else if (modeModalApoderado.value === "editar" && editingApoderadoId.value) {
-      const apoderado = apoderados.value.find((a) => a.id === editingApoderadoId.value);
-      if (apoderado) {
-        apoderado.claseApoderadoNombre = claseSeleccionada.label;
-        apoderado.nombre = nombreCompleto;
-        apoderado.tipoDocumento = personaNaturalStore.tipoDocumento as TipoDocumentosEnum;
-        apoderado.numeroDocumento = personaNaturalStore.numeroDocumento;
-      }
-    }
-
-    handleCloseModalApoderado();
   };
 
   const handleEditarApoderado = (apoderadoId: string) => {
@@ -226,7 +203,8 @@
   };
 
   const handleEliminarApoderado = (apoderadoId: string) => {
-    apoderados.value = apoderados.value.filter((a) => a.id !== apoderadoId);
+    // TODO: Implementar eliminación desde backend si es necesario
+    console.log("Eliminar apoderado:", apoderadoId);
   };
 
   const apoderadoActions = [
@@ -263,32 +241,26 @@
     personaNaturalStore.$reset();
   };
 
-  const handleSubmitOtroApoderado = () => {
-    const nombreCompleto = `${personaNaturalStore.nombre} ${
-      personaNaturalStore.apellidoPaterno
-    } ${personaNaturalStore.apellidoMaterno || ""}`.trim();
-
-    if (modeModalOtroApoderado.value === "crear") {
-      const nuevoOtroApoderado: ApoderadoRow = {
-        id: `otro-apod-${Math.random().toString(36).slice(2)}`,
-        claseApoderadoNombre: ClasesApoderadoEspecialesEnum.OTROS_APODERADOS,
-        nombre: nombreCompleto,
-        tipoDocumento: personaNaturalStore.tipoDocumento as TipoDocumentosEnum,
-        numeroDocumento: personaNaturalStore.numeroDocumento,
-      };
-      otrosApoderados.value.push(nuevoOtroApoderado);
-    } else if (modeModalOtroApoderado.value === "editar" && editingOtroApoderadoId.value) {
-      const apoderado = otrosApoderados.value.find(
-        (a) => a.id === editingOtroApoderadoId.value
-      );
-      if (apoderado) {
-        apoderado.nombre = nombreCompleto;
-        apoderado.tipoDocumento = personaNaturalStore.tipoDocumento as TipoDocumentosEnum;
-        apoderado.numeroDocumento = personaNaturalStore.numeroDocumento;
-      }
+  const handleSubmitOtroApoderado = async () => {
+    // Para "Otros Apoderados", usar la clase correspondiente
+    const otrosClassId = nombramientoStore.getOtrosApoderadosClassId();
+    if (!otrosClassId) {
+      console.error("No se encontró la clase 'Otros Apoderados'");
+      handleCloseModalOtroApoderado();
+      return;
     }
 
-    handleCloseModalOtroApoderado();
+    claseApoderadoSeleccionada.value = otrosClassId;
+    isLoadingOtroApoderado.value = true;
+
+    try {
+      await guardarApoderado();
+      handleCloseModalOtroApoderado();
+    } catch (error) {
+      console.error("Error al guardar otro apoderado:", error);
+    } finally {
+      isLoadingOtroApoderado.value = false;
+    }
   };
 
   const handleEditarOtroApoderado = (apoderadoId: string) => {
@@ -323,7 +295,8 @@
   };
 
   const handleEliminarOtroApoderado = (apoderadoId: string) => {
-    otrosApoderados.value = otrosApoderados.value.filter((a) => a.id !== apoderadoId);
+    // TODO: Implementar eliminación desde backend si es necesario
+    console.log("Eliminar otro apoderado:", apoderadoId);
   };
 
   const otroApoderadoActions = [
@@ -338,4 +311,15 @@
       onClick: handleEliminarOtroApoderado,
     },
   ];
+
+  // ========== BOTÓN SIGUIENTE ==========
+  // Solo direcciona, no hace nada
+  useJuntasFlowNext(async () => {
+    // No hacer nada, solo permite navegar
+  });
+
+  // ========== CARGA INICIAL ==========
+  onMounted(() => {
+    loadData();
+  });
 </script>

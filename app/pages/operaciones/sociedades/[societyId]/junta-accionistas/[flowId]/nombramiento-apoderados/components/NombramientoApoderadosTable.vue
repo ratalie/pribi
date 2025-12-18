@@ -67,7 +67,7 @@
             <TableCell
               class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
             >
-              <Checkbox :model-value="true" :is-disabled="true" />
+              <Checkbox v-model="item.checked" :is-disabled="false" />
             </TableCell>
             <TableCell
               class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
