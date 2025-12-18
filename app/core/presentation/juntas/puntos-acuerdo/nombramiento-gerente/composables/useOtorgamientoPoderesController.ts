@@ -397,10 +397,6 @@ export const useOtorgamientoPoderesController = (societyId: number, flowId: numb
       return;
     }
 
-    // Configurar información de la clase seleccionada
-    apoderadoFacultadStore.claseApoderadoIdSeleccionada = claseGerenteGeneralId.value;
-    apoderadoFacultadStore.esOtrosApoderados = false;
-
     // Crear un adapter para transformarFacultadAModal
     // La función espera un store con tipoFacultades, pero tenemos poderes
     if (!otorgamientoStore.poderes || otorgamientoStore.poderes.length === 0) {
@@ -419,16 +415,27 @@ export const useOtorgamientoPoderesController = (societyId: number, flowId: numb
       tipoFacultadesCount: storeAdapter.tipoFacultades.length,
       facultadId: idFacultad,
       facultadTipoNombre: facultad.tipoFacultadNombre,
+      facultad: facultad,
     });
 
     const modalData = transformarFacultadAModal(facultad, storeAdapter as any);
 
     if (!modalData) {
-      console.error("Error al transformar la facultad para editar");
+      console.error("❌ [OtorgamientoPoderes] Error al transformar la facultad para editar");
       return;
     }
 
+    console.log("🔵 [OtorgamientoPoderes] Modal data transformado:", modalData);
+
+    // Resetear el store antes de cargar los datos nuevos
+    apoderadoFacultadStore.$reset();
+
+    // Aplicar los datos transformados primero
     apoderadoFacultadStore.$patch(modalData);
+
+    // Configurar información de la clase seleccionada después del patch (para sobrescribir los valores null del modalData)
+    apoderadoFacultadStore.claseApoderadoIdSeleccionada = claseGerenteGeneralId.value;
+    apoderadoFacultadStore.esOtrosApoderados = false;
 
     idFacultadSeleccionada.value = idFacultad;
     modeModalApoderadoFacultad.value = "editar";
@@ -739,4 +746,3 @@ export const useOtorgamientoPoderesController = (societyId: number, flowId: numb
     eliminarFacultad,
   };
 };
-
