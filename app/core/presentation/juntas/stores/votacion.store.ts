@@ -17,7 +17,13 @@ import { VoteHttpRepository } from "~/core/hexag/juntas/infrastructure/repositor
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 
 /**
- * Store para gestionar Votaciones de Aporte Dinerario
+ * Store compartido para gestionar Votaciones
+ * 
+ * Usado por:
+ * - Aporte Dinerario
+ * - Remoción de Apoderados
+ * - Remoción de Gerente
+ * - Otros flujos de votación
  *
  * ⚠️ IMPORTANTE: Usa Option API de Pinia (NO Composition API)
  */
@@ -622,11 +628,15 @@ export const useVotacionStore = defineStore("votacion", {
         const repository = new VoteHttpRepository();
         const useCase = new UpdateVoteSessionUseCase(repository);
 
+        // ✅ Obtener orden del item en la sesión (si existe)
+        const existingItem = this.sesionVotacion.items.find((i) => i.id === itemId);
+        const orden = existingItem?.orden ?? this.sesionVotacion.items.length;
+
         // ✅ Construir payload con item + votos en un solo request
         const itemPayload: any = {
           accion: "add", // ✅ Usar "add" para crear/actualizar el item
           id: itemId,
-          orden: 0,
+          orden, // ✅ Usar orden del item en la sesión
           label,
           descripción: descripcion,
           tipoAprobacion,
@@ -650,8 +660,7 @@ export const useVotacionStore = defineStore("votacion", {
 
         await useCase.execute(societyId, flowId, contexto, [itemPayload]);
 
-        // Actualizar estado local
-        const existingItem = this.sesionVotacion.items.find((i) => i.id === itemId);
+        // Actualizar estado local (reutilizar existingItem declarado arriba)
         if (existingItem) {
           existingItem.label = label;
           existingItem.descripción = descripcion;
@@ -662,9 +671,10 @@ export const useVotacionStore = defineStore("votacion", {
             valor: v.valor,
           }));
         } else {
+          // Agregar nuevo item con el orden correcto
           this.sesionVotacion.items.push({
             id: itemId,
-            orden: 0,
+            orden, // ✅ Usar el orden calculado arriba
             label,
             descripción: descripcion,
             tipoAprobacion,
@@ -823,3 +833,6 @@ export const useVotacionStore = defineStore("votacion", {
     },
   },
 });
+
+
+

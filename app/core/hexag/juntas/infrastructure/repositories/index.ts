@@ -4,3 +4,8 @@ export { AgendaItemsHttpRepository } from "./agenda-items.http.repository";
 export { AgendaItemsMswRepository } from "./agenda-items.msw.repository";
 export { MeetingDetailsHttpRepository } from "./meeting-details.http.repository";
 export { MeetingDetailsMswRepository } from "./meeting-details.msw.repository";
+export { RemovalAttorneyHttpRepository } from "./removal-attorney.http.repository";
+export { RemovalManagerSnapshotRepository } from "./removal-manager.snapshot.repository";
+export { DesignationAttorneyHttpRepository } from "./designation-attorney.http.repository";
+export { CreditorHttpRepository } from "./creditor.http.repository";
+export { CreditCapitalizationHttpRepository } from "./credit-capitalization.http.repository";

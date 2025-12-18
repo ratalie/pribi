@@ -21,7 +21,7 @@
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
   import { useVotacionController } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/composables/useVotacionController";
-  import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/stores/useVotacionStore";
+  import { useVotacionStore } from "~/core/presentation/juntas/stores/votacion.store";
   import MetodoVotacio from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/components/votacion/MetodoVotacio.vue";
 
   /**

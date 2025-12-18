@@ -32,6 +32,7 @@
     votantes?: Votante[] | any; // Aceptar también ComputedRef
     textoVotacion?: string | any; // Aceptar también ComputedRef
     getVoto?: (accionistaId: string) => "A_FAVOR" | "EN_CONTRA" | "ABSTENCION" | null; // Función para obtener voto
+    votacionStore?: any; // ✅ Store dedicado opcional (para múltiples preguntas)
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -211,6 +212,7 @@
         :texto-votacion="textoVotacionValue"
         :get-voto="props.getVoto"
         :preguntas="preguntasValue"
+        :votacion-store="props.votacionStore"
         @cambiar-voto="
           (accionistaId, valor, preguntaIndex) =>
             emit('cambiar-voto', accionistaId, valor, preguntaIndex)

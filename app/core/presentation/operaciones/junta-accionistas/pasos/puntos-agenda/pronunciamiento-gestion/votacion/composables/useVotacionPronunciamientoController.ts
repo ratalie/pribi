@@ -101,21 +101,105 @@ export function useVotacionPronunciamientoController() {
   }
 
   /**
+   * Helper: Obtener nombre completo de un accionista
+   */
+  function getNombreCompletoShareholder(shareholder: any): string {
+    const person = shareholder.person;
+    if (person.tipo === "NATURAL") {
+      return `${person.nombre} ${person.apellidoPaterno} ${
+        person.apellidoMaterno || ""
+      }`.trim();
+    }
+    // Para personas jurídicas y otros tipos
+    if ("razonSocial" in person) {
+      return person.razonSocial || "";
+    }
+    return ""; // Fallback
+  }
+
+  /**
+   * Mapper: Calcular votantes desde snapshot + asistencias
+   * ✅ FUENTE DE VERDAD: Snapshot (no confiar en accionesConDerechoVoto del backend)
+   */
+  function mapearVotantesDesdeSnapshot() {
+    const snapshot = snapshotStore.snapshot;
+    const asistencias = asistenciaStore.asistencias;
+
+    if (!snapshot) {
+      console.warn(
+        "[DEBUG][VotacionPronunciamientoController] No hay snapshot disponible para mapear votantes"
+      );
+      return [];
+    }
+
+    const { shareAllocations, shareClasses, shareholders } = snapshot;
+
+    // 1. Calcular acciones con derecho a voto por accionista desde snapshot
+    const accionistasConAcciones = shareholders.map((accionista) => {
+      const asignaciones = shareAllocations.filter(
+        (asig) => asig.accionistaId === accionista.id
+      );
+
+      let totalAccionesConDerechoVoto = 0;
+
+      asignaciones.forEach((asig) => {
+        const shareClass = shareClasses.find((sc) => sc.id === asig.accionId);
+
+        if (!shareClass) {
+          return;
+        }
+
+        if (shareClass.conDerechoVoto) {
+          totalAccionesConDerechoVoto += asig.cantidadSuscrita;
+        }
+      });
+
+      return {
+        accionista,
+        totalAccionesConDerechoVoto,
+      };
+    });
+
+    // 2. Filtrar solo los que tienen acciones con derecho a voto Y asistieron
+    const votantes = accionistasConAcciones
+      .filter((item) => item.totalAccionesConDerechoVoto > 0)
+      .map((item) => {
+        const asistencia = asistencias.find((a) => a.accionista.id === item.accionista.id);
+
+        if (!asistencia || !asistencia.asistio) {
+          return null;
+        }
+
+        return {
+          id: asistencia.id,
+          accionistaId: item.accionista.id,
+          accionista: item.accionista,
+          nombreCompleto: getNombreCompletoShareholder(item.accionista),
+          tipoPersona: item.accionista.person.tipo,
+          accionesConDerechoVoto: item.totalAccionesConDerechoVoto, // ✅ AGREGADO
+        };
+      })
+      .filter((v): v is NonNullable<typeof v> => v !== null);
+
+    return votantes;
+  }
+
+  /**
    * Obtener votantes (solo asistentes) con formato para componentes
+   * ✅ FUENTE DE VERDAD: Snapshot (calcula accionesConDerechoVoto desde snapshot)
    */
   const votantes = computed(() => {
-    const asistentes = asistenciaStore.asistenciasEnriquecidas;
-    const filtrados = asistentes.filter((a) => a.asistio);
-
-    console.log("[DEBUG][VotacionPronunciamientoController] Votantes filtrados:", filtrados);
-
-    return filtrados.map((a) => ({
-      id: a.id, // ID del registro de asistencia
-      accionistaId: a.accionista.id, // ✅ ID del accionista (para votos)
-      accionista: a.accionista,
-      nombreCompleto: a.nombreCompleto,
-      tipoPersona: a.tipoPersona,
-    }));
+    const votantesMapeados = mapearVotantesDesdeSnapshot();
+    console.log("[DEBUG][VotacionPronunciamientoController] Votantes mapeados desde snapshot:", votantesMapeados);
+    votantesMapeados.forEach((v, i) => {
+      console.log(`[DEBUG][VotacionPronunciamientoController] Votante ${i}:`, {
+        id: v.id,
+        accionistaId: v.accionistaId,
+        nombreCompleto: v.nombreCompleto,
+        accionesConDerechoVoto: v.accionesConDerechoVoto, // ✅ Verificar que esté presente
+      });
+    });
+    return votantesMapeados;
   });
 
   /**

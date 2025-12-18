@@ -37,6 +37,33 @@ export const SUB_STEP_SECTIONS_MAP: Record<string, Array<Omit<SectionItem, "stat
       navigationType: "route",
     },
   ],
+  "capitalizacion-creditos": [
+    {
+      id: "capitalizacion-creditos",
+      title: "Capitalización de Créditos",
+      navigationType: "route",
+    },
+    {
+      id: "acreedores",
+      title: "Acreedores",
+      navigationType: "route",
+    },
+    {
+      id: "creditos",
+      title: "Créditos",
+      navigationType: "route",
+    },
+    {
+      id: "votacion",
+      title: "Votación",
+      navigationType: "route",
+    },
+    {
+      id: "resumen",
+      title: "Resumen",
+      navigationType: "route",
+    },
+  ],
   "aplicacion-resultados": [
     {
       id: "aplicacion-resultados",
@@ -169,11 +196,6 @@ export const SUB_STEP_SECTIONS_MAP: Record<string, Array<Omit<SectionItem, "stat
     {
       id: "remocion",
       title: "Selección de Apoderados",
-      navigationType: "route",
-    },
-    {
-      id: "otorgamiento-facultades",
-      title: "Otorgamiento de Facultades",
       navigationType: "route",
     },
     {

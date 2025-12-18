@@ -5,7 +5,7 @@ import { VoteAgreementType } from "~/core/hexag/juntas/domain/enums/vote-agreeme
 import { VoteContext } from "~/core/hexag/juntas/domain/enums/vote-context.enum";
 import { VoteMode } from "~/core/hexag/juntas/domain/enums/vote-mode.enum";
 import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
-import { useVotacionStore } from "~/core/presentation/juntas/puntos-acuerdo/aporte-dinerario/votacion/stores/useVotacionStore";
+import { useVotacionStore } from "~/core/presentation/juntas/stores/votacion.store";
 import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 import { useVotacionRemocionStore } from "../stores/useVotacionRemocionStore";

@@ -24,10 +24,10 @@
 <script setup lang="ts">
   import { computed } from "vue";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
-  import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
-import { useVotacionPronunciamientoController } from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/pronunciamiento-gestion/votacion/composables/useVotacionPronunciamientoController";
-import { useVotacionPronunciamientoStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/pronunciamiento-gestion/votacion/stores/useVotacionPronunciamientoStore";
+  import type { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
   import MetodoVotacio from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/components/votacion/MetodoVotacio.vue";
+  import { useVotacionPronunciamientoController } from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/pronunciamiento-gestion/votacion/composables/useVotacionPronunciamientoController";
+  import { useVotacionPronunciamientoStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/pronunciamiento-gestion/votacion/stores/useVotacionPronunciamientoStore";
 
   /**
    * Página: Votación (Sub-sección de Pronunciamiento de Gestión)
@@ -80,7 +80,10 @@ import { useVotacionPronunciamientoStore } from "~/core/presentation/operaciones
   /**
    * Manejar cambio de voto de un accionista
    */
-  function handleCambiarVoto(accionistaId: string, valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION") {
+  function handleCambiarVoto(
+    accionistaId: string,
+    valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION"
+  ) {
     const voteValue = valor as VoteValue;
     controller.setVoto(accionistaId, voteValue);
   }

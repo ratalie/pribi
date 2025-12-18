@@ -1,15 +1,13 @@
 import type { FetchOptions } from "ofetch";
-import type { VoteRepository } from "../../domain/ports/vote.repository.port";
-import type { VoteSession } from "../../domain/entities/vote-session.entity";
-import { VoteContext } from "../../domain/enums/vote-context.enum";
-import { VoteAgreementType } from "../../domain/enums/vote-agreement-type.enum";
-import type {
-  VoteSessionResponseDTO,
-  CreateVoteSessionRequestDTO,
-  UpdateVoteSessionRequestDTO,
-} from "../../application/dtos/vote.dto";
-import { VoteMapper } from "../mappers/vote.mapper";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
+import type {
+  UpdateVoteSessionRequestDTO,
+  VoteSessionResponseDTO,
+} from "../../application/dtos/vote.dto";
+import type { VoteSession } from "../../domain/entities/vote-session.entity";
+import type { VoteContext } from "../../domain/enums/vote-context.enum";
+import type { VoteRepository } from "../../domain/ports/vote.repository.port";
+import { VoteMapper } from "../mappers/vote.mapper";
 
 /**
  * Implementación HTTP del repositorio de Votaciones
@@ -73,6 +71,13 @@ export class VoteHttpRepository implements VoteRepository {
       console.debug("[Repository][VoteHttp] getVoteSession() response", {
         success: response?.success,
         hasData: !!response?.data,
+        itemsCount: response?.data?.items?.length || 0,
+        items:
+          response?.data?.items?.map((item: any) => ({
+            id: item.id,
+            label: item.label,
+            orden: item.orden,
+          })) || [],
       });
 
       if (!response?.success || !response?.data) {
@@ -83,9 +88,7 @@ export class VoteHttpRepository implements VoteRepository {
     } catch (error: any) {
       // Si es 404, no existe la sesión (es normal)
       if (error.statusCode === 404 || error.status === 404) {
-        console.debug(
-          "[Repository][VoteHttp] Sesión no encontrada (404), retornando null"
-        );
+        console.debug("[Repository][VoteHttp] Sesión no encontrada (404), retornando null");
         return null;
       }
 
@@ -112,7 +115,7 @@ export class VoteHttpRepository implements VoteRepository {
       headers?: Record<string, string>;
     };
     const body = VoteMapper.toCreateRequestDto(session);
-    
+
     console.debug("[Repository][VoteHttp] createVoteSession() request", {
       url,
       societyId,
@@ -172,10 +175,13 @@ export class VoteHttpRepository implements VoteRepository {
       contexto,
       items, // ✅ tipoAprobacion está dentro de cada item con accion: 'update'
     };
-    
+
     // ✅ DEBUG: Ver qué se envía al backend
-    console.log("[Repository][VoteHttp] updateVoteSession() payload completo:", JSON.stringify(body, null, 2));
-    
+    console.log(
+      "[Repository][VoteHttp] updateVoteSession() payload completo:",
+      JSON.stringify(body, null, 2)
+    );
+
     const requestConfig = {
       ...authConfig,
       method: "PUT" as const,
@@ -204,9 +210,7 @@ export class VoteHttpRepository implements VoteRepository {
       });
 
       if (!response?.success) {
-        throw new Error(
-          response?.message || "Error al actualizar sesión de votación"
-        );
+        throw new Error(response?.message || "Error al actualizar sesión de votación");
       }
     } catch (error: any) {
       console.error("[Repository][VoteHttp] updateVoteSession() error", {
@@ -218,4 +222,3 @@ export class VoteHttpRepository implements VoteRepository {
     }
   }
 }
-

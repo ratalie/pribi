@@ -2,7 +2,7 @@
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { countriesOptions } from "~/constants/inputs/countries-options";
   import { tipoDocumentoOptions } from "~/constants/inputs/document-type";
-  import { useNombramientoGerenteStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-gerente/stores/useNombramientoGerenteStore";
+  import { useNombramientoGerentePage } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-gerente/composables/useNombramientoGerentePage";
   import {
     apellidoMaternoNaturalSchema,
     apellidoPaternoNaturalSchema,
@@ -29,63 +29,18 @@
     flowLayoutJuntas: true,
   });
 
-  const nombramientoStore = useNombramientoGerenteStore();
-
-  const personaNaturalDefaultValues = {
-    tipoDocumento: "",
-    numeroDocumento: "",
-    nombre: "",
-    apellidoPaterno: "",
-    apellidoMaterno: "",
-    paisPasaporte: "",
-  };
-
-  const personaJuridicaDefaultValues = {
-    seConstituyoEnPeru: true,
-    tipoDocumento: "",
-    numeroDocumento: "",
-    razonSocial: "",
-    nombreComercial: "",
-    direccion: "",
-    distrito: "",
-    provincia: "",
-    departamento: "",
-    paisOrigen: "",
-    tieneRepresentante: false,
-  };
-
-  const tipoPersona = ref<"natural" | "juridica">("natural");
+  // ✅ Usar composable para gestión de datos
+  const { tipoPersona, personaNatural, personaJuridica, representanteLegal, guardarGerente } =
+    useNombramientoGerentePage();
 
   const personaOptions = [
     { value: "natural", label: "Persona Natural", description: "" },
     { value: "juridica", label: "Persona Jurídica", description: "" },
   ];
 
-  const personaNatural = ref(personaNaturalDefaultValues);
-  const personaJuridica = ref(personaJuridicaDefaultValues);
-
-  // Guardar datos del gerente en el store cuando se hace clic en "Siguiente"
-  useJuntasFlowNext(() => {
-    // Preparar datos del representante si es persona jurídica y tiene representante
-    const representante =
-      tipoPersona.value === "juridica" && personaJuridica.value.tieneRepresentante
-        ? {
-            tipoDocumento: personaNatural.value.tipoDocumento,
-            numeroDocumento: personaNatural.value.numeroDocumento,
-            nombre: personaNatural.value.nombre,
-            apellidoPaterno: personaNatural.value.apellidoPaterno,
-            apellidoMaterno: personaNatural.value.apellidoMaterno,
-            paisPasaporte: personaNatural.value.paisPasaporte,
-          }
-        : null;
-
-    // Guardar en el store
-    nombramientoStore.setGerenteNombrado({
-      tipoPersona: tipoPersona.value,
-      personaNatural: tipoPersona.value === "natural" ? { ...personaNatural.value } : null,
-      personaJuridica: tipoPersona.value === "juridica" ? { ...personaJuridica.value } : null,
-      representante,
-    });
+  // ✅ Configurar botón "Siguiente" para guardar gerente (POST o PUT según corresponda)
+  useJuntasFlowNext(async () => {
+    await guardarGerente();
   });
 </script>
 
@@ -319,8 +274,8 @@
               <template v-if="personaJuridica.tieneRepresentante" #content>
                 <div class="grid grid-cols-2 gap-12 px-12 py-10">
                   <SelectInputZod
-                    v-model="personaNatural.tipoDocumento"
-                    name="tipo_documento"
+                    v-model="representanteLegal.tipoDocumento"
+                    name="tipo_documento_representante"
                     label="Tipo de documento"
                     placeholder="Selecciona el tipo de documento"
                     :options="tipoDocumentoOptions"
@@ -328,9 +283,9 @@
                   />
 
                   <SearchInputZod
-                    v-if="personaNatural.tipoDocumento === TipoDocumentosEnum.DNI"
-                    v-model="personaNatural.numeroDocumento"
-                    name="numero_documento"
+                    v-if="representanteLegal.tipoDocumento === TipoDocumentosEnum.DNI"
+                    v-model="representanteLegal.numeroDocumento"
+                    name="numero_documento_representante"
                     label="Número de documento"
                     placeholder="Ingrese número de documento"
                     :schema="numeroDocumentoNaturalSchema"
@@ -338,17 +293,17 @@
 
                   <TextInputZod
                     v-else
-                    v-model="personaNatural.numeroDocumento"
-                    name="numero_documento"
+                    v-model="representanteLegal.numeroDocumento"
+                    name="numero_documento_representante"
                     label="Número de documento"
                     placeholder="Ingrese número de documento"
                     :schema="numeroDocumentoNaturalSchema"
                   />
 
                   <SelectInputZod
-                    v-if="personaNatural.tipoDocumento === TipoDocumentosEnum.PASAPORTE"
-                    v-model="personaNatural.paisPasaporte"
-                    name="pais_pasaporte"
+                    v-if="representanteLegal.tipoDocumento === TipoDocumentosEnum.PASAPORTE"
+                    v-model="representanteLegal.paisPasaporte"
+                    name="pais_pasaporte_representante"
                     label="País de pasaporte"
                     placeholder="Selecciona el país de pasaporte"
                     :options="countriesOptions"
@@ -356,24 +311,24 @@
                   />
 
                   <TextInputZod
-                    v-model="personaNatural.nombre"
-                    name="nombre"
+                    v-model="representanteLegal.nombre"
+                    name="nombre_representante"
                     label="Nombres"
                     placeholder="Nombres"
                     :schema="nombreNaturalSchema"
                   />
 
                   <TextInputZod
-                    v-model="personaNatural.apellidoPaterno"
-                    name="apellido_paterno"
+                    v-model="representanteLegal.apellidoPaterno"
+                    name="apellido_paterno_representante"
                     label="Apellido paterno"
                     placeholder="Apellido paterno"
                     :schema="apellidoPaternoNaturalSchema"
                   />
 
                   <TextInputZod
-                    v-model="personaNatural.apellidoMaterno"
-                    name="apellido_materno"
+                    v-model="representanteLegal.apellidoMaterno"
+                    name="apellido_materno_representante"
                     label="Apellido materno"
                     placeholder="Apellido materno"
                     :schema="apellidoMaternoNaturalSchema"
