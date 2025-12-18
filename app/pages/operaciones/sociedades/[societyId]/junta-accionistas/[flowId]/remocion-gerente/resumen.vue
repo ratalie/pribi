@@ -40,7 +40,8 @@
     </template>
 
     <!-- Datos de la remoción -->
-    <div v-if="resultado" class="flex flex-col gap-6 mt-8">
+    <!-- Mostrar siempre si hay datos del gerente, incluso sin resultado de votación o si no se aprobó -->
+    <div v-if="datosGerente.length > 0" class="flex flex-col gap-6 mt-8">
       <p class="t-h4 text-gray-600 font-primary font-semibold mb-4">Datos de la remoción</p>
 
       <!-- Tabla: Gerente General -->
@@ -61,10 +62,10 @@
 <script setup lang="ts">
   import type { ColumnDef } from "@tanstack/vue-table";
   import { computed, h, onMounted } from "vue";
-  import { useRoute } from "vue-router";
+  // import { useRoute } from "vue-router"; // ⚠️ No se usa por ahora (store local)
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import VotacionResultadoCard from "~/components/juntas/VotacionResultadoCard.vue";
-  import { VoteContext } from "~/core/hexag/juntas/domain/enums/vote-context.enum";
+  // import { VoteContext } from "~/core/hexag/juntas/domain/enums/vote-context.enum"; // ⚠️ No se usa por ahora
   import { useVotacionRemocionStore } from "~/core/presentation/juntas/puntos-acuerdo/remocion-gerente/votacion/stores/useVotacionRemocionStore";
   import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
   import { useVotacionStore } from "~/core/presentation/juntas/stores/votacion.store";
@@ -74,42 +75,142 @@
     flowLayoutJuntas: true,
   });
 
-  const route = useRoute();
+  // const route = useRoute(); // ⚠️ No se usa por ahora (store local)
   const votacionStore = useVotacionStore();
   const votacionRemocionStore = useVotacionRemocionStore();
   const snapshotStore = useSnapshotStore();
 
-  const societyId = computed(() => Number(route.params.societyId));
-  const flowId = computed(() => Number(route.params.flowId));
+  // ⚠️ Por ahora, no cargamos del backend (el usuario usa store local)
+  // const societyId = computed(() => Number(route.params.societyId));
+  // const flowId = computed(() => Number(route.params.flowId));
 
   // Cargar datos
+  // ⚠️ Por ahora, no cargamos del backend (el usuario usa store local)
+  // Los datos vienen de los stores locales (votacionStore) que tienen persistencia en localStorage
   onMounted(async () => {
     try {
-      // Cargar snapshot para obtener nombre del gerente
-      if (!snapshotStore.snapshot) {
-        await snapshotStore.loadSnapshot(societyId.value, flowId.value);
-      }
-
-      // Cargar votación
-      await votacionStore.loadVotacion(
-        societyId.value,
-        flowId.value,
-        VoteContext.REMOCION_GERENTE
-      );
+      // Los stores locales ya tienen persistencia, no necesitamos cargar nada
+      // Solo verificamos que los datos estén disponibles
+      console.log("[Resumen Remocion] Datos disponibles:", {
+        tieneVotacion: votacionStore.hasVotacion || !!votacionStore.sesionVotacion,
+        tieneGerente: !!snapshotStore.snapshot?.gerenteGeneral,
+      });
     } catch (error) {
       console.error("Error al cargar datos:", error);
     }
   });
 
+  // Función para calcular resultado usando votantes del store local
+  function calcularResultadoLocal() {
+    const sesion = votacionStore.sesionVotacion;
+    if (!sesion || !sesion.items?.[0]) return null;
+
+    const item = sesion.items[0];
+    const votos = item.votos || [];
+    const esUnanimidadLocal = item.tipoAprobacion === "APROBADO_POR_TODOS";
+
+    // Obtener votantes del controller (pueden ser hardcodeados)
+    // Necesitamos acceder a los votos para inferir la cantidad de accionistas
+    const accionistasIds = new Set(votos.map((v) => v.accionistaId));
+    const totalAccionistas = accionistasIds.size;
+
+    // Si no hay votos, retornar null
+    if (votos.length === 0) return null;
+
+    // Calcular acciones por tipo de voto
+    // Para hardcodeados, cada accionista tiene 100 acciones
+    const accionesPorAccionista = 100;
+    let accionesAFavor = 0;
+    let accionesEnContra = 0;
+    let accionesAbstencion = 0;
+
+    votos.forEach((voto) => {
+      // VoteValue es un enum con valores string: "A_FAVOR", "EN_CONTRA", "ABSTENCION"
+      const valorVoto = String(voto.valor);
+      if (valorVoto === "A_FAVOR") {
+        accionesAFavor += accionesPorAccionista;
+      } else if (valorVoto === "EN_CONTRA") {
+        accionesEnContra += accionesPorAccionista;
+      } else if (valorVoto === "ABSTENCION") {
+        accionesAbstencion += accionesPorAccionista;
+      }
+    });
+
+    const totalAcciones = totalAccionistas * accionesPorAccionista;
+
+    // Calcular porcentajes
+    const porcentajeAFavor = totalAcciones > 0 ? (accionesAFavor / totalAcciones) * 100 : 0;
+    const porcentajeEnContra =
+      totalAcciones > 0 ? (accionesEnContra / totalAcciones) * 100 : 0;
+    const porcentajeAbstencion =
+      totalAcciones > 0 ? (accionesAbstencion / totalAcciones) * 100 : 0;
+
+    // Determinar si está aprobado
+    // Si es unanimidad, todos votaron a favor, entonces está aprobado
+    // Si es mayoría, verificar si porcentajeAFavor >= 50%
+    const quorumMinimo = 50; // Mayoría simple
+    const aprobado = esUnanimidadLocal
+      ? true // En unanimidad, si todos votaron, está aprobado
+      : porcentajeAFavor >= quorumMinimo;
+
+    const accionesVotantes = accionesAFavor + accionesEnContra + accionesAbstencion;
+    const porcentajeVotantes =
+      totalAcciones > 0 ? (accionesVotantes / totalAcciones) * 100 : 0;
+
+    return {
+      aprobado,
+      porcentajeAFavor: Math.round(porcentajeAFavor * 100) / 100, // Redondear a 2 decimales
+      porcentajeEnContra: Math.round(porcentajeEnContra * 100) / 100,
+      porcentajeAbstencion: Math.round(porcentajeAbstencion * 100) / 100,
+      porcentajeVotantes: Math.round(porcentajeVotantes * 100) / 100,
+      quorumMinimoRequerido: quorumMinimo,
+      accionesAFavor,
+      accionesEnContra,
+      accionesAbstencion,
+      totalAcciones,
+    };
+  }
+
   // Obtener resultado de la votación
+  // ⚠️ Calcular desde el store local (incluso si no está guardado en el backend)
   const resultado = computed(() => {
-    if (!votacionStore.hasVotacion) return null;
-    // Usar "remocion-gerente" como puntoId para getResult
-    return votacionStore.getResult("remocion-gerente");
+    // Verificar si hay votos en memoria (store local)
+    const tieneVotosEnMemoria =
+      votacionStore.sesionVotacion?.items?.[0]?.votos &&
+      votacionStore.sesionVotacion.items[0].votos.length > 0;
+
+    // Si hay votos en memoria, calcular resultado local
+    if (tieneVotosEnMemoria) {
+      return calcularResultadoLocal();
+    }
+
+    // Si hay votación guardada en el backend, intentar usar getResult
+    if (votacionStore.hasVotacion) {
+      try {
+        return votacionStore.getResult("remocion-gerente");
+      } catch {
+        console.warn(
+          "[Resumen Remocion] Error al calcular resultado desde backend, usando cálculo local"
+        );
+        return calcularResultadoLocal();
+      }
+    }
+
+    return null;
   });
 
   // Verificar si es unanimidad
+  // ⚠️ Leer desde el store local (incluso si no está guardado en el backend)
   const esUnanimidad = computed(() => {
+    // Si hay sesión en memoria, leer el modo de votación
+    if (votacionStore.sesionVotacion) {
+      const item = votacionStore.sesionVotacion.items?.[0];
+      if (item?.tipoAprobacion) {
+        // VoteAgreementType.APROBADO_POR_TODOS = unanimidad
+        return item.tipoAprobacion === "APROBADO_POR_TODOS";
+      }
+    }
+    // Fallback: usar el getter del store
     return votacionStore.esUnanimidad;
   });
 
