@@ -1,13 +1,12 @@
 <script setup lang="ts">
-  import { ref } from "vue";
-  import type { BaseSelectOption } from "~/components/base/inputs/text/BaseInputSelect.vue";
+  import { onMounted } from "vue";
+  import ConfirmDeleteModal from "~/components/base/modal/ConfirmDeleteModal.vue";
   import SlotWrapper from "~/components/containers/SlotWrapper.vue";
   import TitleH2 from "~/components/titles/TitleH2.vue";
-  import { TipoFirmasUIEnum } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
+  import { useOtorgamientoPoderesController } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-gerente/composables/useOtorgamientoPoderesController";
+  import { useOtorgamientoPoderesStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-gerente/stores/useOtorgamientoPoderesStore";
   import FacultadesApoderados from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/components/FacultadesApoderados.vue";
   import FacultadApoderadoModal from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/components/modals/FacultadApoderadoModal.vue";
-  import { useApoderadoFacultadStore } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/stores/modal/useApoderadoFacultadStore";
-  import type { ApoderadoFacultadRow } from "~/core/presentation/registros/sociedades/pasos/regimen-poderes/types/apoderadosFacultades";
   import { EntityModeEnum } from "~/types/enums/EntityModeEnum";
 
   definePageMeta({
@@ -15,164 +14,38 @@
     flowLayoutJuntas: true,
   });
 
-  // Estado local de ejemplo para los poderes del gerente
-  const apoderadosFacultades = ref<ApoderadoFacultadRow[]>([
-    {
-      id: "gerente-1",
-      nombre: "Gerente General de Ejemplo",
-      facultades: [
-        {
-          id: "fac-1",
-          facultad: "Facultad general de representación",
-          vigencia: "Indefinida",
-          reglas_firma: 1,
-          reglas_y_limites: [
-            {
-              id: "regla-1",
-              table_id: 1,
-              desde: "0",
-              hasta: "10000",
-              tipo_firma: TipoFirmasUIEnum.SOLA_FIRMA,
-              firmantes: [
-                {
-                  id: "firm-1",
-                  cantidad: 1,
-                  grupo: "Gerente General",
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ]);
+  const route = useRoute();
+  const societyId = Number(route.params.societyId);
+  const flowId = Number(route.params.flowId);
 
-  // Estado del modal
-  const isApoderadoFacultadesModalOpen = ref(false);
-  const modeModalApoderadoFacultad = ref<"crear" | "editar">("crear");
-  const listaFacultadesOptions = ref<BaseSelectOption[]>([
-    { id: "fac-rep", label: "Facultad general de representación", value: "fac-rep" },
-    { id: "fac-banc", label: "Facultad bancaria", value: "fac-banc" },
-  ]);
+  const otorgamientoStore = useOtorgamientoPoderesStore();
 
-  const apoderadoSeleccionadoId = ref<string | null>(null);
-  const facultadSeleccionadaId = ref<string | null>(null);
-  const apoderadoFacultadStore = useApoderadoFacultadStore();
+  // Usar el composable
+  const {
+    isLoading,
+    modoOperacion,
+    gerenteAMostrar,
+    puedeAgregarPoderes,
+    apoderadosFacultades,
+    isApoderadoFacultadesModalOpen,
+    modeModalApoderadoFacultad,
+    listaFacultadesDisponibles,
+    facultadActions,
+    confirmDelete,
+    loadData,
+    openModalFacultadApoderado,
+    handleCloseModalApoderadoFacultad,
+    handleSubmitApoderadoFacultad,
+  } = useOtorgamientoPoderesController(societyId, flowId);
 
-  const openModalFacultadApoderado = (idApoderado: string) => {
-    // Resetear estado del modal para creación
-    apoderadoFacultadStore.$reset();
-    apoderadoFacultadStore.tipoFacultad = "";
-
-    apoderadoSeleccionadoId.value = idApoderado;
-    facultadSeleccionadaId.value = null;
-    modeModalApoderadoFacultad.value = "crear";
-    isApoderadoFacultadesModalOpen.value = true;
-  };
-
-  const handleCloseModalApoderadoFacultad = () => {
-    apoderadoFacultadStore.$reset();
-    isApoderadoFacultadesModalOpen.value = false;
-    apoderadoSeleccionadoId.value = null;
-    facultadSeleccionadaId.value = null;
-    modeModalApoderadoFacultad.value = "crear";
-  };
-
-  const handleSubmitApoderadoFacultad = () => {
-    if (!apoderadoSeleccionadoId.value) {
-      handleCloseModalApoderadoFacultad();
-      return;
+  // Cargar datos al montar
+  onMounted(async () => {
+    try {
+      await loadData();
+    } catch (error) {
+      console.error("Error al cargar datos de otorgamiento de poderes", error);
     }
-
-    const apoderado = apoderadosFacultades.value.find(
-      (a) => a.id === apoderadoSeleccionadoId.value
-    );
-
-    if (!apoderado) {
-      handleCloseModalApoderadoFacultad();
-      return;
-    }
-
-    if (modeModalApoderadoFacultad.value === "crear") {
-      const opcion = listaFacultadesOptions.value[0];
-      if (!opcion) {
-        handleCloseModalApoderadoFacultad();
-        return;
-      }
-      const nuevaFacultadId = `fac-${Math.random().toString(36).slice(2)}`;
-
-      apoderado.facultades.push({
-        id: nuevaFacultadId,
-        facultad: opcion.label,
-        vigencia: "Indefinida",
-        reglas_firma: 1,
-        reglas_y_limites: [
-          {
-            id: `${nuevaFacultadId}-regla-1`,
-            table_id: 1,
-            desde: "0",
-            hasta: "10000",
-            tipo_firma: TipoFirmasUIEnum.SOLA_FIRMA,
-            firmantes: [
-              {
-                id: "firm-1",
-                cantidad: 1,
-                grupo: "Gerente General",
-              },
-            ],
-          },
-        ],
-      });
-    } else if (modeModalApoderadoFacultad.value === "editar" && facultadSeleccionadaId.value) {
-      const opcion = listaFacultadesOptions.value[0];
-      if (!opcion) {
-        handleCloseModalApoderadoFacultad();
-        return;
-      }
-      const facultad = apoderado.facultades.find((f) => f.id === facultadSeleccionadaId.value);
-      if (facultad) {
-        facultad.facultad = opcion.label;
-      }
-    }
-
-    handleCloseModalApoderadoFacultad();
-  };
-
-  const facultadActions = [
-    {
-      label: "Editar",
-      icon: "SquarePen",
-      onClick: (idFacultad: string, idApoderado: string) => {
-        const apoderado = apoderadosFacultades.value.find((a) => a.id === idApoderado);
-        if (!apoderado) return;
-
-        const facultad = apoderado.facultades.find((f) => f.id === idFacultad);
-        if (!facultad) return;
-
-        // Buscar la opción correspondiente a la facultad actual para precargar el select
-        const opcion = listaFacultadesOptions.value.find(
-          (opt) => opt.label === facultad.facultad
-        );
-
-        apoderadoFacultadStore.$reset();
-        apoderadoFacultadStore.tipoFacultad = opcion ? (opcion.value as string) : "";
-
-        apoderadoSeleccionadoId.value = idApoderado;
-        facultadSeleccionadaId.value = idFacultad;
-        modeModalApoderadoFacultad.value = "editar";
-        isApoderadoFacultadesModalOpen.value = true;
-      },
-    },
-    {
-      label: "Eliminar",
-      icon: "Trash2",
-      onClick: (idFacultad: string, idApoderado: string) => {
-        const apoderado = apoderadosFacultades.value.find((a) => a.id === idApoderado);
-        if (!apoderado) return;
-        apoderado.facultades = apoderado.facultades.filter((f) => f.id !== idFacultad);
-      },
-    },
-  ];
+  });
 </script>
 
 <template>
@@ -182,7 +55,38 @@
       subtitle="Define las facultades y limitaciones delegadas al gerente designado."
     />
 
-    <div class="flex flex-col gap-10">
+    <div v-if="isLoading" class="flex justify-center items-center py-10">
+      <p>Cargando poderes...</p>
+    </div>
+
+    <div v-else-if="!gerenteAMostrar" class="flex justify-center items-center py-10">
+      <p class="text-gray-500">
+        No hay gerente designado. Por favor, completa primero el nombramiento del gerente.
+      </p>
+    </div>
+
+    <div v-else class="flex flex-col gap-10">
+      <!-- Información del gerente -->
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-lg font-semibold mb-2">Gerente:</h3>
+        <p v-if="gerenteAMostrar && 'persona' in gerenteAMostrar">
+          {{
+            gerenteAMostrar.persona.tipo === "NATURAL"
+              ? `${gerenteAMostrar.persona.nombre} ${
+                  gerenteAMostrar.persona.apellidoPaterno || ""
+                } ${gerenteAMostrar.persona.apellidoMaterno || ""}`.trim()
+              : gerenteAMostrar.persona.razonSocial ||
+                gerenteAMostrar.persona.nombreComercial ||
+                ""
+          }}
+        </p>
+        <p class="text-sm text-gray-500 mt-1">
+          Modo:
+          {{ modoOperacion === "CREAR_NUEVO_GERENTE" ? "Nuevo Gerente" : "Extender Poderes" }}
+        </p>
+      </div>
+
+      <!-- Lista de poderes -->
       <FacultadesApoderados
         v-for="apoderado in apoderadosFacultades"
         :key="apoderado.id"
@@ -192,12 +96,25 @@
         @open-modal="openModalFacultadApoderado"
       />
 
+      <!-- Modal de facultades -->
       <FacultadApoderadoModal
         v-model="isApoderadoFacultadesModalOpen"
         :mode="modeModalApoderadoFacultad"
-        :lista-facultades-options="listaFacultadesOptions"
+        :lista-facultades-options="listaFacultadesDisponibles"
         @close="handleCloseModalApoderadoFacultad"
         @submit="handleSubmitApoderadoFacultad"
+      />
+
+      <!-- Modal de confirmación de eliminación -->
+      <ConfirmDeleteModal
+        v-model="confirmDelete.isOpen.value"
+        :title="confirmDelete.title"
+        :message="confirmDelete.message"
+        :confirm-label="confirmDelete.confirmLabel"
+        :cancel-label="confirmDelete.cancelLabel"
+        :is-loading="confirmDelete.isLoading.value"
+        @confirm="confirmDelete.handleConfirm"
+        @cancel="confirmDelete.handleCancel"
       />
     </div>
   </SlotWrapper>

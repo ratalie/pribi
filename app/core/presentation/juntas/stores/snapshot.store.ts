@@ -173,32 +173,52 @@ export const useSnapshotStore = defineStore("snapshot", {
      * Cargar snapshot desde el backend
      */
     async loadSnapshot(societyId: number, flowId: number) {
+      const url = `http://localhost:3000/api/v2/society-profile/${societyId}/register-assembly/${flowId}/snapshot/complete`;
+      console.log("🟣 [Store][Snapshot] loadSnapshot() INICIADO", {
+        societyId,
+        flowId,
+        url,
+        previousSnapshotExists: !!this.snapshot,
+        previousFlowId: this.currentFlowId,
+        previousSocietyId: this.currentSocietyId,
+      });
+
       this.status = "loading";
       this.errorMessage = null;
       this.currentSocietyId = societyId;
       this.currentFlowId = flowId;
 
-      console.debug("[Store][Snapshot] Cargando snapshot", {
+      console.log("[Store][Snapshot] Cargando snapshot", {
         societyId,
         flowId,
+        status: this.status,
       });
 
       try {
+        console.log("[Store][Snapshot] Creando repository y use case...");
         const repository = new JuntaHttpRepository();
         const useCase = new GetSnapshotUseCase(repository);
+
+        console.log("[Store][Snapshot] Ejecutando useCase.execute()...");
         this.snapshot = await useCase.execute(societyId, flowId);
 
-        console.debug("[Store][Snapshot] Snapshot cargado exitosamente", {
+        console.log("✅ [Store][Snapshot] Snapshot cargado exitosamente", {
           accionistas: this.snapshot.shareholders.length,
           quorums: this.snapshot.quorums,
           tieneDirectorio: !!this.snapshot.directory,
         });
 
         this.status = "idle";
+        console.log("🟣 [Store][Snapshot] loadSnapshot() COMPLETADO exitosamente");
       } catch (error: any) {
         this.status = "error";
         this.errorMessage = error.message || "Error al cargar snapshot";
-        console.error("[Store][Snapshot] Error al cargar", error);
+        console.error("❌ [Store][Snapshot] Error al cargar", {
+          error,
+          message: error.message,
+          statusCode: error.statusCode,
+        });
+        console.log("🟣 [Store][Snapshot] loadSnapshot() FINALIZADO CON ERROR");
         throw error;
       }
     },

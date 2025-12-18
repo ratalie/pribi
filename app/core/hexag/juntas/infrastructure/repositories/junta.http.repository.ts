@@ -33,7 +33,7 @@ export class JuntaHttpRepository implements JuntaRepository {
   }
 
   private resolveSnapshotUrl(societyId: number, flowId: number | string): string {
-    const flowIdStr = typeof flowId === 'string' ? flowId : String(flowId);
+    const flowIdStr = typeof flowId === "string" ? flowId : String(flowId);
     const config = useRuntimeConfig();
     const apiBase = (config.public?.apiBase as string | undefined) || "";
     const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -139,9 +139,7 @@ export class JuntaHttpRepository implements JuntaRepository {
       });
 
       const entries = Array.isArray(response?.data) ? response.data : [];
-      return entries.map((item) =>
-        JuntaMapper.toResumenDTO(item, societyId)
-      );
+      return entries.map((item) => JuntaMapper.toResumenDTO(item, societyId));
     } catch (error: any) {
       const statusCode = error?.statusCode ?? error?.response?.status ?? null;
       const message =
@@ -160,7 +158,7 @@ export class JuntaHttpRepository implements JuntaRepository {
   }
 
   async delete(societyId: number, flowId: number | string): Promise<void> {
-    const flowIdStr = typeof flowId === 'string' ? flowId : String(flowId);
+    const flowIdStr = typeof flowId === "string" ? flowId : String(flowId);
     const url = this.resolveUrl(societyId, `/${flowIdStr}`);
     const authConfig = withAuthHeaders() as FetchOptions & {
       headers?: Record<string, string>;
@@ -198,7 +196,14 @@ export class JuntaHttpRepository implements JuntaRepository {
   }
 
   async getSnapshot(societyId: number, flowId: number | string): Promise<SnapshotCompleteDTO> {
+    console.log("🟠 [Repository][JuntaHttp] getSnapshot() INICIADO", {
+      societyId,
+      flowId,
+    });
+
     const url = this.resolveSnapshotUrl(societyId, flowId);
+    console.log("🟠 [Repository][JuntaHttp] URL resuelta:", url);
+
     const authConfig = withAuthHeaders() as FetchOptions & {
       headers?: Record<string, string>;
     };
@@ -207,13 +212,15 @@ export class JuntaHttpRepository implements JuntaRepository {
       method: "GET" as const,
     };
 
-    console.debug("[Repository][JuntaHttp] getSnapshot() request", {
+    console.log("🟠 [Repository][JuntaHttp] getSnapshot() request - HACIENDO FETCH", {
       url,
       societyId,
       flowId,
+      method: "GET",
     });
 
     try {
+      console.log("🟠 [Repository][JuntaHttp] Ejecutando $fetch...");
       const response = await $fetch<{
         success: boolean;
         message: string;
@@ -221,15 +228,19 @@ export class JuntaHttpRepository implements JuntaRepository {
         data: SnapshotCompleteDTO;
       }>(url, requestConfig);
 
-      console.debug("[Repository][JuntaHttp] getSnapshot() response", {
+      console.log("✅ [Repository][JuntaHttp] getSnapshot() response recibida", {
+        success: response?.success,
+        code: response?.code,
         hasData: !!response?.data,
         snapshotKeys: response?.data ? Object.keys(response.data) : [],
       });
 
       if (!response?.data) {
+        console.error("❌ [Repository][JuntaHttp] La respuesta no incluye data");
         throw new Error("La respuesta del backend no incluye el snapshot.");
       }
 
+      console.log("✅ [Repository][JuntaHttp] getSnapshot() COMPLETADO exitosamente");
       return response.data;
     } catch (error: any) {
       const statusCode = error?.statusCode ?? error?.response?.status ?? null;
@@ -238,15 +249,16 @@ export class JuntaHttpRepository implements JuntaRepository {
         error?.response?._data?.message ??
         error?.message ??
         "Error desconocido";
-      console.error("[Repository][JuntaHttp] getSnapshot() error", {
+      console.error("❌ [Repository][JuntaHttp] getSnapshot() error", {
         url,
         societyId,
         flowId,
         statusCode,
         message,
+        error,
       });
+      console.log("🟠 [Repository][JuntaHttp] getSnapshot() FINALIZADO CON ERROR");
       throw error;
     }
   }
 }
-
