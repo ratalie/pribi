@@ -1,19 +1,30 @@
 <template>
-  <div v-if="!isLoading && !error" class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+  <div
+    v-if="!isLoading && !error"
+    class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm"
+  >
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
           <th class="w-12 px-6 py-3"></th>
-          <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+          <th
+            class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+          >
             Nombre Apellido / Razón Social
           </th>
-          <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+          <th
+            class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+          >
             Tipo de Aportante
           </th>
-          <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+          <th
+            class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
+          >
             N.º de acciones
           </th>
-          <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+          <th
+            class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
+          >
             % Participación
           </th>
           <th class="w-16 px-6 py-3"></th>
@@ -60,7 +71,11 @@
                 getTipoBadgeClass(aportante.typeShareholder),
               ]"
             >
-              {{ aportante.typeShareholder === 'NUEVO_APORTANTE' ? 'NUEVO APORTANTE' : 'ACCIONISTA' }}
+              {{
+                aportante.typeShareholder === "NUEVO_APORTANTE"
+                  ? "NUEVO APORTANTE"
+                  : "ACCIONISTA"
+              }}
             </span>
           </td>
 
@@ -80,12 +95,7 @@
               <DropdownMenuTrigger as-child>
                 <Button variant="ghost" size="sm" class="h-8 w-8 p-0">
                   <span class="sr-only">Abrir menú</span>
-                  <svg
-                    class="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -100,10 +110,7 @@
                   <Pencil class="mr-2 h-4 w-4" />
                   Editar
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  class="text-red-600"
-                  @click="$emit('delete', aportante.id)"
-                >
+                <DropdownMenuItem class="text-red-600" @click="$emit('delete', aportante.id)">
                   <Trash2 class="mr-2 h-4 w-4" />
                   Borrar
                 </DropdownMenuItem>
@@ -126,78 +133,83 @@
 </template>
 
 <script setup lang="ts">
-import { Pencil, Trash2 } from "lucide-vue-next";
-import { Button } from "~/components/ui/button";
-import Checkbox from "~/components/ui/checkbox/Checkbox.vue";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import type { Aportante, ContributorType } from "../../composables/useAportantesPage";
+  import { Pencil, Trash2 } from "lucide-vue-next";
+  import { Button } from "~/components/ui/button";
+  import Checkbox from "~/components/ui/checkbox/Checkbox.vue";
+  import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+  } from "~/components/ui/dropdown-menu";
+  import type { Acreedor } from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/capitalizacion-creditos/composables/useAcreedoresPage";
+  import type { Aportante, ContributorType } from "../../composables/useAportantesPage";
 
-interface Props {
-  aportantes: Aportante[];
-  isLoading: boolean;
-  error: string | null;
-}
+  // Tipo genérico que acepta Aportante o Acreedor (misma estructura)
+  type Participante = Aportante | Acreedor;
 
-const props = defineProps<Props>();
-
-defineEmits<{
-  toggle: [aportante: Aportante];
-  edit: [aportante: Aportante];
-  delete: [id: string];
-}>();
-
-function getNombre(aportante: Aportante): string {
-  const person = aportante.person;
-
-  if (person.tipo === "NATURAL") {
-    return `${person.nombre || ""} ${person.apellidoPaterno || ""} ${person.apellidoMaterno || ""}`.trim();
+  interface Props {
+    aportantes: Participante[];
+    isLoading: boolean;
+    error: string | null;
   }
 
-  if (
-    person.tipo === "JURIDICA" ||
-    person.tipo === "SUCURSAL" ||
-    person.tipo === "SUCESION_INDIVISA" ||
-    person.tipo === "FIDEICOMISO" ||
-    person.tipo === "FONDO_INVERSION"
-  ) {
-    return person.razonSocial || "Sin nombre";
+  const props = defineProps<Props>();
+
+  defineEmits<{
+    toggle: [participante: Participante];
+    edit: [participante: Participante];
+    delete: [id: string];
+  }>();
+
+  function getNombre(aportante: Participante): string {
+    const person = aportante.person;
+
+    if (person.tipo === "NATURAL") {
+      return `${person.nombre || ""} ${person.apellidoPaterno || ""} ${
+        person.apellidoMaterno || ""
+      }`.trim();
+    }
+
+    if (
+      person.tipo === "JURIDICA" ||
+      person.tipo === "SUCURSAL" ||
+      person.tipo === "SUCESION_INDIVISA" ||
+      person.tipo === "FIDEICOMISO" ||
+      person.tipo === "FONDO_INVERSION"
+    ) {
+      return person.razonSocial || "Sin nombre";
+    }
+
+    return "Sin nombre";
   }
 
-  return "Sin nombre";
-}
+  function getTotalAcciones(aportante: Participante): number {
+    if (!aportante.allocationShare || aportante.allocationShare.length === 0) {
+      return 0;
+    }
 
-function getTotalAcciones(aportante: Aportante): number {
-  if (!aportante.allocationShare || aportante.allocationShare.length === 0) {
-    return 0;
+    return aportante.allocationShare.reduce(
+      (total, allocation) => total + (allocation.subscribedSharesQuantity || 0),
+      0
+    );
   }
 
-  return aportante.allocationShare.reduce(
-    (total, allocation) => total + (allocation.subscribedSharesQuantity || 0),
-    0
-  );
-}
+  function getParticipacion(aportante: Participante): string {
+    // Calcular % basado en el total de acciones de todos los aportantes
+    const totalGeneral = props.aportantes.reduce((sum, a) => sum + getTotalAcciones(a), 0);
 
-function getParticipacion(aportante: Aportante): string {
-  // Calcular % basado en el total de acciones de todos los aportantes
-  const totalGeneral = props.aportantes.reduce((sum, a) => sum + getTotalAcciones(a), 0);
+    const accionesAportante = getTotalAcciones(aportante);
 
-  const accionesAportante = getTotalAcciones(aportante);
+    if (totalGeneral === 0) return "0.00";
 
-  if (totalGeneral === 0) return "0.00";
+    const porcentaje = (accionesAportante / totalGeneral) * 100;
+    return porcentaje.toFixed(2);
+  }
 
-  const porcentaje = (accionesAportante / totalGeneral) * 100;
-  return porcentaje.toFixed(2);
-}
-
-function getTipoBadgeClass(type: ContributorType): string {
-  return type === "ACCIONISTA"
-    ? "bg-primary-100 text-primary-700 border-primary-300"
-    : "bg-purple-100 text-purple-700 border-purple-300";
-}
+  function getTipoBadgeClass(type: ContributorType): string {
+    return type === "ACCIONISTA"
+      ? "bg-primary-100 text-primary-700 border-primary-300"
+      : "bg-purple-100 text-purple-700 border-purple-300";
+  }
 </script>
-

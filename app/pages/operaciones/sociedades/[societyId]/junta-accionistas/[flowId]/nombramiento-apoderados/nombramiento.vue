@@ -25,6 +25,7 @@
           :items="apoderados"
           :actions="apoderadoActions"
           :get-action-disabled="getActionDisabledApoderado"
+          :show-actions-for="showActionsForApoderado"
         />
       </SimpleCard>
 
@@ -46,6 +47,7 @@
           :items="otrosApoderadosComputed"
           :actions="otroApoderadoActions"
           :get-action-disabled="getActionDisabledOtroApoderado"
+          :show-actions-for="showActionsForOtroApoderado"
         />
       </SimpleCard>
 
@@ -90,6 +92,7 @@
   import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
   import RegistroApoderadoModal from "~/core/presentation/registros/sociedades/pasos/apoderados/components/modals/RegistroApoderadoModal.vue";
   import { ClasesApoderadoEspecialesEnum } from "~/core/presentation/registros/sociedades/pasos/apoderados/types/enums/ClasesApoderadoEspecialesEnum";
+  import type { ApoderadoRow } from "~/core/presentation/registros/sociedades/pasos/apoderados/types/types";
   import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
   import NombramientoApoderadosTable from "./components/NombramientoApoderadosTable.vue";
   import NombramientoOtrosApoderadosTable from "./components/NombramientoOtrosApoderadosTable.vue";
@@ -252,6 +255,13 @@
     }
   };
 
+  // ✅ Función para determinar si mostrar acciones (apoderados normales)
+  // Solo mostrar acciones para apoderados NUEVOS (no del snapshot)
+  const showActionsForApoderado = (item: ApoderadoRow): boolean => {
+    // Solo mostrar acciones si NO es del snapshot
+    return !item.esDelSnapshot;
+  };
+
   // ✅ Función para determinar si una acción debe estar deshabilitada (apoderados normales)
   const getActionDisabledApoderado = (apoderadoId: string, actionLabel: string): boolean => {
     // Solo deshabilitar editar/eliminar si es del snapshot
@@ -337,6 +347,13 @@
       console.error("Error al eliminar otro apoderado:", error);
       // TODO: Mostrar notificación de error al usuario
     }
+  };
+
+  // ✅ Función para determinar si mostrar acciones (otros apoderados)
+  // Solo mostrar acciones para apoderados NUEVOS (no del snapshot)
+  const showActionsForOtroApoderado = (item: ApoderadoRow): boolean => {
+    // Solo mostrar acciones si NO es del snapshot
+    return !item.esDelSnapshot;
   };
 
   // ✅ Función para determinar si una acción debe estar deshabilitada (otros apoderados)

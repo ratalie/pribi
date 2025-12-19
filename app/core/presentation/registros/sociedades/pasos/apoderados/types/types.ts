@@ -20,4 +20,6 @@ export interface ApoderadoRow {
   nombre: string;
   tipoDocumento: TipoDocumentosEnum;
   numeroDocumento: string;
+  esDelSnapshot?: boolean; // ✅ Flag para identificar si viene del snapshot (read-only)
+  fueRemovido?: boolean; // ✅ Flag para identificar si fue removido (para estilos visuales)
 }

@@ -4,6 +4,7 @@ import type {
   PersonJuridicDTO,
   PersonNaturalDTO,
 } from "~/core/hexag/juntas/application/dtos/designation-attorney.dto";
+import { useRemocionApoderadosStore } from "~/core/presentation/juntas/puntos-acuerdo/remocion-apoderados/stores/useRemocionApoderadosStore";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 import type { ApoderadoRow } from "~/core/presentation/registros/sociedades/pasos/apoderados/types/types";
 import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
@@ -24,6 +25,7 @@ export function useNombramientoApoderadosPage() {
   const route = useRoute();
   const nombramientoStore = useNombramientoApoderadosStore();
   const snapshotStore = useSnapshotStore();
+  const remocionStore = useRemocionApoderadosStore();
   const personaNaturalStore = usePersonaNaturalStore();
 
   const societyId = computed(() => Number(route.params.societyId));
@@ -112,6 +114,18 @@ export function useNombramientoApoderadosPage() {
       return;
     }
 
+    // ✅ Obtener IDs de apoderados del snapshot (para identificar cuáles vienen del snapshot)
+    // Comparar por personaId (el id de la persona en el apoderado del snapshot)
+    const apoderadosDelSnapshotIds = new Set(
+      (snapshot.attorneys || []).map((att) => att.persona?.id).filter(Boolean)
+    );
+
+    // ✅ Obtener IDs de apoderados removidos (estado "ELEGIDO" en remoción)
+    // El id del registro de remoción ES el attorneyId (que coincide con el id del apoderado designado)
+    const removidosAprobadosIds = new Set(
+      remocionStore.candidatos.filter((c) => c.estado === "ELEGIDO").map((c) => c.id) // El id del registro de remoción ES el attorneyId
+    );
+
     // Crear mapa de clases por ID para obtener nombres
     const clasesMap = new Map(snapshot.attorneyClasses.map((clase) => [clase.id, clase.name]));
 
@@ -123,6 +137,7 @@ export function useNombramientoApoderadosPage() {
       let nombre = "";
       let tipoDocumento = TipoDocumentosEnum.DNI;
       let numeroDocumento = "";
+      let personaId: string | null = null;
 
       if (apoderado.person.type === "NATURAL" && apoderado.person.natural) {
         const natural = apoderado.person.natural;
@@ -131,12 +146,20 @@ export function useNombramientoApoderadosPage() {
         }`.trim();
         tipoDocumento = natural.typeDocument as TipoDocumentosEnum;
         numeroDocumento = natural.documentNumber;
+        personaId = apoderado.person.id;
       } else if (apoderado.person.type === "JURIDIC" && apoderado.person.juridic) {
         const juridic = apoderado.person.juridic;
         nombre = juridic.businessName;
         tipoDocumento = juridic.typeDocument as TipoDocumentosEnum;
         numeroDocumento = juridic.documentNumber;
+        personaId = apoderado.person.id;
       }
+
+      // ✅ Identificar si viene del snapshot (comparando personaId con snapshot)
+      const esDelSnapshot = personaId ? apoderadosDelSnapshotIds.has(personaId) : false;
+
+      // ✅ Identificar si fue removido (está en la lista de removidos aprobados)
+      const fueRemovido = removidosAprobadosIds.has(apoderado.id);
 
       // Mantener el estado checked existente si el apoderado ya existe, sino usar isCandidate
       const apoderadoExistente = apoderadosMapeados.value.find((a) => a.id === apoderado.id);
@@ -149,15 +172,21 @@ export function useNombramientoApoderadosPage() {
         nombre,
         tipoDocumento,
         numeroDocumento,
+        esDelSnapshot, // ✅ Flag para identificar si viene del snapshot (read-only)
+        fueRemovido, // ✅ Flag para identificar si fue removido (para estilos visuales)
       };
     });
 
     apoderadosMapeados.value = mapeados;
   }
 
-  // Watch para actualizar apoderados mapeados cuando cambian los designados
+  // Watch para actualizar apoderados mapeados cuando cambian los designados o el snapshot
   watch(
-    () => apoderadosDesignados.value,
+    [
+      () => apoderadosDesignados.value,
+      () => snapshotStore.snapshot?.attorneys,
+      () => remocionStore.candidatos,
+    ],
     () => {
       actualizarApoderadosMapeados();
     },
@@ -198,6 +227,21 @@ export function useNombramientoApoderadosPage() {
 
       // 2. GET /designation-attorney para obtener apoderados ya designados
       await nombramientoStore.loadApoderadosDesignados(societyId.value, flowId.value);
+
+      // 3. Cargar candidatos de remoción (si existe remoción) para identificar removidos
+      // Esto es necesario para marcar apoderados removidos y aplicar estilos visuales
+      try {
+        await remocionStore.loadApoderados(societyId.value, flowId.value);
+        console.log(
+          "[Composable][NombramientoApoderados] Candidatos de remoción cargados para identificar removidos"
+        );
+      } catch (remocionError) {
+        // Si no hay remoción o falla, no es crítico, simplemente no marcaremos removidos
+        console.warn(
+          "[Composable][NombramientoApoderados] No se pudieron cargar candidatos de remoción:",
+          remocionError
+        );
+      }
 
       console.log("[Composable][NombramientoApoderados] Datos cargados:", {
         apoderadosDesignados: nombramientoStore.apoderadosDesignados.length,

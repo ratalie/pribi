@@ -5,6 +5,7 @@ import type {
   PersonNaturalDTO,
 } from "~/core/hexag/juntas/application/dtos/designation-attorney.dto";
 import type { DesignationDirectorResponseDTO } from "~/core/hexag/juntas/application/dtos/designation-director.dto";
+import { useRemocionDirectoresStore } from "~/core/presentation/juntas/puntos-acuerdo/remocion-directores/stores/useRemocionDirectoresStore";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
 import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
@@ -23,6 +24,7 @@ export interface DirectorRow {
   isCandidate: boolean;
   replacesId: string | null;
   esDelSnapshot?: boolean; // ✅ Flag para identificar si viene del snapshot (read-only)
+  fueRemovido?: boolean; // ✅ Flag para identificar si fue removido (candidateStatus === "ELECTED")
 }
 
 /**
@@ -38,6 +40,7 @@ export function useNombramientoDirectoresPage() {
   const route = useRoute();
   const nombramientoStore = useNombramientoDirectoresStore();
   const snapshotStore = useSnapshotStore();
+  const remocionStore = useRemocionDirectoresStore();
   const personaNaturalStore = usePersonaNaturalStore();
 
   const societyId = computed(() => Number(route.params.societyId));
@@ -102,6 +105,12 @@ export function useNombramientoDirectoresPage() {
       directoresDesignados: directoresDesignados.length,
     });
 
+    // ✅ Obtener IDs de directores removidos (candidateStatus === "ELECTED")
+    // El id del registro de remoción ES el directorId
+    const removidosAprobadosIds = new Set(
+      remocionStore.candidatos.filter((c) => c.candidateStatus === "ELECTED").map((c) => c.id)
+    );
+
     // Obtener IDs de directores designados (nuevos) para distinguirlos
     const idsDesignados = new Set(directoresDesignados.map((d) => d.directorId));
 
@@ -144,6 +153,9 @@ export function useNombramientoDirectoresPage() {
       // ✅ Identificar si viene del snapshot (usar el flag temporal _isFromSnapshot)
       const esDelSnapshot = director._isFromSnapshot === true;
 
+      // ✅ Identificar si fue removido (está en la lista de removidos aprobados)
+      const fueRemovido = removidosAprobadosIds.has(director.directorId);
+
       const rowMapeado = {
         id: director.id, // ✅ ID del registro de designación (o directorId si es del snapshot)
         directorId: director.directorId, // ✅ ID del director
@@ -154,6 +166,7 @@ export function useNombramientoDirectoresPage() {
         isCandidate: director.isCandidate,
         replacesId: director.replacesId,
         esDelSnapshot, // ✅ Flag para identificar si viene del snapshot (read-only)
+        fueRemovido, // ✅ Flag para identificar si fue removido (para mostrar "REMOVIDO" en badge)
       };
 
       // ✅ Debug: Log para verificar el flag esDelSnapshot en el composable
@@ -167,11 +180,12 @@ export function useNombramientoDirectoresPage() {
     directoresMapeados.value = mapeados;
   }
 
-  // Watch para actualizar directores mapeados cuando cambian los designados o el snapshot
+  // Watch para actualizar directores mapeados cuando cambian los designados, el snapshot o los candidatos de remoción
   watch(
     [
       () => nombramientoStore.directoresDesignados,
       () => nombramientoStore.directoresDisponiblesDelSnapshot,
+      () => remocionStore.candidatos,
     ],
     () => {
       console.log(
@@ -214,6 +228,21 @@ export function useNombramientoDirectoresPage() {
 
       // 2. GET /designation-director para obtener directores ya designados
       await nombramientoStore.loadDirectoresDesignados(societyId.value, flowId.value);
+
+      // 3. Cargar candidatos de remoción (si existe remoción) para identificar removidos
+      // Esto es necesario para marcar directores removidos y mostrar "REMOVIDO" en el badge
+      try {
+        await remocionStore.loadDirectores(societyId.value, flowId.value);
+        console.log(
+          "[Composable][NombramientoDirectores] Candidatos de remoción cargados para identificar removidos"
+        );
+      } catch (remocionError) {
+        // Si no hay remoción o falla, no es crítico, simplemente no marcaremos removidos
+        console.warn(
+          "[Composable][NombramientoDirectores] No se pudieron cargar candidatos de remoción:",
+          remocionError
+        );
+      }
 
       console.log("[Composable][NombramientoDirectores] Datos cargados:", {
         directoresDesignados: nombramientoStore.directoresDesignados.length,

@@ -162,6 +162,7 @@
     id: string; // Cambiar a string porque ahora viene del backend
     esCandidato?: boolean;
     esDelSnapshot?: boolean; // ✅ Flag para identificar si viene del snapshot (read-only)
+    fueRemovido?: boolean; // ✅ Flag para identificar si fue removido (candidateStatus === "ELECTED")
   }
 
   const route = useRoute();
@@ -249,6 +250,7 @@
         apellidoMaterno,
         candidato: director.isCandidate,
         esDelSnapshot, // ✅ Flag para identificar si viene del snapshot (explícitamente boolean)
+        fueRemovido: director.fueRemovido || false, // ✅ Flag para identificar si fue removido
         ...(director.replacesId ? { reemplazaId: director.replacesId } : {}),
       };
 
@@ -402,10 +404,11 @@
       header: "Nombre Apellido / Razón Social",
       cell: ({ row }) => {
         const esCandidato = row.original.esCandidato;
+        const fueRemovido = row.original.fueRemovido === true;
         return h(
           "div",
           {
-            class: esCandidato ? "text-gray-400" : "",
+            class: esCandidato || fueRemovido ? "text-gray-400 opacity-50" : "",
           },
           row.getValue("nombreCompleto")
         );
@@ -417,14 +420,22 @@
       cell: ({ row }) => {
         const tipo = row.getValue("tipoDirector") as string;
         const esCandidato = row.original.candidato || row.original.esCandidato;
-        const texto = esCandidato ? "CANDIDATO" : tipo.toUpperCase();
+        const fueRemovido = row.original.fueRemovido === true;
+
+        // ✅ Si fue removido, mostrar "REMOVIDO" en lugar del tipo
+        const texto = fueRemovido
+          ? "REMOVIDO"
+          : esCandidato
+          ? "CANDIDATO"
+          : tipo.toUpperCase();
 
         return h(
           "div",
           {
             class: [
               "inline-flex items-center px-4 py-2 rounded-[54px] border text-primary-800 border-primary-800",
-              esCandidato ? "opacity-50" : "",
+              esCandidato || fueRemovido ? "opacity-50" : "",
+              fueRemovido ? "border-red-600 text-red-600" : "",
             ],
           },
           texto
@@ -470,10 +481,11 @@
       header: "Nombre Apellido / Razón Social",
       cell: ({ row }) => {
         const esCandidato = row.original.esCandidato;
+        const fueRemovido = row.original.fueRemovido === true;
         return h(
           "div",
           {
-            class: esCandidato ? "text-gray-400" : "",
+            class: esCandidato || fueRemovido ? "text-gray-400 opacity-50" : "",
           },
           row.getValue("nombreCompleto")
         );
@@ -485,14 +497,22 @@
       cell: ({ row }) => {
         const tipo = row.getValue("tipoDirector") as string;
         const esCandidato = row.original.candidato || row.original.esCandidato;
-        const texto = esCandidato ? "CANDIDATO" : tipo.toUpperCase();
+        const fueRemovido = row.original.fueRemovido === true;
+
+        // ✅ Si fue removido, mostrar "REMOVIDO" en lugar del tipo
+        const texto = fueRemovido
+          ? "REMOVIDO"
+          : esCandidato
+          ? "CANDIDATO"
+          : tipo.toUpperCase();
 
         return h(
           "div",
           {
             class: [
               "inline-flex items-center px-4 py-2 rounded-[54px] border text-primary-800 border-primary-800",
-              esCandidato ? "opacity-50" : "",
+              esCandidato || fueRemovido ? "opacity-50" : "",
+              fueRemovido ? "border-red-600 text-red-600" : "",
             ],
           },
           texto
