@@ -21,12 +21,13 @@ export class VoteMapper {
    * ⚠️ IMPORTANTE: `tipoAprobacion` ahora está en cada item, no en la sesión
    */
   static fromResponseDto(dto: VoteSessionResponseDTO, contexto: VoteContext): VoteSession {
+    const modo = dto.modo as VoteMode;
     return {
       id: dto.id,
       contexto,
-      modo: dto.modo as VoteMode,
+      modo,
       // ✅ tipoAprobacion ya no está aquí, está en cada item
-      items: dto.items.map((item) => this.itemFromDto(item)),
+      items: dto.items.map((item) => this.itemFromDto(item, modo)),
     };
   }
 
@@ -76,7 +77,7 @@ export class VoteMapper {
    *
    * ⚠️ IMPORTANTE: `tipoAprobacion` ahora está en el item
    */
-  private static itemFromDto(dto: VoteItemDTO): VoteItem {
+  private static itemFromDto(dto: VoteItemDTO, modo?: string): VoteItem {
     // ⚠️ Backend puede devolver "descripcion" (sin tilde) o "descripción" (con tilde)
     const descripcion = dto.descripción || dto.descripcion;
 
@@ -87,7 +88,7 @@ export class VoteMapper {
       descripción: descripcion,
       personaId: dto.personaId,
       tipoAprobacion: dto.tipoAprobacion as VoteAgreementType | undefined, // ✅ AQUÍ, en el item
-      votos: dto.votos.map((voto) => this.entryFromDto(voto)),
+      votos: dto.votos.map((voto) => this.entryFromDto(voto, modo)),
     };
   }
 
@@ -112,12 +113,19 @@ export class VoteMapper {
    * Convierte Entry DTO a Entity
    *
    * ⚠️ IMPORTANTE: El backend ahora devuelve `accionistaId` (ID del accionista ShareholderV2.id)
+   * ⚠️ IMPORTANTE: Si el modo es CUMULATIVO, el valor debe ser número (puede venir como string desde el backend)
    */
-  private static entryFromDto(dto: VoteEntryDTO): VoteEntry {
+  private static entryFromDto(dto: VoteEntryDTO, modo?: string): VoteEntry {
+    // Si el modo es CUMULATIVO y el valor es string, convertirlo a número
+    let valor = dto.valor;
+    if (modo === "CUMULATIVO" && typeof dto.valor === "string") {
+      valor = Number(dto.valor) || 0;
+    }
+
     return {
       id: dto.id,
       accionistaId: dto.accionistaId, // ✅ Backend ahora usa accionistaId directamente
-      valor: dto.valor,
+      valor,
     };
   }
 

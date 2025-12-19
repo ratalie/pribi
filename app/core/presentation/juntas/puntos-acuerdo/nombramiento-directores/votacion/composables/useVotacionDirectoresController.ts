@@ -1,4 +1,4 @@
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import { useRoute } from "vue-router";
 import type { VoteEntry } from "~/core/hexag/juntas/domain/entities/vote-entry.entity";
 import type { VoteItem } from "~/core/hexag/juntas/domain/entities/vote-item.entity";
@@ -136,6 +136,20 @@ export function useVotacionDirectoresController() {
       // 3. Cargar directores designados (para obtener candidatos)
       await nombramientoStore.loadDirectoresDesignados(societyId.value, flowId.value);
 
+      // 3.1. Cargar candidatos de remoción (para calcular directores actuales correctamente)
+      try {
+        const { useRemocionDirectoresStore } = await import(
+          "~/core/presentation/juntas/puntos-acuerdo/remocion-directores/stores/useRemocionDirectoresStore"
+        );
+        const remocionStore = useRemocionDirectoresStore();
+        await remocionStore.loadDirectores(societyId.value, flowId.value);
+      } catch (error: any) {
+        // Si no hay remoción, no es crítico
+        if (error?.statusCode !== 404 && error?.status !== 404) {
+          console.warn("[Controller][VotacionDirectores] Error al cargar remociones:", error);
+        }
+      }
+
       // 4. Cargar asistentes (para obtener votantes - solo los que asistieron)
       await asistenciaStore.loadAsistencias(societyId.value, flowId.value);
 
@@ -150,13 +164,11 @@ export function useVotacionDirectoresController() {
             label: item.label,
             personaId: item.personaId,
             votosCount: item.votos.length,
+            modo: votacionStore.sesionVotacion?.modo,
           })),
         });
 
-        // ✅ Si hay votación existente, convertir votos del formato backend al formato local
-        if (votacionStore.hasVotacion && votacionStore.itemsVotacion.length > 0) {
-          convertirVotosBackendALocal();
-        }
+        // ✅ NO convertir aquí, se hará después de cargar todos los datos
       } catch (error: any) {
         // Si no existe (404), es normal - se creará al guardar
         if (error.statusCode === 404 || error.status === 404) {
@@ -172,7 +184,49 @@ export function useVotacionDirectoresController() {
         hasVotacion: votacionStore.hasVotacion,
         candidatosCount: candidatos.value.length,
         votantesCount: votantes.value.length,
+        itemsCount: votacionStore.itemsVotacion.length,
       });
+
+      // ✅ Si hay votación existente, detectar si es unanimidad o mayoría y convertir votos
+      if (votacionStore.hasVotacion && votacionStore.itemsVotacion.length > 0) {
+        // Esperar un tick adicional para asegurar que todo esté sincronizado
+        await nextTick();
+
+        // ✅ Detectar si es unanimidad basándose en tipoAprobacion
+        // Si TODOS los items tienen tipoAprobacion: APROBADO_POR_TODOS → es unanimidad
+        const esUnanimidad =
+          votacionStore.itemsVotacion.length > 0 &&
+          votacionStore.itemsVotacion.every(
+            (item) => item.tipoAprobacion === VoteAgreementType.APROBADO_POR_TODOS
+          );
+
+        console.log("[Controller][VotacionDirectores] Detección de tipo de votación:", {
+          esUnanimidad,
+          itemsCount: votacionStore.itemsVotacion.length,
+          items: votacionStore.itemsVotacion.map((item) => ({
+            label: item.label,
+            tipoAprobacion: item.tipoAprobacion,
+          })),
+        });
+
+        // ✅ Actualizar método de votación en el store
+        if (esUnanimidad) {
+          directoresStore.setMetodoVotacion("unanimidad");
+          // Si es unanimidad, extraer candidatos seleccionados (solo los que tienen items)
+          const candidatosSeleccionados = votacionStore.itemsVotacion.map(
+            (item) => item.label
+          );
+          directoresStore.setCandidatosSeleccionadosUnanimidad(candidatosSeleccionados);
+          console.log(
+            "[Controller][VotacionDirectores] Unanimidad detectada, candidatos:",
+            candidatosSeleccionados
+          );
+        } else {
+          // Si es mayoría acumulativa, convertir votos y establecer método
+          directoresStore.setMetodoVotacion("mayoria");
+          convertirVotosBackendALocal();
+        }
+      }
     } catch (error: any) {
       console.error("[Controller][VotacionDirectores] Error al cargar datos:", error);
       error.value = error.message || "Error al cargar datos";
@@ -210,13 +264,33 @@ export function useVotacionDirectoresController() {
   });
 
   /**
+   * ✅ Calcular cupos disponibles para directores
+   * Cupos = Tamaño del Directorio - Directores Actuales
+   * Donde Directores Actuales = Directores del snapshot que NO fueron removidos
+   */
+  const cuposDisponibles = computed(() => {
+    const tamañoDirectorio = cantidadDirectores.value;
+    const directoresActuales = nombramientoStore.directoresDisponiblesDelSnapshot.length; // Ya filtra removidos
+    const cupos = tamañoDirectorio - directoresActuales;
+    return Math.max(0, cupos); // No permitir valores negativos
+  });
+
+  /**
    * Convertir votos del formato backend (VoteItem[]) al formato local (useDirectoresStore)
    * (para cargar votación existente)
+   *
+   * ⚠️ IMPORTANTE: Si hay votos duplicados del mismo accionista para el mismo candidato, se suman
    */
   function convertirVotosBackendALocal() {
     const items = votacionStore.itemsVotacion;
     const votantesArray = votantes.value;
     const candidatosArray = candidatos.value;
+
+    console.log("[Controller][convertirVotosBackendALocal] Iniciando conversión:", {
+      itemsCount: items.length,
+      votantesCount: votantesArray.length,
+      candidatosCount: candidatosArray.length,
+    });
 
     // Crear mapa de personaId → candidato (para mapear items a candidatos)
     const candidatosPorPersonaId = new Map(candidatosArray.map((c) => [c.person.id || "", c]));
@@ -226,36 +300,111 @@ export function useVotacionDirectoresController() {
       votantesArray.map((v, idx) => [v.accionistaId, idx])
     );
 
-    // Convertir items del backend a formato local
-    const votosAsignados: Array<{
-      candidatoNombreCompleto: string;
-      accionistaIndex: number;
-      cantidad: number;
-    }> = [];
+    // ✅ Map para sumar votos duplicados: clave = "candidatoNombreCompleto-accionistaIndex"
+    const votosMap = new Map<string, number>();
 
     items.forEach((item) => {
-      if (!item.personaId) return;
+      if (!item.personaId) {
+        console.warn("[Controller][convertirVotosBackendALocal] Item sin personaId:", item);
+        return;
+      }
 
       const candidato = candidatosPorPersonaId.get(item.personaId);
-      if (!candidato) return;
+      if (!candidato) {
+        console.warn(
+          "[Controller][convertirVotosBackendALocal] Candidato no encontrado para personaId:",
+          item.personaId
+        );
+        return;
+      }
 
       const nombreCompleto = `${candidato.person.nombre} ${candidato.person.apellidoPaterno} ${
         candidato.person.apellidoMaterno || ""
       }`.trim();
 
-      // Convertir cada voto del item
+      // ✅ Sumar todos los votos del mismo accionista para este candidato
+      // (puede haber votos duplicados en el backend)
       item.votos.forEach((voto) => {
         const accionistaIndex = indicePorAccionistaId.get(voto.accionistaId);
-        if (accionistaIndex === undefined) return;
+        if (accionistaIndex === undefined) {
+          console.warn(
+            "[Controller][convertirVotosBackendALocal] Accionista no encontrado para accionistaId:",
+            voto.accionistaId
+          );
+          return;
+        }
 
-        const cantidad = typeof voto.valor === "number" ? voto.valor : 0;
+        // ✅ Convertir string a número si es necesario (el backend puede devolver strings)
+        const cantidad =
+          typeof voto.valor === "number"
+            ? voto.valor
+            : typeof voto.valor === "string"
+            ? Number(voto.valor) || 0
+            : 0;
 
-        votosAsignados.push({
+        // ✅ Clave única: personaId-accionistaIndex (para sumar duplicados)
+        // Usar personaId en lugar de nombreCompleto es más robusto (único e inmutable)
+        const clave = item.personaId
+          ? `${item.personaId}-${accionistaIndex}`
+          : `${nombreCompleto}-${accionistaIndex}`; // Fallback a nombreCompleto si no hay personaId
+        const cantidadActual = votosMap.get(clave) || 0;
+        votosMap.set(clave, cantidadActual + cantidad);
+      });
+    });
+
+    // ✅ Convertir map a array (ya sin duplicados, sumados)
+    // ⚠️ IMPORTANTE: La clave tiene formato "personaId-accionistaIndex" (o "nombreCompleto-accionistaIndex" como fallback)
+    const votosAsignados = Array.from(votosMap.entries())
+      .map(([clave, cantidad]) => {
+        // Buscar el último guion (que separa el personaId/nombreCompleto del índice)
+        const lastDashIndex = clave.lastIndexOf("-");
+        if (lastDashIndex === -1) {
+          console.warn(
+            "[Controller][convertirVotosBackendALocal] Clave inválida (sin guion):",
+            clave
+          );
+          return null;
+        }
+
+        const identificador = clave.substring(0, lastDashIndex); // personaId o nombreCompleto
+        const accionistaIndexStr = clave.substring(lastDashIndex + 1);
+        const accionistaIndex = Number(accionistaIndexStr);
+
+        if (Number.isNaN(accionistaIndex)) {
+          console.warn(
+            "[Controller][convertirVotosBackendALocal] Índice de accionista inválido:",
+            accionistaIndexStr
+          );
+          return null;
+        }
+
+        // Buscar el candidato para obtener nombreCompleto
+        // Si identificador es un UUID (personaId), buscar por person.id
+        // Si no, es nombreCompleto (fallback)
+        const esUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+          identificador
+        );
+        const candidato = esUUID
+          ? candidatosArray.find((c) => c.person.id === identificador)
+          : null;
+        const nombreCompleto = candidato
+          ? `${candidato.person.nombre} ${candidato.person.apellidoPaterno} ${
+              candidato.person.apellidoMaterno || ""
+            }`.trim()
+          : identificador; // Fallback: usar identificador como nombreCompleto si no es UUID
+
+        return {
           candidatoNombreCompleto: nombreCompleto,
+          candidatoPersonaId: esUUID ? identificador : undefined, // Solo incluir si es UUID válido
           accionistaIndex,
           cantidad,
-        });
-      });
+        };
+      })
+      .filter((v): v is NonNullable<typeof v> => v !== null);
+
+    console.log("[Controller][convertirVotosBackendALocal] Votos convertidos:", {
+      votosAsignadosCount: votosAsignados.length,
+      votosAsignados: votosAsignados.slice(0, 5), // Primeros 5 para debug
     });
 
     // Actualizar useDirectoresStore con los votos cargados
@@ -320,17 +469,48 @@ export function useVotacionDirectoresController() {
       // El backend devuelve person.id en DesignationDirectorResponseDTO
       const personaId = candidato.person?.id || undefined;
 
-      // Si hay votación existente, intentar usar el itemId existente
+      // ✅ Si hay votación existente, intentar usar el itemId y votos existentes
       const itemExistente = personaId ? votacionStore.getItemByPersonaId(personaId) : null;
+
+      // ✅ Si hay item existente, usar sus votos existentes como base
+      // Luego se compararán con los nuevos votos para construir operaciones
+      const votosExistentes = itemExistente?.votos || [];
+      const votosNuevos = votosPorCandidato.get(nombreCompleto) || [];
+
+      // ✅ Si hay item existente, mantener los IDs de votos existentes cuando sea posible
+      // Esto es importante para poder hacer updateVote en lugar de siempre addVote
+      const votosFinales: VoteEntry[] = [];
+      if (itemExistente && votosExistentes.length > 0) {
+        // Si hay votos existentes, intentar mapear los nuevos votos a los existentes
+        const votosExistentesMap = new Map(votosExistentes.map((v) => [v.accionistaId, v]));
+
+        votosNuevos.forEach((votoNuevo) => {
+          const votoExistente = votosExistentesMap.get(votoNuevo.accionistaId);
+          if (votoExistente) {
+            // Si existe, mantener el ID existente pero actualizar el valor
+            votosFinales.push({
+              id: votoExistente.id, // ✅ Mantener ID existente
+              accionistaId: votoNuevo.accionistaId,
+              valor: votoNuevo.valor,
+            });
+          } else {
+            // Si no existe, usar nuevo ID
+            votosFinales.push(votoNuevo);
+          }
+        });
+      } else {
+        // Si no hay item existente o no tiene votos, usar los nuevos votos directamente
+        votosFinales.push(...votosNuevos);
+      }
 
       return {
         id: itemExistente?.id || votacionStore.generateUuid(),
-        orden: index,
+        orden: itemExistente?.orden ?? index,
         label: nombreCompleto,
-        descripcion: "Candidato a director titular",
+        descripcion: itemExistente?.descripción || "Candidato a director titular",
         personaId: personaId, // ✅ PersonV2.id del candidato
-        tipoAprobacion: VoteAgreementType.SOMETIDO_A_VOTACION,
-        votos: votosPorCandidato.get(nombreCompleto) || [],
+        tipoAprobacion: itemExistente?.tipoAprobacion || VoteAgreementType.SOMETIDO_A_VOTACION,
+        votos: votosFinales,
       };
     });
 
@@ -360,8 +540,8 @@ export function useVotacionDirectoresController() {
     // Ordenar por total de votos descendente
     const sorted = votosPorCandidato.sort((a, b) => b.totalVotos - a.totalVotos);
 
-    // Seleccionar top N (donde N = cantidadDirectores)
-    const cantidad = cantidadDirectores.value;
+    // ✅ Seleccionar top N (donde N = cuposDisponibles, NO cantidadDirectores)
+    const cantidad = cuposDisponibles.value;
     const elegidos = sorted.slice(0, cantidad);
 
     // Mapear personaId → directorId usando candidatos
@@ -377,7 +557,90 @@ export function useVotacionDirectoresController() {
   }
 
   /**
-   * Guardar votación completa
+   * Guardar votación por unanimidad
+   * Para unanimidad: todos los candidatos seleccionados se marcan como elegidos
+   * Se crea votación con tipoAprobacion: APROBADO_POR_TODOS
+   */
+  async function guardarVotacionUnanimidad(candidatosSeleccionados: string[]) {
+    try {
+      isLoading.value = true;
+      error.value = null;
+
+      // 1. Crear items solo para candidatos seleccionados con tipoAprobacion: APROBADO_POR_TODOS
+      const items: VoteItem[] = candidatos.value
+        .filter((candidato) => {
+          const nombreCompleto = `${candidato.person.nombre} ${
+            candidato.person.apellidoPaterno
+          } ${candidato.person.apellidoMaterno || ""}`.trim();
+          return candidatosSeleccionados.includes(nombreCompleto);
+        })
+        .map((candidato, index) => {
+          const nombreCompleto = `${candidato.person.nombre} ${
+            candidato.person.apellidoPaterno
+          } ${candidato.person.apellidoMaterno || ""}`.trim();
+          const personaId = candidato.person?.id || undefined;
+
+          // Si hay votación existente, intentar usar el itemId existente
+          const itemExistente = personaId ? votacionStore.getItemByPersonaId(personaId) : null;
+
+          return {
+            id: itemExistente?.id || votacionStore.generateUuid(),
+            orden: index,
+            label: nombreCompleto,
+            descripcion: "Candidato a director titular (unanimidad)",
+            personaId: personaId,
+            tipoAprobacion: VoteAgreementType.APROBADO_POR_TODOS,
+            votos: [], // Para unanimidad, los votos se generan automáticamente en el backend
+          };
+        });
+
+      // 2. Guardar votación en backend
+      await votacionStore.guardarVotacion(societyId.value, flowId.value, items);
+
+      // 3. Para unanimidad, todos los candidatos seleccionados son elegidos
+      const candidatosSeleccionadosIds = new Set(
+        candidatos.value
+          .filter((candidato) => {
+            const nombreCompleto = `${candidato.person.nombre} ${
+              candidato.person.apellidoPaterno
+            } ${candidato.person.apellidoMaterno || ""}`.trim();
+            return candidatosSeleccionados.includes(nombreCompleto);
+          })
+          .map((c) => c.id)
+      );
+
+      // 4. Marcar estados (ELEGIDO para seleccionados, NO_ELEGIDO para el resto)
+      for (const candidato of candidatos.value) {
+        const estado = candidatosSeleccionadosIds.has(candidato.id)
+          ? ("ELEGIDO" as const)
+          : ("NO_ELEGIDO" as const);
+
+        await nombramientoStore.updateEstadoDirector(
+          societyId.value,
+          flowId.value,
+          candidato.id,
+          estado
+        );
+      }
+
+      console.log("[Controller][VotacionDirectores] Votación por unanimidad guardada:", {
+        itemsCount: items.length,
+        candidatosSeleccionadosCount: candidatosSeleccionados.length,
+      });
+    } catch (error: any) {
+      console.error(
+        "[Controller][VotacionDirectores] Error al guardar votación unanimidad:",
+        error
+      );
+      error.value = error.message || "Error al guardar votación";
+      throw error;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /**
+   * Guardar votación completa (mayoría acumulativa)
    */
   async function guardarVotacion(
     votosAsignados: Array<{
@@ -400,8 +663,17 @@ export function useVotacionDirectoresController() {
       // 2. Guardar votación en backend (create o update según corresponda)
       await votacionStore.guardarVotacion(societyId.value, flowId.value, items);
 
-      // 3. Calcular elegidos
-      const elegidos = calcularElegidos(items);
+      // ✅ 2.1. Recargar votación desde el backend para sincronizar estado local
+      // (esto asegura que después de guardar, el estado local tenga los datos correctos)
+      await votacionStore.loadVotacion(societyId.value, flowId.value);
+
+      // ✅ 2.2. Esperar un tick para asegurar que el store se actualice
+      await nextTick();
+
+      // 3. Calcular elegidos (usar items recargados del store si están disponibles)
+      const itemsParaCalcular =
+        votacionStore.itemsVotacion.length > 0 ? votacionStore.itemsVotacion : items;
+      const elegidos = calcularElegidos(itemsParaCalcular);
 
       // 4. Marcar estados (ELEGIDO/NO_ELEGIDO)
       const elegidosIds = new Set(elegidos.map((e) => e.directorId));
@@ -444,11 +716,12 @@ export function useVotacionDirectoresController() {
     // Funciones
     loadData,
     guardarVotacion,
+    guardarVotacionUnanimidad, // ✅ Para unanimidad
 
     // Computed
     candidatos,
     votantes,
     cantidadDirectores,
+    cuposDisponibles, // ✅ Exponer cupos disponibles
   };
 }
-

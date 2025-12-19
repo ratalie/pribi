@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 
 export interface DirectorData {
   nombreCompleto: string;
+  personaId?: string; // ✅ ID único de la persona (person.id) - usado para hacer match con votos
   tipoDirector: "titular" | "suplente" | "alterno";
   tipoDocumento: string;
   numeroDocumento: string;
@@ -15,6 +16,7 @@ export interface DirectorData {
 
 export interface VotoAsignado {
   candidatoNombreCompleto: string;
+  candidatoPersonaId?: string; // ✅ ID único de la persona - usado para hacer match (más robusto que nombreCompleto)
   accionistaIndex: number;
   cantidad: number;
 }
@@ -23,6 +25,7 @@ export const useDirectoresStore = defineStore("directores", {
   state: (): {
     directoresData: DirectorData[];
     cantidadDirectores: number;
+    cuposDisponibles: number | null; // ✅ Cupos calculados correctamente (null = usar cálculo por defecto)
     votosAsignados: VotoAsignado[];
     hayEmpate: boolean;
     metodoVotacion: "unanimidad" | "mayoria";
@@ -30,6 +33,7 @@ export const useDirectoresStore = defineStore("directores", {
   } => ({
     directoresData: [],
     cantidadDirectores: 5,
+    cuposDisponibles: null, // ✅ null = calcular automáticamente, o usar valor explícito
     votosAsignados: [],
     hayEmpate: false,
     metodoVotacion: "unanimidad",
@@ -49,6 +53,13 @@ export const useDirectoresStore = defineStore("directores", {
       ),
 
     cantidadDisponibles: (state) => {
+      // ✅ Si se estableció cuposDisponibles explícitamente, usarlo
+      if (state.cuposDisponibles !== null) {
+        return state.cuposDisponibles;
+      }
+
+      // ✅ Cálculo por defecto: cantidadDirectores - directoresNoCandidatos
+      // (Este cálculo es incorrecto cuando hay directores del snapshot, pero se mantiene por compatibilidad)
       const cantidadNoCandidatos = state.directoresData.filter(
         (d) => d.tipoDirector === "titular" && d.candidato === false
       ).length;
@@ -73,6 +84,14 @@ export const useDirectoresStore = defineStore("directores", {
 
     setCantidadDirectores(cantidad: number) {
       this.cantidadDirectores = cantidad;
+    },
+
+    /**
+     * ✅ Establecer cupos disponibles explícitamente
+     * (calculados correctamente considerando directores actuales del snapshot - removidos)
+     */
+    setCuposDisponibles(cupos: number) {
+      this.cuposDisponibles = cupos;
     },
 
     setVotosAsignados(votos: VotoAsignado[]) {

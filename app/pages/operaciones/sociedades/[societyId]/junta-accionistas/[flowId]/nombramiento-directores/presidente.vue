@@ -22,7 +22,7 @@
         <div class="flex-1 max-w-xs">
           <BaseInputSelect
             id="nombre-presidente"
-            v-model="nombrePresidente"
+            v-model="presidenteId"
             :options="opcionesPresidente"
             :placeholder="
               tieneCambioPresidente ? 'Seleccione el presidente' : presidenteActual
@@ -30,6 +30,9 @@
             :is-disabled="!tieneCambioPresidente"
             class="border border-gray-700 bg-gray-100 text-gray-500"
           />
+          <p v-if="!tieneCambioPresidente" class="t-b2 text-gray-600 font-secondary mt-1">
+            {{ presidenteActual }}
+          </p>
         </div>
       </div>
 
@@ -152,6 +155,12 @@
   import SlotWrapper from "~/components/containers/SlotWrapper.vue";
   import Switch from "~/components/ui/switch/Switch.vue";
   import VDropdownComponent from "~/components/VDropdownComponent.vue";
+  import { VoteAgreementType } from "~/core/hexag/juntas/domain/enums/vote-agreement-type.enum";
+  import { useDirectoryConfigurationStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/stores/useDirectoryConfigurationStore";
+  import { useNombramientoDirectoresStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/stores/useNombramientoDirectoresStore";
+  import { useVotacionDirectoresController } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/votacion/composables/useVotacionDirectoresController";
+  import { useVotacionDirectoresStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/votacion/stores/useVotacionDirectoresStore";
+  import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
   import { useDirectoresStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/composables/useDirectoresStore";
 
   definePageMeta({
@@ -161,95 +170,251 @@
 
   const route = useRoute();
   const directoresStore = useDirectoresStore();
+  const nombramientoStore = useNombramientoDirectoresStore();
+  const snapshotStore = useSnapshotStore();
+  const votacionController = useVotacionDirectoresController();
+  const votacionStore = useVotacionDirectoresStore();
+  const directoryConfigurationStore = useDirectoryConfigurationStore();
 
   // Log para verificar que se está cargando el componente correcto
-  onMounted(() => {
-    console.log("✅ [presidente.vue] Componente presidente.vue montado");
-    console.log("✅ [presidente.vue] Ruta actual:", route.path);
-  });
-
   // Estado
   const tieneCambioPresidente = ref(false);
-  const nombrePresidente = ref("");
+  const presidenteId = ref<string>(""); // ID del director (no person.id)
   const isModalEmpateOpen = ref(false);
   const candidatosSeleccionadosEmpate = ref<string[]>([]);
+  const isLoadingPresidente = ref(false);
 
-  // Obtener presidente actual (hardcodeado por ahora, luego vendrá del store)
+  // ✅ Cargar directores designados y votos al montar
+  onMounted(async () => {
+    const societyId = Number(route.params.societyId);
+    const flowId = Number(route.params.flowId);
+    if (societyId && flowId) {
+      try {
+        // 1. Cargar snapshot si no está cargado
+        if (!snapshotStore.snapshot) {
+          await snapshotStore.loadSnapshot(societyId, flowId);
+        }
+
+        // 2. Cargar directores designados
+        await nombramientoStore.loadDirectoresDesignados(societyId, flowId);
+
+        // 3. Cargar configuración del directorio (para obtener presidenteId actual)
+        try {
+          await directoryConfigurationStore.loadConfiguration(societyId, flowId);
+          // Si hay presidenteId en la configuración, establecerlo
+          if (directoryConfigurationStore.configuration?.presidenteId) {
+            presidenteId.value = directoryConfigurationStore.configuration.presidenteId;
+            tieneCambioPresidente.value = true; // Si ya hay presidente, asumir que hay cambio
+          }
+        } catch (error: any) {
+          // Si no existe (404), es normal - se creará al guardar
+          if (error?.statusCode !== 404 && error?.status !== 404) {
+            console.error("[presidente.vue] Error al cargar configuración:", error);
+          }
+        }
+
+        // 4. Cargar todos los datos necesarios (incluye votos desde el backend)
+        await votacionController.loadData();
+
+        // Sincronizar candidatos y cantidad con useDirectoresStore
+        // (necesario para que los votos se muestren correctamente)
+        const candidatosFromController = votacionController.candidatos.value;
+        const candidatosParaStore = candidatosFromController.map((c) => ({
+          nombreCompleto: `${c.person.nombre} ${c.person.apellidoPaterno} ${
+            c.person.apellidoMaterno || ""
+          }`.trim(),
+          tipoDirector: "titular" as const,
+          tipoDocumento: c.person.tipoDocumento,
+          numeroDocumento: c.person.numeroDocumento,
+          nombre: c.person.nombre,
+          apellidoPaterno: c.person.apellidoPaterno,
+          apellidoMaterno: c.person.apellidoMaterno,
+          candidato: true,
+        }));
+
+        directoresStore.setDirectoresData(candidatosParaStore);
+        directoresStore.setCantidadDirectores(votacionController.cantidadDirectores.value);
+        directoresStore.setCuposDisponibles(votacionController.cuposDisponibles.value);
+
+        // ✅ Detectar método de votación desde la sesión de votación
+        // Si hay items con tipoAprobacion: APROBADO_POR_TODOS, es unanimidad
+        if (votacionStore.hasVotacion && votacionStore.itemsVotacion.length > 0) {
+          const esUnanimidad = votacionStore.itemsVotacion.some(
+            (item) => item.tipoAprobacion === VoteAgreementType.APROBADO_POR_TODOS
+          );
+          const metodoDetectado = esUnanimidad ? "unanimidad" : "mayoria";
+          directoresStore.setMetodoVotacion(metodoDetectado);
+          console.log("[presidente.vue] Método de votación detectado:", metodoDetectado);
+        }
+
+        console.log("[presidente.vue] Datos cargados:", {
+          votos: directoresStore.votosAsignados.length,
+          candidatos: candidatosParaStore.length,
+          votosPorCandidato: Array.from(directoresStore.votosPorCandidato.entries()),
+          metodoVotacion: directoresStore.metodoVotacion,
+        });
+      } catch (error) {
+        console.error("[presidente.vue] Error al cargar datos:", error);
+      }
+    }
+  });
+
+  // ✅ Obtener presidente actual desde la configuración del directorio o snapshot
   const presidenteActual = computed(() => {
-    // Esto debería venir del store o props, por ahora hardcodeado
-    return "Olenka Sanchez Aguilar";
+    // 1. Prioridad: Presidente de la configuración del directorio (si existe)
+    if (directoryConfigurationStore.configuration?.presidenteId) {
+      const presidenteIdConfig = directoryConfigurationStore.configuration.presidenteId;
+      const director = nombramientoStore.directoresTitularesCandidatos.find(
+        (d) => d.id === presidenteIdConfig
+      );
+      if (director) {
+        return `${director.person.nombre} ${director.person.apellidoPaterno} ${
+          director.person.apellidoMaterno || ""
+        }`.trim();
+      }
+    }
+
+    // 2. Fallback: Presidente del snapshot (si existe)
+    const snapshot = snapshotStore.snapshot;
+    if (snapshot?.directory?.presidenteId) {
+      const presidente = snapshot.directors.find(
+        (d) => d.id === snapshot.directory.presidenteId
+      );
+      if (presidente) {
+        return `${presidente.persona.nombre} ${presidente.persona.apellidoPaterno} ${
+          presidente.persona.apellidoMaterno || ""
+        }`.trim();
+      }
+    }
+
+    // 3. Último fallback: Primer director elegido (si hay)
+    const directoresElegidos = nombramientoStore.directoresTitularesCandidatos.filter(
+      (d) => d.designationStatus === "ELEGIDO" || d.candidateStatus === "ELECTED"
+    );
+    if (directoresElegidos.length > 0) {
+      const primerElegido = directoresElegidos[0];
+      return `${primerElegido.person.nombre} ${primerElegido.person.apellidoPaterno} ${
+        primerElegido.person.apellidoMaterno || ""
+      }`.trim();
+    }
+
+    // Último fallback: mensaje indicando que no hay presidente
+    return "No hay presidente designado";
   });
 
-  // Opciones para el select del presidente (solo candidatos SELECCIONADOS + presidente actual)
+  // ✅ Opciones para el select del presidente (solo directores ELEGIDOS - candidateStatus: "ELECTED")
   const opcionesPresidente = computed<BaseSelectOption[]>(() => {
-    const presidente = presidenteActual.value;
+    // ✅ Obtener solo los directores que están ELEGIDOS (candidateStatus === "ELECTED")
+    const directoresElegidos = nombramientoStore.directoresTitularesCandidatos.filter(
+      (d) => d.candidateStatus === "ELECTED" || d.designationStatus === "ELEGIDO"
+    );
 
-    // Obtener solo los candidatos que están SELECCIONADOS según los resultados de votación
-    const candidatosSeleccionados = resultadosVotacion.value
-      .filter((candidato) => candidato.estado === "SELECCIONADO")
-      .map((candidato) => candidato.nombreCompleto);
-
-    // Incluir solo los candidatos seleccionados + presidente actual
-    const todos = [
-      ...candidatosSeleccionados,
-      presidente, // Asegurar que el presidente actual esté incluido
-    ];
-
-    // Eliminar duplicados y crear opciones
-    const unicos = Array.from(new Set(todos));
-    return unicos.map((nombre, index) => ({
-      id: index,
-      value: nombre,
-      label: nombre,
-    }));
+    // Crear opciones con el ID del director como value y el nombre completo como label
+    return directoresElegidos.map((director) => {
+      const nombreCompleto = `${director.person.nombre} ${director.person.apellidoPaterno} ${
+        director.person.apellidoMaterno || ""
+      }`.trim();
+      return {
+        id: director.id,
+        value: director.id, // ✅ Usar ID del director (no person.id)
+        label: nombreCompleto,
+      };
+    });
   });
 
-  // Precargar nombre del presidente
+  // Precargar presidenteId desde la configuración
+  watch(
+    () => directoryConfigurationStore.configuration?.presidenteId,
+    (nuevoPresidenteId) => {
+      if (nuevoPresidenteId) {
+        presidenteId.value = nuevoPresidenteId;
+        // Si hay presidenteId, significa que ya hay un presidente asignado
+        tieneCambioPresidente.value = true;
+      }
+    },
+    { immediate: true }
+  );
+
+  // Manejar cambio del switch
   watch(
     () => tieneCambioPresidente.value,
-    (nuevoValor) => {
-      if (!nuevoValor) {
-        // Si el switch está en false, mostrar el presidente actual
-        nombrePresidente.value = presidenteActual.value;
-      } else if (opcionesPresidente.value.length > 0 && !nombrePresidente.value) {
+    (tieneCambio) => {
+      if (!tieneCambio) {
+        // Si el switch está en false, limpiar el presidenteId (no guardar null, solo limpiar localmente)
+        presidenteId.value = "";
+      } else if (opcionesPresidente.value.length > 0 && !presidenteId.value) {
         // Si el switch está en true y no hay valor, usar el primero disponible
-        nombrePresidente.value = opcionesPresidente.value[0]?.value.toString() || "";
+        presidenteId.value = opcionesPresidente.value[0]?.value.toString() || "";
       }
-    },
-    { immediate: true }
+    }
   );
 
-  // Asegurar que el presidente actual esté en las opciones cuando está disabled
-  watch(
-    () => presidenteActual.value,
-    (presidente: string) => {
-      if (!tieneCambioPresidente.value) {
-        nombrePresidente.value = presidente;
+  // Guardar presidenteId cuando cambie (solo si el switch está activado)
+  let saveTimeout: ReturnType<typeof setTimeout> | null = null;
+  watch([presidenteId, tieneCambioPresidente], async ([nuevoPresidenteId, tieneCambio]) => {
+    // Solo guardar si el switch está activado y hay un presidenteId
+    if (!tieneCambio || !nuevoPresidenteId) return;
+
+    // Limpiar timeout anterior si existe
+    if (saveTimeout) {
+      clearTimeout(saveTimeout);
+    }
+
+    // Debounce: esperar 500ms antes de guardar
+    saveTimeout = setTimeout(async () => {
+      const societyId = Number(route.params.societyId);
+      const flowId = Number(route.params.flowId);
+      if (!societyId || !flowId) return;
+
+      isLoadingPresidente.value = true;
+      try {
+        await directoryConfigurationStore.updateConfiguration(societyId, flowId, {
+          presidenteId: nuevoPresidenteId,
+        });
+        console.log("[presidente.vue] Presidente guardado:", nuevoPresidenteId);
+      } catch (error) {
+        console.error("[presidente.vue] Error al guardar presidente:", error);
+      } finally {
+        isLoadingPresidente.value = false;
       }
-    },
-    { immediate: true }
-  );
+    }, 500);
+  });
 
   // Método de votación (obtenido del store) - DEBE declararse ANTES de los watch que lo usan
   const metodoVotacion = computed(() => directoresStore.metodoVotacion);
 
-  // Verificar si hay empate al montar el componente (solo para votación por mayoría)
-  onMounted(async () => {
-    await nextTick();
-    console.log("🔍 [presidente.vue] onMounted - hayEmpate:", directoresStore.hayEmpate);
-    console.log("🔍 [presidente.vue] onMounted - metodoVotacion:", metodoVotacion.value);
-
-    // Solo mostrar modal si es votación por mayoría
-    if (directoresStore.hayEmpate && metodoVotacion.value === "mayoria") {
+  // Verificar si hay empate después de cargar los datos (solo para votación por mayoría)
+  watch(
+    () => [
+      directoresStore.votosAsignados.length,
+      nombramientoStore.directoresTitularesCandidatos.length,
+    ],
+    async () => {
+      await nextTick();
       console.log(
-        "✅ [presidente.vue] Mostrando modal de empate al montar (votación por mayoría)"
+        "🔍 [presidente.vue] Datos actualizados - hayEmpate:",
+        directoresStore.hayEmpate
       );
-      // Usar setTimeout para asegurar que el DOM esté listo
-      setTimeout(() => {
-        isModalEmpateOpen.value = true;
-      }, 100);
-    }
-  });
+      console.log(
+        "🔍 [presidente.vue] Datos actualizados - metodoVotacion:",
+        metodoVotacion.value
+      );
+      console.log(
+        "🔍 [presidente.vue] Datos actualizados - votosAsignados:",
+        directoresStore.votosAsignados.length
+      );
+
+      // Solo mostrar modal si es votación por mayoría
+      if (directoresStore.hayEmpate && metodoVotacion.value === "mayoria") {
+        console.log("✅ [presidente.vue] Mostrando modal de empate (votación por mayoría)");
+        // Usar setTimeout para asegurar que el DOM esté listo
+        setTimeout(() => {
+          isModalEmpateOpen.value = true;
+        }, 100);
+      }
+    },
+    { immediate: true }
+  );
 
   // Watch el flag para mostrar el modal cuando cambie a true (solo para votación por mayoría)
   watch(
@@ -265,36 +430,50 @@
     { immediate: true }
   );
 
-  // Candidatos con votos (viene del store de votación)
+  // ✅ Candidatos con votos (viene del store de votación O de nombramientoStore si ya fueron elegidos)
   interface CandidatoConVotos {
     nombreCompleto: string;
     votos_asignados: number;
     tipoDirector: string;
+    estado?: string; // "ELEGIDO" | "NO_ELEGIDO"
   }
 
   const candidatosConVotos = computed<CandidatoConVotos[]>(() => {
-    const candidatos = directoresStore.directoresTitularesCandidatos;
+    // ✅ Obtener candidatos elegidos desde nombramientoStore (ya tienen su estado actualizado)
+    const directoresElegidos = nombramientoStore.directoresTitularesCandidatos;
 
     // Si es votación por unanimidad, usar los votos asignados del store
     if (metodoVotacion.value === "unanimidad") {
       const votosPorCandidato = directoresStore.votosPorCandidato;
-      return candidatos.map((candidato) => ({
-        nombreCompleto: candidato.nombreCompleto,
-        votos_asignados: votosPorCandidato.get(candidato.nombreCompleto) || 0,
-        tipoDirector: "Director titular",
-      }));
+      return directoresElegidos.map((candidato) => {
+        const nombreCompleto = `${candidato.person.nombre} ${
+          candidato.person.apellidoPaterno
+        } ${candidato.person.apellidoMaterno || ""}`.trim();
+        return {
+          nombreCompleto,
+          votos_asignados: votosPorCandidato.get(nombreCompleto) || 0,
+          tipoDirector: "Director titular",
+          estado: candidato.designationStatus || undefined,
+        };
+      });
     }
 
     // Si es votación por mayoría, usar los votos asignados
     const votosPorCandidato = directoresStore.votosPorCandidato;
-    return candidatos.map((candidato) => ({
-      nombreCompleto: candidato.nombreCompleto,
-      votos_asignados: votosPorCandidato.get(candidato.nombreCompleto) || 0,
-      tipoDirector: "Director titular",
-    }));
+    return directoresElegidos.map((candidato) => {
+      const nombreCompleto = `${candidato.person.nombre} ${candidato.person.apellidoPaterno} ${
+        candidato.person.apellidoMaterno || ""
+      }`.trim();
+      return {
+        nombreCompleto,
+        votos_asignados: votosPorCandidato.get(nombreCompleto) || 0,
+        tipoDirector: "Director titular",
+        estado: candidato.designationStatus || undefined,
+      };
+    });
   });
 
-  // Ordenar por votos y asignar posiciones
+  // ✅ Ordenar por votos y asignar posiciones (usando estado ELEGIDO/NO_ELEGIDO del backend)
   const resultadosVotacion = computed(() => {
     const candidatos = candidatosConVotos.value;
     const plazasDisponibles = directoresStore.cantidadDisponibles;
@@ -308,12 +487,18 @@
         const estaSeleccionado = candidatosSeleccionados.includes(candidato.nombreCompleto);
         const posicion = index + 1;
 
-        // Si la cantidad de candidatos es menor o igual a plazas disponibles: todos SELECCIONADO
-        // Si no: NO SELECCIONADO
-        const estado =
-          cantidadCandidatos <= plazasDisponibles && estaSeleccionado
-            ? "SELECCIONADO"
-            : "NO SELECCIONADO";
+        // ✅ Usar estado del backend (ELEGIDO/NO_ELEGIDO) si está disponible, sino calcular
+        const estadoBackend = candidato.estado;
+        let estado: string;
+        if (estadoBackend === "ELEGIDO" || estadoBackend === "NO_ELEGIDO") {
+          estado = estadoBackend === "ELEGIDO" ? "SELECCIONADO" : "NO SELECCIONADO";
+        } else {
+          // Fallback: calcular basado en selección
+          estado =
+            cantidadCandidatos <= plazasDisponibles && estaSeleccionado
+              ? "SELECCIONADO"
+              : "NO SELECCIONADO";
+        }
 
         return {
           ...candidato,
@@ -328,12 +513,22 @@
 
     return sorted.map((candidato, index) => {
       const posicion = index + 1;
-      const esSeleccionado = posicion <= plazasDisponibles;
+
+      // ✅ Usar estado del backend (ELEGIDO/NO_ELEGIDO) si está disponible, sino calcular
+      const estadoBackend = candidato.estado;
+      let estado: string;
+      if (estadoBackend === "ELEGIDO" || estadoBackend === "NO_ELEGIDO") {
+        estado = estadoBackend === "ELEGIDO" ? "SELECCIONADO" : "NO SELECCIONADO";
+      } else {
+        // Fallback: calcular basado en posición
+        const esSeleccionado = posicion <= plazasDisponibles;
+        estado = esSeleccionado ? "SELECCIONADO" : "NO SELECCIONADO";
+      }
 
       return {
         ...candidato,
         posicion,
-        estado: esSeleccionado ? "SELECCIONADO" : "NO SELECCIONADO",
+        estado,
       };
     });
   });

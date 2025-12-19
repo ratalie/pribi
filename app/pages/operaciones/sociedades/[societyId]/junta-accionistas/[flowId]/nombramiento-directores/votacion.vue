@@ -1,4 +1,5 @@
 <template>
+  <DebugVotacionDirectores :controller="controller" :metodo-votacion="metodoVotacion" />
   <MetodoVotacionDirectorio
     v-model="metodoVotacion"
     v-model:candidatos-seleccionados="candidatosSeleccionados"
@@ -14,9 +15,10 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted, ref, watch } from "vue";
+  import { computed, nextTick, onMounted, ref, watch } from "vue";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { useVotacionDirectoresController } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/votacion/composables/useVotacionDirectoresController";
+  import DebugVotacionDirectores from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/components/votacion/DebugVotacionDirectores.vue";
   import MetodoVotacionDirectorio from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/components/votacion/MetodoVotacionDirectorio.vue";
   import { useDirectoresStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/composables/useDirectoresStore";
 
@@ -44,27 +46,56 @@
   // Cargar datos al montar
   onMounted(async () => {
     try {
+      // ✅ 1. Cargar datos del controller (incluye votación desde backend)
       await controller.loadData();
 
-      // Sincronizar candidatos y cantidad con useDirectoresStore
+      // ✅ 2. Esperar un tick para asegurar que todas las computed se actualicen
+      await nextTick();
+
+      // ✅ 3. Sincronizar candidatos y cantidad con useDirectoresStore
       // (necesario para que MayoriaVotacionDirectorio funcione correctamente)
       const candidatosFromController = controller.candidatos.value;
-      const candidatosParaStore = candidatosFromController.map((c) => ({
-        nombreCompleto: `${c.person.nombre} ${c.person.apellidoPaterno} ${
+      const candidatosParaStore = candidatosFromController.map((c) => {
+        const nombreCompleto = `${c.person.nombre} ${c.person.apellidoPaterno} ${
           c.person.apellidoMaterno || ""
-        }`.trim(),
-        tipoDirector: "titular" as const,
-        tipoDocumento: c.person.tipoDocumento,
-        numeroDocumento: c.person.numeroDocumento,
-        nombre: c.person.nombre,
-        apellidoPaterno: c.person.apellidoPaterno,
-        apellidoMaterno: c.person.apellidoMaterno,
-        candidato: true,
-      }));
+        }`.trim();
+
+        console.log("[VotacionDirectores] Preparando candidato para store:", {
+          nombreCompleto,
+          nombre: c.person.nombre,
+          apellidoPaterno: c.person.apellidoPaterno,
+          apellidoMaterno: c.person.apellidoMaterno,
+        });
+
+        return {
+          nombreCompleto, // ✅ Construir exactamente igual que en el controller
+          personaId: c.person.id || undefined, // ✅ Incluir personaId para hacer match con votos
+          tipoDirector: "titular" as const,
+          tipoDocumento: c.person.tipoDocumento,
+          numeroDocumento: c.person.numeroDocumento,
+          nombre: c.person.nombre,
+          apellidoPaterno: c.person.apellidoPaterno,
+          apellidoMaterno: c.person.apellidoMaterno,
+          candidato: true,
+        };
+      });
 
       directoresStore.setDirectoresData(candidatosParaStore);
       directoresStore.setCantidadDirectores(controller.cantidadDirectores.value);
-      directoresStore.setMetodoVotacion(metodoVotacion.value);
+      directoresStore.setCuposDisponibles(controller.cuposDisponibles.value); // ✅ Usar cupos calculados correctamente
+
+      // ✅ 4. Sincronizar método de votación desde el store (ya fue detectado en loadData)
+      // El método ya fue establecido en loadData basándose en tipoAprobacion del backend
+      metodoVotacion.value = directoresStore.metodoVotacion;
+
+      // ✅ 5. Esperar otro tick para que el componente MayoriaVotacionDirectorio detecte los cambios
+      await nextTick();
+
+      console.log("[VotacionDirectores] onMounted completado:", {
+        candidatosCount: candidatosParaStore.length,
+        votosAsignadosCount: directoresStore.votosAsignados.length,
+        metodoVotacion: metodoVotacion.value,
+      });
     } catch (error) {
       console.error("[VotacionDirectores] Error al cargar datos:", error);
     }
@@ -162,7 +193,16 @@
         await controller.guardarVotacion(votosAsignados);
       }
 
-      // Si es unanimidad, la lógica se maneja diferente (TODO: implementar si es necesario)
+      // ✅ Si es unanimidad, guardar votación por unanimidad
+      if (metodoVotacion.value === "unanimidad") {
+        const candidatosSeleccionados = directoresStore.candidatosSeleccionadosUnanimidad;
+        if (candidatosSeleccionados.length === 0) {
+          throw new Error("Debe seleccionar al menos un candidato");
+        }
+
+        await controller.guardarVotacionUnanimidad(candidatosSeleccionados);
+      }
+
       console.log("✅ Votación guardada exitosamente");
     } catch (error: any) {
       console.error("[VotacionDirectores] Error al guardar:", error);
