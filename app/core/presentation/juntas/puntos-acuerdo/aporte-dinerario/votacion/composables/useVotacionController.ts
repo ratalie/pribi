@@ -6,10 +6,10 @@ import { VoteMode } from "~/core/hexag/juntas/domain/enums/vote-mode.enum";
 import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
 import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
+import { useVotacionStore } from "~/core/presentation/juntas/stores/votacion.store";
 import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
 import { useAportesManagerStore } from "../../aportes/stores/useAportesManagerStore";
 import { useVotacionAportesStore } from "../stores/useVotacionAportesStore";
-import { useVotacionStore } from "~/core/presentation/juntas/stores/votacion.store";
 
 /**
  * Controller para la vista de Votación de Aporte Dinerario
@@ -41,7 +41,7 @@ export function useVotacionController() {
   async function loadParticipantes() {
     try {
       const baseUrl = resolveBaseUrl();
-      const url = `${baseUrl}/api/v2/society-profile/${societyId.value}/register-assembly/${flowId.value}/participants`;
+      const url = `${baseUrl}/api/v2/society-profile/${societyId.value}/register-assembly/${flowId.value}/cash-contribution/participants`;
 
       console.log("[DEBUG][VotacionController] Cargando participantes desde:", url);
 

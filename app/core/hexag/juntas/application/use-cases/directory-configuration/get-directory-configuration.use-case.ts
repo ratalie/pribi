@@ -14,3 +14,4 @@ export class GetDirectoryConfigurationUseCase {
     return await this.repository.get(societyId, flowId);
   }
 }
+

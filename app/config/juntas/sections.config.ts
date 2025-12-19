@@ -377,7 +377,7 @@ export const SUB_STEP_SECTIONS_MAP: Record<string, Array<Omit<SectionItem, "stat
     {
       id: "configuracion",
       title: "Configuración del directorio",
-      description: "Detalla la propuesta de directorio",
+      description: "Establece la configuración del directorio (cantidad, duración, fechas)",
       navigationType: "route",
     },
     {

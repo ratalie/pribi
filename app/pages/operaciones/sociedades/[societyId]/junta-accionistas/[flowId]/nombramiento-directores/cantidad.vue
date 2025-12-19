@@ -23,7 +23,7 @@
 
       <!-- Formulario cuando el switch está en true -->
       <SimpleCard v-if="configurarDirectorio">
-        <Form :validation-schema="schema" @submit="handleSubmit">
+        <Form v-if="configurarDirectorio" :validation-schema="schema" @submit="handleSubmit">
           <div class="flex flex-col gap-4">
             <SelectInputZod
               v-model="form.cantidadDirectores"
@@ -42,7 +42,7 @@
 
 <script setup lang="ts">
   import { Form } from "vee-validate";
-  import { onMounted, ref } from "vue";
+  import { computed, onMounted, ref } from "vue";
   import { useRoute } from "vue-router";
   import { z } from "zod";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
@@ -85,8 +85,16 @@
     .string()
     .min(1, "La cantidad de directores es obligatoria");
 
-  const schema = z.object({
-    cantidadDirectores: cantidadDirectoresSchema,
+  // ✅ Schema condicional: solo validar cuando el switch está activo
+  const schema = computed(() => {
+    if (!configurarDirectorio.value) {
+      // Si el switch está desactivado, schema opcional (no valida nada)
+      return z.object({}).passthrough();
+    }
+    // Si el switch está activo, validar cantidadDirectores
+    return z.object({
+      cantidadDirectores: cantidadDirectoresSchema,
+    });
   });
 
   // Cargar configuración existente si hay

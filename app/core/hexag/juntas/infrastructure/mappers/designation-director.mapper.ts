@@ -146,14 +146,77 @@ export class DesignationDirectorMapper {
    * Backend espera:
    * {
    *   "directorId": "uuid" (ID del DirectorFlowAction),
-   *   "candidatoEstado": "ELEGIDO" | "NO_ELEGIDO"
+   *   "candidatoEstado": "ELEGIDO" | "NO_ELEGIDO" (opcional),
+   *   "director": { "persona": {...}, "rolDirector": "TITULAR" | "SUPLENTE" | "ALTERNO" } (opcional, para actualizar datos personales)
    * }
    */
-  static toBackendUpdateRequest(dto: UpdateDesignationDirectorDTO): any {
-    return {
+  static toBackendUpdateRequest(
+    dto: UpdateDesignationDirectorDTO,
+    directorRole?: "TITULAR" | "SUPLENTE" | "ALTERNO"
+  ): any {
+    const payload: any = {
       directorId: dto.directorId,
-      candidatoEstado: dto.candidatoEstado,
     };
+
+    // Si hay candidatoEstado, incluirlo
+    if (dto.candidatoEstado) {
+      payload.candidatoEstado = dto.candidatoEstado;
+    }
+
+    // Si hay datos personales para actualizar, incluirlos
+    if (dto.person && directorRole) {
+      const person = dto.person;
+
+      // Transformar persona según el tipo (similar a toBackendRequest)
+      if ("firstName" in person) {
+        // Es PersonNaturalDTO
+        const personNatural = person as PersonNaturalDTO;
+        payload.director = {
+          persona: {
+            tipo: "NATURAL",
+            nombre: personNatural.firstName || "",
+            apellidoPaterno: personNatural.lastNamePaternal || "",
+            apellidoMaterno: personNatural.lastNameMaternal || "",
+            tipoDocumento: personNatural.typeDocument || "",
+            numeroDocumento: personNatural.documentNumber || "",
+            paisEmision: personNatural.issuingCountry || "",
+          },
+          rolDirector: directorRole,
+        };
+      } else {
+        // Es PersonJuridicDTO
+        const personJuridic = person as PersonJuridicDTO;
+        payload.director = {
+          persona: {
+            tipo: "JURIDIC",
+            razonSocial: personJuridic.businessName || "",
+            nombreComercial: personJuridic.commercialName || "",
+            tipoDocumento: personJuridic.typeDocument || "",
+            numeroDocumento: personJuridic.documentNumber || "",
+            paisEmision: personJuridic.issuingCountry || "",
+            direccion: personJuridic.address || "",
+            distrito: personJuridic.district || "",
+            provincia: personJuridic.province || "",
+            departamento: personJuridic.department || "",
+            paisOrigen: personJuridic.countryOfOrigin || "",
+            representanteLegal: personJuridic.representative
+              ? {
+                  tipo: "NATURAL",
+                  nombre: personJuridic.representative.firstName || "",
+                  apellidoPaterno: personJuridic.representative.lastNamePaternal || "",
+                  apellidoMaterno: personJuridic.representative.lastNameMaternal || "",
+                  tipoDocumento: personJuridic.representative.typeDocument || "",
+                  numeroDocumento: personJuridic.representative.documentNumber || "",
+                  paisEmision: personJuridic.representative.issuingCountry || "",
+                }
+              : null,
+          },
+          rolDirector: directorRole,
+        };
+      }
+    }
+
+    return payload;
   }
 
   /**
@@ -245,5 +308,4 @@ export class DesignationDirectorMapper {
     return backendDataArray.map((item) => this.fromBackendResponse(item));
   }
 }
-
 

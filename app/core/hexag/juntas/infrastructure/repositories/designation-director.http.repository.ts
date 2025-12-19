@@ -168,7 +168,15 @@ export class DesignationDirectorHttpRepository implements DesignationDirectorRep
     };
 
     // Transformar DTO interno a estructura que espera el backend
-    const backendPayload = DesignationDirectorMapper.toBackendUpdateRequest(dto);
+    // Si hay datos personales, necesitamos el directorRole del director original
+    // Por ahora, obtenemos el directorRole del DTO si está disponible en alguna propiedad adicional
+    // Esto es una solución temporal - idealmente deberíamos pasar directorRole como parámetro separado
+    const directorRole = (dto as any).directorRole as
+      | "TITULAR"
+      | "SUPLENTE"
+      | "ALTERNO"
+      | undefined;
+    const backendPayload = DesignationDirectorMapper.toBackendUpdateRequest(dto, directorRole);
 
     const requestConfig = {
       ...authConfig,

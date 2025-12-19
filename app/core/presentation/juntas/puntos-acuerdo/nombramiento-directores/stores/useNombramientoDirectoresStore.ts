@@ -284,7 +284,64 @@ export const useNombramientoDirectoresStore = defineStore("nombramientoDirectore
     },
 
     /**
-     * Actualizar estado de director designado
+     * Actualizar director designado (datos personales o estado)
+     * PUT /designation-director
+     *
+     * @param designationId - ID del registro de designación (DesignationDirectorResponseDTO.id)
+     * @param person - Datos personales actualizados (opcional)
+     * @param directorRole - Rol del director (requerido si se actualizan datos personales)
+     * @param candidatoEstado - Estado del candidato (opcional)
+     */
+    async updateDirector(
+      societyId: number,
+      flowId: number,
+      designationId: string,
+      person?: PersonNaturalDTO | PersonJuridicDTO | null,
+      directorRole?: "TITULAR" | "SUPLENTE" | "ALTERNO",
+      candidatoEstado?: "ELEGIDO" | "NO_ELEGIDO"
+    ): Promise<void> {
+      this.status = "loading";
+      this.errorMessage = null;
+
+      try {
+        const repository = new DesignationDirectorHttpRepository();
+        const useCase = new UpdateDesignationDirectorUseCase(repository);
+
+        const dto: UpdateDesignationDirectorDTO = {
+          directorId: designationId,
+          ...(candidatoEstado ? { candidatoEstado } : {}),
+          ...(person ? { person } : {}),
+        };
+
+        console.log(`[Store][NombramientoDirectores] Actualizando director ${designationId}`, {
+          hasPerson: !!person,
+          directorRole,
+          candidatoEstado,
+        });
+
+        // ⚠️ IMPORTANTE: Pasar directorRole al mapper si se actualizan datos personales
+        // Para esto, necesitamos modificar el repositorio o pasar directorRole al mapper
+        // Por ahora, el mapper usará el directorRole del DTO si está disponible
+        await useCase.execute(societyId, flowId, dto, directorRole);
+
+        console.log(
+          `[Store][NombramientoDirectores] ✅ Director actualizado: ${designationId}`
+        );
+
+        // Recargar directores para obtener datos actualizados
+        await this.loadDirectoresDesignados(societyId, flowId);
+
+        this.status = "idle";
+      } catch (error: any) {
+        console.error("[Store][NombramientoDirectores] Error al actualizar director:", error);
+        this.status = "error";
+        this.errorMessage = error.message || "Error al actualizar director";
+        throw error;
+      }
+    },
+
+    /**
+     * Actualizar estado de director designado (método legacy - usar updateDirector en su lugar)
      * PUT /designation-director
      *
      * @param designationId - ID del registro de designación (DesignationDirectorResponseDTO.id)

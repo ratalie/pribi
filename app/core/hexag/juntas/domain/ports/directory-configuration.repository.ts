@@ -30,3 +30,4 @@ export interface DirectoryConfigurationRepository {
     dto: UpdateDirectoryConfigurationDTO
   ): Promise<void>;
 }
+

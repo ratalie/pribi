@@ -1,116 +1,113 @@
 <template>
+  <div v-if="isLoading" class="flex items-center justify-center p-8">
+    <p class="text-gray-600">Cargando votación...</p>
+  </div>
+  <div v-else-if="error" class="flex items-center justify-center p-8">
+    <p class="text-red-600">Error: {{ error }}</p>
+  </div>
   <MetodoVotacio
+    v-else
     v-model="metodoVotacion"
-    title="Votación para la configuración del nuevo directorio"
-    subtitle="Votación para aprobar la configuración del nuevo directorio"
+    title="Votación para la configuración del directorio"
+    subtitle="Votación para aprobar la configuración del directorio"
     title-color="text-primary-800"
-    :texto-votacion="mensajeUnanimidad"
-    :preguntas="preguntas"
-    :votantes="[]"
-    :accionistas="accionistas"
+    :mensaje-unanimidad="mensajeUnanimidad"
+    :votantes="votantes"
+    :texto-votacion="textoVotacion"
+    :get-voto="getVoto"
     @cambiar-tipo="handleCambiarTipo"
     @cambiar-voto="handleCambiarVoto"
   />
 </template>
 
 <script setup lang="ts">
-  import { computed, ref } from "vue";
+  import { computed } from "vue";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
+  import type { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
+  import { useVotacionConfiguracionController } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directorio/votacion-configuracion/composables/useVotacionConfiguracionController";
+  import { useVotacionConfiguracionStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directorio/votacion-configuracion/stores/useVotacionConfiguracionStore";
   import MetodoVotacio from "~/core/presentation/operaciones/junta-accionistas/pasos/instalacion/components/votacion/MetodoVotacio.vue";
-  import { useDirectorioConfigStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directorio/composables/useDirectorioConfigStore";
-  import { termOptions } from "~/core/presentation/registros/sociedades/pasos/directorio/constants/directorio.constants";
 
   definePageMeta({
     layout: "registros",
     flowLayoutJuntas: true,
   });
 
-  const directorioConfigStore = useDirectorioConfigStore();
-  const metodoVotacion = ref<"unanimidad" | "mayoria">("unanimidad");
+  const controller = useVotacionConfiguracionController();
+  const votacionStore = useVotacionConfiguracionStore();
 
-  // Obtener valores del store
-  const cantidadDirectores = computed(() => directorioConfigStore.cantidadDirectores || "3");
-  const duracionDirectorio = computed(() => {
-    const duracion = directorioConfigStore.duracionDirectorio || "1";
-    // Buscar el label correspondiente en termOptions
-    const opcion = termOptions.find((opt) => opt.value === duracion);
-    return opcion ? opcion.label : `${duracion} año${duracion !== "1" ? "s" : ""}`;
-  });
-  const fechaInicio = computed(() => directorioConfigStore.fechaInicio || "");
-  const fechaFin = computed(() => directorioConfigStore.fechaFin || "");
+  // ✅ Obtener props del controller
+  const isLoading = controller.isLoading;
+  const error = controller.error;
 
-  // Formatear fechas para mostrar
-  const fechaInicioFormateada = computed(() => {
-    if (!fechaInicio.value) return "";
-    // Si la fecha viene en formato ISO (YYYY-MM-DD), convertirla a DD/MM/YYYY
-    const fecha = new Date(fechaInicio.value);
-    if (!isNaN(fecha.getTime())) {
-      const dia = String(fecha.getDate()).padStart(2, "0");
-      const mes = String(fecha.getMonth() + 1).padStart(2, "0");
-      const año = fecha.getFullYear();
-      return `${dia}/${mes}/${año}`;
-    }
-    return fechaInicio.value;
-  });
+  // ✅ Usar directamente los computed del controller
+  const votantes = controller.votantes;
+  const textoVotacion = controller.textoVotacion;
+  const getVoto = controller.getVoto;
+  const cantidadDirectores = controller.cantidadDirectores;
+  const duracionDirectorio = controller.duracionDirectorio;
+  const fechaInicio = controller.fechaInicio;
+  const fechaFin = controller.fechaFin;
 
-  const fechaFinFormateada = computed(() => {
-    if (!fechaFin.value) return "";
-    // Si la fecha viene en formato ISO (YYYY-MM-DD), convertirla a DD/MM/YYYY
-    const fecha = new Date(fechaFin.value);
-    if (!isNaN(fecha.getTime())) {
-      const dia = String(fecha.getDate()).padStart(2, "0");
-      const mes = String(fecha.getMonth() + 1).padStart(2, "0");
-      const año = fecha.getFullYear();
-      return `${dia}/${mes}/${año}`;
-    }
-    return fechaFin.value;
-  });
-
-  // Mensaje de unanimidad dinámico
+  // Mensaje de unanimidad con los 4 campos
   const mensajeUnanimidad = computed(() => {
-    let mensaje = `establecer un nuevo Directorio de ${cantidadDirectores.value} miembros, con una duración de ${duracionDirectorio.value}, considerando las fechas de inicio y fin registradas`;
+    let mensaje = `Confirmo que todos los accionistas están de acuerdo en establecer un Directorio de ${cantidadDirectores.value} miembros`;
 
-    // Agregar fechas si están disponibles
-    if (fechaInicioFormateada.value && fechaFinFormateada.value) {
-      mensaje += `, considerando las fechas de inicio ${fechaInicioFormateada.value} y fin ${fechaFinFormateada.value} registradas`;
-    } else if (fechaInicioFormateada.value) {
-      mensaje += `, considerando la fecha de inicio ${fechaInicioFormateada.value} registrada`;
-    } else if (fechaFinFormateada.value) {
-      mensaje += `, considerando la fecha de fin ${fechaFinFormateada.value} registrada`;
+    if (duracionDirectorio.value) {
+      mensaje += `, con una duración de ${duracionDirectorio.value}`;
     }
+
+    if (fechaInicio.value && fechaFin.value) {
+      mensaje += `, considerando las fechas de inicio ${fechaInicio.value} y fin ${fechaFin.value} registradas`;
+    } else if (fechaInicio.value) {
+      mensaje += `, considerando la fecha de inicio ${fechaInicio.value} registrada`;
+    } else if (fechaFin.value) {
+      mensaje += `, considerando la fecha de fin ${fechaFin.value} registrada`;
+    }
+
+    mensaje += ".";
 
     return mensaje;
   });
 
-  // Pregunta para voto por mayoría (reactiva)
-  const preguntas = computed(() => [
-    `¿Se aprueba que el Directorio esté conformado por ${cantidadDirectores.value} directores, con una duración de ${duracionDirectorio.value}?`,
-  ]);
+  // Método de votación (unanimidad/mayoría)
+  const metodoVotacion = computed({
+    get: () => {
+      if (votacionStore.esUnanimidad) {
+        return "unanimidad";
+      }
+      return "mayoria";
+    },
+    set: (value: string) => {
+      handleCambiarTipo(value as "unanimidad" | "mayoria");
+    },
+  });
 
-  // Accionistas (hardcodeados por el momento)
-  const accionistas = ref<string[]>([
-    "Olenka Sanchez Aguilar",
-    "Melanie Sanchez Aguilar",
-    "Braulio Sanchez Aguilar",
-  ]);
+  /**
+   * Manejar cambio de tipo de votación
+   */
+  async function handleCambiarTipo(tipo: "unanimidad" | "mayoria") {
+    await controller.cambiarTipo(tipo);
+  }
 
-  // Manejar cambio de tipo de votación
-  const handleCambiarTipo = (tipo: "unanimidad" | "mayoria") => {
-    metodoVotacion.value = tipo;
-    // TODO: Implementar lógica de guardado
-  };
-
-  // Manejar cambio de voto
-  const handleCambiarVoto = (
+  /**
+   * Manejar cambio de voto de un accionista
+   */
+  function handleCambiarVoto(
     accionistaId: string,
     valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION"
-  ) => {
-    // TODO: Implementar lógica de guardado de votos
-    console.log("Voto cambiado:", accionistaId, valor);
-  };
+  ) {
+    const voteValue = valor as VoteValue;
+    controller.setVoto(accionistaId, voteValue);
+  }
 
   // Configurar el botón "Siguiente"
   useJuntasFlowNext(async () => {
-    // TODO: Agregar validación y guardado de datos
+    try {
+      await controller.guardarVotacion();
+    } catch (error: any) {
+      console.error("[VotacionConfiguracion] Error al guardar:", error);
+      throw error;
+    }
   });
 </script>

@@ -154,9 +154,13 @@ export function detectCurrentSection(
     }
   }
 
-  if (subStepId === "nombramiento-directorio") {
-    if (path.includes("/nombramiento-directorio/cantidad")) return "cantidad";
-    if (path.includes("/nombramiento-directorio/nombramiento")) return "nombramiento";
+  if (
+    subStepId === "nombramiento-directorio" ||
+    subStepId === "nombramiento-nuevo-directorio"
+  ) {
+    if (path.includes("/nombramiento-directorio/votacion-configuracion"))
+      return "votacion-configuracion";
+    if (path.includes("/nombramiento-directorio/configuracion")) return "configuracion";
     if (path.includes("/nombramiento-directorio/directores")) return "directores";
     if (path.includes("/nombramiento-directorio/votacion")) return "votacion";
     if (path.includes("/nombramiento-directorio/presidente")) return "presidente";

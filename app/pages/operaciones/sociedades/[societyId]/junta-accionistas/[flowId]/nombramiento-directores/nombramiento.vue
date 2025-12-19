@@ -134,7 +134,9 @@
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
+  import type { PersonNaturalDTO } from "~/core/hexag/juntas/application/dtos/designation-attorney.dto";
   import { useNombramientoDirectoresPage } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/composables/useNombramientoDirectoresPage";
+  import { useDirectoryConfigurationStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/stores/useDirectoryConfigurationStore";
   import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
   import DesignarDirectorModal from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/components/DesignarDirectorModal.vue";
   import DesignarSuplenteAlternoModal from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/components/DesignarSuplenteAlternoModal.vue";
@@ -180,12 +182,19 @@
   } = useNombramientoDirectoresPage();
 
   const snapshotStore = useSnapshotStore();
+  const directoryConfigStore = useDirectoryConfigurationStore();
 
   // Store local para compartir datos con votacion.vue (compatibilidad)
   const directoresStore = useDirectoresStore();
 
-  // Cantidad de directores desde snapshot
+  // ✅ Cantidad de directores: Prioridad a directoryConfigStore, fallback a snapshot
   const cantidadDirectores = computed(() => {
+    // 1. Prioridad: Si se configuró en cantidad.vue
+    if (directoryConfigStore.configuration?.cantidadDirectores) {
+      return directoryConfigStore.configuration.cantidadDirectores;
+    }
+
+    // 2. Fallback: Snapshot (valor original de la sociedad)
     return snapshotStore.snapshot?.directory?.cantidadDirectores || 5;
   });
 
@@ -577,13 +586,15 @@
 
         // ✅ Implementar DELETE
         try {
+          console.log("[Nombramiento.vue] Intentando eliminar director:", id);
           await nombramientoStore.deleteDirector(societyId.value, flowId.value, id);
           console.log("✅ Director eliminado exitosamente:", id);
-          // Recargar datos para actualizar la vista
+          // El store ya recarga los directores, pero también recargamos aquí para actualizar la vista completa
           await loadData();
-        } catch (error) {
-          console.error("Error al eliminar director:", error);
-          // El error ya fue manejado en el store, aquí solo logueamos
+        } catch (error: any) {
+          console.error("❌ Error al eliminar director:", error);
+          // Re-lanzar el error para que se muestre al usuario
+          throw error;
         }
       },
     },
@@ -655,13 +666,15 @@
 
         // ✅ Implementar DELETE
         try {
+          console.log("[Nombramiento.vue] Intentando eliminar director suplente/alterno:", id);
           await nombramientoStore.deleteDirector(societyId.value, flowId.value, id);
           console.log("✅ Director suplente/alterno eliminado exitosamente:", id);
-          // Recargar datos para actualizar la vista
+          // El store ya recarga los directores, pero también recargamos aquí para actualizar la vista completa
           await loadData();
-        } catch (error) {
-          console.error("Error al eliminar director suplente/alterno:", error);
-          // El error ya fue manejado en el store, aquí solo logueamos
+        } catch (error: any) {
+          console.error("❌ Error al eliminar director suplente/alterno:", error);
+          // Re-lanzar el error para que se muestre al usuario
+          throw error;
         }
       },
     },
@@ -707,9 +720,9 @@
     directorSuplenteAlternoToEdit.value = null;
   };
 
-  // ✅ Manejar cuando se guarda un nuevo director titular
+  // ✅ Manejar cuando se guarda un nuevo director titular o se edita uno existente
   const handleDirectorSaved = async (director: {
-    id?: number;
+    id?: number | string;
     nombreCompleto: string;
     tipoDirector: "titular";
     tipoDocumento: string;
@@ -721,10 +734,43 @@
   }) => {
     isLoadingGuardar.value = true;
     try {
-      // Por ahora solo crear (editar se implementará después si es necesario)
-      // TODO: Si director.id existe, implementar edición
-      await guardarDirector("TITULAR");
-      console.log("✅ Director titular creado exitosamente");
+      // ✅ Si director.id existe, es edición - usar PUT
+      if (director.id) {
+        // Buscar el director original para obtener su designationId (el id del DirectorFlowAction)
+        const directorOriginal = directoresTitulares.value.find(
+          (d) => d.id === String(director.id)
+        );
+
+        if (!directorOriginal) {
+          throw new Error("No se encontró el director a editar");
+        }
+
+        // Construir PersonNaturalDTO desde los datos del director editado
+        const person: PersonNaturalDTO = {
+          firstName: director.nombre,
+          lastNamePaternal: director.apellidoPaterno,
+          lastNameMaternal: director.apellidoMaterno,
+          typeDocument: director.tipoDocumento,
+          documentNumber: director.numeroDocumento,
+          issuingCountry: director.paisPasaporte || null,
+        };
+
+        // ✅ Usar PUT para actualizar el director
+        await nombramientoStore.updateDirector(
+          societyId.value,
+          flowId.value,
+          directorOriginal.id, // designationId (ID del DirectorFlowAction)
+          person,
+          "TITULAR" // directorRole
+        );
+
+        console.log("✅ Director titular actualizado exitosamente");
+      } else {
+        // ✅ Si no hay id, es creación - usar POST
+        await guardarDirector("TITULAR");
+        console.log("✅ Director titular creado exitosamente");
+      }
+
       isModalOpen.value = false;
       directorToEdit.value = null;
     } catch (error) {

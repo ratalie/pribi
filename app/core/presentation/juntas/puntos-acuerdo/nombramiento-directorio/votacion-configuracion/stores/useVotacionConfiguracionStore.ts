@@ -12,11 +12,11 @@ import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
 import { VoteHttpRepository } from "~/core/hexag/juntas/infrastructure/repositories/vote.http.repository";
 
 /**
- * Store para gestionar Votación de Configuración de Directorio (Cantidad)
+ * Store para gestionar Votación de Configuración de Directorio (4 campos completos)
  *
  * ⚠️ IMPORTANTE: Usa Option API de Pinia (NO Composition API)
  */
-export const useVotacionCantidadStore = defineStore("votacionCantidad", {
+export const useVotacionConfiguracionStore = defineStore("votacionConfiguracion", {
   state: () => ({
     sesionVotacion: null as VoteSession | null,
     status: "idle" as "idle" | "loading" | "error",
@@ -99,7 +99,7 @@ export const useVotacionCantidadStore = defineStore("votacionCantidad", {
       } catch (error: any) {
         this.status = "error";
         this.errorMessage = error.message || "Error al cargar votación";
-        console.error("[Store][VotacionCantidad] Error al cargar:", error);
+        console.error("[Store][VotacionConfiguracion] Error al cargar:", error);
         throw error;
       }
     },
@@ -130,7 +130,6 @@ export const useVotacionCantidadStore = defineStore("votacionCantidad", {
             label,
             descripción: descripcion,
             tipoAprobacion,
-            // Si ya hay votos en el item existente (por unanimidad), incluirlos
             votos: this.itemVotacion?.votos || [],
           };
 
@@ -155,7 +154,7 @@ export const useVotacionCantidadStore = defineStore("votacionCantidad", {
       } catch (error: any) {
         this.status = "error";
         this.errorMessage = error.message || "Error al crear votación";
-        console.error("[Store][VotacionCantidad] Error al crear:", error);
+        console.error("[Store][VotacionConfiguracion] Error al crear:", error);
         throw error;
       }
     },
@@ -215,7 +214,10 @@ export const useVotacionCantidadStore = defineStore("votacionCantidad", {
           valor: v.valor,
         }));
       } catch (error: any) {
-        console.error("[Store][VotacionCantidad] Error al actualizar item con votos:", error);
+        console.error(
+          "[Store][VotacionConfiguracion] Error al actualizar item con votos:",
+          error
+        );
         throw error;
       }
     },
@@ -294,7 +296,7 @@ export const useVotacionCantidadStore = defineStore("votacionCantidad", {
           valor: valor as VoteValue | number,
         });
       } catch (error: any) {
-        console.error("[Store][VotacionCantidad] Error al agregar voto:", error);
+        console.error("[Store][VotacionConfiguracion] Error al agregar voto:", error);
         throw error;
       }
     },
@@ -329,9 +331,9 @@ export const useVotacionCantidadStore = defineStore("votacionCantidad", {
     },
 
     /**
-     * Resetear store
+     * Resetear estado del store
      */
-    reset(): void {
+    reset() {
       this.sesionVotacion = null;
       this.status = "idle";
       this.errorMessage = null;

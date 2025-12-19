@@ -17,3 +17,4 @@ export class UpdateDirectoryConfigurationUseCase {
     await this.repository.update(societyId, flowId, dto);
   }
 }
+

@@ -4,23 +4,23 @@ import { VoteAgreementType } from "~/core/hexag/juntas/domain/enums/vote-agreeme
 import { VoteContext } from "~/core/hexag/juntas/domain/enums/vote-context.enum";
 import { VoteMode } from "~/core/hexag/juntas/domain/enums/vote-mode.enum";
 import { VoteValue } from "~/core/hexag/juntas/domain/enums/vote-value.enum";
+import { useDirectoryConfigurationStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/stores/useDirectoryConfigurationStore";
 import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
-import { useDirectoryConfigurationStore } from "../../stores/useDirectoryConfigurationStore";
-import { useVotacionCantidadStore } from "../stores/useVotacionCantidadStore";
+import { useVotacionConfiguracionStore } from "../stores/useVotacionConfiguracionStore";
 
 /**
- * Controller para la vista de Votación de Configuración de Directorio (Cantidad)
+ * Controller para la vista de Votación de Configuración de Directorio (4 campos completos)
  *
  * Orquesta:
  * - Carga de datos (asistentes, snapshot, configuración de directorio)
  * - Carga/creación de sesión de votación
- * - Generación de texto de votación
+ * - Generación de texto de votación con los 4 campos (cantidad, duración, fecha inicio, fecha fin)
  * - Guardado de votos
  */
-export function useVotacionCantidadController() {
+export function useVotacionConfiguracionController() {
   const route = useRoute();
-  const votacionStore = useVotacionCantidadStore();
+  const votacionStore = useVotacionConfiguracionStore();
   const asistenciaStore = useAsistenciaStore();
   const snapshotStore = useSnapshotStore();
   const directoryConfigStore = useDirectoryConfigurationStore();
@@ -31,6 +31,32 @@ export function useVotacionCantidadController() {
   // Estados
   const isLoading = ref(false);
   const error = ref<string | null>(null);
+
+  /**
+   * Mapeo de periodo del backend al texto legible
+   */
+  const periodoMap: Record<string, string> = {
+    ONE_YEAR: "1 año",
+    TWO_YEARS: "2 años",
+    THREE_YEARS: "3 años",
+  };
+
+  /**
+   * Formatear fecha ISO a formato DD/MM/YYYY
+   */
+  function formatearFecha(fechaISO: string | null | undefined): string {
+    if (!fechaISO) return "";
+    try {
+      const fecha = new Date(fechaISO);
+      if (isNaN(fecha.getTime())) return fechaISO;
+      const dia = String(fecha.getDate()).padStart(2, "0");
+      const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+      const año = fecha.getFullYear();
+      return `${dia}/${mes}/${año}`;
+    } catch {
+      return fechaISO;
+    }
+  }
 
   /**
    * Cargar todos los datos necesarios
@@ -52,7 +78,7 @@ export function useVotacionCantidadController() {
         // Si no existe (404), es normal - se debe configurar primero
         if (error?.statusCode !== 404 && error?.status !== 404) {
           console.error(
-            "[Controller][VotacionCantidad] Error al cargar configuración:",
+            "[Controller][VotacionConfiguracion] Error al cargar configuración:",
             error
           );
         }
@@ -64,7 +90,7 @@ export function useVotacionCantidadController() {
       // 4. Cargar votación existente (NO crear automáticamente)
       try {
         await votacionStore.loadVotacion(societyId.value, flowId.value);
-        console.log("[DEBUG][VotacionCantidadController] Votación cargada:", {
+        console.log("[DEBUG][VotacionConfiguracionController] Votación cargada:", {
           hasVotacion: votacionStore.hasVotacion,
           hasItem: !!votacionStore.itemVotacion,
           itemId: votacionStore.itemVotacion?.id,
@@ -81,15 +107,18 @@ export function useVotacionCantidadController() {
         // Si no existe (404), es normal - se creará al guardar
         if (error.statusCode === 404 || error.status === 404) {
           console.log(
-            "[DEBUG][VotacionCantidadController] No hay votación existente (404), se creará al guardar"
+            "[DEBUG][VotacionConfiguracionController] No hay votación existente (404), se creará al guardar"
           );
         } else {
-          console.error("[Controller][VotacionCantidad] Error al cargar votación:", error);
+          console.error(
+            "[Controller][VotacionConfiguracion] Error al cargar votación:",
+            error
+          );
         }
       }
 
       // ✅ DEBUG: Estado final después de carga
-      console.log("[DEBUG][VotacionCantidadController] Carga de datos completada:", {
+      console.log("[DEBUG][VotacionConfiguracionController] Carga de datos completada:", {
         hasVotacion: votacionStore.hasVotacion,
         hasItem: !!votacionStore.itemVotacion,
         votantesCount: votantes.value.length,
@@ -100,7 +129,7 @@ export function useVotacionCantidadController() {
         })),
       });
     } catch (error: any) {
-      console.error("[Controller][VotacionCantidad] Error al cargar datos:", error);
+      console.error("[Controller][VotacionConfiguracion] Error al cargar datos:", error);
       error.value = error.message || "Error al cargar datos";
       throw error;
     } finally {
@@ -185,7 +214,7 @@ export function useVotacionCantidadController() {
   const votantes = computed(() => {
     const votantesMapeados = mapearVotantesDesdeSnapshot();
     console.log(
-      "[DEBUG][VotacionCantidadController] Votantes mapeados desde snapshot:",
+      "[DEBUG][VotacionConfiguracionController] Votantes mapeados desde snapshot:",
       votantesMapeados.map((v) => ({
         id: v.id,
         accionistaId: v.accionistaId,
@@ -197,22 +226,99 @@ export function useVotacionCantidadController() {
   });
 
   /**
-   * Obtener cantidad de directores configurada
+   * Obtener configuración de directorio
    */
-  const cantidadDirectores = computed(() => {
-    return directoryConfigStore.configuration?.cantidadDirectores || 0;
+  const configuracion = computed(() => {
+    return directoryConfigStore.configuration;
   });
 
   /**
-   * Obtener texto de votación
+   * Obtener cantidad de directores
+   */
+  const cantidadDirectores = computed(() => {
+    return configuracion.value?.cantidadDirectores || 0;
+  });
+
+  /**
+   * Obtener duración del directorio (texto legible)
+   */
+  const duracionDirectorio = computed(() => {
+    const periodo = configuracion.value?.periodo;
+    if (!periodo) return "";
+    return periodoMap[periodo] || periodo;
+  });
+
+  /**
+   * Obtener fecha de inicio (formateada)
+   */
+  const fechaInicio = computed(() => {
+    return formatearFecha(configuracion.value?.inicioMandato);
+  });
+
+  /**
+   * Obtener fecha de fin (formateada)
+   */
+  const fechaFin = computed(() => {
+    return formatearFecha(configuracion.value?.finMandato);
+  });
+
+  /**
+   * Obtener texto de votación con los 4 campos
    */
   const textoVotacion = computed(() => {
     if (votacionStore.itemVotacion) {
       return votacionStore.itemVotacion.label;
     }
-    // Texto por defecto basado en la cantidad de directores
+
+    // Construir texto con los 4 campos
     const cantidad = cantidadDirectores.value;
-    return `¿Se aprueba que el Directorio esté conformado por ${cantidad} directores?`;
+    const duracion = duracionDirectorio.value;
+    const inicio = fechaInicio.value;
+    const fin = fechaFin.value;
+
+    let texto = `¿Se aprueba que el Directorio esté conformado por ${cantidad} directores`;
+
+    if (duracion) {
+      texto += `, con una duración de ${duracion}`;
+    }
+
+    if (inicio && fin) {
+      texto += `, considerando las fechas de inicio ${inicio} y fin ${fin} registradas`;
+    } else if (inicio) {
+      texto += `, considerando la fecha de inicio ${inicio} registrada`;
+    } else if (fin) {
+      texto += `, considerando la fecha de fin ${fin} registrada`;
+    }
+
+    texto += "?";
+
+    return texto;
+  });
+
+  /**
+   * Obtener descripción de votación con los 4 campos
+   */
+  const descripcionVotacion = computed(() => {
+    const cantidad = cantidadDirectores.value;
+    const duracion = duracionDirectorio.value;
+    const inicio = fechaInicio.value;
+    const fin = fechaFin.value;
+
+    let descripcion = `Votación para aprobar la configuración del directorio con ${cantidad} directores`;
+
+    if (duracion) {
+      descripcion += `, duración de ${duracion}`;
+    }
+
+    if (inicio && fin) {
+      descripcion += `, período del ${inicio} al ${fin}`;
+    } else if (inicio) {
+      descripcion += `, inicio el ${inicio}`;
+    } else if (fin) {
+      descripcion += `, fin el ${fin}`;
+    }
+
+    return descripcion;
   });
 
   /**
@@ -234,6 +340,7 @@ export function useVotacionCantidadController() {
       const sessionId = votacionStore.generateUuid();
       const itemId = votacionStore.generateUuid();
       const textoVotacionValue = textoVotacion.value;
+      const descripcionValue = descripcionVotacion.value;
 
       votacionStore.sesionVotacion = {
         id: sessionId,
@@ -244,7 +351,7 @@ export function useVotacionCantidadController() {
             id: itemId,
             orden: 0,
             label: textoVotacionValue,
-            descripción: `Votación para aprobar la configuración del directorio con ${cantidadDirectores.value} directores`,
+            descripción: descripcionValue,
             tipoAprobacion: VoteAgreementType.APROBADO_POR_TODOS,
             votos: [],
           },
@@ -277,15 +384,12 @@ export function useVotacionCantidadController() {
       error.value = null;
 
       if (!directoryConfigStore.configuration) {
-        throw new Error(
-          "Debe configurar la cantidad de directores antes de realizar la votación"
-        );
+        throw new Error("Debe configurar el directorio antes de realizar la votación");
       }
 
-      const cantidad = cantidadDirectores.value;
       const itemId = votacionStore.itemVotacion?.id || votacionStore.generateUuid();
-      const label = `¿Se aprueba que el Directorio esté conformado por ${cantidad} directores?`;
-      const descripcion = `Votación para aprobar la configuración del directorio con ${cantidad} directores`;
+      const label = textoVotacion.value;
+      const descripcion = descripcionVotacion.value;
 
       // ✅ Asegurar que hay sesión en memoria
       if (!votacionStore.sesionVotacion) {
@@ -398,7 +502,7 @@ export function useVotacionCantidadController() {
         // Para unanimidad, los votos ya están incluidos en el item antes de crear
       }
     } catch (error: any) {
-      console.error("[Controller][VotacionCantidad] Error al guardar:", error);
+      console.error("[Controller][VotacionConfiguracion] Error al guardar:", error);
       error.value = error.message || "Error al guardar votación";
       throw error;
     } finally {
@@ -425,6 +529,9 @@ export function useVotacionCantidadController() {
     textoVotacion,
     getVoto,
     cantidadDirectores,
+    duracionDirectorio,
+    fechaInicio,
+    fechaFin,
 
     // Acciones
     cambiarTipo,

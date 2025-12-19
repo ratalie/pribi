@@ -5,23 +5,23 @@
       <div class="flex flex-col gap-2">
         <div class="flex items-center gap-2">
           <p class="t-h5 text-primary-800 font-primary font-semibold">Configurar directorio</p>
-          <Switch v-model="tieneDirectorio" />
+          <Switch v-model="configurarDirectorio" />
           <VDropdownComponent
-            message-dropdown="Puede activar o desactivar este paso según la preferencia de la sociedad. Si no se desea tratar, manténgalo desactivado."
+            message-dropdown="Activa o desactiva la votación para la configuración del directorio. Si se activa, se creará una sesión de votación para aprobar esta configuración."
             :button-add-visible="true"
           />
         </div>
         <p class="t-b2 text-gray-600 font-secondary">
-          Indique si corresponde renovar el directorio y defina la remuneración de sus
+          Indique si corresponde renovar el directorio y defina la configuración de sus
           miembros.
         </p>
       </div>
 
       <!-- Estado vacío cuando el switch está en false -->
-      <DirectorioEmptyState v-if="!tieneDirectorio" />
+      <DirectorioEmptyState v-if="!configurarDirectorio" />
 
       <!-- Formulario cuando el switch está en true -->
-      <SimpleCard v-if="tieneDirectorio">
+      <SimpleCard v-if="configurarDirectorio">
         <Form :validation-schema="schema" @submit="handleSubmit">
           <div class="grid grid-cols-2 gap-4">
             <!-- Columna 1 -->
@@ -70,7 +70,8 @@
 
 <script setup lang="ts">
   import { Form } from "vee-validate";
-  import { ref, watch } from "vue";
+  import { onMounted, ref } from "vue";
+  import { useRoute } from "vue-router";
   import { z } from "zod";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import DateInputZod from "~/components/base/inputs/text/ui/DateInputZod.vue";
@@ -78,7 +79,8 @@
   import SlotWrapper from "~/components/containers/SlotWrapper.vue";
   import Switch from "~/components/ui/switch/Switch.vue";
   import VDropdownComponent from "~/components/VDropdownComponent.vue";
-  import { useDirectorioConfigStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directorio/composables/useDirectorioConfigStore";
+  import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
+  import { useDirectoryConfigurationStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/stores/useDirectoryConfigurationStore";
   import DirectorioEmptyState from "~/core/presentation/registros/sociedades/pasos/directorio/components/DirectorioEmptyState.vue";
   import { termOptions } from "~/core/presentation/registros/sociedades/pasos/directorio/constants/directorio.constants";
   import type { TypeOption } from "~/types/TypeOptions";
@@ -88,58 +90,45 @@
     flowLayoutJuntas: true,
   });
 
-  // Store para compartir configuración
-  const directorioConfigStore = useDirectorioConfigStore();
+  const route = useRoute();
+  const directoryConfigStore = useDirectoryConfigurationStore();
 
-  // Estado del switch
-  const tieneDirectorio = ref(true);
+  // Estado del switch (default: false)
+  const configurarDirectorio = ref(false);
 
   // Formulario
   const form = ref({
-    cantidadDirectores: directorioConfigStore.cantidadDirectores || "",
-    fechaInicio: directorioConfigStore.fechaInicio || "",
-    fechaFin: directorioConfigStore.fechaFin || "",
-    duracionDirectorio: directorioConfigStore.duracionDirectorio || "",
+    cantidadDirectores: "" as string | number,
+    fechaInicio: "" as string,
+    fechaFin: "" as string,
+    duracionDirectorio: "" as string,
   });
 
-  // Sincronizar con el store cuando cambien los valores
-  watch(
-    () => form.value.cantidadDirectores,
-    (value) => {
-      directorioConfigStore.setCantidadDirectores(value);
-    }
-  );
-
-  watch(
-    () => form.value.duracionDirectorio,
-    (value) => {
-      directorioConfigStore.setDuracionDirectorio(value);
-    }
-  );
-
-  watch(
-    () => form.value.fechaInicio,
-    (value) => {
-      directorioConfigStore.setFechaInicio(value);
-    }
-  );
-
-  watch(
-    () => form.value.fechaFin,
-    (value) => {
-      directorioConfigStore.setFechaFin(value);
-    }
-  );
-
-  // Opciones para Cantidad de Directores (3, 4, 5)
+  // Opciones para Cantidad de Directores
   const cantidadDirectoresOptions: TypeOption[] = [
     { id: 1, label: "3", name: "3", value: "3", acronimo: "3" },
     { id: 2, label: "4", name: "4", value: "4", acronimo: "4" },
     { id: 3, label: "5", name: "5", value: "5", acronimo: "5" },
+    { id: 4, label: "6", name: "6", value: "6", acronimo: "6" },
+    { id: 5, label: "7", name: "7", value: "7", acronimo: "7" },
   ];
 
   // Opciones para Duración del Directorio (1, 2, 3 años)
   const duracionDirectorioOptions: TypeOption[] = termOptions;
+
+  // Mapeo de periodo del frontend al backend
+  const periodoMap: Record<string, string> = {
+    "1": "ONE_YEAR",
+    "2": "TWO_YEARS",
+    "3": "THREE_YEARS",
+  };
+
+  // Mapeo inverso: del backend al frontend
+  const periodoMapReverse: Record<string, string> = {
+    ONE_YEAR: "1",
+    TWO_YEARS: "2",
+    THREE_YEARS: "3",
+  };
 
   // Schemas de validación
   const cantidadDirectoresSchema = z
@@ -158,8 +147,115 @@
     duracionDirectorio: duracionDirectorioSchema,
   });
 
-  // Handler para submit (por ahora solo console.log)
-  const handleSubmit = (values: any) => {
-    console.log("Form submitted:", values);
+  // Cargar configuración existente si hay
+  onMounted(async () => {
+    const societyId = Number(route.params.societyId);
+    const flowId = Number(route.params.flowId);
+
+    if (societyId && flowId) {
+      try {
+        await directoryConfigStore.loadConfiguration(societyId, flowId);
+
+        // Si hay configuración cargada, prellenar el formulario
+        if (directoryConfigStore.configuration) {
+          const config = directoryConfigStore.configuration;
+
+          // Prellenar cantidadDirectores si existe
+          if (config.cantidadDirectores) {
+            form.value.cantidadDirectores = String(config.cantidadDirectores);
+          }
+
+          // Prellenar periodo (convertir del backend al frontend)
+          if (config.periodo) {
+            const periodoFrontend = periodoMapReverse[config.periodo] || config.periodo;
+            form.value.duracionDirectorio = periodoFrontend;
+          }
+
+          // Prellenar fechas
+          if (config.inicioMandato) {
+            form.value.fechaInicio = config.inicioMandato;
+          }
+          if (config.finMandato) {
+            form.value.fechaFin = config.finMandato;
+          }
+
+          // Si hay configuración, activar el switch
+          if (
+            config.cantidadDirectores ||
+            config.periodo ||
+            config.inicioMandato ||
+            config.finMandato
+          ) {
+            configurarDirectorio.value = true;
+          }
+        }
+      } catch (error: any) {
+        // Si no existe configuración (404), es normal
+        if (error?.statusCode === 404 || error?.status === 404) {
+          console.debug("[Configuracion.vue] No hay configuración previa (404)");
+        } else {
+          console.error("[Configuracion.vue] Error al cargar configuración:", error);
+        }
+      }
+    }
+  });
+
+  // Handler para submit - se ejecuta cuando se hace click en "Siguiente"
+  const handleSubmit = async () => {
+    const societyId = Number(route.params.societyId);
+    const flowId = Number(route.params.flowId);
+
+    if (!societyId || !flowId) {
+      console.error("[Configuracion.vue] Faltan parámetros de ruta");
+      return;
+    }
+
+    try {
+      // Preparar el DTO para enviar al backend
+      const dto: {
+        cantidadDirectores?: number;
+        periodo?: string;
+        inicioMandato?: string;
+        finMandato?: string;
+        configurarDirectorio?: boolean;
+      } = {};
+
+      // Solo enviar campos si el switch está activo y hay valores
+      if (configurarDirectorio.value) {
+        if (form.value.cantidadDirectores) {
+          dto.cantidadDirectores = Number(form.value.cantidadDirectores);
+        }
+
+        // Convertir periodo del frontend al backend
+        if (form.value.duracionDirectorio) {
+          dto.periodo =
+            periodoMap[form.value.duracionDirectorio] || form.value.duracionDirectorio;
+        }
+
+        if (form.value.fechaInicio) {
+          dto.inicioMandato = form.value.fechaInicio;
+        }
+
+        if (form.value.fechaFin) {
+          dto.finMandato = form.value.fechaFin;
+        }
+      }
+
+      // Siempre enviar configurarDirectorio para activar/desactivar la votación
+      dto.configurarDirectorio = configurarDirectorio.value;
+
+      console.debug("[Configuracion.vue] Enviando configuración:", dto);
+
+      // Actualizar configuración en el backend
+      await directoryConfigStore.updateConfiguration(societyId, flowId, dto);
+
+      console.debug("[Configuracion.vue] Configuración actualizada correctamente");
+    } catch (error: any) {
+      console.error("[Configuracion.vue] Error al actualizar configuración:", error);
+      throw error; // Re-lanzar para que useJuntasFlowNext pueda manejarlo
+    }
   };
+
+  // Conectar el botón "Siguiente" del layout
+  useJuntasFlowNext(handleSubmit);
 </script>

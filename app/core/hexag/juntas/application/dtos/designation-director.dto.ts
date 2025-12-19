@@ -36,8 +36,11 @@ export interface UpdateDesignationDirectorDTO {
   /** ID del DirectorFlowAction (no el directorId) */
   directorId: string;
 
-  /** Nuevo estado del candidato */
-  candidatoEstado: "ELEGIDO" | "NO_ELEGIDO";
+  /** Nuevo estado del candidato (opcional) */
+  candidatoEstado?: "ELEGIDO" | "NO_ELEGIDO";
+
+  /** Datos personales actualizados (opcional) - para actualizar nombre, apellidos, documento, etc. */
+  person?: PersonNaturalDTO | PersonJuridicDTO | null;
 }
 
 /**
@@ -98,6 +101,4 @@ export interface DesignationDirectorActionResponse {
   code: number;
   data?: any;
 }
-
-
 

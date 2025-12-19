@@ -1,8 +1,8 @@
-import { ref, computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
 import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
+import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
 import {
   useAportesManagerStore,
   type Aportante as AportanteFromStore,
@@ -67,7 +67,8 @@ export function useAportesPage() {
 
     try {
       const baseUrl = resolveBaseUrl();
-      const url = `${baseUrl}${API_BASE.value}/participants`;
+      // ✅ CORREGIDO: Usar endpoint correcto con filtro isActive=true para obtener solo contribuyentes
+      const url = `${baseUrl}${API_BASE.value}/cash-contribution/participants?isActive=true`;
 
       interface ApiResponse {
         success: boolean;
@@ -81,15 +82,14 @@ export function useAportesPage() {
         method: "GET",
       });
 
-      // Filtrar solo los que son contribuyentes (isContributor: true)
-      aportantes.value = response.data
-        .filter((a: AportanteFromStore) => a.isContributor === true)
-        .map((a: AportanteFromStore) => {
-          if (a.typeShareholder === "NUEVO_APORTANTE") {
-            return { ...a, isContributor: true };
-          }
-          return a;
-        });
+      // ✅ Ya no necesitamos filtrar en frontend porque el backend retorna solo contribuyentes con isActive=true
+      // Solo mapeamos para asegurar que NUEVO_APORTANTE tenga isContributor: true
+      aportantes.value = response.data.map((a: AportanteFromStore) => {
+        if (a.typeShareholder === "NUEVO_APORTANTE") {
+          return { ...a, isContributor: true };
+        }
+        return a;
+      });
     } catch (err: any) {
       console.error("[Aportes] Error al cargar aportantes:", err);
       error.value = err.message || err.data?.message || "Error al cargar aportantes";
@@ -198,15 +198,18 @@ export function useAportesPage() {
         accionesPorRecibir: formData.accionesPorRecibir,
         precioPorAccion: formData.precioPorAccion,
         pagadoCompletamente: formData.pagadoCompletamente,
-        porcentajePagado: formData.pagadoCompletamente ? 100 : (formData.porcentajePagado || 0),
-        totalPasivo: formData.pagadoCompletamente ? 0 : (formData.totalPasivo || 0),
+        porcentajePagado: formData.pagadoCompletamente ? 100 : formData.porcentajePagado || 0,
+        totalPasivo: formData.pagadoCompletamente ? 0 : formData.totalPasivo || 0,
         capitalSocial: formData.capitalSocial,
         premium: formData.premium,
         reserva: formData.reserva || 0,
       };
 
       // Solo incluir comprobantePagoArchivoId si tiene un valor válido
-      if (formData.comprobantePagoArchivoId && formData.comprobantePagoArchivoId.trim() !== "") {
+      if (
+        formData.comprobantePagoArchivoId &&
+        formData.comprobantePagoArchivoId.trim() !== ""
+      ) {
         payload.comprobantePagoArchivoId = formData.comprobantePagoArchivoId;
       }
 
@@ -332,8 +335,3 @@ export function useAportesPage() {
     flowId,
   };
 }
-
-
-
-
-
