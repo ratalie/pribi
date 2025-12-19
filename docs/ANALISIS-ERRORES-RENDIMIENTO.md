@@ -168,3 +168,5 @@ WARN Plugin app/plugins/vee-validate.ts has no default export and will be ignore
 - Los componentes duplicados pueden estar causando que Nuxt cargue más código del necesario
 - El error del toast puede estar causando fallos silenciosos en funcionalidades que dependen de notificaciones
 
+
+

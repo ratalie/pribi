@@ -568,15 +568,15 @@ export const useOtorgamientoPoderesController = (societyId: number, flowId: numb
 
                 return {
                   accion,
-                  id: regla.id,
-                  tipoMoneda: entity.tipoMoneda,
-                  montoDesde: regla.desde,
-                  ...(regla.tipoMonto === TipoMontoUIEnum.MONTO
-                    ? { tipoLimite: TipoMontoUIEnum.MONTO, montoHasta: regla.hasta }
-                    : { tipoLimite: TipoMontoUIEnum.SIN_LIMITE }),
-                  ...(regla.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA
-                    ? { tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA }
-                    : { tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA }),
+                id: regla.id,
+                tipoMoneda: entity.tipoMoneda,
+                montoDesde: regla.desde,
+                ...(regla.tipoMonto === TipoMontoUIEnum.MONTO
+                  ? { tipoLimite: TipoMontoUIEnum.MONTO, montoHasta: regla.hasta }
+                  : { tipoLimite: TipoMontoUIEnum.SIN_LIMITE }),
+                ...(regla.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA
+                  ? { tipoFirma: TipoFirmasUIEnum.FIRMA_CONJUNTA }
+                  : { tipoFirma: TipoFirmasUIEnum.SOLA_FIRMA }),
                 };
               }),
             }
@@ -746,3 +746,4 @@ export const useOtorgamientoPoderesController = (societyId: number, flowId: numb
     eliminarFacultad,
   };
 };
+

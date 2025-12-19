@@ -247,3 +247,5 @@ Este documento detalla el plan para remover todos los `console.log`, `console.er
 - Los console en archivos de test pueden mantenerse si son útiles
 - Verificar que la eliminación no rompa funcionalidad existente
 
+
+
