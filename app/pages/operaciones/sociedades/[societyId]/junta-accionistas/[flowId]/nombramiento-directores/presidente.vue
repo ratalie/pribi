@@ -274,20 +274,8 @@
       }
     }
 
-    // 2. Fallback: Presidente del snapshot (si existe)
-    const snapshot = snapshotStore.snapshot;
-    if (snapshot?.directory?.presidenteId) {
-      const presidente = snapshot.directors.find(
-        (d) => d.id === snapshot.directory.presidenteId
-      );
-      if (presidente) {
-        return `${presidente.persona.nombre} ${presidente.persona.apellidoPaterno} ${
-          presidente.persona.apellidoMaterno || ""
-        }`.trim();
-      }
-    }
-
-    // 3. Último fallback: Primer director elegido (si hay)
+    // 2. Último fallback: Primer director elegido (si hay)
+    // ✅ NO hay fallback a presidente del snapshot porque en nombramiento-directores TODO es nuevo
     const directoresElegidos = nombramientoStore.directoresTitularesCandidatos.filter(
       (d) => d.designationStatus === "ELEGIDO" || d.candidateStatus === "ELECTED"
     );
@@ -302,9 +290,10 @@
     return "No hay presidente designado";
   });
 
-  // ✅ Opciones para el select del presidente (solo directores ELEGIDOS - candidateStatus: "ELECTED")
+  // ✅ Opciones para el select del presidente (SOLO ELEGIDOS - todo es nuevo en nombramiento-directores)
   const opcionesPresidente = computed<BaseSelectOption[]>(() => {
-    // ✅ Obtener solo los directores que están ELEGIDOS (candidateStatus === "ELECTED")
+    // ✅ Obtener SOLO los directores elegidos (candidatos que fueron elegidos)
+    // En nombramiento-directores, TODO es nuevo, no hay titulares del snapshot
     const directoresElegidos = nombramientoStore.directoresTitularesCandidatos.filter(
       (d) => d.candidateStatus === "ELECTED" || d.designationStatus === "ELEGIDO"
     );
@@ -430,50 +419,37 @@
     { immediate: true }
   );
 
-  // ✅ Candidatos con votos (viene del store de votación O de nombramientoStore si ya fueron elegidos)
+  // ✅ Candidatos con votos (solo candidatos nuevos - todo es nuevo en nombramiento-directores)
   interface CandidatoConVotos {
     nombreCompleto: string;
+    directorId: string; // ID del director (para evitar duplicados)
     votos_asignados: number;
     tipoDirector: string;
-    estado?: string; // "ELEGIDO" | "NO_ELEGIDO"
+    estado?: string; // "ELEGIDO" | "NO_ELEGIDO" (NO "TITULAR" - todo es nuevo)
   }
 
   const candidatosConVotos = computed<CandidatoConVotos[]>(() => {
-    // ✅ Obtener candidatos elegidos desde nombramientoStore (ya tienen su estado actualizado)
-    const directoresElegidos = nombramientoStore.directoresTitularesCandidatos;
-
-    // Si es votación por unanimidad, usar los votos asignados del store
-    if (metodoVotacion.value === "unanimidad") {
-      const votosPorCandidato = directoresStore.votosPorCandidato;
-      return directoresElegidos.map((candidato) => {
-        const nombreCompleto = `${candidato.person.nombre} ${
-          candidato.person.apellidoPaterno
-        } ${candidato.person.apellidoMaterno || ""}`.trim();
-        return {
-          nombreCompleto,
-          votos_asignados: votosPorCandidato.get(nombreCompleto) || 0,
-          tipoDirector: "Director titular",
-          estado: candidato.designationStatus || undefined,
-        };
-      });
-    }
-
-    // Si es votación por mayoría, usar los votos asignados
+    // ✅ Obtener SOLO candidatos desde nombramientoStore (todo es nuevo, no hay titulares del snapshot)
+    const directoresCandidatos = nombramientoStore.directoresTitularesCandidatos;
     const votosPorCandidato = directoresStore.votosPorCandidato;
-    return directoresElegidos.map((candidato) => {
+
+    // Mapear candidatos (elegidos/no elegidos)
+    return directoresCandidatos.map((candidato) => {
       const nombreCompleto = `${candidato.person.nombre} ${candidato.person.apellidoPaterno} ${
         candidato.person.apellidoMaterno || ""
       }`.trim();
       return {
         nombreCompleto,
+        directorId: candidato.id,
         votos_asignados: votosPorCandidato.get(nombreCompleto) || 0,
         tipoDirector: "Director titular",
-        estado: candidato.designationStatus || undefined,
+        estado: candidato.designationStatus || undefined, // "ELEGIDO" | "NO_ELEGIDO" | null
       };
     });
   });
 
-  // ✅ Ordenar por votos y asignar posiciones (usando estado ELEGIDO/NO_ELEGIDO del backend)
+  // ✅ Ordenar por votos y asignar posiciones (solo 2 estados: SELECCIONADO/NO SELECCIONADO)
+  // En nombramiento-directores, TODO es nuevo, no hay titulares del snapshot
   const resultadosVotacion = computed(() => {
     const candidatos = candidatosConVotos.value;
     const plazasDisponibles = directoresStore.cantidadDisponibles;
@@ -605,13 +581,17 @@
       cell: ({ row }) => {
         const estado = row.getValue("estado") as string;
         const esSeleccionado = estado === "SELECCIONADO";
+
+        // ✅ Solo 2 estados: SELECCIONADO (verde) y NO SELECCIONADO (rojo)
+        // No hay estado "TITULAR" porque en nombramiento-directores todo es nuevo
+        const claseBg = esSeleccionado
+          ? "bg-[#DEF7EC] text-[#03543f]" // Verde para SELECCIONADO
+          : "bg-[#FDE8E8] text-[#9B1C1C]"; // Rojo para NO SELECCIONADO
+
         return h(
           "div",
           {
-            class: [
-              "flex px-2.5 py-2 rounded-full uppercase font-secondary text-sm",
-              esSeleccionado ? "bg-[#DEF7EC] text-[#03543f]" : "bg-[#FDE8E8] text-[#9B1C1C]",
-            ],
+            class: ["flex px-2.5 py-2 rounded-full uppercase font-secondary text-sm", claseBg],
           },
           estado
         );

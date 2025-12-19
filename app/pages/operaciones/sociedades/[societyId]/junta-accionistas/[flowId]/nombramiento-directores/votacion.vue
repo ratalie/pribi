@@ -1,5 +1,4 @@
 <template>
-  <DebugVotacionDirectores :controller="controller" :metodo-votacion="metodoVotacion" />
   <MetodoVotacionDirectorio
     v-model="metodoVotacion"
     v-model:candidatos-seleccionados="candidatosSeleccionados"
@@ -18,7 +17,6 @@
   import { computed, nextTick, onMounted, ref, watch } from "vue";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { useVotacionDirectoresController } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/votacion/composables/useVotacionDirectoresController";
-  import DebugVotacionDirectores from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/components/votacion/DebugVotacionDirectores.vue";
   import MetodoVotacionDirectorio from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/components/votacion/MetodoVotacionDirectorio.vue";
   import { useDirectoresStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/composables/useDirectoresStore";
 

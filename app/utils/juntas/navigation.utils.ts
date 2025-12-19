@@ -139,12 +139,13 @@ export function detectCurrentSection(
   }
 
   if (subStepId === "nombramiento-directores") {
+    // ✅ Orden correcto según el flujo: cantidad -> votacion-cantidad -> nombramiento -> votacion -> presidente
+    if (path.includes("/nombramiento-directores/cantidad")) return "cantidad";
     if (path.includes("/nombramiento-directores/votacion-cantidad"))
       return "votacion-cantidad";
-    if (path.includes("/nombramiento-directores/cantidad")) return "cantidad";
-    if (path.includes("/nombramiento-directores/presidente")) return "presidente";
     if (path.includes("/nombramiento-directores/nombramiento")) return "nombramiento";
     if (path.includes("/nombramiento-directores/votacion")) return "votacion";
+    if (path.includes("/nombramiento-directores/presidente")) return "presidente";
     if (path.includes("/nombramiento-directores/resumen")) return "resumen";
     if (
       path.includes("/nombramiento-directores") &&

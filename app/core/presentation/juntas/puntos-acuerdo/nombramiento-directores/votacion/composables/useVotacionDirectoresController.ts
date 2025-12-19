@@ -134,20 +134,33 @@ export function useVotacionDirectoresController() {
       }
 
       // 3. Cargar directores designados (para obtener candidatos)
-      await nombramientoStore.loadDirectoresDesignados(societyId.value, flowId.value);
-
-      // 3.1. Cargar candidatos de remoción (para calcular directores actuales correctamente)
+      // ⚠️ IMPORTANTE: En nombramiento-directorio NO cargamos remoción porque todos son candidatos nuevos
+      // El método loadDirectoresDesignados del store intenta cargar remoción, pero eso es solo para nombramiento-directores
+      // Para nombramiento-directorio, cargamos directamente sin pasar por el método del store que carga remoción
+      nombramientoStore.status = "loading";
       try {
-        const { useRemocionDirectoresStore } = await import(
-          "~/core/presentation/juntas/puntos-acuerdo/remocion-directores/stores/useRemocionDirectoresStore"
+        const { DesignationDirectorHttpRepository } = await import(
+          "~/core/hexag/juntas/infrastructure/repositories/designation-director.http.repository"
         );
-        const remocionStore = useRemocionDirectoresStore();
-        await remocionStore.loadDirectores(societyId.value, flowId.value);
+        const { GetDesignationDirectorUseCase } = await import(
+          "~/core/hexag/juntas/application/use-cases/designation-director/get-designation-director.use-case"
+        );
+        const repository = new DesignationDirectorHttpRepository();
+        const useCase = new GetDesignationDirectorUseCase(repository);
+        const directores = await useCase.execute(societyId.value, flowId.value);
+        nombramientoStore.directoresDesignados = directores;
+        nombramientoStore.status = "idle";
+        nombramientoStore.errorMessage = null;
+        console.log(
+          "[Controller][VotacionDirectores] Directores designados cargados (sin remoción):",
+          {
+            count: directores.length,
+          }
+        );
       } catch (error: any) {
-        // Si no hay remoción, no es crítico
-        if (error?.statusCode !== 404 && error?.status !== 404) {
-          console.warn("[Controller][VotacionDirectores] Error al cargar remociones:", error);
-        }
+        nombramientoStore.status = "error";
+        nombramientoStore.errorMessage = error.message || "Error al cargar directores";
+        throw error;
       }
 
       // 4. Cargar asistentes (para obtener votantes - solo los que asistieron)
@@ -266,11 +279,20 @@ export function useVotacionDirectoresController() {
   /**
    * ✅ Calcular cupos disponibles para directores
    * Cupos = Tamaño del Directorio - Directores Actuales
-   * Donde Directores Actuales = Directores del snapshot que NO fueron removidos
+   *
+   * Para nombramiento-directorio: todos son candidatos nuevos, no hay directores del snapshot
+   * Por lo tanto: cupos = cantidadDirectores (todos los cupos están disponibles)
+   *
+   * Para nombramiento-directores: Directores Actuales = Directores del snapshot que NO fueron removidos
+   * Por lo tanto: cupos = cantidadDirectores - directoresDisponiblesDelSnapshot.length
    */
   const cuposDisponibles = computed(() => {
     const tamañoDirectorio = cantidadDirectores.value;
-    const directoresActuales = nombramientoStore.directoresDisponiblesDelSnapshot.length; // Ya filtra removidos
+    // ⚠️ IMPORTANTE: En nombramiento-directorio, directoresDisponiblesDelSnapshot será [] (array vacío)
+    // porque no hay directores del snapshot que mostrar. Los directores actuales solo son los designados.
+    // Para calcular cupos, en nombramiento-directorio deberíamos usar solo cantidadDirectores
+    // ya que todos los cupos están disponibles (no hay directores del snapshot ocupando cupos).
+    const directoresActuales = nombramientoStore.directoresDisponiblesDelSnapshot.length;
     const cupos = tamañoDirectorio - directoresActuales;
     return Math.max(0, cupos); // No permitir valores negativos
   });
