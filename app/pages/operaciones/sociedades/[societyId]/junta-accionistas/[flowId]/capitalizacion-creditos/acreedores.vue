@@ -45,6 +45,7 @@
       :aportantes="acreedores"
       :is-loading="isLoading"
       :error="error"
+      module="CREDIT"
       @toggle="toggleAcreedor"
       @edit="() => {}"
       @delete="eliminarAcreedor"

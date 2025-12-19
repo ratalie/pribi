@@ -14,6 +14,28 @@ export type {
   CreditorResponseDTO,
   UpdateCreditorDTO,
 } from "./creditor.dto";
+export type {
+  CreateDesignationAttorneyDTO,
+  DesignationAttorneyActionResponse,
+  DesignationAttorneyListResponse,
+  DesignationAttorneyResponseDTO,
+  PersonJuridicDTO,
+  PersonNaturalDTO,
+  UpdateDesignationAttorneyDTO,
+} from "./designation-attorney.dto";
+export type {
+  CreateDesignationDirectorDTO,
+  DesignationDirectorActionResponse,
+  DesignationDirectorListResponse,
+  DesignationDirectorResponseDTO,
+  UpdateDesignationDirectorDTO,
+} from "./designation-director.dto";
+export type {
+  DirectoryConfigurationGetResponse,
+  DirectoryConfigurationResponseDTO,
+  DirectoryConfigurationUpdateResponse,
+  UpdateDirectoryConfigurationDTO,
+} from "./directory-configuration.dto";
 export type { JuntaResumenDTO } from "./junta-resumen.dto";
 export type {
   ConvocatoriaDto,
@@ -28,15 +50,6 @@ export type {
   RemovalAttorneyResponseDTO,
   UpdateRemovalAttorneyDTO,
 } from "./removal-attorney.dto";
-export type {
-  CreateDesignationAttorneyDTO,
-  DesignationAttorneyActionResponse,
-  DesignationAttorneyListResponse,
-  DesignationAttorneyResponseDTO,
-  PersonJuridicDTO,
-  PersonNaturalDTO,
-  UpdateDesignationAttorneyDTO,
-} from "./designation-attorney.dto";
 export type { RemovalManagerResponseDTO } from "./removal-manager.dto";
 export {
   isPersonaFideicomiso,

@@ -139,6 +139,9 @@ export function detectCurrentSection(
   }
 
   if (subStepId === "nombramiento-directores") {
+    if (path.includes("/nombramiento-directores/votacion-cantidad"))
+      return "votacion-cantidad";
+    if (path.includes("/nombramiento-directores/cantidad")) return "cantidad";
     if (path.includes("/nombramiento-directores/presidente")) return "presidente";
     if (path.includes("/nombramiento-directores/nombramiento")) return "nombramiento";
     if (path.includes("/nombramiento-directores/votacion")) return "votacion";
@@ -207,10 +210,14 @@ export function detectCurrentSection(
 
   if (subStepId === "nombramiento-apoderados") {
     if (path.includes("/nombramiento-apoderados/nombramiento")) return "nombramiento";
-    if (path.includes("/nombramiento-apoderados/otorgamiento-poderes")) return "otorgamiento-poderes";
+    if (path.includes("/nombramiento-apoderados/otorgamiento-poderes"))
+      return "otorgamiento-poderes";
     if (path.includes("/nombramiento-apoderados/votacion")) return "votacion";
     if (path.includes("/nombramiento-apoderados/resumen")) return "resumen";
-    if (path.includes("/nombramiento-apoderados") && !path.includes("/nombramiento-apoderados/")) {
+    if (
+      path.includes("/nombramiento-apoderados") &&
+      !path.includes("/nombramiento-apoderados/")
+    ) {
       return "nombramiento-apoderados";
     }
   }
@@ -220,7 +227,10 @@ export function detectCurrentSection(
     if (path.includes("/nombramiento-directores/cantidad")) return "cantidad";
     if (path.includes("/nombramiento-directores/votacion")) return "votacion";
     if (path.includes("/nombramiento-directores/resumen")) return "resumen";
-    if (path.includes("/nombramiento-directores") && !path.includes("/nombramiento-directores/")) {
+    if (
+      path.includes("/nombramiento-directores") &&
+      !path.includes("/nombramiento-directores/")
+    ) {
       return "nombramiento-directores";
     }
   }
@@ -230,7 +240,10 @@ export function detectCurrentSection(
     if (path.includes("/nombramiento-directorio/nombramiento")) return "nombramiento";
     if (path.includes("/nombramiento-directorio/votacion")) return "votacion";
     if (path.includes("/nombramiento-directorio/resumen")) return "resumen";
-    if (path.includes("/nombramiento-directorio") && !path.includes("/nombramiento-directorio/")) {
+    if (
+      path.includes("/nombramiento-directorio") &&
+      !path.includes("/nombramiento-directorio/")
+    ) {
       return "nombramiento-directorio";
     }
   }

@@ -10,6 +10,19 @@ import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
 
 export type ContributorType = "ACCIONISTA" | "NUEVO_APORTANTE";
 
+/**
+ * Permiso de contributor por módulo
+ * ✅ Nuevo formato: Permite diferentes permisos por módulo (CASH, CREDIT, etc.)
+ */
+export interface ContributorPermission {
+  id: string;
+  shareholderId: string;
+  module: "CASH" | "CREDIT" | "NON_CASH" | "ACCOUNTING";
+  isContributor: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Person {
   id: string;
   tipo:
@@ -34,10 +47,11 @@ export interface Person {
 export interface Acreedor {
   id: string;
   personId?: string;
-  typeShareholder: ContributorType;
-  isContributor: boolean;
+  typeShareholder: ContributorType | "NUEVO_APORTANTE_CASH" | "NUEVO_APORTANTE_CREDIT";
+  isContributor: boolean; // ✅ MANTENER (compatibilidad con backend antiguo)
   status?: boolean;
-  contributionModule?: "CASH" | "CREDIT" | "BOTH";
+  contributionModule?: ("CASH" | "CREDIT")[]; // ✅ Siempre array según backend
+  contributorPermissions?: ContributorPermission[]; // ✅ NUEVO (opcional, formato nuevo)
   person: Person;
   allocationShare?: Array<{
     id: string;
@@ -49,6 +63,92 @@ export interface Acreedor {
     subscribedSharesQuantity: number;
     percentagePaidPerShare: number;
   }>;
+}
+
+// ========================================
+// HELPERS - ContributorPermission
+// ========================================
+
+/**
+ * Obtiene isContributor para un módulo específico
+ * ✅ Compatible con ambos formatos (isContributor booleano o contributorPermissions)
+ *
+ * @param participante - Participante con o sin contributorPermissions
+ * @param module - Módulo a verificar ("CASH" | "CREDIT")
+ * @returns true si es contributor en el módulo especificado
+ */
+export function getIsContributorForModule(
+  participante: Acreedor,
+  module: "CASH" | "CREDIT"
+): boolean {
+  // ✅ 0. Para NUEVO_APORTANTE: inferir módulo desde typeShareholder
+  // Si es NUEVO_APORTANTE_CASH y se pregunta por CASH → usar isContributor
+  // Si es NUEVO_APORTANTE_CREDIT y se pregunta por CREDIT → usar isContributor
+  if (participante.typeShareholder === "NUEVO_APORTANTE_CASH" && module === "CASH") {
+    return participante.isContributor === true;
+  }
+  if (participante.typeShareholder === "NUEVO_APORTANTE_CREDIT" && module === "CREDIT") {
+    return participante.isContributor === true;
+  }
+
+  // ✅ 1. Si tiene contributorPermissions, buscar permiso específico del módulo
+  if (participante.contributorPermissions && participante.contributorPermissions.length > 0) {
+    const permission = participante.contributorPermissions.find((p) => p.module === module);
+
+    // Si encontró el permiso específico, usar ese valor
+    if (permission !== undefined) {
+      return permission.isContributor;
+    }
+
+    // ✅ 2. Si NO encontró permiso específico, pero el módulo está en contributionModule
+    // y isContributor es true, entonces es contributor para ese módulo
+    const modules = Array.isArray(participante.contributionModule)
+      ? participante.contributionModule
+      : participante.contributionModule
+      ? [participante.contributionModule]
+      : [];
+
+    const tieneModulo = modules.includes(module) || modules.includes("BOTH");
+
+    if (tieneModulo && participante.isContributor === true) {
+      return true;
+    }
+
+    // Si no tiene el módulo o isContributor es false, no es contributor
+    return false;
+  }
+
+  // ✅ 3. Si NO tiene contributorPermissions, usar isContributor (formato antiguo, compatibilidad)
+  // Pero verificar que el módulo esté en contributionModule O inferir desde typeShareholder
+  const modules = Array.isArray(participante.contributionModule)
+    ? participante.contributionModule
+    : participante.contributionModule
+    ? [participante.contributionModule]
+    : [];
+
+  // Si contributionModule está vacío, inferir desde typeShareholder
+  if (modules.length === 0) {
+    if (participante.typeShareholder === "NUEVO_APORTANTE_CASH" && module === "CASH") {
+      return participante.isContributor === true;
+    }
+    if (participante.typeShareholder === "NUEVO_APORTANTE_CREDIT" && module === "CREDIT") {
+      return participante.isContributor === true;
+    }
+    // Si no coincide el módulo con typeShareholder, no es contributor
+    return false;
+  }
+
+  const tieneModulo = modules.includes(module) || modules.includes("BOTH");
+
+  return participante.isContributor === true && tieneModulo;
+}
+
+/**
+ * Obtiene todos los permisos de contributor
+ * Útil para debugging o mostrar información detallada
+ */
+export function getAllContributorPermissions(participante: Acreedor): ContributorPermission[] {
+  return participante.contributorPermissions || [];
 }
 
 /**
@@ -129,10 +229,24 @@ export function useAcreedoresPage() {
 
       console.debug("[Acreedores] GET response", { count: response.data.length });
 
+      // ✅ Helper: Verificar si es participante de Capitalización
+      // contributionModule SIEMPRE viene como array string[] según el backend
+      const isCapitalizacionParticipant = (a: Acreedor): boolean => {
+        // Si es NUEVO_APORTANTE_CREDIT, siempre es de capitalización
+        if (a.typeShareholder === "NUEVO_APORTANTE_CREDIT") return true;
+
+        // Si es ACCIONISTA, verificar contributionModule (siempre es array)
+        const modules = Array.isArray(a.contributionModule)
+          ? a.contributionModule
+          : a.contributionModule
+          ? [a.contributionModule]
+          : [];
+
+        return modules.includes("CREDIT") || modules.includes("BOTH");
+      };
+
       // ✅ 2. Filtrar por contributionModule (solo CREDIT o BOTH)
-      const participantesCapitalizacion = response.data.filter(
-        (a: Acreedor) => a.contributionModule === "CREDIT" || a.contributionModule === "BOTH"
-      );
+      const participantesCapitalizacion = response.data.filter(isCapitalizacionParticipant);
 
       console.debug(
         "[Acreedores] Filtrados por módulo (CREDIT/BOTH):",
@@ -141,35 +255,111 @@ export function useAcreedoresPage() {
 
       // ✅ 3. Filtrar por asistencia
       // Para ACCIONISTA: verificar en asistencias por personId
-      // Para NUEVO_APORTANTE: siempre incluir (no está en snapshot, es nuevo)
+      // Para NUEVO_APORTANTE_CREDIT: siempre incluir (no está en snapshot, es nuevo)
       const participantesFiltrados = participantesCapitalizacion.filter(
         (participante: Acreedor) => {
-          // Si es NUEVO_APORTANTE, siempre incluirlo (no tiene asistencia registrada)
-          if (participante.typeShareholder === "NUEVO_APORTANTE") {
+          // Si es NUEVO_APORTANTE_CREDIT, siempre incluirlo (no tiene asistencia registrada)
+          if (participante.typeShareholder === "NUEVO_APORTANTE_CREDIT") {
+            console.debug(
+              "[Acreedores] NUEVO_APORTANTE_CREDIT incluido:",
+              participante.person?.id
+            );
             return true;
           }
 
           // Si es ACCIONISTA, verificar si asistió
-          if (participante.personId) {
-            const asistencia = asistenciaStore.asistencias.find(
-              (a) => a.accionista.id === participante.personId
-            );
-            return asistencia?.asistio === true;
+          // ✅ personId viene de person.id (no viene en nivel raíz)
+          const personId = participante.person?.id;
+          if (!personId) {
+            console.warn("[Acreedores] Participante sin personId:", participante);
+            return false;
           }
 
-          // Si no tiene personId, excluirlo por seguridad
-          return false;
+          // ✅ Buscar en asistencias: comparar person.id del participante con accionista.person.id de la asistencia
+          const asistencia = asistenciaStore.asistencias.find(
+            (a) => a.accionista.person?.id === personId || a.accionista.id === personId
+          );
+
+          if (!asistencia) {
+            console.debug(
+              "[Acreedores] No se encontró asistencia para personId:",
+              personId,
+              "Participante:",
+              participante.person?.nombre || participante.person?.razonSocial
+            );
+            console.debug(
+              "[Acreedores] Asistencias disponibles:",
+              asistenciaStore.asistencias.length
+            );
+            if (asistenciaStore.asistencias.length > 0) {
+              console.debug(
+                "[Acreedores] Primeras asistencias:",
+                asistenciaStore.asistencias.slice(0, 2).map((a) => ({
+                  accionistaId: a.accionista.id,
+                  personId: a.accionista.person?.id,
+                  asistio: a.asistio,
+                }))
+              );
+            }
+            return false;
+          }
+
+          const resultado = asistencia.asistio === true;
+          console.debug(
+            "[Acreedores] Asistencia encontrada:",
+            personId,
+            "asistio:",
+            asistencia.asistio,
+            "→",
+            resultado ? "INCLUIDO" : "EXCLUIDO"
+          );
+          return resultado;
         }
       );
 
       console.debug("[Acreedores] Filtrados por asistencia:", participantesFiltrados.length);
 
-      // ✅ 4. Mapear y asegurar que NUEVO_APORTANTE siempre tenga isContributor: true
+      // ✅ 4. Mapear participantes, asegurar que NUEVO_APORTANTE_CREDIT siempre tenga isContributor: true
+      // ✅ Asegurar que personId esté disponible desde person.id
       acreedores.value = participantesFiltrados.map((a: Acreedor) => {
-        if (a.typeShareholder === "NUEVO_APORTANTE") {
-          return { ...a, isContributor: true };
+        // ✅ Extraer personId desde person.id si no existe
+        const mapped = {
+          ...a,
+          personId: a.personId || a.person?.id,
+        };
+
+        // ✅ NUEVO_APORTANTE_CREDIT siempre es contribuyente
+        if (mapped.typeShareholder === "NUEVO_APORTANTE_CREDIT") {
+          const nuevoMapped = { ...mapped, isContributor: true };
+          console.debug(
+            "[Acreedores] NUEVO_APORTANTE_CREDIT forzado a isContributor: true",
+            nuevoMapped.person?.nombre || nuevoMapped.person?.razonSocial,
+            {
+              typeShareholder: nuevoMapped.typeShareholder,
+              isContributor: nuevoMapped.isContributor,
+              contributionModule: nuevoMapped.contributionModule,
+              contributorPermissions: nuevoMapped.contributorPermissions,
+              checkboxCREDIT: getIsContributorForModule(nuevoMapped, "CREDIT"),
+            }
+          );
+          return nuevoMapped;
         }
-        return a;
+
+        // ✅ Debug: Verificar estado del checkbox para CREDIT
+        const isContributorCREDIT = getIsContributorForModule(mapped, "CREDIT");
+        console.debug(
+          "[Acreedores] Estado checkbox CREDIT:",
+          mapped.person?.nombre || mapped.person?.razonSocial,
+          {
+            typeShareholder: mapped.typeShareholder,
+            isContributor: mapped.isContributor,
+            contributionModule: mapped.contributionModule,
+            contributorPermissions: mapped.contributorPermissions,
+            isContributorCREDIT,
+          }
+        );
+
+        return mapped;
       });
     } catch (err: any) {
       console.error("[Acreedores] Error al cargar:", err);
@@ -184,9 +374,9 @@ export function useAcreedoresPage() {
   // ========================================
 
   async function toggleAcreedor(acreedor: Acreedor) {
-    // NUEVO_APORTANTE siempre es contribuidor y no se puede cambiar
-    if (acreedor.typeShareholder === "NUEVO_APORTANTE") {
-      console.debug("[Acreedores] NUEVO_APORTANTE no se puede desmarcar");
+    // NUEVO_APORTANTE_CREDIT siempre es contribuidor y no se puede cambiar
+    if (acreedor.typeShareholder === "NUEVO_APORTANTE_CREDIT") {
+      console.debug("[Acreedores] NUEVO_APORTANTE_CREDIT no se puede desmarcar");
       return;
     }
 
@@ -233,15 +423,24 @@ export function useAcreedoresPage() {
 
       console.debug("[Acreedores] POST nuevo", { requestPayload });
 
-      await $fetch(url, {
+      const response = await $fetch(url, {
         ...withAuthHeaders(),
         method: "POST",
         body: requestPayload,
       });
 
+      console.debug("[Acreedores] POST response", { response });
+
       // Cerrar modal y recargar
       isModalOpen.value = false;
       await fetchAcreedores();
+
+      console.debug("[Acreedores] Datos recargados después de crear:", {
+        total: acreedores.value.length,
+        nuevoParticipante: acreedores.value.find(
+          (a) => a.person?.id === requestPayload.persona?.id
+        ),
+      });
     } catch (err: any) {
       console.error("[Acreedores] Error al agregar:", err);
       error.value = err.message || "Error al agregar acreedor";
@@ -290,7 +489,7 @@ export function useAcreedoresPage() {
   }
 
   const totalSeleccionados = computed(() => {
-    return acreedores.value.filter((a) => a.isContributor).length;
+    return acreedores.value.filter((a) => getIsContributorForModule(a, "CREDIT")).length;
   });
 
   const totalAcciones = computed(() => {
@@ -306,7 +505,9 @@ export function useAcreedoresPage() {
     console.log("🎯 [Acreedores] Handler de Siguiente ejecutado");
 
     // Validar que haya al menos un acreedor seleccionado
-    const acreedoresSeleccionados = acreedores.value.filter((a) => a.isContributor);
+    const acreedoresSeleccionados = acreedores.value.filter((a) =>
+      getIsContributorForModule(a, "CREDIT")
+    );
 
     if (acreedoresSeleccionados.length === 0) {
       const error = new Error("Debe seleccionar al menos un acreedor para continuar");

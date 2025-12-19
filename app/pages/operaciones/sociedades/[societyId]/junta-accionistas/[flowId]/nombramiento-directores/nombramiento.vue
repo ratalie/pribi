@@ -233,8 +233,10 @@
       const apellidoPaterno = partesNombre[1] || "";
       const apellidoMaterno = partesNombre.slice(2).join(" ") || "";
 
-      // ✅ Asegurar que esDelSnapshot sea explícitamente boolean
-      const esDelSnapshot = director.esDelSnapshot === true;
+      // ✅ Asegurar que esDelSnapshot sea explícitamente boolean (true o false, nunca undefined)
+      // Si esDelSnapshot es true, mantenerlo como true
+      // Si esDelSnapshot es false, undefined, o cualquier otro valor, tratarlo como false (director nuevo)
+      const esDelSnapshot = director.esDelSnapshot === true ? true : false;
 
       const directorMapeado: Director = {
         id: director.id, // ID del registro de designación
@@ -249,14 +251,14 @@
         apellidoPaterno,
         apellidoMaterno,
         candidato: director.isCandidate,
-        esDelSnapshot, // ✅ Flag para identificar si viene del snapshot (explícitamente boolean)
+        esDelSnapshot, // ✅ Flag para identificar si viene del snapshot (explícitamente boolean: true o false)
         fueRemovido: director.fueRemovido || false, // ✅ Flag para identificar si fue removido
         ...(director.replacesId ? { reemplazaId: director.replacesId } : {}),
       };
 
-      // ✅ Debug: Log para verificar el flag esDelSnapshot
+      // ✅ Debug: Log para verificar el flag esDelSnapshot (VERIFICAR EN CONSOLA SI ESTE VALOR ES CORRECTO)
       console.log(
-        `[mapearDirectoresParaUI] Director: ${directorMapeado.nombreCompleto}, esDelSnapshot: ${esDelSnapshot}, raw: ${director.esDelSnapshot}`
+        `[mapearDirectoresParaUI] Director: ${directorMapeado.nombreCompleto}, esDelSnapshot en mapeo: ${esDelSnapshot}, raw de composable: ${director.esDelSnapshot}, fueRemovido: ${directorMapeado.fueRemovido}, directorId: ${director.directorId}`
       );
 
       return directorMapeado;
@@ -593,22 +595,20 @@
   // - La fila "Sin Asignar" (esCandidato === true y es fila especial)
   const showActionsFor = (row: Director) => {
     // ✅ Verificar explícitamente: solo mostrar si NO es del snapshot y NO es candidato (fila "Sin Asignar")
+    // Si esDelSnapshot es true, NO mostrar acciones (es del snapshot)
+    // Si esDelSnapshot es false o undefined, mostrar acciones (es nuevo)
     const esDelSnapshot = row.esDelSnapshot === true;
     const esCandidatoFilaEspecial = row.esCandidato === true;
 
+    // Si es del snapshot o es la fila "Sin Asignar", NO mostrar acciones
+    const shouldShow = !esDelSnapshot && !esCandidatoFilaEspecial;
+
     // Debug: Log para verificar qué está recibiendo
     console.log(
-      `[showActionsFor] Director: ${
-        row.nombreCompleto
-      }, esDelSnapshot: ${esDelSnapshot} (raw: ${
-        row.esDelSnapshot
-      }), esCandidato: ${esCandidatoFilaEspecial} (raw: ${row.esCandidato}), shouldShow: ${
-        !esDelSnapshot && !esCandidatoFilaEspecial
-      }`
+      `[showActionsFor] Director: ${row.nombreCompleto}, esDelSnapshot: ${esDelSnapshot} (raw: ${row.esDelSnapshot}), esCandidato: ${esCandidatoFilaEspecial} (raw: ${row.esCandidato}), shouldShow: ${shouldShow}`
     );
 
-    // Solo mostrar acciones para directores nuevos (no del snapshot y no la fila especial)
-    return !esDelSnapshot && !esCandidatoFilaEspecial;
+    return shouldShow;
   };
 
   // ✅ Acciones para suplentes/alternos (solo para directores nuevos, no del snapshot)
@@ -673,22 +673,20 @@
   // - La fila "Sin Asignar" (esCandidato === true y es fila especial)
   const showActionsForSuplentesAlternos = (row: Director) => {
     // ✅ Verificar explícitamente: solo mostrar si NO es del snapshot y NO es candidato (fila "Sin Asignar")
+    // Si esDelSnapshot es true, NO mostrar acciones (es del snapshot)
+    // Si esDelSnapshot es false o undefined, mostrar acciones (es nuevo)
     const esDelSnapshot = row.esDelSnapshot === true;
     const esCandidatoFilaEspecial = row.esCandidato === true;
 
+    // Si es del snapshot o es la fila "Sin Asignar", NO mostrar acciones
+    const shouldShow = !esDelSnapshot && !esCandidatoFilaEspecial;
+
     // Debug: Log para verificar qué está recibiendo
     console.log(
-      `[showActionsForSuplentesAlternos] Director: ${
-        row.nombreCompleto
-      }, esDelSnapshot: ${esDelSnapshot} (raw: ${
-        row.esDelSnapshot
-      }), esCandidato: ${esCandidatoFilaEspecial} (raw: ${row.esCandidato}), shouldShow: ${
-        !esDelSnapshot && !esCandidatoFilaEspecial
-      }`
+      `[showActionsForSuplentesAlternos] Director: ${row.nombreCompleto}, esDelSnapshot: ${esDelSnapshot} (raw: ${row.esDelSnapshot}), esCandidato: ${esCandidatoFilaEspecial} (raw: ${row.esCandidato}), shouldShow: ${shouldShow}`
     );
 
-    // Solo mostrar acciones para directores nuevos (no del snapshot y no la fila especial)
-    return !esDelSnapshot && !esCandidatoFilaEspecial;
+    return shouldShow;
   };
 
   // ✅ Función para deshabilitar acciones de directores del snapshot

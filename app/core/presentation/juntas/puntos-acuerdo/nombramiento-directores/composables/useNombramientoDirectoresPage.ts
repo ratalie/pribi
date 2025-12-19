@@ -137,11 +137,16 @@ export function useNombramientoDirectoresPage() {
     todosDirectores.forEach((director) => {
       const existing = mapa.get(director.directorId);
       // Si no existe, agregarlo
-      // Si existe y es del snapshot, reemplazar con el designado (porque los designados vienen después)
-      // Esto asegura que si un director está tanto en snapshot como designado, se use el designado
-      if (!existing || existing._isFromSnapshot) {
+      // Si existe y es del snapshot, reemplazar con el designado (porque los designados vienen después en el array)
+      // Esto asegura que si un director está tanto en snapshot como designado, se use el designado (nuevo)
+      if (!existing) {
+        // No existe, agregarlo
+        mapa.set(director.directorId, director);
+      } else if (existing._isFromSnapshot && !director._isFromSnapshot) {
+        // Existe uno del snapshot, y el actual es designado (nuevo), reemplazar
         mapa.set(director.directorId, director);
       }
+      // Si ambos son del snapshot o ambos son designados, mantener el primero (ya no debería pasar)
     });
 
     const mapeados = Array.from(mapa.values()).map((director) => {
@@ -151,7 +156,8 @@ export function useNombramientoDirectoresPage() {
       }`.trim();
 
       // ✅ Identificar si viene del snapshot (usar el flag temporal _isFromSnapshot)
-      const esDelSnapshot = director._isFromSnapshot === true;
+      // Asegurar que siempre sea un boolean explícito (true o false, nunca undefined)
+      const esDelSnapshot = director._isFromSnapshot === true ? true : false;
 
       // ✅ Identificar si fue removido (está en la lista de removidos aprobados)
       const fueRemovido = removidosAprobadosIds.has(director.directorId);
@@ -165,7 +171,7 @@ export function useNombramientoDirectoresPage() {
         numeroDocumento: director.person.numeroDocumento,
         isCandidate: director.isCandidate,
         replacesId: director.replacesId,
-        esDelSnapshot, // ✅ Flag para identificar si viene del snapshot (read-only)
+        esDelSnapshot, // ✅ Flag para identificar si viene del snapshot (read-only) - SIEMPRE boolean
         fueRemovido, // ✅ Flag para identificar si fue removido (para mostrar "REMOVIDO" en badge)
       };
 

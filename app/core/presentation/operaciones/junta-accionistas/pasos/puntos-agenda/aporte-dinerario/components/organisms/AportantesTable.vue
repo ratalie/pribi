@@ -36,16 +36,18 @@
           :key="aportante.id"
           :class="[
             'transition-colors',
-            aportante.isContributor ? 'bg-primary-50/40' : 'hover:bg-gray-50',
+            getIsContributorForModule(aportante, module)
+              ? 'bg-primary-50/40'
+              : 'hover:bg-gray-50',
           ]"
         >
           <!-- Checkbox -->
           <td class="px-6 py-4">
             <Checkbox
-              :model-value="aportante.isContributor"
-              :disabled="aportante.typeShareholder === 'NUEVO_APORTANTE'"
+              :model-value="getIsContributorForModule(aportante, module)"
+              :disabled="isNuevoAportante(aportante.typeShareholder)"
               @update:model-value="(value: boolean | 'indeterminate') => {
-                if (aportante.typeShareholder !== 'NUEVO_APORTANTE' && typeof value === 'boolean') {
+                if (!isNuevoAportante(aportante.typeShareholder) && typeof value === 'boolean') {
                   $emit('toggle', aportante);
                 }
               }"
@@ -72,9 +74,7 @@
               ]"
             >
               {{
-                aportante.typeShareholder === "NUEVO_APORTANTE"
-                  ? "NUEVO APORTANTE"
-                  : "ACCIONISTA"
+                isNuevoAportante(aportante.typeShareholder) ? "NUEVO APORTANTE" : "ACCIONISTA"
               }}
             </span>
           </td>
@@ -91,7 +91,7 @@
 
           <!-- Acciones (solo para NUEVOS) -->
           <td class="px-6 py-4">
-            <DropdownMenu v-if="aportante.typeShareholder === 'NUEVO_APORTANTE'">
+            <DropdownMenu v-if="isNuevoAportante(aportante.typeShareholder)">
               <DropdownMenuTrigger as-child>
                 <Button variant="ghost" size="sm" class="h-8 w-8 p-0">
                   <span class="sr-only">Abrir menú</span>
@@ -143,7 +143,9 @@
     DropdownMenuTrigger,
   } from "~/components/ui/dropdown-menu";
   import type { Acreedor } from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/capitalizacion-creditos/composables/useAcreedoresPage";
+  import { getIsContributorForModule as getIsContributorForModuleAcreedores } from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/capitalizacion-creditos/composables/useAcreedoresPage";
   import type { Aportante, ContributorType } from "../../composables/useAportantesPage";
+  import { getIsContributorForModule as getIsContributorForModuleAportantes } from "../../composables/useAportantesPage";
 
   // Tipo genérico que acepta Aportante o Acreedor (misma estructura)
   type Participante = Aportante | Acreedor;
@@ -152,9 +154,12 @@
     aportantes: Participante[];
     isLoading: boolean;
     error: string | null;
+    module?: "CASH" | "CREDIT"; // ✅ Módulo para determinar qué función usar
   }
 
-  const props = defineProps<Props>();
+  const props = withDefaults(defineProps<Props>(), {
+    module: "CASH", // ✅ Por defecto CASH (aporte dinerario)
+  });
 
   defineEmits<{
     toggle: [participante: Participante];
@@ -162,26 +167,57 @@
     delete: [id: string];
   }>();
 
+  // ✅ Función genérica para obtener isContributor según el módulo
+  function getIsContributorForModule(
+    participante: Participante,
+    module: "CASH" | "CREDIT"
+  ): boolean {
+    if (module === "CREDIT") {
+      // Para CREDIT, usar la función de acreedores
+      return getIsContributorForModuleAcreedores(participante as Acreedor, module);
+    } else {
+      // Para CASH, usar la función de aportantes
+      return getIsContributorForModuleAportantes(participante as Aportante, module);
+    }
+  }
+
+  // ✅ Verificar si es nuevo aportante (según el módulo)
+  function isNuevoAportante(
+    typeShareholder: ContributorType | "NUEVO_APORTANTE_CASH" | "NUEVO_APORTANTE_CREDIT"
+  ): boolean {
+    if (props.module === "CREDIT") {
+      return (
+        typeShareholder === "NUEVO_APORTANTE" || typeShareholder === "NUEVO_APORTANTE_CREDIT"
+      );
+    } else {
+      return (
+        typeShareholder === "NUEVO_APORTANTE" || typeShareholder === "NUEVO_APORTANTE_CASH"
+      );
+    }
+  }
+
   function getNombre(aportante: Participante): string {
     const person = aportante.person;
 
-    if (person.tipo === "NATURAL") {
-      return `${person.nombre || ""} ${person.apellidoPaterno || ""} ${
-        person.apellidoMaterno || ""
-      }`.trim();
-    }
+    switch (person.tipo) {
+      case "NATURAL":
+        return `${person.nombre || ""} ${person.apellidoPaterno || ""} ${
+          person.apellidoMaterno || ""
+        }`.trim();
 
-    if (
-      person.tipo === "JURIDICA" ||
-      person.tipo === "SUCURSAL" ||
-      person.tipo === "SUCESION_INDIVISA" ||
-      person.tipo === "FIDEICOMISO" ||
-      person.tipo === "FONDO_INVERSION"
-    ) {
-      return person.razonSocial || "Sin nombre";
-    }
+      case "JURIDICA":
+      case "FONDO_INVERSION":
+      case "FIDEICOMISO":
+      case "SUCESION_INDIVISA":
+        return person.razonSocial || "Sin nombre";
 
-    return "Sin nombre";
+      case "SUCURSAL":
+        // ✅ SUCURSAL usa nombreSucursal, NO razonSocial
+        return (person as any).nombreSucursal || "Sin nombre";
+
+      default:
+        return "Sin nombre";
+    }
   }
 
   function getTotalAcciones(aportante: Participante): number {
@@ -207,7 +243,9 @@
     return porcentaje.toFixed(2);
   }
 
-  function getTipoBadgeClass(type: ContributorType): string {
+  function getTipoBadgeClass(
+    type: ContributorType | "NUEVO_APORTANTE_CASH" | "NUEVO_APORTANTE_CREDIT"
+  ): string {
     return type === "ACCIONISTA"
       ? "bg-primary-100 text-primary-700 border-primary-300"
       : "bg-purple-100 text-purple-700 border-purple-300";
