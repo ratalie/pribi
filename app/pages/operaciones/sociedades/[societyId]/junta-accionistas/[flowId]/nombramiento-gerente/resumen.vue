@@ -266,14 +266,7 @@
   // que tienen persistencia en localStorage
   onMounted(async () => {
     try {
-      // Los stores locales ya tienen persistencia, no necesitamos cargar nada
-      // Solo verificamos que los datos estén disponibles
-      console.log("[Resumen] Datos disponibles:", {
-        tieneGerente: nombramientoStore.tieneGerenteNombrado,
-        tienePoderes: otorgamientoStore.tienePoderes,
-        tieneVotacion: votacionStore.hasVotacion || !!votacionStore.sesionVotacion,
-        facultadesCount: otorgamientoStore.facultadesGerente.length,
-      });
+      console.log("[Resumen] Datos de poderes:", otorgamientoStore.powerGrants);
     } catch (error) {
       console.error("Error al cargar datos:", error);
     }
@@ -423,9 +416,66 @@
     return nombreCompleto ? [nombreCompleto] : [];
   });
 
+  // Función helper para formatear fechas ISO a DD/MM/YYYY
+  const formatDateShort = (dateISO: string | undefined): string => {
+    if (!dateISO) return "";
+    try {
+      const date = new Date(dateISO);
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    } catch (error) {
+      console.error("[Resumen] Error al formatear fecha:", error);
+      return dateISO; // Fallback: devolver la fecha original si hay error
+    }
+  };
+
+  // Función helper para convertir enum TipoFirma a texto legible
+  const formatTipoFirma = (tipoFirma: string): string => {
+    if (tipoFirma === "SOLA_FIRMA") {
+      return "A sola firma";
+    }
+    if (tipoFirma === "FIRMA_CONJUNTA") {
+      return "Firma conjunta";
+    }
+    // Fallback: devolver el valor original si no coincide
+    return tipoFirma;
+  };
+
   // Obtener facultades del gerente desde el store de otorgamiento
   const facultadesGerente = computed(() => {
-    return otorgamientoStore.facultadesGerente;
+    return otorgamientoStore.powerGrants.map((powerGrant) => {
+      const fechaInicioFormateada = formatDateShort(powerGrant.fechaInicio);
+      const fechaFinFormateada = formatDateShort(powerGrant.fechaFin);
+
+      return {
+        id: powerGrant.id,
+        facultad: powerGrant.poder.name,
+        vigencia: powerGrant.esIrrevocable
+          ? fechaFinFormateada
+            ? `${fechaInicioFormateada} - ${fechaFinFormateada}`
+            : fechaInicioFormateada
+          : "Indefinido",
+        reglas_firma: powerGrant.reglasMonetarias.length,
+        reglas_y_limites: powerGrant.reglasMonetarias.map((regla, index) => {
+          return {
+            id: regla.id,
+            table_id: index + 1,
+            desde: regla.montoDesde,
+            hasta: regla.montoHasta,
+            tipo_firma: formatTipoFirma(regla.tipoFirma),
+            firmantes: regla.firmantes.map((firmante) => {
+              return {
+                id: firmante.id,
+                cantidad: firmante.cantidadMiembros,
+                grupo: firmante.claseApoderado.name,
+              };
+            }),
+          };
+        }),
+      };
+    });
   });
 
   // Estado para controlar qué facultades están expandidas
