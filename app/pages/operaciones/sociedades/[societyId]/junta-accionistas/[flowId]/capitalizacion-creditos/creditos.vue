@@ -1,9 +1,7 @@
 <script setup lang="ts">
   import SlotWrapper from "~/components/containers/SlotWrapper.vue";
   import TitleH2 from "~/components/titles/TitleH2.vue";
-  import ValorNominalBadge from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/aporte-dinerario/components/atoms/ValorNominalBadge.vue";
-  import AporteModal from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/aporte-dinerario/components/molecules/AporteModal.vue";
-  import AportesSection from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/aporte-dinerario/components/organisms/AportesSection.vue";
+  import CapitalizacionesSection from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/capitalizacion-creditos/components/organisms/CapitalizacionesSection.vue";
   import { useCapitalizacionesPage } from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/capitalizacion-creditos/composables/useCapitalizacionesPage";
 
   /**
@@ -18,24 +16,8 @@
     flowLayoutJuntas: true,
   });
 
-  const {
-    isLoading,
-    error,
-    valorNominal,
-    totalAcciones,
-    acreedoresConCapitalizaciones,
-    isModalOpen,
-    modalMode,
-    selectedAccionistaId,
-    selectedCapitalizacionId,
-    openModalForAdd,
-    openModalForEdit,
-    closeModal,
-    handleSaveCapitalizacion,
-    handleDeleteCapitalizacion,
-    societyId,
-    flowId,
-  } = useCapitalizacionesPage();
+  // ✅ Solo inicialización si es necesaria
+  useCapitalizacionesPage();
 </script>
 
 <template>
@@ -44,32 +26,6 @@
       title="Capitalizaciones"
       subtitle="Registra las capitalizaciones de créditos realizadas por los acreedores."
     />
-
-    <!-- Valor Nominal (Top Right) -->
-    <div class="flex justify-end mb-6">
-      <ValorNominalBadge :valor-nominal="valorNominal" />
-    </div>
-
-    <AportesSection
-      :aportantes="acreedoresConCapitalizaciones"
-      :total-acciones="totalAcciones"
-      :is-loading="isLoading"
-      :error="error"
-      @add="openModalForAdd"
-      @edit="openModalForEdit"
-      @delete="handleDeleteCapitalizacion"
-    />
-
-    <!-- Modal de Capitalización -->
-    <AporteModal
-      v-model="isModalOpen"
-      :mode="modalMode"
-      :accionista-id="selectedAccionistaId"
-      :aporte-id="selectedCapitalizacionId"
-      :society-id="societyId"
-      :flow-id="flowId"
-      @close="closeModal"
-      @submit="handleSaveCapitalizacion"
-    />
+    <CapitalizacionesSection />
   </SlotWrapper>
 </template>

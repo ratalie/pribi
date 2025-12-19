@@ -7,7 +7,7 @@
   import BaseModal from "~/components/base/modal/BaseModal.vue";
   import { useCapitalizacionesStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/capitalizacion-creditos/stores/useCapitalizacionesStore";
   import { useAportesStore } from "../../stores/useAportesStore";
-  import AporteForm from "./AporteForm.vue";
+  import AporteForm from "../molecules/AporteForm.vue";
 
   interface Props {
     modelValue?: boolean;
