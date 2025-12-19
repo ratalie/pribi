@@ -1,7 +1,8 @@
-import { ref, computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
 import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
+import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
+import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
 
 // ========================================
 // TIPOS
@@ -11,7 +12,13 @@ export type ContributorType = "ACCIONISTA" | "NUEVO_APORTANTE";
 
 export interface Person {
   id: string;
-  tipo: "NATURAL" | "JURIDICA" | "SUCURSAL" | "FONDO_INVERSION" | "FIDEICOMISO" | "SUCESION_INDIVISA";
+  tipo:
+    | "NATURAL"
+    | "JURIDICA"
+    | "SUCURSAL"
+    | "FONDO_INVERSION"
+    | "FIDEICOMISO"
+    | "SUCESION_INDIVISA";
   nombre?: string;
   apellidoPaterno?: string;
   apellidoMaterno?: string;
@@ -30,6 +37,7 @@ export interface Aportante {
   typeShareholder: ContributorType;
   isContributor: boolean;
   status?: boolean;
+  contributionModule?: "CASH" | "CREDIT" | "BOTH";
   person: Person;
   allocationShare?: Array<{
     id: string;
@@ -49,6 +57,7 @@ export interface Aportante {
  */
 export function useAportantesPage() {
   const route = useRoute();
+  const asistenciaStore = useAsistenciaStore();
 
   const societyId = computed(() => route.params.societyId as string);
   const flowId = computed(() => route.params.flowId as string);
@@ -102,6 +111,11 @@ export function useAportantesPage() {
     error.value = null;
 
     try {
+      // ✅ 1. Cargar asistencias si no están cargadas
+      if (asistenciaStore.asistencias.length === 0) {
+        await asistenciaStore.loadAsistencias(Number(societyId.value), Number(flowId.value));
+      }
+
       const baseUrl = resolveBaseUrl();
       const url = `${baseUrl}${API_BASE.value}/participants`;
 
@@ -114,9 +128,43 @@ export function useAportantesPage() {
 
       console.debug("[Aportantes] GET response", { count: response.data.length });
 
-      // El backend ya devuelve solo los participantes (que asistieron)
-      aportantes.value = response.data.map((a: Aportante) => {
-        // NUEVO_APORTANTE siempre debe tener isContributor: true
+      // ✅ 2. Filtrar por contributionModule (solo CASH o BOTH)
+      const participantesAporteDinerario = response.data.filter(
+        (a: Aportante) => a.contributionModule === "CASH" || a.contributionModule === "BOTH"
+      );
+
+      console.debug(
+        "[Aportantes] Filtrados por módulo (CASH/BOTH):",
+        participantesAporteDinerario.length
+      );
+
+      // ✅ 3. Filtrar por asistencia
+      // Para ACCIONISTA: verificar en asistencias por personId
+      // Para NUEVO_APORTANTE: siempre incluir (no está en snapshot, es nuevo)
+      const participantesFiltrados = participantesAporteDinerario.filter(
+        (participante: Aportante) => {
+          // Si es NUEVO_APORTANTE, siempre incluirlo (no tiene asistencia registrada)
+          if (participante.typeShareholder === "NUEVO_APORTANTE") {
+            return true;
+          }
+
+          // Si es ACCIONISTA, verificar si asistió
+          if (participante.personId) {
+            const asistencia = asistenciaStore.asistencias.find(
+              (a) => a.accionista.id === participante.personId
+            );
+            return asistencia?.asistio === true;
+          }
+
+          // Si no tiene personId, excluirlo por seguridad
+          return false;
+        }
+      );
+
+      console.debug("[Aportantes] Filtrados por asistencia:", participantesFiltrados.length);
+
+      // ✅ 4. Mapear y asegurar que NUEVO_APORTANTE siempre tenga isContributor: true
+      aportantes.value = participantesFiltrados.map((a: Aportante) => {
         if (a.typeShareholder === "NUEVO_APORTANTE") {
           return { ...a, isContributor: true };
         }
@@ -265,7 +313,11 @@ export function useAportantesPage() {
       throw error;
     }
 
-    console.log("✅ [Aportantes] Validación exitosa:", aportantesSeleccionados.length, "aportantes seleccionados");
+    console.log(
+      "✅ [Aportantes] Validación exitosa:",
+      aportantesSeleccionados.length,
+      "aportantes seleccionados"
+    );
   });
 
   // ========================================
@@ -273,6 +325,14 @@ export function useAportantesPage() {
   // ========================================
 
   onMounted(async () => {
+    // ✅ Cargar asistencias primero
+    try {
+      await asistenciaStore.loadAsistencias(Number(societyId.value), Number(flowId.value));
+    } catch (err) {
+      console.error("[Aportantes] Error al cargar asistencias:", err);
+    }
+
+    // Luego cargar participantes (que ya filtrará por asistencia)
     await fetchAportantes();
   });
 
@@ -293,4 +353,3 @@ export function useAportantesPage() {
     fetchAportantes,
   };
 }
-

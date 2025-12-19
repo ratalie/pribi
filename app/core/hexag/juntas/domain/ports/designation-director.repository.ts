@@ -26,5 +26,10 @@ export interface DesignationDirectorRepository {
    * PUT /api/v2/society-profile/:societyId/register-assembly/:flowId/designation-director
    */
   update(societyId: number, flowId: number, dto: UpdateDesignationDirectorDTO): Promise<void>;
-}
 
+  /**
+   * Eliminar director designado
+   * DELETE /api/v2/society-profile/:societyId/register-assembly/:flowId/designation-director/:designationId
+   */
+  delete(societyId: number, flowId: number, designationId: string): Promise<void>;
+}

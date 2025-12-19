@@ -130,8 +130,10 @@
   import type { ColumnDef } from "@tanstack/vue-table";
   import { Info, UserPlus } from "lucide-vue-next";
   import { computed, h, onMounted, ref, watch } from "vue";
+  import { useRoute } from "vue-router";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
+  import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { useNombramientoDirectoresPage } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/composables/useNombramientoDirectoresPage";
   import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
   import DesignarDirectorModal from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/components/DesignarDirectorModal.vue";
@@ -161,6 +163,10 @@
     esCandidato?: boolean;
     esDelSnapshot?: boolean; // ✅ Flag para identificar si viene del snapshot (read-only)
   }
+
+  const route = useRoute();
+  const societyId = computed(() => Number(route.params.societyId));
+  const flowId = computed(() => Number(route.params.flowId));
 
   // ✅ Composable para datos del backend
   const {
@@ -226,7 +232,10 @@
       const apellidoPaterno = partesNombre[1] || "";
       const apellidoMaterno = partesNombre.slice(2).join(" ") || "";
 
-      return {
+      // ✅ Asegurar que esDelSnapshot sea explícitamente boolean
+      const esDelSnapshot = director.esDelSnapshot === true;
+
+      const directorMapeado: Director = {
         id: director.id, // ID del registro de designación
         nombreCompleto: director.nombre, // Ya viene formateado del composable
         tipoDirector: director.directorRole.toLowerCase() as
@@ -239,19 +248,32 @@
         apellidoPaterno,
         apellidoMaterno,
         candidato: director.isCandidate,
-        esDelSnapshot: director.esDelSnapshot || false, // ✅ Flag para identificar si viene del snapshot
+        esDelSnapshot, // ✅ Flag para identificar si viene del snapshot (explícitamente boolean)
         ...(director.replacesId ? { reemplazaId: director.replacesId } : {}),
       };
+
+      // ✅ Debug: Log para verificar el flag esDelSnapshot
+      console.log(
+        `[mapearDirectoresParaUI] Director: ${directorMapeado.nombreCompleto}, esDelSnapshot: ${esDelSnapshot}, raw: ${director.esDelSnapshot}`
+      );
+
+      return directorMapeado;
     });
   };
 
   /**
    * ✅ Función para identificar si un director viene del snapshot (read-only)
+   * Los directores del snapshot NO deben tener acciones de editar/eliminar
    */
   const esDirectorDelSnapshot = (directorId: string): boolean => {
-    const director =
-      directoresTitulares.value.find((d) => d.id === directorId) ||
-      directoresSuplentesAlternos.value.find((d) => d.id === directorId);
+    // Buscar el director en ambas listas (titulares y suplentes/alternos)
+    const directorEnTitulares = directoresTitulares.value.find((d) => d.id === directorId);
+    const directorEnSuplentesAlternos = directoresSuplentesAlternos.value.find(
+      (d) => d.id === directorId
+    );
+    const director = directorEnTitulares || directorEnSuplentesAlternos;
+
+    // Si tiene el flag esDelSnapshot === true, es del snapshot (read-only)
     return director?.esDelSnapshot === true;
   };
 
@@ -531,18 +553,42 @@
           return;
         }
 
-        // TODO: Implementar DELETE si el backend lo soporta
-        console.log("Eliminar director:", id);
-        // Por ahora solo loguear, se implementará después
+        // ✅ Implementar DELETE
+        try {
+          await nombramientoStore.deleteDirector(societyId.value, flowId.value, id);
+          console.log("✅ Director eliminado exitosamente:", id);
+          // Recargar datos para actualizar la vista
+          await loadData();
+        } catch (error) {
+          console.error("Error al eliminar director:", error);
+          // El error ya fue manejado en el store, aquí solo logueamos
+        }
       },
     },
   ];
 
-  // Mostrar acciones solo para directores que no son la fila "Sin Asignar"
-  // Los candidatos agregados desde esta vista SÍ deben tener acciones
-  // ✅ Mostrar acciones solo para directores que no son la fila "Sin Asignar" y no son del snapshot
+  // ✅ Mostrar acciones SOLO para directores nuevos (candidatos creados en este flujo)
+  // NO mostrar acciones para:
+  // - Directores del snapshot (esDelSnapshot === true) - estos son read-only
+  // - La fila "Sin Asignar" (esCandidato === true y es fila especial)
   const showActionsFor = (row: Director) => {
-    return !row.esCandidato && !row.esDelSnapshot; // ✅ Excluir también los del snapshot
+    // ✅ Verificar explícitamente: solo mostrar si NO es del snapshot y NO es candidato (fila "Sin Asignar")
+    const esDelSnapshot = row.esDelSnapshot === true;
+    const esCandidatoFilaEspecial = row.esCandidato === true;
+
+    // Debug: Log para verificar qué está recibiendo
+    console.log(
+      `[showActionsFor] Director: ${
+        row.nombreCompleto
+      }, esDelSnapshot: ${esDelSnapshot} (raw: ${
+        row.esDelSnapshot
+      }), esCandidato: ${esCandidatoFilaEspecial} (raw: ${row.esCandidato}), shouldShow: ${
+        !esDelSnapshot && !esCandidatoFilaEspecial
+      }`
+    );
+
+    // Solo mostrar acciones para directores nuevos (no del snapshot y no la fila especial)
+    return !esDelSnapshot && !esCandidatoFilaEspecial;
   };
 
   // ✅ Acciones para suplentes/alternos (solo para directores nuevos, no del snapshot)
@@ -587,17 +633,42 @@
           return;
         }
 
-        // TODO: Implementar DELETE si el backend lo soporta
-        console.log("Eliminar director suplente/alterno:", id);
-        // Por ahora solo loguear, se implementará después
+        // ✅ Implementar DELETE
+        try {
+          await nombramientoStore.deleteDirector(societyId.value, flowId.value, id);
+          console.log("✅ Director suplente/alterno eliminado exitosamente:", id);
+          // Recargar datos para actualizar la vista
+          await loadData();
+        } catch (error) {
+          console.error("Error al eliminar director suplente/alterno:", error);
+          // El error ya fue manejado en el store, aquí solo logueamos
+        }
       },
     },
   ];
 
-  // ✅ Mostrar acciones solo para directores que no son la fila "Sin Asignar" y no son del snapshot
-  // Los candidatos agregados desde esta vista SÍ deben tener acciones (si no son del snapshot)
+  // ✅ Mostrar acciones SOLO para directores nuevos (candidatos creados en este flujo)
+  // NO mostrar acciones para:
+  // - Directores del snapshot (esDelSnapshot === true) - estos son read-only
+  // - La fila "Sin Asignar" (esCandidato === true y es fila especial)
   const showActionsForSuplentesAlternos = (row: Director) => {
-    return !row.esCandidato && !row.esDelSnapshot; // ✅ Excluir también los del snapshot
+    // ✅ Verificar explícitamente: solo mostrar si NO es del snapshot y NO es candidato (fila "Sin Asignar")
+    const esDelSnapshot = row.esDelSnapshot === true;
+    const esCandidatoFilaEspecial = row.esCandidato === true;
+
+    // Debug: Log para verificar qué está recibiendo
+    console.log(
+      `[showActionsForSuplentesAlternos] Director: ${
+        row.nombreCompleto
+      }, esDelSnapshot: ${esDelSnapshot} (raw: ${
+        row.esDelSnapshot
+      }), esCandidato: ${esCandidatoFilaEspecial} (raw: ${row.esCandidato}), shouldShow: ${
+        !esDelSnapshot && !esCandidatoFilaEspecial
+      }`
+    );
+
+    // Solo mostrar acciones para directores nuevos (no del snapshot y no la fila especial)
+    return !esDelSnapshot && !esCandidatoFilaEspecial;
   };
 
   // ✅ Función para deshabilitar acciones de directores del snapshot
@@ -681,5 +752,12 @@
   // Cargar datos al montar
   onMounted(() => {
     loadData();
+  });
+
+  // ✅ Configurar el botón "Siguiente" para navegar a votaciones
+  useJuntasFlowNext(async () => {
+    // No necesitamos validaciones adicionales aquí,
+    // useJuntasFlowNext automáticamente detecta la siguiente sección (votacion)
+    console.log("✅ Navegando a votaciones desde nombramiento");
   });
 </script>

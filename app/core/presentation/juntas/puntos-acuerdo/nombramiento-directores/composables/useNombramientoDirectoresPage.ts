@@ -4,6 +4,7 @@ import type {
   PersonJuridicDTO,
   PersonNaturalDTO,
 } from "~/core/hexag/juntas/application/dtos/designation-attorney.dto";
+import type { DesignationDirectorResponseDTO } from "~/core/hexag/juntas/application/dtos/designation-director.dto";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 import { usePersonaNaturalStore } from "~/stores/usePersonaNaturalStore";
 import { TipoDocumentosEnum } from "~/types/enums/TipoDocumentosEnum";
@@ -92,24 +93,58 @@ export function useNombramientoDirectoresPage() {
    * Función para actualizar directores mapeados desde todos los directores (snapshot + designados)
    */
   function actualizarDirectoresMapeados() {
-    // ✅ Usar todosLosDirectores que incluye snapshot + designados
-    const todosDirectores = nombramientoStore.todosLosDirectores;
+    // ✅ Obtener directores del snapshot y designados por separado
+    const directoresDelSnapshot = nombramientoStore.directoresDisponiblesDelSnapshot;
+    const directoresDesignados = nombramientoStore.directoresDesignados;
+
+    console.log("[Composable][actualizarDirectoresMapeados] Iniciando mapeo:", {
+      directoresDelSnapshot: directoresDelSnapshot.length,
+      directoresDesignados: directoresDesignados.length,
+    });
 
     // Obtener IDs de directores designados (nuevos) para distinguirlos
-    const idsDesignados = new Set(
-      nombramientoStore.directoresDesignados.map((d) => d.directorId)
-    );
+    const idsDesignados = new Set(directoresDesignados.map((d) => d.directorId));
 
-    const mapeados = todosDirectores.map((director) => {
+    // Crear un tipo temporal con el flag
+    type DirectorConFlag = DesignationDirectorResponseDTO & { _isFromSnapshot: boolean };
+
+    // Combinar snapshot (marcados como esDelSnapshot: true) + designados (marcados como esDelSnapshot: false)
+    // ⚠️ IMPORTANTE: Primero snapshot, luego designados (los designados tienen prioridad en la deduplicación)
+    const todosDirectores: DirectorConFlag[] = [
+      // Directores del snapshot (marcar como esDelSnapshot: true)
+      ...directoresDelSnapshot.map((director) => ({
+        ...director,
+        _isFromSnapshot: true as const, // Flag temporal para identificar origen
+      })),
+      // Directores designados (marcar como esDelSnapshot: false)
+      ...directoresDesignados.map((director) => ({
+        ...director,
+        _isFromSnapshot: false as const, // Flag temporal para identificar origen
+      })),
+    ];
+
+    // Deduplicar por directorId (preferir designados sobre snapshot si hay duplicados)
+    const mapa = new Map<string, DirectorConFlag>();
+    todosDirectores.forEach((director) => {
+      const existing = mapa.get(director.directorId);
+      // Si no existe, agregarlo
+      // Si existe y es del snapshot, reemplazar con el designado (porque los designados vienen después)
+      // Esto asegura que si un director está tanto en snapshot como designado, se use el designado
+      if (!existing || existing._isFromSnapshot) {
+        mapa.set(director.directorId, director);
+      }
+    });
+
+    const mapeados = Array.from(mapa.values()).map((director) => {
       // Construir nombre completo desde los datos de persona del backend
       const nombre = `${director.person.nombre} ${director.person.apellidoPaterno} ${
         director.person.apellidoMaterno || ""
       }`.trim();
 
-      // ✅ Identificar si viene del snapshot (no está en designados)
-      const esDelSnapshot = !idsDesignados.has(director.directorId);
+      // ✅ Identificar si viene del snapshot (usar el flag temporal _isFromSnapshot)
+      const esDelSnapshot = director._isFromSnapshot === true;
 
-      return {
+      const rowMapeado = {
         id: director.id, // ✅ ID del registro de designación (o directorId si es del snapshot)
         directorId: director.directorId, // ✅ ID del director
         directorRole: director.directorRole,
@@ -118,17 +153,30 @@ export function useNombramientoDirectoresPage() {
         numeroDocumento: director.person.numeroDocumento,
         isCandidate: director.isCandidate,
         replacesId: director.replacesId,
-        esDelSnapshot, // ✅ Flag para identificar si viene del snapshot
+        esDelSnapshot, // ✅ Flag para identificar si viene del snapshot (read-only)
       };
+
+      // ✅ Debug: Log para verificar el flag esDelSnapshot en el composable
+      console.log(
+        `[Composable][actualizarDirectoresMapeados] Director: ${nombre}, esDelSnapshot: ${esDelSnapshot}, _isFromSnapshot: ${director._isFromSnapshot}`
+      );
+
+      return rowMapeado;
     });
 
     directoresMapeados.value = mapeados;
   }
 
-  // Watch para actualizar directores mapeados cuando cambian los designados
+  // Watch para actualizar directores mapeados cuando cambian los designados o el snapshot
   watch(
-    () => nombramientoStore.directoresDesignados,
+    [
+      () => nombramientoStore.directoresDesignados,
+      () => nombramientoStore.directoresDisponiblesDelSnapshot,
+    ],
     () => {
+      console.log(
+        "[Composable][NombramientoDirectores] Watch detectó cambios, actualizando directores mapeados"
+      );
       actualizarDirectoresMapeados();
     },
     { immediate: true, deep: true }
@@ -317,4 +365,3 @@ export function useNombramientoDirectoresPage() {
     limpiarFormulario,
   };
 }
-

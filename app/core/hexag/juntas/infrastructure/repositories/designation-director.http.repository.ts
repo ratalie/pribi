@@ -204,4 +204,48 @@ export class DesignationDirectorHttpRepository implements DesignationDirectorRep
       throw error;
     }
   }
+
+  /**
+   * DELETE - Eliminar director designado
+   * ⚠️ IMPORTANTE: El DELETE se hace con body (array de IDs), NO por ruta
+   */
+  async delete(societyId: number, flowId: number, designationId: string): Promise<void> {
+    const url = this.resolveDesignationDirectorUrl(societyId, flowId);
+    const authConfig = withAuthHeaders() as FetchOptions & {
+      headers?: Record<string, string>;
+    };
+    const requestConfig = {
+      ...authConfig,
+      method: "DELETE" as const,
+      body: [designationId], // ✅ Enviar array de IDs en el body
+    };
+
+    console.debug("[Repository][DesignationDirectorHttp] delete() request", {
+      url,
+      societyId,
+      flowId,
+      designationId,
+      body: [designationId],
+    });
+
+    try {
+      const response = await $fetch<DesignationDirectorActionResponse>(url, requestConfig);
+
+      console.debug("[Repository][DesignationDirectorHttp] delete() response", {
+        success: response?.success,
+        message: response?.message,
+      });
+
+      if (!response.success) {
+        throw new Error(response.message || "Error al eliminar director designado");
+      }
+    } catch (error: any) {
+      console.error("[Repository][DesignationDirectorHttp] delete() error", {
+        url,
+        error: error.message || error,
+        status: error.status || error.statusCode,
+      });
+      throw error;
+    }
+  }
 }

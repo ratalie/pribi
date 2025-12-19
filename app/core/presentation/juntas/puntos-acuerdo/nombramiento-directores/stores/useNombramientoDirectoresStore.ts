@@ -7,6 +7,7 @@ import type {
   UpdateDesignationDirectorDTO,
 } from "~/core/hexag/juntas/application/dtos/designation-director.dto";
 import { CreateDesignationDirectorUseCase } from "~/core/hexag/juntas/application/use-cases/designation-director/create-designation-director.use-case";
+import { DeleteDesignationDirectorUseCase } from "~/core/hexag/juntas/application/use-cases/designation-director/delete-designation-director.use-case";
 import { GetDesignationDirectorUseCase } from "~/core/hexag/juntas/application/use-cases/designation-director/get-designation-director.use-case";
 import { UpdateDesignationDirectorUseCase } from "~/core/hexag/juntas/application/use-cases/designation-director/update-designation-director.use-case";
 import { DesignationDirectorHttpRepository } from "~/core/hexag/juntas/infrastructure/repositories/designation-director.http.repository";
@@ -328,6 +329,43 @@ export const useNombramientoDirectoresStore = defineStore("nombramientoDirectore
         throw error;
       }
     },
+
+    /**
+     * Eliminar director designado
+     * DELETE /designation-director/:designationId
+     *
+     * @param designationId - ID del registro de designación (DesignationDirectorResponseDTO.id)
+     */
+    async deleteDirector(
+      societyId: number,
+      flowId: number,
+      designationId: string
+    ): Promise<void> {
+      this.status = "loading";
+      this.errorMessage = null;
+
+      try {
+        const repository = new DesignationDirectorHttpRepository();
+        const useCase = new DeleteDesignationDirectorUseCase(repository);
+
+        console.log(`[Store][NombramientoDirectores] Eliminando director ${designationId}`);
+
+        await useCase.execute(societyId, flowId, designationId);
+
+        console.log(
+          `[Store][NombramientoDirectores] ✅ Director ${designationId} eliminado exitosamente`
+        );
+
+        // Recargar directores para obtener datos actualizados
+        await this.loadDirectoresDesignados(societyId, flowId);
+
+        this.status = "idle";
+      } catch (error: any) {
+        console.error("[Store][NombramientoDirectores] Error al eliminar director:", error);
+        this.status = "error";
+        this.errorMessage = error.message || "Error al eliminar director";
+        throw error;
+      }
+    },
   },
 });
-
