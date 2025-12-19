@@ -42,6 +42,7 @@
 
   const metodoVotacion = ref<"unanimidad" | "mayoria">("unanimidad");
   const candidatosSeleccionados = ref<string[]>([]);
+  const isLoadingInitial = ref(true); // ✅ Flag para evitar resetear votos durante carga inicial
 
   // Cargar datos al montar
   onMounted(async () => {
@@ -86,7 +87,14 @@
 
       // ✅ 4. Sincronizar método de votación desde el store (ya fue detectado en loadData)
       // El método ya fue establecido en loadData basándose en tipoAprobacion del backend
+      // ⚠️ IMPORTANTE: Cambiar metodoVotacion DURANTE la carga inicial (isLoadingInitial = true)
+      // para que el watch NO resetee los votos que acabamos de cargar del backend
       metodoVotacion.value = directoresStore.metodoVotacion;
+
+      // ✅ Marcar que terminó la carga inicial DESPUÉS de cambiar metodoVotacion
+      // y esperar un tick para que el watch termine de procesar
+      await nextTick();
+      isLoadingInitial.value = false;
 
       // ✅ 5. Esperar otro tick para que el componente MayoriaVotacionDirectorio detecte los cambios
       await nextTick();
@@ -98,6 +106,7 @@
       });
     } catch (error) {
       console.error("[VotacionDirectores] Error al cargar datos:", error);
+      isLoadingInitial.value = false; // Asegurar que se desactive aunque haya error
     }
   });
 
@@ -105,9 +114,30 @@
   watch(metodoVotacion, async (nuevoMetodo, metodoAnterior) => {
     directoresStore.setMetodoVotacion(nuevoMetodo);
 
-    // Si cambia de unanimidad a mayoría, resetear votos
-    if (metodoAnterior === "unanimidad" && nuevoMetodo === "mayoria") {
+    // ⚠️ IMPORTANTE: Solo resetear votos si:
+    // 1. El cambio es MANUAL (no durante carga inicial)
+    // 2. Cambia de unanimidad a mayoría
+    // 3. NO hay votos ya cargados (si hay votos, significa que vienen del backend y no debemos borrarlos)
+    const tieneVotosCargados = directoresStore.votosAsignados.length > 0;
+
+    if (
+      !isLoadingInitial.value &&
+      metodoAnterior === "unanimidad" &&
+      nuevoMetodo === "mayoria" &&
+      !tieneVotosCargados // ✅ Solo resetear si NO hay votos cargados
+    ) {
+      console.log(
+        "[VotacionDirectores] Cambio manual de unanimidad a mayoría, reseteando votos (no hay votos previos)"
+      );
       directoresStore.setVotosAsignados([]);
+    } else if (isLoadingInitial.value) {
+      console.log(
+        "[VotacionDirectores] Cambio durante carga inicial, NO reseteando votos (ya cargados del backend)"
+      );
+    } else if (tieneVotosCargados) {
+      console.log(
+        "[VotacionDirectores] Cambio de método detectado pero hay votos cargados, NO reseteando (vienen del backend)"
+      );
     }
   });
 

@@ -95,7 +95,20 @@ export const useDirectoresStore = defineStore("directores", {
     },
 
     setVotosAsignados(votos: VotoAsignado[]) {
+      console.log("🔍 [DirectoresStore][setVotosAsignados] Recibiendo votos:", {
+        count: votos.length,
+        votos: votos.map((v) => ({
+          candidatoNombreCompleto: v.candidatoNombreCompleto,
+          candidatoPersonaId: v.candidatoPersonaId,
+          accionistaIndex: v.accionistaIndex,
+          cantidad: v.cantidad,
+        })),
+      });
       this.votosAsignados = votos;
+      console.log(
+        "✅ [DirectoresStore][setVotosAsignados] Votos asignados actualizados. Total:",
+        this.votosAsignados.length
+      );
     },
 
     agregarVotoAsignado(voto: VotoAsignado) {

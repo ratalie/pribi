@@ -286,11 +286,45 @@ export function useVotacionDirectoresController() {
     const votantesArray = votantes.value;
     const candidatosArray = candidatos.value;
 
+    console.log("🔍 [Controller][convertirVotosBackendALocal] ========== INICIO ==========");
     console.log("[Controller][convertirVotosBackendALocal] Iniciando conversión:", {
       itemsCount: items.length,
       votantesCount: votantesArray.length,
       candidatosCount: candidatosArray.length,
     });
+
+    // ✅ LOG DETALLADO: Candidatos disponibles
+    console.log(
+      "🔍 [Controller][convertirVotosBackendALocal] Candidatos disponibles:",
+      candidatosArray.map((c) => ({
+        personaId: c.person?.id,
+        nombreCompleto: `${c.person?.nombre || ""} ${c.person?.apellidoPaterno || ""} ${
+          c.person?.apellidoMaterno || ""
+        }`.trim(),
+      }))
+    );
+
+    // ✅ LOG DETALLADO: Votantes disponibles
+    console.log(
+      "🔍 [Controller][convertirVotosBackendALocal] Votantes disponibles:",
+      votantesArray.map((v, idx) => ({
+        index: idx,
+        accionistaId: v.accionistaId,
+        nombreCompleto: v.nombreCompleto,
+      }))
+    );
+
+    // ✅ LOG DETALLADO: Items del backend
+    console.log(
+      "🔍 [Controller][convertirVotosBackendALocal] Items del backend:",
+      items.map((item) => ({
+        id: item.id,
+        personaId: item.personaId,
+        label: item.label,
+        votosCount: item.votos?.length || 0,
+        votos: item.votos?.map((v) => ({ accionistaId: v.accionistaId, valor: v.valor })),
+      }))
+    );
 
     // Crear mapa de personaId → candidato (para mapear items a candidatos)
     const candidatosPorPersonaId = new Map(candidatosArray.map((c) => [c.person.id || "", c]));
@@ -303,17 +337,30 @@ export function useVotacionDirectoresController() {
     // ✅ Map para sumar votos duplicados: clave = "candidatoNombreCompleto-accionistaIndex"
     const votosMap = new Map<string, number>();
 
-    items.forEach((item) => {
+    items.forEach((item, itemIndex) => {
+      console.log(
+        `🔍 [Controller][convertirVotosBackendALocal] Procesando item ${itemIndex + 1}/${
+          items.length
+        }:`,
+        {
+          itemId: item.id,
+          personaId: item.personaId,
+          label: item.label,
+        }
+      );
+
       if (!item.personaId) {
-        console.warn("[Controller][convertirVotosBackendALocal] Item sin personaId:", item);
+        console.warn("⚠️ [Controller][convertirVotosBackendALocal] Item sin personaId:", item);
         return;
       }
 
       const candidato = candidatosPorPersonaId.get(item.personaId);
       if (!candidato) {
         console.warn(
-          "[Controller][convertirVotosBackendALocal] Candidato no encontrado para personaId:",
-          item.personaId
+          "⚠️ [Controller][convertirVotosBackendALocal] Candidato NO encontrado para personaId:",
+          item.personaId,
+          "| Candidatos disponibles:",
+          Array.from(candidatosPorPersonaId.keys())
         );
         return;
       }
@@ -322,14 +369,21 @@ export function useVotacionDirectoresController() {
         candidato.person.apellidoMaterno || ""
       }`.trim();
 
+      console.log(`✅ [Controller][convertirVotosBackendALocal] Candidato encontrado:`, {
+        personaId: item.personaId,
+        nombreCompleto,
+      });
+
       // ✅ Sumar todos los votos del mismo accionista para este candidato
       // (puede haber votos duplicados en el backend)
-      item.votos.forEach((voto) => {
+      item.votos.forEach((voto, votoIndex) => {
         const accionistaIndex = indicePorAccionistaId.get(voto.accionistaId);
         if (accionistaIndex === undefined) {
           console.warn(
-            "[Controller][convertirVotosBackendALocal] Accionista no encontrado para accionistaId:",
-            voto.accionistaId
+            "⚠️ [Controller][convertirVotosBackendALocal] Accionista NO encontrado para accionistaId:",
+            voto.accionistaId,
+            "| Votantes disponibles:",
+            Array.from(indicePorAccionistaId.keys())
           );
           return;
         }
@@ -349,6 +403,15 @@ export function useVotacionDirectoresController() {
           : `${nombreCompleto}-${accionistaIndex}`; // Fallback a nombreCompleto si no hay personaId
         const cantidadActual = votosMap.get(clave) || 0;
         votosMap.set(clave, cantidadActual + cantidad);
+
+        console.log(`  📝 [Controller][convertirVotosBackendALocal] Voto ${votoIndex + 1}:`, {
+          accionistaId: voto.accionistaId,
+          accionistaIndex,
+          cantidad,
+          clave,
+          cantidadAnterior: cantidadActual,
+          cantidadNueva: cantidadActual + cantidad,
+        });
       });
     });
 
@@ -402,13 +465,29 @@ export function useVotacionDirectoresController() {
       })
       .filter((v): v is NonNullable<typeof v> => v !== null);
 
-    console.log("[Controller][convertirVotosBackendALocal] Votos convertidos:", {
+    console.log("🔍 [Controller][convertirVotosBackendALocal] Votos convertidos:", {
       votosAsignadosCount: votosAsignados.length,
-      votosAsignados: votosAsignados.slice(0, 5), // Primeros 5 para debug
+      votosAsignados: votosAsignados, // TODOS los votos para debug completo
+      resumen: votosAsignados.map((v) => ({
+        candidatoNombreCompleto: v.candidatoNombreCompleto,
+        candidatoPersonaId: v.candidatoPersonaId,
+        accionistaIndex: v.accionistaIndex,
+        cantidad: v.cantidad,
+        clave: v.candidatoPersonaId
+          ? `${v.candidatoPersonaId}-${v.accionistaIndex}`
+          : `${v.candidatoNombreCompleto}-${v.accionistaIndex}`,
+      })),
     });
 
     // Actualizar useDirectoresStore con los votos cargados
+    console.log("🔍 [Controller][convertirVotosBackendALocal] Guardando votos en store...");
     directoresStore.setVotosAsignados(votosAsignados);
+    console.log(
+      "✅ [Controller][convertirVotosBackendALocal] Votos guardados en store. Store ahora tiene:",
+      directoresStore.votosAsignados.length,
+      "votos"
+    );
+    console.log("🔍 [Controller][convertirVotosBackendALocal] ========== FIN ==========");
   }
 
   /**
