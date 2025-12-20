@@ -1,15 +1,15 @@
-import type { VoteSession } from "../../domain/entities/vote-session.entity";
-import type { VoteItem } from "../../domain/entities/vote-item.entity";
-import type { VoteEntry } from "../../domain/entities/vote-entry.entity";
 import type {
-  VoteSessionResponseDTO,
-  VoteItemDTO,
-  VoteEntryDTO,
   CreateVoteSessionRequestDTO,
+  VoteEntryDTO,
+  VoteItemDTO,
+  VoteSessionResponseDTO,
 } from "../../application/dtos/vote.dto";
+import type { VoteEntry } from "../../domain/entities/vote-entry.entity";
+import type { VoteItem } from "../../domain/entities/vote-item.entity";
+import type { VoteSession } from "../../domain/entities/vote-session.entity";
+import { VoteAgreementType } from "../../domain/enums/vote-agreement-type.enum";
 import { VoteContext } from "../../domain/enums/vote-context.enum";
 import { VoteMode } from "../../domain/enums/vote-mode.enum";
-import { VoteAgreementType } from "../../domain/enums/vote-agreement-type.enum";
 
 /**
  * Mapper: DTO ↔ Entity para Votaciones
@@ -17,25 +17,23 @@ import { VoteAgreementType } from "../../domain/enums/vote-agreement-type.enum";
 export class VoteMapper {
   /**
    * Convierte DTO de respuesta a Entity
-   * 
+   *
    * ⚠️ IMPORTANTE: `tipoAprobacion` ahora está en cada item, no en la sesión
    */
-  static fromResponseDto(
-    dto: VoteSessionResponseDTO,
-    contexto: VoteContext
-  ): VoteSession {
+  static fromResponseDto(dto: VoteSessionResponseDTO, contexto: VoteContext): VoteSession {
+    const modo = dto.modo as VoteMode;
     return {
       id: dto.id,
       contexto,
-      modo: dto.modo as VoteMode,
+      modo,
       // ✅ tipoAprobacion ya no está aquí, está en cada item
-      items: dto.items.map((item) => this.itemFromDto(item)),
+      items: dto.items.map((item) => this.itemFromDto(item, modo)),
     };
   }
 
   /**
    * Convierte Entity a DTO de request (crear)
-   * 
+   *
    * ⚠️ IMPORTANTE: `tipoAprobacion` ahora está en cada item, no en la sesión
    * ⚠️ IMPORTANTE: Si es unanimidad, NO enviar votos vacío (o según backend)
    */
@@ -76,24 +74,27 @@ export class VoteMapper {
 
   /**
    * Convierte Item DTO a Entity
-   * 
+   *
    * ⚠️ IMPORTANTE: `tipoAprobacion` ahora está en el item
    */
-  private static itemFromDto(dto: VoteItemDTO): VoteItem {
+  private static itemFromDto(dto: VoteItemDTO, modo?: string): VoteItem {
+    // ⚠️ Backend puede devolver "descripcion" (sin tilde) o "descripción" (con tilde)
+    const descripcion = dto.descripción || dto.descripcion;
+
     return {
       id: dto.id,
       orden: dto.orden,
       label: dto.label,
-      descripción: dto.descripción,
+      descripción: descripcion,
       personaId: dto.personaId,
       tipoAprobacion: dto.tipoAprobacion as VoteAgreementType | undefined, // ✅ AQUÍ, en el item
-      votos: dto.votos.map((voto) => this.entryFromDto(voto)),
+      votos: dto.votos.map((voto) => this.entryFromDto(voto, modo)),
     };
   }
 
   /**
    * Convierte Item Entity a DTO (ya no se usa, se hace inline en toCreateRequestDto)
-   * 
+   *
    * ⚠️ IMPORTANTE: `tipoAprobacion` ahora está en el item
    */
   private static itemToDto(entity: VoteItem): VoteItemDTO {
@@ -110,20 +111,27 @@ export class VoteMapper {
 
   /**
    * Convierte Entry DTO a Entity
-   * 
+   *
    * ⚠️ IMPORTANTE: El backend ahora devuelve `accionistaId` (ID del accionista ShareholderV2.id)
+   * ⚠️ IMPORTANTE: Si el modo es CUMULATIVO, el valor debe ser número (puede venir como string desde el backend)
    */
-  private static entryFromDto(dto: VoteEntryDTO): VoteEntry {
+  private static entryFromDto(dto: VoteEntryDTO, modo?: string): VoteEntry {
+    // Si el modo es CUMULATIVO y el valor es string, convertirlo a número
+    let valor = dto.valor;
+    if (modo === "CUMULATIVO" && typeof dto.valor === "string") {
+      valor = Number(dto.valor) || 0;
+    }
+
     return {
       id: dto.id,
       accionistaId: dto.accionistaId, // ✅ Backend ahora usa accionistaId directamente
-      valor: dto.valor,
+      valor,
     };
   }
 
   /**
    * Convierte Entry Entity a DTO (para crear)
-   * 
+   *
    * ⚠️ IMPORTANTE: El backend ahora espera `accionistaId` directamente
    */
   private static entryToDto(entity: VoteEntry): VoteEntryDTO {
@@ -134,4 +142,3 @@ export class VoteMapper {
     };
   }
 }
-

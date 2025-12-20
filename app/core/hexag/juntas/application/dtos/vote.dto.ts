@@ -5,7 +5,7 @@
 
 /**
  * DTO de Voto Individual (Response del GET)
- * 
+ *
  * ⚠️ IMPORTANTE: El backend ahora devuelve `accionistaId` (ID del accionista ShareholderV2.id)
  * NO es el ID de la persona (PersonV2.id)
  */
@@ -17,7 +17,7 @@ export interface VoteEntryDTO {
 
 /**
  * DTO de Item de Votación (Request/Response)
- * 
+ *
  * ⚠️ IMPORTANTE: `tipoAprobacion` ahora está a nivel de item, no de sesión
  */
 export interface VoteItemDTO {
@@ -25,6 +25,7 @@ export interface VoteItemDTO {
   orden: number;
   label: string;
   descripción?: string;
+  descripcion?: string; // ⚠️ Backend puede devolver sin tilde
   personaId?: string; // Opcional, solo para votos sobre personas
   tipoAprobacion?: "APROBADO_POR_TODOS" | "SOMETIDO_A_VOTACION"; // ✅ AQUÍ, en el item
   votos: VoteEntryDTO[];
@@ -32,7 +33,7 @@ export interface VoteItemDTO {
 
 /**
  * DTO de Sesión de Votación (Response)
- * 
+ *
  * ⚠️ IMPORTANTE: `tipoAprobacion` ahora está en cada item, no en la sesión
  */
 export interface VoteSessionResponseDTO {
@@ -43,7 +44,7 @@ export interface VoteSessionResponseDTO {
 
 /**
  * DTO para Crear Sesión de Votación (Request)
- * 
+ *
  * ⚠️ IMPORTANTE: `tipoAprobacion` ahora está en cada item, no en el body principal
  */
 export interface CreateVoteSessionRequestDTO {
@@ -67,7 +68,7 @@ export interface CreateVoteSessionRequestDTO {
 
 /**
  * DTO para Actualizar Sesión de Votación (Request)
- * 
+ *
  * ⚠️ IMPORTANTE: `tipoAprobacion` ahora está en cada item con `accion: 'update'`
  */
 export interface UpdateVoteSessionRequestDTO {
@@ -90,4 +91,3 @@ export interface UpdateVoteSessionRequestDTO {
     }>;
   }>;
 }
-

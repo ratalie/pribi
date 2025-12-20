@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { Ticket, User, UserCircle, X } from "lucide-vue-next";
-  import { computed, nextTick, ref } from "vue";
+  import { computed, nextTick, onMounted, ref, watch } from "vue";
   import BaseButton from "~/components/base/buttons/BaseButton.vue";
   import SimpleCard from "~/components/base/cards/SimpleCard.vue";
   import NumberInputVotos from "~/components/base/inputs/number/NumberInputVotos.vue";
@@ -119,6 +119,165 @@
       .fill(null)
       .map(() => Array(candidatos.value.length).fill(0))
   );
+
+  // ✅ Cargar votos desde el store cuando se monta o cuando cambian
+  const cargarVotosDesdeStore = () => {
+    console.log(
+      "🔍 [MayoriaVotacionDirectorio][cargarVotosDesdeStore] ========== INICIO =========="
+    );
+    const votosDelStore = directoresStore.votosAsignados;
+
+    console.log("🔍 [MayoriaVotacionDirectorio] cargarVotosDesdeStore llamado:", {
+      votosDelStoreCount: votosDelStore?.length || 0,
+      candidatosCount: candidatos.value.length,
+      accionistasCount: accionistasNormalizados.value.length,
+    });
+
+    // ✅ LOG DETALLADO: Candidatos disponibles en el componente
+    console.log(
+      "🔍 [MayoriaVotacionDirectorio] Candidatos en componente:",
+      candidatos.value.map((c, idx) => ({
+        index: idx,
+        nombreCompleto: c.nombreCompleto,
+        personaId: c.personaId,
+      }))
+    );
+
+    // ✅ LOG DETALLADO: Accionistas disponibles en el componente
+    console.log(
+      "🔍 [MayoriaVotacionDirectorio] Accionistas en componente:",
+      accionistasNormalizados.value.map((a, idx) => ({
+        index: idx,
+        nombre: a.nombre,
+      }))
+    );
+
+    // ✅ LOG DETALLADO: TODOS los votos del store
+    console.log(
+      "🔍 [MayoriaVotacionDirectorio] TODOS los votos del store:",
+      votosDelStore?.map((v) => ({
+        candidatoNombreCompleto: v.candidatoNombreCompleto,
+        candidatoPersonaId: v.candidatoPersonaId,
+        accionistaIndex: v.accionistaIndex,
+        cantidad: v.cantidad,
+        claveUsada: v.candidatoPersonaId
+          ? `${v.candidatoPersonaId}-${v.accionistaIndex}`
+          : `${v.candidatoNombreCompleto}-${v.accionistaIndex}`,
+      })) || []
+    );
+
+    if (!votosDelStore || votosDelStore.length === 0) {
+      // Si no hay votos en el store, inicializar con ceros
+      votosAsignados.value = Array(accionistasNormalizados.value.length)
+        .fill(null)
+        .map(() => Array(candidatos.value.length).fill(0));
+      console.log(
+        "[MayoriaVotacionDirectorio] No hay votos en store, inicializando con ceros"
+      );
+      return;
+    }
+
+    // Crear mapa temporal para facilitar el acceso
+    // ✅ Usar personaId como clave principal (más robusto), fallback a nombreCompleto
+    const votosMap = new Map<string, number>();
+    votosDelStore.forEach((voto) => {
+      const clave = voto.candidatoPersonaId
+        ? `${voto.candidatoPersonaId}-${voto.accionistaIndex}`
+        : `${voto.candidatoNombreCompleto}-${voto.accionistaIndex}`;
+      votosMap.set(clave, voto.cantidad);
+    });
+
+    // Convertir votos del store al formato del componente [accionistaIndex][candidatoIndex]
+    const nuevosVotos: number[][] = Array(accionistasNormalizados.value.length)
+      .fill(null)
+      .map(() => Array(candidatos.value.length).fill(0));
+
+    // ✅ Debug: Log de claves esperadas vs encontradas
+    const clavesEncontradas: string[] = [];
+    const clavesEsperadas: string[] = [];
+
+    candidatos.value.forEach((candidato, candidatoIndex) => {
+      accionistasNormalizados.value.forEach((_, accionistaIndex) => {
+        // ✅ Usar personaId como clave principal, fallback a nombreCompleto
+        const claveEsperada = candidato.personaId
+          ? `${candidato.personaId}-${accionistaIndex}`
+          : `${candidato.nombreCompleto}-${accionistaIndex}`;
+        clavesEsperadas.push(claveEsperada);
+
+        const cantidad = votosMap.get(claveEsperada) || 0;
+        if (cantidad > 0) {
+          clavesEncontradas.push(claveEsperada);
+        }
+
+        if (nuevosVotos[accionistaIndex]) {
+          nuevosVotos[accionistaIndex][candidatoIndex] = cantidad;
+        }
+      });
+    });
+
+    console.log("🔍 [MayoriaVotacionDirectorio] Mapeo de votos:", {
+      clavesEnStore: Array.from(votosMap.keys()),
+      clavesEsperadas: clavesEsperadas, // TODAS las claves esperadas
+      clavesEncontradas,
+      matchCount: clavesEncontradas.length,
+      totalEsperadas: clavesEsperadas.length,
+      clavesNoEncontradas: clavesEsperadas.filter((c) => !clavesEncontradas.includes(c)),
+    });
+
+    votosAsignados.value = nuevosVotos;
+    console.log("✅ [MayoriaVotacionDirectorio] Votos cargados desde store:", {
+      votosDelStoreCount: votosDelStore.length,
+      nuevosVotos: nuevosVotos.map((v, idx) => ({
+        accionistaIndex: idx,
+        total: v.reduce((sum, cant) => sum + cant, 0),
+        votos: v,
+      })),
+      totalVotosAsignados: nuevosVotos.reduce(
+        (sum, acc) => sum + acc.reduce((s, v) => s + v, 0),
+        0
+      ),
+    });
+    console.log(
+      "🔍 [MayoriaVotacionDirectorio][cargarVotosDesdeStore] ========== FIN =========="
+    );
+  };
+
+  // ✅ Cargar votos cuando se monta o cuando cambian los datos
+  watch(
+    [() => directoresStore.votosAsignados.length, candidatos, accionistasNormalizados],
+    (newValues) => {
+      console.log("🔔 [MayoriaVotacionDirectorio] Watch detectó cambio:", {
+        votosAsignadosLength: newValues[0],
+        candidatosCount: candidatos.value.length,
+        accionistasCount: accionistasNormalizados.value.length,
+        puedeCargar: candidatos.value.length > 0 && accionistasNormalizados.value.length > 0,
+      });
+
+      if (candidatos.value.length > 0 && accionistasNormalizados.value.length > 0) {
+        cargarVotosDesdeStore();
+      } else {
+        console.log("⏳ [MayoriaVotacionDirectorio] Esperando candidatos o accionistas...");
+      }
+    },
+    { immediate: true, deep: true }
+  );
+
+  // También cargar cuando se monta el componente
+  onMounted(() => {
+    console.log("🔔 [MayoriaVotacionDirectorio] onMounted llamado:", {
+      candidatosCount: candidatos.value.length,
+      accionistasCount: accionistasNormalizados.value.length,
+      votosEnStore: directoresStore.votosAsignados.length,
+    });
+
+    if (candidatos.value.length > 0 && accionistasNormalizados.value.length > 0) {
+      cargarVotosDesdeStore();
+    } else {
+      console.log(
+        "⏳ [MayoriaVotacionDirectorio] onMounted: Esperando candidatos o accionistas..."
+      );
+    }
+  });
 
   // Calcular votos asignados totales por accionista
   const getVotosAsignados = (accionistaIndex: number): number => {

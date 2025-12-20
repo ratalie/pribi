@@ -22,11 +22,13 @@
       onClick: (id: string) => void;
     }[];
     getActionDisabled?: (itemId: string, actionLabel: string) => boolean;
+    showActionsFor?: (item: ApoderadoRow) => boolean; // ✅ Función para determinar si mostrar acciones
   }
 
   const props = withDefaults(defineProps<Props>(), {
     titleMenu: undefined,
     getActionDisabled: undefined,
+    showActionsFor: undefined,
   });
 </script>
 
@@ -65,7 +67,11 @@
       </TableHeader>
       <TableBody>
         <template v-if="items.length > 0">
-          <TableRow v-for="item in items" :key="item.id">
+          <TableRow
+            v-for="item in items"
+            :key="item.id"
+            :class="{ 'opacity-50': item.fueRemovido }"
+          >
             <TableCell
               class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
             >
@@ -80,6 +86,7 @@
               class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
             >
               {{ item.nombre }}
+              <span v-if="item.fueRemovido" class="ml-2 text-xs text-red-600">(Removido)</span>
             </TableCell>
             <TableCell
               class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
@@ -91,8 +98,13 @@
             >
               {{ item.numeroDocumento }}
             </TableCell>
-            <!-- Celda de acciones -->
-            <TableCell v-if="props.actions" class="w-auto">
+            <!-- Celda de acciones - Solo mostrar si es nuevo (no del snapshot) -->
+            <TableCell
+              v-if="
+                props.actions && (props.showActionsFor ? props.showActionsFor(item) : true)
+              "
+              class="w-auto"
+            >
               <DataTableDropDown
                 :item-id="item.id"
                 :title-menu="props.titleMenu"
@@ -100,6 +112,8 @@
                 :get-action-disabled="props.getActionDisabled"
               />
             </TableCell>
+            <!-- Celda vacía si no se muestran acciones -->
+            <TableCell v-else-if="props.actions" class="w-auto" />
           </TableRow>
         </template>
 

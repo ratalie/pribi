@@ -124,9 +124,9 @@ export const useApoderadoFacultadStore = defineStore("apoderadoFacultad", {
         }
       } else {
         // Usar cantidad del store de regimen
-        const clase = regimenStore.clasesApoderadosDisponibles.find(
-          (c) => c.id === this.claseFirmanteSeleccionada
-        );
+      const clase = regimenStore.clasesApoderadosDisponibles.find(
+        (c) => c.id === this.claseFirmanteSeleccionada
+      );
         cantidadApoderados = clase?.cantidadApoderados;
       }
 

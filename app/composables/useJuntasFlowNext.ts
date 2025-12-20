@@ -1,12 +1,12 @@
+import { getSectionRoutesForSubStep } from "~/config/juntas/navigation-routes.config";
+import { getBaseSectionsForSubStep } from "~/config/juntas/sections.config";
+import { JuntaRoutes } from "~/config/routes/junta-accionistas.routes";
 import { useJuntasFlowStore } from "~/stores/useJuntasFlowStore";
 import { useJuntasNavbarStore } from "~/stores/useJuntasNavbarStore";
-import { getBaseSectionsForSubStep } from "~/config/juntas/sections.config";
-import { getSectionRoutesForSubStep } from "~/config/juntas/navigation-routes.config";
-import { detectCurrentSection } from "~/utils/juntas/navigation.utils";
-import { buildBasePath } from "~/utils/juntas/route-detection.utils";
-import { buildJuntaRoute } from "~/utils/juntas/route-builder.utils";
-import { JuntaRoutes } from "~/config/routes/junta-accionistas.routes";
 import type { JuntaNavigationContext } from "~/types/junta-navigation.types";
+import { detectCurrentSection } from "~/utils/juntas/navigation.utils";
+import { buildJuntaRoute } from "~/utils/juntas/route-builder.utils";
+import { buildBasePath } from "~/utils/juntas/route-detection.utils";
 
 /**
  * Construye la ruta para un sub-step (punto de agenda)
@@ -57,7 +57,7 @@ function buildSubStepRoute(subStepId: string, context: JuntaNavigationContext): 
   };
 
   const slug = subStepSlugMap[subStepId] || subStepId;
-  
+
   if (context.societyId && context.flowId) {
     return `/operaciones/sociedades/${context.societyId}/junta-accionistas/${context.flowId}/${slug}`;
   }
@@ -71,22 +71,22 @@ type FlowNextHandler = (() => void) | (() => Promise<void>);
 
 /**
  * Composable para configurar el handler del botón "Siguiente" en el flujo de Juntas
- * 
+ *
  * Similar a useFlowLayoutNext pero adaptado para usar los stores de juntas.
- * 
+ *
  * @param handleNext Función que se ejecuta antes de navegar al siguiente paso
  *                   Puede ser síncrona o asíncrona (para validaciones/guardado)
- * 
+ *
  * @example
  * ```vue
  * <script setup>
  * useJuntasFlowNext(async () => {
  *   // Validar formulario
  *   await validateForm();
- *   
+ *
  *   // Guardar datos
  *   await saveData();
- *   
+ *
  *   // El composable automáticamente navega al siguiente paso
  * });
  * </script>
@@ -106,7 +106,7 @@ export const useJuntasFlowNext = (handleNext: FlowNextHandler) => {
     try {
       juntasFlowStore.isLoading = true;
       console.log("⏳ [useJuntasFlowNext] Loading activado");
-      
+
       // Ejecutar el handler (validación/guardado)
       console.log("▶️ [useJuntasFlowNext] Ejecutando handleNext...");
       await handleNext();
@@ -115,47 +115,128 @@ export const useJuntasFlowNext = (handleNext: FlowNextHandler) => {
       // Intentar navegar entre secciones del sub-step actual primero
       const currentSubStepId = juntasFlowStore.currentSubStepId;
       console.log("🔍 [useJuntasFlowNext] Sub-step actual:", currentSubStepId);
-      
+
       if (currentSubStepId) {
         // Obtener las secciones del sub-step
         const sections = getBaseSectionsForSubStep(currentSubStepId);
-        console.log("🔍 [useJuntasFlowNext] Secciones disponibles:", sections.map(s => s.id));
-        
+        console.log(
+          "🔍 [useJuntasFlowNext] Secciones disponibles:",
+          sections.map((s) => s.id)
+        );
+
         if (sections.length > 0) {
           // Detectar la sección actual
           const path = route.path;
           const hash = route.hash?.replace("#", "") || "";
-          const currentSectionId = detectCurrentSection(path, hash, currentSubStepId);
-          console.log("🔍 [useJuntasFlowNext] Sección actual detectada:", currentSectionId);
-          
+          let currentSectionId = detectCurrentSection(path, hash, currentSubStepId);
+          console.log("🔍 [useJuntasFlowNext] Detección inicial de sección:", {
+            path,
+            hash,
+            currentSubStepId,
+            detectedSection: currentSectionId,
+          });
+
+          // ✅ Si no se detectó sección, verificar si estamos en la ruta base del sub-step
+          if (!currentSectionId && sections.length > 0) {
+            const societyId = route.params.societyId as string;
+            const flowId = route.params.flowId as string;
+            const basePath = buildBasePath(societyId, flowId);
+            const sectionRoutes = getSectionRoutesForSubStep(currentSubStepId, basePath);
+
+            // Normalizar sub-step ID para comparación (nombramiento-nuevo-directorio -> nombramiento-directorio)
+            const normalizedSubStepId =
+              currentSubStepId?.replace(
+                "nombramiento-nuevo-directorio",
+                "nombramiento-directorio"
+              ) || "";
+            const expectedBaseRoute =
+              sectionRoutes?.[normalizedSubStepId] || `${basePath}/${normalizedSubStepId}`;
+
+            // Si estamos en la ruta base (coincide con la primera sección o con la ruta base esperada)
+            if (path === expectedBaseRoute || path.endsWith(`/${normalizedSubStepId}`)) {
+              // Usar la primera sección de la lista (que normalmente es la vista general)
+              currentSectionId = sections[0]?.id || "";
+              console.log(
+                "🔍 [useJuntasFlowNext] Estamos en ruta base, usando primera sección:",
+                currentSectionId
+              );
+            }
+          }
+
+          console.log("🔍 [useJuntasFlowNext] Sección actual final:", currentSectionId);
+
           // Encontrar el índice de la sección actual
-          const currentSectionIndex = sections.findIndex(s => s.id === currentSectionId);
-          console.log("🔍 [useJuntasFlowNext] Índice de sección actual:", currentSectionIndex);
-          
+          let currentSectionIndex = sections.findIndex((s) => s.id === currentSectionId);
+          console.log(
+            "🔍 [useJuntasFlowNext] Índice de sección actual (antes de fallback):",
+            currentSectionIndex
+          );
+
+          // ✅ Si no se encontró la sección, usar índice 0 (primera sección) como fallback
+          if (currentSectionIndex === -1 && sections.length > 0) {
+            console.log(
+              "⚠️ [useJuntasFlowNext] No se encontró la sección, usando índice 0 como fallback"
+            );
+            currentSectionIndex = 0;
+          }
+
+          console.log(
+            "🔍 [useJuntasFlowNext] Índice de sección actual (final):",
+            currentSectionIndex
+          );
+
           // Si hay una sección siguiente dentro del sub-step
           if (currentSectionIndex >= 0 && currentSectionIndex < sections.length - 1) {
             const nextSection = sections[currentSectionIndex + 1];
             if (nextSection) {
-              console.log("🔍 [useJuntasFlowNext] Siguiente sección encontrada:", nextSection.id);
-              
+              console.log(
+                "🔍 [useJuntasFlowNext] Siguiente sección encontrada:",
+                nextSection.id
+              );
+
               // Obtener la ruta de la siguiente sección
               const societyId = route.params.societyId as string;
               const flowId = route.params.flowId as string;
               const basePath = buildBasePath(societyId, flowId);
               const sectionRoutes = getSectionRoutesForSubStep(currentSubStepId, basePath);
-              
-              if (sectionRoutes && nextSection.id && sectionRoutes[nextSection.id]) {
+
+              if (sectionRoutes && nextSection.id) {
                 const nextRoute = sectionRoutes[nextSection.id];
+                console.log(
+                  "🔍 [useJuntasFlowNext] Verificando ruta para sección:",
+                  nextSection.id,
+                  "sectionRoutes keys:",
+                  Object.keys(sectionRoutes),
+                  "nextRoute:",
+                  nextRoute
+                );
                 if (nextRoute) {
-                  console.log("🚀 [useJuntasFlowNext] Navegando a siguiente sección:", nextRoute);
+                  console.log(
+                    "🚀 [useJuntasFlowNext] Navegando a siguiente sección:",
+                    nextRoute
+                  );
                   await router.push(nextRoute);
                   console.log("✅ [useJuntasFlowNext] Navegación a sección completada");
                   return; // Salir temprano, ya navegamos
+                } else {
+                  console.warn(
+                    "⚠️ [useJuntasFlowNext] No se encontró ruta para sección:",
+                    nextSection.id,
+                    "Rutas disponibles:",
+                    Object.keys(sectionRoutes)
+                  );
                 }
+              } else {
+                console.warn("⚠️ [useJuntasFlowNext] No hay sectionRoutes o nextSection.id:", {
+                  hasSectionRoutes: !!sectionRoutes,
+                  nextSectionId: nextSection.id,
+                });
               }
             }
           } else {
-            console.log("ℹ️ [useJuntasFlowNext] No hay más secciones en el sub-step, buscando siguiente paso principal");
+            console.log(
+              "ℹ️ [useJuntasFlowNext] No hay más secciones en el sub-step, buscando siguiente paso principal"
+            );
           }
         }
       }
@@ -164,90 +245,118 @@ export const useJuntasFlowNext = (handleNext: FlowNextHandler) => {
       const path = route.path;
       const societyId = route.params.societyId as string;
       const flowId = route.params.flowId as string;
-      
-      // Detectar si estamos en la página "puntos-acuerdo" (sin sub-step)
-      const isPuntosAcuerdoPage = path.includes("/puntos-acuerdo") && !currentSubStepId;
-      
+
+      // ✅ Detectar si estamos en la página "puntos-acuerdo" (sin sub-step)
+      // La ruta debe terminar en "/puntos-acuerdo" y no tener sub-step activo
+      const isPuntosAcuerdoPage =
+        (path.endsWith("/puntos-acuerdo") || path.match(/\/puntos-acuerdo\/?$/)) &&
+        !currentSubStepId;
+
       // Detectar si estamos en un punto de agenda (sub-step)
       const isPuntoAgendaPage = !!currentSubStepId;
-      
+
       // Obtener puntos de agenda seleccionados
       const selectedPuntos = juntasFlowStore.getDynamicSubSteps;
       console.log("🔍 [useJuntasFlowNext] Puntos de agenda seleccionados:", selectedPuntos);
-      
+
       // Si estamos en "puntos-acuerdo", navegar al primer punto de agenda
       if (isPuntosAcuerdoPage && selectedPuntos.length > 0) {
         const firstPuntoId = selectedPuntos[0];
-        console.log("🔍 [useJuntasFlowNext] Estamos en puntos-acuerdo, navegando al primer punto:", firstPuntoId);
-        
+        console.log(
+          "🔍 [useJuntasFlowNext] Estamos en puntos-acuerdo, navegando al primer punto:",
+          firstPuntoId
+        );
+
         const context: JuntaNavigationContext = {
           societyId: societyId || undefined,
           flowId: flowId || undefined,
         };
-        
+
         // Construir la ruta del primer punto de agenda
         const firstPuntoRoute = buildSubStepRoute(firstPuntoId, context);
-        console.log("🚀 [useJuntasFlowNext] Navegando al primer punto de agenda:", firstPuntoRoute);
+        console.log(
+          "🚀 [useJuntasFlowNext] Navegando al primer punto de agenda:",
+          firstPuntoRoute
+        );
         await router.push(firstPuntoRoute);
         console.log("✅ [useJuntasFlowNext] Navegación al primer punto completada");
         return;
       }
-      
+
       // Si estamos en un punto de agenda, navegar al siguiente punto de agenda
       if (isPuntoAgendaPage && selectedPuntos.length > 0) {
         // Buscar el índice del punto actual en la lista de puntos seleccionados
         // El currentSubStepId puede tener variaciones (ej: "aporte-dinerario" vs "aporte-dinerarios")
-        const currentPuntoIndex = selectedPuntos.findIndex(id => {
+        const currentPuntoIndex = selectedPuntos.findIndex((id) => {
           // Comparación flexible: puede ser exacto o contener el ID
           const normalizedId = id.toLowerCase().replace(/-/g, "");
           const normalizedSubStep = currentSubStepId.toLowerCase().replace(/-/g, "");
-          return id === currentSubStepId || 
-                 normalizedId === normalizedSubStep ||
-                 currentSubStepId.includes(id) || 
-                 id.includes(currentSubStepId) ||
-                 normalizedId.includes(normalizedSubStep) ||
-                 normalizedSubStep.includes(normalizedId);
+          return (
+            id === currentSubStepId ||
+            normalizedId === normalizedSubStep ||
+            currentSubStepId.includes(id) ||
+            id.includes(currentSubStepId) ||
+            normalizedId.includes(normalizedSubStep) ||
+            normalizedSubStep.includes(normalizedId)
+          );
         });
-        
+
         console.log("🔍 [useJuntasFlowNext] Sub-step actual:", currentSubStepId);
         console.log("🔍 [useJuntasFlowNext] Puntos seleccionados:", selectedPuntos);
         console.log("🔍 [useJuntasFlowNext] Índice del punto actual:", currentPuntoIndex);
-        
+
         // Si encontramos el punto actual y hay un siguiente
         if (currentPuntoIndex >= 0 && currentPuntoIndex < selectedPuntos.length - 1) {
           const nextPuntoId = selectedPuntos[currentPuntoIndex + 1];
-          console.log("🔍 [useJuntasFlowNext] Siguiente punto de agenda encontrado:", nextPuntoId);
-          
+          console.log(
+            "🔍 [useJuntasFlowNext] Siguiente punto de agenda encontrado:",
+            nextPuntoId
+          );
+
           const context: JuntaNavigationContext = {
             societyId: societyId || undefined,
             flowId: flowId || undefined,
           };
-          
+
           const nextPuntoRoute = buildSubStepRoute(nextPuntoId, context);
-          console.log("🚀 [useJuntasFlowNext] Navegando al siguiente punto de agenda:", nextPuntoRoute);
+          console.log(
+            "🚀 [useJuntasFlowNext] Navegando al siguiente punto de agenda:",
+            nextPuntoRoute
+          );
           await router.push(nextPuntoRoute);
           console.log("✅ [useJuntasFlowNext] Navegación al siguiente punto completada");
           return;
         } else if (currentPuntoIndex >= 0 && currentPuntoIndex === selectedPuntos.length - 1) {
           // Estamos en el último punto de agenda, ir a resumen
-          console.log("🔍 [useJuntasFlowNext] Estamos en el último punto de agenda, navegando a resumen");
+          console.log(
+            "🔍 [useJuntasFlowNext] Estamos en el último punto de agenda, navegando a resumen"
+          );
           const context: JuntaNavigationContext = {
             societyId: societyId || undefined,
             flowId: flowId || undefined,
           };
-          const resumenRoute = buildJuntaRoute(JuntaRoutes.RESUMEN, context.societyId, context.flowId);
+          const resumenRoute = buildJuntaRoute(
+            JuntaRoutes.RESUMEN,
+            context.societyId,
+            context.flowId
+          );
           console.log("🚀 [useJuntasFlowNext] Navegando a resumen:", resumenRoute);
           await router.push(resumenRoute);
           console.log("✅ [useJuntasFlowNext] Navegación a resumen completada");
           return;
         } else {
           // No encontramos el punto actual, intentar usar la lógica normal
-          console.warn("⚠️ [useJuntasFlowNext] No se encontró el punto actual en la lista de seleccionados, usando lógica normal");
+          console.warn(
+            "⚠️ [useJuntasFlowNext] No se encontró el punto actual en la lista de seleccionados, usando lógica normal"
+          );
         }
       }
-      
+
       // Si no estamos en puntos-acuerdo ni en un punto de agenda, usar la lógica normal
-      console.log("🔍 [useJuntasFlowNext] Buscando siguiente paso principal para:", route.path);
+      console.log(
+        "🔍 [useJuntasFlowNext] Buscando siguiente paso principal para:",
+        route.path
+      );
       const nextStep = juntasNavbarStore.getNextStepByCurrentStep(route.path);
       console.log("🔍 [useJuntasFlowNext] Siguiente paso encontrado:", nextStep);
 
@@ -257,7 +366,10 @@ export const useJuntasFlowNext = (handleNext: FlowNextHandler) => {
         console.log("✅ [useJuntasFlowNext] Navegación completada");
       } else {
         console.warn("⚠️ [useJuntasFlowNext] No se encontró siguiente paso");
-        console.warn("⚠️ [useJuntasFlowNext] Pasos disponibles:", juntasNavbarStore.steps.map(s => ({ title: s.title, route: s.route })));
+        console.warn(
+          "⚠️ [useJuntasFlowNext] Pasos disponibles:",
+          juntasNavbarStore.steps.map((s) => ({ title: s.title, route: s.route }))
+        );
       }
     } catch (error) {
       console.error("❌ [useJuntasFlowNext] Error:", error);
@@ -285,4 +397,3 @@ export const useJuntasFlowNext = (handleNext: FlowNextHandler) => {
     }
   });
 };
-

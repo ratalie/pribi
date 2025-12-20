@@ -14,12 +14,12 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onActivated, onMounted, ref, watch } from "vue";
-  import { useRoute } from "vue-router";
+  import { computed, nextTick, onMounted, ref, watch } from "vue";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
-  import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
+  import { useVotacionDirectoresController } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/votacion/composables/useVotacionDirectoresController";
   import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
   import MetodoVotacionDirectorio from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/components/votacion/MetodoVotacionDirectorio.vue";
+  import { useDirectoresStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/composables/useDirectoresStore";
 
   /**
    * Página: Votación (Sub-sección de Nombramiento de Directorio)
@@ -35,158 +35,109 @@
     flowLayoutJuntas: true,
   });
 
-  const route = useRoute();
-  const asistenciaStore = useAsistenciaStore();
+  // ✅ Controller para manejar la lógica de votación
+  const controller = useVotacionDirectoresController();
+  const directoresStore = useDirectoresStore();
   const snapshotStore = useSnapshotStore();
-
-  const societyId = computed(() => Number(route.params.societyId));
-  const flowId = computed(() => Number(route.params.flowId));
 
   const metodoVotacion = ref<"unanimidad" | "mayoria">("unanimidad");
   const candidatosSeleccionados = ref<string[]>([]);
-  const isLoading = ref(false);
+  const isLoadingInitial = ref(true); // ✅ Flag para evitar resetear votos durante carga inicial
 
-  /**
-   * Helper: Obtener nombre completo de un accionista
-   */
-  function getNombreCompletoShareholder(shareholder: any): string {
-    const person = shareholder.person;
-    if (person.tipo === "NATURAL") {
-      return `${person.nombre} ${person.apellidoPaterno} ${
-        person.apellidoMaterno || ""
-      }`.trim();
-    }
-    // Para personas jurídicas y otros tipos
-    if ("razonSocial" in person) {
-      return person.razonSocial || "";
-    }
-    return ""; // Fallback
-  }
+  // Cargar datos al montar
+  onMounted(async () => {
+    try {
+      // ✅ 1. Cargar datos del controller (incluye votación desde backend)
+      await controller.loadData();
 
-  /**
-   * Mapper: Calcular accionistas desde snapshot + asistencias
-   * Convierte al formato que espera MayoriaVotacionDirectorio
-   */
-  function mapearAccionistasDesdeSnapshot() {
-    const snapshot = snapshotStore.snapshot;
-    const asistencias = asistenciaStore.asistencias;
+      // ✅ 2. Esperar un tick para asegurar que todas las computed se actualicen
+      await nextTick();
 
-    if (!snapshot) {
-      console.warn(
-        "[DEBUG][NombramientoDirectorioVotacion] No hay snapshot disponible para mapear accionistas"
-      );
-      return [];
-    }
+      // ✅ 3. Sincronizar candidatos y cantidad con useDirectoresStore
+      // (necesario para que MayoriaVotacionDirectorio funcione correctamente)
+      const candidatosFromController = controller.candidatos.value;
+      const candidatosParaStore = candidatosFromController.map((c) => {
+        const nombreCompleto = `${c.person.nombre} ${c.person.apellidoPaterno} ${
+          c.person.apellidoMaterno || ""
+        }`.trim();
 
-    const { shareAllocations, shareClasses, shareholders } = snapshot;
-
-    // 1. Calcular acciones por accionista desde snapshot
-    const accionistasConAcciones = shareholders
-      .map((accionista) => {
-        const asignaciones = shareAllocations.filter(
-          (asig) => asig.accionistaId === accionista.id
-        );
-
-        // Agrupar acciones por tipo/clase
-        const accionesPorClase = asignaciones
-          .map((asig) => {
-            const shareClass = shareClasses.find((sc) => sc.id === asig.accionId);
-            if (!shareClass) return null;
-
-            return {
-              derecho_voto: shareClass.conDerechoVoto || false,
-              tipo: shareClass.nombre || shareClass.id,
-              cantidad: asig.cantidadSuscrita,
-            };
-          })
-          .filter((acc): acc is NonNullable<typeof acc> => acc !== null);
-
-        // Verificar si asistió
-        const asistencia = asistencias.find((a) => a.accionista.id === accionista.id);
-        if (!asistencia || !asistencia.asistio) {
-          return null;
-        }
-
-        // Solo incluir si tiene acciones con derecho a voto
-        const tieneAccionesConDerechoVoto = accionesPorClase.some(
-          (acc) => acc.derecho_voto === true
-        );
-        if (!tieneAccionesConDerechoVoto) {
-          return null;
-        }
+        console.log("[VotacionDirectorio] Preparando candidato para store:", {
+          nombreCompleto,
+          nombre: c.person.nombre,
+          apellidoPaterno: c.person.apellidoPaterno,
+          apellidoMaterno: c.person.apellidoMaterno,
+        });
 
         return {
-          nombre: getNombreCompletoShareholder(accionista),
-          acciones: accionesPorClase,
-          presidente: false, // TODO: Determinar si es presidente desde algún campo
+          nombreCompleto, // ✅ Construir exactamente igual que en el controller
+          personaId: c.person.id || undefined, // ✅ Incluir personaId para hacer match con votos
+          tipoDirector: "titular" as const,
+          tipoDocumento: c.person.tipoDocumento,
+          numeroDocumento: c.person.numeroDocumento,
+          nombre: c.person.nombre,
+          apellidoPaterno: c.person.apellidoPaterno,
+          apellidoMaterno: c.person.apellidoMaterno,
+          candidato: true,
         };
-      })
-      .filter((acc): acc is NonNullable<typeof acc> => acc !== null);
-
-    return accionistasConAcciones;
-  }
-
-  /**
-   * Cargar datos necesarios
-   */
-  async function loadData() {
-    try {
-      isLoading.value = true;
-
-      // 1. Cargar snapshot
-      if (!snapshotStore.snapshot) {
-        await snapshotStore.loadSnapshot(societyId.value, flowId.value);
-      }
-
-      // 2. Cargar asistencias
-      await asistenciaStore.loadAsistencias(societyId.value, flowId.value);
-
-      console.log("[DEBUG][NombramientoDirectorioVotacion] Datos cargados:", {
-        hasSnapshot: !!snapshotStore.snapshot,
-        asistenciasCount: asistenciaStore.asistencias.length,
-        accionistasCount: accionistas.value.length,
       });
-    } catch (error: any) {
-      console.error("[NombramientoDirectorioVotacion] Error al cargar datos:", error);
-    } finally {
-      isLoading.value = false;
+
+      directoresStore.setDirectoresData(candidatosParaStore);
+      directoresStore.setCantidadDirectores(controller.cantidadDirectores.value);
+      directoresStore.setCuposDisponibles(controller.cuposDisponibles.value); // ✅ Usar cupos calculados correctamente
+
+      // ✅ 4. Sincronizar método de votación desde el store (ya fue detectado en loadData)
+      // El método ya fue establecido en loadData basándose en tipoAprobacion del backend
+      // ⚠️ IMPORTANTE: Cambiar metodoVotacion DURANTE la carga inicial (isLoadingInitial = true)
+      // para que el watch NO resetee los votos que acabamos de cargar del backend
+      metodoVotacion.value = directoresStore.metodoVotacion;
+
+      // ✅ Marcar que terminó la carga inicial DESPUÉS de cambiar metodoVotacion
+      // y esperar un tick para que el watch termine de procesar
+      await nextTick();
+      isLoadingInitial.value = false;
+
+      // ✅ 5. Esperar otro tick para que el componente MayoriaVotacionDirectorio detecte los cambios
+      await nextTick();
+
+      console.log("[VotacionDirectorio] onMounted completado:", {
+        candidatosCount: candidatosParaStore.length,
+        votosAsignadosCount: directoresStore.votosAsignados.length,
+        metodoVotacion: metodoVotacion.value,
+      });
+    } catch (error) {
+      console.error("[VotacionDirectorio] Error al cargar datos:", error);
+      isLoadingInitial.value = false; // Asegurar que se desactive aunque haya error
     }
-  }
-
-  // Accionistas calculados desde snapshot
-  const accionistas = computed(() => {
-    const mapeados = mapearAccionistasDesdeSnapshot();
-    console.log("[DEBUG][NombramientoDirectorioVotacion] Accionistas mapeados:", mapeados);
-    return mapeados;
-  });
-
-  // Inicializar método de votación en el store
-  onMounted(async () => {
-    await loadData();
-
-    const { useDirectoresStore } = await import(
-      "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/composables/useDirectoresStore"
-    );
-    const directoresStore = useDirectoresStore();
-    directoresStore.setMetodoVotacion(metodoVotacion.value);
-  });
-
-  // Recargar datos al activar
-  onActivated(() => {
-    loadData();
   });
 
   // Guardar método de votación en el store cuando cambie
   watch(metodoVotacion, async (nuevoMetodo, metodoAnterior) => {
-    const { useDirectoresStore } = await import(
-      "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/composables/useDirectoresStore"
-    );
-    const directoresStore = useDirectoresStore();
     directoresStore.setMetodoVotacion(nuevoMetodo);
 
-    // Si cambia de unanimidad a mayoría, resetear votos
-    if (metodoAnterior === "unanimidad" && nuevoMetodo === "mayoria") {
+    // ⚠️ IMPORTANTE: Solo resetear votos si:
+    // 1. El cambio es MANUAL (no durante carga inicial)
+    // 2. Cambia de unanimidad a mayoría
+    // 3. NO hay votos ya cargados (si hay votos, significa que vienen del backend y no debemos borrarlos)
+    const tieneVotosCargados = directoresStore.votosAsignados.length > 0;
+
+    if (
+      !isLoadingInitial.value &&
+      metodoAnterior === "unanimidad" &&
+      nuevoMetodo === "mayoria" &&
+      !tieneVotosCargados // ✅ Solo resetear si NO hay votos cargados
+    ) {
+      console.log(
+        "[VotacionDirectorio] Cambio manual de unanimidad a mayoría, reseteando votos (no hay votos previos)"
+      );
       directoresStore.setVotosAsignados([]);
+    } else if (isLoadingInitial.value) {
+      console.log(
+        "[VotacionDirectorio] Cambio durante carga inicial, NO reseteando votos (ya cargados del backend)"
+      );
+    } else if (tieneVotosCargados) {
+      console.log(
+        "[VotacionDirectorio] Cambio de método detectado pero hay votos cargados, NO reseteando (vienen del backend)"
+      );
     }
   });
 
@@ -195,28 +146,66 @@
     "¿Se aprueba la designación de los directores propuestos?",
   ]);
 
+  // ✅ Convertir votantes del controller al formato Accionista que espera el componente
+  const accionistas = computed(() => {
+    const votantesFromController = controller.votantes.value;
+    const snapshotStore = useSnapshotStore();
+    const snapshot = snapshotStore.snapshot;
+
+    if (!snapshot || !votantesFromController || votantesFromController.length === 0) {
+      return [];
+    }
+
+    const { shareAllocations, shareClasses } = snapshot;
+
+    return votantesFromController.map((votante) => {
+      // Construir array de acciones desde shareAllocations del snapshot
+      const asignaciones = shareAllocations.filter(
+        (asig) => asig.accionistaId === votante.accionistaId
+      );
+
+      const acciones = asignaciones.map((asig) => {
+        const shareClass = shareClasses.find((sc) => sc.id === asig.accionId);
+        return {
+          derecho_voto: shareClass?.conDerechoVoto || false,
+          tipo: shareClass?.tipoAccion || "comun",
+          cantidad: asig.cantidadSuscrita || 0,
+        };
+      });
+
+      // Calcular total de acciones con derecho a voto
+      const totalAcciones = acciones
+        .filter((acc) => acc.derecho_voto === true)
+        .reduce((sum, acc) => sum + acc.cantidad, 0);
+
+      return {
+        nombre: votante.nombreCompleto || votante.nombre || "",
+        acciones,
+        presidente: votante.presidente || false,
+        totalAcciones,
+      };
+    });
+  });
+
   // Mensaje de aprobación
   const mensajeAprobacion = "la designación de los directores propuestos.";
 
-  // Manejar cambio de voto
-  const handleCambiarVoto = (
+  // ✅ Manejar cambio de voto (por unanimidad - SIMPLE)
+  const handleCambiarVoto = async (
     accionistaId: string,
     valor: "A_FAVOR" | "EN_CONTRA" | "ABSTENCION"
   ) => {
-    // TODO: Implementar lógica de guardado de votos
-    console.log("Voto cambiado:", accionistaId, valor);
+    console.log("[VotacionDirectorio] handleCambiarVoto:", accionistaId, valor);
+    // La lógica de guardado se maneja en el componente MetodoVotacionDirectorio
+    // cuando se detecta unanimidad y se completa la votación
   };
 
-  // Manejar candidatos seleccionados
+  // ✅ Manejar candidatos seleccionados (por unanimidad)
   const handleCandidatosSeleccionados = async (candidatos: string[]) => {
     candidatosSeleccionados.value = candidatos;
-    console.log("Candidatos seleccionados:", candidatos);
+    console.log("[VotacionDirectorio] Candidatos seleccionados:", candidatos);
 
     // Guardar en el store
-    const { useDirectoresStore } = await import(
-      "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/composables/useDirectoresStore"
-    );
-    const directoresStore = useDirectoresStore();
     directoresStore.setCandidatosSeleccionadosUnanimidad(candidatos);
 
     // Si es votación por unanimidad, calcular y asignar votos iguales
@@ -232,9 +221,10 @@
       // Dividir votos iguales entre candidatos seleccionados
       const votosPorCandidato = Math.floor(totalVotos / candidatos.length);
 
-      // Guardar votos en el store
+      // Guardar votos en el store (para guardar después cuando se complete la votación)
       const votosAsignados = candidatos.map((candidatoNombre) => ({
         candidatoNombreCompleto: candidatoNombre,
+        candidatoPersonaId: undefined, // En unanimidad no tenemos personaId aquí
         accionistaIndex: 0, // En unanimidad, todos los accionistas votan igual
         cantidad: votosPorCandidato,
       }));
@@ -243,20 +233,42 @@
     }
   };
 
-  // Configurar el botón "Siguiente"
+  // ✅ Configurar el botón "Siguiente" para guardar votación
   useJuntasFlowNext(async () => {
-    // La verificación de empate ya se hace automáticamente cuando se completa el último voto
-    // Solo necesitamos limpiar el flag si no hay empate
-    const { useDirectoresStore } = await import(
-      "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/composables/useDirectoresStore"
-    );
-    const directoresStore = useDirectoresStore();
+    try {
+      // Si hay empate, el usuario debe resolverlo primero
+      if (directoresStore.hayEmpate) {
+        throw new Error("Debe resolver el empate antes de continuar");
+      }
 
-    // Si no hay empate, limpiar el flag
-    if (!directoresStore.hayEmpate) {
-      directoresStore.setHayEmpate(false);
+      // Si es votación por mayoría, guardar votos acumulativos
+      if (metodoVotacion.value === "mayoria") {
+        const votosAsignados = directoresStore.votosAsignados;
+        if (votosAsignados.length === 0) {
+          throw new Error("Debe asignar votos a los candidatos");
+        }
+
+        console.log("[VotacionDirectorio] Guardando votación por mayoría (acumulativa)");
+        await controller.guardarVotacion(votosAsignados);
+        console.log("[VotacionDirectorio] ✅ Votación por mayoría guardada exitosamente");
+      }
+
+      // ✅ Si es unanimidad, guardar votación por unanimidad
+      if (metodoVotacion.value === "unanimidad") {
+        const candidatosSeleccionados = directoresStore.candidatosSeleccionadosUnanimidad;
+        if (candidatosSeleccionados.length === 0) {
+          throw new Error("Debe seleccionar al menos un candidato");
+        }
+
+        console.log("[VotacionDirectorio] Guardando votación por unanimidad");
+        await controller.guardarVotacionUnanimidad(candidatosSeleccionados);
+        console.log("[VotacionDirectorio] ✅ Votación por unanimidad guardada exitosamente");
+      }
+
+      console.log("[VotacionDirectorio] ✅ Votación guardada exitosamente");
+    } catch (error: any) {
+      console.error("[VotacionDirectorio] ❌ Error al guardar:", error);
+      throw error; // Re-lanzar para que useJuntasFlowNext muestre el error
     }
-
-    // TODO: Agregar validación y guardado de datos adicionales
   });
 </script>

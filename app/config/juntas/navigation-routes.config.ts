@@ -123,9 +123,11 @@ export function getNombramientoApoderadosRoutes(basePath: string): Record<string
 export function getNombramientoDirectoresRoutes(basePath: string): Record<string, string> {
   return {
     "nombramiento-directores": `${basePath}/nombramiento-directores`,
+    cantidad: `${basePath}/nombramiento-directores/cantidad`,
+    "votacion-cantidad": `${basePath}/nombramiento-directores/votacion-cantidad`,
     nombramiento: `${basePath}/nombramiento-directores/nombramiento`,
     votacion: `${basePath}/nombramiento-directores/votacion`,
-    presidente: `${basePath}/nombramiento-directores/nombramiento`,
+    presidente: `${basePath}/nombramiento-directores/presidente`,
     resumen: `${basePath}/nombramiento-directores/resumen`,
   };
 }
@@ -136,11 +138,11 @@ export function getNombramientoDirectoresRoutes(basePath: string): Record<string
 export function getNombramientoDirectorioRoutes(basePath: string): Record<string, string> {
   return {
     "nombramiento-directorio": `${basePath}/nombramiento-directorio`,
-    cantidad: `${basePath}/nombramiento-directorio/cantidad`,
-    "votacion-configuracion": `${basePath}/nombramiento-directorio/votacion`,
-    nombramiento: `${basePath}/nombramiento-directorio/nombramiento`,
+    configuracion: `${basePath}/nombramiento-directorio/configuracion`,
+    "votacion-configuracion": `${basePath}/nombramiento-directorio/votacion-configuracion`,
+    directores: `${basePath}/nombramiento-directorio/directores`,
     votacion: `${basePath}/nombramiento-directorio/votacion`,
-    presidente: `${basePath}/nombramiento-directorio/nombramiento`,
+    presidente: `${basePath}/nombramiento-directorio/presidente`,
     resumen: `${basePath}/nombramiento-directorio/resumen`,
   };
 }

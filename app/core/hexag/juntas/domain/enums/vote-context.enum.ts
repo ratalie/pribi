@@ -16,4 +16,5 @@ export enum VoteContext {
   APLICACION_UTILIDADES = "APLICACION_UTILIDADES", // Para aplicación de resultados económicos
   GESTION_SOCIAL = "GESTION_SOCIAL", // Para pronunciamiento de gestión social y resultados económicos
   DESIGNACION_AUDITORES = "DESIGNACION_AUDITORES", // Para designación de auditores externos
+  CONFIGURACION_DIRECTORIO = "CONFIGURACION_DIRECTORIO", // Para votación de configuración de directorio
 }
