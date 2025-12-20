@@ -194,8 +194,26 @@
           await snapshotStore.loadSnapshot(societyId, flowId);
         }
 
-        // 2. Cargar directores designados
-        await nombramientoStore.loadDirectoresDesignados(societyId, flowId);
+        // 2. Cargar directores designados (sin cargar remoción, no es necesaria en nombramiento-directorio)
+        nombramientoStore.status = "loading";
+        try {
+          const { DesignationDirectorHttpRepository } = await import(
+            "~/core/hexag/juntas/infrastructure/repositories/designation-director.http.repository"
+          );
+          const { GetDesignationDirectorUseCase } = await import(
+            "~/core/hexag/juntas/application/use-cases/designation-director/get-designation-director.use-case"
+          );
+          const repository = new DesignationDirectorHttpRepository();
+          const useCase = new GetDesignationDirectorUseCase(repository);
+          const directores = await useCase.execute(societyId, flowId);
+          nombramientoStore.directoresDesignados = directores;
+          nombramientoStore.status = "idle";
+          nombramientoStore.errorMessage = null;
+        } catch (error: any) {
+          nombramientoStore.status = "error";
+          nombramientoStore.errorMessage = error.message || "Error al cargar directores";
+          throw error;
+        }
 
         // 3. Cargar configuración del directorio (para obtener presidenteId actual)
         try {

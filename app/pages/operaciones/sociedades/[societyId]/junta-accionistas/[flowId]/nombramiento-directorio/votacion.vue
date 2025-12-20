@@ -17,6 +17,7 @@
   import { computed, nextTick, onMounted, ref, watch } from "vue";
   import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { useVotacionDirectoresController } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/votacion/composables/useVotacionDirectoresController";
+  import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
   import MetodoVotacionDirectorio from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/components/votacion/MetodoVotacionDirectorio.vue";
   import { useDirectoresStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/composables/useDirectoresStore";
 
@@ -37,6 +38,7 @@
   // ✅ Controller para manejar la lógica de votación
   const controller = useVotacionDirectoresController();
   const directoresStore = useDirectoresStore();
+  const snapshotStore = useSnapshotStore();
 
   const metodoVotacion = ref<"unanimidad" | "mayoria">("unanimidad");
   const candidatosSeleccionados = ref<string[]>([]);
@@ -147,20 +149,38 @@
   // ✅ Convertir votantes del controller al formato Accionista que espera el componente
   const accionistas = computed(() => {
     const votantesFromController = controller.votantes.value;
+    const snapshotStore = useSnapshotStore();
+    const snapshot = snapshotStore.snapshot;
+
+    if (!snapshot || !votantesFromController || votantesFromController.length === 0) {
+      return [];
+    }
+
+    const { shareAllocations, shareClasses } = snapshot;
 
     return votantesFromController.map((votante) => {
-      // Calcular total de acciones con derecho a voto para este accionista
-      const totalAcciones = votante.acciones
+      // Construir array de acciones desde shareAllocations del snapshot
+      const asignaciones = shareAllocations.filter(
+        (asig) => asig.accionistaId === votante.accionistaId
+      );
+
+      const acciones = asignaciones.map((asig) => {
+        const shareClass = shareClasses.find((sc) => sc.id === asig.accionId);
+        return {
+          derecho_voto: shareClass?.conDerechoVoto || false,
+          tipo: shareClass?.tipoAccion || "comun",
+          cantidad: asig.cantidadSuscrita || 0,
+        };
+      });
+
+      // Calcular total de acciones con derecho a voto
+      const totalAcciones = acciones
         .filter((acc) => acc.derecho_voto === true)
         .reduce((sum, acc) => sum + acc.cantidad, 0);
 
       return {
-        nombre: votante.nombre,
-        acciones: votante.acciones.map((acc) => ({
-          derecho_voto: acc.derecho_voto,
-          tipo: acc.tipo,
-          cantidad: acc.cantidad,
-        })),
+        nombre: votante.nombreCompleto || votante.nombre || "",
+        acciones,
         presidente: votante.presidente || false,
         totalAcciones,
       };

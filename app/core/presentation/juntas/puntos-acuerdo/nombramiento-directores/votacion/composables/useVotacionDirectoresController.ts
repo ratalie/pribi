@@ -282,19 +282,30 @@ export function useVotacionDirectoresController() {
    *
    * Para nombramiento-directorio: todos son candidatos nuevos, no hay directores del snapshot
    * Por lo tanto: cupos = cantidadDirectores (todos los cupos están disponibles)
+   * ⚠️ IMPORTANTE: NO usar directoresDisponiblesDelSnapshot porque accede a remocionStore
    *
    * Para nombramiento-directores: Directores Actuales = Directores del snapshot que NO fueron removidos
    * Por lo tanto: cupos = cantidadDirectores - directoresDisponiblesDelSnapshot.length
    */
   const cuposDisponibles = computed(() => {
     const tamañoDirectorio = cantidadDirectores.value;
-    // ⚠️ IMPORTANTE: En nombramiento-directorio, directoresDisponiblesDelSnapshot será [] (array vacío)
-    // porque no hay directores del snapshot que mostrar. Los directores actuales solo son los designados.
-    // Para calcular cupos, en nombramiento-directorio deberíamos usar solo cantidadDirectores
-    // ya que todos los cupos están disponibles (no hay directores del snapshot ocupando cupos).
-    const directoresActuales = nombramientoStore.directoresDisponiblesDelSnapshot.length;
-    const cupos = tamañoDirectorio - directoresActuales;
-    return Math.max(0, cupos); // No permitir valores negativos
+
+    // ✅ Detectar si estamos en nombramiento-directorio o nombramiento-directores
+    // basándonos en la ruta actual
+    const rutaActual = route.path;
+    const esNombramientoDirectorio = rutaActual.includes("/nombramiento-directorio/");
+
+    if (esNombramientoDirectorio) {
+      // ✅ En nombramiento-directorio: todos los cupos están disponibles
+      // (no hay directores del snapshot ocupando cupos, todos son nuevos candidatos)
+      return tamañoDirectorio;
+    } else {
+      // ✅ En nombramiento-directores: calcular basándose en directores del snapshot
+      // (solo acceder a directoresDisponiblesDelSnapshot cuando sea necesario)
+      const directoresActuales = nombramientoStore.directoresDisponiblesDelSnapshot.length;
+      const cupos = tamañoDirectorio - directoresActuales;
+      return Math.max(0, cupos); // No permitir valores negativos
+    }
   });
 
   /**

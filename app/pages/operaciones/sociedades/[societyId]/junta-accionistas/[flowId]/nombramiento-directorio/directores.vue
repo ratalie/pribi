@@ -366,15 +366,14 @@
     return false;
   };
 
-  // ✅ Directores titulares desde backend (SOLO directores nuevos de esta junta, NO titulares del snapshot)
+  // ✅ Directores titulares desde backend (SOLO directores candidatos nuevos de esta junta, NO titulares del snapshot)
   // En nombramiento-directorio, todos los directores son nuevos (vienen solo de directoresDesignados)
-  // ⚠️ IMPORTANTE: Mostrar TODOS los TITULARES nuevos, no solo los que tienen isCandidate: true
+  // ⚠️ IMPORTANTE: Mostrar SOLO los TITULARES que son candidatos (isCandidate === true)
   const directoresTitulares = computed(() => {
-    // Filtrar solo los directores designados (nuevos) que son TITULARES
+    // Filtrar solo los directores designados (nuevos) que son TITULARES y candidatos
     // NO usar directoresTitularesFromComposable porque incluye snapshot - usar directamente del store
-    // En nombramiento-directorio, mostramos todos los TITULARES nuevos, independientemente de isCandidate
     const directoresDesignados = nombramientoStore.directoresDesignados.filter(
-      (d) => d.directorRole === "TITULAR"
+      (d) => d.directorRole === "TITULAR" && d.isCandidate === true
     );
     // Mapear a DirectorRow para usar la función mapearDirectoresParaUI
     const directoresRow: Array<{
@@ -428,15 +427,16 @@
   // Datos para la tabla de titulares
   const tableData = computed(() => [...directoresTitulares.value, filaSinAsignar.value]);
 
-  // ✅ Directores suplentes y alternos desde backend (SOLO directores nuevos de esta junta, NO titulares del snapshot)
+  // ✅ Directores suplentes y alternos desde backend (SOLO directores candidatos nuevos de esta junta, NO titulares del snapshot)
   // En nombramiento-directorio, todos los directores son nuevos (vienen solo de directoresDesignados)
-  // ⚠️ IMPORTANTE: Mostrar TODOS los SUPLENTES/ALTERNOS nuevos, no solo los que tienen isCandidate: true
+  // ⚠️ IMPORTANTE: Mostrar SOLO los SUPLENTES/ALTERNOS que son candidatos (isCandidate === true)
   const directoresSuplentesAlternos = computed(() => {
-    // Filtrar solo los directores designados (nuevos) que son SUPLENTES o ALTERNOS
+    // Filtrar solo los directores designados (nuevos) que son SUPLENTES o ALTERNOS y candidatos
     // NO usar directoresSuplentesAlternosFromComposable porque incluye snapshot - usar directamente del store
-    // En nombramiento-directorio, mostramos todos los SUPLENTES/ALTERNOS nuevos, independientemente de isCandidate
     const directoresDesignados = nombramientoStore.directoresDesignados.filter(
-      (d) => d.directorRole === "SUPLENTE" || d.directorRole === "ALTERNO"
+      (d) =>
+        (d.directorRole === "SUPLENTE" || d.directorRole === "ALTERNO") &&
+        d.isCandidate === true
     );
     // Mapear a DirectorRow para usar la función mapearDirectoresParaUI
     const directoresRow: Array<{
@@ -846,12 +846,19 @@
         };
 
         // ✅ Usar PUT para actualizar el director
+        // ⚠️ IMPORTANTE: Obtener directorRole del director existente (NO hardcodear "TITULAR")
+        // Buscar el director original en el store para obtener su directorRole
+        const directorEnStore = nombramientoStore.directoresDesignados.find(
+          (d) => d.id === directorOriginal.id
+        );
+        const directorRoleActual = directorEnStore?.directorRole || "TITULAR";
+
         await nombramientoStore.updateDirector(
           societyId.value,
           flowId.value,
           directorOriginal.id, // designationId (ID del DirectorFlowAction)
           person,
-          "TITULAR" // directorRole
+          directorRoleActual // Usar el directorRole del director existente, no hardcodear
         );
 
         console.log("✅ Director titular actualizado exitosamente");
@@ -863,8 +870,8 @@
 
       isModalOpen.value = false;
       directorToEdit.value = null;
-      // Recargar datos después de guardar
-      await loadData();
+      // Recargar directores designados (sin remoción)
+      await recargarDirectoresSinRemocion();
     } catch (error) {
       console.error("Error al guardar director:", error);
       // El error ya fue manejado en el composable/store
@@ -896,8 +903,8 @@
       console.log("✅ Director suplente/alterno creado exitosamente");
       isModalSuplenteAlternoOpen.value = false;
       directorSuplenteAlternoToEdit.value = null;
-      // Recargar datos después de guardar
-      await loadData();
+      // Recargar directores designados (sin remoción)
+      await recargarDirectoresSinRemocion();
     } catch (error) {
       console.error("Error al guardar director suplente/alterno:", error);
       // El error ya fue manejado en el composable/store
