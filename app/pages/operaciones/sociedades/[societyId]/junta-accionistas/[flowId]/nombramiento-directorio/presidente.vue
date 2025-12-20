@@ -155,6 +155,7 @@
   import SlotWrapper from "~/components/containers/SlotWrapper.vue";
   import Switch from "~/components/ui/switch/Switch.vue";
   import VDropdownComponent from "~/components/VDropdownComponent.vue";
+  import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
   import { VoteAgreementType } from "~/core/hexag/juntas/domain/enums/vote-agreement-type.enum";
   import { useDirectoryConfigurationStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/stores/useDirectoryConfigurationStore";
   import { useNombramientoDirectoresStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/stores/useNombramientoDirectoresStore";
@@ -675,5 +676,35 @@
   // Exponer función para uso externo
   defineExpose({
     verificarEmpate,
+  });
+
+  // ✅ Configurar el botón "Siguiente" para navegar a resumen
+  useJuntasFlowNext(async () => {
+    // Validar que si hay cambio de presidente, esté seleccionado
+    if (tieneCambioPresidente.value && !presidenteId.value) {
+      throw new Error("Debe seleccionar un presidente");
+    }
+
+    // Si hay cambio de presidente, guardar la configuración
+    if (tieneCambioPresidente.value && presidenteId.value) {
+      try {
+        isLoadingPresidente.value = true;
+        await directoryConfigurationStore.updateConfiguration(
+          Number(route.params.societyId),
+          Number(route.params.flowId),
+          {
+            presidenteId: presidenteId.value,
+          }
+        );
+        console.log("✅ Presidente actualizado exitosamente");
+      } catch (error: any) {
+        console.error("❌ Error al guardar presidente:", error);
+        throw error;
+      } finally {
+        isLoadingPresidente.value = false;
+      }
+    }
+
+    console.log("✅ Navegando a resumen desde presidente");
   });
 </script>
