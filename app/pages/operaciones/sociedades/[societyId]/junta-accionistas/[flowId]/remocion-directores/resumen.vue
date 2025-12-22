@@ -22,7 +22,7 @@
 
     <!-- Si es mayoría: mostrar una card por cada director -->
     <template v-if="resultadoVotacion && !esUnanimidad && resultadosPorItem.length > 0">
-      <div class="mt-8">
+      <div class="mt-8 gap-2">
         <p class="t-h4 text-gray-800 font-primary font-semibold mb-4">
           Resultados de la Votación
         </p>

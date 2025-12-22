@@ -80,9 +80,10 @@ export function useResumenRemocionDirectores() {
   /**
    * Directores removidos (aprobados en votación)
    * Son los que tienen isCandidate: true Y fueron aprobados (candidateStatus === "ELECTED" o isRemoved === true)
+   * ⚠️ IMPORTANTE: Solo cuenta directores TITULARES
    */
   const directoresRemovidos = computed(() => {
-    // Filtrar candidatos que fueron aprobados
+    // Filtrar candidatos que fueron aprobados Y son TITULARES
     const candidatosAprobados = remocionStore.candidatos.filter((c) => {
       // Verificar si fue aprobado
       const fueAprobado =
@@ -90,7 +91,8 @@ export function useResumenRemocionDirectores() {
         c.isRemoved === true ||
         c.removalStatus === "REMOVIDO";
 
-      return c.isCandidate === true && fueAprobado;
+      // ⚠️ IMPORTANTE: Solo contar TITULARES
+      return c.isCandidate === true && fueAprobado && c.rolDirector === "TITULAR";
     });
 
     return candidatosAprobados;
