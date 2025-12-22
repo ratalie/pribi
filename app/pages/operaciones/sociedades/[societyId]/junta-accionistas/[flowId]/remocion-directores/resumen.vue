@@ -76,12 +76,12 @@
           <!-- Directores sujetos a remoción y removidos -->
           <div class="flex flex-col gap-4">
             <div class="flex justify-between items-center">
-              <p class="t-h6 text-primary-700 font-semibold">Directores sujetos a remoción</p>
+              <p class="t-h6 text-gray-700 font-medium">Directores sujetos a remoción</p>
               <p class="font-bold text-primary-800">{{ cantidadDirectoresSujetosRemocion }}</p>
             </div>
 
             <div class="flex justify-between items-center">
-              <p class="t-h6 text-primary-700 font-semibold">Directores removidos</p>
+              <p class="t-h6 text-gray-700 font-medium">Directores removidos</p>
               <p class="font-bold text-green-600">{{ cantidadDirectoresRemovidos }}</p>
             </div>
           </div>
