@@ -45,9 +45,9 @@
             <span class="font-semibold">votación por mayoría simple</span>
             , con la participación del
             <span class="font-semibold">{{ porcentajeParticipacion }}%</span>
-            de los accionistas con derecho a voto presentes, obteniéndose el
+            de los accionistas con derecho a voto presentes, obteniéndose un
             <span class="font-semibold">{{ porcentajeAFavor }}% de votos favorables</span>
-            sobre las acciones presentes.
+            , calculados sobre las acciones presentes con derecho a voto.
           </template>
         </p>
       </div>
