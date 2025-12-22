@@ -341,3 +341,5 @@ export const useVotacionConfiguracionStore = defineStore("votacionConfiguracion"
   },
 });
 
+
+

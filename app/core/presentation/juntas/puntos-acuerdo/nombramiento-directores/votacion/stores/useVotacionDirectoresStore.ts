@@ -509,3 +509,5 @@ export const useVotacionDirectoresStore = defineStore("votacionDirectores", {
     },
   },
 });
+
+

@@ -837,3 +837,5 @@ export function useVotacionDirectoresController() {
     cuposDisponibles, // ✅ Exponer cupos disponibles
   };
 }
+
+

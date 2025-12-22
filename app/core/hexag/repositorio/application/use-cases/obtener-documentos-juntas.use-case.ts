@@ -1,9 +1,9 @@
-import type { RepositorioDocumentosRepository } from "../../domain/ports/repositorio-documentos.repository";
 import type { RepositorioNode } from "../../domain/entities/repositorio-node.entity";
+import type { RepositorioDocumentosRepository } from "../../domain/ports/repositorio-documentos.repository";
 
 /**
  * Use Case: Obtener Documentos de Juntas
- * 
+ *
  * Responsabilidad: Orquestar la obtención de documentos de juntas desde el repositorio
  * Ubicación: Application (según arquitectura hexagonal)
  */
@@ -14,23 +14,27 @@ export class ObtenerDocumentosJuntasUseCase {
 
   /**
    * Obtiene todas las carpetas de juntas de una sociedad
-   * 
+   *
    * Según la nueva estructura V2:
    * - Las carpetas de juntas están en: /core/documentos-generados/operaciones/juntas-accionistas/
    * - NO en: /core/juntas/ (estructura antigua)
-   * 
+   *
    * Filtra los nodos que:
    * - Son carpetas (type === 1)
    * - Están en el path "/core/documentos-generados/operaciones/juntas-accionistas/"
    * - Tienen nombres legibles como "junta del 11 de diciembre del 2025"
-   * 
+   *
    * @param structureId ID de la estructura de la sociedad
    * @returns Lista de carpetas de juntas
    */
   async obtenerCarpetasJuntas(structureId: string): Promise<RepositorioNode[]> {
-    console.log("🟡 [ObtenerDocumentosJuntasUseCase] ========================================");
+    console.log(
+      "🟡 [ObtenerDocumentosJuntasUseCase] ========================================"
+    );
     console.log("🟡 [ObtenerDocumentosJuntasUseCase] OBTENER CARPETAS JUNTAS (V2)");
-    console.log("🟡 [ObtenerDocumentosJuntasUseCase] ========================================");
+    console.log(
+      "🟡 [ObtenerDocumentosJuntasUseCase] ========================================"
+    );
     console.log("🟡 [ObtenerDocumentosJuntasUseCase] structureId:", structureId);
 
     try {
@@ -41,33 +45,44 @@ export class ObtenerDocumentosJuntasUseCase {
       // 2. Encontrar el nodo "juntas-accionistas" en la nueva estructura V2
       // Path: "/core/documentos-generados/operaciones/juntas-accionistas/"
       const nodoJuntasAccionistas = nodos.find(
-        (node) => 
-          node.type === "folder" && 
-          node.name === "juntas-accionistas" && 
+        (node) =>
+          node.type === "folder" &&
+          node.name === "juntas-accionistas" &&
           node.path === "/core/documentos-generados/operaciones/"
       );
-      
+
       if (!nodoJuntasAccionistas) {
-        console.log("🟡 [ObtenerDocumentosJuntasUseCase] No se encontró el nodo 'juntas-accionistas' (estructura V2)");
-        console.log("🟡 [ObtenerDocumentosJuntasUseCase] Buscando nodos con path que contenga 'juntas-accionistas'...");
-        const nodosJuntas = nodos.filter(n => 
-          n.type === "folder" && 
-          (n.path?.includes("juntas-accionistas") || n.name === "juntas-accionistas")
+        console.log(
+          "🟡 [ObtenerDocumentosJuntasUseCase] No se encontró el nodo 'juntas-accionistas' (estructura V2)"
         );
-        console.log("🟡 [ObtenerDocumentosJuntasUseCase] Nodos relacionados con juntas-accionistas:", nodosJuntas.map(n => ({
-          id: n.id,
-          name: n.name,
-          path: n.path,
-          parentId: n.parentId,
-        })));
+        console.log(
+          "🟡 [ObtenerDocumentosJuntasUseCase] Buscando nodos con path que contenga 'juntas-accionistas'..."
+        );
+        const nodosJuntas = nodos.filter(
+          (n) =>
+            n.type === "folder" &&
+            (n.path?.includes("juntas-accionistas") || n.name === "juntas-accionistas")
+        );
+        console.log(
+          "🟡 [ObtenerDocumentosJuntasUseCase] Nodos relacionados con juntas-accionistas:",
+          nodosJuntas.map((n) => ({
+            id: n.id,
+            name: n.name,
+            path: n.path,
+            parentId: n.parentId,
+          }))
+        );
         return [];
       }
 
-      console.log("🟡 [ObtenerDocumentosJuntasUseCase] Nodo 'juntas-accionistas' encontrado:", {
-        id: nodoJuntasAccionistas.id,
-        name: nodoJuntasAccionistas.name,
-        path: nodoJuntasAccionistas.path,
-      });
+      console.log(
+        "🟡 [ObtenerDocumentosJuntasUseCase] Nodo 'juntas-accionistas' encontrado:",
+        {
+          id: nodoJuntasAccionistas.id,
+          name: nodoJuntasAccionistas.name,
+          path: nodoJuntasAccionistas.path,
+        }
+      );
 
       // 3. Filtrar carpetas que son hijas directas del nodo "juntas-accionistas"
       // Estas son las carpetas de juntas individuales con nombres como:
@@ -79,28 +94,38 @@ export class ObtenerDocumentosJuntasUseCase {
         // Debe ser hija directa del nodo "juntas-accionistas"
         if (node.parentId !== nodoJuntasAccionistas.id) return false;
         // El path debe ser "/core/documentos-generados/operaciones/juntas-accionistas/"
-        if (node.path !== "/core/documentos-generados/operaciones/juntas-accionistas/") return false;
+        if (node.path !== "/core/documentos-generados/operaciones/juntas-accionistas/")
+          return false;
         // Incluir carpetas con nombre que contenga fecha legible
         // Formato nuevo: "junta del 11 de diciembre del 2025"
         // Formato antiguo: "11 de diciembre del 2025"
-        const esFechaLegibleNueva = /^junta\s+del\s+\d+\s+de\s+\w+\s+del\s+\d{4}$/.test(node.name);
+        const esFechaLegibleNueva = /^junta\s+del\s+\d+\s+de\s+\w+\s+del\s+\d{4}$/.test(
+          node.name
+        );
         const esFechaLegibleAntigua = /^\d+\s+de\s+\w+\s+del\s+\d{4}$/.test(node.name);
         return esFechaLegibleNueva || esFechaLegibleAntigua;
       });
 
-      console.log("🟡 [ObtenerDocumentosJuntasUseCase] Carpetas de juntas encontradas:", carpetasJuntas.length);
-      console.log("🟡 [ObtenerDocumentosJuntasUseCase] Carpetas:", carpetasJuntas.map(c => ({ 
-        id: c.id, 
-        name: c.name, 
-        path: c.path,
-        parentId: c.parentId 
-      })));
+      console.log(
+        "🟡 [ObtenerDocumentosJuntasUseCase] Carpetas de juntas encontradas:",
+        carpetasJuntas.length
+      );
+      console.log(
+        "🟡 [ObtenerDocumentosJuntasUseCase] Carpetas:",
+        carpetasJuntas.map((c) => ({
+          id: c.id,
+          name: c.name,
+          path: c.path,
+          parentId: c.parentId,
+        }))
+      );
 
       // 4. Para cada carpeta de junta, obtener sus hijos (documentos)
       const carpetasJuntasConHijos = await Promise.all(
         carpetasJuntas.map(async (carpeta) => {
           try {
-            const carpetaCompleta = await this.repositorioDocumentosRepository.obtenerNodoPorId(carpeta.id);
+            const carpetaCompleta =
+              await this.repositorioDocumentosRepository.obtenerNodoPorId(carpeta.id);
             console.log("🟡 [ObtenerDocumentosJuntasUseCase] Carpeta completa obtenida:", {
               id: carpetaCompleta?.id,
               name: carpetaCompleta?.name,
@@ -108,13 +133,18 @@ export class ObtenerDocumentosJuntasUseCase {
             });
             return carpetaCompleta || carpeta;
           } catch (error) {
-            console.error("🔴 [ObtenerDocumentosJuntasUseCase] Error al obtener hijos de carpeta:", error);
+            console.error(
+              "🔴 [ObtenerDocumentosJuntasUseCase] Error al obtener hijos de carpeta:",
+              error
+            );
             return carpeta;
           }
         })
       );
 
-      console.log("🟡 [ObtenerDocumentosJuntasUseCase] ========================================");
+      console.log(
+        "🟡 [ObtenerDocumentosJuntasUseCase] ========================================"
+      );
 
       return carpetasJuntasConHijos;
     } catch (error: any) {
@@ -125,20 +155,24 @@ export class ObtenerDocumentosJuntasUseCase {
 
   /**
    * Obtiene los documentos dentro de una carpeta de junta específica
-   * 
+   *
    * @param carpetaId ID de la carpeta de junta (string)
    * @returns Lista de documentos dentro de la carpeta
    */
   async obtenerDocumentosDeCarpeta(carpetaId: string): Promise<RepositorioNode[]> {
-    console.log("🟡 [ObtenerDocumentosJuntasUseCase] ========================================");
+    console.log(
+      "🟡 [ObtenerDocumentosJuntasUseCase] ========================================"
+    );
     console.log("🟡 [ObtenerDocumentosJuntasUseCase] OBTENER DOCUMENTOS DE CARPETA");
-    console.log("🟡 [ObtenerDocumentosJuntasUseCase] ========================================");
+    console.log(
+      "🟡 [ObtenerDocumentosJuntasUseCase] ========================================"
+    );
     console.log("🟡 [ObtenerDocumentosJuntasUseCase] carpetaId:", carpetaId);
 
     try {
       // 1. Obtener el nodo (carpeta) con sus hijos
       const carpeta = await this.repositorioDocumentosRepository.obtenerNodoPorId(carpetaId);
-      
+
       if (!carpeta) {
         console.log("🟡 [ObtenerDocumentosJuntasUseCase] Carpeta no encontrada");
         return [];
@@ -158,13 +192,18 @@ export class ObtenerDocumentosJuntasUseCase {
 
       console.log("🟡 [ObtenerDocumentosJuntasUseCase] Hijos encontrados:", hijos.length);
       if (hijos.length > 0) {
-        console.log("🟡 [ObtenerDocumentosJuntasUseCase] Detalle de hijos:", hijos.map(h => ({
-          id: h.id,
-          name: h.name,
-          type: h.type,
-        })));
+        console.log(
+          "🟡 [ObtenerDocumentosJuntasUseCase] Detalle de hijos:",
+          hijos.map((h) => ({
+            id: h.id,
+            name: h.name,
+            type: h.type,
+          }))
+        );
       }
-      console.log("🟡 [ObtenerDocumentosJuntasUseCase] ========================================");
+      console.log(
+        "🟡 [ObtenerDocumentosJuntasUseCase] ========================================"
+      );
 
       return hijos;
     } catch (error: any) {
@@ -175,11 +214,11 @@ export class ObtenerDocumentosJuntasUseCase {
 
   /**
    * Obtiene la estructura de "operaciones" (directorio y juntas-accionistas)
-   * 
+   *
    * Según la nueva estructura V2:
    * - Directorio: /core/documentos-generados/operaciones/directorio/
    * - Juntas: /core/documentos-generados/operaciones/juntas-accionistas/
-   * 
+   *
    * @param structureId ID de la estructura de la sociedad
    * @returns Estructura de operaciones con directorio y juntas-accionistas
    */
@@ -187,9 +226,13 @@ export class ObtenerDocumentosJuntasUseCase {
     directorio: RepositorioNode | null;
     juntas: RepositorioNode | null;
   }> {
-    console.log("🟡 [ObtenerDocumentosJuntasUseCase] ========================================");
+    console.log(
+      "🟡 [ObtenerDocumentosJuntasUseCase] ========================================"
+    );
     console.log("🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA OPERACIONES (V2)");
-    console.log("🟡 [ObtenerDocumentosJuntasUseCase] ========================================");
+    console.log(
+      "🟡 [ObtenerDocumentosJuntasUseCase] ========================================"
+    );
     console.log("🟡 [ObtenerDocumentosJuntasUseCase] structureId:", structureId);
 
     try {
@@ -201,24 +244,30 @@ export class ObtenerDocumentosJuntasUseCase {
       // Directorio: /core/documentos-generados/operaciones/directorio/
       // Juntas: /core/documentos-generados/operaciones/juntas-accionistas/
       const nodoDirectorio = nodos.find(
-        (node) => 
-          node.type === "folder" && 
-          node.name === "directorio" && 
+        (node) =>
+          node.type === "folder" &&
+          node.name === "directorio" &&
           node.path === "/core/documentos-generados/operaciones/"
       );
-      
+
       const nodoJuntas = nodos.find(
-        (node) => 
-          node.type === "folder" && 
-          node.name === "juntas-accionistas" && 
+        (node) =>
+          node.type === "folder" &&
+          node.name === "juntas-accionistas" &&
           node.path === "/core/documentos-generados/operaciones/"
       );
 
       console.log("🟡 [ObtenerDocumentosJuntasUseCase] Nodos encontrados (V2):", {
-        directorio: nodoDirectorio ? { id: nodoDirectorio.id, name: nodoDirectorio.name, path: nodoDirectorio.path } : null,
-        juntas: nodoJuntas ? { id: nodoJuntas.id, name: nodoJuntas.name, path: nodoJuntas.path } : null,
+        directorio: nodoDirectorio
+          ? { id: nodoDirectorio.id, name: nodoDirectorio.name, path: nodoDirectorio.path }
+          : null,
+        juntas: nodoJuntas
+          ? { id: nodoJuntas.id, name: nodoJuntas.name, path: nodoJuntas.path }
+          : null,
       });
-      console.log("🟡 [ObtenerDocumentosJuntasUseCase] ========================================");
+      console.log(
+        "🟡 [ObtenerDocumentosJuntasUseCase] ========================================"
+      );
 
       return {
         directorio: nodoDirectorio || null,
@@ -232,14 +281,14 @@ export class ObtenerDocumentosJuntasUseCase {
 
   /**
    * Obtiene la estructura completa de juntas para la vista
-   * 
+   *
    * Retorna estructura compatible con la vista actual:
    * {
    *   operaciones: {
    *     juntas: [carpetas de juntas]
    *   }
    * }
-   * 
+   *
    * @param structureId ID de la estructura de la sociedad
    * @returns Estructura de juntas
    */
@@ -248,9 +297,13 @@ export class ObtenerDocumentosJuntasUseCase {
       juntas: RepositorioNode[];
     };
   }> {
-    console.log("🟡 [ObtenerDocumentosJuntasUseCase] ========================================");
+    console.log(
+      "🟡 [ObtenerDocumentosJuntasUseCase] ========================================"
+    );
     console.log("🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA JUNTAS");
-    console.log("🟡 [ObtenerDocumentosJuntasUseCase] ========================================");
+    console.log(
+      "🟡 [ObtenerDocumentosJuntasUseCase] ========================================"
+    );
     console.log("🟡 [ObtenerDocumentosJuntasUseCase] structureId:", structureId);
 
     try {
@@ -265,7 +318,9 @@ export class ObtenerDocumentosJuntasUseCase {
       console.log("🟡 [ObtenerDocumentosJuntasUseCase] Estructura obtenida:", {
         totalJuntas: carpetasJuntas.length,
       });
-      console.log("🟡 [ObtenerDocumentosJuntasUseCase] ========================================");
+      console.log(
+        "🟡 [ObtenerDocumentosJuntasUseCase] ========================================"
+      );
 
       return estructura;
     } catch (error: any) {
@@ -273,5 +328,71 @@ export class ObtenerDocumentosJuntasUseCase {
       throw error;
     }
   }
-}
 
+  /**
+   * Obtiene la estructura de "registros" (sociedades y sucursales)
+   *
+   * Según la nueva estructura V2:
+   * - Sociedades: /core/documentos-generados/registros/sociedades/
+   * - Sucursales: /core/documentos-generados/registros/sucursales/
+   *
+   * @param structureId ID de la estructura de la sociedad
+   * @returns Estructura de registros con sociedades y sucursales
+   */
+  async obtenerEstructuraRegistros(structureId: string): Promise<{
+    sociedades: RepositorioNode | null;
+    sucursales: RepositorioNode | null;
+  }> {
+    console.log(
+      "🟡 [ObtenerDocumentosJuntasUseCase] ========================================"
+    );
+    console.log("🟡 [ObtenerDocumentosJuntasUseCase] OBTENER ESTRUCTURA REGISTROS (V2)");
+    console.log(
+      "🟡 [ObtenerDocumentosJuntasUseCase] ========================================"
+    );
+    console.log("🟡 [ObtenerDocumentosJuntasUseCase] structureId:", structureId);
+
+    try {
+      // 1. Obtener todos los nodos core
+      const nodos = await this.repositorioDocumentosRepository.obtenerNodosCore(structureId);
+      console.log("🟡 [ObtenerDocumentosJuntasUseCase] Total nodos core:", nodos.length);
+
+      // 2. Encontrar nodos en la nueva estructura V2
+      // Sociedades: /core/documentos-generados/registros/sociedades/
+      // Sucursales: /core/documentos-generados/registros/sucursales/
+      const nodoSociedades = nodos.find(
+        (node) =>
+          node.type === "folder" &&
+          node.name === "sociedades" &&
+          node.path === "/core/documentos-generados/registros/"
+      );
+
+      const nodoSucursales = nodos.find(
+        (node) =>
+          node.type === "folder" &&
+          node.name === "sucursales" &&
+          node.path === "/core/documentos-generados/registros/"
+      );
+
+      console.log("🟡 [ObtenerDocumentosJuntasUseCase] Nodos encontrados (V2):", {
+        sociedades: nodoSociedades
+          ? { id: nodoSociedades.id, name: nodoSociedades.name, path: nodoSociedades.path }
+          : null,
+        sucursales: nodoSucursales
+          ? { id: nodoSucursales.id, name: nodoSucursales.name, path: nodoSucursales.path }
+          : null,
+      });
+      console.log(
+        "🟡 [ObtenerDocumentosJuntasUseCase] ========================================"
+      );
+
+      return {
+        sociedades: nodoSociedades || null,
+        sucursales: nodoSucursales || null,
+      };
+    } catch (error: any) {
+      console.error("🔴 [ObtenerDocumentosJuntasUseCase] ERROR:", error);
+      throw error;
+    }
+  }
+}
