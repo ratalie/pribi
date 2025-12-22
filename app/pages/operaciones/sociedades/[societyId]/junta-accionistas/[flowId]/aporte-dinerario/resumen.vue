@@ -223,11 +223,17 @@
         </div>
       </div>
     </section>
+
+    <!-- Sección 3: Distribución Accionaria -->
+    <section id="distribucion-accionaria" class="flex flex-col gap-4 mt-6">
+      <TablaAntesDespuesAD :lista-antes="listaAntes" :lista-despues="listaDespues" />
+    </section>
   </SlotWrapper>
 </template>
 
 <script setup lang="ts">
   import { ArrowRight } from "lucide-vue-next";
+  import TablaAntesDespuesAD from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/aporte-dinerario/components/organisms/resumen/TablaAntesDespuesAD.vue";
   import { useLoadDataFlowAD } from "~/core/presentation/operaciones/junta-accionistas/pasos/puntos-agenda/aporte-dinerario/composables/useLoadDataFlowAD";
 
   /**
@@ -252,6 +258,8 @@
     primaEmision,
     totalAportado,
     votacionAprobada,
+    listaAntes,
+    listaDespues,
   } = useLoadDataFlowAD();
 
   /**

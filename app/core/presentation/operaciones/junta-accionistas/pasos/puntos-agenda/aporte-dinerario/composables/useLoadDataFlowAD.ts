@@ -1,5 +1,6 @@
 import type {
   Accion,
+  Persona,
   Shareholder,
   SnapshotCompleteDTO,
 } from "~/core/hexag/juntas/application/dtos/snapshot-complete.dto";
@@ -92,6 +93,16 @@ export interface ContributionsResponse {
   code: number;
 }
 
+// Tipo para items de la tabla antes/después
+export interface ItemTablaDistribucion {
+  id: string;
+  nombre: string;
+  esAccionista: boolean;
+  numeroAcciones: number;
+  porcentajeParticipacion: string;
+  porcentajeAntes?: number; // Porcentaje antes del aporte (solo para comparación en "después")
+}
+
 // Tipo para el resultado final
 export interface AporteDetalle {
   fecha: string;
@@ -165,7 +176,7 @@ export const useLoadDataFlowAD = () => {
     return sesionVotacion;
   };
 
-  const _mapAccionistasConAcciones = (
+  const mapAccionistasConAcciones = (
     snapshot: SnapshotCompleteDTO | null
   ): AccionistaConAcciones[] => {
     if (!snapshot) return [];
@@ -287,7 +298,7 @@ export const useLoadDataFlowAD = () => {
    * @param contributionsResponse - Respuesta de getContributions
    * @returns Array de aportantes con sus aportes mapeados
    */
-  const _mapAportantesConAportes = (
+  const mapAportantesConAportes = (
     participantsResponse: ParticipantsResponse | null,
     contributionsResponse: ContributionsResponse | null
   ): AportanteConAportes[] => {
@@ -416,12 +427,278 @@ export const useLoadDataFlowAD = () => {
     return montoAlCapital.value + primaEmision.value;
   });
 
+  /**
+   * Helper para obtener nombre completo de una Persona
+   */
+  const getNombreCompletoPersona = (persona: Persona): string => {
+    if (persona.tipo === "NATURAL") {
+      return `${persona.nombre} ${persona.apellidoPaterno} ${
+        persona.apellidoMaterno || ""
+      }`.trim();
+    } else if (persona.tipo === "JURIDICA") {
+      return persona.razonSocial;
+    } else if (persona.tipo === "SUCURSAL") {
+      return persona.nombreSucursal;
+    } else if (persona.tipo === "FONDO_INVERSION") {
+      return persona.razonSocial;
+    } else if (persona.tipo === "FIDEICOMISO") {
+      return persona.razonSocial || "";
+    } else if (persona.tipo === "SUCESION_INDIVISA") {
+      return persona.razonSocial;
+    }
+    return "";
+  };
+
+  /**
+   * Helper para obtener nombre completo de Shareholder o ParticipantPerson
+   */
+  const getNombreCompleto = (person: Shareholder | ParticipantPerson | undefined): string => {
+    if (!person) return "";
+
+    // Para Shareholder (tiene propiedad person)
+    if ("person" in person) {
+      return getNombreCompletoPersona(person.person);
+    }
+
+    // Para ParticipantPerson
+    if (person.tipo === "NATURAL" || person.tipo === "NATURAL_PERSON") {
+      return `${person.nombre || ""} ${person.apellidoPaterno || ""} ${
+        person.apellidoMaterno || ""
+      }`.trim();
+    } else {
+      return (person as any).razonSocial || person.nombre || "";
+    }
+  };
+
+  /**
+   * Normaliza un documento para comparación (elimina espacios, convierte a mayúsculas)
+   */
+  const normalizarDocumento = (tipoDocumento: string, numeroDocumento: string): string => {
+    const tipo = (tipoDocumento || "").trim().toUpperCase();
+    const numero = (numeroDocumento || "").trim().toUpperCase().replace(/\s+/g, "");
+    return `${tipo}|${numero}`;
+  };
+
+  /**
+   * Extrae el documento (tipoDocumento + numeroDocumento) de una Persona
+   * Maneja todos los tipos: NATURAL, JURIDICA, SUCURSAL, FONDO_INVERSION, FIDEICOMISO, SUCESION_INDIVISA
+   */
+  const getDocumentoPersona = (persona: Persona): string => {
+    if (persona.tipo === "NATURAL") {
+      return normalizarDocumento(persona.tipoDocumento, persona.numeroDocumento);
+    } else if (persona.tipo === "JURIDICA") {
+      return normalizarDocumento(persona.tipoDocumento, persona.numeroDocumento);
+    } else if (persona.tipo === "SUCURSAL") {
+      // Para sucursales, el documento principal es el RUC
+      return normalizarDocumento("RUC", persona.ruc);
+    } else if (persona.tipo === "FONDO_INVERSION") {
+      // Para fondos de inversión, el documento principal es el RUC
+      return normalizarDocumento("RUC", persona.ruc);
+    } else if (persona.tipo === "FIDEICOMISO") {
+      // Para fideicomisos, puede tener RUC o usar el número de registro
+      if (persona.tieneRuc && persona.ruc) {
+        return normalizarDocumento("RUC", persona.ruc);
+      } else {
+        // Fallback al número de registro de fideicomiso
+        return normalizarDocumento("REGISTRO_FIDEICOMISO", persona.numeroRegistroFideicomiso);
+      }
+    } else if (persona.tipo === "SUCESION_INDIVISA") {
+      // Para sucesiones indivisas, el documento principal es el RUC
+      return normalizarDocumento("RUC", persona.ruc);
+    }
+    return "";
+  };
+
+  /**
+   * Extrae el documento de un Shareholder
+   */
+  const getDocumentoShareholder = (shareholder: Shareholder): string => {
+    return getDocumentoPersona(shareholder.person);
+  };
+
+  /**
+   * Extrae el documento de un ParticipantPerson
+   */
+  const getDocumentoParticipantPerson = (person: ParticipantPerson): string => {
+    return normalizarDocumento(person.tipoDocumento, person.numeroDocumento);
+  };
+
+  /**
+   * Extrae el documento de un Participant
+   */
+  const getDocumentoParticipant = (participant: Participant): string => {
+    return getDocumentoParticipantPerson(participant.person);
+  };
+
+  /**
+   * Calcula la lista de distribución ANTES del aporte
+   * Incluye solo los accionistas actuales con sus acciones
+   * Usa mapAccionistasConAcciones para obtener los datos
+   */
+  const listaAntes = computed((): ItemTablaDistribucion[] => {
+    if (!snapshotData.value) return [];
+
+    // Usar la función existente para mapear accionistas con sus acciones
+    const accionistasConAcciones = mapAccionistasConAcciones(snapshotData.value);
+
+    // Calcular total de acciones sumando todas las acciones de todos los accionistas
+    const totalAcciones = accionistasConAcciones.reduce((sum, accionista) => {
+      const totalAccionesAccionista = accionista.acciones.reduce(
+        (accSum, accion) => accSum + accion.cantidad,
+        0
+      );
+      return sum + totalAccionesAccionista;
+    }, 0);
+
+    // Mapear a formato de tabla
+    return accionistasConAcciones
+      .map((accionistaConAcciones) => {
+        // Sumar todas las acciones del accionista
+        const numeroAcciones = accionistaConAcciones.acciones.reduce(
+          (sum, accion) => sum + accion.cantidad,
+          0
+        );
+
+        const porcentaje = totalAcciones > 0 ? (numeroAcciones / totalAcciones) * 100 : 0;
+
+        return {
+          id: accionistaConAcciones.accionista.id,
+          nombre: getNombreCompleto(accionistaConAcciones.accionista),
+          esAccionista: true,
+          numeroAcciones,
+          porcentajeParticipacion: `${porcentaje.toFixed(2)}%`,
+        };
+      })
+      .filter((item) => item.numeroAcciones > 0) // Solo mostrar quienes tienen acciones
+      .sort((a, b) => b.numeroAcciones - a.numeroAcciones); // Ordenar por número de acciones descendente
+  });
+
+  /**
+   * Calcula la lista de distribución DESPUÉS del aporte
+   * Usa mapAportantesConAportes para obtener los aportantes y sus aportes
+   * Combina con listaAntes para sumar acciones antes + nuevas acciones
+   * Compara por documento (tipoDocumento + numeroDocumento) en lugar de ID
+   * Garantiza un solo item por aportante con la suma de sus valores
+   */
+  const listaDespues = computed((): ItemTablaDistribucion[] => {
+    if (!contributionsData.value?.data || !participantsData.value || !snapshotData.value) {
+      return listaAntes.value;
+    }
+
+    // Usar la función existente para mapear aportantes con sus aportes
+    const aportantesConAportes = mapAportantesConAportes(
+      participantsData.value,
+      contributionsData.value
+    );
+
+    // Si no hay aportantes, retornar lista antes
+    if (aportantesConAportes.length === 0) {
+      return listaAntes.value;
+    }
+
+    // Crear mapa de listaAntes por documento (tipoDocumento + numeroDocumento) para acceso rápido
+    const listaAntesPorDocumento = new Map<string, ItemTablaDistribucion>();
+    listaAntes.value.forEach((item) => {
+      // Obtener el shareholder del snapshot para extraer su documento
+      const accionistasConAcciones = mapAccionistasConAcciones(snapshotData.value);
+      const accionista = accionistasConAcciones.find((acc) => acc.accionista.id === item.id);
+      if (accionista) {
+        const documento = getDocumentoShareholder(accionista.accionista);
+        if (documento) {
+          listaAntesPorDocumento.set(documento, item);
+        }
+      }
+    });
+
+    // Usar un Map para garantizar un solo item por aportante (usando documento como clave)
+    const itemsMap = new Map<string, ItemTablaDistribucion>();
+
+    // Procesar cada aportante y sumar sus acciones de todos sus aportes
+    aportantesConAportes.forEach((aportanteConAportes) => {
+      const aportanteId = aportanteConAportes.aportante.id;
+      const documentoAportante = getDocumentoParticipant(aportanteConAportes.aportante);
+
+      // Sumar todas las acciones de todos los aportes del aportante
+      const nuevasAcciones = aportanteConAportes.aportes.reduce(
+        (sum, aporte) => sum + aporte.acciones,
+        0
+      );
+
+      // Verificar si el aportante ya está en listaAntes (comparando por documento)
+      const itemAntes = documentoAportante
+        ? listaAntesPorDocumento.get(documentoAportante)
+        : null;
+
+      if (itemAntes) {
+        // Si está en listaAntes, sumar acciones antes + nuevas acciones
+        const numeroAccionesDespues = itemAntes.numeroAcciones + nuevasAcciones;
+        // Extraer porcentaje numérico de antes para comparación
+        const porcentajeAntesNum = parseFloat(
+          itemAntes.porcentajeParticipacion.replace("%", "")
+        );
+        itemsMap.set(documentoAportante, {
+          ...itemAntes,
+          numeroAcciones: numeroAccionesDespues,
+          porcentajeAntes: porcentajeAntesNum, // Guardar para comparación
+        });
+      } else {
+        // Si no está en listaAntes, es un nuevo aportante (porcentajeAntes = 0)
+        itemsMap.set(documentoAportante, {
+          id: aportanteId,
+          nombre: getNombreCompleto(aportanteConAportes.aportante.person),
+          esAccionista: false,
+          numeroAcciones: nuevasAcciones,
+          porcentajeParticipacion: "0%", // Se calculará después
+          porcentajeAntes: 0, // Nuevo aportante, no tenía participación antes
+        });
+      }
+    });
+
+    // Agregar accionistas que no tienen nuevos aportes (mantenerlos en la lista)
+    listaAntes.value.forEach((itemAntes) => {
+      // Obtener el documento del accionista
+      const accionistasConAcciones = mapAccionistasConAcciones(snapshotData.value);
+      const accionista = accionistasConAcciones.find(
+        (acc) => acc.accionista.id === itemAntes.id
+      );
+      if (accionista) {
+        const documento = getDocumentoShareholder(accionista.accionista);
+        // Solo agregar si NO está ya en el mapa (no tiene nuevos aportes)
+        if (documento && !itemsMap.has(documento)) {
+          // Extraer porcentaje numérico de antes para comparación
+          const porcentajeAntesNum = parseFloat(
+            itemAntes.porcentajeParticipacion.replace("%", "")
+          );
+          itemsMap.set(documento, {
+            ...itemAntes,
+            porcentajeAntes: porcentajeAntesNum, // Guardar para comparación
+          });
+        }
+      }
+    });
+
+    // Convertir Map a Array
+    const items = Array.from(itemsMap.values());
+
+    // Calcular total de acciones después
+    const totalAccionesDespues = items.reduce((sum, item) => sum + item.numeroAcciones, 0);
+
+    // Recalcular porcentajes con el nuevo total
+    items.forEach((item) => {
+      const porcentaje =
+        totalAccionesDespues > 0 ? (item.numeroAcciones / totalAccionesDespues) * 100 : 0;
+      item.porcentajeParticipacion = `${porcentaje.toFixed(2)}%`;
+    });
+
+    // Ordenar por número de acciones descendente
+    return items.sort((a, b) => b.numeroAcciones - a.numeroAcciones);
+  });
+
   const votacionAprobada = computed((): boolean => {
     if (!votesData.value?.items?.[0] || !snapshotData.value) {
       return false;
     }
 
-    const snapshotStore = useSnapshotStore();
     const accionistasConDerechoVoto = snapshotStore.accionistasConDerechoVoto;
     const votos = votesData.value.items[0].votos || [];
 
@@ -504,5 +781,7 @@ export const useLoadDataFlowAD = () => {
     primaEmision,
     totalAportado,
     votacionAprobada,
+    listaAntes,
+    listaDespues,
   };
 };
