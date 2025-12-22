@@ -103,6 +103,25 @@ export interface ItemTablaDistribucion {
   porcentajeAntes?: number; // Porcentaje antes del aporte (solo para comparación en "después")
 }
 
+// Tipo para items de la tabla de detalles de aportes
+export interface ItemTablaDetalleAporte {
+  fecha: string;
+  tipoAccion: string;
+  monto: number;
+  montoEnOtraMoneda: number | null;
+  capitalSocial: number;
+  prima: number;
+  precioPorAccion: number;
+  acciones: number;
+}
+
+// Tipo para aportante con sus aportes detallados
+export interface AportanteConDetalles {
+  id: string;
+  nombre: string;
+  aportes: ItemTablaDetalleAporte[];
+}
+
 // Tipo para el resultado final
 export interface AporteDetalle {
   fecha: string;
@@ -694,6 +713,78 @@ export const useLoadDataFlowAD = () => {
     return items.sort((a, b) => b.numeroAcciones - a.numeroAcciones);
   });
 
+  /**
+   * Formatea una fecha ISO a formato DD/MM/YY
+   */
+  const formatDateShort = (dateISO: string | undefined): string => {
+    if (!dateISO) return "";
+    try {
+      const date = new Date(dateISO);
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const year = String(date.getFullYear()).slice(-2); // Últimos 2 dígitos del año
+      return `${day}/${month}/${year}`;
+    } catch {
+      return dateISO;
+    }
+  };
+
+  /**
+   * Formatea el tipo de acción a texto legible
+   */
+  const formatTipoAccion = (tipoAccion: string): string => {
+    const tipoAccionMap: Record<string, string> = {
+      COMUN: "Comunes",
+      CLASE: "Clase",
+      PREFERENTE_NO_VOTO: "Sin derecho a voto",
+    };
+    return tipoAccionMap[tipoAccion] || tipoAccion;
+  };
+
+  /**
+   * Calcula la lista de aportantes con sus aportes detallados
+   * Lista lista para mostrar en la tabla de detalles
+   */
+  const listaDetallesAportes = computed((): AportanteConDetalles[] => {
+    if (!participantsData.value || !contributionsData.value) {
+      return [];
+    }
+
+    // Usar la función existente para mapear aportantes con sus aportes
+    const aportantesConAportes = mapAportantesConAportes(
+      participantsData.value,
+      contributionsData.value
+    );
+
+    // Formatear y ordenar los datos para la tabla
+    return aportantesConAportes.map((aportanteConAportes) => {
+      // Ordenar aportes por fecha (más reciente primero) antes de formatear
+      const aportesOrdenados = [...aportanteConAportes.aportes].sort((a, b) => {
+        const dateA = new Date(a.fecha);
+        const dateB = new Date(b.fecha);
+        return dateB.getTime() - dateA.getTime(); // Más reciente primero
+      });
+
+      // Formatear los aportes ya ordenados
+      const aportesFormateados: ItemTablaDetalleAporte[] = aportesOrdenados.map((aporte) => ({
+        fecha: formatDateShort(aporte.fecha),
+        tipoAccion: formatTipoAccion(aporte.tipoAccion),
+        monto: aporte.monto,
+        montoEnOtraMoneda: aporte.montoEnOtraMoneda,
+        capitalSocial: aporte.capitalSocial,
+        prima: aporte.prima,
+        precioPorAccion: aporte.precioPorAccion,
+        acciones: aporte.acciones,
+      }));
+
+      return {
+        id: aportanteConAportes.aportante.id,
+        nombre: getNombreCompleto(aportanteConAportes.aportante.person),
+        aportes: aportesFormateados,
+      };
+    });
+  });
+
   const votacionAprobada = computed((): boolean => {
     if (!votesData.value?.items?.[0] || !snapshotData.value) {
       return false;
@@ -783,5 +874,6 @@ export const useLoadDataFlowAD = () => {
     votacionAprobada,
     listaAntes,
     listaDespues,
+    listaDetallesAportes,
   };
 };
