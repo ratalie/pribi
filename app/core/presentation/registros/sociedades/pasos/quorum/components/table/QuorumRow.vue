@@ -58,14 +58,14 @@
   <tr class="border-b border-button-secondary">
     <td
       v-if="props.convocatoria !== undefined"
-      class="font-secondary text-gray-700 t-t2 font-medium py-7 px-7"
+      class="font-secondary text-gray-700 t-t2 font-medium py-7 px-4 2xl:px-7"
     >
       {{ props.convocatoria || "" }}
     </td>
-    <td class="font-secondary text-gray-700 t-t2 font-medium py-7 px-7">
+    <td class="font-secondary text-gray-700 t-t2 font-medium py-7 px-4 2xl:px-7">
       {{ quorumType }}
     </td>
-    <td class="font-secondary t-t2 text-gray-700 font-medium py-7 px-7">
+    <td class="font-secondary t-t2 text-gray-700 font-medium py-7 px-4 2xl:px-7">
       <div class="flex flex-wrap gap-2 items-center">
         <div v-if="props.ruler" class="flex gap-2 items-center shrink-0">
           <p class="whitespace-nowrap">{{ ruler }}</p>

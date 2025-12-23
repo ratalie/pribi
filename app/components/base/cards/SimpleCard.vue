@@ -6,8 +6,11 @@
 
 <template>
   <div
-    :class="['h-full border border-gray-100 rounded-xl flex flex-col gap-12 py-12 px-10', props.class]"
+    :class="[
+      'h-full border border-gray-100 rounded-xl flex flex-col gap-12 py-10 2xl:py-12 px-10',
+      props.class,
+    ]"
   >
     <slot />
-</div>
+  </div>
 </template>

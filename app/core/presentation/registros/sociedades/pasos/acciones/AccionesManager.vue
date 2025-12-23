@@ -54,7 +54,7 @@
     :class="[
       'h-full w-full flex flex-col gap-12',
       mode !== EntityModeEnum.RESUMEN
-        ? ' p-14 '
+        ? ' py-8 px-10 2xl:py-14 2xl:px-14 '
         : 'border border-gray-100 rounded-xl py-12 px-10',
     ]"
   >
@@ -143,7 +143,9 @@
           <p class="font-primary font-semibold t-h6 text-gray-800">Valor Nominal:</p>
         </div>
         <div class="flex items-center gap-2">
-          <p class="font-secondary font-medium t-t1 text-gray-800">{{ valorNominalDisplay }}</p>
+          <p class="font-secondary font-medium t-t1 text-gray-800">
+            {{ valorNominalDisplay }}
+          </p>
           <svg
             v-if="mode !== EntityModeEnum.RESUMEN"
             xmlns="http://www.w3.org/2000/svg"
@@ -187,7 +189,13 @@
       v-model="isValorNominalModalOpen"
       v-model:switch-tabs="switchTabs"
       :valor-nominal="valorNominalStore.valor"
-      :tipo-acciones-sociedad="valorNominalStore.tipoAccionesSociedad === 'COMUNES_SIN_DERECHO_VOTO' ? 'opcion-a' : valorNominalStore.tipoAccionesSociedad === 'CON_CLASES' ? 'opcion-b' : null"
+      :tipo-acciones-sociedad="
+        valorNominalStore.tipoAccionesSociedad === 'COMUNES_SIN_DERECHO_VOTO'
+          ? 'opcion-a'
+          : valorNominalStore.tipoAccionesSociedad === 'CON_CLASES'
+          ? 'opcion-b'
+          : null
+      "
       :handle-save-valor-nominal="handleSaveValorNominal"
       :on-switch-tabs-change="handleSwitchTabsChange"
       @close="closeValorNominalModal"
