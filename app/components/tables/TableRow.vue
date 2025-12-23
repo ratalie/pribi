@@ -19,9 +19,13 @@ interface Props {
   actions?: TableAction[];
   rowClass?: string;
   isLast?: boolean;
+  /** Color de texto de la fila: 'text-layout-gray-700' o 'text-layout-gray-800' */
+  textColor?: "text-layout-gray-700" | "text-layout-gray-800";
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  textColor: "text-layout-gray-800",
+});
 
 const hasActions = computed(() => props.actions && props.actions.length > 0);
 
@@ -48,9 +52,10 @@ const handleAction = async (action: TableAction) => {
   <div
     :class="[
       props.config.gridClass,
-      'items-center border-b',
+      'items-center border-b-[1px]',
       props.isLast ? 'border-gray-300' : 'border-gray-200',
-      'py-5 text-layout-gray-800 text-t2 font-secondary pr-16 gap-2',
+      'py-5 text-t2 font-medium font-secondary pr-16 gap-2',
+      props.textColor,
       props.rowClass,
     ]"
   >

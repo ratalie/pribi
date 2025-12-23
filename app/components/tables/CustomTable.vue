@@ -1,10 +1,17 @@
 <script setup lang="ts">
   import type { CustomTableProps } from "~/types/tables/table-config";
+  import { computed } from "vue";
   import TableEmpty from "./TableEmpty.vue";
   import TableRow from "./TableRow.vue";
   import TableSkeleton from "./TableSkeleton.vue";
 
-  const props = defineProps<CustomTableProps>();
+  const props = withDefaults(defineProps<CustomTableProps>(), {
+    headerTextSize: "text-t1",
+    containerPadding: "p-4",
+    headerPadding: "py-4",
+    headerPaddingExtra: "",
+    rowTextColor: "text-layout-gray-800",
+  });
 
   const getRowId = (row: any, index: number): string | number => {
     if (props.getRowId) {
@@ -12,23 +19,52 @@
     }
     return row.id ?? row.idSociety ?? row.idFlow ?? index;
   };
+
+  // Construir clases del header dinámicamente
+  const headerClasses = computed(() => {
+    // Usar border-b-[1px] para replicar exactamente v2.5
+    const base = [props.config.gridClass, "border-b-[1px] border-gray-300", props.headerPadding];
+    if (props.headerPaddingExtra) {
+      base.push(props.headerPaddingExtra);
+    } else {
+      // Default: pr-16 gap-2 solo si no hay headerPaddingExtra
+      if (props.headerPadding === "py-4") {
+        base.push("pr-16 gap-2");
+      }
+    }
+    return base;
+  });
+
+  // Clases del span del header (para aplicar gap-4 pl-8 cuando sea necesario)
+  const headerSpanClasses = computed(() => {
+    const base = [
+      props.headerTextSize,
+      "font-semibold font-primary block p-0 text-start",
+    ];
+    // Si hay headerPaddingExtra con gap-4 pl-8, aplicarlo al span
+    if (props.headerPaddingExtra && props.headerPaddingExtra.includes("gap-4 pl-8")) {
+      base.push("gap-4 pl-8");
+    }
+    return base;
+  });
 </script>
 
 <template>
   <div
     :class="[
-      'flex flex-col p-4 min-h-full scroll-container',
+      'flex flex-col min-h-full scroll-container',
+      props.containerPadding,
       props.maxHeight ? `max-h-[${props.maxHeight}]` : 'h-[calc(100vh-270px)]',
       'overflow-y-auto',
       props.config.containerClass,
     ]"
   >
     <!-- Header -->
-    <div :class="[props.config.gridClass, 'border-b border-gray-300 py-4 pr-16 gap-2']">
+    <div :class="headerClasses">
       <div v-for="column in props.config.columns" :key="column.id">
         <span
           v-if="column.label"
-          class="text-t1 font-semibold font-primary block p-0 text-start"
+          :class="headerSpanClasses"
         >
           {{ column.label }}
         </span>
@@ -55,6 +91,7 @@
         :actions="props.actions"
         :row-class="props.rowClass"
         :is-last="index === props.data.length - 1"
+        :text-color="props.rowTextColor"
       >
         <!-- Slots para renderizado personalizado -->
         <template
