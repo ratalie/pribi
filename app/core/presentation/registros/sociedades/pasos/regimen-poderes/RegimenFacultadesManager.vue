@@ -71,9 +71,9 @@
 <template>
   <div
     :class="[
-      'flex flex-col gap-12',
+      'flex flex-col gap-10 2xl:gap-12',
       mode !== EntityModeEnum.RESUMEN
-        ? ' p-14 '
+        ? ' py-8 px-10 2xl:py-14 2xl:px-14 '
         : 'border border-gray-100 rounded-xl py-12 px-10',
     ]"
   >

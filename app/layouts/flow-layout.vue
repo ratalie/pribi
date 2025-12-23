@@ -18,7 +18,7 @@
 
     <!-- Body -->
     <div class="flex min-h-0 flex-1">
-      <div class="w-[401px] shrink-0 border-r px-6 py-14">
+      <div class="w-[360px] shrink-0 border-r px-6 py-8 2xl:py-14 2xl:w-[401px]">
         <ProgressNavBar :steps="steps" />
       </div>
 
