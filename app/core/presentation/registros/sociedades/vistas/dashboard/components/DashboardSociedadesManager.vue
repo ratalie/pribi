@@ -1,11 +1,11 @@
 <template>
   <div class="min-h-full bg-gray-50">
-    <DashboardHeader @create="handleCreate" />
+    <DashboardSociedadesHeader @create="handleCreate" />
 
-    <div class="max-w-[1600px] mx-auto px-8 py-10">
+    <div class="vista-container">
       <StatsSection :stats="stats" />
 
-      <SociedadesTable
+      <DashboardSociedadesTable
         :sociedades="sociedades"
         :get-estado="getEstado"
         @sociedad-click="(id) => router.push(`/registros/sociedades/${id}/datos-sociedad`)"
@@ -20,9 +20,9 @@ import { SocietyRegisterStep } from "~/core/hexag/registros/sociedades/domain/en
 import type { SociedadResumenDTO } from "~/core/hexag/registros/sociedades/application/dtos";
 import type { EstadoSociedad } from "~/core/presentation/registros/sociedades/vistas/historial/types/historial.types";
 import { useDashboardSociedades } from "../composables/useDashboardSociedades";
-import DashboardHeader from "./organisms/DashboardHeader.vue";
-import StatsSection from "./organisms/StatsSection.vue";
-import SociedadesTable from "./organisms/SociedadesTable.vue";
+import DashboardSociedadesHeader from "./organisms/DashboardSociedadesHeader.vue";
+import StatsSection from "~/core/presentation/shared/components/organisms/StatsSection.vue";
+import DashboardSociedadesTable from "./organisms/DashboardSociedadesTable.vue";
 
 const router = useRouter();
 const { sociedades, stats, handleCreate } = useDashboardSociedades();
@@ -35,4 +35,27 @@ const getEstado = (sociedad: SociedadResumenDTO): EstadoSociedad => {
   return { label: "Pendiente", isComplete: false };
 };
 </script>
+
+<style scoped>
+  /* Sistema de estilos responsivos consistente */
+  .vista-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem; /* Default: < 1280px */
+  }
+
+  /* Breakpoint >= 1280px y < 1440px */
+  @media (min-width: 1280px) and (max-width: 1439px) {
+    .vista-container {
+      padding: 2rem 1.5rem;
+    }
+  }
+
+  /* Breakpoint >= 1440px */
+  @media (min-width: 1440px) {
+    .vista-container {
+      padding: 2.5rem 2rem;
+    }
+  }
+</style>
 

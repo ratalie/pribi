@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import StatCard from "../molecules/StatCard.vue";
-import type { Stat } from "../../types/dashboard.types";
+import type { Stat } from "../../types/stat.types";
 
 interface Props {
   stats: Stat[];
@@ -21,4 +21,7 @@ interface Props {
 
 defineProps<Props>();
 </script>
+
+
+
 

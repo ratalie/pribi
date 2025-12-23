@@ -20,6 +20,7 @@
           :color-classes="getColorClasses(step.color)"
           :index="index"
           :is-last="index === pasos.length - 1"
+          :has-sub-steps="step.hasSubSteps"
         />
       </div>
     </div>
@@ -28,7 +29,7 @@
 
 <script setup lang="ts">
 import PasoCard from "../molecules/PasoCard.vue";
-import type { Paso } from "../../types/agregar.types";
+import type { Paso } from "../../types/paso.types";
 
 interface Props {
   pasos: Paso[];
@@ -37,4 +38,7 @@ interface Props {
 
 defineProps<Props>();
 </script>
+
+
+
 

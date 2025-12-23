@@ -3,6 +3,8 @@
  * Tipos UI que no están en el dominio hexagonal
  */
 
+import type { Estado } from "~/core/presentation/shared/types/estado.types";
+
 export interface HistorialTableAction {
   id: string;
   label: string;
@@ -11,8 +13,7 @@ export interface HistorialTableAction {
   destructive?: boolean;
 }
 
-export interface EstadoSociedad {
-  label: string;
-  isComplete: boolean;
+export interface EstadoSociedad extends Estado {
+  // Extiende Estado de shared, específico para sociedades
 }
 

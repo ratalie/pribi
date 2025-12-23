@@ -2,10 +2,5 @@
  * Types específicos para la vista de Dashboard de Sociedades
  */
 
-export interface Stat {
-  label: string;
-  value: number;
-  icon: any;
-  color: string;
-}
+export type { Stat } from "~/core/presentation/shared/types/stat.types";
 

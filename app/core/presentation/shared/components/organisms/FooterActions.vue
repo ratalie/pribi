@@ -10,8 +10,7 @@
       >
         <CheckCircle2 class="w-4 h-4 text-green-500 flex-shrink-0" />
         <p>
-          Puedes reanudar un borrador guardado desde el módulo de historial cuando esté
-          disponible.
+          {{ message }}
         </p>
       </div>
       <div class="flex flex-col items-center gap-2 w-full md:w-auto">
@@ -26,7 +25,7 @@
           variant="primary"
           size="lg"
           class="w-full md:w-auto shadow-lg hover:shadow-xl transition-all"
-          :disabled="isSubmitting"
+          :disabled="isSubmitting || disabled"
           @click="$emit('start-flow')"
           style="
             background: linear-gradient(135deg, var(--primary-800), var(--primary-600));
@@ -38,11 +37,12 @@
             v-if="isSubmitting"
             class="mr-2 h-5 w-5 animate-spin"
           />
-          <FileCheck
+          <component
             v-else
+            :is="icon"
             class="mr-2 h-5 w-5"
           />
-          Comenzar formulario guiado
+          {{ buttonLabel }}
         </Button>
       </div>
     </div>
@@ -50,18 +50,30 @@
 </template>
 
 <script setup lang="ts">
-import { CheckCircle2, FileCheck, LoaderCircle } from "lucide-vue-next";
+import { CheckCircle2, LoaderCircle } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 
 interface Props {
   isSubmitting: boolean;
   errorMessage: string | null;
+  message?: string;
+  buttonLabel?: string;
+  icon?: any;
+  disabled?: boolean;
 }
 
-defineProps<Props>();
+withDefaults(defineProps<Props>(), {
+  message: "Puedes reanudar un borrador guardado desde el módulo de historial cuando esté disponible.",
+  buttonLabel: "Comenzar formulario guiado",
+  icon: undefined,
+  disabled: false,
+});
 
 defineEmits<{
   "start-flow": [];
 }>();
 </script>
+
+
+
 

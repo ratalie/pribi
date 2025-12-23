@@ -37,15 +37,24 @@
 
     <!-- Información del Paso (debajo del círculo) -->
     <div class="mt-6 text-center max-w-[140px]">
-      <h3
-        class="text-sm font-bold mb-1"
-        style="
-          color: var(--text-primary);
-          font-family: var(--font-primary);
-        "
-      >
-        {{ title }}
-      </h3>
+      <div class="flex items-center justify-center gap-2 mb-2">
+        <h3
+          class="text-sm font-bold"
+          style="
+            color: var(--text-primary);
+            font-family: var(--font-primary);
+          "
+        >
+          {{ title }}
+        </h3>
+        <div
+          v-if="hasSubSteps"
+          class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-700"
+          style="font-family: var(--font-secondary)"
+        >
+          <Zap class="w-3 h-3" />
+        </div>
+      </div>
       <p
         class="text-xs leading-relaxed"
         style="
@@ -67,6 +76,8 @@
 </template>
 
 <script setup lang="ts">
+import { Zap } from "lucide-vue-next";
+
 interface Props {
   number: number;
   title: string;
@@ -76,9 +87,12 @@ interface Props {
   colorClasses: { bg: string; text: string };
   index: number;
   isLast: boolean;
+  hasSubSteps?: boolean;
 }
 
-defineProps<Props>();
+withDefaults(defineProps<Props>(), {
+  hasSubSteps: false,
+});
 </script>
 
 <style scoped>
@@ -93,4 +107,7 @@ defineProps<Props>();
   }
 }
 </style>
+
+
+
 

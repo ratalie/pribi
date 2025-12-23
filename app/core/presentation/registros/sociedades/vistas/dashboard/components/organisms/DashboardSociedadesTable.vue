@@ -113,7 +113,7 @@
 <script setup lang="ts">
 import { SocietyRegisterStep } from "~/core/hexag/registros/sociedades/domain/enums/society-register-step.enum";
 import type { SociedadResumenDTO } from "~/core/hexag/registros/sociedades/application/dtos";
-import EstadoBadge from "~/core/presentation/registros/sociedades/vistas/historial/components/molecules/EstadoBadge.vue";
+import EstadoBadge from "~/core/presentation/shared/components/molecules/EstadoBadge.vue";
 import type { EstadoSociedad } from "~/core/presentation/registros/sociedades/vistas/historial/types/historial.types";
 
 interface Props {
@@ -131,4 +131,7 @@ const handleClick = (id: string) => {
   emit("sociedad-click", id);
 };
 </script>
+
+
+
 
