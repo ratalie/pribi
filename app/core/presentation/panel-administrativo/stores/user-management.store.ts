@@ -11,7 +11,7 @@ import { UpdateUserRoutePermissionsUseCase } from '~/core/hexag/panel-administra
 import { AssignUserToSocietiesUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/assign-user-to-societies.use-case';
 import { UpdateUserRoleUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/update-user-role.use-case';
 import { GetAllSocietiesUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/get-all-societies.use-case';
-import { UserMockRepository } from '~/core/hexag/panel-administrativo/infrastructure/repositories/user-mock.repository';
+import { UserHttpRepository } from '~/core/hexag/panel-administrativo/infrastructure/repositories/user-http.repository';
 
 type Status = 'idle' | 'loading' | 'saving' | 'error';
 
@@ -53,7 +53,7 @@ export const useUserManagementStore = defineStore('user-management', {
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new GetUsersUseCase(repository);
         const users = await useCase.execute();
         this.users = users;
@@ -88,7 +88,7 @@ export const useUserManagementStore = defineStore('user-management', {
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new GetUserPermissionsUseCase(repository);
         const permissions = await useCase.execute(userId);
         this.userPermissions = permissions;
@@ -108,7 +108,7 @@ export const useUserManagementStore = defineStore('user-management', {
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new UpdateUserPermissionsUseCase(repository);
         const updatedPermissions = await useCase.execute(userId, permissions);
         this.userPermissions = updatedPermissions;
@@ -130,7 +130,7 @@ export const useUserManagementStore = defineStore('user-management', {
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new GetUserRoutePermissionsUseCase(repository);
         const routePermissions = await useCase.execute(userId);
         this.userRoutePermissions = routePermissions;
@@ -150,7 +150,7 @@ export const useUserManagementStore = defineStore('user-management', {
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new UpdateUserRoutePermissionsUseCase(repository);
         const updatedPermissions = await useCase.execute(userId, routePermissions);
         this.userRoutePermissions = updatedPermissions;
@@ -184,7 +184,7 @@ export const useUserManagementStore = defineStore('user-management', {
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new AssignUserToSocietiesUseCase(repository);
         // Para cargar, usamos el método del repositorio directamente
         const societies = await repository.getUserAssignedSocieties(userId);
@@ -205,7 +205,7 @@ export const useUserManagementStore = defineStore('user-management', {
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new AssignUserToSocietiesUseCase(repository);
         const assignedSocieties = await useCase.execute(userId, societyIds);
         this.userAssignedSocieties = assignedSocieties;
@@ -239,7 +239,7 @@ export const useUserManagementStore = defineStore('user-management', {
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new GetAllSocietiesUseCase(repository);
         const societies = await useCase.execute();
         this.availableSocieties = societies;
@@ -259,7 +259,7 @@ export const useUserManagementStore = defineStore('user-management', {
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new UpdateUserRoleUseCase(repository);
         const updatedUser = await useCase.execute(userId, role);
         
