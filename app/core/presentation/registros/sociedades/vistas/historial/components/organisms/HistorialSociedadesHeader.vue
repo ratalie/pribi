@@ -4,11 +4,11 @@
       <div class="flex items-center gap-3">
         <ActionButton
           variant="primary"
-          size="md"
+          size="lg"
           label="Crear Sociedad"
           :icon="Plus"
-          button-class="shadow-md hover:shadow-lg transition-all"
-          icon-class="h-4 w-4"
+          button-class="shadow-lg hover:shadow-xl transition-all font-semibold px-6 py-2.5"
+          icon-class="h-5 w-5"
           label-class="ml-2"
           @click="$emit('create')"
         />

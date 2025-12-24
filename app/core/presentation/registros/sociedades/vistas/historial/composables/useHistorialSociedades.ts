@@ -63,9 +63,12 @@ export function useHistorialSociedades() {
 
     // Filtro de tipo
     if (selectedTipo.value !== "all") {
-      filtered = filtered.filter(
-        (sociedad: SociedadResumenDTO) => sociedad.tipoSocietario === selectedTipo.value
-      );
+      filtered = filtered.filter((sociedad: SociedadResumenDTO) => {
+        const tipoSociedad = (sociedad.tipoSocietario || "").trim();
+        const tipoFiltro = selectedTipo.value.trim();
+        // Comparar exactamente o si el tipo está incluido en el tipoSocietario
+        return tipoSociedad === tipoFiltro || tipoSociedad.includes(tipoFiltro);
+      });
     }
 
     // Filtro de estado
@@ -194,6 +197,17 @@ export function useHistorialSociedades() {
     (historialStore as any).cargarHistorial();
   });
 
+  // Obtener tipos únicos de sociedades disponibles
+  const tiposDisponibles = computed(() => {
+    const tipos = new Set<string>();
+    (historialStore as any).sociedades.forEach((sociedad: SociedadResumenDTO) => {
+      if (sociedad.tipoSocietario) {
+        tipos.add(sociedad.tipoSocietario.trim());
+      }
+    });
+    return Array.from(tipos).sort();
+  });
+
   return {
     // State
     sociedades,
@@ -205,6 +219,7 @@ export function useHistorialSociedades() {
     deleteModalOpen,
     sociedadToDelete,
     isDeleting,
+    tiposDisponibles,
     // Methods
     getEstado,
     formatPasoActual,

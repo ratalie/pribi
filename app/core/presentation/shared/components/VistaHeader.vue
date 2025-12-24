@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white border-b border-gray-200 shadow-sm">
-    <div class="max-w-[1600px] mx-auto px-8 py-8">
+    <div class="max-w-[1600px] mx-auto px-8 py-5">
       <div class="flex items-center justify-between">
         <!-- Contenido Izquierdo: Icono + Título + Descripción -->
         <div class="flex items-center gap-4">
@@ -9,12 +9,12 @@
             <template v-if="icon || title || description">
               <div
                 v-if="icon"
-                class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"
+                class="w-12 h-12 rounded-xl flex items-center justify-center shadow-md"
                 style="
                   background: linear-gradient(135deg, var(--primary-700), var(--primary-500));
                 "
               >
-                <component :is="icon" class="w-7 h-7 text-white" />
+                <component :is="icon" class="w-6 h-6 text-white" />
               </div>
               <VistaHeaderTitle
                 v-if="title || description"

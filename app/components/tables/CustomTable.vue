@@ -24,7 +24,7 @@
   const headerClasses = computed(() => {
     // Usar border-b-[1px] para replicar exactamente v2.5
     const base = [props.config.gridClass, "border-b-[1px] border-gray-300"];
-    
+
     // Aplicar padding según configuración
     if (props.headerPadding === "py-4.5 pr-16") {
       base.push("py-4.5 pr-16 gap-2");
@@ -33,11 +33,11 @@
     } else {
       base.push("py-4 pr-16 gap-2");
     }
-    
+
     if (props.headerPaddingExtra) {
       base.push(props.headerPaddingExtra);
     }
-    
+
     return base;
   });
 
@@ -68,10 +68,7 @@
     <!-- Header -->
     <div :class="headerClasses">
       <div v-for="column in props.config.columns" :key="column.id">
-        <span
-          v-if="column.label"
-          :class="headerSpanClasses"
-        >
+        <span v-if="column.label" :class="headerSpanClasses">
           {{ column.label }}
         </span>
         <span v-else class="block"></span>

@@ -18,6 +18,7 @@
         :search-query="searchQuery"
         :selected-tipo="selectedTipo"
         :selected-estado="selectedEstado"
+        :tipos-disponibles="tiposDisponibles"
         @update:search-query="(val: string) => searchQuery = val"
         @update:selected-tipo="(val: string) => selectedTipo = val"
         @update:selected-estado="(val: string) => selectedEstado = val"
@@ -52,6 +53,7 @@
     deleteModalOpen,
     sociedadToDelete,
     isDeleting,
+    tiposDisponibles,
     getEstado,
     handleCreate,
     handleDelete,

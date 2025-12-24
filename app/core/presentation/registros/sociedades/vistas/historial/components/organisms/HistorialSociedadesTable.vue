@@ -5,6 +5,7 @@
       :search-query="searchQuery"
       :selected-tipo="selectedTipo"
       :selected-estado="selectedEstado"
+      :tipos-disponibles="tiposDisponibles"
       @update:search-query="$emit('update:search-query', $event)"
       @update:selected-tipo="$emit('update:selected-tipo', $event)"
       @update:selected-estado="$emit('update:selected-estado', $event)"
@@ -43,6 +44,7 @@
     searchQuery: string;
     selectedTipo: string;
     selectedEstado: string;
+    tiposDisponibles: string[];
   }
 
   const props = defineProps<Props>();

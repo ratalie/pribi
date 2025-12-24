@@ -20,10 +20,13 @@
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">Todos los tipos</SelectItem>
-          <SelectItem value="S.A.">S.A.</SelectItem>
-          <SelectItem value="S.A.C.">S.A.C.</SelectItem>
-          <SelectItem value="E.I.R.L.">E.I.R.L.</SelectItem>
-          <SelectItem value="S.R.L.">S.R.L.</SelectItem>
+          <SelectItem
+            v-for="tipo in tiposDisponibles"
+            :key="tipo"
+            :value="tipo"
+          >
+            {{ tipo }}
+          </SelectItem>
         </SelectContent>
       </Select>
     </div>
@@ -61,12 +64,14 @@ interface Props {
   searchQuery: string;
   selectedTipo: string;
   selectedEstado: string;
+  tiposDisponibles: string[];
 }
 
 withDefaults(defineProps<Props>(), {
   searchQuery: "",
   selectedTipo: "all",
   selectedEstado: "all",
+  tiposDisponibles: () => [],
 });
 
 defineEmits<{

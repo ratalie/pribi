@@ -2,14 +2,14 @@
   <div>
     <h1
       v-if="title"
-      class="t-t1 font-bold mb-1"
+      class="text-xl font-bold mb-0.5"
       style="color: var(--text-primary); font-family: var(--font-primary)"
     >
       {{ title }}
     </h1>
     <p
       v-if="subtitle"
-      class="t-t2"
+      class="text-sm"
       style="color: var(--text-muted); font-family: var(--font-secondary)"
     >
       {{ subtitle }}
