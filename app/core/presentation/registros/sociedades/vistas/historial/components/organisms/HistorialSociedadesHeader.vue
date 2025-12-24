@@ -5,9 +5,9 @@
         <ActionButton
           variant="primary"
           size="lg"
-          label="Crear Sociedad"
+          label="Agregar Sociedad"
           :icon="Plus"
-          button-class="shadow-lg hover:shadow-xl transition-all font-semibold px-6 py-2.5"
+          button-class="shadow-lg hover:shadow-xl transition-all font-semibold px-8 py-2.5"
           icon-class="h-5 w-5"
           label-class="ml-2"
           @click="$emit('create')"

@@ -89,13 +89,6 @@ export function useAgregarSociedad() {
       icon: FileText,
       color: "teal",
     },
-    {
-      number: 10,
-      title: "Resumen",
-      description: "Visualiza un resumen de los datos",
-      icon: CheckCircle2,
-      color: "emerald",
-    },
   ];
 
   const handleStartFlow = async () => {

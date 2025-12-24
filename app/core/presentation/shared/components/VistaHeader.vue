@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white border-b border-gray-200 shadow-sm">
-    <div class="max-w-[1600px] mx-auto px-8 py-5">
+    <div class="max-w-[1600px] mx-auto px-8 py-6">
       <div class="flex items-center justify-between">
         <!-- Contenido Izquierdo: Icono + Título + Descripción -->
         <div class="flex items-center gap-4">
