@@ -36,6 +36,8 @@ const hasChanges = computed(() => {
 
 const handleNameChange = (newName: string) => {
   localName.value = newName;
+  // NO hacer fetch automático, solo emitir el evento
+  // El padre decidirá cuándo guardar
   emit("updateName", newName);
 };
 

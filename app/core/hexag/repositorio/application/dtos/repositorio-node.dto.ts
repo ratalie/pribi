@@ -36,7 +36,9 @@ export interface RepositorioNodeDTO {
     sizeInBytes?: number;
     createdAt: string;
     updatedAt: string;
-    userId?: number;
+    userId?: number | null;
+    userIdV2?: string | null;
+    userName?: string | null;
   }>;
 }
 

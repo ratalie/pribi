@@ -27,6 +27,9 @@ export interface RepositorioNode {
     documentCode: string;
     createdAt: string;
     updatedAt: string;
+    userId?: number | null;
+    userIdV2?: string | null;
+    userName?: string | null;
   }>;
 }
 

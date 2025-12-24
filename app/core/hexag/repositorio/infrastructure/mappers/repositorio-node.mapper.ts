@@ -70,8 +70,19 @@ export class RepositorioNodeMapper {
             documentCode: v.documentCode || "",
             createdAt: v.createdAt,
             updatedAt: v.updatedAt,
+            userId: v.userId ?? null,
+            userIdV2: v.userIdV2 ?? null,
+            userName: v.userName ?? null,
           }))
-        : dto.versions,
+        : dto.versions?.map((v) => ({
+            versionCode: v.versionCode,
+            documentCode: v.documentCode || "",
+            createdAt: v.createdAt,
+            updatedAt: v.updatedAt,
+            userId: null,
+            userIdV2: null,
+            userName: null,
+          })),
     };
     
     // Log para debugging

@@ -3,6 +3,7 @@ import mammoth from "mammoth";
 import * as XLSX from "xlsx";
 import html2canvas from "html2canvas";
 import VueOfficePptx from "@vue-office/pptx";
+import { PdfWorkerService } from "./pdf-worker.service";
 
 /**
  * Servicio para previsualizar documentos
@@ -13,9 +14,8 @@ export class DocumentPreviewService {
    * Configurar el worker de PDF.js
    */
   static configurePdfWorker() {
-    if (typeof window !== "undefined") {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-    }
+    // Usar el servicio centralizado
+    PdfWorkerService.configure();
   }
 
   /**

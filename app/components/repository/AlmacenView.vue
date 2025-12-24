@@ -23,6 +23,7 @@
   import CreateFolderModal from "./CreateFolderModal.vue";
   import DeleteConfirmModal from "./DeleteConfirmModal.vue";
   import PreviewModal from "./PreviewModal.vue";
+  import FileThumbnail from "./FileThumbnail.vue";
   import type { AdvancedFilters } from "./types";
   import UploadModal from "./UploadModal.vue";
   // import DocumentCard from "./DocumentCard.vue"; // No usado
@@ -344,8 +345,9 @@
           throw new Error("El nodo no es un documento");
         }
 
-        // Obtener versionCode de las versiones del nodo
+        // Obtener versionCode y userName de las versiones del nodo
         let versionCode: string | undefined;
+        let userName: string | null = null;
         if (
           node.versions &&
           Array.isArray(node.versions) &&
@@ -353,7 +355,9 @@
           node.versions[0]
         ) {
           versionCode = node.versions[0].versionCode;
+          userName = node.versions[0].userName || null;
           console.log("🟢 [AlmacenView] versionCode obtenido del nodo:", versionCode);
+          console.log("🟢 [AlmacenView] userName obtenido del nodo:", userName);
         }
 
         if (!versionCode) {
@@ -365,7 +369,7 @@
         selectedDocument.value = {
           name: node.name,
           type: node.mimeType || "documento",
-          owner: "Sistema",
+          owner: userName || "Usuario desconocido",
           dateModified: new Date(node.updatedAt),
           size: node.sizeInBytes,
           versionCode: versionCode,
@@ -739,10 +743,21 @@
           :style="{ borderColor: 'var(--border-light)' }"
           @click="handleDocumentClick(doc)"
         >
-          <!-- Icono -->
+          <!-- Thumbnail o Icono -->
           <div class="flex items-center justify-center mb-3">
+            <!-- Para archivos, mostrar FileThumbnail si está en modo grid -->
+            <FileThumbnail
+              v-if="doc.tipo === 'file' && vista === 'grid'"
+              :file-name="doc.nombre"
+              :node-code="doc.code"
+              :version-code="doc.versionCode"
+              :mime-type="doc.mimeType"
+              :show-thumbnail="true"
+              class="w-full"
+            />
+            <!-- Para carpetas o modo lista, mostrar icono -->
             <div
-              v-if="doc.tipo === 'folder'"
+              v-else-if="doc.tipo === 'folder'"
               class="p-4 rounded-lg"
               style="background-color: #eef2ff"
             >

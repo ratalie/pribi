@@ -16,7 +16,17 @@ const props = defineProps<Props>();
 const emit = defineEmits<{
   versionSelected: [versionCode: string, isCurrentVersion: boolean];
   versionRestored: [];
+  refreshRequested: [];
 }>();
+
+// Exponer método para recargar versiones desde el padre
+defineExpose({
+  recargarVersiones: () => {
+    if (props.nodeId) {
+      cargarVersionesDesdeNodo(props.nodeId);
+    }
+  },
+});
 
 const {
   versions,

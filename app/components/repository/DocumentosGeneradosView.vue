@@ -26,6 +26,7 @@
   import AdvancedSearchBar from "./AdvancedSearchBar.vue";
   import DeleteConfirmModal from "./DeleteConfirmModal.vue";
   import PreviewModal from "./PreviewModal.vue";
+  import FileThumbnail from "./FileThumbnail.vue";
   import type { AdvancedFilters } from "./types";
 
   const router = useRouter();
@@ -265,6 +266,8 @@
       tamaño?: number;
       tipo?: string;
       versionCode?: string;
+      code?: string; // UUID del nodo (nodeCode) para previews
+      nodeId?: string; // ID numérico del nodo
     }> = [];
 
     // Nivel 0: Raíz - mostrar "Operaciones" y "Registros"
@@ -421,6 +424,8 @@
                 tamaño: item.sizeInBytes,
                 tipo: item.mimeType,
                 versionCode: item.versions?.[0]?.versionCode,
+                code: item.code, // UUID del nodo (nodeCode) para previews
+                nodeId: item.id, // ID numérico del nodo
               });
             }
           });
@@ -449,6 +454,8 @@
                 tamaño: item.sizeInBytes,
                 tipo: item.mimeType,
                 versionCode: item.versions?.[0]?.versionCode,
+                code: item.code, // UUID del nodo (nodeCode) para previews
+                nodeId: item.id, // ID numérico del nodo
               });
             }
           });
@@ -504,6 +511,8 @@
                 tamaño: item.sizeInBytes,
                 tipo: item.mimeType,
                 versionCode: item.versions?.[0]?.versionCode,
+                code: item.code, // UUID del nodo (nodeCode) para previews
+                nodeId: item.id, // ID numérico del nodo
               });
             }
           });
@@ -532,6 +541,8 @@
                 tamaño: item.sizeInBytes,
                 tipo: item.mimeType,
                 versionCode: item.versions?.[0]?.versionCode,
+                code: item.code, // UUID del nodo (nodeCode) para previews
+                nodeId: item.id, // ID numérico del nodo
               });
             }
           });
@@ -635,7 +646,11 @@
             nodeId = estructura.acuerdosEspeciales.id;
           }
 
-          if (nodeId && carpetaActual.value === String(nodeId) && documentosCarpeta.value.length > 0) {
+          if (
+            nodeId &&
+            carpetaActual.value === String(nodeId) &&
+            documentosCarpeta.value.length > 0
+          ) {
             documentosCarpeta.value.forEach((item) => {
               if (item.type === "folder") {
                 folders.push({
@@ -675,6 +690,8 @@
                 tamaño: item.sizeInBytes,
                 tipo: item.mimeType,
                 versionCode: item.versions?.[0]?.versionCode,
+                code: item.code, // UUID del nodo (nodeCode) para previews
+                nodeId: item.id, // ID numérico del nodo
               });
             }
           });
@@ -707,9 +724,13 @@
     }
 
     // Si estamos en registros/sociedades y es una subcarpeta V2, usar nombre en lugar de ID
-    if (routePath.value.length === 2 && routePath.value[0] === "registros" && routePath.value[1] === "sociedades") {
+    if (
+      routePath.value.length === 2 &&
+      routePath.value[0] === "registros" &&
+      routePath.value[1] === "sociedades"
+    ) {
       const estructura = estructuraRegistros.value?.sociedades;
-      
+
       // Verificar si es una subcarpeta V2
       if (estructura?.capitalSocialYAcciones?.id === carpetaId) {
         const newPath = [...routePath.value, "capital-social-y-acciones"];
@@ -719,7 +740,7 @@
         router.push(newRoute);
         return;
       }
-      
+
       if (estructura?.acuerdosEspeciales?.id === carpetaId) {
         const newPath = [...routePath.value, "acuerdos-especiales"];
         const pathString = newPath.join("/");
@@ -948,7 +969,7 @@
             versionCode = doc.versions[0].versionCode;
             mimeType = doc.mimeType || mimeType;
           }
-          
+
           // Intentar obtener nodeId y documentCode
           if (item.id) {
             const nodeIdNumber = parseInt(item.id, 10);
@@ -956,9 +977,9 @@
               nodeId = nodeIdNumber;
             }
           }
-          
+
           // Obtener documentCode del documento si está disponible
-          if (doc && 'code' in doc) {
+          if (doc && "code" in doc) {
             documentCode = doc.code as string;
           }
         } else {
@@ -977,10 +998,23 @@
           return;
         }
 
+        // Obtener userName del documento si está disponible
+        let userName: string | null = null;
+        if (item.propietario && item.propietario !== "Sistema") {
+          userName = item.propietario;
+        } else if (
+          doc &&
+          doc.versions &&
+          doc.versions.length > 0 &&
+          doc.versions[0].userName
+        ) {
+          userName = doc.versions[0].userName;
+        }
+
         selectedDocument.value = {
           name: item.nombre,
           type: mimeType || "documento",
-          owner: "Sistema",
+          owner: userName || "Usuario desconocido",
           dateModified: item.fecha || new Date(),
           size: item.tamaño,
           versionCode: versionCode,
@@ -1213,9 +1247,20 @@
           :style="{ borderColor: 'var(--border-light)' }"
           @click="handleDocumentClick(file)"
         >
-          <!-- Icono -->
+          <!-- Thumbnail o Icono -->
           <div class="flex items-center justify-center mb-3">
-            <div class="p-4 rounded-lg" style="background-color: #fee2e2">
+            <!-- Para archivos, mostrar FileThumbnail si está en modo grid -->
+            <FileThumbnail
+              v-if="vista === 'grid'"
+              :file-name="file.nombre"
+              :node-code="file.code"
+              :version-code="file.versionCode"
+              :mime-type="file.tipo"
+              :show-thumbnail="true"
+              class="w-full"
+            />
+            <!-- Para modo lista, mostrar icono -->
+            <div v-else class="p-4 rounded-lg" style="background-color: #fee2e2">
               <FileText class="w-8 h-8" style="color: #dc2626" />
             </div>
           </div>

@@ -533,7 +533,7 @@ export class RepositorioDocumentosHttpRepository implements RepositorioDocumento
   /**
    * Actualiza un nodo (renombrar carpeta, cambiar metadata)
    *
-   * ENDPOINT V2: PATCH /api/v2/repository/nodes/:nodeId
+   * ENDPOINT V2: PATCH /api/v2/repository/society-profile/nodes/:nodeId
    */
   async actualizarNodo(
     nodeId: number,
@@ -544,7 +544,7 @@ export class RepositorioDocumentosHttpRepository implements RepositorioDocumento
     }
   ): Promise<void> {
     const baseUrl = this.resolveBaseUrl();
-    const url = `${baseUrl}/api/v2/repository/nodes/${nodeId}`;
+    const url = `${baseUrl}/api/v2/repository/society-profile/nodes/${nodeId}`;
 
     console.log("🔵 [RepositorioDocumentosHttp] ========================================");
     console.log("🔵 [RepositorioDocumentosHttp] ACTUALIZAR NODO");
