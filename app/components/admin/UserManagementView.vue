@@ -9,12 +9,18 @@ import {
   UserPlus,
   CheckCircle,
   XCircle,
+  Plus,
 } from 'lucide-vue-next';
 import { useUserManagement } from '~/core/presentation/panel-administrativo/composables/useUserManagement';
 import { mockRoles, getRoleBadgeColor } from '~/data/mockDataAdmin';
 import type { RoleName } from '~/core/hexag/panel-administrativo/domain/entities/role.entity';
 import PermissionsEditor from './permissions/PermissionsEditor.vue';
 import UserAssignmentModal from './UserAssignmentModal.vue';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { withAuthHeaders } from '~/core/shared/http/with-auth-headers';
+
+const router = useRouter();
 
 const {
   store,
@@ -25,10 +31,144 @@ const {
   viewMode,
   showPermissionsEditor,
   showAssignmentModal,
-  openPermissionsEditor,
+  openPermissionsEditor: oldOpenPermissionsEditor,
   closePermissionsEditor,
   isLoading,
+  createUser,
+  deleteUser,
+  updateUserStatus,
 } = useUserManagement();
+
+// Estados para crear usuario
+const showCreateUserModal = ref(false);
+const createUserForm = ref({
+  email: '',
+  password: '',
+  roleId: '',
+});
+const isCreating = ref(false);
+const createError = ref<string | null>(null);
+
+// Estados para eliminar usuario
+const userToDelete = ref<{ id: string; email: string } | null>(null);
+const isDeleting = ref(false);
+
+// Cargar roles disponibles
+const availableRoles = ref<Array<{ id: string; name: string }>>([]);
+
+// Función para cargar roles
+const loadRoles = async () => {
+  try {
+    const config = useRuntimeConfig();
+    const apiBase = (config.public?.apiBase as string | undefined) || '';
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const baseUrl = apiBase || origin || 'http://localhost:3000';
+    // Construir URL correctamente sin duplicar /api/v2
+    const url = new URL('/api/v2/access-management/roles', baseUrl).toString();
+    
+    const response = await $fetch<{ success: boolean; data: Array<{ id: string; name: string }> }>(
+      url,
+      withAuthHeaders({
+        method: 'GET' as const,
+      })
+    );
+    if (response.success && response.data) {
+      availableRoles.value = response.data;
+    }
+  } catch (error) {
+    console.error('Error al cargar roles:', error);
+  }
+};
+
+// Cargar roles al montar
+onMounted(() => {
+  loadRoles();
+});
+
+// Navegar a permisos en lugar de abrir modal
+const openPermissionsEditor = (user: any) => {
+  router.push(`/admin/usuarios/${user.id}/permisos`);
+};
+
+// Abrir modal crear usuario
+const handleCreateUser = () => {
+  createUserForm.value = { email: '', password: '', roleId: '' };
+  createError.value = null;
+  showCreateUserModal.value = true;
+};
+
+// Cerrar modal crear usuario
+const closeCreateUserModal = () => {
+  showCreateUserModal.value = false;
+  createUserForm.value = { email: '', password: '', roleId: '' };
+  createError.value = null;
+};
+
+// Guardar nuevo usuario
+const handleSaveUser = async () => {
+  if (!createUserForm.value.email || !createUserForm.value.password || !createUserForm.value.roleId) {
+    createError.value = 'Todos los campos son requeridos';
+    return;
+  }
+
+  isCreating.value = true;
+  createError.value = null;
+
+  try {
+    await createUser(
+      createUserForm.value.email,
+      createUserForm.value.password,
+      createUserForm.value.roleId
+    );
+    closeCreateUserModal();
+    // Recargar usuarios
+    await store.loadUsers();
+  } catch (error: any) {
+    createError.value = error?.message || 'Error al crear usuario';
+  } finally {
+    isCreating.value = false;
+  }
+};
+
+// Confirmar eliminar usuario
+const confirmDeleteUser = (user: any) => {
+  userToDelete.value = { id: user.id, email: user.email };
+};
+
+// Cancelar eliminar
+const cancelDelete = () => {
+  userToDelete.value = null;
+};
+
+// Ejecutar eliminar
+const handleDeleteUser = async () => {
+  if (!userToDelete.value) return;
+
+  isDeleting.value = true;
+  try {
+    await deleteUser(userToDelete.value.id);
+    userToDelete.value = null;
+    // Recargar usuarios
+    await store.loadUsers();
+  } catch (error: any) {
+    console.error('Error al eliminar usuario:', error);
+    alert(error?.message || 'Error al eliminar usuario');
+  } finally {
+    isDeleting.value = false;
+  }
+};
+
+// Toggle estado usuario
+const handleToggleStatus = async (user: any) => {
+  try {
+    await updateUserStatus(user.id, !user.status);
+    // Recargar usuarios
+    await store.loadUsers();
+  } catch (error: any) {
+    console.error('Error al actualizar estado:', error);
+    alert(error?.message || 'Error al actualizar estado');
+  }
+};
 </script>
 
 <template>
@@ -188,7 +328,7 @@ const {
             </button>
           </div>
 
-          <!-- Botón Asignar -->
+          <!-- Botón Crear Usuario -->
           <button
             class="flex items-center gap-2 px-4 py-2 rounded-lg transition-all"
             style="
@@ -197,6 +337,20 @@ const {
               font-family: var(--font-secondary);
               font-weight: 500;
             "
+            @click="handleCreateUser"
+          >
+            <Plus class="w-4 h-4" />
+            <span>Crear Usuario</span>
+          </button>
+
+          <!-- Botón Asignar -->
+          <button
+            class="flex items-center gap-2 px-4 py-2 rounded-lg transition-all border"
+            :style="{
+              borderColor: 'var(--border-light)',
+              fontFamily: 'var(--font-secondary)',
+              fontWeight: 500,
+            }"
             @click="showAssignmentModal = true"
           >
             <UserPlus class="w-4 h-4" />
@@ -357,30 +511,20 @@ const {
 
               <!-- Estado (activo/inactivo) -->
               <td class="px-6 py-4">
-                <span
-                  v-if="user.status"
-                  class="flex items-center gap-1 text-green-600"
+                <button
+                  @click="handleToggleStatus(user)"
+                  class="flex items-center gap-1 transition-colors hover:opacity-80"
+                  :class="user.status ? 'text-green-600' : 'text-red-600'"
                 >
-                  <CheckCircle class="w-4 h-4" />
+                  <CheckCircle v-if="user.status" class="w-4 h-4" />
+                  <XCircle v-else class="w-4 h-4" />
                   <span
                     class="text-sm"
                     :style="{ fontFamily: 'var(--font-secondary)' }"
                   >
-                    Activo
+                    {{ user.status ? 'Activo' : 'Inactivo' }}
                   </span>
-                </span>
-                <span
-                  v-else
-                  class="flex items-center gap-1 text-red-600"
-                >
-                  <XCircle class="w-4 h-4" />
-                  <span
-                    class="text-sm"
-                    :style="{ fontFamily: 'var(--font-secondary)' }"
-                  >
-                    Inactivo
-                  </span>
-                </span>
+                </button>
               </td>
 
               <!-- Fecha de creación -->
@@ -410,6 +554,7 @@ const {
                   <button
                     class="p-2 hover:bg-red-50 rounded transition-colors"
                     title="Eliminar usuario"
+                    @click="confirmDeleteUser(user)"
                   >
                     <Trash2
                       class="w-4 h-4"
@@ -543,6 +688,7 @@ const {
                 borderColor: 'var(--border-light)',
                 fontFamily: 'var(--font-secondary)',
               }"
+              @click="confirmDeleteUser(user)"
             >
               <Trash2
                 class="w-4 h-4 mx-auto"
@@ -598,6 +744,160 @@ const {
         :is-open="showAssignmentModal"
         @close="showAssignmentModal = false"
       />
+
+      <!-- Modal Crear Usuario -->
+      <div
+        v-if="showCreateUserModal"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        @click.self="closeCreateUserModal"
+      >
+        <div
+          class="bg-white rounded-xl p-6 w-full max-w-md"
+          :style="{ fontFamily: 'var(--font-secondary)' }"
+        >
+          <h2
+            class="text-xl mb-4"
+            :style="{
+              color: 'var(--text-primary)',
+              fontFamily: 'var(--font-primary)',
+              fontWeight: 600,
+            }"
+          >
+            Crear Nuevo Usuario
+          </h2>
+
+          <div v-if="createError" class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
+            {{ createError }}
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm mb-2" :style="{ color: 'var(--text-primary)' }">
+                Email *
+              </label>
+              <input
+                v-model="createUserForm.email"
+                type="email"
+                class="w-full px-3 py-2 border rounded-lg"
+                :style="{ borderColor: 'var(--border-light)' }"
+                placeholder="usuario@ejemplo.com"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm mb-2" :style="{ color: 'var(--text-primary)' }">
+                Contraseña *
+              </label>
+              <input
+                v-model="createUserForm.password"
+                type="password"
+                class="w-full px-3 py-2 border rounded-lg"
+                :style="{ borderColor: 'var(--border-light)' }"
+                placeholder="Mínimo 8 caracteres"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm mb-2" :style="{ color: 'var(--text-primary)' }">
+                Rol *
+              </label>
+              <select
+                v-model="createUserForm.roleId"
+                class="w-full px-3 py-2 border rounded-lg"
+                :style="{ borderColor: 'var(--border-light)' }"
+              >
+                <option value="">Seleccionar rol...</option>
+                <option
+                  v-for="role in availableRoles"
+                  :key="role.id"
+                  :value="role.id"
+                >
+                  {{ role.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex gap-3 mt-6 justify-end">
+            <button
+              @click="closeCreateUserModal"
+              class="px-4 py-2 border rounded-lg"
+              :style="{
+                borderColor: 'var(--border-light)',
+                fontFamily: 'var(--font-secondary)',
+              }"
+            >
+              Cancelar
+            </button>
+            <button
+              @click="handleSaveUser"
+              :disabled="isCreating"
+              class="px-4 py-2 rounded-lg text-white"
+              :style="{
+                backgroundColor: 'var(--primary-700)',
+                fontFamily: 'var(--font-secondary)',
+                opacity: isCreating ? 0.5 : 1,
+              }"
+            >
+              {{ isCreating ? 'Creando...' : 'Crear Usuario' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Confirmar Eliminar -->
+      <div
+        v-if="userToDelete"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        @click.self="cancelDelete"
+      >
+        <div
+          class="bg-white rounded-xl p-6 w-full max-w-md"
+          :style="{ fontFamily: 'var(--font-secondary)' }"
+        >
+          <h2
+            class="text-xl mb-4"
+            :style="{
+              color: 'var(--text-primary)',
+              fontFamily: 'var(--font-primary)',
+              fontWeight: 600,
+            }"
+          >
+            Confirmar Eliminación
+          </h2>
+
+          <p class="mb-6" :style="{ color: 'var(--text-muted)' }">
+            ¿Estás seguro de que deseas eliminar al usuario
+            <strong>{{ userToDelete.email }}</strong>?
+            Esta acción no se puede deshacer.
+          </p>
+
+          <div class="flex gap-3 justify-end">
+            <button
+              @click="cancelDelete"
+              class="px-4 py-2 border rounded-lg"
+              :style="{
+                borderColor: 'var(--border-light)',
+                fontFamily: 'var(--font-secondary)',
+              }"
+            >
+              Cancelar
+            </button>
+            <button
+              @click="handleDeleteUser"
+              :disabled="isDeleting"
+              class="px-4 py-2 rounded-lg text-white"
+              :style="{
+                backgroundColor: '#EF4444',
+                fontFamily: 'var(--font-secondary)',
+                opacity: isDeleting ? 0.5 : 1,
+              }"
+            >
+              {{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

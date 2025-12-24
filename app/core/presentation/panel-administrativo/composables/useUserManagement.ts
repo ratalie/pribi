@@ -104,5 +104,8 @@ export function useUserManagement() {
     closePermissionsEditor,
     savePermissions,
     loadUsers: () => store.loadUsers(),
+    createUser: (email: string, password: string, roleId: string) => store.createUser(email, password, roleId),
+    deleteUser: (userId: string) => store.deleteUser(userId),
+    updateUserStatus: (userId: string, status: boolean) => store.updateUserStatus(userId, status),
   };
 }

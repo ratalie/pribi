@@ -16,6 +16,7 @@ export class AccessAreaMapper {
       displayName: dto.displayName,
       description: dto.description,
       routes: dto.routes.map(AccessRouteMapper.toDomain),
+      status: (dto as any).status, // El backend puede incluir status en /access/full
     };
   }
 

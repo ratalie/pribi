@@ -1,9 +1,11 @@
-import type { UserRepository } from '../../domain/ports/user.repository';
-import type { User } from '../../domain/entities/user.entity';
-import type { RoleName } from '../../domain/entities/role.entity';
-import type { UserFlowAccess } from '../../domain/entities/permission.entity';
-import type { SocietyInfo } from '../../domain/entities/society-assignment.entity';
-import { withAuthHeaders } from '~/core/shared/http/with-auth-headers';
+import type { UserRepository } from "../../domain/ports/user.repository";
+import type { User } from "../../domain/entities/user.entity";
+import type { RoleName } from "../../domain/entities/role.entity";
+import type { UserFlowAccess } from "../../domain/entities/permission.entity";
+import type { SocietyInfo } from "../../domain/entities/society-assignment.entity";
+import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
+import { PermissionsHttpRepository } from "~/core/hexag/permissions/infrastructure/repositories/permissions.http.repository";
+import { SocietiesHttpRepository } from "./societies-http.repository";
 
 /**
  * Respuesta estándar de la API
@@ -84,29 +86,29 @@ interface UserSocietyDto {
  * Implementación HTTP del repositorio de usuarios
  */
 export class UserHttpRepository implements UserRepository {
-  private readonly basePath = '/api/v1/access-management';
+  private readonly basePath = "/api/v2/access-management";
 
   /**
    * Resuelve la URL base para las peticiones
    */
   private resolveBaseUrl(): string {
     const config = useRuntimeConfig();
-    const apiBase = (config.public?.apiBase as string | undefined) || '';
-    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const apiBase = (config.public?.apiBase as string | undefined) || "";
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
 
-    const candidates = [apiBase, origin, 'http://localhost:3000'];
+    const candidates = [apiBase, origin, "http://localhost:3000"];
 
     for (const base of candidates) {
       if (!base) continue;
       try {
-        const baseUrl = new URL(base, origin || 'http://localhost:3000');
+        const baseUrl = new URL(base, origin || "http://localhost:3000");
         return baseUrl.origin;
       } catch {
         continue;
       }
     }
 
-    return origin || 'http://localhost:3000';
+    return origin || "http://localhost:3000";
   }
 
   /**
@@ -114,9 +116,9 @@ export class UserHttpRepository implements UserRepository {
    */
   private getUrl(path: string): string {
     const baseUrl = this.resolveBaseUrl();
-    const basePath = this.basePath.startsWith('/') ? this.basePath : `/${this.basePath}`;
-    const fullPath = `${basePath}${path.startsWith('/') ? path : `/${path}`}`;
-    return new URL(fullPath, baseUrl.origin).toString();
+    const basePath = this.basePath.startsWith("/") ? this.basePath : `/${this.basePath}`;
+    const fullPath = `${basePath}${path.startsWith("/") ? path : `/${path}`}`;
+    return new URL(fullPath, baseUrl).toString();
   }
 
   /**
@@ -126,7 +128,7 @@ export class UserHttpRepository implements UserRepository {
     return {
       id: dto.id,
       email: dto.email,
-      name: dto.email.split('@')[0] || 'Usuario', // Generar nombre del email
+      name: dto.email.split("@")[0] || "Usuario", // Generar nombre del email
       roleId: dto.roleId,
       studyId: dto.studyId,
       status: dto.status,
@@ -141,8 +143,8 @@ export class UserHttpRepository implements UserRepository {
             updatedAt: new Date(),
           }
         : {
-            id: '',
-            name: 'Usuario' as RoleName,
+            id: "",
+            name: "Usuario" as RoleName,
             status: true,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -156,7 +158,7 @@ export class UserHttpRepository implements UserRepository {
           }
         : {
             id: dto.studyId,
-            name: 'Estudio',
+            name: "Estudio",
             limit: 0,
             status: true,
           },
@@ -169,18 +171,18 @@ export class UserHttpRepository implements UserRepository {
    * Obtiene todos los usuarios del sistema
    */
   async findAll(): Promise<User[]> {
-    const url = this.getUrl('/users');
+    const url = this.getUrl("/users");
 
     try {
       const response = await $fetch<ApiResponse<UserDto[]>>(
         url,
         withAuthHeaders({
-          method: 'GET',
-        }),
+          method: "GET" as const,
+        })
       );
 
       if (!response.success || !response.data) {
-        throw new Error(response.message || 'Error al obtener usuarios');
+        throw new Error(response.message || "Error al obtener usuarios");
       }
 
       // Mapear DTOs a entidades
@@ -198,13 +200,12 @@ export class UserHttpRepository implements UserRepository {
           } catch {
             return user;
           }
-        }),
+        })
       );
 
       return usersWithSocieties;
     } catch (error: any) {
-      const message =
-        error?.data?.message ?? error?.message ?? 'Error al obtener usuarios';
+      const message = error?.data?.message ?? error?.message ?? "Error al obtener usuarios";
       throw new Error(message);
     }
   }
@@ -219,8 +220,8 @@ export class UserHttpRepository implements UserRepository {
       const response = await $fetch<ApiResponse<UserDto>>(
         url,
         withAuthHeaders({
-          method: 'GET',
-        }),
+          method: "GET" as const,
+        })
       );
 
       if (!response.success || !response.data) {
@@ -242,8 +243,7 @@ export class UserHttpRepository implements UserRepository {
       if (error?.statusCode === 404) {
         return null;
       }
-      const message =
-        error?.data?.message ?? error?.message ?? 'Error al obtener usuario';
+      const message = error?.data?.message ?? error?.message ?? "Error al obtener usuario";
       throw new Error(message);
     }
   }
@@ -259,48 +259,88 @@ export class UserHttpRepository implements UserRepository {
   /**
    * Obtiene permisos de un usuario
    * NOTA: Este método usa el endpoint de permisos, no el de usuarios
+   *
+   * NOTA: UserFlowAccess es un formato legacy. El sistema actual usa AccessArea[].
+   * Este método se mantiene para compatibilidad pero retorna array vacío.
+   * Para obtener permisos reales, usar PermissionsHttpRepository.getUserAccess()
    */
-  async getUserPermissions(userId: string): Promise<UserFlowAccess[]> {
-    // Este método debería usar el repositorio de permisos
-    // Por ahora, retornamos un array vacío
-    // TODO: Integrar con PermissionsRepository
+  async getUserPermissions(_userId: string): Promise<UserFlowAccess[]> {
+    // UserFlowAccess es un formato legacy que no se usa en el nuevo sistema
+    // El nuevo sistema usa AccessArea[] desde PermissionsHttpRepository
+    // Retornamos array vacío para mantener compatibilidad con el port
+    console.warn(
+      "[UserHttpRepository] getUserPermissions() es legacy. Usar PermissionsHttpRepository.getUserAccess()"
+    );
     return [];
   }
 
   /**
    * Actualiza permisos de un usuario
    * NOTA: Este método usa el endpoint de permisos, no el de usuarios
+   *
+   * NOTA: UserFlowAccess es un formato legacy. El sistema actual usa AccessArea[].
+   * Este método se mantiene para compatibilidad pero no hace nada.
+   * Para actualizar permisos, usar PermissionsHttpRepository.updateUserOverrides()
    */
   async updateUserPermissions(
     userId: string,
-    permissions: UserFlowAccess[],
+    permissions: UserFlowAccess[]
   ): Promise<UserFlowAccess[]> {
-    // Este método debería usar el repositorio de permisos
-    // Por ahora, retornamos los permisos recibidos
-    // TODO: Integrar con PermissionsRepository
+    // UserFlowAccess es un formato legacy que no se usa en el nuevo sistema
+    // El nuevo sistema usa BackendOverride[] desde PermissionsHttpRepository
+    // Retornamos input para mantener compatibilidad con el port
+    console.warn(
+      "[UserHttpRepository] updateUserPermissions() es legacy. Usar PermissionsHttpRepository.updateUserOverrides()"
+    );
     return permissions;
   }
 
   /**
    * Obtiene permisos de rutas de un usuario
+   * Extrae las rutas habilitadas del árbol de permisos
    */
   async getUserRoutePermissions(userId: string): Promise<string[]> {
-    // Este método debería obtener las rutas desde el árbol de permisos
-    // Por ahora, retornamos un array vacío
-    // TODO: Integrar con PermissionsRepository para obtener rutas
-    return [];
+    try {
+      const permissionsRepo = new PermissionsHttpRepository();
+      const accessAreas = await permissionsRepo.getUserAccess(userId);
+
+      // Extraer todas las rutas habilitadas
+      const routes: string[] = [];
+
+      for (const area of accessAreas) {
+        for (const route of area.routes) {
+          // Solo incluir rutas que tengan al menos una acción habilitada
+          const hasEnabledAction = route.actions.some((action) => action.enabled);
+          if (hasEnabledAction) {
+            routes.push(route.path);
+          }
+        }
+      }
+
+      return routes;
+    } catch (error: any) {
+      console.warn("[UserHttpRepository] Error al obtener rutas de permisos:", error);
+      return [];
+    }
   }
 
   /**
    * Actualiza permisos de rutas de un usuario
+   *
+   * NOTA: Este método es complejo de implementar porque requiere convertir
+   * rutas a la estructura de overrides del backend. Por ahora retorna input.
+   * Para actualizar permisos, usar PermissionsHttpRepository.updateUserOverrides()
    */
   async updateUserRoutePermissions(
     userId: string,
-    routePermissions: string[],
+    routePermissions: string[]
   ): Promise<string[]> {
-    // Este método debería usar el endpoint de permisos
-    // Por ahora, retornamos las rutas recibidas
-    // TODO: Integrar con PermissionsRepository
+    // La conversión de rutas a overrides es compleja y requiere mapeo de áreas/rutas
+    // Por ahora, retornamos input para mantener compatibilidad
+    // Para actualizar permisos reales, usar PermissionsHttpRepository.updateUserOverrides()
+    console.warn(
+      "[UserHttpRepository] updateUserRoutePermissions() no implementado completamente. Usar PermissionsHttpRepository.updateUserOverrides()"
+    );
     return routePermissions;
   }
 
@@ -314,8 +354,8 @@ export class UserHttpRepository implements UserRepository {
       const response = await $fetch<ApiResponse<UserSocietyDto[]>>(
         url,
         withAuthHeaders({
-          method: 'GET',
-        }),
+          method: "GET" as const,
+        })
       );
 
       if (!response.success || !response.data) {
@@ -325,7 +365,7 @@ export class UserHttpRepository implements UserRepository {
       return response.data.map((item) => item.societyId);
     } catch (error: any) {
       // Si hay error, retornar array vacío
-      console.warn('Error al obtener sociedades asignadas:', error);
+      console.warn("Error al obtener sociedades asignadas:", error);
       return [];
     }
   }
@@ -333,10 +373,7 @@ export class UserHttpRepository implements UserRepository {
   /**
    * Asigna usuario a sociedades
    */
-  async assignUserToSocieties(
-    userId: string,
-    societyIds: string[],
-  ): Promise<string[]> {
+  async assignUserToSocieties(userId: string, societyIds: string[]): Promise<string[]> {
     const url = this.getUrl(`/users/${userId}/societies`);
 
     try {
@@ -347,34 +384,33 @@ export class UserHttpRepository implements UserRepository {
       const response = await $fetch<ApiResponse<UserSocietyDto[]>>(
         url,
         withAuthHeaders({
-          method: 'POST',
+          method: "POST" as const,
           body,
-        }),
+        })
       );
 
       if (!response.success || !response.data) {
-        throw new Error(response.message || 'Error al asignar sociedades');
+        throw new Error(response.message || "Error al asignar sociedades");
       }
 
       return response.data.map((item) => item.societyId);
     } catch (error: any) {
-      const message =
-        error?.data?.message ??
-        error?.message ??
-        'Error al asignar sociedades';
+      const message = error?.data?.message ?? error?.message ?? "Error al asignar sociedades";
       throw new Error(message);
     }
   }
 
   /**
    * Obtiene información de todas las sociedades disponibles
-   * NOTA: Este método debería usar SocietiesRepository
    */
   async getAllSocieties(): Promise<SocietyInfo[]> {
-    // Este método debería usar SocietiesRepository
-    // Por ahora, retornamos un array vacío
-    // TODO: Implementar en SocietiesRepository
-    return [];
+    try {
+      const societiesRepo = new SocietiesHttpRepository();
+      return await societiesRepo.getAllSocieties();
+    } catch (error: any) {
+      console.warn("[UserHttpRepository] Error al obtener sociedades:", error);
+      return [];
+    }
   }
 
   /**
@@ -382,40 +418,54 @@ export class UserHttpRepository implements UserRepository {
    */
   async updateUserRole(
     userId: string,
-    role: 'lector' | 'editor' | 'admin' | 'user',
+    role: "lector" | "editor" | "admin" | "user"
   ): Promise<User> {
     const url = this.getUrl(`/users/${userId}/role`);
 
     try {
-      // Mapear rol simplificado a roleId
-      // TODO: Obtener roleId desde el backend o desde un store de roles
-      const roleNameMap: Record<
-        'lector' | 'editor' | 'admin' | 'user',
-        RoleName
-      > = {
-        lector: 'Lector',
-        editor: 'Usuario',
-        admin: 'Administrador',
-        user: 'Usuario',
+      // Mapear rol simplificado a nombre de rol del backend
+      const roleNameMap: Record<"lector" | "editor" | "admin" | "user", RoleName> = {
+        lector: "Lector",
+        editor: "Usuario",
+        admin: "Administrador",
+        user: "Usuario",
       };
 
-      // Por ahora, necesitamos obtener el roleId desde el backend
-      // Esto debería hacerse obteniendo la lista de roles primero
-      // Por simplicidad, asumimos que el backend acepta el nombre del rol
+      const roleName = roleNameMap[role];
+
+      // Obtener lista de roles desde el backend para encontrar el roleId
+      const rolesUrl = this.getUrl("/roles");
+      const rolesResponse = await $fetch<ApiResponse<Array<{ id: string; name: string }>>>(
+        rolesUrl,
+        withAuthHeaders({
+          method: "GET" as const,
+        })
+      );
+
+      if (!rolesResponse.success || !rolesResponse.data) {
+        throw new Error("No se pudieron obtener los roles disponibles");
+      }
+
+      // Buscar el roleId correspondiente al nombre del rol
+      const roleData = rolesResponse.data.find((r) => r.name === roleName);
+      if (!roleData) {
+        throw new Error(`Rol '${roleName}' no encontrado en el sistema`);
+      }
+
       const body: UpdateUserRoleDto = {
-        roleId: '', // TODO: Obtener roleId real
+        roleId: roleData.id,
       };
 
       const response = await $fetch<ApiResponse<UserDto>>(
         url,
         withAuthHeaders({
-          method: 'PATCH',
+          method: "PATCH" as const,
           body,
-        }),
+        })
       );
 
       if (!response.success || !response.data) {
-        throw new Error(response.message || 'Error al actualizar rol');
+        throw new Error(response.message || "Error al actualizar rol");
       }
 
       const user = this.mapUserDtoToEntity(response.data);
@@ -430,8 +480,112 @@ export class UserHttpRepository implements UserRepository {
 
       return user;
     } catch (error: any) {
-      const message =
-        error?.data?.message ?? error?.message ?? 'Error al actualizar rol';
+      const message = error?.data?.message ?? error?.message ?? "Error al actualizar rol";
+      throw new Error(message);
+    }
+  }
+
+  /**
+   * Crea un nuevo usuario
+   */
+  async createUser(email: string, password: string, roleId: string): Promise<User> {
+    const url = this.getUrl("/users");
+
+    try {
+      const body: CreateUserDto = {
+        email,
+        password,
+        roleId,
+      };
+
+      const response = await $fetch<ApiResponse<UserDto>>(
+        url,
+        withAuthHeaders({
+          method: "POST" as const,
+          body,
+        })
+      );
+
+      if (!response.success || !response.data) {
+        throw new Error(response.message || "Error al crear usuario");
+      }
+
+      const user = this.mapUserDtoToEntity(response.data);
+
+      // Cargar sociedades asignadas
+      try {
+        const societies = await this.getUserAssignedSocieties(user.id);
+        user.assignedSocieties = societies;
+      } catch {
+        // Ignorar error
+      }
+
+      return user;
+    } catch (error: any) {
+      const message = error?.data?.message ?? error?.message ?? "Error al crear usuario";
+      throw new Error(message);
+    }
+  }
+
+  /**
+   * Elimina (desactiva) un usuario
+   */
+  async deleteUser(userId: string): Promise<void> {
+    const url = this.getUrl(`/users/${userId}`);
+
+    try {
+      const response = await $fetch<ApiResponse<boolean>>(
+        url,
+        withAuthHeaders({
+          method: "DELETE" as const,
+        })
+      );
+
+      if (!response.success) {
+        throw new Error(response.message || "Error al eliminar usuario");
+      }
+    } catch (error: any) {
+      const message = error?.data?.message ?? error?.message ?? "Error al eliminar usuario";
+      throw new Error(message);
+    }
+  }
+
+  /**
+   * Actualiza el estado (activo/inactivo) de un usuario
+   */
+  async updateUserStatus(userId: string, status: boolean): Promise<User> {
+    const url = this.getUrl(`/users/${userId}/status`);
+
+    try {
+      const body: UpdateUserStatusDto = {
+        status,
+      };
+
+      const response = await $fetch<ApiResponse<UserDto>>(
+        url,
+        withAuthHeaders({
+          method: "PATCH" as const,
+          body,
+        })
+      );
+
+      if (!response.success || !response.data) {
+        throw new Error(response.message || "Error al actualizar estado");
+      }
+
+      const user = this.mapUserDtoToEntity(response.data);
+
+      // Cargar sociedades asignadas
+      try {
+        const societies = await this.getUserAssignedSocieties(user.id);
+        user.assignedSocieties = societies;
+      } catch {
+        // Ignorar error
+      }
+
+      return user;
+    } catch (error: any) {
+      const message = error?.data?.message ?? error?.message ?? "Error al actualizar estado";
       throw new Error(message);
     }
   }

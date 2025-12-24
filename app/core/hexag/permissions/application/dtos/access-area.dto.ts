@@ -18,6 +18,9 @@ export interface AccessAreaDto {
   
   /** Rutas disponibles en esta área */
   routes: AccessRouteDto[];
+  
+  /** Estado del permiso (solo presente en /access/full) */
+  status?: boolean;
 }
 
 

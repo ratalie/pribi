@@ -48,10 +48,21 @@ export function mapOverridesToSimpleConfig(
   }
 
   // Mapear módulos habilitados
+  // Un área está habilitada si tiene al menos una ruta con status: true
   const enabledAreas = new Set<AccessAreaEnum>();
   for (const area of accessAreas) {
-    if (area.routes && area.routes.length > 0) {
-      enabledAreas.add(area.area);
+    // Verificar si el área tiene status: true o si tiene rutas habilitadas
+    const areaEnabled = area.status !== false; // Por defecto true si no está definido
+    
+    if (areaEnabled && area.routes && area.routes.length > 0) {
+      // Verificar si hay al menos una ruta habilitada
+      const hasEnabledRoute = area.routes.some(
+        (route) => route.status !== false && route.actions && route.actions.length > 0,
+      );
+      
+      if (hasEnabledRoute) {
+        enabledAreas.add(area.area);
+      }
     }
   }
 
@@ -62,25 +73,43 @@ export function mapOverridesToSimpleConfig(
   }));
 
   // Determinar acciones permitidas
-  // Analizar las rutas para ver qué acciones están disponibles
+  // Analizar las rutas para ver qué acciones están disponibles y habilitadas
   const availableActions = new Set<string>();
   
   for (const area of accessAreas) {
+    // Solo procesar áreas habilitadas
+    if (area.status === false) continue;
+    
     for (const route of area.routes || []) {
+      // Solo procesar rutas habilitadas
+      if (route.status === false) continue;
+      
+      // Revisar acciones en la ruta
       for (const action of route.actions || []) {
-        availableActions.add(action);
+        // El backend puede usar 'status' (boolean) o 'enabled' (boolean)
+        // En PermissionAction entity, 'enabled' es el campo principal
+        const actionEnabled = action.enabled !== false && (action.status !== false);
+        if (actionEnabled) {
+          availableActions.add(action.action);
+        }
       }
       
       // También revisar acciones en módulos dentro de rutas
       for (const module of route.modules || []) {
+        if (module.status === false) continue;
+        
         for (const action of module.actions || []) {
-          availableActions.add(action);
+          // El backend puede usar 'status' (boolean) o 'enabled' (boolean)
+          const actionEnabled = action.enabled !== false && (action.status !== false);
+          if (actionEnabled) {
+            availableActions.add(action.action);
+          }
         }
       }
     }
   }
 
-  // Mapear acciones
+  // Mapear acciones (el backend puede usar 'read'/'write' o 'view'/'create')
   const actions = {
     view: availableActions.has('view') || availableActions.has('read'),
     create: availableActions.has('create') || availableActions.has('write'),

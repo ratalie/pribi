@@ -73,5 +73,27 @@ export interface UserRepository {
     userId: string,
     role: 'lector' | 'editor' | 'admin' | 'user'
   ): Promise<User>;
+
+  /**
+   * Crea un nuevo usuario
+   */
+  createUser(
+    email: string,
+    password: string,
+    roleId: string
+  ): Promise<User>;
+
+  /**
+   * Elimina (desactiva) un usuario
+   */
+  deleteUser(userId: string): Promise<void>;
+
+  /**
+   * Actualiza el estado (activo/inactivo) de un usuario
+   */
+  updateUserStatus(
+    userId: string,
+    status: boolean
+  ): Promise<User>;
 }
 

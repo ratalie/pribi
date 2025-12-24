@@ -9,11 +9,14 @@ export interface PermissionActionDto {
   /** Tipo de acción (view, create, update, delete, file) */
   action: PermissionActionEnum | string;
   
-  /** Si la acción está habilitada */
-  enabled: boolean;
+  /** Si la acción está habilitada (formato legacy) */
+  enabled?: boolean;
   
   /** Si la acción está deshabilitada explícitamente (override negativo) */
   disabled?: boolean;
+  
+  /** Estado del permiso (true = habilitado, false = deshabilitado) - formato del backend */
+  status?: boolean;
 }
 
 

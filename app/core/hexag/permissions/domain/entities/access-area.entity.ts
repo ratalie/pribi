@@ -21,6 +21,9 @@ export interface AccessArea {
   
   /** Rutas disponibles en esta área */
   routes: AccessRoute[];
+  
+  /** Estado del permiso (solo presente en /access/full) */
+  status?: boolean;
 }
 
 

@@ -28,10 +28,15 @@ export class PermissionActionMapper {
       action = dto.action;
     }
 
+    // El backend puede usar 'status' (true/false) o 'enabled' (boolean)
+    // Convertir 'status' a 'enabled' si está presente
+    const enabled = dto.status !== undefined ? dto.status : (dto.enabled ?? true);
+    const disabled = dto.status !== undefined ? !dto.status : (dto.disabled ?? false);
+
     return {
       action,
-      enabled: dto.enabled,
-      disabled: dto.disabled,
+      enabled,
+      disabled: !enabled,
     };
   }
 

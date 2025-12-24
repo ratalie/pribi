@@ -11,6 +11,9 @@ import { UpdateUserRoutePermissionsUseCase } from '~/core/hexag/panel-administra
 import { AssignUserToSocietiesUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/assign-user-to-societies.use-case';
 import { UpdateUserRoleUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/update-user-role.use-case';
 import { GetAllSocietiesUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/get-all-societies.use-case';
+import { CreateUserUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/create-user.use-case';
+import { DeleteUserUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/delete-user.use-case';
+import { UpdateUserStatusUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/update-user-status.use-case';
 import { UserHttpRepository } from '~/core/hexag/panel-administrativo/infrastructure/repositories/user-http.repository';
 
 type Status = 'idle' | 'loading' | 'saving' | 'error';
@@ -280,6 +283,93 @@ export const useUserManagementStore = defineStore('user-management', {
         console.error('[UserManagementStore] Error al actualizar rol:', error);
         this.status = 'error';
         this.errorMessage = error?.message ?? 'No pudimos actualizar el rol';
+        throw error;
+      }
+    },
+
+    /**
+     * Crea un nuevo usuario
+     */
+    async createUser(email: string, password: string, roleId: string) {
+      this.status = 'saving';
+      this.errorMessage = null;
+
+      try {
+        const repository = new UserHttpRepository();
+        const useCase = new CreateUserUseCase(repository);
+        const newUser = await useCase.execute(email, password, roleId);
+        
+        // Agregar a la lista de usuarios
+        this.users.push(newUser);
+        
+        this.status = 'idle';
+        return newUser;
+      } catch (error: any) {
+        console.error('[UserManagementStore] Error al crear usuario:', error);
+        this.status = 'error';
+        this.errorMessage = error?.message ?? 'No pudimos crear el usuario';
+        throw error;
+      }
+    },
+
+    /**
+     * Elimina un usuario
+     */
+    async deleteUser(userId: string) {
+      this.status = 'saving';
+      this.errorMessage = null;
+
+      try {
+        const repository = new UserHttpRepository();
+        const useCase = new DeleteUserUseCase(repository);
+        await useCase.execute(userId);
+        
+        // Remover de la lista de usuarios
+        this.users = this.users.filter((u) => u.id !== userId);
+        
+        // Si era el usuario seleccionado, limpiar selección
+        if (this.selectedUser && this.selectedUser.id === userId) {
+          this.clearSelection();
+        }
+        
+        this.status = 'idle';
+      } catch (error: any) {
+        console.error('[UserManagementStore] Error al eliminar usuario:', error);
+        this.status = 'error';
+        this.errorMessage = error?.message ?? 'No pudimos eliminar el usuario';
+        throw error;
+      }
+    },
+
+    /**
+     * Actualiza el estado de un usuario
+     */
+    async updateUserStatus(userId: string, status: boolean) {
+      this.status = 'saving';
+      this.errorMessage = null;
+
+      try {
+        const repository = new UserHttpRepository();
+        const useCase = new UpdateUserStatusUseCase(repository);
+        const updatedUser = await useCase.execute(userId, status);
+        
+        // Actualizar en la lista de usuarios
+        const userIndex = this.users.findIndex((u) => u.id === userId);
+        if (userIndex !== -1) {
+          this.users[userIndex] = updatedUser;
+        }
+        
+        // Actualizar usuario seleccionado si es el mismo
+        if (this.selectedUser && this.selectedUser.id === userId) {
+          this.selectedUser = updatedUser;
+        }
+        
+        this.status = 'idle';
+        return updatedUser;
+      } catch (error: any) {
+        console.error('[UserManagementStore] Error al actualizar estado:', error);
+        this.status = 'error';
+        this.errorMessage = error?.message ?? 'No pudimos actualizar el estado';
         throw error;
       }
     },

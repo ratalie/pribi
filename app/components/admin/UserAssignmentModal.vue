@@ -11,9 +11,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { mockUsers, mockRoles, getRoleBadgeColor } from '~/data/mockDataAdmin';
-import { sociedadesMock } from '~/core/hexag/repositorio/infrastructure/mocks/data/repositorio.state';
+import { mockRoles, getRoleBadgeColor } from '~/data/mockDataAdmin';
 import type { RoleName } from '~/core/hexag/panel-administrativo/domain/entities/role.entity';
+import { useUserManagementStore } from '~/core/presentation/panel-administrativo/stores/user-management.store';
+import { SocietiesHttpRepository } from '~/core/hexag/panel-administrativo/infrastructure/repositories/societies-http.repository';
+import { onMounted, ref, computed, watch } from 'vue';
+import type { SocietyInfo } from '~/core/hexag/panel-administrativo/domain/entities/society-assignment.entity';
 
 interface Props {
   isOpen: boolean;
@@ -26,19 +29,50 @@ const emits = defineEmits<{
   (e: 'assign', userIds: string[], societyId: string): void;
 }>();
 
+const store = useUserManagementStore();
+
 // Estados locales
 const selectedSociety = ref<string>('');
 const searchQuery = ref('');
 const selectedRole = ref<RoleName | 'all'>('all');
 const selectedUsers = ref<string[]>([]);
+const availableSocieties = ref<SocietyInfo[]>([]);
+const isLoadingSocieties = ref(false);
 
-// Usuarios disponibles filtrados
+// Cargar sociedades disponibles
+const loadSocieties = async () => {
+  isLoadingSocieties.value = true;
+  try {
+    const societiesRepo = new SocietiesHttpRepository();
+    availableSocieties.value = await societiesRepo.getAllSocieties();
+  } catch (error) {
+    console.error('Error al cargar sociedades:', error);
+  } finally {
+    isLoadingSocieties.value = false;
+  }
+};
+
+// Cargar sociedades cuando se abre el modal
+watch(
+  () => props.isOpen,
+  (isOpen) => {
+    if (isOpen) {
+      loadSocieties();
+      // Reset estado
+      selectedSociety.value = '';
+      selectedUsers.value = [];
+      searchQuery.value = '';
+      selectedRole.value = 'all';
+    }
+  }
+);
+
+// Usuarios disponibles filtrados (desde el store)
 const availableUsers = computed(() => {
-  return mockUsers.filter((user) => {
+  return store.users.filter((user) => {
     const matchesRole =
       selectedRole.value === 'all' || user.role.name === selectedRole.value;
     const matchesSearch =
-      user.email.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.value.toLowerCase());
     return matchesRole && matchesSearch && user.status;
   });
@@ -54,33 +88,35 @@ const toggleUser = (userId: string) => {
 };
 
 // Asignar usuarios a sociedad
-const handleAssign = () => {
+const handleAssign = async () => {
   if (!selectedSociety.value || selectedUsers.value.length === 0) {
     alert('Selecciona una sociedad y al menos un usuario');
     return;
   }
 
-  emits('assign', selectedUsers.value, selectedSociety.value);
-  // Limpiar estado
-  selectedSociety.value = '';
-  selectedUsers.value = [];
-  searchQuery.value = '';
-  selectedRole.value = 'all';
-  emits('close');
-};
-
-// Reset al cerrar
-watch(
-  () => props.isOpen,
-  (isOpen) => {
-    if (!isOpen) {
-      selectedSociety.value = '';
-      selectedUsers.value = [];
-      searchQuery.value = '';
-      selectedRole.value = 'all';
+  try {
+    // Asignar cada usuario a la sociedad seleccionada
+    for (const userId of selectedUsers.value) {
+      await store.assignUserToSocieties(userId, [selectedSociety.value]);
     }
+    
+    // Emitir evento para notificar al componente padre
+    emits('assign', selectedUsers.value, selectedSociety.value);
+    
+    // Recargar usuarios para reflejar cambios
+    await store.loadUsers();
+    
+    // Limpiar estado
+    selectedSociety.value = '';
+    selectedUsers.value = [];
+    searchQuery.value = '';
+    selectedRole.value = 'all';
+    emits('close');
+  } catch (error: any) {
+    console.error('Error al asignar usuarios:', error);
+    alert(error?.message || 'Error al asignar usuarios a la sociedad');
   }
-);
+};
 </script>
 
 <template>
@@ -175,11 +211,18 @@ watch(
             >
               <option value="">Seleccionar sociedad...</option>
               <option
-                v-for="sociedad in sociedadesMock.filter((s) => s.activa)"
+                v-if="isLoadingSocieties"
+                value=""
+                disabled
+              >
+                Cargando sociedades...
+              </option>
+              <option
+                v-for="sociedad in availableSocieties"
                 :key="sociedad.id"
                 :value="sociedad.id"
               >
-                {{ sociedad.nombre }} - {{ sociedad.rut }}
+                {{ sociedad.name }} {{ sociedad.ruc ? `- ${sociedad.ruc}` : '' }}
               </option>
             </select>
           </div>
