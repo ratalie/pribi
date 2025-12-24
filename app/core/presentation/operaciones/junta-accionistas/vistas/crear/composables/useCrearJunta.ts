@@ -160,15 +160,11 @@ export function useCrearJunta() {
   };
 
   const getColorClasses = (color: string) => {
-    const colors: Record<string, { bg: string; text: string }> = {
-      blue: { bg: "bg-blue-500", text: "text-blue-600" },
-      purple: { bg: "bg-purple-500", text: "text-purple-600" },
-      green: { bg: "bg-green-500", text: "text-green-600" },
-      orange: { bg: "bg-orange-500", text: "text-orange-600" },
-      indigo: { bg: "bg-indigo-500", text: "text-indigo-600" },
-      emerald: { bg: "bg-emerald-500", text: "text-emerald-600" },
+    // Unificar todos los pasos con el color primary para un look más profesional
+    return {
+      bg: "var(--primary-600)",
+      text: "var(--primary-600)",
     };
-    return colors[color] || colors.blue;
   };
 
   return {

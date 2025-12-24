@@ -1,11 +1,15 @@
 <template>
-  <div class="min-h-full bg-gray-50">
-    <HistorialHeader
-      :selected-society-id="selectedSocietyId"
+  <div class="min-h-full">
+    <HistorialJuntasHeader
+      :title="'Registro de Juntas'"
+      :description="`${juntasList.length} ${
+        juntasList.length === 1 ? 'junta registrada' : 'juntas registradas'
+      }`"
       @create="handleCreate"
     />
 
-    <div class="max-w-[1600px] mx-auto px-8 py-10">
+    <!-- Responsive container: px-4 (<1280), px-6 (1280-1440), px-8 (>1440) -->
+    <div class="vista-container">
       <div class="space-y-6">
         <!-- Selector de Sociedades -->
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
@@ -61,8 +65,9 @@
 
 <script setup lang="ts">
 import { History } from "lucide-vue-next";
+import { computed } from "vue";
 import { useHistorialJuntas } from "../composables/useHistorialJuntas";
-import HistorialHeader from "./organisms/HistorialHeader.vue";
+import HistorialJuntasHeader from "./organisms/HistorialJuntasHeader.vue";
 import HistorialTable from "./organisms/HistorialTable.vue";
 import SociedadSelector from "~/core/presentation/shared/components/molecules/SociedadSelector.vue";
 
@@ -80,7 +85,36 @@ const {
   handleCreate,
   tableActions,
 } = useHistorialJuntas();
+
+// Asegurar que juntas siempre sea un array para el contador
+const juntasList = computed(() => {
+  return Array.isArray(juntas.value) ? juntas.value : [];
+});
 </script>
+
+<style scoped>
+  /* Sistema de estilos responsivos consistente - Estilo v2.5 */
+  .vista-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1rem; /* Default: < 1280px */
+    min-height: calc(100vh - 200px);
+  }
+
+  /* Breakpoint >= 1280px y < 1440px */
+  @media (min-width: 1280px) and (max-width: 1439px) {
+    .vista-container {
+      padding: 1.5rem;
+    }
+  }
+
+  /* Breakpoint >= 1440px */
+  @media (min-width: 1440px) {
+    .vista-container {
+      padding: 2rem;
+    }
+  }
+</style>
 
 
 
