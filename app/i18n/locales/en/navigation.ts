@@ -39,6 +39,10 @@ export default {
   calculadoraLegal: "Legal Calculator",
   ayuda: "Help",
 
+  // Seeds
+  seeds: "Seeds",
+  seedsSociedades: "Societies",
+
   // Other nav elements
   operaciones: "Control Body Operations",
   directorio: "Board",

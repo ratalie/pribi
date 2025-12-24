@@ -34,6 +34,10 @@ export default {
   chatIA: "Chat IA",
   iniciarChat: "Iniciar Chat",
 
+  // Seeds
+  seeds: "Seeds",
+  seedsSociedades: "Sociedades",
+
   // Ayuda
   ayuda: "Ayuda",
 } as const;

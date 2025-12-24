@@ -1,13 +1,11 @@
 <template>
   <div class="min-h-full">
     <HistorialSociedadesHeader
-      :show-delete-all="sociedades.length > 0"
-      :is-loading="isLoading"
-      :search-query="searchQuery"
-      @go-to-test="goToTestPage"
+      :title="'Registro de Sociedades'"
+      :description="`${sociedades.length} ${
+        sociedades.length === 1 ? 'sociedad registrada' : 'sociedades registradas'
+      }`"
       @create="handleCreate"
-      @delete-all="handleDeleteAll"
-      @update:search-query="(value) => searchQuery = value"
     />
 
     <!-- Responsive container: px-4 (<1280), px-6 (1280-1440), px-8 (>1440) -->
@@ -17,8 +15,25 @@
         :is-loading="isLoading"
         :actions="tableActions"
         :get-estado="getEstado"
+        :search-query="searchQuery"
+        :selected-tipo="selectedTipo"
+        :selected-estado="selectedEstado"
+        @update:search-query="(val: string) => searchQuery = val"
+        @update:selected-tipo="(val: string) => selectedTipo = val"
+        @update:selected-estado="(val: string) => selectedEstado = val"
       />
     </div>
+
+    <!-- Modal de Eliminación -->
+    <DeleteSociedadModal
+      v-if="sociedadToDelete"
+      :is-open="deleteModalOpen"
+      :razon-social="sociedadToDelete.razonSocial"
+      :is-loading="isDeleting"
+      @update:is-open="(val: boolean) => deleteModalOpen = val"
+      @confirm="handleDelete"
+      @cancel="closeDeleteModal"
+    />
   </div>
 </template>
 
@@ -26,15 +41,21 @@
   import { useHistorialSociedades } from "../composables/useHistorialSociedades";
   import HistorialSociedadesHeader from "./organisms/HistorialSociedadesHeader.vue";
   import HistorialSociedadesTable from "./organisms/HistorialSociedadesTable.vue";
+  import DeleteSociedadModal from "./organisms/DeleteSociedadModal.vue";
 
   const {
     sociedades,
     isLoading,
     searchQuery,
+    selectedTipo,
+    selectedEstado,
+    deleteModalOpen,
+    sociedadToDelete,
+    isDeleting,
     getEstado,
-    goToTestPage,
     handleCreate,
-    handleDeleteAll,
+    handleDelete,
+    closeDeleteModal,
     tableActions,
   } = useHistorialSociedades();
 </script>

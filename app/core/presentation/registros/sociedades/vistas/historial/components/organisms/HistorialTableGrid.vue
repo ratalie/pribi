@@ -49,6 +49,19 @@
 
   const props = defineProps<Props>();
 
+  const formatDate = (date: string | null | undefined): string => {
+    if (!date) return "—";
+    try {
+      const d = new Date(date);
+      const day = String(d.getDate()).padStart(2, "0");
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const year = d.getFullYear();
+      return `${day}/${month}/${year}`;
+    } catch {
+      return "—";
+    }
+  };
+
   const cellRenderers: TableCellRenderer[] = [
     {
       columnKey: "razonSocial",
@@ -65,6 +78,14 @@
     {
       columnKey: "tipoSociedad",
       render: (rowData: SociedadResumenDTO) => rowData.tipoSocietario || "—",
+    },
+    {
+      columnKey: "fechaConstitucion",
+      render: (rowData: SociedadResumenDTO) => formatDate(rowData.fechaRegistroSociedad),
+    },
+    {
+      columnKey: "fechaRegistro",
+      render: (rowData: SociedadResumenDTO) => formatDate(rowData.createdAt),
     },
     {
       columnKey: "estado",

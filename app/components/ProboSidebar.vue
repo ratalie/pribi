@@ -42,6 +42,7 @@
     Storage: true,
     "Espacios de Trabajo": true,
     "Chat IA": true,
+    Seeds: true,
   });
 
   const expandedItems = ref<Record<string, boolean>>({

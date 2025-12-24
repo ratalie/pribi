@@ -1,14 +1,29 @@
 <template>
-  <div class="historial-table-header">
-    <HistorialTableHeader :total="total" />
+  <!-- HeaderContent: Buscador y Filtros -->
+  <div class="historial-filters-section bg-white rounded-xl border border-gray-200 shadow-sm p-4 mb-4">
+    <HistorialFilters
+      :search-query="searchQuery"
+      :selected-tipo="selectedTipo"
+      :selected-estado="selectedEstado"
+      @update:search-query="$emit('update:search-query', $event)"
+      @update:selected-tipo="$emit('update:selected-tipo', $event)"
+      @update:selected-estado="$emit('update:selected-estado', $event)"
+    />
   </div>
 
-  <HistorialTableGrid
-    :data="data"
-    :is-loading="isLoading"
-    :actions="actions"
-    :get-estado="getEstado"
-  />
+  <!-- Tabla -->
+  <div class="historial-table-wrapper">
+    <div class="historial-table-header">
+      <HistorialTableHeader :total="total" />
+    </div>
+
+    <HistorialTableGrid
+      :data="data"
+      :is-loading="isLoading"
+      :actions="actions"
+      :get-estado="getEstado"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -18,17 +33,27 @@
   import type { EstadoSociedad } from "../../types/historial.types";
   import HistorialTableHeader from "../molecules/HistorialTableHeader.vue";
   import HistorialTableGrid from "./HistorialTableGrid.vue";
+  import HistorialFilters from "./HistorialFilters.vue";
 
   interface Props {
     data: SociedadResumenDTO[];
     isLoading: boolean;
     actions: TableAction[];
     getEstado: (sociedad: SociedadResumenDTO) => EstadoSociedad;
+    searchQuery: string;
+    selectedTipo: string;
+    selectedEstado: string;
   }
 
   const props = defineProps<Props>();
 
   const total = computed(() => props.data.length);
+
+  defineEmits<{
+    "update:search-query": [value: string];
+    "update:selected-tipo": [value: string];
+    "update:selected-estado": [value: string];
+  }>();
 </script>
 
 <style scoped>

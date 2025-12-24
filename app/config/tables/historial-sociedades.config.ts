@@ -10,10 +10,12 @@ export const historialSociedadesTableConfig: TableConfig = {
     { id: 2, label: "RUC", key: "ruc" },
     { id: 3, label: "Nombre Comercial", key: "nombreComercial" },
     { id: 4, label: "Tipo de Sociedad", key: "tipoSociedad" },
-    { id: 5, label: "Estado", key: "estado" },
-    { id: 6, label: "", key: "edit-remove" },
+    { id: 5, label: "Fecha de Constitución", key: "fechaConstitucion" },
+    { id: 6, label: "Fecha Registro", key: "fechaRegistro" },
+    { id: 7, label: "Estado", key: "estado" },
+    { id: 8, label: "", key: "edit-remove" },
   ],
-  gridClass: "grid grid-cols-[3fr_1fr_2fr_1fr_1fr_2fr]",
+  gridClass: "grid grid-cols-[3fr_1fr_2fr_1fr_1fr_1fr_1fr_auto]",
   containerClass: "",
 };
 

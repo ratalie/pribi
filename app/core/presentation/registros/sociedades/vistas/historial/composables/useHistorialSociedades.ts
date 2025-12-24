@@ -1,46 +1,88 @@
 /**
  * Controller para la vista de Historial de Sociedades
- * 
+ *
  * Orquesta la lógica de la vista y coordina con el store
  */
 
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { storeToRefs } from "pinia";
 import { useSociedadHistorialStore } from "~/core/presentation/registros/sociedades/stores/sociedad-historial.store";
 import { SocietyRegisterStep } from "~/core/hexag/registros/sociedades/domain/enums/society-register-step.enum";
 import type { SociedadResumenDTO } from "~/core/hexag/registros/sociedades/application/dtos";
 import type { TableAction } from "~/types/tables/table-config";
-import type { EstadoSociedad, HistorialTableAction } from "../types/historial.types";
+import type { EstadoSociedad } from "../types/historial.types";
 
 export function useHistorialSociedades() {
   const router = useRouter();
   const historialStore = useSociedadHistorialStore();
-  const { sociedades: allSociedades, status, errorMessage } = storeToRefs(historialStore);
   const searchQuery = ref("");
+  const selectedTipo = ref("all");
+  const selectedEstado = ref("all");
+  const deleteModalOpen = ref(false);
+  const sociedadToDelete = ref<SociedadResumenDTO | null>(null);
+  const isDeleting = ref(false);
 
-  const isLoading = computed(() => status.value === "loading");
+  const isLoading = computed(() => (historialStore as any).status === "loading");
+  const errorMessage = computed(() => (historialStore as any).errorMessage);
 
-  // Filtrar sociedades según búsqueda
+  // Formatear fecha
+  const formatDate = (date: string | null | undefined): string => {
+    if (!date) return "—";
+    try {
+      const d = new Date(date);
+      const day = String(d.getDate()).padStart(2, "0");
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const year = d.getFullYear();
+      return `${day}/${month}/${year}`;
+    } catch {
+      return "—";
+    }
+  };
+
+  // Filtrar sociedades según búsqueda, tipo y estado
   const sociedades = computed(() => {
-    if (!searchQuery.value.trim()) {
-      return allSociedades.value;
+    let filtered = (historialStore as any).sociedades as SociedadResumenDTO[];
+
+    // Filtro de búsqueda
+    if (searchQuery.value.trim()) {
+      const query = searchQuery.value.toLowerCase().trim();
+      filtered = filtered.filter((sociedad) => {
+        const razonSocial = (sociedad.razonSocial || "").toLowerCase();
+        const nombreComercial = (sociedad.nombreComercial || "").toLowerCase();
+        const ruc = (sociedad.ruc || "").toLowerCase();
+        const tipoSocietario = (sociedad.tipoSocietario || "").toLowerCase();
+
+        return (
+          razonSocial.includes(query) ||
+          nombreComercial.includes(query) ||
+          ruc.includes(query) ||
+          tipoSocietario.includes(query)
+        );
+      });
     }
 
-    const query = searchQuery.value.toLowerCase().trim();
-    return allSociedades.value.filter((sociedad) => {
-      const razonSocial = (sociedad.razonSocial || "").toLowerCase();
-      const nombreComercial = (sociedad.nombreComercial || "").toLowerCase();
-      const ruc = (sociedad.ruc || "").toLowerCase();
-      const tipoSocietario = (sociedad.tipoSocietario || "").toLowerCase();
-
-      return (
-        razonSocial.includes(query) ||
-        nombreComercial.includes(query) ||
-        ruc.includes(query) ||
-        tipoSocietario.includes(query)
+    // Filtro de tipo
+    if (selectedTipo.value !== "all") {
+      filtered = filtered.filter(
+        (sociedad: SociedadResumenDTO) => sociedad.tipoSocietario === selectedTipo.value
       );
-    });
+    }
+
+    // Filtro de estado
+    if (selectedEstado.value !== "all") {
+      filtered = filtered.filter((sociedad: SociedadResumenDTO) => {
+        const estado = getEstado(sociedad);
+        if (selectedEstado.value === "completado") {
+          return estado.isComplete;
+        }
+        if (selectedEstado.value === "pendiente") {
+          return !estado.isComplete;
+        }
+        return true;
+      });
+    }
+
+    return filtered;
   });
 
   const pasoLabels: Record<SocietyRegisterStep, string> = {
@@ -79,10 +121,29 @@ export function useHistorialSociedades() {
     router.push(`/registros/sociedades/${id}/datos-sociedad`);
   };
 
-  const handleDelete = async (sociedad: SociedadResumenDTO) => {
-    const confirmed = window.confirm("¿Deseas eliminar este registro de sociedad?");
-    if (!confirmed) return;
-    await historialStore.eliminarSociedad(sociedad.idSociety);
+  const openDeleteModal = (sociedad: SociedadResumenDTO) => {
+    sociedadToDelete.value = sociedad;
+    deleteModalOpen.value = true;
+  };
+
+  const handleDelete = async () => {
+    if (!sociedadToDelete.value) return;
+
+    isDeleting.value = true;
+    try {
+      await (historialStore as any).eliminarSociedad(sociedadToDelete.value.idSociety);
+      deleteModalOpen.value = false;
+      sociedadToDelete.value = null;
+    } catch (error) {
+      console.error("Error al eliminar sociedad:", error);
+    } finally {
+      isDeleting.value = false;
+    }
+  };
+
+  const closeDeleteModal = () => {
+    deleteModalOpen.value = false;
+    sociedadToDelete.value = null;
   };
 
   const goToTestPage = () => {
@@ -99,7 +160,7 @@ export function useHistorialSociedades() {
     );
     if (!confirmed) return;
 
-    await historialStore.eliminarTodasLasSociedades();
+    await (historialStore as any).eliminarTodasLasSociedades();
   };
 
   const handleCreate = () => {
@@ -124,13 +185,13 @@ export function useHistorialSociedades() {
       label: "Eliminar registro",
       icon: "Trash2",
       destructive: true,
-      handler: (rowData: SociedadResumenDTO) => handleDelete(rowData),
+      handler: (rowData: SociedadResumenDTO) => openDeleteModal(rowData),
     },
   ];
 
   // Cargar datos al montar
   onMounted(() => {
-    historialStore.cargarHistorial();
+    (historialStore as any).cargarHistorial();
   });
 
   return {
@@ -139,16 +200,23 @@ export function useHistorialSociedades() {
     isLoading,
     errorMessage,
     searchQuery,
+    selectedTipo,
+    selectedEstado,
+    deleteModalOpen,
+    sociedadToDelete,
+    isDeleting,
     // Methods
     getEstado,
     formatPasoActual,
+    formatDate,
     goToPreview,
     goToEdit,
+    openDeleteModal,
     handleDelete,
+    closeDeleteModal,
     goToTestPage,
     handleDeleteAll,
     handleCreate,
     tableActions,
   };
 }
-

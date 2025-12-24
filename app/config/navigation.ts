@@ -226,4 +226,20 @@ export const navigationSections: NavigationSection[] = [
       },
     ],
   },
+  {
+    id: "seeds",
+    title: "Seeds",
+    translationKey: "navigation.seeds",
+    icon: "Package",
+    items: [
+      {
+        id: "seeds-sociedades",
+        label: "Sociedades",
+        translationKey: "navigation.seedsSociedades",
+        icon: "Building2",
+        href: "/dev/seeds-sociedades",
+        roles: ["admin", "manager", "user"],
+      },
+    ],
+  },
 ];
