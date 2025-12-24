@@ -4,7 +4,7 @@
  * Orquesta la lógica de la vista y coordina con el store
  */
 
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useSociedadHistorialStore } from "~/core/presentation/registros/sociedades/stores/sociedad-historial.store";
@@ -16,9 +16,32 @@ import type { EstadoSociedad, HistorialTableAction } from "../types/historial.ty
 export function useHistorialSociedades() {
   const router = useRouter();
   const historialStore = useSociedadHistorialStore();
-  const { sociedades, status, errorMessage } = storeToRefs(historialStore);
+  const { sociedades: allSociedades, status, errorMessage } = storeToRefs(historialStore);
+  const searchQuery = ref("");
 
   const isLoading = computed(() => status.value === "loading");
+
+  // Filtrar sociedades según búsqueda
+  const sociedades = computed(() => {
+    if (!searchQuery.value.trim()) {
+      return allSociedades.value;
+    }
+
+    const query = searchQuery.value.toLowerCase().trim();
+    return allSociedades.value.filter((sociedad) => {
+      const razonSocial = (sociedad.razonSocial || "").toLowerCase();
+      const nombreComercial = (sociedad.nombreComercial || "").toLowerCase();
+      const ruc = (sociedad.ruc || "").toLowerCase();
+      const tipoSocietario = (sociedad.tipoSocietario || "").toLowerCase();
+
+      return (
+        razonSocial.includes(query) ||
+        nombreComercial.includes(query) ||
+        ruc.includes(query) ||
+        tipoSocietario.includes(query)
+      );
+    });
+  });
 
   const pasoLabels: Record<SocietyRegisterStep, string> = {
     [SocietyRegisterStep.DATOS_SOCIEDAD]: "Datos principales",
@@ -115,6 +138,7 @@ export function useHistorialSociedades() {
     sociedades,
     isLoading,
     errorMessage,
+    searchQuery,
     // Methods
     getEstado,
     formatPasoActual,

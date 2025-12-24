@@ -1,11 +1,13 @@
 <template>
-  <div class="min-h-full bg-gray-50">
+  <div class="min-h-full">
     <HistorialSociedadesHeader
       :show-delete-all="sociedades.length > 0"
       :is-loading="isLoading"
+      :search-query="searchQuery"
       @go-to-test="goToTestPage"
       @create="handleCreate"
       @delete-all="handleDeleteAll"
+      @update:search-query="(value) => searchQuery = value"
     />
 
     <!-- Responsive container: px-4 (<1280), px-6 (1280-1440), px-8 (>1440) -->
@@ -28,6 +30,7 @@
   const {
     sociedades,
     isLoading,
+    searchQuery,
     getEstado,
     goToTestPage,
     handleCreate,
@@ -37,30 +40,25 @@
 </script>
 
 <style scoped>
-  /* Container principal con estilos de tarjeta - paddings optimizados */
+  /* Sistema de estilos responsivos consistente - Estilo v2.5 */
   .vista-container {
     max-width: 1600px;
-    /* margin: 1rem auto; */
-    padding: 0.75rem;
-    background-color: white;
-    border-radius: 0.75rem;
-    border: 1px solid rgb(229, 231, 235);
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    margin: 0 auto;
+    padding: 1rem; /* Default: < 1280px */
+    min-height: calc(100vh - 200px);
   }
 
   /* Breakpoint >= 1280px y < 1440px */
   @media (min-width: 1280px) and (max-width: 1439px) {
     .vista-container {
-      margin: 1.25rem auto;
-      padding: 1rem;
+      padding: 1.5rem;
     }
   }
 
   /* Breakpoint >= 1440px */
   @media (min-width: 1440px) {
     .vista-container {
-      margin: 1.5rem auto;
-      padding: 1.25rem;
+      padding: 2rem;
     }
   }
 </style>

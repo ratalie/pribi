@@ -52,12 +52,14 @@ const handleAction = async (action: TableAction) => {
   <div
     :class="[
       props.config.gridClass,
-      'items-center border-b-[1px]',
+      'items-center border-b transition-colors',
       props.isLast ? 'border-gray-300' : 'border-gray-200',
-      'py-5 text-t2 font-medium font-secondary pr-16 gap-2',
+      'py-5 text-sm font-secondary pr-16 gap-2',
       props.textColor,
       props.rowClass,
+      'hover:bg-[#f1eeff] cursor-pointer',
     ]"
+    style="font-size: 12.8px; color: #2e293d;"
   >
     <div
       v-for="column in props.config.columns"

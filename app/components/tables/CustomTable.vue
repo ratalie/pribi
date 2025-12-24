@@ -23,22 +23,28 @@
   // Construir clases del header dinámicamente
   const headerClasses = computed(() => {
     // Usar border-b-[1px] para replicar exactamente v2.5
-    const base = [props.config.gridClass, "border-b-[1px] border-gray-300", props.headerPadding];
+    const base = [props.config.gridClass, "border-b-[1px] border-gray-300"];
+    
+    // Aplicar padding según configuración
+    if (props.headerPadding === "py-4.5 pr-16") {
+      base.push("py-4.5 pr-16 gap-2");
+    } else if (props.headerPadding) {
+      base.push(props.headerPadding);
+    } else {
+      base.push("py-4 pr-16 gap-2");
+    }
+    
     if (props.headerPaddingExtra) {
       base.push(props.headerPaddingExtra);
-    } else {
-      // Default: pr-16 gap-2 solo si no hay headerPaddingExtra
-      if (props.headerPadding === "py-4") {
-        base.push("pr-16 gap-2");
-      }
     }
+    
     return base;
   });
 
   // Clases del span del header (para aplicar gap-4 pl-8 cuando sea necesario)
   const headerSpanClasses = computed(() => {
     const base = [
-      props.headerTextSize,
+      props.headerTextSize || "text-sm",
       "font-semibold font-primary block p-0 text-start",
     ];
     // Si hay headerPaddingExtra con gap-4 pl-8, aplicarlo al span

@@ -19,12 +19,15 @@ export const historialSociedadesTableConfig: TableConfig = {
 
 /**
  * Props específicas para CustomTable cuando se usa para Historial de Sociedades
- * Tipografía optimizada con clases Tailwind 4 personalizadas
+ * Estilo v2.5: Tipografía, espaciado y colores mejorados
  */
 export const historialSociedadesTableProps = {
-  headerTextSize: "t-b2" as const, // 11.2px - headers más pequeños
-  containerPadding: "py-2 px-2" as const, // Padding reducido al mínimo
-  headerPadding: "py-2" as const, // Padding vertical mínimo
-  headerPaddingExtra: "gap-2 pl-2" as const, // Gap y padding mínimos
-  rowTextColor: "text-layout-gray-700" as const,
+  headerTextSize: "text-sm" as const, // 14.4px (text-t1 equivalente)
+  containerPadding: "p-4" as const, // Padding de 16px (p-4)
+  headerPadding: "py-4.5 pr-16" as const, // py-4.5 (18px), pr-16 (64px)
+  headerPaddingExtra: "gap-2" as const, // Gap de 8px
+  rowTextColor: "text-layout-gray-800" as const, // #2e293d
+  rowPadding: "py-5 pr-16" as const, // py-5 (20px), pr-16 (64px)
+  rowHover: "hover:bg-[#f1eeff]" as const, // Hover color v2.5
+  borderColor: "border-gray-200" as const, // Bordes grises
 };

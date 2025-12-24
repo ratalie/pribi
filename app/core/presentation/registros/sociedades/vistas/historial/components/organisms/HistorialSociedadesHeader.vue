@@ -6,6 +6,14 @@
   >
     <template #right>
       <div class="flex items-center gap-3">
+        <!-- Buscador -->
+        <div class="w-64">
+          <SearchBar
+            :model-value="searchQuery"
+            placeholder="Buscar sociedades..."
+            @update:model-value="$emit('update:search-query', $event)"
+          />
+        </div>
         <ActionButton
           variant="primary"
           size="md"
@@ -37,20 +45,24 @@
   import { FileText, Plus, Trash2 } from "lucide-vue-next";
   import VistaHeader from "~/core/presentation/shared/components/VistaHeader.vue";
   import ActionButton from "~/core/presentation/shared/components/molecules/ActionButton.vue";
+  import SearchBar from "~/core/presentation/shared/components/molecules/SearchBar.vue";
 
   interface Props {
     showDeleteAll?: boolean;
     isLoading?: boolean;
+    searchQuery: string;
   }
 
   withDefaults(defineProps<Props>(), {
     showDeleteAll: false,
     isLoading: false,
+    searchQuery: "",
   });
 
   defineEmits<{
     create: [];
     "delete-all": [];
+    "update:search-query": [value: string];
   }>();
 </script>
 
