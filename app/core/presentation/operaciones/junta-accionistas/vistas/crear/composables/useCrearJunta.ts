@@ -22,7 +22,19 @@ export function useCrearJunta() {
   const router = useRouter();
   const sociedadStore = useSociedadHistorialStore();
   const juntaStore = useJuntaHistorialStore();
-  const { sociedades } = storeToRefs(sociedadStore);
+  const { sociedades: sociedadesRef } = storeToRefs(sociedadStore);
+
+  // Asegurar que sociedades siempre sea un array
+  const sociedades = computed(() => {
+    const result = Array.isArray(sociedadesRef.value) ? sociedadesRef.value : [];
+    console.log("🔍 [useCrearJunta] sociedades computed:", {
+      sociedadesRefValue: sociedadesRef.value,
+      isArray: Array.isArray(sociedadesRef.value),
+      resultLength: result.length,
+      result: result,
+    });
+    return result;
+  });
 
   const selectedSocietyId = ref<number | null>(null);
   const isSubmitting = ref(false);
@@ -77,7 +89,9 @@ export function useCrearJunta() {
 
   const selectedSociedad = computed(() => {
     if (!selectedSocietyId.value) return null;
-    return sociedades.value.find((s) => s.idSociety === selectedSocietyId.value) || null;
+    // Convertir selectedSocietyId a string para comparar con idSociety
+    const idStr = String(selectedSocietyId.value);
+    return sociedades.value.find((s) => String(s.idSociety) === idStr) || null;
   });
 
   const canStart = computed(() => {
@@ -85,14 +99,24 @@ export function useCrearJunta() {
   });
 
   onMounted(async () => {
+    console.log("🚀 [useCrearJunta] onMounted - Iniciando carga de sociedades");
     isLoadingSociedades.value = true;
     try {
+      console.log("📡 [useCrearJunta] Llamando a sociedadStore.cargarHistorial()");
       await sociedadStore.cargarHistorial();
+      console.log("✅ [useCrearJunta] Historial cargado exitosamente");
+      console.log("📊 [useCrearJunta] Estado del store después de cargar:", {
+        sociedadesEnStore: sociedadStore.sociedades,
+        cantidad: sociedadStore.sociedades?.length || 0,
+        sociedadesRefValue: sociedadesRef.value,
+        sociedadesComputed: sociedades.value,
+      });
     } catch (error) {
-      console.error("Error al cargar sociedades:", error);
+      console.error("❌ [useCrearJunta] Error al cargar sociedades:", error);
       errorMessage.value = "No pudimos cargar las sociedades disponibles.";
     } finally {
       isLoadingSociedades.value = false;
+      console.log("🏁 [useCrearJunta] onMounted - Finalizado, isLoadingSociedades:", isLoadingSociedades.value);
     }
   });
 
@@ -107,8 +131,17 @@ export function useCrearJunta() {
         throw new Error("ID de sociedad inválido");
       }
 
+      // Convertir selectedSocietyId a número (puede venir como string o number)
+      const societyIdNumber = typeof selectedSocietyId.value === "string"
+        ? parseInt(selectedSocietyId.value, 10)
+        : selectedSocietyId.value;
+
+      if (Number.isNaN(societyIdNumber)) {
+        throw new Error("ID de sociedad inválido");
+      }
+
       // Crear la junta en el backend
-      const flowId = await juntaStore.crearJunta(selectedSocietyId.value as number);
+      const flowId = await juntaStore.crearJunta(societyIdNumber);
 
       if (!flowId) {
         errorMessage.value = "No fue posible crear la junta. Inténtalo nuevamente.";
@@ -117,7 +150,7 @@ export function useCrearJunta() {
       }
 
       // Redirigir al primer paso del flujo de junta con ambos IDs
-      await router.push(`/operaciones/sociedades/${selectedSocietyId.value}/junta-accionistas/${flowId}/seleccion-agenda`);
+      await router.push(`/operaciones/sociedades/${societyIdNumber}/junta-accionistas/${flowId}/seleccion-agenda`);
     } catch (error) {
       errorMessage.value = "No fue posible iniciar el flujo de junta. Inténtalo nuevamente.";
       console.error("Error al iniciar flujo de junta:", error);
@@ -140,6 +173,7 @@ export function useCrearJunta() {
 
   return {
     sociedadSteps,
+    sociedades, // ✅ Exportar sociedades para que esté disponible en el componente
     selectedSocietyId,
     selectedSociedad,
     isSubmitting,

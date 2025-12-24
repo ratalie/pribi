@@ -15,8 +15,13 @@ export function useHistorialJuntas() {
   const router = useRouter();
   const sociedadStore = useSociedadHistorialStore();
   const juntaStore = useJuntaHistorialStore();
-  const { sociedades } = storeToRefs(sociedadStore);
+  const { sociedades: sociedadesRef } = storeToRefs(sociedadStore);
   const { juntas, status, errorMessage } = storeToRefs(juntaStore);
+
+  // Asegurar que sociedades siempre sea un array
+  const sociedades = computed(() => {
+    return Array.isArray(sociedadesRef.value) ? sociedadesRef.value : [];
+  });
 
   const selectedSocietyId = ref<number | null>(null);
   const isLoadingSociedades = ref(false);
@@ -30,6 +35,45 @@ export function useHistorialJuntas() {
     const dateOnly = isoString.split("T")[0];
     const [year, month, day] = dateOnly.split("-");
     return `${day}/${month}/${year}`;
+  };
+
+  /**
+   * Obtiene la fecha de la junta
+   * Usa fechaJunta del backend (fecha de primera convocatoria) o createdAt como fallback
+   */
+  const getFechaJunta = (junta: JuntaResumenDTO): string => {
+    // Priorizar fechaJunta (fecha de primera convocatoria) si está disponible
+    if (junta.fechaJunta) {
+      return formatDate(junta.fechaJunta);
+    }
+    // Fallback a createdAt si no hay fecha de junta
+    return formatDate(junta.createdAt);
+  };
+
+  /**
+   * Obtiene el nombre de la junta
+   * Si tiene nombre personalizado, lo devuelve. Si no, devuelve nombre por defecto
+   */
+  const getNombreJunta = (junta: JuntaResumenDTO): string => {
+    // Si la junta tiene nombre personalizado, devolverlo
+    if (junta.juntaNombrada && junta.nombreJunta) {
+      return junta.nombreJunta;
+    }
+    // Valor por defecto basado en tipo
+    if (junta.esAnualObligatoria) {
+      return "Junta Obligatoria Anual";
+    }
+    return "Junta Ordinaria";
+  };
+
+  /**
+   * Obtiene el tipo de junta
+   */
+  const getTipoJunta = (junta: JuntaResumenDTO): string => {
+    if (junta.esAnualObligatoria) {
+      return "Junta Obligatoria Anual";
+    }
+    return "Ordinaria";
   };
 
   const getEstado = (junta: JuntaResumenDTO): EstadoJunta => {
@@ -112,6 +156,9 @@ export function useHistorialJuntas() {
     // Methods
     getEstado,
     formatDate,
+    getFechaJunta,
+    getNombreJunta,
+    getTipoJunta,
     handleSocietyChange,
     handleCreate,
     tableActions,

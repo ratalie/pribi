@@ -35,6 +35,8 @@ export class MeetingDetailsMapper {
       secretarioAsistio: dto.secretarioAsistio,
       nombreOtroPresidente: dto.nombreOtroPresidente,
       nombreOtroSecretario: dto.nombreOtroSecretario,
+      juntaNombrada: dto.juntaNombrada ?? false,
+      nombreJunta: dto.nombreJunta,
     };
   }
 
@@ -57,6 +59,8 @@ export class MeetingDetailsMapper {
       secretarioAsistio: entity.secretarioAsistio,
       nombreOtroPresidente: entity.nombreOtroPresidente,
       nombreOtroSecretario: entity.nombreOtroSecretario,
+      juntaNombrada: entity.juntaNombrada,
+      nombreJunta: entity.nombreJunta,
     };
 
     // Para JUNTA_UNIVERSAL: Solo enviar primeraConvocatoria (como "detalle")
@@ -129,6 +133,8 @@ export class MeetingDetailsMapper {
       secretarioAsistio: dto.secretaryAttended !== undefined ? dto.secretaryAttended : false,
       nombreOtroPresidente: dto.otherPresidentName,
       nombreOtroSecretario: dto.otherSecretaryName,
+      juntaNombrada: dto.juntaNombrada ?? false,
+      nombreJunta: dto.nombreJunta,
     };
   }
 

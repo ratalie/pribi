@@ -28,6 +28,7 @@ export interface AgendaItemsDTO {
     aplicacionResultados: boolean;
     designacionAuditoresExternos: boolean;
   };
+  esAnualObligatoria?: boolean;
 }
 
 /**

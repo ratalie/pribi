@@ -25,6 +25,8 @@ export interface DetallesJuntaDto {
   secretarioAsistio: boolean;
   nombreOtroPresidente?: string;
   nombreOtroSecretario?: string;
+  juntaNombrada?: boolean;
+  nombreJunta?: string;
 }
 
 // ============================================
@@ -52,5 +54,7 @@ export interface GeneralMeetingConfigDto {
   secretaryAttended: boolean;
   otherPresidentName?: string;
   otherSecretaryName?: string;
+  juntaNombrada: boolean;
+  nombreJunta?: string;
 }
 

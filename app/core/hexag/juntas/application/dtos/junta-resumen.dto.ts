@@ -11,5 +11,10 @@ export interface JuntaResumenDTO {
   societyId?: number; // ID de la sociedad asociada (para referencia)
   createdAt?: string; // Fecha de creación (si está disponible)
   updatedAt?: string; // Fecha de actualización (si está disponible)
+  // Nuevos campos de meeting-details
+  nombreJunta?: string | null;
+  juntaNombrada?: boolean;
+  esAnualObligatoria?: boolean;
+  fechaJunta?: string | null; // Fecha de la primera convocatoria
 }
 

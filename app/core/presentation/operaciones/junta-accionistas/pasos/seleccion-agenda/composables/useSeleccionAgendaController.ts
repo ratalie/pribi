@@ -31,12 +31,16 @@ export function useSeleccionAgendaController() {
   /**
    * Guarda los puntos de agenda seleccionados
    */
-  const saveAgendaItems = async (societyId: number, flowId: number): Promise<void> => {
+  const saveAgendaItems = async (
+    societyId: number,
+    flowId: number,
+    esAnualObligatoria?: boolean
+  ): Promise<void> => {
     // Validar selección
     const selectedPuntos = validateSelection();
 
     // Convertir IDs del frontend a estructura del backend
-    const payload = AgendaItemsMapper.frontendIdsToDTO(selectedPuntos);
+    const payload = AgendaItemsMapper.frontendIdsToDTO(selectedPuntos, esAnualObligatoria);
 
     // Guardar en el backend
     await agendaItemsStore.saveAgendaItems(societyId, flowId, payload);
@@ -46,7 +50,11 @@ export function useSeleccionAgendaController() {
    * Handler completo para el botón "Siguiente"
    * Incluye validación de IDs y guardado
    */
-  const handleNext = async (societyId: number | null, flowId: string | null): Promise<void> => {
+  const handleNext = async (
+    societyId: number | null,
+    flowId: string | null,
+    esAnualObligatoria?: boolean
+  ): Promise<void> => {
     // Validar IDs
     if (!societyId || !flowId) {
       throw new Error(
@@ -61,7 +69,7 @@ export function useSeleccionAgendaController() {
     }
 
     // Guardar
-    await saveAgendaItems(societyId, flowIdNumber);
+    await saveAgendaItems(societyId, flowIdNumber, esAnualObligatoria);
   };
 
   return {

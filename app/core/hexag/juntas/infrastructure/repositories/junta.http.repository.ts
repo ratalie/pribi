@@ -131,6 +131,10 @@ export class JuntaHttpRepository implements JuntaRepository {
           id: string | number;
           estado: string;
           actual: string;
+          nombreJunta?: string | null;
+          juntaNombrada?: boolean;
+          esAnualObligatoria?: boolean;
+          fechaJunta?: string | null;
         }>;
       }>(url, requestConfig);
 

@@ -32,6 +32,14 @@
       :cell-renderers="cellRenderers"
       :actions="actions"
       :get-row-id="(row) => row.id"
+      :header-text-size="historialJuntasTableProps.headerTextSize"
+      :container-padding="historialJuntasTableProps.containerPadding"
+      :header-padding="historialJuntasTableProps.headerPadding"
+      :header-padding-extra="historialJuntasTableProps.headerPaddingExtra"
+      :row-text-color="historialJuntasTableProps.rowTextColor"
+      :row-padding="historialJuntasTableProps.rowPadding"
+      :row-hover="historialJuntasTableProps.rowHover"
+      :border-color="historialJuntasTableProps.borderColor"
       empty-message="Aún no has registrado información. No te preocupes, puedes hacerlo en cualquier momento."
     >
       <!-- Renderizado personalizado del estado con badge -->
@@ -45,7 +53,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import CustomTable from "~/components/tables/CustomTable.vue";
-import { historialJuntasTableConfig } from "~/config/tables/historial-juntas.config";
+import {
+  historialJuntasTableConfig,
+  historialJuntasTableProps,
+} from "~/config/tables/historial-juntas.config";
 import type { TableCellRenderer, TableAction } from "~/types/tables/table-config";
 import type { JuntaResumenDTO } from "~/core/hexag/juntas/application/dtos";
 import EstadoBadge from "~/core/presentation/shared/components/molecules/EstadoBadge.vue";
@@ -56,6 +67,9 @@ interface Props {
   isLoading: boolean;
   actions: TableAction[];
   getEstado: (junta: JuntaResumenDTO) => EstadoJunta;
+  getFechaJunta: (junta: JuntaResumenDTO) => string;
+  getNombreJunta: (junta: JuntaResumenDTO) => string;
+  getTipoJunta: (junta: JuntaResumenDTO) => string;
 }
 
 const props = defineProps<Props>();
@@ -64,27 +78,16 @@ const total = computed(() => props.data.length);
 
 const cellRenderers: TableCellRenderer[] = [
   {
-    columnKey: "fechaCreacion",
-    render: (rowData: JuntaResumenDTO) => {
-      if (!rowData.createdAt) return "—";
-      const date = new Date(rowData.createdAt);
-      if (Number.isNaN(date.getTime())) return "—";
-      const dateOnly = rowData.createdAt.split("T")[0];
-      const [year, month, day] = dateOnly.split("-");
-      return `${day}/${month}/${year}`;
-    },
+    columnKey: "fechaJunta",
+    render: (rowData: JuntaResumenDTO) => props.getFechaJunta(rowData),
   },
   {
-    columnKey: "tipo",
-    render: () => "Junta General",
+    columnKey: "nombreJunta",
+    render: (rowData: JuntaResumenDTO) => props.getNombreJunta(rowData),
   },
   {
-    columnKey: "categoria",
-    render: () => "Aumento de Capital",
-  },
-  {
-    columnKey: "accion",
-    render: () => "Aporte Dinerario",
+    columnKey: "tipoJunta",
+    render: (rowData: JuntaResumenDTO) => props.getTipoJunta(rowData),
   },
   {
     columnKey: "estado",

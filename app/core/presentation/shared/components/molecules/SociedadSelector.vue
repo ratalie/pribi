@@ -20,7 +20,7 @@
       </SelectTrigger>
       <SelectContent>
         <SelectItem
-          v-for="sociedad in sociedades"
+          v-for="sociedad in sociedadesList"
           :key="sociedad.idSociety"
           :value="sociedad.idSociety?.toString() || ''"
         >
@@ -42,7 +42,7 @@
       Cargando sociedades...
     </p>
     <p
-      v-else-if="sociedades.length === 0"
+      v-else-if="sociedadesList.length === 0"
       class="text-xs text-amber-600 font-medium"
       style="font-family: var(--font-secondary)"
     >
@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted, watch } from "vue";
 import { Building2 } from "lucide-vue-next";
 import {
   Select,
@@ -98,6 +98,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  sociedades: () => [],
   isLoading: false,
   disabled: false,
   label: "Selecciona la sociedad",
@@ -110,12 +111,48 @@ const emit = defineEmits<{
   "update:selectedSocietyId": [value: number | null];
 }>();
 
+// Asegurar que sociedades siempre sea un array
+const sociedadesList = computed(() => {
+  const result = Array.isArray(props.sociedades) ? props.sociedades : [];
+  console.log("🔍 [SociedadSelector] sociedadesList computed:", {
+    propsSociedades: props.sociedades,
+    isArray: Array.isArray(props.sociedades),
+    resultLength: result.length,
+    result: result,
+  });
+  return result;
+});
+
+// Logs para debuggear
+onMounted(() => {
+  console.log("🔍 [SociedadSelector] onMounted:", {
+    propsSociedades: props.sociedades,
+    propsSociedadesLength: props.sociedades?.length || 0,
+    sociedadesList: sociedadesList.value,
+    sociedadesListLength: sociedadesList.value.length,
+    selectedSocietyId: props.selectedSocietyId,
+    isLoading: props.isLoading,
+  });
+});
+
+watch(
+  () => props.sociedades,
+  (newVal) => {
+    console.log("👀 [SociedadSelector] props.sociedades changed:", {
+      newVal,
+      length: newVal?.length || 0,
+      isArray: Array.isArray(newVal),
+      sociedadesListValue: sociedadesList.value,
+    });
+  },
+  { immediate: true, deep: true }
+);
+
 const selectedSociedad = computed(() => {
   if (!props.selectedSocietyId) return null;
-  const id = typeof props.selectedSocietyId === "string" 
-    ? parseInt(props.selectedSocietyId, 10) 
-    : props.selectedSocietyId;
-  return props.sociedades.find((s) => s.idSociety === id) || null;
+  // Convertir selectedSocietyId a string para comparar con idSociety (que es string)
+  const idStr = String(props.selectedSocietyId);
+  return sociedadesList.value.find((s) => String(s.idSociety) === idStr) || null;
 });
 
 const handleChange = (value: unknown) => {

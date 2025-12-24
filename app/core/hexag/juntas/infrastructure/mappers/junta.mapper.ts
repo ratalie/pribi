@@ -12,6 +12,10 @@ export class JuntaMapper {
       id: string | number;
       estado: string;
       actual: string;
+      nombreJunta?: string | null;
+      juntaNombrada?: boolean;
+      esAnualObligatoria?: boolean;
+      fechaJunta?: string | null;
     },
     societyId: number
   ): JuntaResumenDTO {
@@ -23,6 +27,11 @@ export class JuntaMapper {
       // El backend no devuelve fechas en el resumen, pero las agregamos por si acaso
       createdAt: undefined,
       updatedAt: undefined,
+      // Nuevos campos de meeting-details
+      nombreJunta: data.nombreJunta ?? null,
+      juntaNombrada: data.juntaNombrada ?? false,
+      esAnualObligatoria: data.esAnualObligatoria ?? false,
+      fechaJunta: data.fechaJunta ?? null,
     };
   }
 }

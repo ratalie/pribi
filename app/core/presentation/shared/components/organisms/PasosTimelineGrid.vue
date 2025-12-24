@@ -2,10 +2,7 @@
   <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
     <h3
       class="text-base font-semibold mb-5"
-      style="
-        color: var(--text-primary);
-        font-family: var(--font-primary);
-      "
+      style="color: var(--text-primary); font-family: var(--font-primary)"
     >
       Pasos del Proceso
     </h3>
@@ -20,7 +17,7 @@
         <!-- Número del paso -->
         <div
           class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold text-white"
-          style="background-color: var(--primary-600);"
+          style="background-color: var(--primary-600)"
         >
           {{ step.number }}
         </div>
@@ -29,19 +26,13 @@
         <div class="flex-1 min-w-0">
           <h4
             class="text-sm font-medium mb-0.5"
-            style="
-              color: var(--text-primary);
-              font-family: var(--font-primary);
-            "
+            style="color: var(--text-primary); font-family: var(--font-primary)"
           >
             {{ step.title }}
           </h4>
           <p
             class="text-xs leading-relaxed"
-            style="
-              color: var(--text-muted);
-              font-family: var(--font-secondary);
-            "
+            style="color: var(--text-muted); font-family: var(--font-secondary)"
           >
             {{ step.description }}
           </p>
@@ -52,18 +43,17 @@
 </template>
 
 <script setup lang="ts">
-import type { Paso } from "../../types/paso.types";
+  import type { Paso } from "../../types/paso.types";
 
-interface Props {
-  pasos: Paso[];
-  getColorClasses: (color: string) => { bg: string; text: string };
-}
+  interface Props {
+    pasos: Paso[];
+    getColorClasses: (color: string) => { bg: string; text: string };
+  }
 
-const props = defineProps<Props>();
+  const props = defineProps<Props>();
 
-const getStepColor = (): string => {
-  // Usar color primario unificado para todos los pasos
-  return "var(--primary-600)";
-};
+  const getStepColor = (): string => {
+    // Usar color primario unificado para todos los pasos
+    return "var(--primary-600)";
+  };
 </script>
-

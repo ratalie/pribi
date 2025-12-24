@@ -47,6 +47,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, watch } from "vue";
 import { CheckCircle2 } from "lucide-vue-next";
 import type { SociedadResumenDTO } from "~/core/hexag/registros/sociedades/application/dtos";
 import SociedadSelector from "~/core/presentation/shared/components/molecules/SociedadSelector.vue";
@@ -65,7 +66,31 @@ const emit = defineEmits<{
   "update:selectedSocietyId": [value: number | null];
 }>();
 
+// Logs para debuggear
+onMounted(() => {
+  console.log("🔍 [SociedadSelectorSection] onMounted:", {
+    sociedades: props.sociedades,
+    sociedadesLength: props.sociedades?.length || 0,
+    selectedSocietyId: props.selectedSocietyId,
+    selectedSociedad: props.selectedSociedad,
+    isLoadingSociedades: props.isLoadingSociedades,
+  });
+});
+
+watch(
+  () => props.sociedades,
+  (newVal) => {
+    console.log("👀 [SociedadSelectorSection] sociedades changed:", {
+      newVal,
+      length: newVal?.length || 0,
+      isArray: Array.isArray(newVal),
+    });
+  },
+  { immediate: true, deep: true }
+);
+
 const handleChange = (value: number | null) => {
+  console.log("🔄 [SociedadSelectorSection] handleChange:", value);
   emit("update:selectedSocietyId", value);
 };
 </script>

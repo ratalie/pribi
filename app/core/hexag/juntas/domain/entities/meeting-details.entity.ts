@@ -18,5 +18,7 @@ export interface MeetingDetails {
   secretarioAsistio: boolean;
   nombreOtroPresidente?: string;
   nombreOtroSecretario?: string;
+  juntaNombrada: boolean;
+  nombreJunta?: string;
 }
 

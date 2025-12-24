@@ -24,6 +24,9 @@
           :is-loading="isLoading"
           :actions="tableActions"
           :get-estado="getEstado"
+          :get-fecha-junta="getFechaJunta"
+          :get-nombre-junta="getNombreJunta"
+          :get-tipo-junta="getTipoJunta"
         />
 
         <!-- Empty State -->
@@ -70,6 +73,9 @@ const {
   isLoadingSociedades,
   selectedSocietyId,
   getEstado,
+  getFechaJunta,
+  getNombreJunta,
+  getTipoJunta,
   handleSocietyChange,
   handleCreate,
   tableActions,

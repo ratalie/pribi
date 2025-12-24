@@ -11,9 +11,10 @@ export class AgendaItemsMapper {
   /**
    * Convierte IDs del frontend a estructura del backend
    * @param frontendIds Array de IDs seleccionados en el frontend (ej: ["aporte-dinerarios", "remocion-gerente"])
+   * @param esAnualObligatoria Indica si es Junta Obligatoria Anual
    * @returns DTO con la estructura que el backend espera
    */
-  static frontendIdsToDTO(frontendIds: string[]): AgendaItemsDTO {
+  static frontendIdsToDTO(frontendIds: string[], esAnualObligatoria?: boolean): AgendaItemsDTO {
     const dto = createDefaultAgendaItemsDTO();
 
     // Mapeo de IDs del frontend a campos del backend
@@ -72,6 +73,11 @@ export class AgendaItemsMapper {
         console.warn(`[AgendaItemsMapper] ID desconocido del frontend: ${id}`);
       }
     });
+
+    // Agregar esAnualObligatoria si viene
+    if (esAnualObligatoria !== undefined) {
+      dto.esAnualObligatoria = esAnualObligatoria;
+    }
 
     return dto;
   }
@@ -170,6 +176,7 @@ export class AgendaItemsMapper {
           response.gestionSocialYResultadosEconomicos?.designacionAuditoresExternos ?? false
         ),
       },
+      esAnualObligatoria: response.esAnualObligatoria ?? false,
     };
   }
 }

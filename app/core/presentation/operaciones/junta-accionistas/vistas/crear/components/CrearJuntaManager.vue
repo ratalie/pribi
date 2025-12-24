@@ -36,6 +36,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, watch } from "vue";
 import { useCrearJunta } from "../composables/useCrearJunta";
 import CrearJuntasHeader from "./organisms/CrearJuntasHeader.vue";
 import SociedadSelectorSection from "./organisms/SociedadSelectorSection.vue";
@@ -46,6 +47,7 @@ const {
   sociedadSteps,
   selectedSocietyId,
   selectedSociedad,
+  sociedades,
   isSubmitting,
   isLoadingSociedades,
   errorMessage,
@@ -54,7 +56,31 @@ const {
   getColorClasses,
 } = useCrearJunta();
 
+// Logs para debuggear
+onMounted(() => {
+  console.log("🔍 [CrearJuntaManager] onMounted:", {
+    sociedades: sociedades.value,
+    sociedadesLength: sociedades.value?.length || 0,
+    selectedSocietyId: selectedSocietyId.value,
+    selectedSociedad: selectedSociedad.value,
+    isLoadingSociedades: isLoadingSociedades.value,
+  });
+});
+
+watch(
+  () => sociedades.value,
+  (newVal) => {
+    console.log("👀 [CrearJuntaManager] sociedades changed:", {
+      newVal,
+      length: newVal?.length || 0,
+      isArray: Array.isArray(newVal),
+    });
+  },
+  { immediate: true, deep: true }
+);
+
 const handleSociedadChange = (value: number | null) => {
+  console.log("🔄 [CrearJuntaManager] handleSociedadChange:", value);
   selectedSocietyId.value = value;
 };
 </script>

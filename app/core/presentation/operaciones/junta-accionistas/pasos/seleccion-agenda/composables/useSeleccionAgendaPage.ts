@@ -10,10 +10,12 @@
  * el componente de la página solo se encargue del template.
  */
 
+import { onMounted } from "vue";
 import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
 import { useJuntasRouteParams } from "./useJuntasRouteParams";
 import { useSeleccionAgendaController } from "./useSeleccionAgendaController";
 import { useSeleccionAgendaInitialization } from "./useSeleccionAgendaInitialization";
+import { useSeleccionAgendaSetup } from "./useSeleccionAgendaSetup";
 
 export function useSeleccionAgendaPage() {
   // Obtener IDs de la ruta
@@ -25,9 +27,12 @@ export function useSeleccionAgendaPage() {
   // Inicialización de la vista
   const { initialize } = useSeleccionAgendaInitialization();
 
+  // Obtener composable de junta obligatoria para enviar esAnualObligatoria
+  const { juntaObligatoria } = useSeleccionAgendaSetup();
+
   // Configurar el botón "Siguiente"
   useJuntasFlowNext(async () => {
-    await handleNext(societyId.value, flowId.value);
+    await handleNext(societyId.value, flowId.value, juntaObligatoria.isJuntaObligatoria.value);
   });
 
   // Inicializar vista al montar

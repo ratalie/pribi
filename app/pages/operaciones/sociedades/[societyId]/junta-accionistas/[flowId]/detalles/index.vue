@@ -2,6 +2,7 @@
   <SlotWrapper>
     <div class="flex flex-col gap-10">
       <TipoJuntaSection />
+      <NombraJuntaSection />
       <ConvocatoriaJuntaSection />
     </div>
   </SlotWrapper>
@@ -16,6 +17,7 @@
   import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
   import ConvocatoriaJuntaSection from "~/core/presentation/operaciones/junta-accionistas/pasos/detalles/components/organisms/ConvocatoriaJuntaSection.vue";
   import TipoJuntaSection from "~/core/presentation/operaciones/junta-accionistas/pasos/detalles/components/organisms/TipoJuntaSection.vue";
+  import NombraJuntaSection from "~/core/presentation/operaciones/junta-accionistas/pasos/detalles/components/molecules/NombraJuntaSection.vue";
 
   /**
    * Página: Detalles de la Junta
