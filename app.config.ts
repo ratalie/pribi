@@ -15,7 +15,7 @@ export default defineAppConfig({
     
     // Aliases: nombres cortos para iconos comunes
     // Ejemplo: <Icon name="nuxt" /> en lugar de <Icon name="logos:nuxt-icon" />
-    aliases: {
+      aliases: {
       // Ejemplos (puedes agregar más según tus necesidades)
       // 'nuxt': 'logos:nuxt-icon',
       // 'github': 'uil:github',

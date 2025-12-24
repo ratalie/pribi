@@ -100,5 +100,101 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
       }
     );
   }
+
+  async asignarPermisos(
+    carpetaId: string,
+    usuarioId: string,
+    expireAt?: Date
+  ): Promise<void> {
+    await $fetch(
+      `/api/v2/repository/virtual-nodes/${carpetaId}/users/${usuarioId}`,
+      {
+        ...withAuthHeaders(),
+        method: 'POST' as const,
+        body: expireAt ? { expireAt: expireAt.toISOString() } : {},
+      }
+    );
+  }
+
+  async removerPermisos(carpetaId: string, usuarioId: string): Promise<void> {
+    await $fetch(
+      `/api/v2/repository/virtual-nodes/${carpetaId}/users/${usuarioId}`,
+      {
+        ...withAuthHeaders(),
+        method: 'DELETE' as const,
+      }
+    );
+  }
+
+  async listarUsuariosConPermisos(carpetaId: string): Promise<Array<{
+    id: string;
+    email: string;
+    name: string;
+    expireAt?: Date;
+  }>> {
+    const response = await $fetch<{ data: Array<{
+      user: {
+        id: number;
+        email: string;
+        name?: string;
+      };
+      expireAt?: string;
+    }> }>(
+      `/api/v2/repository/virtual-nodes/${carpetaId}/users`,
+      {
+        ...withAuthHeaders(),
+        method: 'GET' as const,
+      }
+    );
+
+    return response.data.map((item) => ({
+      id: String(item.user.id),
+      email: item.user.email,
+      name: item.user.name || item.user.email,
+      expireAt: item.expireAt ? new Date(item.expireAt) : undefined,
+    }));
+  }
+
+  async obtenerPesoCarpetaVirtual(carpetaId: string): Promise<{
+    sizeInBytes: number;
+    folderCount: number;
+    fileCount: number;
+  }> {
+    const response = await $fetch<{ data: {
+      sizeInBytes: number;
+      folderCount: number;
+      fileCount: number;
+    } }>(
+      `/api/v2/repository/virtual-nodes/${carpetaId}/weight`,
+      {
+        ...withAuthHeaders(),
+        method: 'GET' as const,
+      }
+    );
+
+    return response.data;
+  }
+
+  async crearArbolCarpetas(
+    sociedadId: string,
+    nodeId: number,
+    nombre: string,
+    descripcion?: string
+  ): Promise<CarpetaPersonalizada> {
+    const response = await $fetch<{ data: any }>(
+      `/api/v2/repository/society-profile/${sociedadId}/virtual-nodes/tree`,
+      {
+        ...withAuthHeaders(),
+        method: 'POST' as const,
+        body: {
+          nodeId,
+          name: nombre,
+          description: descripcion,
+        },
+      }
+    );
+
+    return CarpetasPersonalizadasMapper.dtoToEntity(response.data);
+  }
 }
 

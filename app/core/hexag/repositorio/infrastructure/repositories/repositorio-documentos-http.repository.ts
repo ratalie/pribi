@@ -7,14 +7,12 @@ import { withAuthHeaders } from "~/lib/api-client";
 
 /**
  * Repositorio HTTP para enviar documentos al repositorio
- * 
+ *
  * REPLICA EXACTA DEL CÓDIGO V2.5:
  * - getNodeBySociety: GET /repository/society/{societyId}/nodes/core
  * - postFilesToNode: POST /repository/society/nodes/{nodeId}/core?name={nombre}
  */
-export class RepositorioDocumentosHttpRepository
-  implements RepositorioDocumentosRepository
-{
+export class RepositorioDocumentosHttpRepository implements RepositorioDocumentosRepository {
   /**
    * Resuelve la URL base (igual que otros repositorios en V3)
    */
@@ -57,22 +55,26 @@ export class RepositorioDocumentosHttpRepository
 
   /**
    * Obtiene el folderId de la carpeta de junta
-   * 
+   *
    * ENDPOINT V2: GET /api/v2/repository/society-profile/:structureId/juntas/:flowId/folder?folderName={nombre}
    * Este endpoint obtiene o crea automáticamente la carpeta con el nombre especificado
-   * 
+   *
    * @param folderName Nombre opcional de la carpeta. Si se proporciona, el backend crea/obtiene la carpeta con ese nombre.
    *                   Si no se proporciona, usa flowId.toString() como nombre.
    */
-  async obtenerFolderIdJunta(structureId: string, flowId: string, folderName?: string): Promise<number> {
+  async obtenerFolderIdJunta(
+    structureId: string,
+    flowId: string,
+    folderName?: string
+  ): Promise<number> {
     const baseUrl = this.resolveBaseUrl();
     let url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/juntas/${flowId}/folder`;
-    
+
     // Si se proporciona folderName, agregarlo como query parameter
     if (folderName) {
       url += `?folderName=${encodeURIComponent(folderName)}`;
     }
-    
+
     console.log("🔵 [RepositorioDocumentosHttp] ========================================");
     console.log("🔵 [RepositorioDocumentosHttp] OBTENER FOLDER ID JUNTA (ENDPOINT V2)");
     console.log("🔵 [RepositorioDocumentosHttp] ========================================");
@@ -80,10 +82,10 @@ export class RepositorioDocumentosHttpRepository
     console.log("🔵 [RepositorioDocumentosHttp] structureId:", structureId);
     console.log("🔵 [RepositorioDocumentosHttp] flowId:", flowId);
     console.log("🔵 [RepositorioDocumentosHttp] folderName:", folderName || "(usando flowId)");
-    
+
     try {
       console.log("🔵 [RepositorioDocumentosHttp] Obteniendo/creando carpeta de junta...");
-      
+
       // ENDPOINT V2: GET /api/v2/repository/society-profile/:structureId/juntas/:flowId/folder?folderName={nombre}
       const response = await $fetch<{
         success?: boolean;
@@ -104,17 +106,24 @@ export class RepositorioDocumentosHttpRepository
 
       console.log("🔵 [RepositorioDocumentosHttp] ========================================");
       console.log("🔵 [RepositorioDocumentosHttp] RESPUESTA:");
-      console.log("🔵 [RepositorioDocumentosHttp] response:", JSON.stringify(response, null, 2));
+      console.log(
+        "🔵 [RepositorioDocumentosHttp] response:",
+        JSON.stringify(response, null, 2)
+      );
       console.log("🔵 [RepositorioDocumentosHttp] response.data:", response?.data);
       console.log("🔵 [RepositorioDocumentosHttp] ========================================");
 
       if (!response || !response.data) {
-        console.error("🔴 [RepositorioDocumentosHttp] ERROR: response o response.data es undefined");
+        console.error(
+          "🔴 [RepositorioDocumentosHttp] ERROR: response o response.data es undefined"
+        );
         throw new Error("No se pudo obtener o crear la carpeta de junta");
       }
 
       if (typeof response.data.id === "undefined" || response.data.id === null) {
-        console.error("🔴 [RepositorioDocumentosHttp] ERROR: response.data.id es undefined o null");
+        console.error(
+          "🔴 [RepositorioDocumentosHttp] ERROR: response.data.id es undefined o null"
+        );
         throw new Error("La respuesta no contiene el ID de la carpeta");
       }
 
@@ -138,22 +147,24 @@ export class RepositorioDocumentosHttpRepository
       console.error("🔴 [RepositorioDocumentosHttp] Error statusCode:", error?.statusCode);
       console.error("🔴 [RepositorioDocumentosHttp] Error data:", error?.data);
       console.error("🔴 [RepositorioDocumentosHttp] ========================================");
-      
+
       throw new Error(
-        `No se pudo obtener la carpeta de junta: ${error?.message || error?.data?.message || "Error desconocido"}`
+        `No se pudo obtener la carpeta de junta: ${
+          error?.message || error?.data?.message || "Error desconocido"
+        }`
       );
     }
   }
 
   /**
    * Envía documentos al repositorio directamente a la carpeta de la junta
-   * 
+   *
    * ENDPOINT V2: POST /api/v2/repository/society-profile/:structureId/nodes/:parentNodeId/documents
-   * 
+   *
    * IMPORTANTE: Usamos `/documents` en lugar de `/core` porque:
    * - `/core` SIEMPRE crea una subcarpeta (incluso sin el parámetro `name`)
    * - `/documents` sube archivos DIRECTAMENTE a la carpeta sin crear subcarpetas
-   * 
+   *
    * CÓDIGO EXACTO DE V2.5:
    * - FormData con key = "file" (no file.size.toString())
    * - Usa getCorrectMimeType() para MIME types
@@ -165,7 +176,7 @@ export class RepositorioDocumentosHttpRepository
   ): Promise<void> {
     const baseUrl = this.resolveBaseUrl();
     const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/nodes/${folderId}/documents`;
-    
+
     console.log("🟢 [RepositorioDocumentosHttp] ========================================");
     console.log("🟢 [RepositorioDocumentosHttp] ENVIAR DOCUMENTOS (CÓDIGO V2.5)");
     console.log("🟢 [RepositorioDocumentosHttp] ========================================");
@@ -173,8 +184,10 @@ export class RepositorioDocumentosHttpRepository
     console.log("🟢 [RepositorioDocumentosHttp] structureId:", structureId);
     console.log("🟢 [RepositorioDocumentosHttp] folderId:", folderId, typeof folderId);
     console.log("🟢 [RepositorioDocumentosHttp] cantidadDocumentos:", documentos.length);
-    console.log("🟢 [RepositorioDocumentosHttp] NOTA: Subiendo directamente a la carpeta de la junta (sin crear subcarpeta)");
-    
+    console.log(
+      "🟢 [RepositorioDocumentosHttp] NOTA: Subiendo directamente a la carpeta de la junta (sin crear subcarpeta)"
+    );
+
     try {
       // CÓDIGO EXACTO V2.5: Convertir documentos a Files con getCorrectMimeType
       console.log("🟢 [RepositorioDocumentosHttp] Convirtiendo documentos a Files...");
@@ -185,22 +198,28 @@ export class RepositorioDocumentosHttpRepository
         const file = new File([doc.blob], doc.nombre, {
           type: correctMimeType,
         });
-        
+
         console.log(`🟢 [RepositorioDocumentosHttp] File ${index + 1}:`, {
           nombre: doc.nombre,
           size: file.size,
           type: file.type,
           correctMimeType: correctMimeType,
         });
-        
+
         return file;
       });
 
       // ENDPOINT /documents: Solo acepta UN archivo por request
       // Necesitamos hacer múltiples requests, uno por cada archivo
-      console.log("🟢 [RepositorioDocumentosHttp] El endpoint /documents acepta un archivo por request");
-      console.log("🟢 [RepositorioDocumentosHttp] Haciendo", files.length, "requests (uno por archivo)...");
-      
+      console.log(
+        "🟢 [RepositorioDocumentosHttp] El endpoint /documents acepta un archivo por request"
+      );
+      console.log(
+        "🟢 [RepositorioDocumentosHttp] Haciendo",
+        files.length,
+        "requests (uno por archivo)..."
+      );
+
       const authConfig = withAuthHeaders();
       const resultados: any[] = [];
       const errores: any[] = [];
@@ -208,8 +227,19 @@ export class RepositorioDocumentosHttpRepository
       // Subir cada archivo individualmente
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        console.log(`🟢 [RepositorioDocumentosHttp] Subiendo archivo ${i + 1}/${files.length}: ${file.name}`);
-        
+        if (!file) {
+          console.warn(
+            `⚠️ [RepositorioDocumentosHttp] Archivo ${i + 1} es undefined, saltando...`
+          );
+          continue;
+        }
+
+        console.log(
+          `🟢 [RepositorioDocumentosHttp] Subiendo archivo ${i + 1}/${files.length}: ${
+            file.name
+          }`
+        );
+
         try {
           // Crear FormData para un solo archivo
           const formData = new FormData();
@@ -218,7 +248,7 @@ export class RepositorioDocumentosHttpRepository
 
           // Headers para /documents (similar a subirArchivo)
           const headers: Record<string, string> = {
-            ...authConfig.headers,
+            ...(authConfig.headers as Record<string, string>),
             "x-file-size": file.size.toString(),
           };
 
@@ -230,13 +260,19 @@ export class RepositorioDocumentosHttpRepository
 
           if (!response.ok) {
             const errorText = await response.text();
-            console.error(`🔴 [RepositorioDocumentosHttp] Error al subir ${file.name}:`, errorText);
+            console.error(
+              `🔴 [RepositorioDocumentosHttp] Error al subir ${file.name}:`,
+              errorText
+            );
             errores.push({ archivo: file.name, error: response.statusText });
             continue;
           }
 
           const responseData = await response.json();
-          console.log(`✅ [RepositorioDocumentosHttp] Archivo ${i + 1}/${files.length} subido:`, file.name);
+          console.log(
+            `✅ [RepositorioDocumentosHttp] Archivo ${i + 1}/${files.length} subido:`,
+            file.name
+          );
           resultados.push(responseData);
         } catch (error: any) {
           console.error(`🔴 [RepositorioDocumentosHttp] Error al subir ${file.name}:`, error);
@@ -252,7 +288,7 @@ export class RepositorioDocumentosHttpRepository
 
       // Si hay errores, lanzar excepción
       if (errores.length > 0) {
-        const mensajeErrores = errores.map(e => `${e.archivo}: ${e.error}`).join(", ");
+        const mensajeErrores = errores.map((e) => `${e.archivo}: ${e.error}`).join(", ");
         throw new Error(`Error al subir algunos documentos: ${mensajeErrores}`);
       }
 
@@ -261,7 +297,9 @@ export class RepositorioDocumentosHttpRepository
         throw new Error("No se pudo subir ningún documento");
       }
 
-      console.log(`✅ [RepositorioDocumentosHttp] ${resultados.length} documentos enviados al repositorio`);
+      console.log(
+        `✅ [RepositorioDocumentosHttp] ${resultados.length} documentos enviados al repositorio`
+      );
     } catch (error: any) {
       console.error("🔴 [RepositorioDocumentosHttp] ========================================");
       console.error("🔴 [RepositorioDocumentosHttp] ERROR AL ENVIAR DOCUMENTOS:");
@@ -275,26 +313,30 @@ export class RepositorioDocumentosHttpRepository
       console.error("🔴 [RepositorioDocumentosHttp] Error status:", error?.status);
       console.error("🔴 [RepositorioDocumentosHttp] Error data:", error?.data);
       console.error("🔴 [RepositorioDocumentosHttp] Error response:", error?.response);
-      console.error("🔴 [RepositorioDocumentosHttp] Error response._data:", error?.response?._data);
+      console.error(
+        "🔴 [RepositorioDocumentosHttp] Error response._data:",
+        error?.response?._data
+      );
       console.error("🔴 [RepositorioDocumentosHttp] ========================================");
 
       // CÓDIGO EXACTO V2.5: Manejar error de límite de almacenamiento
-      const errorMessage = error?.data?.message || error?.message || error?.response?._data?.message || "";
+      const errorMessage =
+        error?.data?.message || error?.message || error?.response?._data?.message || "";
       if (errorMessage.includes("Upload would exceed society storage limit")) {
-        throw new Error(
-          "Se superó el límite de almacenamiento permitido para la sociedad."
-        );
+        throw new Error("Se superó el límite de almacenamiento permitido para la sociedad.");
       }
 
       throw new Error(
-        `No se pudieron enviar los documentos al repositorio: ${errorMessage || "Error desconocido"}`
+        `No se pudieron enviar los documentos al repositorio: ${
+          errorMessage || "Error desconocido"
+        }`
       );
     }
   }
 
   /**
    * Obtiene todos los nodos core de una sociedad
-   * 
+   *
    * ENDPOINT V2: GET /api/v2/repository/society-profile/:structureId/nodes/core
    */
   async obtenerNodosCore(structureId: string): Promise<RepositorioNode[]> {
@@ -338,7 +380,7 @@ export class RepositorioDocumentosHttpRepository
 
   /**
    * Obtiene los nodos raíz de una sociedad (core y common)
-   * 
+   *
    * ENDPOINT V2: GET /api/v2/repository/society-profile/:structureId/nodes/root
    */
   async obtenerNodosRaiz(structureId: string): Promise<RepositorioNode[]> {
@@ -360,7 +402,10 @@ export class RepositorioDocumentosHttpRepository
         method: "GET" as const,
       });
 
-      console.log("🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos:", response.data.length);
+      console.log(
+        "🔵 [RepositorioDocumentosHttp] Nodos raíz obtenidos:",
+        response.data.length
+      );
       console.log("🔵 [RepositorioDocumentosHttp] ========================================");
 
       return RepositorioNodeMapper.toEntities(response.data);
@@ -380,10 +425,10 @@ export class RepositorioDocumentosHttpRepository
 
   /**
    * Obtiene un nodo específico por su ID (incluye hijos si es carpeta)
-   * 
+   *
    * ENDPOINT V2: GET /api/v2/repository/society-profile/nodes/:nodeId
    */
-  async obtenerNodoPorId(nodeId: string): Promise<RepositorioNode | null> {
+  async obtenerNodoPorId(nodeId: number): Promise<RepositorioNode> {
     const baseUrl = this.resolveBaseUrl();
     const url = `${baseUrl}/api/v2/repository/society-profile/nodes/${nodeId}`;
 
@@ -414,17 +459,23 @@ export class RepositorioDocumentosHttpRepository
         mimeType: response.data.mimeType,
         sizeInBytes: response.data.sizeInBytes,
       });
-      
+
       // Log detallado de documentVersions si existe
       if (response.data.documentVersions && response.data.documentVersions.length > 0) {
-        console.log("🔵 [RepositorioDocumentosHttp] documentVersions encontradas:", response.data.documentVersions);
+        console.log(
+          "🔵 [RepositorioDocumentosHttp] documentVersions encontradas:",
+          response.data.documentVersions
+        );
       }
-      
+
       // Log detallado de versions si existe
       if (response.data.versions && response.data.versions.length > 0) {
-        console.log("🔵 [RepositorioDocumentosHttp] versions encontradas:", response.data.versions);
+        console.log(
+          "🔵 [RepositorioDocumentosHttp] versions encontradas:",
+          response.data.versions
+        );
       }
-      
+
       console.log("🔵 [RepositorioDocumentosHttp] ========================================");
 
       return RepositorioNodeMapper.toEntity(response.data);
@@ -438,15 +489,13 @@ export class RepositorioDocumentosHttpRepository
       console.error("🔴 [RepositorioDocumentosHttp] Error statusCode:", error?.statusCode);
       console.error("🔴 [RepositorioDocumentosHttp] ========================================");
 
-      throw new Error(
-        `No se pudo obtener el nodo: ${error?.message || "Error desconocido"}`
-      );
+      throw new Error(`No se pudo obtener el nodo: ${error?.message || "Error desconocido"}`);
     }
   }
 
   /**
    * Descarga una versión de documento
-   * 
+   *
    * ENDPOINT V2: GET /api/v2/repository/documents/versions/:versionCode/download
    */
   async descargarVersion(versionCode: string): Promise<Blob> {
@@ -478,12 +527,12 @@ export class RepositorioDocumentosHttpRepository
 
   /**
    * Elimina un nodo (documento o carpeta)
-   * 
+   *
    * ENDPOINT V2: DELETE /api/v2/repository/nodes/:nodeId
    */
   /**
    * Actualiza un nodo (renombrar carpeta, cambiar metadata)
-   * 
+   *
    * ENDPOINT V2: PATCH /api/v2/repository/nodes/:nodeId
    */
   async actualizarNodo(
@@ -496,16 +545,16 @@ export class RepositorioDocumentosHttpRepository
   ): Promise<void> {
     const baseUrl = this.resolveBaseUrl();
     const url = `${baseUrl}/api/v2/repository/nodes/${nodeId}`;
-    
+
     console.log("🔵 [RepositorioDocumentosHttp] ========================================");
     console.log("🔵 [RepositorioDocumentosHttp] ACTUALIZAR NODO");
     console.log("🔵 [RepositorioDocumentosHttp] ========================================");
     console.log("🔵 [RepositorioDocumentosHttp] URL:", url);
     console.log("🔵 [RepositorioDocumentosHttp] nodeId:", nodeId);
     console.log("🔵 [RepositorioDocumentosHttp] updates:", updates);
-    
+
     try {
-      const response = await $fetch(url, {
+      await $fetch(url, {
         ...withAuthHeaders(),
         method: "PATCH" as const,
         body: updates,
@@ -521,16 +570,18 @@ export class RepositorioDocumentosHttpRepository
       console.error("🔴 [RepositorioDocumentosHttp] updates:", updates);
       console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
       console.error("🔴 [RepositorioDocumentosHttp] ========================================");
-      
+
       throw new Error(
-        `No se pudo actualizar el nodo: ${error?.message || error?.data?.message || "Error desconocido"}`
+        `No se pudo actualizar el nodo: ${
+          error?.message || error?.data?.message || "Error desconocido"
+        }`
       );
     }
   }
 
   /**
    * Elimina un nodo (documento o carpeta)
-   * 
+   *
    * ENDPOINT V2: DELETE /api/v2/repository/society-profile/nodes/:nodeId
    */
   async eliminarNodo(nodeId: number): Promise<void> {
@@ -566,15 +617,13 @@ export class RepositorioDocumentosHttpRepository
       console.error("🔴 [RepositorioDocumentosHttp] nodeId:", nodeId);
       console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
       console.error("🔴 [RepositorioDocumentosHttp] ========================================");
-      throw new Error(
-        `No se pudo eliminar el nodo: ${error?.message || "Error desconocido"}`
-      );
+      throw new Error(`No se pudo eliminar el nodo: ${error?.message || "Error desconocido"}`);
     }
   }
 
   /**
    * Descarga una carpeta completa como ZIP
-   * 
+   *
    * ENDPOINT V2: GET /api/v2/repository/nodes/:nodeId/download-zip
    */
   async descargarCarpetaZip(nodeId: number): Promise<Blob> {
@@ -606,7 +655,7 @@ export class RepositorioDocumentosHttpRepository
 
   /**
    * Sube un archivo a una carpeta
-   * 
+   *
    * ENDPOINT V2: POST /api/v2/repository/society-profile/{structureId}/nodes/{parentNodeId}/documents
    */
   async subirArchivo(
@@ -636,7 +685,7 @@ export class RepositorioDocumentosHttpRepository
       // Headers con autenticación
       const authHeaders = withAuthHeaders();
       const headers: Record<string, string> = {
-        ...authHeaders.headers,
+        ...(authHeaders.headers as Record<string, string>),
         "x-file-size": file.size.toString(),
       };
 
@@ -674,20 +723,18 @@ export class RepositorioDocumentosHttpRepository
       console.error("🔴 [RepositorioDocumentosHttp] URL:", url);
       console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
       console.error("🔴 [RepositorioDocumentosHttp] ========================================");
-      throw new Error(
-        `No se pudo subir el archivo: ${error?.message || "Error desconocido"}`
-      );
+      throw new Error(`No se pudo subir el archivo: ${error?.message || "Error desconocido"}`);
     }
   }
 
   /**
    * Sube múltiples archivos a una carpeta
-   * 
+   *
    * ENDPOINT V2: POST /api/v2/repository/society-profile/{structureId}/nodes/{parentNodeId}/core
    */
   /**
    * Crea una carpeta en el repositorio
-   * 
+   *
    * ENDPOINT V2: POST /api/v2/repository/society-profile/:structureId/nodes/:parentNodeId/folder
    */
   async crearCarpeta(
@@ -698,7 +745,7 @@ export class RepositorioDocumentosHttpRepository
   ): Promise<RepositorioNode> {
     const baseUrl = this.resolveBaseUrl();
     const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/nodes/${parentNodeId}/folder`;
-    
+
     console.log("🔵 [RepositorioDocumentosHttp] ========================================");
     console.log("🔵 [RepositorioDocumentosHttp] CREAR CARPETA");
     console.log("🔵 [RepositorioDocumentosHttp] ========================================");
@@ -707,7 +754,7 @@ export class RepositorioDocumentosHttpRepository
     console.log("🔵 [RepositorioDocumentosHttp] parentNodeId:", parentNodeId);
     console.log("🔵 [RepositorioDocumentosHttp] nombre:", nombre);
     console.log("🔵 [RepositorioDocumentosHttp] description:", description);
-    
+
     try {
       const response = await $fetch<{
         success: boolean;
@@ -725,7 +772,10 @@ export class RepositorioDocumentosHttpRepository
 
       console.log("🔵 [RepositorioDocumentosHttp] ========================================");
       console.log("🔵 [RepositorioDocumentosHttp] RESPUESTA:");
-      console.log("🔵 [RepositorioDocumentosHttp] response:", JSON.stringify(response, null, 2));
+      console.log(
+        "🔵 [RepositorioDocumentosHttp] response:",
+        JSON.stringify(response, null, 2)
+      );
       console.log("🔵 [RepositorioDocumentosHttp] ========================================");
 
       if (!response || !response.data) {
@@ -749,9 +799,11 @@ export class RepositorioDocumentosHttpRepository
       console.error("🔴 [RepositorioDocumentosHttp] nombre:", nombre);
       console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
       console.error("🔴 [RepositorioDocumentosHttp] ========================================");
-      
+
       throw new Error(
-        `No se pudo crear la carpeta: ${error?.message || error?.data?.message || "Error desconocido"}`
+        `No se pudo crear la carpeta: ${
+          error?.message || error?.data?.message || "Error desconocido"
+        }`
       );
     }
   }
@@ -775,7 +827,7 @@ export class RepositorioDocumentosHttpRepository
     try {
       // Crear FormData
       const formData = new FormData();
-      
+
       // Agregar todos los archivos con el mismo nombre de campo "file"
       files.forEach((file) => {
         formData.append("file", file);
@@ -784,7 +836,7 @@ export class RepositorioDocumentosHttpRepository
       // Headers con autenticación
       const authHeaders = withAuthHeaders();
       const headers: Record<string, string> = {
-        ...authHeaders.headers,
+        ...(authHeaders.headers as Record<string, string>),
       };
 
       // No incluir Content-Type, el navegador lo establecerá automáticamente con el boundary
@@ -805,7 +857,7 @@ export class RepositorioDocumentosHttpRepository
 
       // El backend puede devolver un array de nodos o un objeto con data
       let nodosDTO: RepositorioNodeDTO[] = [];
-      
+
       if (Array.isArray(responseData.data)) {
         nodosDTO = responseData.data;
       } else if (responseData.data && Array.isArray(responseData.data.nodes)) {
@@ -816,13 +868,13 @@ export class RepositorioDocumentosHttpRepository
       }
 
       const nodos = nodosDTO.map((dto) => RepositorioNodeMapper.toEntity(dto));
-      
+
       console.log("🟢 [RepositorioDocumentosHttp] Archivos subidos exitosamente:", {
         count: nodos.length,
         nodos: nodos.map((n) => ({ id: n.id, name: n.name })),
       });
       console.log("🔵 [RepositorioDocumentosHttp] ========================================");
-      
+
       return nodos;
     } catch (error: any) {
       console.error("🔴 [RepositorioDocumentosHttp] ========================================");
@@ -838,7 +890,7 @@ export class RepositorioDocumentosHttpRepository
 
   /**
    * Verifica si un documento con un nombre específico ya existe en una carpeta
-   * 
+   *
    * ENDPOINT V2: GET /api/v2/repository/society-profile/:structureId/nodes/:folderId/documents/check?fileName={nombre}
    */
   async verificarDocumentoDuplicado(
@@ -866,7 +918,9 @@ export class RepositorioDocumentosHttpRepository
     } | null;
   }> {
     const baseUrl = this.resolveBaseUrl();
-    const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/nodes/${folderId}/documents/check?fileName=${encodeURIComponent(fileName)}`;
+    const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/nodes/${folderId}/documents/check?fileName=${encodeURIComponent(
+      fileName
+    )}`;
 
     console.log("🔍 [RepositorioDocumentosHttp] ========================================");
     console.log("🔍 [RepositorioDocumentosHttp] VERIFICAR DOCUMENTO DUPLICADO");
@@ -924,14 +978,16 @@ export class RepositorioDocumentosHttpRepository
       console.error("🔴 [RepositorioDocumentosHttp] ========================================");
 
       throw new Error(
-        `No se pudo verificar el documento duplicado: ${error?.message || error?.data?.message || "Error desconocido"}`
+        `No se pudo verificar el documento duplicado: ${
+          error?.message || error?.data?.message || "Error desconocido"
+        }`
       );
     }
   }
 
   /**
    * Sube una nueva versión de un documento existente
-   * 
+   *
    * ENDPOINT V2: POST /api/v2/repository/society-profile/documents/:documentCode/versions
    */
   async subirNuevaVersion(
@@ -963,7 +1019,7 @@ export class RepositorioDocumentosHttpRepository
 
       const authConfig = withAuthHeaders();
       const headers: Record<string, string> = {
-        ...authConfig.headers,
+        ...(authConfig.headers as Record<string, string>),
         "x-file-size": file.size.toString(),
       };
 
@@ -1010,5 +1066,374 @@ export class RepositorioDocumentosHttpRepository
       );
     }
   }
-}
 
+  /**
+   * Obtiene el peso (tamaño y conteo) de una carpeta
+   *
+   * ENDPOINT V2: GET /api/v2/repository/society-profile/nodes/:nodeId/weight
+   */
+  async obtenerPesoCarpeta(nodeId: number): Promise<{
+    sizeInBytes: number;
+    folderCount: number;
+    fileCount: number;
+  }> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/society-profile/nodes/${nodeId}/weight`;
+
+    console.log("📊 [RepositorioDocumentosHttp] ========================================");
+    console.log("📊 [RepositorioDocumentosHttp] OBTENER PESO DE CARPETA");
+    console.log("📊 [RepositorioDocumentosHttp] ========================================");
+    console.log("📊 [RepositorioDocumentosHttp] URL:", url);
+    console.log("📊 [RepositorioDocumentosHttp] nodeId:", nodeId);
+
+    try {
+      const response = await $fetch<{
+        success: boolean;
+        code: number;
+        message: string;
+        data: {
+          sizeInBytes: number;
+          folderCount: number;
+          fileCount: number;
+        };
+      }>(url, {
+        ...withAuthHeaders(),
+        method: "GET" as const,
+      });
+
+      console.log("📊 [RepositorioDocumentosHttp] ========================================");
+      console.log("📊 [RepositorioDocumentosHttp] RESPUESTA:");
+      console.log("📊 [RepositorioDocumentosHttp] sizeInBytes:", response.data.sizeInBytes);
+      console.log("📊 [RepositorioDocumentosHttp] folderCount:", response.data.folderCount);
+      console.log("📊 [RepositorioDocumentosHttp] fileCount:", response.data.fileCount);
+      console.log("📊 [RepositorioDocumentosHttp] ========================================");
+
+      return response.data;
+    } catch (error: any) {
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      console.error("🔴 [RepositorioDocumentosHttp] ERROR AL OBTENER PESO:");
+      console.error("🔴 [RepositorioDocumentosHttp] URL:", url);
+      console.error("🔴 [RepositorioDocumentosHttp] nodeId:", nodeId);
+      console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+
+      throw new Error(
+        `No se pudo obtener el peso de la carpeta: ${
+          error?.message || error?.data?.message || "Error desconocido"
+        }`
+      );
+    }
+  }
+
+  /**
+   * Restaura una versión anterior de un documento como versión actual
+   *
+   * ENDPOINT V2: POST /api/v2/repository/society-profile/documents/:documentCode/versions/:versionCode/restore
+   */
+  async restaurarVersion(
+    documentCode: string,
+    versionCode: string
+  ): Promise<{
+    versionCode: string;
+    documentCode: string;
+    versionNumber: number;
+    title: string;
+    sizeInBytes: number;
+    createdAt: string;
+  }> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/society-profile/documents/${documentCode}/versions/${versionCode}/restore`;
+
+    console.log("🔄 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔄 [RepositorioDocumentosHttp] RESTAURAR VERSIÓN");
+    console.log("🔄 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔄 [RepositorioDocumentosHttp] URL:", url);
+    console.log("🔄 [RepositorioDocumentosHttp] documentCode:", documentCode);
+    console.log("🔄 [RepositorioDocumentosHttp] versionCode:", versionCode);
+
+    try {
+      const response = await $fetch<{
+        success: boolean;
+        code: number;
+        message: string;
+        data: {
+          versionCode: string;
+          documentCode: string;
+          versionNumber: number;
+          title: string;
+          sizeInBytes: number;
+          createdAt: string;
+        };
+      }>(url, {
+        ...withAuthHeaders(),
+        method: "POST" as const,
+      });
+
+      console.log("🔄 [RepositorioDocumentosHttp] ========================================");
+      console.log("🔄 [RepositorioDocumentosHttp] RESPUESTA:");
+      console.log("🔄 [RepositorioDocumentosHttp] Versión restaurada:", response.data);
+      console.log("🔄 [RepositorioDocumentosHttp] ========================================");
+
+      return response.data;
+    } catch (error: any) {
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      console.error("🔴 [RepositorioDocumentosHttp] ERROR AL RESTAURAR VERSIÓN:");
+      console.error("🔴 [RepositorioDocumentosHttp] URL:", url);
+      console.error("🔴 [RepositorioDocumentosHttp] documentCode:", documentCode);
+      console.error("🔴 [RepositorioDocumentosHttp] versionCode:", versionCode);
+      console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+
+      throw new Error(
+        `No se pudo restaurar la versión: ${
+          error?.message || error?.data?.message || "Error desconocido"
+        }`
+      );
+    }
+  }
+
+  /**
+   * Búsqueda semántica de documentos usando embeddings de IA
+   *
+   * ENDPOINT V2: POST /api/v2/repository/society-profile/:structureId/documents/search
+   */
+  async busquedaSemantica(
+    structureId: string,
+    params: {
+      semanticInput?: string;
+      searchID?: string;
+      filters?: {
+        page?: number;
+        limit?: number;
+        scopedFolderNodeID?: number;
+        mimeType?: string;
+      };
+    }
+  ): Promise<{
+    searchId: string;
+    documents: Array<{
+      versionCode: string;
+      documentCode: string;
+      title: string;
+      sizeInBytes: number;
+      createdAt: string;
+      proximity: number;
+      node?: {
+        id: number;
+        code: string;
+        name: string;
+        path: string;
+        type: number;
+      };
+    }>;
+    pagination: {
+      total: number;
+      page: number;
+      perPage: number;
+      totalPages: number;
+    };
+  }> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/documents/search`;
+
+    console.log("🔍 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔍 [RepositorioDocumentosHttp] BÚSQUEDA SEMÁNTICA");
+    console.log("🔍 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔍 [RepositorioDocumentosHttp] URL:", url);
+    console.log("🔍 [RepositorioDocumentosHttp] structureId:", structureId);
+    console.log("🔍 [RepositorioDocumentosHttp] params:", params);
+
+    try {
+      const response = await $fetch<{
+        success: boolean;
+        code: number;
+        message: string;
+        data: {
+          searchId: string;
+          documents: Array<{
+            versionCode: string;
+            documentCode: string;
+            title: string;
+            sizeInBytes: number;
+            createdAt: string;
+            proximity: number;
+            node?: {
+              id: number;
+              code: string;
+              name: string;
+              path: string;
+              type: number;
+            };
+          }>;
+        };
+        pagination: {
+          total: number;
+          page: number;
+          perPage: number;
+          totalPages: number;
+        };
+      }>(url, {
+        ...withAuthHeaders(),
+        method: "POST" as const,
+        body: {
+          semanticInput: params.semanticInput,
+          searchID: params.searchID,
+          filters: {
+            page: params.filters?.page || 1,
+            limit: params.filters?.limit || 20,
+            scopedFolderNodeID: params.filters?.scopedFolderNodeID,
+            mimeType: params.filters?.mimeType,
+          },
+        },
+      });
+
+      console.log("🔍 [RepositorioDocumentosHttp] ========================================");
+      console.log("🔍 [RepositorioDocumentosHttp] RESPUESTA:");
+      console.log("🔍 [RepositorioDocumentosHttp] searchId:", response.data.searchId);
+      console.log(
+        "🔍 [RepositorioDocumentosHttp] documents count:",
+        response.data.documents.length
+      );
+      console.log("🔍 [RepositorioDocumentosHttp] pagination:", response.pagination);
+      console.log("🔍 [RepositorioDocumentosHttp] ========================================");
+
+      return {
+        searchId: response.data.searchId,
+        documents: response.data.documents,
+        pagination: response.pagination,
+      };
+    } catch (error: any) {
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      console.error("🔴 [RepositorioDocumentosHttp] ERROR EN BÚSQUEDA SEMÁNTICA:");
+      console.error("🔴 [RepositorioDocumentosHttp] URL:", url);
+      console.error("🔴 [RepositorioDocumentosHttp] structureId:", structureId);
+      console.error("🔴 [RepositorioDocumentosHttp] params:", params);
+      console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+
+      throw new Error(
+        `No se pudo realizar la búsqueda semántica: ${
+          error?.message || error?.data?.message || "Error desconocido"
+        }`
+      );
+    }
+  }
+
+  /**
+   * Búsqueda por coincidencia de texto en el título del documento
+   *
+   * ENDPOINT V2: GET /api/v2/repository/society-profile/:structureId/documents/search
+   */
+  async busquedaPorCoincidencia(
+    structureId: string,
+    params: {
+      search?: string;
+      page?: number;
+      limit?: number;
+      order?: "name" | "createdAt";
+      sort?: "asc" | "desc";
+      mimeType?: string;
+      updatedFrom?: string;
+      updatedTo?: string;
+    }
+  ): Promise<{
+    documents: Array<{
+      versionCode: string;
+      documentCode: string;
+      title: string;
+      sizeInBytes: number;
+      createdAt: string;
+      node?: {
+        id: number;
+        code: string;
+        name: string;
+        path: string;
+        type: number;
+      };
+    }>;
+    pagination: {
+      total: number;
+      page: number;
+      perPage: number;
+      totalPages: number;
+    };
+  }> {
+    const baseUrl = this.resolveBaseUrl();
+
+    // Construir query params
+    const queryParams = new URLSearchParams();
+    if (params.search) queryParams.append("search", params.search);
+    if (params.page) queryParams.append("page", params.page.toString());
+    if (params.limit) queryParams.append("limit", params.limit.toString());
+    if (params.order) queryParams.append("order", params.order);
+    if (params.sort) queryParams.append("sort", params.sort);
+    if (params.mimeType) queryParams.append("mimeType", params.mimeType);
+    if (params.updatedFrom) queryParams.append("updatedFrom", params.updatedFrom);
+    if (params.updatedTo) queryParams.append("updatedTo", params.updatedTo);
+
+    const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/documents/search?${queryParams.toString()}`;
+
+    console.log("🔍 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔍 [RepositorioDocumentosHttp] BÚSQUEDA POR COINCIDENCIA");
+    console.log("🔍 [RepositorioDocumentosHttp] ========================================");
+    console.log("🔍 [RepositorioDocumentosHttp] URL:", url);
+    console.log("🔍 [RepositorioDocumentosHttp] structureId:", structureId);
+    console.log("🔍 [RepositorioDocumentosHttp] params:", params);
+
+    try {
+      const response = await $fetch<{
+        success: boolean;
+        code: number;
+        message: string;
+        data: Array<{
+          versionCode: string;
+          documentCode: string;
+          title: string;
+          sizeInBytes: number;
+          createdAt: string;
+          node?: {
+            id: number;
+            code: string;
+            name: string;
+            path: string;
+            type: number;
+          };
+        }>;
+        pagination: {
+          total: number;
+          page: number;
+          perPage: number;
+          totalPages: number;
+        };
+      }>(url, {
+        ...withAuthHeaders(),
+        method: "GET" as const,
+      });
+
+      console.log("🔍 [RepositorioDocumentosHttp] ========================================");
+      console.log("🔍 [RepositorioDocumentosHttp] RESPUESTA:");
+      console.log("🔍 [RepositorioDocumentosHttp] documents count:", response.data.length);
+      console.log("🔍 [RepositorioDocumentosHttp] pagination:", response.pagination);
+      console.log("🔍 [RepositorioDocumentosHttp] ========================================");
+
+      return {
+        documents: response.data,
+        pagination: response.pagination,
+      };
+    } catch (error: any) {
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+      console.error("🔴 [RepositorioDocumentosHttp] ERROR EN BÚSQUEDA POR COINCIDENCIA:");
+      console.error("🔴 [RepositorioDocumentosHttp] URL:", url);
+      console.error("🔴 [RepositorioDocumentosHttp] structureId:", structureId);
+      console.error("🔴 [RepositorioDocumentosHttp] params:", params);
+      console.error("🔴 [RepositorioDocumentosHttp] Error completo:", error);
+      console.error("🔴 [RepositorioDocumentosHttp] ========================================");
+
+      throw new Error(
+        `No se pudo realizar la búsqueda por coincidencia: ${
+          error?.message || error?.data?.message || "Error desconocido"
+        }`
+      );
+    }
+  }
+}

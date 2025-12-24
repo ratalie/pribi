@@ -16,18 +16,23 @@ interface EstructuraJuntas {
 }
 
 /**
- * Estructura de operaciones (directorio y juntas)
+ * Estructura de operaciones (directorio, juntas y estados financieros)
  */
 interface EstructuraOperaciones {
   directorio: RepositorioNode | null;
   juntas: RepositorioNode | null;
+  estadosFinancieros: RepositorioNode | null;
 }
 
 /**
- * Estructura de registros (sociedades y sucursales)
+ * Estructura de registros (sociedades con subcarpetas V2 y sucursales)
  */
 interface EstructuraRegistros {
-  sociedades: RepositorioNode | null;
+  sociedades: {
+    id: string;
+    capitalSocialYAcciones: RepositorioNode | null;
+    acuerdosEspeciales: RepositorioNode | null;
+  } | null;
   sucursales: RepositorioNode | null;
 }
 

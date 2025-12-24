@@ -37,7 +37,6 @@
   const {
     documentos,
     carpetaActual,
-    breadcrumb,
     vista,
     isLoading,
     carpetas: _carpetas,
@@ -45,7 +44,6 @@
     cargarDocumentos,
     navegarACarpeta: _navegarACarpetaStore,
     navegarAtras: _navegarAtras,
-    obtenerDocumento,
     descargarDocumento,
     eliminarDocumento,
     crearCarpeta,
@@ -101,10 +99,10 @@
     // Construir breadcrumb desde la ruta
     routePath.value.forEach((folderId) => {
       // Primero buscar en el cache
-      if (folderNamesCache.value[folderId]) {
+      if (folderId && folderNamesCache.value[folderId]) {
         items.push({
           id: folderId,
-          nombre: folderNamesCache.value[folderId],
+          nombre: folderNamesCache.value[folderId] || "",
         });
         return;
       }
@@ -207,16 +205,32 @@
       router.push(`/storage/almacen/${idSociety.value}/${pathString}`);
 
       // Cargar documentos de la carpeta objetivo
-      const carpetaId = targetPath[targetPath.length - 1];
-      await _navegarACarpetaStore(carpetaId);
+      if (targetPath.length > 0) {
+        const carpetaId = targetPath[targetPath.length - 1];
+        if (carpetaId) {
+          await _navegarACarpetaStore(carpetaId);
+        }
+      }
     }
   };
 
   // Sincronizar ruta con store cuando cambia la ruta
   watch(
-    () => [routePath.value, idSociety.value],
-    async ([newPath, societyId], [oldPath]) => {
-      console.log("🔵 [AlmacenView] Ruta cambió:", { newPath, oldPath, societyId });
+    () => {
+      const path = routePath.value;
+      const society = idSociety.value;
+      return { path: Array.isArray(path) ? path : [], society };
+    },
+    async ({ path: newPath, society: societyId }, oldValue) => {
+      console.log("🔵 [AlmacenView] Ruta cambió:", { newPath, oldValue, societyId });
+
+      // Manejar caso donde oldValue puede ser undefined en la primera ejecución
+      const oldPathArray = oldValue?.path
+        ? Array.isArray(oldValue.path)
+          ? oldValue.path
+          : []
+        : [];
+      const newPathArray = Array.isArray(newPath) ? newPath : [];
 
       if (!societyId) {
         console.log("🔵 [AlmacenView] No hay societyId, esperando...");
@@ -224,27 +238,31 @@
       }
 
       // Limpiar cache si cambió el path completamente
-      if (oldPath && oldPath.length > 0 && newPath.length === 0) {
+      if (oldPathArray.length > 0 && newPathArray.length === 0) {
         folderNamesCache.value = {};
       }
 
       try {
-        if (newPath.length === 0) {
+        if (newPathArray.length === 0) {
           // Estamos en la raíz
           console.log("🔵 [AlmacenView] Cargando documentos de raíz...");
           await cargarDocumentos(null);
         } else {
           // Cargar nombres de todas las carpetas del path si no están en cache
-          for (const folderId of newPath) {
-            if (!folderNamesCache.value[folderId]) {
+          for (const folderId of newPathArray) {
+            if (folderId && !folderNamesCache.value[folderId]) {
               await loadFolderName(folderId);
             }
           }
 
           // Navegar a la última carpeta del path
-          const carpetaId = newPath[newPath.length - 1];
-          console.log("🔵 [AlmacenView] Navegando a carpeta:", carpetaId);
-          await _navegarACarpetaStore(carpetaId);
+          if (newPathArray.length > 0) {
+            const carpetaId = newPathArray[newPathArray.length - 1];
+            if (carpetaId) {
+              console.log("🔵 [AlmacenView] Navegando a carpeta:", carpetaId);
+              await _navegarACarpetaStore(carpetaId);
+            }
+          }
         }
       } catch (error: any) {
         console.error("❌ [AlmacenView] Error al sincronizar ruta:", error);
@@ -288,6 +306,10 @@
         // Si el documento ya tiene versionCode, usarlo directamente
         if (doc.versionCode && doc.mimeType) {
           console.log("🟢 [AlmacenView] Usando versionCode del documento:", doc.versionCode);
+
+          // Intentar obtener nodeId y documentCode si están disponibles
+          const nodeIdNumber = doc.nodeId ? parseInt(doc.nodeId, 10) : undefined;
+
           selectedDocument.value = {
             name: doc.nombre,
             type: doc.mimeType || "documento",
@@ -296,6 +318,8 @@
             size: doc.tamaño,
             versionCode: doc.versionCode,
             mimeType: doc.mimeType,
+            nodeId: nodeIdNumber && !isNaN(nodeIdNumber) ? nodeIdNumber : undefined,
+            documentCode: doc.documentCode || doc.code,
           };
           previewModalOpen.value = true;
           return;
@@ -322,7 +346,12 @@
 
         // Obtener versionCode de las versiones del nodo
         let versionCode: string | undefined;
-        if (node.versions && node.versions.length > 0) {
+        if (
+          node.versions &&
+          Array.isArray(node.versions) &&
+          node.versions.length > 0 &&
+          node.versions[0]
+        ) {
           versionCode = node.versions[0].versionCode;
           console.log("🟢 [AlmacenView] versionCode obtenido del nodo:", versionCode);
         }
@@ -341,6 +370,8 @@
           size: node.sizeInBytes,
           versionCode: versionCode,
           mimeType: node.mimeType,
+          nodeId: nodeIdNumber, // Agregar nodeId para el tab de historial
+          documentCode: node.code, // Agregar documentCode para restaurar versiones
         };
         previewModalOpen.value = true;
       } catch (error: any) {
@@ -447,10 +478,6 @@
     if (dashboardStore.sociedadSeleccionada?.id) {
       router.push(`/storage/documentos-generados/${dashboardStore.sociedadSeleccionada.id}`);
     }
-  };
-
-  const navegarARaiz = async () => {
-    await cargarDocumentos(null);
   };
 
   const handleUploadClick = () => {

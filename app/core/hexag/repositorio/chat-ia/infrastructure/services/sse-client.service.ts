@@ -18,7 +18,7 @@ export class SSEClient {
     // Obtener la URL base de la API desde la configuración de Nuxt
     const config = useRuntimeConfig();
     const baseUrl = config.public.apiBase || '/api/v2';
-    const url = `${baseUrl}/repository/conversations/${conversationId}/message`;
+    const url = `${baseUrl}/repository/society-profile/conversations/${conversationId}/message`;
 
     // Limpiar cualquier conexión anterior
     if (this.abortController) {

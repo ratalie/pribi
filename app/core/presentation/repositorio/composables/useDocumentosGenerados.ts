@@ -99,8 +99,23 @@ export function useDocumentosGenerados() {
           sociedades: store.estructuraRegistros?.sociedades
             ? {
                 id: store.estructuraRegistros.sociedades.id,
-                nombre: store.estructuraRegistros.sociedades.name,
+                nombre: "Sociedades",
                 nodeId: store.estructuraRegistros.sociedades.id,
+                // Subcarpetas V2
+                capitalSocialYAcciones: store.estructuraRegistros.sociedades.capitalSocialYAcciones
+                  ? {
+                      id: store.estructuraRegistros.sociedades.capitalSocialYAcciones.id,
+                      nombre: store.estructuraRegistros.sociedades.capitalSocialYAcciones.name,
+                      nodeId: store.estructuraRegistros.sociedades.capitalSocialYAcciones.id,
+                    }
+                  : null,
+                acuerdosEspeciales: store.estructuraRegistros.sociedades.acuerdosEspeciales
+                  ? {
+                      id: store.estructuraRegistros.sociedades.acuerdosEspeciales.id,
+                      nombre: store.estructuraRegistros.sociedades.acuerdosEspeciales.name,
+                      nodeId: store.estructuraRegistros.sociedades.acuerdosEspeciales.id,
+                    }
+                  : null,
               }
             : null,
           // Sucursales: puede ser null si no existe en backend, pero siempre se muestra
