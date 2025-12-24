@@ -185,8 +185,22 @@ export class UserHttpRepository implements UserRepository {
         throw new Error(response.message || "Error al obtener usuarios");
       }
 
+      // Validar que data sea un array
+      if (!Array.isArray(response.data)) {
+        console.error(
+          "[UserHttpRepository] findAll: respuesta no es un array:",
+          response.data
+        );
+        throw new Error("Error: respuesta inválida del servidor (no es un array)");
+      }
+
       // Mapear DTOs a entidades
       const users = response.data.map((dto) => this.mapUserDtoToEntity(dto));
+
+      console.log(
+        "[UserHttpRepository] findAll: usuarios recibidos del backend:",
+        users.length
+      );
 
       // Cargar sociedades asignadas para cada usuario
       const usersWithSocieties = await Promise.all(

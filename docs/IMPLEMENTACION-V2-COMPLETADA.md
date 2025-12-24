@@ -16,6 +16,7 @@ Se ha implementado exitosamente la versión v2 de los endpoints de access-manage
 **Archivo:** `probo-api-v30/src/common/decorators/roles-v2.decorator.ts`
 
 **Contenido:**
+
 - ✅ `AdminOnlyV2()` - Usa `AuthV2()` + `RolesV2()`
 - ✅ `SuperAdminOnlyV2()` - Usa `AuthV2()` + `RolesV2()`
 - ✅ `RolesV2()` - Versión v2 del decorador de roles
@@ -25,6 +26,7 @@ Se ha implementado exitosamente la versión v2 de los endpoints de access-manage
 **Archivo:** `probo-api-v30/src/modules/access-management/presentation/v2/access-management-v2.controller.ts`
 
 **Endpoints implementados:**
+
 - ✅ `GET /v2/access-management/roles`
 - ✅ `POST /v2/access-management/users`
 - ✅ `GET /v2/access-management/users`
@@ -39,6 +41,7 @@ Se ha implementado exitosamente la versión v2 de los endpoints de access-manage
 - ✅ `POST /v2/access-management/users/:id/societies`
 
 **Características:**
+
 - ✅ Usa `@AuthV2()` para autenticación
 - ✅ Usa `@AdminOnlyV2()` para autorización
 - ✅ Reutiliza TODOS los use cases existentes
@@ -49,6 +52,7 @@ Se ha implementado exitosamente la versión v2 de los endpoints de access-manage
 **Archivo:** `probo-api-v30/src/modules/access-management/presentation/v2/superadmin-v2.controller.ts`
 
 **Endpoints implementados:**
+
 - ✅ `GET /v2/superadmin/studies`
 - ✅ `POST /v2/superadmin/studies`
 - ✅ `PUT /v2/superadmin/studies/:id/modules`
@@ -57,6 +61,7 @@ Se ha implementado exitosamente la versión v2 de los endpoints de access-manage
 - ✅ `POST /v2/superadmin/studies/:studyId/users`
 
 **Características:**
+
 - ✅ Usa `@SuperAdminOnlyV2()` para autorización
 - ✅ Reutiliza TODOS los métodos del repositorio
 - ✅ Misma lógica que v1
@@ -66,6 +71,7 @@ Se ha implementado exitosamente la versión v2 de los endpoints de access-manage
 **Archivo:** `probo-api-v30/src/modules/access-management/access-management.module.ts`
 
 **Cambios:**
+
 - ✅ Agregado `AccessManagementV2Controller` a controllers
 - ✅ Agregado `SuperadminV2Controller` a controllers
 - ✅ Mantiene v1 para compatibilidad
@@ -79,6 +85,7 @@ Se ha implementado exitosamente la versión v2 de los endpoints de access-manage
 **Archivo:** `app/core/hexag/permissions/infrastructure/repositories/permissions.http.repository.ts`
 
 **Cambio:**
+
 ```typescript
 // De:
 private readonly basePath = '/api/v1/access-management';
@@ -92,6 +99,7 @@ private readonly basePath = '/api/v2/access-management';
 **Archivo:** `app/core/hexag/panel-administrativo/infrastructure/repositories/user-http.repository.ts`
 
 **Cambio:**
+
 ```typescript
 // De:
 private readonly basePath = '/api/v1/access-management';
@@ -114,37 +122,38 @@ private readonly basePath = '/api/v2/access-management';
 
 ### Access Management v2
 
-| Método | Endpoint | Estado |
-|--------|----------|--------|
-| `GET` | `/v2/access-management/roles` | ✅ |
-| `POST` | `/v2/access-management/users` | ✅ |
-| `GET` | `/v2/access-management/users` | ✅ |
-| `PATCH` | `/v2/access-management/users/:id/role` | ✅ |
-| `PATCH` | `/v2/access-management/users/:id/status` | ✅ |
-| `DELETE` | `/v2/access-management/users/:id` | ✅ |
-| `GET` | `/v2/access-management/users/:id/access` | ✅ |
-| `GET` | `/v2/access-management/users/:id/access/full` | ✅ |
-| `PUT` | `/v2/access-management/users/:id/access` | ✅ |
-| `GET` | `/v2/access-management/me/access` | ✅ |
-| `GET` | `/v2/access-management/users/:id/societies` | ✅ |
-| `POST` | `/v2/access-management/users/:id/societies` | ✅ |
+| Método   | Endpoint                                      | Estado |
+| -------- | --------------------------------------------- | ------ |
+| `GET`    | `/v2/access-management/roles`                 | ✅     |
+| `POST`   | `/v2/access-management/users`                 | ✅     |
+| `GET`    | `/v2/access-management/users`                 | ✅     |
+| `PATCH`  | `/v2/access-management/users/:id/role`        | ✅     |
+| `PATCH`  | `/v2/access-management/users/:id/status`      | ✅     |
+| `DELETE` | `/v2/access-management/users/:id`             | ✅     |
+| `GET`    | `/v2/access-management/users/:id/access`      | ✅     |
+| `GET`    | `/v2/access-management/users/:id/access/full` | ✅     |
+| `PUT`    | `/v2/access-management/users/:id/access`      | ✅     |
+| `GET`    | `/v2/access-management/me/access`             | ✅     |
+| `GET`    | `/v2/access-management/users/:id/societies`   | ✅     |
+| `POST`   | `/v2/access-management/users/:id/societies`   | ✅     |
 
 ### SuperAdmin v2
 
-| Método | Endpoint | Estado |
-|--------|----------|--------|
-| `GET` | `/v2/superadmin/studies` | ✅ |
-| `POST` | `/v2/superadmin/studies` | ✅ |
-| `PUT` | `/v2/superadmin/studies/:id/modules` | ✅ |
-| `POST` | `/v2/superadmin/roles` | ✅ |
-| `PUT` | `/v2/superadmin/roles/:id` | ✅ |
-| `POST` | `/v2/superadmin/studies/:studyId/users` | ✅ |
+| Método | Endpoint                                | Estado |
+| ------ | --------------------------------------- | ------ |
+| `GET`  | `/v2/superadmin/studies`                | ✅     |
+| `POST` | `/v2/superadmin/studies`                | ✅     |
+| `PUT`  | `/v2/superadmin/studies/:id/modules`    | ✅     |
+| `POST` | `/v2/superadmin/roles`                  | ✅     |
+| `PUT`  | `/v2/superadmin/roles/:id`              | ✅     |
+| `POST` | `/v2/superadmin/studies/:studyId/users` | ✅     |
 
 ---
 
 ## ✅ VERIFICACIONES
 
 ### Backend
+
 - ✅ Decoradores v2 creados
 - ✅ Controllers v2 creados
 - ✅ Registrados en módulo
@@ -152,6 +161,7 @@ private readonly basePath = '/api/v2/access-management';
 - ✅ Reutilizan use cases existentes
 
 ### Frontend
+
 - ✅ Permissions repository actualizado a v2
 - ✅ User repository actualizado a v2
 - ✅ Societies repository mantiene v1 (correcto, no existe v2)
@@ -161,12 +171,14 @@ private readonly basePath = '/api/v2/access-management';
 ## 🎯 PRÓXIMOS PASOS
 
 ### 1. Probar Backend
+
 - [ ] Iniciar servidor backend
 - [ ] Probar cada endpoint v2
 - [ ] Verificar autenticación v2
 - [ ] Verificar respuestas
 
 ### 2. Probar Frontend
+
 - [ ] Iniciar servidor frontend
 - [ ] Probar cargar usuarios
 - [ ] Probar configurar permisos
@@ -174,6 +186,7 @@ private readonly basePath = '/api/v2/access-management';
 - [ ] Verificar que todo funciona
 
 ### 3. Si algo falla
+
 - ✅ v1 sigue disponible (backup)
 - ✅ Fácil de revertir (cambiar 2 strings)
 - ✅ No perdemos funcionalidad
@@ -183,11 +196,13 @@ private readonly basePath = '/api/v2/access-management';
 ## 📝 NOTAS IMPORTANTES
 
 ### Societies Repository
+
 - ⚠️ Mantiene v1 porque `/v2/society-profile/list` NO existe
 - ✅ Esto es CORRECTO - no hay v2 para ese endpoint
 - ✅ El frontend seguirá funcionando correctamente
 
 ### Compatibilidad
+
 - ✅ v1 sigue funcionando (backup)
 - ✅ v2 es idéntico a v1 (misma lógica)
 - ✅ Si v1 funciona, v2 funcionará
@@ -208,4 +223,3 @@ private readonly basePath = '/api/v2/access-management';
 
 **Fecha:** $(date)  
 **Estado:** ✅ **COMPLETADO - LISTO PARA PROBAR**
-

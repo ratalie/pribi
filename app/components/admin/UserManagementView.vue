@@ -120,9 +120,8 @@ const handleSaveUser = async () => {
       createUserForm.value.password,
       createUserForm.value.roleId
     );
+    // El store ya recarga los usuarios automáticamente
     closeCreateUserModal();
-    // Recargar usuarios
-    await store.loadUsers();
   } catch (error: any) {
     createError.value = error?.message || 'Error al crear usuario';
   } finally {
@@ -162,11 +161,22 @@ const handleDeleteUser = async () => {
 const handleToggleStatus = async (user: any) => {
   try {
     await updateUserStatus(user.id, !user.status);
-    // Recargar usuarios
-    await store.loadUsers();
+    // No necesitamos recargar, el store actualiza localmente
   } catch (error: any) {
     console.error('Error al actualizar estado:', error);
     alert(error?.message || 'Error al actualizar estado');
+    // Si falla, recargar para restaurar estado
+    await store.loadUsers();
+  }
+};
+
+// Manejar asignación de usuarios desde el modal
+const handleAssignUsers = async (userIds: string[], societyId: string) => {
+  try {
+    // El modal ya hace la asignación, solo recargamos para reflejar cambios
+    await store.loadUsers();
+  } catch (error: any) {
+    console.error('Error al actualizar lista después de asignar:', error);
   }
 };
 </script>
@@ -743,6 +753,7 @@ const handleToggleStatus = async (user: any) => {
         v-if="showAssignmentModal"
         :is-open="showAssignmentModal"
         @close="showAssignmentModal = false"
+        @assign="handleAssignUsers"
       />
 
       <!-- Modal Crear Usuario -->

@@ -115,6 +115,7 @@ const handleAssign = async () => {
   } catch (error: any) {
     console.error('Error al asignar usuarios:', error);
     alert(error?.message || 'Error al asignar usuarios a la sociedad');
+    throw error; // Re-lanzar para que el componente padre pueda manejarlo
   }
 };
 </script>
@@ -195,27 +196,26 @@ const handleAssign = async () => {
             />
             <select
               v-model="selectedSociety"
+              :disabled="isLoadingSocieties"
               class="w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all"
+              :class="{ 'opacity-50 cursor-not-allowed': isLoadingSocieties }"
               :style="{
                 borderColor: 'var(--border-light)',
                 fontFamily: 'var(--font-secondary)',
               }"
               @focus="
-                ($event.target as HTMLSelectElement).style.borderColor =
-                  'var(--primary-700)';
+                if (!isLoadingSocieties) {
+                  ($event.target as HTMLSelectElement).style.borderColor =
+                    'var(--primary-700)';
+                }
               "
               @blur="
                 ($event.target as HTMLSelectElement).style.borderColor =
                   'var(--border-light)';
               "
             >
-              <option value="">Seleccionar sociedad...</option>
-              <option
-                v-if="isLoadingSocieties"
-                value=""
-                disabled
-              >
-                Cargando sociedades...
+              <option value="">
+                {{ isLoadingSocieties ? 'Cargando sociedades...' : 'Seleccionar sociedad...' }}
               </option>
               <option
                 v-for="sociedad in availableSocieties"
