@@ -368,7 +368,13 @@ export class ThumbnailService {
   }
 
   /**
-   * Genera un thumbnail y lo sube al servidor automáticamente
+   * Genera thumbnail con cache del servidor (método optimizado)
+   * 
+   * Flujo exacto igual que V2.5:
+   * 1. Verificar si existe preview en el servidor (HEAD request)
+   * 2. Si existe, descargarlo y retornarlo (GET request)
+   * 3. Si NO existe, generar nuevo thumbnail localmente
+   * 4. Subir el nuevo thumbnail al servidor (PUT request) en background
    * 
    * @param file Archivo a procesar
    * @param nodeCode UUID del nodo
@@ -381,26 +387,63 @@ export class ThumbnailService {
     options: ThumbnailOptions = {}
   ): Promise<string | null> {
     try {
-      // Generar thumbnail
-      const thumbnailDataUrl = await this.generateThumbnail(file, options);
+      // Importar dinámicamente para evitar problemas
+      const { PreviewCacheService } = await import("./preview-cache.service");
 
-      if (!thumbnailDataUrl) {
-        console.warn("⚠️ [ThumbnailService] No se pudo generar thumbnail");
-        return null;
+      // 1. Verificar si existe preview en el servidor
+      const hasPreview = await PreviewCacheService.hasPreview(nodeCode);
+
+      if (hasPreview) {
+        // 2. Descargar preview existente
+        const cachedPreview = await PreviewCacheService.downloadPreview(nodeCode);
+        if (cachedPreview) {
+          console.log("🟢 [ThumbnailService] Preview encontrado en servidor");
+          return cachedPreview; // ✅ Retorna preview del servidor
+        }
       }
 
-      // Subir al servidor
-      const uploaded = await PreviewCacheService.uploadPreview(nodeCode, thumbnailDataUrl);
+      // 3. Si NO existe, generar nuevo thumbnail
+      console.log("🔵 [ThumbnailService] No existe preview, generando nuevo...");
+      let newThumbnail: string | null = null;
 
-      if (!uploaded) {
-        console.warn("⚠️ [ThumbnailService] No se pudo subir thumbnail al servidor");
-        // Retornar el thumbnail de todas formas (está en memoria)
+      try {
+        // Intentar primero con DocumentPreviewService para obtener previews reales del contenido
+        const { DocumentPreviewService } = await import("./document-preview.service");
+        const fileToProcess =
+          file instanceof File
+            ? file
+            : new File([file], "document", { type: file.type || "application/octet-stream" });
+
+        const preview = await DocumentPreviewService.previewDocument(fileToProcess, fileToProcess.type);
+        
+        if (preview.type === "image" && typeof preview.content === "string") {
+          newThumbnail = preview.content;
+        } else if (preview.type === "canvas" && preview.content instanceof HTMLCanvasElement) {
+          newThumbnail = preview.content.toDataURL("image/jpeg", options.quality || 0.8);
+        }
+      } catch (error) {
+        // DocumentPreviewService falló, usar ThumbnailService como fallback
+        console.warn("⚠️ [ThumbnailService] DocumentPreviewService falló, usando fallback");
       }
 
-      return thumbnailDataUrl;
+      // Si DocumentPreviewService no funcionó, usar ThumbnailService como fallback
+      if (!newThumbnail) {
+        newThumbnail = await this.generateThumbnail(file, options);
+      }
+
+      // 4. Si se generó thumbnail, subirlo al servidor (en background, no bloquea)
+      if (newThumbnail) {
+        PreviewCacheService.uploadPreview(nodeCode, newThumbnail).catch((_error) => {
+          // No se pudo subir preview al servidor (no falla el flujo)
+          console.warn("⚠️ [ThumbnailService] No se pudo subir preview al servidor");
+        });
+      }
+
+      return newThumbnail;
     } catch (error) {
       console.error("🔴 [ThumbnailService] Error en generateThumbnailWithCache:", error);
-      return null;
+      // Fallback al método original
+      return this.generateThumbnail(file, options);
     }
   }
 }

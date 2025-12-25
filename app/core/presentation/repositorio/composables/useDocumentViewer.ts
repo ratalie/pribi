@@ -418,7 +418,17 @@ export function useDocumentViewer() {
       const mimeType = file.mimeType || file.type;
       const preview = await DocumentPreviewService.previewDocument(fileBlob, mimeType);
 
-      const container = officeViewer || officeViewerRef.value;
+      // Esperar a que el contenedor esté disponible (con retry)
+      let container = officeViewer || officeViewerRef.value;
+      if (!container) {
+        // Esperar hasta 2 segundos para que el contenedor esté disponible
+        for (let i = 0; i < 20; i++) {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          container = officeViewer || officeViewerRef.value;
+          if (container) break;
+        }
+      }
+
       if (!container) {
         throw new Error("No se encontró el contenedor para el documento de Office");
       }

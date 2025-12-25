@@ -49,22 +49,43 @@ export class PreviewCacheService {
       console.log("🔵 [PreviewCacheService] Verificando preview:", {
         nodeCode,
         endpoint,
+        timestamp: new Date().toISOString(),
+      });
+
+      const authConfig = withAuthHeaders();
+      console.log("🔵 [PreviewCacheService] Headers de autenticación:", {
+        hasAuth: !!authConfig.headers,
+        headerKeys: authConfig.headers ? Object.keys(authConfig.headers) : [],
+        authHeaders: authConfig.headers,
       });
 
       const response = await fetch(endpoint, {
         method: "HEAD",
-        ...withAuthHeaders(),
+        headers: authConfig.headers,
+      });
+
+      console.log("🔵 [PreviewCacheService] Respuesta HEAD:", {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        headers: Object.fromEntries(response.headers.entries()),
       });
 
       const hasPreview = response.status === 200;
       
-      console.log("🔵 [PreviewCacheService] Preview existe:", hasPreview);
+      console.log("🔵 [PreviewCacheService] Preview existe:", hasPreview, "para nodeCode:", nodeCode);
 
       return hasPreview;
     } catch (error: any) {
-      console.error("🔴 [PreviewCacheService] Error al verificar preview:", error);
+      console.error("🔴 [PreviewCacheService] Error al verificar preview:", {
+        error,
+        message: error?.message,
+        stack: error?.stack,
+        nodeCode,
+      });
       // Si hay error de red o 404, retornar false
       if (error.response?.status === 404 || error.status === 404) {
+        console.log("🔵 [PreviewCacheService] Error 404 - preview no existe");
         return false;
       }
       return false;
@@ -87,9 +108,15 @@ export class PreviewCacheService {
         endpoint,
       });
 
+      const authConfig = withAuthHeaders();
+      console.log("🔵 [PreviewCacheService] Headers de autenticación para GET:", {
+        hasAuth: !!authConfig.headers,
+        headerKeys: authConfig.headers ? Object.keys(authConfig.headers) : [],
+      });
+
       const response = await fetch(endpoint, {
         method: "GET",
-        ...withAuthHeaders(),
+        headers: authConfig.headers,
       });
 
       if (!response.ok) {
@@ -148,10 +175,16 @@ export class PreviewCacheService {
         size: optimizedBlob.size,
       });
 
+      const authConfig = withAuthHeaders();
+      console.log("🔵 [PreviewCacheService] Headers de autenticación para PUT:", {
+        hasAuth: !!authConfig.headers,
+        headerKeys: authConfig.headers ? Object.keys(authConfig.headers) : [],
+      });
+
       const uploadResponse = await fetch(endpoint, {
         method: "PUT",
         headers: {
-          ...withAuthHeaders().headers,
+          ...authConfig.headers,
           "x-file-size": optimizedBlob.size.toString(),
         },
         body: formData,

@@ -208,6 +208,49 @@
           emit("mounted", pdfViewer.value || null);
         } else if (props.isOffice) {
           emit("officeMounted", officeViewer.value || null);
+        } else if (props.isExcel) {
+          emit("excelMounted", excelViewer.value || null);
+        } else if (props.isPptx) {
+          emit("pptxMounted", pptxViewer.value || null);
+        }
+      }
+    }
+  );
+
+  // Emitir evento cuando cambie el tipo de archivo a Office
+  watch(
+    () => props.isOffice,
+    async (newIsOffice) => {
+      if (newIsOffice) {
+        await nextTick();
+        if (officeViewer.value) {
+          emit("officeMounted", officeViewer.value);
+        }
+      }
+    }
+  );
+
+  // Emitir evento cuando cambie el tipo de archivo a Excel
+  watch(
+    () => props.isExcel,
+    async (newIsExcel) => {
+      if (newIsExcel) {
+        await nextTick();
+        if (excelViewer.value) {
+          emit("excelMounted", excelViewer.value);
+        }
+      }
+    }
+  );
+
+  // Emitir evento cuando cambie el tipo de archivo a PowerPoint
+  watch(
+    () => props.isPptx,
+    async (newIsPptx) => {
+      if (newIsPptx) {
+        await nextTick();
+        if (pptxViewer.value) {
+          emit("pptxMounted", pptxViewer.value);
         }
       }
     }

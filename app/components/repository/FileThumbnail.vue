@@ -52,234 +52,308 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from "vue";
-import { Loader2, FileText, Image } from "lucide-vue-next";
-import { PreviewCacheService } from "~/core/hexag/repositorio/infrastructure/services/preview-cache.service";
-import { ThumbnailService, type ThumbnailOptions } from "~/core/hexag/repositorio/infrastructure/services/thumbnail.service";
-import { RepositorioDocumentosHttpRepository } from "~/core/hexag/repositorio/infrastructure/repositories/repositorio-documentos-http.repository";
+  import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+  import { Loader2, FileText, Image } from "lucide-vue-next";
+  import { PreviewCacheService } from "~/core/hexag/repositorio/infrastructure/services/preview-cache.service";
+  import {
+    ThumbnailService,
+    type ThumbnailOptions,
+  } from "~/core/hexag/repositorio/infrastructure/services/thumbnail.service";
+  import { RepositorioDocumentosHttpRepository } from "~/core/hexag/repositorio/infrastructure/repositories/repositorio-documentos-http.repository";
 
-interface Props {
-  file?: File | Blob | { name: string; type: string; size?: number };
-  fileName: string;
-  fileId?: string;
-  thumbnail?: string;
-  options?: ThumbnailOptions;
-  showThumbnail?: boolean;
-  nodeCode?: string; // UUID del nodo para usar cache del servidor
-  versionCode?: string; // UUID de la versión del documento (para descargar archivo)
-  mimeType?: string; // MIME type del archivo
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  options: () => ({
-    width: 200,
-    height: 280,
-    quality: 0.8,
-  }),
-  showThumbnail: true,
-});
-
-const emit = defineEmits<{
-  (e: "thumbnail-generated", thumbnail: string): void;
-  (e: "thumbnail-error", error: Error): void;
-}>();
-
-const isLoading = ref(false);
-const isLoadingMessage = ref("Cargando vista previa...");
-const hasError = ref(false);
-const localThumbnail = ref<string | null>(props.thumbnail || null);
-const previewContainer = ref<HTMLElement | null>(null);
-const repository = new RepositorioDocumentosHttpRepository();
-
-const thumbnail = computed(() => localThumbnail.value || props.thumbnail);
-
-const canGenerateThumbnail = computed(() => {
-  const fileType = props.mimeType || 
-    (props.file && "type" in props.file ? props.file.type : "application/octet-stream");
-  const fileName = props.fileName;
-
-  // PDFs
-  if (fileType === "application/pdf") return true;
-
-  // Imágenes
-  if (fileType.startsWith("image/")) return true;
-
-  // Archivos de Office
-  const officeExtensions = ["doc", "docx", "ppt", "pptx", "xls", "xlsx"];
-  const extension = fileName.split(".").pop()?.toLowerCase() || "";
-  if (officeExtensions.includes(extension)) return true;
-
-  // MIME types de Office
-  const officeMimeTypes = [
-    "application/msword",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    "application/vnd.ms-powerpoint",
-    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-    "application/vnd.ms-excel",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  ];
-
-  return officeMimeTypes.some((mime) => fileType.includes(mime));
-});
-
-/**
- * Verifica si existe preview en el servidor y lo carga
- */
-const loadPreviewFromServer = async () => {
-  if (!props.nodeCode) return;
-
-  try {
-    isLoading.value = true;
-    isLoadingMessage.value = "Verificando vista previa...";
-    hasError.value = false;
-
-    // Verificar si existe preview
-    const exists = await PreviewCacheService.hasPreview(props.nodeCode);
-
-    if (exists) {
-      isLoadingMessage.value = "Descargando vista previa...";
-      // Descargar preview
-      const previewDataUrl = await PreviewCacheService.downloadPreview(props.nodeCode);
-
-      if (previewDataUrl) {
-        localThumbnail.value = previewDataUrl;
-        console.log("🟢 [FileThumbnail] Preview cargado desde servidor");
-      } else {
-        console.warn("⚠️ [FileThumbnail] Preview existe pero no se pudo descargar");
-      }
-    } else {
-      console.log("🔵 [FileThumbnail] No existe preview en servidor");
-    }
-  } catch (error) {
-    console.error("🔴 [FileThumbnail] Error al cargar preview desde servidor:", error);
-    hasError.value = true;
-  } finally {
-    isLoading.value = false;
+  interface Props {
+    file?: File | Blob | { name: string; type: string; size?: number };
+    fileName: string;
+    fileId?: string;
+    thumbnail?: string;
+    options?: ThumbnailOptions;
+    showThumbnail?: boolean;
+    nodeCode?: string; // UUID del nodo para usar cache del servidor
+    versionCode?: string; // UUID de la versión del documento (para descargar archivo)
+    mimeType?: string; // MIME type del archivo
   }
-};
 
-/**
- * Genera un thumbnail y lo sube al servidor
- */
-const generateThumbnail = async () => {
-  if (!canGenerateThumbnail.value || isLoading.value) return;
+  const props = withDefaults(defineProps<Props>(), {
+    options: () => ({
+      width: 200,
+      height: 280,
+      quality: 0.8,
+    }),
+    showThumbnail: true,
+  });
 
-  try {
-    isLoading.value = true;
-    isLoadingMessage.value = "Generando vista previa...";
-    hasError.value = false;
+  const emit = defineEmits<{
+    (e: "thumbnail-generated", thumbnail: string): void;
+    (e: "thumbnail-error", error: Error): void;
+  }>();
 
-    let fileToProcess: File | Blob;
+  const isLoading = ref(false);
+  const isLoadingMessage = ref("Cargando vista previa...");
+  const hasError = ref(false);
+  const localThumbnail = ref<string | null>(props.thumbnail || null);
+  const previewContainer = ref<HTMLElement | null>(null);
+  const repository = new RepositorioDocumentosHttpRepository();
 
-    // Si tenemos versionCode, descargar el archivo desde el servidor
-    if (props.versionCode) {
-      try {
-        isLoadingMessage.value = "Descargando archivo...";
-        const fileBlob = await repository.descargarVersion(props.versionCode);
-        const mimeType = props.mimeType || "application/octet-stream";
-        fileToProcess = new File([fileBlob], props.fileName, { type: mimeType });
-      } catch (downloadError: any) {
-        console.error("🔴 [FileThumbnail] Error al descargar archivo:", downloadError);
-        hasError.value = true;
-        emit("thumbnail-error", downloadError as Error);
-        return;
+  const thumbnail = computed(() => localThumbnail.value || props.thumbnail);
+
+  const canGenerateThumbnail = computed(() => {
+    const fileType =
+      props.mimeType ||
+      (props.file && "type" in props.file ? props.file.type : "application/octet-stream");
+    const fileName = props.fileName;
+
+    // PDFs
+    if (fileType === "application/pdf") return true;
+
+    // Imágenes
+    if (fileType.startsWith("image/")) return true;
+
+    // Archivos de Office
+    const officeExtensions = ["doc", "docx", "ppt", "pptx", "xls", "xlsx"];
+    const extension = fileName.split(".").pop()?.toLowerCase() || "";
+    if (officeExtensions.includes(extension)) return true;
+
+    // MIME types de Office
+    const officeMimeTypes = [
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.ms-powerpoint",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ];
+
+    return officeMimeTypes.some((mime) => fileType.includes(mime));
+  });
+
+  /**
+   * Verifica si existe preview en el servidor y lo carga
+   * Si no existe, genera automáticamente (igual que V2.5)
+   */
+  const loadPreviewFromServer = async () => {
+    console.log("🔵 [FileThumbnail] loadPreviewFromServer iniciado:", {
+      nodeCode: props.nodeCode,
+      versionCode: props.versionCode,
+      canGenerate: canGenerateThumbnail.value,
+      fileName: props.fileName,
+    });
+
+    if (!props.nodeCode) {
+      console.log("🔵 [FileThumbnail] No hay nodeCode, intentando generar sin cache");
+      // Si no hay nodeCode, intentar generar sin cache
+      if (canGenerateThumbnail.value && props.versionCode) {
+        await generateThumbnail();
       }
-    } else if (props.file instanceof File || props.file instanceof Blob) {
-      // Es un archivo local
-      fileToProcess = props.file;
-    } else {
-      // No podemos generar thumbnail sin el archivo
-      console.warn("⚠️ [FileThumbnail] No se puede generar thumbnail sin archivo");
-      hasError.value = true;
       return;
     }
 
-    isLoadingMessage.value = "Procesando imagen...";
+    try {
+      isLoading.value = true;
+      isLoadingMessage.value = "Verificando vista previa...";
+      hasError.value = false;
 
-    // Generar thumbnail
-    let generatedThumbnail: string | null = null;
-
-    // Si tenemos nodeCode, usar el método con cache (genera y sube automáticamente)
-    if (props.nodeCode) {
-      generatedThumbnail = await ThumbnailService.generateThumbnailWithCache(
-        fileToProcess,
-        props.nodeCode,
-        props.options
+      console.log(
+        "🔵 [FileThumbnail] Verificando si existe preview en servidor para nodeCode:",
+        props.nodeCode
       );
-    } else {
-      // Generar sin cache
-      generatedThumbnail = await ThumbnailService.generateThumbnail(
-        fileToProcess,
-        props.options
-      );
-    }
 
-    if (generatedThumbnail) {
-      localThumbnail.value = generatedThumbnail;
-      emit("thumbnail-generated", generatedThumbnail);
-      console.log("🟢 [FileThumbnail] Thumbnail generado exitosamente");
-    } else {
-      hasError.value = true;
-      console.warn("⚠️ [FileThumbnail] No se pudo generar thumbnail");
-    }
-  } catch (error: any) {
-    console.error("🔴 [FileThumbnail] Error generando thumbnail:", error);
-    hasError.value = true;
-    emit("thumbnail-error", error as Error);
-  } finally {
-    isLoading.value = false;
-  }
-};
+      // Verificar si existe preview
+      const exists = await PreviewCacheService.hasPreview(props.nodeCode);
 
-const handleImageError = () => {
-  hasError.value = true;
-  localThumbnail.value = null;
-};
+      console.log("🔵 [FileThumbnail] Resultado de verificación:", {
+        exists,
+        nodeCode: props.nodeCode,
+      });
 
-const handleImageLoad = () => {
-  hasError.value = false;
-};
+      if (exists) {
+        isLoadingMessage.value = "Descargando vista previa...";
+        console.log("🟢 [FileThumbnail] Preview existe, descargando...");
+        // Descargar preview
+        const previewDataUrl = await PreviewCacheService.downloadPreview(props.nodeCode);
 
-// Cargar preview desde servidor al montar si tenemos nodeCode
-onMounted(() => {
-  if (props.showThumbnail && props.nodeCode && !thumbnail.value && !isLoading.value) {
-    // Usar Intersection Observer para lazy loading
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !isLoading.value && !thumbnail.value) {
-            loadPreviewFromServer();
-            observer.disconnect(); // Solo cargar una vez
+        if (previewDataUrl) {
+          localThumbnail.value = previewDataUrl;
+          console.log("🟢 [FileThumbnail] Preview cargado desde servidor exitosamente");
+          return; // ✅ Preview cargado exitosamente
+        } else {
+          console.warn("⚠️ [FileThumbnail] Preview existe pero no se pudo descargar");
+        }
+      } else {
+        console.log(
+          "🔵 [FileThumbnail] No existe preview en servidor, generando automáticamente...",
+          {
+            canGenerate: canGenerateThumbnail.value,
+            hasVersionCode: !!props.versionCode,
           }
-        });
-      },
-      {
-        rootMargin: "50px", // Cargar cuando esté a 50px de ser visible
-        threshold: 0.1,
+        );
       }
-    );
 
-    // Observar el elemento del thumbnail
-    if (previewContainer.value) {
-      observer.observe(previewContainer.value);
+      // ❌ NUEVO (igual que V2.5): Si no existe, generar automáticamente
+      if (canGenerateThumbnail.value && props.versionCode) {
+        isLoadingMessage.value = "Generando vista previa...";
+        console.log("🟡 [FileThumbnail] Iniciando generación automática de preview...");
+        await generateThumbnail(); // Generar y subir automáticamente
+      } else {
+        if (!canGenerateThumbnail.value) {
+          console.warn(
+            "⚠️ [FileThumbnail] No se puede generar preview - archivo no soportado"
+          );
+        }
+        if (!props.versionCode) {
+          console.warn("⚠️ [FileThumbnail] No se puede generar preview sin versionCode");
+        }
+        hasError.value = true;
+      }
+    } catch (error) {
+      console.error("🔴 [FileThumbnail] Error al cargar preview desde servidor:", {
+        error,
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        nodeCode: props.nodeCode,
+        versionCode: props.versionCode,
+      });
+
+      // Si falla la carga, intentar generar como fallback
+      if (canGenerateThumbnail.value && props.versionCode) {
+        console.log("🟡 [FileThumbnail] Intentando generar preview como fallback...");
+        try {
+          await generateThumbnail();
+        } catch (genError) {
+          console.error("🔴 [FileThumbnail] Error al generar preview:", {
+            error: genError,
+            message: genError instanceof Error ? genError.message : String(genError),
+            stack: genError instanceof Error ? genError.stack : undefined,
+          });
+          hasError.value = true;
+        }
+      } else {
+        hasError.value = true;
+      }
+    } finally {
+      isLoading.value = false;
     }
+  };
 
-    // Cleanup al desmontar
-    onUnmounted(() => {
-      observer.disconnect();
-    });
-  }
-});
+  /**
+   * Genera un thumbnail y lo sube al servidor
+   */
+  const generateThumbnail = async () => {
+    if (!canGenerateThumbnail.value || isLoading.value) return;
 
-// Recargar preview si cambia nodeCode
-watch(
-  () => props.nodeCode,
-  (newNodeCode) => {
-    if (newNodeCode && props.showThumbnail && !thumbnail.value) {
-      loadPreviewFromServer();
+    try {
+      isLoading.value = true;
+      isLoadingMessage.value = "Generando vista previa...";
+      hasError.value = false;
+
+      let fileToProcess: File | Blob;
+
+      // Si tenemos versionCode, descargar el archivo desde el servidor
+      if (props.versionCode) {
+        try {
+          isLoadingMessage.value = "Descargando archivo...";
+          const fileBlob = await repository.descargarVersion(props.versionCode);
+          const mimeType = props.mimeType || "application/octet-stream";
+          fileToProcess = new File([fileBlob], props.fileName, { type: mimeType });
+        } catch (downloadError: any) {
+          console.error("🔴 [FileThumbnail] Error al descargar archivo:", downloadError);
+          hasError.value = true;
+          emit("thumbnail-error", downloadError as Error);
+          return;
+        }
+      } else if (props.file instanceof File || props.file instanceof Blob) {
+        // Es un archivo local
+        fileToProcess = props.file;
+      } else {
+        // No podemos generar thumbnail sin el archivo
+        console.warn("⚠️ [FileThumbnail] No se puede generar thumbnail sin archivo");
+        hasError.value = true;
+        return;
+      }
+
+      isLoadingMessage.value = "Procesando imagen...";
+
+      // Generar thumbnail
+      let generatedThumbnail: string | null = null;
+
+      // Si tenemos nodeCode, usar el método con cache (genera y sube automáticamente)
+      if (props.nodeCode) {
+        generatedThumbnail = await ThumbnailService.generateThumbnailWithCache(
+          fileToProcess,
+          props.nodeCode,
+          props.options
+        );
+      } else {
+        // Generar sin cache
+        generatedThumbnail = await ThumbnailService.generateThumbnail(
+          fileToProcess,
+          props.options
+        );
+      }
+
+      if (generatedThumbnail) {
+        localThumbnail.value = generatedThumbnail;
+        emit("thumbnail-generated", generatedThumbnail);
+        console.log("🟢 [FileThumbnail] Thumbnail generado exitosamente");
+      } else {
+        hasError.value = true;
+        console.warn("⚠️ [FileThumbnail] No se pudo generar thumbnail");
+      }
+    } catch (error: any) {
+      console.error("🔴 [FileThumbnail] Error generando thumbnail:", error);
+      hasError.value = true;
+      emit("thumbnail-error", error as Error);
+    } finally {
+      isLoading.value = false;
     }
-  }
-);
+  };
+
+  const handleImageError = () => {
+    hasError.value = true;
+    localThumbnail.value = null;
+  };
+
+  const handleImageLoad = () => {
+    hasError.value = false;
+  };
+
+  // Cargar preview desde servidor al montar si tenemos nodeCode
+  onMounted(() => {
+    if (props.showThumbnail && props.nodeCode && !thumbnail.value && !isLoading.value) {
+      // Usar Intersection Observer para lazy loading
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !isLoading.value && !thumbnail.value) {
+              loadPreviewFromServer();
+              observer.disconnect(); // Solo cargar una vez
+            }
+          });
+        },
+        {
+          rootMargin: "50px", // Cargar cuando esté a 50px de ser visible
+          threshold: 0.1,
+        }
+      );
+
+      // Observar el elemento del thumbnail
+      if (previewContainer.value) {
+        observer.observe(previewContainer.value);
+      }
+
+      // Cleanup al desmontar
+      onUnmounted(() => {
+        observer.disconnect();
+      });
+    }
+  });
+
+  // Recargar preview si cambia nodeCode
+  watch(
+    () => props.nodeCode,
+    (newNodeCode) => {
+      if (newNodeCode && props.showThumbnail && !thumbnail.value) {
+        loadPreviewFromServer();
+      }
+    }
+  );
 </script>
-
-
