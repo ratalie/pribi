@@ -3,89 +3,208 @@ import { useDocumentosStore } from "./documentos.store";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
 import { useDownloadDataStore } from "./download-data.store";
+import { numeroALetras, montoALetras } from "~/utils/numero-a-letras";
 
 /**
  * Store para Variables Completas del Acta
  *
- * Calcula reactivamente todas las variables necesarias para el template Mustache del acta.
- * Se actualiza automáticamente cuando cambian los datos de downloadData o snapshot.
+ * ✅ SOLO STATE Y ACTIONS - Sin getters
+ * ✅ Se carga automáticamente cuando cambian los datos base
  */
 export const useActaDocumentStore = defineStore("actaDocument", {
-  // ✅ PERSISTENCIA: Guardar en localStorage para debug
+  // ✅ PERSISTENCIA: Guardar en localStorage
+  // ⚠️ Cambiado key para limpiar datos antiguos duplicados
   persist: {
     storage: localStorage,
-    key: "probo-acta-document-variables",
+    key: "probo-acta-document-variables-v2",
   },
 
   state: () => ({
-    // Cache de variables completas calculadas
-    // Se actualiza automáticamente cuando cambian los datos
-    variablesCompletasCache: null as any,
+    // ============================================
+    // VARIABLES BASE (encabezado)
+    // ============================================
+    variablesBase: {
+      acta_label: "",
+      ciudad: "",
+      date: "",
+      hours: "",
+      nombre_empresa: "",
+      direccion: "",
+      ruc: "",
+    },
+
+    // ============================================
+    // VARIABLES DE JUNTA
+    // ============================================
+    variablesJunta: {
+      nombre_junta: "",
+      tiene_nombre_junta: false,
+      es_anual_obligatoria: false,
+      tipo_junta: "" as "UNIVERSAL" | "GENERAL",
+      es_universal: false,
+      es_general: false,
+      convocatoria_activa: null as string | null,
+      convocatoria_realizada: "",
+      fecha_convocatoria: "",
+      primera_convocatoria: null as {
+        fecha: string;
+        hora: string;
+        lugar: string;
+        modo: string;
+      } | null,
+      segunda_convocatoria: null as {
+        fecha: string;
+        hora: string;
+        lugar: string;
+        modo: string;
+      } | null,
+      _convocatoria_realizada_lower: "",
+    },
+
+    // ============================================
+    // VARIABLES DE ASISTENCIA
+    // ============================================
+    variablesAsistencia: {
+      asistencia_lista: [] as Array<{ texto_asistencia: string }>,
+      accionistas_asistentes: [] as any[],
+      accionistas_con_derecho_voto: [] as any[],
+      total_acciones: "",
+      total_acciones_numero: 0,
+      porcentaje_acciones: "",
+      porcentaje_acciones_numero: 0,
+      valor_nominal: "",
+    },
+
+    // ============================================
+    // VARIABLES DE PRESIDENCIA Y SECRETARÍA
+    // ============================================
+    variablesPresidenciaSecretaria: {
+      presidente_junta: "",
+      secretario_junta: "",
+      hora_acta: "",
+      asistentes_firmas: [] as Array<{ nombre_accionista: string }>,
+      is_universal: false,
+      porcentaje_acciones_asistentes: "",
+    },
+
+    // ============================================
+    // VARIABLES DE AGENDA
+    // ============================================
+    variablesAgenda: [] as Array<{ numero: number; titulo: string }>,
+
+    // ============================================
+    // VARIABLES DE QUÓRUM
+    // ============================================
+    variablesQuorum: {
+      primera_simple: 0,
+      primera_calificada: 0,
+      segunda_simple: 0,
+      segunda_calificada: 0,
+      convocatoria_realizada: "",
+      porcentaje_asistencia: 0,
+      porcentaje_asistencia_texto: "",
+      cumple_quorum_simple: false,
+      cumple_quorum_calificado: false,
+      apertura_junta: false,
+    },
+
+    // ============================================
+    // VARIABLES DE APERTURA DE PUNTOS
+    // ============================================
+    variablesAperturaPuntos: [] as Array<{
+      punto_id: string;
+      punto_titulo: string;
+      tipo_junta: string;
+      convocatoria_realizada: string;
+      tipoPuntoAgenda: string;
+      porcentajeAsistenciaRequerido: number;
+      porcentajeAsistenciaPunto: number;
+      aperturado: boolean;
+    }>,
+
+    // ============================================
+    // VARIABLES DE APORTE DINERARIO
+    // ============================================
+    aporteDinerario: null as {
+      tipo: string;
+      numero: number;
+      titulo: string;
+      votacion: any;
+      datos: any;
+    } | null,
+
+    // ============================================
+    // METADATA
+    // ============================================
     lastUpdated: null as number | null,
+    isLoaded: false,
   }),
 
-  getters: {
+  actions: {
     /**
-     * Variables completas para el template del acta
-     * Se calcula reactivamente cuando cambian los datos
-     * También actualiza el cache en el state para persistencia
+     * MIGRAR DATOS - Limpia datos antiguos del localStorage
+     * Se ejecuta automáticamente al cargar si detecta datos antiguos
      */
-    variablesCompletas() {
-      // Construir todas las secciones directamente desde los getters
-      // Los getters internos ya manejan los casos donde faltan datos (valores por defecto)
-      const variablesBase = this.variablesBase;
-      const variablesJunta = this.variablesJunta;
-      const variablesAsistencia = this.variablesAsistencia;
-      const variablesPresidencia = this.variablesPresidenciaSecretaria;
-      const variablesAperturaPuntos = this.variablesAperturaPuntos;
-      const variablesAgenda = this.variablesAgenda;
-
-      // Obtener quorum (acceder directamente al getter)
-      const variablesQuorum = this.variablesQuorum as ReturnType<typeof this.variablesQuorum>;
-
-      // Combinar todo
-      const variablesCompletas = {
-        ...variablesBase,
-        ...variablesJunta,
-        ...variablesAsistencia,
-        ...variablesPresidencia, // presidente_junta, secretario_junta, hora_acta, asistentes_firmas
-        agenda: variablesAgenda, // Lista de agenda numerada
-        quorum: variablesQuorum,
-        puntos_agenda_apertura: variablesAperturaPuntos,
-      };
-
-      // ✅ ACTUALIZAR CACHE EN STATE para persistencia
-      this.variablesCompletasCache = variablesCompletas;
-      this.lastUpdated = Date.now();
-
-      // Log de éxito
-      console.log(
-        "✅ [ActaDocumentStore] Variables completas calculadas y cache actualizado:",
-        {
-          acta_label: (variablesCompletas as any).acta_label,
-          nombre_empresa: (variablesCompletas as any).nombre_empresa,
-          presidente: (variablesCompletas as any).presidente_junta,
-          secretario: (variablesCompletas as any).secretario_junta,
-          apertura_junta: variablesCompletas.quorum.apertura_junta,
-          puntosApertura: variablesCompletas.puntos_agenda_apertura.length,
+    migrate() {
+      // Limpiar localStorage antiguo si existe
+      try {
+        const oldKey = "probo-acta-document-variables";
+        const oldData = localStorage.getItem(oldKey);
+        if (oldData) {
+          console.log("🧹 [ActaDocumentStore] Limpiando datos antiguos...");
+          localStorage.removeItem(oldKey);
+          console.log("✅ [ActaDocumentStore] Datos antiguos eliminados");
         }
-      );
-
-      return variablesCompletas;
+      } catch (error) {
+        console.warn("⚠️ [ActaDocumentStore] Error al limpiar datos antiguos:", error);
+      }
     },
 
     /**
-     * Variables base (encabezado)
+     * CARGAR TODO - Calcula y actualiza todas las variables en el state
+     * Se debe llamar cuando cambien los datos base (downloadData, snapshot)
      */
-    variablesBase() {
-      const documentosStore = useDocumentosStore();
-      const datosSociedad = documentosStore.datosSociedad!;
-      const datosJunta = documentosStore.datosJunta!;
+    load() {
+      // Migrar datos antiguos si es necesario (solo una vez)
+      if (!this.isLoaded) {
+        this.migrate();
+      }
 
-      return {
-        // ============================================
-        // ENCABEZADO
-        // ============================================
+      console.log("🔄 [ActaDocumentStore] Cargando todas las variables...");
+
+      // Actualizar cada sección en orden
+      this.loadVariablesBase();
+      this.loadVariablesJunta();
+      this.loadVariablesAsistencia();
+      this.loadVariablesPresidenciaSecretaria();
+      this.loadVariablesAgenda();
+      this.loadVariablesQuorum();
+      this.loadVariablesAperturaPuntos();
+      this.loadVariablesAporteDinerario();
+
+      this.lastUpdated = Date.now();
+      this.isLoaded = true;
+
+      console.log("✅ [ActaDocumentStore] Todas las variables cargadas:", {
+        acta_label: this.variablesBase.acta_label,
+        nombre_empresa: this.variablesBase.nombre_empresa,
+        presidente: this.variablesPresidenciaSecretaria.presidente_junta,
+        apertura_junta: this.variablesQuorum.apertura_junta,
+        tieneAporteDinerario: !!this.aporteDinerario,
+      });
+    },
+
+    /**
+     * Cargar variables base (encabezado)
+     */
+    loadVariablesBase() {
+      const documentosStore = useDocumentosStore();
+      const datosSociedad = documentosStore.datosSociedad;
+      const datosJunta = documentosStore.datosJunta;
+
+      if (!datosSociedad || !datosJunta) return;
+
+      this.variablesBase = {
         acta_label: datosJunta.esUniversal
           ? "ACTA DE JUNTA UNIVERSAL"
           : "ACTA DE JUNTA GENERAL",
@@ -114,26 +233,29 @@ export const useActaDocumentStore = defineStore("actaDocument", {
     },
 
     /**
-     * Variables de junta (nombre, tipo, convocatoria)
+     * Cargar variables de junta
      */
-    variablesJunta() {
+    loadVariablesJunta() {
       const documentosStore = useDocumentosStore();
       const meetingDetailsStore = useMeetingDetailsStore();
       const downloadDataStore = useDownloadDataStore();
-      const datosJunta = documentosStore.datosJunta!;
+      const datosJunta = documentosStore.datosJunta;
 
-      // Obtener nombre de junta
+      if (!datosJunta) return;
+
+      // Nombre de junta
       const nombreJunta =
         meetingDetailsStore.meetingDetails?.nombreJunta ||
         downloadDataStore.meetingDetails?.nombreJunta ||
         null;
 
-      // Construir nombre si no existe
-      let nombreJuntaFinal: string | undefined = undefined;
+      let nombreJuntaFinal: string;
+      let tieneNombreJunta: boolean;
+
       if (nombreJunta) {
         nombreJuntaFinal = nombreJunta;
+        tieneNombreJunta = true;
       } else {
-        // Construir desde isAnnualMandatory
         if (datosJunta.esAnualObligatoria) {
           nombreJuntaFinal = datosJunta.esUniversal
             ? "Junta Universal Ordinaria"
@@ -143,43 +265,28 @@ export const useActaDocumentStore = defineStore("actaDocument", {
             ? "Junta Universal Extraordinaria"
             : "Junta General Extraordinaria";
         }
+        tieneNombreJunta = false;
       }
 
-      // Obtener convocatoria realizada
+      // Convocatoria
       const convocatoriaRealizada = datosJunta.esUniversal
         ? "UNIVERSAL"
         : meetingDetailsStore.instaladaEnConvocatoria || "PRIMERA";
 
-      // Formatear convocatoria para puntos (lowercase)
-      const convocatoriaRealizadaLower =
-        convocatoriaRealizada === "UNIVERSAL"
-          ? "universal"
-          : convocatoriaRealizada.toLowerCase();
-
-      // Fecha de convocatoria
-      const fechaConvocatoria = datosJunta.esUniversal
-        ? datosJunta.primeraConvocatoria?.dateFormatted || ""
-        : convocatoriaRealizada === "PRIMERA"
-        ? datosJunta.primeraConvocatoria?.dateFormatted || ""
-        : datosJunta.segundaConvocatoria?.dateFormatted || "";
-
-      return {
-        // Nombre de junta
+      this.variablesJunta = {
         nombre_junta: nombreJuntaFinal,
-        tiene_nombre_junta: !!nombreJuntaFinal,
+        tiene_nombre_junta: tieneNombreJunta,
         es_anual_obligatoria: datosJunta.esAnualObligatoria || false,
-
-        // Tipo de junta
         tipo_junta: datosJunta.esUniversal ? "UNIVERSAL" : "GENERAL",
         es_universal: datosJunta.esUniversal,
         es_general: !datosJunta.esUniversal,
-
-        // Convocatoria
         convocatoria_activa: datosJunta.esUniversal ? null : convocatoriaRealizada,
         convocatoria_realizada: convocatoriaRealizada,
-        fecha_convocatoria: fechaConvocatoria,
-
-        // Datos de convocatorias
+        fecha_convocatoria: datosJunta.esUniversal
+          ? datosJunta.primeraConvocatoria?.dateFormatted || ""
+          : convocatoriaRealizada === "PRIMERA"
+          ? datosJunta.primeraConvocatoria?.dateFormatted || ""
+          : datosJunta.segundaConvocatoria?.dateFormatted || "",
         primera_convocatoria: datosJunta.primeraConvocatoria
           ? {
               fecha: datosJunta.primeraConvocatoria.dateFormatted || "",
@@ -188,7 +295,6 @@ export const useActaDocumentStore = defineStore("actaDocument", {
               modo: datosJunta.primeraConvocatoria.modeFormatted || "",
             }
           : null,
-
         segunda_convocatoria: datosJunta.segundaConvocatoria
           ? {
               fecha: datosJunta.segundaConvocatoria.dateFormatted || "",
@@ -197,23 +303,23 @@ export const useActaDocumentStore = defineStore("actaDocument", {
               modo: datosJunta.segundaConvocatoria.modeFormatted || "",
             }
           : null,
-
-        // Helper para puntos (lowercase)
-        _convocatoria_realizada_lower: convocatoriaRealizadaLower,
+        _convocatoria_realizada_lower:
+          convocatoriaRealizada === "UNIVERSAL"
+            ? "universal"
+            : convocatoriaRealizada.toLowerCase(),
       };
     },
 
     /**
-     * Variables de asistencia
+     * Cargar variables de asistencia
      */
-    variablesAsistencia() {
+    loadVariablesAsistencia() {
       const documentosStore = useDocumentosStore();
       const asistentes = documentosStore.listaAccionistasAsistentes;
       const todosAccionistas = documentosStore.listaAccionistasConDerechoAVoto;
       const totalAcciones = documentosStore.totalAccionesConDerechoVoto;
       const porcentajeAsistencia = documentosStore.porcentajeAsistencia;
 
-      // Helper para formatear asistencia
       const formatearAsistencia = (accionista: any): string => {
         const esPersonaNatural = accionista.tipo === "NATURAL";
 
@@ -231,13 +337,10 @@ export const useActaDocumentStore = defineStore("actaDocument", {
         }
       };
 
-      return {
-        // Lista formateada para Mustache
+      this.variablesAsistencia = {
         asistencia_lista: asistentes.map((a: any) => ({
           texto_asistencia: formatearAsistencia(a),
         })),
-
-        // Arrays completos
         accionistas_asistentes: asistentes.map((a: any) => ({
           id: a.id,
           nombre: a.nombre,
@@ -256,7 +359,6 @@ export const useActaDocumentStore = defineStore("actaDocument", {
               }
             : null,
         })),
-
         accionistas_con_derecho_voto: todosAccionistas.map((a: any) => ({
           id: a.id,
           nombre: a.nombre,
@@ -275,124 +377,85 @@ export const useActaDocumentStore = defineStore("actaDocument", {
               }
             : null,
         })),
-
-        // Totales
         total_acciones: totalAcciones.toLocaleString("es-PE"),
         total_acciones_numero: totalAcciones,
         porcentaje_acciones: porcentajeAsistencia.toFixed(2) + "%",
         porcentaje_acciones_numero: porcentajeAsistencia,
-        valor_nominal: "1.00", // TODO: Obtener desde snapshot cuando esté disponible
+        valor_nominal: "1.00", // TODO: Obtener desde snapshot
       };
     },
 
     /**
-     * Variables de presidencia y secretaría
+     * Cargar variables de presidencia y secretaría
      */
-    variablesPresidenciaSecretaria() {
+    loadVariablesPresidenciaSecretaria() {
       const documentosStore = useDocumentosStore();
       const meetingDetailsStore = useMeetingDetailsStore();
       const snapshotStore = useSnapshotStore();
-      const datosJunta = documentosStore.datosJunta!;
+      const datosJunta = documentosStore.datosJunta;
       const asistentes = documentosStore.listaAccionistasAsistentes;
 
-      // Obtener nombres de presidente y secretario desde IDs
       const obtenerNombreDesdePersonId = (
         personId: string | null | undefined,
         esSecretario: boolean = false
       ): string => {
         if (!personId) {
-          console.warn(
-            `⚠️ [ActaDocumentStore] No hay ${esSecretario ? "secretario" : "presidente"}Id`
-          );
           return "No especificado";
         }
 
-        // Buscar en directores del snapshot
+        // Buscar en directores
         const directores = snapshotStore.directores;
         const director = directores.find((d) => d.persona.id === personId);
         if (director) {
-          const nombre = `${director.persona.nombre} ${director.persona.apellidoPaterno} ${
+          return `${director.persona.nombre} ${director.persona.apellidoPaterno} ${
             director.persona.apellidoMaterno || ""
           }`.trim();
-          console.log(
-            `✅ [ActaDocumentStore] ${
-              esSecretario ? "Secretario" : "Presidente"
-            } encontrado en directores:`,
-            nombre
-          );
-          return nombre;
         }
 
-        // Buscar en apoderados (attorneys) del snapshot
+        // Buscar en apoderados
         const snapshot = snapshotStore.snapshot;
         const apoderado = snapshot?.attorneys?.find((a) => a.persona.id === personId);
         if (apoderado) {
-          let nombre = "";
           if (apoderado.persona.tipo === "NATURAL") {
-            nombre = `${apoderado.persona.nombre} ${apoderado.persona.apellidoPaterno} ${
+            return `${apoderado.persona.nombre} ${apoderado.persona.apellidoPaterno} ${
               apoderado.persona.apellidoMaterno || ""
             }`.trim();
           } else {
-            nombre = apoderado.persona.razonSocial || "No especificado";
+            return apoderado.persona.razonSocial || "No especificado";
           }
-          console.log(
-            `✅ [ActaDocumentStore] ${
-              esSecretario ? "Secretario" : "Presidente"
-            } encontrado en apoderados:`,
-            nombre
-          );
-          return nombre;
         }
 
-        // Si no se encuentra, usar el nombre del downloadData (puede estar vacío)
-        const nombreFallback = esSecretario ? datosJunta.secretario : datosJunta.presidente;
-        console.warn(
-          `⚠️ [ActaDocumentStore] ${
-            esSecretario ? "Secretario" : "Presidente"
-          } no encontrado en snapshot, usando fallback:`,
-          nombreFallback
-        );
+        const nombreFallback = esSecretario ? datosJunta?.secretario : datosJunta?.presidente;
         return nombreFallback || "No especificado";
       };
 
       const presidenteId = meetingDetailsStore.meetingDetails?.presidenteId;
       const secretarioId = meetingDetailsStore.meetingDetails?.secretarioId;
 
-      const nombrePresidente = obtenerNombreDesdePersonId(presidenteId, false);
-      const nombreSecretario = obtenerNombreDesdePersonId(secretarioId, true);
-
-      return {
-        // Mesa directiva
-        presidente_junta: nombrePresidente,
-        secretario_junta: nombreSecretario,
-
-        // Cierre
+      this.variablesPresidenciaSecretaria = {
+        presidente_junta: obtenerNombreDesdePersonId(presidenteId, false),
+        secretario_junta: obtenerNombreDesdePersonId(secretarioId, true),
         hora_acta: new Date().toLocaleTimeString("es-PE", {
           hour: "2-digit",
           minute: "2-digit",
         }),
-
-        // Firmas (solo para Junta Universal)
-        asistentes_firmas: datosJunta.esUniversal
+        asistentes_firmas: datosJunta?.esUniversal
           ? asistentes.map((a: any) => ({
               nombre_accionista: a.nombre,
             }))
           : [],
-
-        // Quórum (para compatibilidad con template antiguo)
-        is_universal: datosJunta.esUniversal,
+        is_universal: datosJunta?.esUniversal || false,
         porcentaje_acciones_asistentes: documentosStore.porcentajeAsistencia.toFixed(2),
       };
     },
 
     /**
-     * Variables de agenda (lista de puntos numerados)
+     * Cargar variables de agenda
      */
-    variablesAgenda() {
+    loadVariablesAgenda() {
       const documentosStore = useDocumentosStore();
       const puntosActivos = documentosStore.puntosAgendaActivos;
 
-      // Mapeo de puntos a títulos
       const titulosPuntos: Record<string, string> = {
         aporteDinerario: "Aumento de capital mediante nuevos aportes dinerarios",
         capitalizacionCreditos: "Aumento de capital mediante capitalización de créditos",
@@ -405,7 +468,6 @@ export const useActaDocumentStore = defineStore("actaDocument", {
         designacionAuditores: "Designación de Auditores Externos",
       };
 
-      // Construir lista de agenda
       const agenda: string[] = [];
 
       puntosActivos.forEach((puntoId) => {
@@ -415,7 +477,6 @@ export const useActaDocumentStore = defineStore("actaDocument", {
         }
       });
 
-      // Si hay aumento de capital (aportes o capitalización), agregar modificación de estatuto
       if (
         puntosActivos.includes("aporteDinerario") ||
         puntosActivos.includes("capitalizacionCreditos")
@@ -423,77 +484,67 @@ export const useActaDocumentStore = defineStore("actaDocument", {
         agenda.push("Modificación parcial del estatuto social de la Sociedad");
       }
 
-      // Siempre agregar otorgamiento de facultades al final
       agenda.push("Otorgamiento de facultades para la formalización de acuerdos");
 
-      return agenda.map((titulo, index) => ({
+      this.variablesAgenda = agenda.map((titulo, index) => ({
         numero: index + 1,
         titulo,
       }));
     },
 
     /**
-     * Variables de quórum
+     * Cargar variables de quórum
      */
-    variablesQuorum() {
+    loadVariablesQuorum() {
       const documentosStore = useDocumentosStore();
       const snapshotStore = useSnapshotStore();
       const meetingDetailsStore = useMeetingDetailsStore();
-      const datosJunta = documentosStore.datosJunta!;
+      const datosJunta = documentosStore.datosJunta;
       const porcentajeAsistencia = documentosStore.porcentajeAsistencia;
 
-      // Obtener quórums del snapshot
       const quorums = snapshotStore.quorums;
       if (!quorums) {
-        console.warn("⚠️ [ActaDocumentStore] No hay quórums en el snapshot");
-        return {
+        this.variablesQuorum = {
           primera_simple: 50,
           primera_calificada: 66.66,
           segunda_simple: 25,
           segunda_calificada: 50,
-          convocatoria_realizada: datosJunta.esUniversal ? "UNIVERSAL" : "PRIMERA",
+          convocatoria_realizada: datosJunta?.esUniversal ? "UNIVERSAL" : "PRIMERA",
           porcentaje_asistencia: porcentajeAsistencia,
           porcentaje_asistencia_texto: porcentajeAsistencia.toFixed(2) + "%",
           cumple_quorum_simple: false,
           cumple_quorum_calificado: false,
-          apertura_junta: false, // Por defecto false si no hay quórums
+          apertura_junta: false,
         };
+        return;
       }
 
-      // Determinar convocatoria realizada
-      const convocatoriaRealizada = datosJunta.esUniversal
+      const convocatoriaRealizada = datosJunta?.esUniversal
         ? "UNIVERSAL"
         : meetingDetailsStore.instaladaEnConvocatoria || "PRIMERA";
 
-      // Calcular si cumple quórum simple y calificado
       let cumpleQuorumSimple = false;
       let cumpleQuorumCalificado = false;
 
-      if (datosJunta.esUniversal) {
-        // Universal: siempre cumple (100% requerido)
+      if (datosJunta?.esUniversal) {
         cumpleQuorumSimple = porcentajeAsistencia >= 100;
         cumpleQuorumCalificado = porcentajeAsistencia >= 100;
       } else {
-        // General: según convocatoria
         if (convocatoriaRealizada === "PRIMERA") {
           cumpleQuorumSimple = porcentajeAsistencia >= quorums.primeraConvocatoriaSimple;
           cumpleQuorumCalificado =
             porcentajeAsistencia >= quorums.primeraConvocatoriaCalificada;
         } else {
-          // SEGUNDA
           cumpleQuorumSimple = porcentajeAsistencia >= quorums.segundaConvocatoriaSimple;
           cumpleQuorumCalificado =
             porcentajeAsistencia >= quorums.segundaConvocatoriaCalificada;
         }
       }
 
-      // Calcular apertura de junta basado en puntos de agenda
-      // Nota: Calculamos aquí directamente para evitar dependencia circular
       const puntosActivos = documentosStore.puntosAgendaActivos;
       let aperturaJunta = false;
 
       if (puntosActivos.length > 0) {
-        // Reglas de tipo de votación por punto
         const tipoVotacionPorPunto: Record<string, "simple" | "calificado"> = {
           aporteDinerario: "simple",
           capitalizacionCreditos: "simple",
@@ -506,13 +557,12 @@ export const useActaDocumentStore = defineStore("actaDocument", {
           designacionAuditores: "simple",
         };
 
-        // Verificar si al menos 1 punto cumple el quórum
         aperturaJunta = puntosActivos.some((puntoId) => {
           const tipoVotacion = tipoVotacionPorPunto[puntoId] || "simple";
           let porcentajeRequerido = 0;
 
-          if (datosJunta.esUniversal) {
-            porcentajeRequerido = 0; // Universal siempre se abre
+          if (datosJunta?.esUniversal) {
+            porcentajeRequerido = 0;
           } else {
             if (convocatoriaRealizada === "PRIMERA") {
               porcentajeRequerido =
@@ -520,7 +570,6 @@ export const useActaDocumentStore = defineStore("actaDocument", {
                   ? quorums.primeraConvocatoriaSimple
                   : quorums.primeraConvocatoriaCalificada;
             } else {
-              // SEGUNDA
               porcentajeRequerido =
                 tipoVotacion === "simple"
                   ? quorums.segundaConvocatoriaSimple
@@ -532,52 +581,42 @@ export const useActaDocumentStore = defineStore("actaDocument", {
         });
       }
 
-      return {
-        // Quórums requeridos (del snapshot)
+      this.variablesQuorum = {
         primera_simple: quorums.primeraConvocatoriaSimple,
         primera_calificada: quorums.primeraConvocatoriaCalificada,
         segunda_simple: quorums.segundaConvocatoriaSimple,
         segunda_calificada: quorums.segundaConvocatoriaCalificada,
-
-        // Estado actual
         convocatoria_realizada: convocatoriaRealizada,
         porcentaje_asistencia: porcentajeAsistencia,
         porcentaje_asistencia_texto: porcentajeAsistencia.toFixed(2) + "%",
-
-        // Validaciones
         cumple_quorum_simple: cumpleQuorumSimple,
         cumple_quorum_calificado: cumpleQuorumCalificado,
-
-        // Apertura de junta (calculado desde puntos de agenda)
         apertura_junta: aperturaJunta,
       };
     },
 
     /**
-     * Variables de apertura de puntos de agenda
+     * Cargar variables de apertura de puntos
      */
-    variablesAperturaPuntos() {
+    loadVariablesAperturaPuntos() {
       const documentosStore = useDocumentosStore();
       const snapshotStore = useSnapshotStore();
       const meetingDetailsStore = useMeetingDetailsStore();
-      const datosJunta = documentosStore.datosJunta!;
+      const datosJunta = documentosStore.datosJunta;
       const porcentajeAsistencia = documentosStore.porcentajeAsistencia;
       const puntosActivos = documentosStore.puntosAgendaActivos;
 
-      // Obtener quórums
       const quorums = snapshotStore.quorums;
       if (!quorums) {
-        console.warn("⚠️ [ActaDocumentStore] No hay quórums para calcular apertura de puntos");
-        return [];
+        this.variablesAperturaPuntos = [];
+        return;
       }
 
-      // Determinar tipo de junta y convocatoria
-      const tipoJunta = datosJunta.esUniversal ? "universal" : "general";
-      const convocatoriaRealizada = datosJunta.esUniversal
+      const tipoJunta = datosJunta?.esUniversal ? "universal" : "general";
+      const convocatoriaRealizada = datosJunta?.esUniversal
         ? "universal"
         : (meetingDetailsStore.instaladaEnConvocatoria || "PRIMERA").toLowerCase();
 
-      // Mapeo de puntos a títulos
       const titulosPuntos: Record<string, string> = {
         aporteDinerario: "Aumento de capital mediante nuevos aportes dinerarios",
         capitalizacionCreditos: "Aumento de capital mediante capitalización de créditos",
@@ -590,44 +629,36 @@ export const useActaDocumentStore = defineStore("actaDocument", {
         designacionAuditores: "Designación de Auditores Externos",
       };
 
-      // Reglas de tipo de votación por punto
       const tipoVotacionPorPunto: Record<string, "simple" | "calificado"> = {
-        aporteDinerario: "simple", // Siempre simple
-        capitalizacionCreditos: "simple", // Por ahora simple
-        nombramientoDirectores: "simple", // Por ahora simple
-        nombramientoGerente: "simple", // Por ahora simple
-        remocionDirectores: "calificado", // Probablemente calificado
-        remocionGerente: "calificado", // Probablemente calificado
-        gestionSocial: "simple", // Por ahora simple
-        aplicacionResultados: "simple", // Por ahora simple
-        designacionAuditores: "simple", // Por ahora simple
+        aporteDinerario: "simple",
+        capitalizacionCreditos: "simple",
+        nombramientoDirectores: "simple",
+        nombramientoGerente: "simple",
+        remocionDirectores: "calificado",
+        remocionGerente: "calificado",
+        gestionSocial: "simple",
+        aplicacionResultados: "simple",
+        designacionAuditores: "simple",
       };
 
-      // Función para calcular porcentaje requerido
       const calcularPorcentajeRequerido = (tipoVotacion: "simple" | "calificado"): number => {
-        // Universal: siempre 0%
         if (tipoJunta === "universal") {
           return 0;
         }
-
-        // General: según convocatoria y tipo de votación
         if (convocatoriaRealizada === "primera") {
           return tipoVotacion === "simple"
             ? quorums.primeraConvocatoriaSimple
             : quorums.primeraConvocatoriaCalificada;
         }
-
         if (convocatoriaRealizada === "segunda") {
           return tipoVotacion === "simple"
             ? quorums.segundaConvocatoriaSimple
             : quorums.segundaConvocatoriaCalificada;
         }
-
-        return 0; // Fallback
+        return 0;
       };
 
-      // Construir array de puntos
-      const puntosApertura = puntosActivos.map((puntoId) => {
+      this.variablesAperturaPuntos = puntosActivos.map((puntoId) => {
         const tipoVotacion = tipoVotacionPorPunto[puntoId] || "simple";
         const porcentajeRequerido = calcularPorcentajeRequerido(tipoVotacion);
         const aperturado = porcentajeAsistencia >= porcentajeRequerido;
@@ -643,27 +674,648 @@ export const useActaDocumentStore = defineStore("actaDocument", {
           aperturado: aperturado,
         };
       });
-
-      return puntosApertura;
-    },
-  },
-
-  actions: {
-    /**
-     * Actualiza el cache de variables completas
-     * Se puede llamar manualmente o automáticamente cuando cambien los datos
-     */
-    actualizarCache() {
-      // Simplemente acceder al getter para que se ejecute y actualice el cache
-      const _ = this.variablesCompletas;
     },
 
     /**
-     * Limpia el cache
+     * Cargar variables de aporte dinerario
+     * Esta es la función más compleja - calcula todas las variables de aporte dinerario
      */
-    limpiarCache() {
-      this.variablesCompletasCache = null;
+    loadVariablesAporteDinerario() {
+      const documentosStore = useDocumentosStore();
+      const snapshotStore = useSnapshotStore();
+      const datosAporte = documentosStore.datosAporteDinerario;
+      const datosSociedad = documentosStore.datosSociedad;
+      const datosJunta = documentosStore.datosJunta;
+      const asistentes = documentosStore.listaAccionistasAsistentes;
+
+      // Si no hay aporte dinerario, limpiar
+      if (!datosAporte || !datosSociedad || !datosJunta) {
+        this.aporteDinerario = null;
+        return;
+      }
+
+      // Helper functions (mismo código que antes, pero dentro de la acción)
+      const parseFormattedNumber = (str: string): number => {
+        if (!str || typeof str !== "string") return 0;
+        const cleaned = str.replace(/[^\d.-]/g, "");
+        const parsed = parseFloat(cleaned);
+        return isNaN(parsed) ? 0 : parsed;
+      };
+
+      const parseFormattedInteger = (str: string): number => {
+        if (!str || typeof str !== "string") return 0;
+        const cleaned = str.replace(/[^\d]/g, "");
+        const parsed = parseInt(cleaned, 10);
+        return isNaN(parsed) ? 0 : parsed;
+      };
+
+      const calcularCapitalSocialDesdeSnapshot = (): number => {
+        const snapshot = snapshotStore.snapshot;
+        if (!snapshot) return 0;
+        const valorNominal = snapshot.nominalValue || 0;
+        const shareAllocations = snapshot.shareAllocations || [];
+        return shareAllocations.reduce((sum, asig) => {
+          return sum + valorNominal * asig.cantidadSuscrita;
+        }, 0);
+      };
+
+      const calcularTotalAccionesDesdeSnapshot = (): number => {
+        const snapshot = snapshotStore.snapshot;
+        if (!snapshot) return 0;
+        const shareAllocations = snapshot.shareAllocations || [];
+        return shareAllocations.reduce((sum, asig) => sum + asig.cantidadSuscrita, 0);
+      };
+
+      const agruparPorTipoAccion = (shareAllocations: any[], shareClasses: any[]) => {
+        const comunes = {
+          cantidad: 0,
+          capitalSocial: 0,
+          prima: 0,
+          reserva: 0,
+          dividendoPasivo: 0,
+        };
+        const preferenteSinDerechoVoto = {
+          cantidad: 0,
+          capitalSocial: 0,
+          prima: 0,
+          reserva: 0,
+          dividendoPasivo: 0,
+        };
+        const clasesMap = new Map<
+          string,
+          {
+            id: string;
+            nombre: string;
+            cantidad: number;
+            capitalSocial: number;
+            prima: number;
+            reserva: number;
+            dividendoPasivo: number;
+            conDerechoVoto: boolean;
+          }
+        >();
+        const valorNominal = snapshotStore.snapshot?.nominalValue || 0;
+
+        shareAllocations.forEach((asig: any) => {
+          const shareClass = shareClasses.find((sc: any) => sc.id === asig.accionId);
+          if (!shareClass) return;
+          const cantidad = asig.cantidadSuscrita;
+          const capitalSocial = valorNominal * cantidad;
+          const prima = Math.max(0, (asig.precioPorAccion - valorNominal) * cantidad);
+          const dividendoPasivo = asig.totalDividendosPendientes;
+
+          if (shareClass.tipo === "COMUN") {
+            comunes.cantidad += cantidad;
+            comunes.capitalSocial += capitalSocial;
+            comunes.prima += prima;
+            comunes.dividendoPasivo += dividendoPasivo;
+          } else if (shareClass.tipo === "PREFERENTE_NO_VOTO") {
+            preferenteSinDerechoVoto.cantidad += cantidad;
+            preferenteSinDerechoVoto.capitalSocial += capitalSocial;
+            preferenteSinDerechoVoto.prima += prima;
+            preferenteSinDerechoVoto.dividendoPasivo += dividendoPasivo;
+          } else if (shareClass.tipo === "CLASE") {
+            const claseId = shareClass.id;
+            if (!clasesMap.has(claseId)) {
+              clasesMap.set(claseId, {
+                id: claseId,
+                nombre: shareClass.nombre || "Sin nombre",
+                cantidad: 0,
+                capitalSocial: 0,
+                prima: 0,
+                reserva: 0,
+                dividendoPasivo: 0,
+                conDerechoVoto: shareClass.conDerechoVoto || false,
+              });
+            }
+            const clase = clasesMap.get(claseId)!;
+            clase.cantidad += cantidad;
+            clase.capitalSocial += capitalSocial;
+            clase.prima += prima;
+            clase.dividendoPasivo += dividendoPasivo;
+          }
+        });
+
+        return {
+          comunes,
+          preferenteSinDerechoVoto,
+          clases: Array.from(clasesMap.values()),
+        };
+      };
+
+      const formatearDistribucion = (distribucion: any) => {
+        const valorNominal = snapshotStore.snapshot?.nominalValue || 0;
+        const formatearTipo = (tipo: any) => {
+          if (!tipo) {
+            return {
+              cantidad: 0,
+              cantidadTexto: numeroALetras(0),
+              capitalSocial: 0,
+              capitalSocialTexto: montoALetras(0, "PEN"),
+              prima: 0,
+              primaTexto: montoALetras(0, "PEN"),
+              reserva: 0,
+              reservaTexto: montoALetras(0, "PEN"),
+              dividendoPasivo: 0,
+              dividendoPasivoTexto: montoALetras(0, "PEN"),
+              valorNominal,
+              valorNominalTexto: montoALetras(valorNominal, "PEN"),
+            };
+          }
+          return {
+            cantidad: tipo.cantidad || 0,
+            cantidadTexto: numeroALetras(tipo.cantidad || 0),
+            capitalSocial: tipo.capitalSocial || 0,
+            capitalSocialTexto: montoALetras(tipo.capitalSocial || 0, "PEN"),
+            prima: tipo.prima || 0,
+            primaTexto: montoALetras(tipo.prima || 0, "PEN"),
+            reserva: tipo.reserva || 0,
+            reservaTexto: montoALetras(tipo.reserva || 0, "PEN"),
+            dividendoPasivo: tipo.dividendoPasivo || 0,
+            dividendoPasivoTexto: montoALetras(tipo.dividendoPasivo || 0, "PEN"),
+            valorNominal,
+            valorNominalTexto: montoALetras(valorNominal, "PEN"),
+          };
+        };
+
+        return {
+          comunes: formatearTipo(distribucion.comunes),
+          preferenteSinDerechoVoto: formatearTipo(distribucion.preferenteSinDerechoVoto),
+          clases: (distribucion.clases || []).map((clase: any) => ({
+            ...formatearTipo(clase),
+            id: clase.id,
+            nombre: clase.nombre,
+            conDerechoVoto: clase.conDerechoVoto,
+          })),
+        };
+      };
+
+      const calcularDistribucionAntesAporte = () => {
+        const snapshot = snapshotStore.snapshot;
+        if (!snapshot) {
+          return {
+            comunes: {
+              cantidad: 0,
+              capitalSocial: 0,
+              prima: 0,
+              reserva: 0,
+              dividendoPasivo: 0,
+            },
+            preferenteSinDerechoVoto: {
+              cantidad: 0,
+              capitalSocial: 0,
+              prima: 0,
+              reserva: 0,
+              dividendoPasivo: 0,
+            },
+            clases: [],
+          };
+        }
+        const shareAllocations = snapshot.shareAllocations || [];
+        const shareClasses = snapshot.shareClasses || [];
+        return agruparPorTipoAccion(shareAllocations, shareClasses);
+      };
+
+      const calcularDistribucionDespuesAporte = () => {
+        const distribucionAntes = calcularDistribucionAntesAporte();
+        const aportes = datosAporte.aportes || [];
+        const shareClasses = snapshotStore.snapshot?.shareClasses || [];
+
+        const distribucionDespues = {
+          comunes: { ...distribucionAntes.comunes },
+          preferenteSinDerechoVoto: { ...distribucionAntes.preferenteSinDerechoVoto },
+          clases: distribucionAntes.clases.map((c) => ({ ...c })),
+        };
+
+        aportes.forEach((aporte: any) => {
+          const shareClass = shareClasses.find((sc: any) => sc.id === aporte.shareClass?.id);
+          if (!shareClass) return;
+          const cantidad = parseFormattedInteger(aporte.sharesToReceiveFormatted || "0");
+          const capitalSocial = parseFormattedNumber(aporte.socialCapitalFormatted || "0");
+          const prima = parseFormattedNumber(aporte.premiumFormatted || "0");
+          const reserva = parseFormattedNumber(aporte.reserveFormatted || "0");
+          const dividendoPasivo = parseFormattedNumber(aporte.totalLiabilityFormatted || "0");
+
+          if (shareClass.tipo === "COMUN") {
+            distribucionDespues.comunes.cantidad += cantidad;
+            distribucionDespues.comunes.capitalSocial += capitalSocial;
+            distribucionDespues.comunes.prima += prima;
+            distribucionDespues.comunes.reserva += reserva;
+            distribucionDespues.comunes.dividendoPasivo += dividendoPasivo;
+          } else if (shareClass.tipo === "PREFERENTE_NO_VOTO") {
+            distribucionDespues.preferenteSinDerechoVoto.cantidad += cantidad;
+            distribucionDespues.preferenteSinDerechoVoto.capitalSocial += capitalSocial;
+            distribucionDespues.preferenteSinDerechoVoto.prima += prima;
+            distribucionDespues.preferenteSinDerechoVoto.reserva += reserva;
+            distribucionDespues.preferenteSinDerechoVoto.dividendoPasivo += dividendoPasivo;
+          } else if (shareClass.tipo === "CLASE") {
+            let clase = distribucionDespues.clases.find((c: any) => c.id === shareClass.id);
+            if (!clase) {
+              clase = {
+                id: shareClass.id,
+                nombre: shareClass.nombre || "Sin nombre",
+                cantidad: 0,
+                capitalSocial: 0,
+                prima: 0,
+                reserva: 0,
+                dividendoPasivo: 0,
+                conDerechoVoto: shareClass.conDerechoVoto || false,
+              };
+              distribucionDespues.clases.push(clase);
+            }
+            clase.cantidad += cantidad;
+            clase.capitalSocial += capitalSocial;
+            clase.prima += prima;
+            clase.reserva += reserva;
+            clase.dividendoPasivo += dividendoPasivo;
+          }
+        });
+
+        return distribucionDespues;
+      };
+
+      const calcularDistribucionAccionariaDerechoAvoto = (distribucion: any) => {
+        const shareClasses = snapshotStore.snapshot?.shareClasses || [];
+        const comunes = {
+          cantidad: distribucion.comunes?.cantidad || 0,
+          capitalSocial: distribucion.comunes?.capitalSocial || 0,
+          prima: distribucion.comunes?.prima || 0,
+          reserva: distribucion.comunes?.reserva || 0,
+          dividendoPasivo: distribucion.comunes?.dividendoPasivo || 0,
+        };
+        const clases = (distribucion.clases || []).filter((clase: any) => {
+          const shareClass = shareClasses.find((sc: any) => sc.id === clase.id);
+          return shareClass?.conDerechoVoto === true;
+        });
+        return {
+          comunes,
+          preferenteSinDerechoVoto: {
+            cantidad: 0,
+            capitalSocial: 0,
+            prima: 0,
+            reserva: 0,
+            dividendoPasivo: 0,
+          },
+          clases,
+        };
+      };
+
+      const construirAportantes = () => {
+        const aportantes = datosAporte.aportantes;
+        const aportesPorAportante = datosAporte.aportesPorAportante;
+
+        console.log("🔍 [ActaDocumentStore] Construyendo aportantes:", {
+          aportantesCount: aportantes?.length || 0,
+          aportantes: aportantes,
+        });
+
+        return aportantes.map((aportante: any) => {
+          const aportes = aportesPorAportante[aportante.id] || [];
+          const person = aportante.person;
+
+          console.log("🔍 [ActaDocumentStore] Procesando aportante:", {
+            aportanteId: aportante.id,
+            typeShareholder: aportante.typeShareholder,
+            person: person,
+            personKeys: person ? Object.keys(person) : [],
+          });
+
+          // Determinar si es persona natural o jurídica
+          // La estructura real es: person.tipo === "NATURAL" o person.tipo === "JURIDICA"
+          const esPersonaNatural =
+            person?.tipo === "NATURAL" || aportante.typeShareholder === "NATURAL";
+
+          // Construir nombre completo según estructura real del backend
+          let nombre = "";
+          if (esPersonaNatural) {
+            // Persona natural: person.nombre, person.apellidoPaterno, person.apellidoMaterno
+            nombre = `${person?.nombre || ""} ${person?.apellidoPaterno || ""} ${
+              person?.apellidoMaterno || ""
+            }`.trim();
+          } else {
+            // Persona jurídica: person.razonSocial o person.legalName
+            nombre = person?.razonSocial || person?.legalName || "";
+          }
+
+          // Si el nombre está vacío, intentar con estructura alternativa (compatibilidad)
+          if (!nombre || nombre.trim() === "") {
+            if (person?.firstName) {
+              // Estructura alternativa en inglés
+              nombre = `${person?.firstName || ""} ${person?.lastNamePaternal || ""} ${
+                person?.lastNameMaternal || ""
+              }`.trim();
+            } else if (person?.legalName) {
+              // Otra alternativa
+              nombre = person.legalName;
+            } else {
+              console.warn("⚠️ [ActaDocumentStore] No se pudo obtener nombre del aportante:", {
+                aportanteId: aportante.id,
+                person: person,
+                typeShareholder: aportante.typeShareholder,
+              });
+              nombre = "Aportante sin nombre";
+            }
+          }
+
+          console.log("✅ [ActaDocumentStore] Nombre construido:", {
+            aportanteId: aportante.id,
+            nombre,
+            esPersonaNatural,
+          });
+
+          return {
+            nombre,
+            aportes: aportes.map((aporte: any) => ({
+              aporte_soles: aporte.contributionAmountInBaseCurrencyFormatted,
+              cantidad_acciones: aporte.sharesToReceiveFormatted,
+              tipo_accion: aporte.shareClass?.className || aporte.shareClass?.type || "",
+              capital_social: aporte.socialCapitalFormatted,
+              prima: aporte.premiumFormatted,
+              reserva: aporte.reserveFormatted,
+            })),
+          };
+        });
+      };
+
+      const calcularPorcentajeAprobacion = (votacion: any): number => {
+        if (!votacion || votacion.items.length === 0) return 100;
+        const itemVotacion = votacion.items[0];
+        if (!itemVotacion) return 100;
+
+        let accionesAFavor = 0;
+        let totalAccionesVotantes = 0;
+
+        itemVotacion.votos.forEach((voto: any) => {
+          const accionista = asistentes.find((a: any) => a.id === voto.accionistaId);
+          if (accionista) {
+            const acciones = accionista.acciones;
+            totalAccionesVotantes += acciones;
+            const votoAFavor =
+              (typeof voto.valor === "string" &&
+                (voto.valor === "A_FAVOR" || voto.valor === "FAVOR")) ||
+              (typeof voto.valor === "number" && voto.valor > 0);
+            if (votoAFavor) {
+              accionesAFavor += acciones;
+            }
+          }
+        });
+
+        if (totalAccionesVotantes === 0) return 100;
+        const porcentaje = (accionesAFavor / totalAccionesVotantes) * 100;
+        return Math.round(porcentaje * 100) / 100;
+      };
+
+      const obtenerNombresAFavor = (votacion: any): string[] => {
+        if (!votacion || votacion.items.length === 0) return [];
+        const itemVotacion = votacion.items[0];
+        if (!itemVotacion) return [];
+        const idsAFavor = itemVotacion.votos
+          .filter((v: any) => {
+            if (typeof v.valor === "string") {
+              return v.valor === "A_FAVOR" || v.valor === "FAVOR";
+            }
+            return v.valor > 0;
+          })
+          .map((v: any) => v.accionistaId);
+        return asistentes
+          .filter((a: any) => idsAFavor.includes(a.id))
+          .map((a: any) => a.nombre);
+      };
+
+      const obtenerNombresEnContra = (votacion: any): string[] => {
+        if (!votacion || votacion.items.length === 0) return [];
+        const itemVotacion = votacion.items[0];
+        if (!itemVotacion) return [];
+        const idsEnContra = itemVotacion.votos
+          .filter((v: any) => {
+            if (typeof v.valor === "string") {
+              return v.valor === "EN_CONTRA" || v.valor === "CONTRA";
+            }
+            return v.valor < 0;
+          })
+          .map((v: any) => v.accionistaId);
+        return asistentes
+          .filter((a: any) => idsEnContra.includes(a.id))
+          .map((a: any) => a.nombre);
+      };
+
+      const obtenerInfoAccionista = (nombre: string) => {
+        const accionista = asistentes.find((a: any) => a.nombre === nombre);
+        if (!accionista) {
+          return {
+            nombres: nombre,
+            tipoDoc: "DNI",
+            numeroDoc: "",
+            esJuridico: false,
+            tieneRepresentante: false,
+          };
+        }
+        const esJuridico = accionista.tipo === "JURIDICA";
+        const tieneRepresentante = !!accionista.representante;
+        return {
+          nombres: nombre,
+          tipoDoc: accionista.tipoDocumento || "DNI",
+          numeroDoc: accionista.documento || "",
+          esJuridico,
+          tieneRepresentante,
+          nombreRepre: accionista.representante
+            ? `${accionista.representante.nombre} ${
+                accionista.representante.apellidoPaterno
+              } ${accionista.representante.apellidoMaterno || ""}`.trim()
+            : "",
+          tipoDocRepre: accionista.representante?.tipoDocumento || "",
+          numeroDocRepre: accionista.representante?.numeroDocumento || "",
+          esEmpresaExtranjera: false,
+        };
+      };
+
+      // Calcular todos los valores
+      const aportantesData = construirAportantes();
+      const sumaCapitalSocial = aportantesData.reduce(
+        (sum: number, a: any) =>
+          sum +
+          a.aportes.reduce(
+            (s: number, ap: any) => s + parseFormattedNumber(ap.capital_social),
+            0
+          ),
+        0
+      );
+      const sumaPrimaTotal = aportantesData.reduce(
+        (sum: number, a: any) =>
+          sum +
+          a.aportes.reduce((s: number, ap: any) => s + parseFormattedNumber(ap.prima), 0),
+        0
+      );
+      const sumaReserva = aportantesData.reduce(
+        (sum: number, a: any) =>
+          sum +
+          a.aportes.reduce((s: number, ap: any) => s + parseFormattedNumber(ap.reserva), 0),
+        0
+      );
+      const sumaTotalAcciones = aportantesData.reduce(
+        (sum: number, a: any) =>
+          sum +
+          a.aportes.reduce(
+            (s: number, ap: any) => s + parseFormattedInteger(ap.cantidad_acciones),
+            0
+          ),
+        0
+      );
+
+      const capitalSocialAntes = calcularCapitalSocialDesdeSnapshot();
+      const accionesAntes = calcularTotalAccionesDesdeSnapshot();
+      const valorNominal = snapshotStore.snapshot?.nominalValue || 0;
+
+      const capitalSocialDespues = capitalSocialAntes + sumaCapitalSocial;
+      const accionesDespues = accionesAntes + sumaTotalAcciones;
+      const incremento = capitalSocialDespues - capitalSocialAntes;
+      const numeroDeAccionesIncrementadas = sumaTotalAcciones;
+      const montoTotal = sumaCapitalSocial + sumaPrimaTotal + sumaReserva;
+
+      const distribucionAntesRaw = calcularDistribucionAntesAporte();
+      const distribucionDespuesRaw = calcularDistribucionDespuesAporte();
+      const distribucionAntesAporte = formatearDistribucion(distribucionAntesRaw);
+      const distribucionDespuesAporte = formatearDistribucion(distribucionDespuesRaw);
+      const distribucionAccionariaDerechoAvotoAntes = formatearDistribucion(
+        calcularDistribucionAccionariaDerechoAvoto(distribucionAntesRaw)
+      );
+      const distribucionAccionariaDerechoAvotoDespues = formatearDistribucion(
+        calcularDistribucionAccionariaDerechoAvoto(distribucionDespuesRaw)
+      );
+
+      const porcentajeAprobacion = calcularPorcentajeAprobacion(datosAporte.votacion);
+      const nombresAFavor = obtenerNombresAFavor(datosAporte.votacion);
+      const nombresEnContra = obtenerNombresEnContra(datosAporte.votacion);
+
+      // Actualizar el state
+      this.aporteDinerario = {
+        tipo: "aporte_dinerario",
+        numero: 1, // Se asignará dinámicamente en ActaGenerator
+        titulo: "Aumento de capital mediante nuevos aportes dinerarios",
+        votacion: {
+          cumple_votos: porcentajeAprobacion >= 50,
+          no_cumple_votos: porcentajeAprobacion < 50,
+          porcentaje: porcentajeAprobacion.toFixed(2),
+          lista_nombres: nombresAFavor.join(", "),
+          accionistas_afavor: nombresAFavor.map((nombre) => obtenerInfoAccionista(nombre)),
+          accionistas_contra: nombresEnContra.map((nombre) => {
+            const info = obtenerInfoAccionista(nombre);
+            return {
+              nombres: info.nombres,
+              tipoDoc: info.tipoDoc,
+              numeroDoc: info.numeroDoc,
+            };
+          }),
+          accionistas_abstencion: [],
+        },
+        datos: {
+          suma_aumentos_efectuados: datosAporte.totalAportes.toFixed(2),
+          suma_aumentos_efectuados_palabras: datosAporte.totalAportesPalabras,
+          capital_actual: capitalSocialAntes.toFixed(2),
+          capital_actual_palabras:
+            capitalSocialAntes === 0 ? "cero soles" : montoALetras(capitalSocialAntes, "PEN"),
+          total_capital: capitalSocialDespues.toFixed(2),
+          total_capital_palabras: montoALetras(capitalSocialDespues, "PEN"),
+          prima_total: sumaPrimaTotal.toFixed(2),
+          prima_total_texto: montoALetras(sumaPrimaTotal, "PEN"),
+          suma_reserva: sumaReserva.toFixed(2),
+          suma_reserva_texto: montoALetras(sumaReserva, "PEN"),
+          aportantes: aportantesData,
+          accionistas_aumento_capital: [],
+          suma_total_acciones: sumaTotalAcciones.toString(),
+          suma_capital_social: sumaCapitalSocial.toFixed(2),
+          suma_prima_total: sumaPrimaTotal.toFixed(2),
+          no_publicar_aviso: datosJunta.esUniversal,
+          capitalSocialAntes,
+          capitalSocialAntesTexto: montoALetras(capitalSocialAntes, "PEN"),
+          capitalSocialDespues,
+          capitalSocialDespuesTexto: montoALetras(capitalSocialDespues, "PEN"),
+          accionesAntes,
+          accionesAntesTexto: numeroALetras(accionesAntes),
+          accionesDespues,
+          accionesDespuesTexto: numeroALetras(accionesDespues),
+          valorNominal,
+          valorNominalTexto: montoALetras(valorNominal, "PEN"),
+          incremento,
+          incrementoTexto: montoALetras(incremento, "PEN"),
+          numeroDeAccionesIncrementadas,
+          numeroDeAccionesIncrementadasTexto: numeroALetras(numeroDeAccionesIncrementadas),
+          primaTotal: sumaPrimaTotal,
+          primaTotalTexto: montoALetras(sumaPrimaTotal, "PEN"),
+          reservaTotal: sumaReserva,
+          reservaTotalTexto: montoALetras(sumaReserva, "PEN"),
+          montoTotal,
+          montoTotalTexto: montoALetras(montoTotal, "PEN"),
+          distribucionAntesAporte,
+          distribucionDespuesAporte,
+          distribucionAccionariaDerechoAvotoAntes,
+          distribucionAccionariaDerechoAvotoDespues,
+        },
+      };
+    },
+
+    /**
+     * Limpiar todo
+     */
+    clear() {
+      this.variablesBase = {
+        acta_label: "",
+        ciudad: "",
+        date: "",
+        hours: "",
+        nombre_empresa: "",
+        direccion: "",
+        ruc: "",
+      };
+      this.variablesJunta = {
+        nombre_junta: "",
+        tiene_nombre_junta: false,
+        es_anual_obligatoria: false,
+        tipo_junta: "GENERAL",
+        es_universal: false,
+        es_general: false,
+        convocatoria_activa: null,
+        convocatoria_realizada: "",
+        fecha_convocatoria: "",
+        primera_convocatoria: null,
+        segunda_convocatoria: null,
+        _convocatoria_realizada_lower: "",
+      };
+      this.variablesAsistencia = {
+        asistencia_lista: [],
+        accionistas_asistentes: [],
+        accionistas_con_derecho_voto: [],
+        total_acciones: "",
+        total_acciones_numero: 0,
+        porcentaje_acciones: "",
+        porcentaje_acciones_numero: 0,
+        valor_nominal: "",
+      };
+      this.variablesPresidenciaSecretaria = {
+        presidente_junta: "",
+        secretario_junta: "",
+        hora_acta: "",
+        asistentes_firmas: [],
+        is_universal: false,
+        porcentaje_acciones_asistentes: "",
+      };
+      this.variablesAgenda = [];
+      this.variablesQuorum = {
+        primera_simple: 0,
+        primera_calificada: 0,
+        segunda_simple: 0,
+        segunda_calificada: 0,
+        convocatoria_realizada: "",
+        porcentaje_asistencia: 0,
+        porcentaje_asistencia_texto: "",
+        cumple_quorum_simple: false,
+        cumple_quorum_calificado: false,
+        apertura_junta: false,
+      };
+      this.variablesAperturaPuntos = [];
+      this.aporteDinerario = null;
       this.lastUpdated = null;
+      this.isLoaded = false;
     },
   },
 });

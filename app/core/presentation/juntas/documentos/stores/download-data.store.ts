@@ -79,12 +79,30 @@ export const useDownloadDataStore = defineStore("downloadData", {
         const useCase = new GetDownloadDataUseCase(repository);
         this.downloadData = await useCase.execute(societyId, flowId);
 
-        console.debug("[Store][DownloadData] Datos cargados", {
+        console.log("✅ [Store][DownloadData] Datos cargados exitosamente", {
           hasAgendaItems: !!this.downloadData.agendaItems,
           hasMeetingDetails: !!this.downloadData.meetingDetails,
           attendanceCount: this.downloadData.attendance.length,
           hasAporteDinerario: !!this.downloadData.agendaItemsData?.aporteDinerario,
+          aportanteDataCount: this.downloadData.agendaItemsData?.aporteDinerario?.aportanteData?.length || 0,
+          aportesDataCount: this.downloadData.agendaItemsData?.aporteDinerario?.aportesData?.length || 0,
         });
+
+        // Log detallado de aportantes para debugging
+        if (this.downloadData.agendaItemsData?.aporteDinerario?.aportanteData) {
+          console.log("🔍 [Store][DownloadData] Estructura de aportantes:", 
+            this.downloadData.agendaItemsData.aporteDinerario.aportanteData.map((a: any) => ({
+              id: a.id,
+              typeShareholder: a.typeShareholder,
+              hasPerson: !!a.person,
+              personTipo: a.person?.tipo,
+              personKeys: a.person ? Object.keys(a.person) : [],
+              personNombre: a.person?.nombre,
+              personApellidoPaterno: a.person?.apellidoPaterno,
+              personRazonSocial: a.person?.razonSocial,
+            }))
+          );
+        }
 
         this.status = "idle";
       } catch (error: any) {

@@ -28,10 +28,12 @@ export function useDownloadData() {
 
   // Cargar datos al montar
   onMounted(async () => {
-    if (societyId.value && flowId.value && !store.hasData) {
-      console.log("🚀 [useDownloadData] Cargando datos de descarga...", {
+    if (societyId.value && flowId.value) {
+      console.log("🚀 [useDownloadData] onMounted - Verificando datos...", {
         societyId: societyId.value,
         flowId: flowId.value,
+        hasData: store.hasData,
+        hasSnapshot: !!snapshotStore.snapshot,
       });
 
       // Cargar snapshot si no está cargado (para obtener razonSocial y ruc)
@@ -40,8 +42,27 @@ export function useDownloadData() {
         await snapshotStore.loadSnapshot(societyId.value, flowId.value);
       }
 
-      await store.loadDownloadData(societyId.value, flowId.value);
-      console.log("✅ [useDownloadData] Datos cargados:", store.downloadData);
+      // Cargar downloadData si no está cargado o si necesitamos recargar
+      if (!store.hasData) {
+        console.log("📥 [useDownloadData] Cargando datos de descarga desde backend...");
+        await store.loadDownloadData(societyId.value, flowId.value);
+        
+        console.log("✅ [useDownloadData] Datos cargados:", {
+          hasData: !!store.downloadData,
+          hasAgendaItems: !!store.downloadData?.agendaItems,
+          hasMeetingDetails: !!store.downloadData?.meetingDetails,
+          attendanceCount: store.downloadData?.attendance?.length || 0,
+          hasAporteDinerario: !!store.downloadData?.agendaItemsData?.aporteDinerario,
+          aportanteDataCount: store.downloadData?.agendaItemsData?.aporteDinerario?.aportanteData?.length || 0,
+        });
+      } else {
+        console.log("ℹ️ [useDownloadData] Datos ya cargados, omitiendo fetch");
+      }
+    } else {
+      console.warn("⚠️ [useDownloadData] No se pueden cargar datos - IDs faltantes:", {
+        societyId: societyId.value,
+        flowId: flowId.value,
+      });
     }
   });
 

@@ -1,4 +1,3 @@
-import { useActaAporteDinerario } from "../composables/useActaAporteDinerario";
 import { useDocumentosStore } from "../stores/documentos.store";
 import { useActaDocumentStore } from "../stores/acta-document.store";
 import { DocxtemplaterProcessor } from "~/core/hexag/documentos/infrastructure/processors/docxtemplater-processor";
@@ -22,11 +21,19 @@ export class ActaGenerator {
     const actaDocumentStore = useActaDocumentStore();
     const documentosStore = useDocumentosStore();
 
-    // 1. Actualizar cache antes de obtener variables
-    actaDocumentStore.actualizarCache();
+    // 1. Cargar todo antes de obtener variables
+    actaDocumentStore.load();
 
-    // 2. Obtener variables completas del store
-    const variablesCompletas = actaDocumentStore.variablesCompletas;
+    // 2. Construir variables completas desde el state
+    const variablesCompletas = {
+      ...actaDocumentStore.variablesBase,
+      ...actaDocumentStore.variablesJunta,
+      ...actaDocumentStore.variablesAsistencia,
+      ...actaDocumentStore.variablesPresidenciaSecretaria,
+      agenda: actaDocumentStore.variablesAgenda,
+      quorum: actaDocumentStore.variablesQuorum,
+      puntos_agenda_apertura: actaDocumentStore.variablesAperturaPuntos,
+    };
 
     if (!variablesCompletas) {
       throw new Error("No hay datos suficientes para generar el acta");
@@ -50,12 +57,13 @@ export class ActaGenerator {
     };
 
     // Log detallado para debugging
+    const variablesFinalesAny = variablesFinales as any;
     console.log("📋 [ActaGenerator] Variables completas:", {
       // Variables base
-      acta_label: variablesFinales.acta_label,
-      ciudad: variablesFinales.ciudad,
-      nombre_empresa: variablesFinales.nombre_empresa,
-      asistenciaCount: variablesFinales.asistencia_lista?.length || 0,
+      acta_label: variablesFinalesAny.acta_label,
+      ciudad: variablesFinalesAny.ciudad,
+      nombre_empresa: variablesFinalesAny.nombre_empresa,
+      asistenciaCount: variablesFinalesAny.asistencia_lista?.length || 0,
       // Quórum
       apertura_junta: variablesFinales.quorum.apertura_junta,
       porcentaje_asistencia: variablesFinales.quorum.porcentaje_asistencia,
@@ -72,7 +80,7 @@ export class ActaGenerator {
     });
 
     // Log completo del primer punto (solo en desarrollo)
-    if (puntosAcuerdo.length > 0 && import.meta.env.DEV) {
+    if (puntosAcuerdo.length > 0 && process.env.NODE_ENV === "development") {
       console.log("📋 [ActaGenerator] Primer punto de acuerdo:", {
         tipo: puntosAcuerdo[0].tipo,
         votacion: puntosAcuerdo[0].votacion,
@@ -85,15 +93,14 @@ export class ActaGenerator {
     const templateBlob = await TemplateHttpRepository.getTemplate("acta/acta.docx");
 
     // 6. Procesar template con datos
-    const documentoBlob = await DocxtemplaterProcessor.process(
-      templateBlob,
-      variablesFinales
-    );
+    const documentoBlob = await DocxtemplaterProcessor.process(templateBlob, variablesFinales);
 
     // 7. Crear entidad Documento
     const documento: Documento = {
       id: crypto.randomUUID(),
-      nombre: `acta-${documentosStore.datosJunta.tipoJunta.toLowerCase().replace(/\s+/g, "-")}.docx`,
+      nombre: `acta-${documentosStore.datosJunta.tipoJunta
+        .toLowerCase()
+        .replace(/\s+/g, "-")}.docx`,
       tipo: TipoDocumento.ACTA,
       categoria: CategoriaDocumento.ACTA_PRINCIPAL,
       blob: documentoBlob,
@@ -127,7 +134,9 @@ export class ActaGenerator {
       } else {
         const representante = accionista.representante;
         if (representante) {
-          const nombreRepre = `${representante.nombre} ${representante.apellidoPaterno} ${representante.apellidoMaterno || ""}`.trim();
+          const nombreRepre = `${representante.nombre} ${representante.apellidoPaterno} ${
+            representante.apellidoMaterno || ""
+          }`.trim();
           return `${accionista.nombre}, representada por ${nombreRepre}, identificado con ${representante.tipoDocumento} N° ${representante.numeroDocumento}, con ${accionista.acciones} acciones`;
         }
         return `${accionista.nombre}, identificada con ${accionista.tipoDocumento} N° ${accionista.documento}, con ${accionista.acciones} acciones`;
@@ -144,7 +153,10 @@ export class ActaGenerator {
     if (puntosActivos.includes("capitalizacionCreditos")) {
       agenda.push("Aumento de capital mediante capitalización de créditos");
     }
-    if (puntosActivos.includes("aporteDinerario") || puntosActivos.includes("capitalizacionCreditos")) {
+    if (
+      puntosActivos.includes("aporteDinerario") ||
+      puntosActivos.includes("capitalizacionCreditos")
+    ) {
       agenda.push("Modificación parcial del estatuto social de la Sociedad");
     }
     // TODO: Agregar más puntos de agenda según se implementen
@@ -237,12 +249,14 @@ export class ActaGenerator {
 
     // 1. Aporte Dinerario
     if (puntosActivos.includes("aporteDinerario")) {
-      const { puntoAcuerdo } = useActaAporteDinerario();
-      const punto = puntoAcuerdo.value;
+      const actaDocumentStore = useActaDocumentStore();
+      const punto = actaDocumentStore.aporteDinerario; // Leer directamente del state
 
       if (punto) {
-        punto.numero = puntos.length + 1; // Asignar número dinámico
-        puntos.push(punto);
+        // Crear copia para no modificar el state original
+        const puntoCopia = JSON.parse(JSON.stringify(punto));
+        puntoCopia.numero = puntos.length + 1; // Asignar número dinámico
+        puntos.push(puntoCopia);
       }
     }
 

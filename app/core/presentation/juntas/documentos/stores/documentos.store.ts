@@ -126,39 +126,85 @@ export const useDocumentosStore = defineStore("documentos", {
      */
     listaAccionistasConDerechoAVoto() {
       const downloadDataStore = useDownloadDataStore();
+      const snapshotStore = useSnapshotStore();
       const attendance = downloadDataStore.attendance;
 
       if (!attendance || attendance.length === 0) {
         return [];
       }
 
+      // Obtener snapshot para calcular acciones correctamente
+      const snapshot = snapshotStore.snapshot;
+      const shareAllocations = snapshot?.shareAllocations || [];
+      const shareClasses = snapshot?.shareClasses || [];
+
       return attendance
-        .filter((a) => a.accionesConDerechoVoto > 0)
         .map((a) => {
+          // Calcular acciones con derecho a voto desde snapshot si no vienen en attendance
+          let accionesConDerechoVoto = a.accionesConDerechoVoto;
+
+          // Si accionesConDerechoVoto es 0, calcular desde snapshot
+          if (accionesConDerechoVoto === 0 && snapshot) {
+            const accionistaId = a.accionista?.id;
+            if (accionistaId) {
+              const asignaciones = shareAllocations.filter(
+                (asig) => asig.accionistaId === accionistaId
+              );
+
+              accionesConDerechoVoto = asignaciones.reduce((sum, asig) => {
+                const shareClass = shareClasses.find((sc) => sc.id === asig.accionId);
+                if (shareClass?.conDerechoVoto) {
+                  return sum + asig.cantidadSuscrita;
+                }
+                return sum;
+              }, 0);
+            }
+          }
+
+          // Filtrar solo los que tienen acciones con derecho a voto
+          if (accionesConDerechoVoto === 0) {
+            return null;
+          }
+
           const accionista = a.accionista;
-          const esPersonaNatural =
-            accionista?.type === "NATURAL" ||
-            (accionista?.firstName && !accionista?.legalName);
+          // La estructura real es: accionista.person.tipo, accionista.person.nombre, etc.
+          const person = accionista?.person || accionista;
+          const esPersonaNatural = person?.tipo === "NATURAL";
+
+          // Construir nombre completo
+          let nombre = "";
+          if (esPersonaNatural) {
+            nombre = `${person?.nombre || ""} ${person?.apellidoPaterno || ""} ${
+              person?.apellidoMaterno || ""
+            }`.trim();
+          } else {
+            nombre = person?.razonSocial || person?.legalName || "Accionista sin nombre";
+          }
+
+          // Obtener documento
+          const documento = esPersonaNatural
+            ? person?.numeroDocumento || person?.documentNumber || ""
+            : person?.ruc || "";
+
+          // Obtener tipo de documento
+          const tipoDocumento = esPersonaNatural
+            ? person?.tipoDocumento || person?.documentType || "DNI"
+            : "RUC";
 
           return {
             id: accionista?.id || a.id,
-            nombre: esPersonaNatural
-              ? `${accionista?.firstName || ""} ${accionista?.lastNamePaternal || ""} ${
-                  accionista?.lastNameMaternal || ""
-                }`.trim()
-              : accionista?.legalName || "Accionista sin nombre",
+            nombre: nombre || "Accionista sin nombre",
             tipo: esPersonaNatural ? "NATURAL" : "JURIDICA",
-            acciones: a.accionesConDerechoVoto,
+            acciones: accionesConDerechoVoto, // Usar el valor calculado
             porcentaje: a.porcentajeParticipacion,
             asistio: a.asistio,
             representante: a.representante,
             // Datos adicionales para templates
-            documento: esPersonaNatural
-              ? accionista?.documentNumber || ""
-              : accionista?.ruc || "",
-            tipoDocumento: esPersonaNatural ? accionista?.documentType || "DNI" : "RUC",
+            documento,
+            tipoDocumento,
           };
-        });
+        })
+        .filter((a) => a !== null) as any[];
     },
 
     /**
@@ -166,46 +212,86 @@ export const useDocumentosStore = defineStore("documentos", {
      * Origen: downloadData.attendance (filtrado por asistio === true)
      */
     listaAccionistasAsistentes() {
-      const lista = this.listaAccionistasConDerechoAVoto;
-      return lista.filter((a) => a.asistio);
+      const lista = this.listaAccionistasConDerechoAVoto; // Esto ya es un array, no un getter
+      return lista.filter((a: any) => a.asistio);
     },
 
     /**
      * Total de acciones con derecho a voto presentes
-     * Origen: Suma de accionesConDerechoVoto de asistentes
+     * Origen: Suma de accionesConDerechoVoto de asistentes (calculado desde snapshot si es 0)
      */
     totalAccionesConDerechoVoto(): number {
       const downloadDataStore = useDownloadDataStore();
+      const snapshotStore = useSnapshotStore();
       const attendance = downloadDataStore.attendance;
 
       if (!attendance || attendance.length === 0) {
         return 0;
       }
 
+      const snapshot = snapshotStore.snapshot;
+      const shareAllocations = snapshot?.shareAllocations || [];
+      const shareClasses = snapshot?.shareClasses || [];
+
+      // Calcular total desde asistentes
       return attendance
-        .filter((a) => a.asistio && a.accionesConDerechoVoto > 0)
-        .reduce((sum, a) => sum + a.accionesConDerechoVoto, 0);
+        .filter((a) => a.asistio)
+        .reduce((sum, a) => {
+          let accionesConDerechoVoto = a.accionesConDerechoVoto;
+
+          // Si accionesConDerechoVoto es 0, calcular desde snapshot
+          if (accionesConDerechoVoto === 0 && snapshot) {
+            const accionistaId = a.accionista?.id;
+            if (accionistaId) {
+              const asignaciones = shareAllocations.filter(
+                (asig) => asig.accionistaId === accionistaId
+              );
+
+              accionesConDerechoVoto = asignaciones.reduce((accSum, asig) => {
+                const shareClass = shareClasses.find((sc) => sc.id === asig.accionId);
+                if (shareClass?.conDerechoVoto) {
+                  return accSum + asig.cantidadSuscrita;
+                }
+                return accSum;
+              }, 0);
+            }
+          }
+
+          return sum + accionesConDerechoVoto;
+        }, 0);
     },
 
     /**
      * Porcentaje de asistencia
-     * TODO: Necesitamos obtener el total de acciones de la sociedad desde snapshot
-     * Por ahora, calculamos basado en el porcentaje de participación
+     * Calcula el porcentaje de acciones presentes vs total de acciones con derecho a voto
      */
     porcentajeAsistencia(): number {
-      const downloadDataStore = useDownloadDataStore();
-      const attendance = downloadDataStore.attendance;
+      const snapshotStore = useSnapshotStore();
+      const totalAccionesAsistentes = this.totalAccionesConDerechoVoto;
+      const snapshot = snapshotStore.snapshot;
 
-      if (!attendance || attendance.length === 0) {
+      if (!snapshot) {
         return 0;
       }
 
-      // Sumar porcentajes de asistentes con derecho a voto
-      const porcentajeAsistentes = attendance
-        .filter((a) => a.asistio && a.accionesConDerechoVoto > 0)
-        .reduce((sum, a) => sum + a.porcentajeParticipacion, 0);
+      // Calcular total de acciones con derecho a voto desde snapshot
+      const shareAllocations = snapshot.shareAllocations || [];
+      const shareClasses = snapshot.shareClasses || [];
 
-      return Math.round(porcentajeAsistentes * 100) / 100;
+      const totalAccionesSociedad = shareAllocations.reduce((sum, asig) => {
+        const shareClass = shareClasses.find((sc) => sc.id === asig.accionId);
+        if (shareClass?.conDerechoVoto) {
+          return sum + asig.cantidadSuscrita;
+        }
+        return sum;
+      }, 0);
+
+      if (totalAccionesSociedad === 0) {
+        return 0;
+      }
+
+      const porcentaje = (totalAccionesAsistentes / totalAccionesSociedad) * 100;
+      return Math.round(porcentaje * 100) / 100;
     },
 
     /**

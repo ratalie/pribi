@@ -384,10 +384,37 @@
           // 1. Cargar datos en stores necesarios
           downloadDataStore.downloadData = data;
           console.log("✅ [JuntaDocumentosGenerados] Datos cargados en downloadDataStore");
+          
+          // Verificar que todos los datos necesarios estén presentes
+          console.log("🔍 [JuntaDocumentosGenerados] Verificando datos cargados:", {
+            hasDownloadData: !!downloadDataStore.downloadData,
+            hasAgendaItems: !!downloadDataStore.downloadData?.agendaItems,
+            hasMeetingDetails: !!downloadDataStore.downloadData?.meetingDetails,
+            hasAttendance: !!downloadDataStore.downloadData?.attendance,
+            attendanceCount: downloadDataStore.downloadData?.attendance?.length || 0,
+            hasAporteDinerario: !!downloadDataStore.downloadData?.agendaItemsData?.aporteDinerario,
+            aportanteDataCount: downloadDataStore.downloadData?.agendaItemsData?.aporteDinerario?.aportanteData?.length || 0,
+            aportesDataCount: downloadDataStore.downloadData?.agendaItemsData?.aporteDinerario?.aportesData?.length || 0,
+            hasSnapshot: !!snapshotStore.snapshot,
+            hasMeetingDetailsStore: !!meetingDetailsStore.meetingDetails,
+          });
 
-          // 2. Actualizar cache de variables del acta
-          actaDocumentStore.actualizarCache();
-          console.log("✅ [JuntaDocumentosGenerados] Cache de acta actualizado");
+          // Log detallado de aportantes para debugging
+          const aporteDinerarioData = downloadDataStore.downloadData?.agendaItemsData?.aporteDinerario;
+          if (aporteDinerarioData?.aportanteData) {
+            console.log("🔍 [JuntaDocumentosGenerados] Aportantes del backend:", 
+              aporteDinerarioData.aportanteData.map((a: any) => ({
+                id: a.id,
+                typeShareholder: a.typeShareholder,
+                personKeys: a.person ? Object.keys(a.person) : [],
+                person: a.person,
+              }))
+            );
+          }
+
+          // 2. Cargar variables del acta
+          actaDocumentStore.load();
+          console.log("✅ [JuntaDocumentosGenerados] Variables de acta cargadas");
 
           // 3. Generar documentos con el nuevo sistema
           const documentosGenerados = await DocumentosOrchestrator.generateAll();

@@ -28,13 +28,13 @@ export class DocxtemplaterProcessor {
     // 2. Cargar template con PizZip
     const zip = new PizZip(arrayBuffer);
 
-    // 3. Crear instancia de Docxtemplater
+    // 3. Crear instancia de Docxtemplater con datos (nueva API)
     const doc = new Docxtemplater(zip, {
       paragraphLoop: true,
       linebreaks: true,
     });
 
-    // 4. Reemplazar datos
+    // 4. Reemplazar datos (nueva API - pasar datos directamente a render)
     console.log("📝 [DocxtemplaterProcessor] Datos a inyectar:", {
       encabezado: data.encabezado,
       instalacion: {
@@ -47,10 +47,9 @@ export class DocxtemplaterProcessor {
     // Log completo de los datos para debug
     console.log("📋 [DocxtemplaterProcessor] Datos completos (JSON):", JSON.stringify(data, null, 2));
 
-    doc.setData(data);
-    
     try {
-      doc.render();
+      // Nueva API: pasar datos directamente a render() en lugar de setData()
+      doc.render(data);
       console.log("✅ [DocxtemplaterProcessor] Template renderizado exitosamente");
     } catch (error: any) {
       console.error("❌ [DocxtemplaterProcessor] Error al renderizar template:", error);
