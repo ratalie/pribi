@@ -5,9 +5,14 @@ import type {
   ModuleConfig,
   SocietiesConfig,
   ActionsConfig,
+  SubModuleConfig,
 } from "../vistas/configurar-permisos/types/configurar-permisos.types";
 import { AVAILABLE_AREAS } from "../vistas/configurar-permisos/types/configurar-permisos.types";
 import { getDefaultPermissionsForRole } from "../vistas/configurar-permisos/utils/role-permissions.utils";
+import {
+  getSubmodulesForArea,
+  createSubmoduleConfigFromDefinition,
+} from "../vistas/configurar-permisos/utils/submodule-definitions.utils";
 
 /**
  * Store para la configuración de permisos simplificada
@@ -126,14 +131,20 @@ export const usePermissionsConfigStore = defineStore("permissions-config", {
     },
 
     /**
-     * Inicializa los módulos con todas las áreas habilitadas
+     * Inicializa los módulos con todas las áreas habilitadas y sus sub-módulos
      */
     initializeModules() {
-      this.selectedModules = AVAILABLE_AREAS.map((area) => ({
-        area,
-        enabled: true,
-        submodules: [],
-      }));
+      this.selectedModules = AVAILABLE_AREAS.map((area) => {
+        const definitions = getSubmodulesForArea(area);
+        const submodules = definitions.map((def) =>
+          createSubmoduleConfigFromDefinition(def, true)
+        );
+        return {
+          area,
+          enabled: true,
+          submodules,
+        };
+      });
     },
 
     /**
@@ -150,14 +161,42 @@ export const usePermissionsConfigStore = defineStore("permissions-config", {
       const module = this.selectedModules.find((m) => m.area === area);
       if (module) {
         module.enabled = !module.enabled;
+        // Si se habilita y no tiene sub-módulos, inicializarlos
+        if (module.enabled && (!module.submodules || module.submodules.length === 0)) {
+          const definitions = getSubmodulesForArea(area);
+          module.submodules = definitions.map((def) =>
+            createSubmoduleConfigFromDefinition(def, false)
+          );
+        }
       } else {
-        // Si no existe, agregarlo
+        // Si no existe, agregarlo con sub-módulos inicializados
+        const definitions = getSubmodulesForArea(area);
+        const submodules = definitions.map((def) =>
+          createSubmoduleConfigFromDefinition(def, false)
+        );
         this.selectedModules.push({
           area,
           enabled: true,
-          submodules: [],
+          submodules,
         });
       }
+    },
+
+    /**
+     * Actualiza un sub-módulo específico
+     */
+    updateSubmodule(
+      area: string,
+      submoduleKey: string,
+      updates: Partial<SubModuleConfig>
+    ) {
+      const module = this.selectedModules.find((m) => m.area === area);
+      if (!module) return;
+
+      const submodule = module.submodules.find((s) => s.key === submoduleKey);
+      if (!submodule) return;
+
+      Object.assign(submodule, updates);
     },
 
     /**

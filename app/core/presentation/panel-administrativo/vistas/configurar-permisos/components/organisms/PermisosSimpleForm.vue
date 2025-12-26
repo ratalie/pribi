@@ -2,7 +2,11 @@
   import { usePermissionsConfigStore } from "~/core/presentation/panel-administrativo/stores/permissions-config.store";
   import RoleSelector from "~/core/presentation/shared/components/admin/RoleSelector.vue";
   import ActionSelector from "~/core/presentation/shared/components/admin/ActionSelector.vue";
-  import type { ActionsConfig } from "~/core/presentation/panel-administrativo/vistas/configurar-permisos/types/configurar-permisos.types";
+  import ModuleSelector from "~/core/presentation/shared/components/admin/ModuleSelector.vue";
+  import type {
+    ActionsConfig,
+    ModuleConfig,
+  } from "~/core/presentation/panel-administrativo/vistas/configurar-permisos/types/configurar-permisos.types";
 
   interface Props {
     disabled?: boolean;
@@ -37,6 +41,12 @@
     },
   });
 
+  // Computed para los módulos actuales
+  const currentModules = computed({
+    get: () => store.selectedModules,
+    set: (value: ModuleConfig[]) => store.setModules(value),
+  });
+
   // Nota: El manejo de cambio de rol se hace directamente a través de @update:model-value
   // El store.setRole() ya aplica automáticamente los permisos por defecto
 
@@ -65,6 +75,19 @@
       >
         <h3 class="permisos-step-title">¿Qué acciones puede realizar?</h3>
         <ActionSelector v-model="currentActions" :role="currentRole" :disabled="disabled" />
+      </div>
+
+      <!-- Paso 3: Configurar Módulos (para Editor y Lector) -->
+      <div
+        v-if="currentRole !== 'Administrador' && currentRole !== 'Administrador Superior'"
+        class="permisos-form-step"
+      >
+        <h3 class="permisos-step-title">¿Qué módulos puede acceder?</h3>
+        <ModuleSelector
+          v-model="currentModules"
+          :disabled="disabled"
+          :role="currentRole"
+        />
       </div>
 
       <!-- Mensaje para Administrador y Administrador Superior -->

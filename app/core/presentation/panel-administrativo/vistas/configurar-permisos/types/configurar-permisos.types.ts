@@ -8,15 +8,46 @@
 export type SimpleRole = 'Administrador Superior' | 'Administrador' | 'Editor' | 'Lector' | 'Externo';
 
 /**
+ * Acciones de un sub-módulo
+ */
+export interface SubModuleActions {
+  view: boolean;
+  create: boolean;
+  update: boolean;
+  delete?: boolean;
+  file?: boolean;
+}
+
+/**
+ * Definición estática de un sub-módulo (configuración)
+ */
+export interface SubModuleDefinition {
+  key: string;
+  displayName: string;
+  description?: string;
+  backendModules: string[];
+  defaultActions: SubModuleActions;
+}
+
+/**
+ * Configuración dinámica de un sub-módulo (estado)
+ */
+export interface SubModuleConfig {
+  key: string;
+  displayName: string;
+  description?: string;
+  enabled: boolean;
+  backendModules: string[];
+  actions: SubModuleActions;
+}
+
+/**
  * Configuración de módulos
  */
 export interface ModuleConfig {
   area: string; // REGISTROS, OPERACIONES, etc.
   enabled: boolean;
-  submodules?: {
-    key: string; // society, shareholder, etc.
-    enabled: boolean;
-  }[];
+  submodules: SubModuleConfig[];
 }
 
 /**

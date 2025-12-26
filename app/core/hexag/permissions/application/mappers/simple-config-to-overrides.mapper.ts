@@ -100,6 +100,36 @@ export function mapSimpleConfigToOverrides(
     }
   }
 
+  // 1.5. Procesar sub-módulos deshabilitados dentro de módulos habilitados
+  const enabledModules = config.modules.filter((m) => m.enabled);
+  for (const module of enabledModules) {
+    const area = module.area as AccessAreaEnum;
+    const flowCode = AREA_TO_FLOW_MAP[area];
+
+    if (!flowCode) continue;
+
+    // Procesar sub-módulos deshabilitados
+    for (const submodule of module.submodules || []) {
+      if (!submodule.enabled) {
+        // Deshabilitar todos los módulos del backend de este sub-módulo
+        // El backend requiere que ModuleOverrideSchema tenga actions.nonempty()
+        // Por lo tanto, enviamos todas las acciones con status: false
+        const allActions = ["view", "create", "update", "delete", "file"];
+        for (const backendModule of submodule.backendModules) {
+          overrides.push({
+            module: backendModule,
+            flow: flowCode,
+            actions: allActions.map((action) => ({
+              action,
+              status: false,
+              isOverride: true,
+            })),
+          });
+        }
+      }
+    }
+  }
+
   // 2. Procesar acciones para Editor
   // El rol "Usuario" (Editor) en el backend solo tiene READ, WRITE, FILE por defecto
   // NO tiene UPDATE ni DELETE por defecto
@@ -172,32 +202,72 @@ export function mapSimpleConfigToOverrides(
       actionsToOverride
     );
 
-    // Si hay acciones que necesitan override, aplicarlas a todos los módulos habilitados
+    // Si hay acciones que necesitan override, aplicarlas a los sub-módulos habilitados
     if (actionsToOverride.length > 0) {
       for (const module of enabledModules) {
         const area = module.area as AccessAreaEnum;
         const flowCode = AREA_TO_FLOW_MAP[area];
-        const moduleName = AREA_TO_MODULE_MAP[area];
 
-        if (flowCode && moduleName) {
-          const actionOverrides = actionsToOverride.map(({ action, status }) => ({
-            action,
-            status,
-            isOverride: true,
-          }));
+        if (!flowCode) continue;
 
-          console.log(
-            "[mapSimpleConfigToOverrides] Agregando override para módulo:",
-            moduleName,
-            "con acciones:",
-            actionOverrides
-          );
+        // Procesar cada sub-módulo habilitado
+        for (const submodule of module.submodules || []) {
+          if (!submodule.enabled) continue;
 
-          overrides.push({
-            module: moduleName,
-            flow: flowCode,
-            actions: actionOverrides,
-          });
+          // Aplicar overrides a cada módulo del backend de este sub-módulo
+          for (const backendModule of submodule.backendModules) {
+            // Determinar qué acciones del sub-módulo necesitan override
+            const submoduleActionsToOverride: Array<{
+              action: string;
+              status: boolean;
+            }> = [];
+
+            // Comparar acciones del sub-módulo con las acciones globales
+            // Si el sub-módulo tiene una acción diferente a la global, necesita override
+            for (const { action, status } of actionsToOverride) {
+              const submoduleActionValue = submodule.actions[action as keyof typeof submodule.actions];
+              if (submoduleActionValue !== undefined && submoduleActionValue !== status) {
+                submoduleActionsToOverride.push({ action, status: submoduleActionValue });
+              }
+            }
+
+            // Si hay acciones específicas del sub-módulo que difieren de las globales
+            if (submoduleActionsToOverride.length > 0) {
+              const actionOverrides = submoduleActionsToOverride.map(({ action, status }) => ({
+                action,
+                status,
+                isOverride: true,
+              }));
+
+              console.log(
+                "[mapSimpleConfigToOverrides] Agregando override para sub-módulo:",
+                submodule.key,
+                "módulo backend:",
+                backendModule,
+                "con acciones:",
+                actionOverrides
+              );
+
+              overrides.push({
+                module: backendModule,
+                flow: flowCode,
+                actions: actionOverrides,
+              });
+            } else {
+              // Si no hay diferencias específicas, aplicar las acciones globales
+              const actionOverrides = actionsToOverride.map(({ action, status }) => ({
+                action,
+                status,
+                isOverride: true,
+              }));
+
+              overrides.push({
+                module: backendModule,
+                flow: flowCode,
+                actions: actionOverrides,
+              });
+            }
+          }
         }
       }
     } else {
@@ -205,30 +275,37 @@ export function mapSimpleConfigToOverrides(
     }
   }
 
-  // 3. Si es Lector, asegurar que solo tenga 'view'
-  if (config.role === "Lector") {
+  // 3. Si es Lector o Externo, asegurar que solo tenga 'view' en sub-módulos habilitados
+  if (config.role === "Lector" || config.role === "Externo") {
     const enabledModules = config.modules.filter((m) => m.enabled);
     const actionsToDisable = ["create", "update", "delete", "file"];
 
     for (const module of enabledModules) {
       const area = module.area as AccessAreaEnum;
       const flowCode = AREA_TO_FLOW_MAP[area];
-      const moduleName = AREA_TO_MODULE_MAP[area];
 
-      if (flowCode && moduleName) {
-        const actionOverrides = actionsToDisable.map((action) => {
-          return {
-            action, // El backend acepta 'view', 'create', etc.
-            status: false,
-            isOverride: true,
-          };
-        });
+      if (!flowCode) continue;
 
-        overrides.push({
-          module: moduleName,
-          flow: flowCode,
-          actions: actionOverrides,
-        });
+      // Procesar cada sub-módulo habilitado
+      for (const submodule of module.submodules || []) {
+        if (!submodule.enabled) continue;
+
+        // Deshabilitar acciones no permitidas en cada módulo del backend
+        for (const backendModule of submodule.backendModules) {
+          const actionOverrides = actionsToDisable.map((action) => {
+            return {
+              action,
+              status: false,
+              isOverride: true,
+            };
+          });
+
+          overrides.push({
+            module: backendModule,
+            flow: flowCode,
+            actions: actionOverrides,
+          });
+        }
       }
     }
   }

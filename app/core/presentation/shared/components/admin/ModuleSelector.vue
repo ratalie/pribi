@@ -1,22 +1,35 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue';
 import { FolderOpen, ChevronRight } from 'lucide-vue-next';
 import Checkbox from '~/components/ui/checkbox/Checkbox.vue';
-import type { ModuleConfig } from '~/core/presentation/panel-administrativo/vistas/configurar-permisos/types/configurar-permisos.types';
+import SubModuleItem from './molecules/SubModuleItem.vue';
+import type {
+  ModuleConfig,
+  SubModuleConfig,
+  SimpleRole,
+} from '~/core/presentation/panel-administrativo/vistas/configurar-permisos/types/configurar-permisos.types';
 import { AVAILABLE_AREAS } from '~/core/presentation/panel-administrativo/vistas/configurar-permisos/types/configurar-permisos.types';
+import {
+  getSubmodulesForArea,
+  createSubmoduleConfigFromDefinition,
+} from '~/core/presentation/panel-administrativo/vistas/configurar-permisos/utils/submodule-definitions.utils';
 
 interface Props {
   modelValue: ModuleConfig[];
   mode?: 'simple' | 'advanced';
   disabled?: boolean;
+  role?: SimpleRole;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   mode: 'simple',
   disabled: false,
+  role: 'Editor',
 });
 
 const emit = defineEmits<{
   'update:modelValue': [value: ModuleConfig[]];
+  'showAdvanced': [];
 }>();
 
 const modules = computed({
@@ -49,16 +62,27 @@ const toggleModule = (area: string) => {
     newModules[moduleIndex] = {
       ...newModules[moduleIndex],
       enabled: !newModules[moduleIndex].enabled,
+      // Asegurar que tenga sub-módulos inicializados
+      submodules:
+        newModules[moduleIndex].submodules && newModules[moduleIndex].submodules.length > 0
+          ? newModules[moduleIndex].submodules
+          : getSubmodulesForArea(area).map((def) =>
+              createSubmoduleConfigFromDefinition(def, false)
+            ),
     };
     modules.value = newModules;
   } else {
-    // Agregar nuevo módulo
+    // Agregar nuevo módulo con sub-módulos inicializados
+    const definitions = getSubmodulesForArea(area);
+    const submodules = definitions.map((def) =>
+      createSubmoduleConfigFromDefinition(def, false)
+    );
     modules.value = [
       ...modules.value,
       {
         area,
         enabled: true,
-        submodules: [],
+        submodules,
       },
     ];
   }
@@ -67,6 +91,71 @@ const toggleModule = (area: string) => {
 const isModuleEnabled = (area: string): boolean => {
   const module = modules.value.find((m) => m.area === area);
   return module?.enabled ?? false;
+};
+
+// Estado de expansión de áreas
+const expandedAreas = ref<Set<string>>(new Set());
+
+const toggleAreaExpansion = (area: string) => {
+  if (expandedAreas.value.has(area)) {
+    expandedAreas.value.delete(area);
+  } else {
+    expandedAreas.value.add(area);
+    
+    // Asegurar que el módulo tenga sub-módulos inicializados cuando se expande
+    const moduleIndex = modules.value.findIndex((m) => m.area === area);
+    if (moduleIndex !== -1) {
+      const module = modules.value[moduleIndex];
+      if (!module.submodules || module.submodules.length === 0) {
+        const definitions = getSubmodulesForArea(area);
+        module.submodules = definitions.map((def) =>
+          createSubmoduleConfigFromDefinition(def, false)
+        );
+        modules.value = [...modules.value];
+      }
+    }
+  }
+};
+
+const isAreaExpanded = (area: string): boolean => {
+  return expandedAreas.value.has(area);
+};
+
+// Obtener sub-módulos para un área
+const getSubmodulesForModule = (area: string): SubModuleConfig[] => {
+  const module = modules.value.find((m) => m.area === area);
+  
+  // Si el módulo no existe o no tiene sub-módulos inicializados, crearlos desde definiciones
+  if (!module || !module.submodules || module.submodules.length === 0) {
+    const definitions = getSubmodulesForArea(area);
+    return definitions.map((def) =>
+      createSubmoduleConfigFromDefinition(def, false)
+    );
+  }
+  
+  return module.submodules;
+};
+
+// Actualizar sub-módulo
+const updateSubmodule = (area: string, updatedSubmodule: SubModuleConfig) => {
+  const moduleIndex = modules.value.findIndex((m) => m.area === area);
+  if (moduleIndex === -1) return;
+
+  const module = modules.value[moduleIndex];
+  const submoduleIndex = module.submodules.findIndex(
+    (s) => s.key === updatedSubmodule.key
+  );
+
+  if (submoduleIndex === -1) {
+    // Agregar nuevo sub-módulo
+    module.submodules.push(updatedSubmodule);
+  } else {
+    // Actualizar sub-módulo existente
+    module.submodules[submoduleIndex] = updatedSubmodule;
+  }
+
+  // Emitir actualización
+  modules.value = [...modules.value];
 };
 </script>
 
@@ -95,9 +184,15 @@ const isModuleEnabled = (area: string): boolean => {
       >
         <div class="module-item-content">
           <Checkbox
-            :checked="isModuleEnabled(area)"
-            :disabled="disabled"
-            @update:checked="toggleModule(area)"
+            :model-value="isModuleEnabled(area)"
+            :is-disabled="disabled"
+            @update:model-value="(value) => {
+              if (value && !isModuleEnabled(area)) {
+                toggleModule(area);
+              } else if (!value && isModuleEnabled(area)) {
+                toggleModule(area);
+              }
+            }"
           />
 
           <div class="module-item-icon">
@@ -134,7 +229,37 @@ const isModuleEnabled = (area: string): boolean => {
               {{ areaDescriptions[area] || 'Módulo del sistema' }}
             </p>
           </div>
+
+          <!-- Icono de expansión -->
+          <ChevronRight
+            v-if="isModuleEnabled(area)"
+            class="module-expand-icon"
+            :class="{ 'expanded': isAreaExpanded(area) }"
+            :style="{
+              color: isModuleEnabled(area)
+                ? 'var(--primary-700)'
+                : 'var(--text-muted)',
+            }"
+            @click.stop="toggleAreaExpansion(area)"
+          />
         </div>
+
+        <!-- Sub-módulos (cuando área está expandida y habilitada) -->
+        <Transition name="expand">
+          <div
+            v-if="isAreaExpanded(area) && isModuleEnabled(area)"
+            class="submodules-container"
+          >
+            <SubModuleItem
+              v-for="submodule in getSubmodulesForModule(area)"
+              :key="submodule.key"
+              :submodule="submodule"
+              :disabled="disabled"
+              :role="role"
+              @update:submodule="updateSubmodule(area, $event)"
+            />
+          </div>
+        </Transition>
       </div>
     </div>
 
@@ -259,6 +384,49 @@ const isModuleEnabled = (area: string): boolean => {
 .module-advanced-icon {
   width: 1rem;
   height: 1rem;
+}
+
+.module-expand-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform 0.2s;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.module-expand-icon.expanded {
+  transform: rotate(90deg);
+}
+
+.submodules-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  padding-left: 2rem;
+  border-left: 2px solid var(--primary-200);
+}
+
+/* Transiciones para sub-módulos */
+.expand-enter-active,
+.expand-leave-active {
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.expand-enter-from,
+.expand-leave-to {
+  opacity: 0;
+  max-height: 0;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.expand-enter-to,
+.expand-leave-from {
+  opacity: 1;
+  max-height: 2000px;
 }
 
 /* Responsive */
