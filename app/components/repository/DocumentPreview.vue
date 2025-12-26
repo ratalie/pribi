@@ -31,26 +31,43 @@
         <p class="text-layout-gray-700 mt-4">{{ error }}</p>
       </div>
 
-      <!-- PDF Viewer -->
-      <div v-else-if="isPdf" class="w-full min-h-full overflow-auto" ref="pdfViewer"></div>
+      <!-- PDF Viewer - Siempre montado para evitar desconexión del DOM -->
+      <div
+        v-show="isPdf"
+        class="w-full min-h-full overflow-auto"
+        ref="pdfViewer"
+        :style="{ display: isPdf ? '' : 'none' }"
+      ></div>
 
       <!-- Office Viewer -->
       <div
-        v-else-if="isOffice"
+        v-show="isOffice"
         class="w-full min-h-full overflow-auto"
         ref="officeViewer"
+        :style="{ display: isOffice ? '' : 'none' }"
       ></div>
 
       <!-- Excel Viewer -->
-      <div v-else-if="isExcel" class="w-full min-h-full overflow-auto" ref="excelViewer"></div>
+      <div
+        v-show="isExcel"
+        class="w-full min-h-full overflow-auto"
+        ref="excelViewer"
+        :style="{ display: isExcel ? '' : 'none' }"
+      ></div>
 
       <!-- PowerPoint Viewer -->
-      <div v-else-if="isPptx" class="w-full min-h-full overflow-auto" ref="pptxViewer"></div>
+      <div
+        v-show="isPptx"
+        class="w-full min-h-full overflow-auto"
+        ref="pptxViewer"
+        :style="{ display: isPptx ? '' : 'none' }"
+      ></div>
 
       <!-- Unsupported Files -->
       <div
-        v-else-if="isUnsupported"
+        v-show="isUnsupported"
         class="w-full h-full flex items-center justify-center p-8 bg-gray-50"
+        :style="{ display: isUnsupported ? '' : 'none' }"
       >
         <div class="text-center max-w-md">
           <div
@@ -201,12 +218,22 @@
   onMounted(async () => {
     // Esperar a que el DOM se renderice completamente
     await nextTick();
+    await nextTick();
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
     // Emitir referencia del contenedor de preview (donde está el scroll)
     emit("previewContainerMounted", previewContainer.value || null);
 
-    // Emitir referencia del PDF viewer
-    emit("mounted", pdfViewer.value || null);
+    // Emitir referencia del PDF viewer (siempre está montado ahora)
+    if (pdfViewer.value) {
+      // Asegurar que esté visible si es PDF
+      if (props.isPdf) {
+        pdfViewer.value.style.display = "";
+      } else {
+        pdfViewer.value.style.display = "none";
+      }
+      emit("mounted", pdfViewer.value);
+    }
 
     // También emitir la referencia de Office si está disponible
     if (officeViewer.value) {
@@ -227,12 +254,37 @@
   // Emitir evento cuando cambie el tipo de archivo
   watch(
     () => props.isPdf,
-    async (newIsPdf) => {
+    async (newIsPdf, oldIsPdf) => {
+      // Esperar múltiples ticks para asegurar que el DOM esté completamente actualizado
+      await nextTick();
+      await nextTick();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      
       if (newIsPdf) {
-        await nextTick();
-        emit("mounted", pdfViewer.value || null);
+        // Asegurar que el contenedor esté visible y conectado
+        if (pdfViewer.value) {
+          pdfViewer.value.style.display = "";
+          // Verificar que esté conectado antes de emitir
+          if (pdfViewer.value.isConnected) {
+            emit("mounted", pdfViewer.value);
+          } else {
+            console.warn("⚠️ [DocumentPreview] pdfViewer no está conectado al DOM, esperando...");
+            // Reintentar después de un delay
+            setTimeout(() => {
+              if (pdfViewer.value && pdfViewer.value.isConnected) {
+                emit("mounted", pdfViewer.value);
+              }
+            }, 200);
+          }
+        }
+      } else {
+        // Ocultar el contenedor cuando no es PDF, pero mantenerlo montado
+        if (pdfViewer.value) {
+          pdfViewer.value.style.display = "none";
+        }
       }
-    }
+    },
+    { immediate: true }
   );
 
   // Emitir evento cuando cambie el estado de carga

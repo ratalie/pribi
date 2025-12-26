@@ -264,8 +264,18 @@ export function useDocumentViewer() {
 
         // Calcular escala para ajustar al contenedor
         const viewport = page.getViewport({ scale: 1 });
-        const containerWidth = container.clientWidth - 80; // Margen de 40px en cada lado
-        const baseScale = containerWidth / viewport.width;
+        // Asegurar que el contenedor tenga dimensiones válidas
+        let containerWidth = container.clientWidth;
+        if (containerWidth === 0) {
+          // Si el contenedor no tiene ancho, usar el ancho del viewport o un valor por defecto
+          containerWidth = viewport.width || 800;
+          console.warn(
+            "⚠️ [useDocumentViewer] Contenedor sin ancho, usando valor por defecto:",
+            containerWidth
+          );
+        }
+        const availableWidth = containerWidth - 80; // Margen de 40px en cada lado
+        const baseScale = availableWidth > 0 ? availableWidth / viewport.width : 1;
         const finalScale = baseScale * (zoom.value / 100); // Aplicar zoom del usuario
         const scaledViewport = page.getViewport({ scale: finalScale });
 
@@ -995,11 +1005,26 @@ export function useDocumentViewer() {
   function setPdfViewerRef(ref: HTMLElement | null) {
     pdfViewerRef.value = ref;
 
+    console.log("🔗 [useDocumentViewer] setPdfViewerRef:", {
+      refExists: !!ref,
+      refId: ref?.id,
+      refClassName: ref?.className,
+      refIsConnected: ref?.isConnected,
+      refClientWidth: ref?.clientWidth,
+      refClientHeight: ref?.clientHeight,
+      hasPendingDocument: !!pendingDocument.value,
+    });
+
     // Si hay un documento pendiente de carga, cargarlo ahora
     if (ref && pendingDocument.value) {
-      nextTick(() => {
-        loadPendingDocument();
-      });
+      // Esperar a que el contenedor esté completamente listo
+      nextTick()
+        .then(() => {
+          return new Promise((resolve) => setTimeout(resolve, 100));
+        })
+        .then(() => {
+          loadPendingDocument();
+        });
     }
   }
 
@@ -1085,22 +1110,30 @@ export function useDocumentViewer() {
       currentPdf.value = null;
     }
 
-    // Limpiar contenedores del DOM (solo si están conectados)
+    // Limpiar contenedores del DOM (solo si están conectados y NO hay documento pendiente)
     // Esperar un poco para asegurar que el PDF se haya destruido completamente
     await nextTick();
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
-    if (pdfViewerRef.value && pdfViewerRef.value.isConnected) {
-      pdfViewerRef.value.innerHTML = "";
-    }
-    if (officeViewerRef.value && officeViewerRef.value.isConnected) {
-      officeViewerRef.value.innerHTML = "";
-    }
-    if (excelViewerRef.value && excelViewerRef.value.isConnected) {
-      excelViewerRef.value.innerHTML = "";
-    }
-    if (pptxViewerRef.value && pptxViewerRef.value.isConnected) {
-      pptxViewerRef.value.innerHTML = "";
+    // Solo limpiar contenedores si NO hay un documento pendiente de carga
+    // Esto evita limpiar el contenedor mientras se está cargando un nuevo documento
+    if (!pendingDocument.value) {
+      if (pdfViewerRef.value && pdfViewerRef.value.isConnected) {
+        pdfViewerRef.value.innerHTML = "";
+      }
+      if (officeViewerRef.value && officeViewerRef.value.isConnected) {
+        officeViewerRef.value.innerHTML = "";
+      }
+      if (excelViewerRef.value && excelViewerRef.value.isConnected) {
+        excelViewerRef.value.innerHTML = "";
+      }
+      if (pptxViewerRef.value && pptxViewerRef.value.isConnected) {
+        pptxViewerRef.value.innerHTML = "";
+      }
+    } else {
+      console.log(
+        "⏸️ [useDocumentViewer] Cleanup: No se limpian contenedores porque hay documento pendiente"
+      );
     }
 
     currentDocument.value = null;
