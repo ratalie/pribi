@@ -175,14 +175,29 @@ export class DocumentPreviewService {
 
   /**
    * Limpiar HTML para evitar problemas con html2canvas
+   * Elimina funciones de color no soportadas como oklch()
    */
   private static sanitizeHtml(html: string): string {
-    // Eliminar funciones de color no soportadas
-    html = html.replace(/color:\s*var\([^)]+\)/gi, "");
-    // Limpiar estilos problemáticos
+    // Eliminar funciones de color oklch() no soportadas por html2canvas
+    html = html.replace(/oklch\([^)]+\)/gi, "#000000"); // Reemplazar con negro por defecto
+    
+    // Eliminar variables CSS que puedan contener oklch
+    html = html.replace(/var\([^)]+\)/gi, "#000000");
+    
+    // Limpiar estilos inline problemáticos
     html = html.replace(/style="[^"]*"/gi, (match) => {
-      return match.replace(/color:\s*var\([^)]+\)/gi, "");
+      let cleaned = match;
+      // Eliminar oklch
+      cleaned = cleaned.replace(/oklch\([^)]+\)/gi, "#000000");
+      // Eliminar var()
+      cleaned = cleaned.replace(/var\([^)]+\)/gi, "#000000");
+      // Eliminar propiedades de color problemáticas
+      cleaned = cleaned.replace(/color:\s*[^;]+/gi, "color: #000000");
+      cleaned = cleaned.replace(/background-color:\s*[^;]+/gi, "background-color: #ffffff");
+      cleaned = cleaned.replace(/background:\s*[^;]+/gi, "background: #ffffff");
+      return cleaned;
     });
+    
     return html;
   }
 }

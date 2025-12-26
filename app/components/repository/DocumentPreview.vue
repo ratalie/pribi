@@ -78,20 +78,33 @@
       <!-- Unsupported Files -->
       <div
         v-else-if="isUnsupported"
-        class="w-full h-full flex items-center justify-center p-8"
+        class="w-full h-full flex items-center justify-center p-8 bg-gray-50"
       >
-        <div class="text-center">
-          <Icon
-            icon="heroicons:document-text"
-            width="64"
-            height="64"
-            class="mx-auto mb-4 text-gray-400"
-          />
-          <h2 class="text-xl font-bold text-gray-700 mb-2">Tipo de archivo no soportado</h2>
-          <p class="text-gray-500 mb-4">{{ fileName }}</p>
-          <p class="text-sm text-gray-400">
-            Este tipo de archivo no se puede previsualizar. Por favor, descárgalo para verlo.
+        <div class="text-center max-w-md">
+          <div
+            class="mx-auto mb-6 w-24 h-24 rounded-2xl flex items-center justify-center shadow-lg"
+            :style="{ backgroundColor: getFileColor(fileName) + '20' }"
+          >
+            <Icon
+              :icon="getFileIcon(fileName)"
+              width="48"
+              height="48"
+              class="mx-auto"
+              :style="{ color: getFileColor(fileName) }"
+            />
+          </div>
+          <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ fileName }}</h2>
+          <p class="text-sm text-gray-500 mb-6">
+            Este tipo de archivo no se puede previsualizar en el navegador.
           </p>
+          <div class="bg-white rounded-lg border p-4 shadow-sm">
+            <p class="text-xs text-gray-600">
+              <strong>Extensión:</strong> .{{ fileName.split(".").pop()?.toUpperCase() || "N/A" }}
+            </p>
+            <p class="text-xs text-gray-600 mt-2">
+              Por favor, descarga el archivo para verlo con una aplicación compatible.
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -137,18 +150,71 @@
 
   // Detectar si es un archivo no soportado
   const isUnsupported = computed(() => {
-    if (
-      props.isLoading ||
-      props.error ||
-      props.isPdf ||
-      props.isOffice ||
-      props.isExcel ||
-      props.isPptx
-    ) {
+    // Si está cargando, no mostrar como no soportado todavía
+    if (props.isLoading) {
       return false;
     }
+    
+    // Si es un tipo soportado, no es no soportado
+    if (props.isPdf || props.isOffice || props.isExcel || props.isPptx) {
+      return false;
+    }
+    
+    // Si hay un error real (no de archivo no soportado), mostrar error
+    if (props.error && !props.error.includes("no soportado")) {
+      return false; // Mostrar el error en lugar del mensaje de no soportado
+    }
+    
+    // Si no es ninguno de los tipos soportados y no hay error real, es no soportado
     return true;
   });
+
+  // Obtener icono según extensión
+  const getFileIcon = (fileName: string): string => {
+    const extension = fileName.split(".").pop()?.toLowerCase() || "";
+    const iconMap: Record<string, string> = {
+      txt: "heroicons:document-text",
+      yml: "vscode-icons:file-type-yaml",
+      yaml: "vscode-icons:file-type-yaml",
+      json: "vscode-icons:file-type-json",
+      xml: "vscode-icons:file-type-xml",
+      csv: "vscode-icons:file-type-csv",
+      zip: "heroicons:archive-box",
+      rar: "heroicons:archive-box",
+      "7z": "heroicons:archive-box",
+      tar: "heroicons:archive-box",
+      gz: "heroicons:archive-box",
+      js: "vscode-icons:file-type-js",
+      ts: "vscode-icons:file-type-typescript",
+      html: "vscode-icons:file-type-html",
+      css: "vscode-icons:file-type-css",
+      md: "vscode-icons:file-type-markdown",
+      sh: "vscode-icons:file-type-shell",
+      bat: "vscode-icons:file-type-bat",
+      ps1: "vscode-icons:file-type-powershell",
+    };
+    return iconMap[extension] || "heroicons:document";
+  };
+
+  // Obtener color según extensión
+  const getFileColor = (fileName: string): string => {
+    const extension = fileName.split(".").pop()?.toLowerCase() || "";
+    const colorMap: Record<string, string> = {
+      txt: "#6B7280",
+      yml: "#F59E0B",
+      yaml: "#F59E0B",
+      json: "#10B981",
+      xml: "#3B82F6",
+      csv: "#8B5CF6",
+      zip: "#EF4444",
+      js: "#FCD34D",
+      ts: "#3B82F6",
+      html: "#F97316",
+      css: "#3B82F6",
+      md: "#6B7280",
+    };
+    return colorMap[extension] || "#6B7280";
+  };
 
   // Exponer referencias para el componente padre
   defineExpose({

@@ -68,6 +68,9 @@ export class RepositorioNodeMapper {
         ? dto.documentVersions.map((v) => ({
             versionCode: v.versionCode,
             documentCode: v.documentCode || "",
+            title: v.title,
+            mimeType: v.mimeType,
+            sizeInBytes: v.sizeInBytes,
             createdAt: v.createdAt,
             updatedAt: v.updatedAt,
             userId: v.userId ?? null,
@@ -77,11 +80,14 @@ export class RepositorioNodeMapper {
         : dto.versions?.map((v) => ({
             versionCode: v.versionCode,
             documentCode: v.documentCode || "",
+            title: v.title,
+            mimeType: v.mimeType,
+            sizeInBytes: v.sizeInBytes,
             createdAt: v.createdAt,
             updatedAt: v.updatedAt,
-            userId: null,
-            userIdV2: null,
-            userName: null,
+            userId: v.userId ?? null,
+            userIdV2: v.userIdV2 ?? null,
+            userName: v.userName ?? null,
           })),
     };
     

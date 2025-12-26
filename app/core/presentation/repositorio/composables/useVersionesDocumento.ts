@@ -9,6 +9,7 @@ export interface DocumentVersion {
   id: string; // versionCode
   versionNumber: number;
   title: string;
+  mimeType?: string; // MIME type de esta versión específica
   sizeInBytes: number;
   createdAt: string;
   updatedAt: string;
@@ -74,17 +75,46 @@ export function useVersionesDocumento() {
           // La versión actual (index 0) debe tener el número más alto
           const versionNumber = documentVersions.length - index;
 
+          // Inferir mimeType desde el nombre si no viene del backend
+          const inferMimeType = (fileName: string): string => {
+            const ext = fileName.toLowerCase().split(".").pop() || "";
+            switch (ext) {
+              case "pdf": return "application/pdf";
+              case "docx": return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+              case "doc": return "application/msword";
+              case "xlsx": return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+              case "xls": return "application/vnd.ms-excel";
+              case "pptx": return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+              case "ppt": return "application/vnd.ms-powerpoint";
+              default: return "application/octet-stream";
+            }
+          };
+
+          const title = version.title || node.name;
+          const mimeType = version.mimeType || inferMimeType(title);
+
+          console.log("📋 [useVersionesDocumento] Mapeando versión:", {
+            versionCode: version.versionCode,
+            title,
+            mimeTypeFromBackend: version.mimeType,
+            mimeTypeInferido: !version.mimeType ? inferMimeType(title) : undefined,
+            mimeTypeFinal: mimeType,
+            index,
+            isCurrentVersion: index === 0,
+          });
+
           return {
             id: version.versionCode || `version-${versionNumber}`,
             versionNumber,
-            title: version.title || node.name,
+            title,
+            mimeType, // Incluir mimeType
             sizeInBytes: version.sizeInBytes || 0,
             createdAt: version.createdAt || new Date().toISOString(),
             updatedAt: version.updatedAt || version.createdAt || new Date().toISOString(),
             isCurrentVersion: index === 0, // La primera versión es la más reciente
             uploadedBy: {
-              id: version.userId?.toString() || "user-1",
-              name: userName,
+              id: version.userId?.toString() || version.userIdV2 || "user-1",
+              name: version.userName || userName,
               email: userEmail,
             },
           };

@@ -42,10 +42,12 @@
 
   const { previsualizar } = usePrevisualizarDocumento();
   const { actualizarNombre } = useActualizarNombreDocumento();
-  const { cargarVersionesDesdeNodo } = useVersionesDocumento();
+  const { cargarVersionesDesdeNodo, versions: versionsList } = useVersionesDocumento();
 
   // Funciones helper para convertir valores a string de forma segura
   const getDocumentName = (): string => {
+    // NO acceder a localDocumentName aquí para evitar dependencia circular
+    // localDocumentName se inicializa usando esta función
     const name = props.document?.name;
     if (typeof name === "string") {
       return name;
@@ -80,6 +82,8 @@
     loadDocument,
     setPdfViewerRef,
     setOfficeViewerRef,
+    setExcelViewerRef,
+    setPptxViewerRef,
     setPreviewContainerRef,
     toggleSidebar: toggleViewerSidebar,
     zoomIn,
@@ -143,44 +147,113 @@
       // Usar la versión seleccionada si existe, sino la del documento
       const codeToUse = selectedVersion || versionCode;
 
+      console.log("🔵 [PreviewModal] Watch activado:", {
+        isOpen,
+        versionCodeFromDocument: versionCode,
+        selectedVersionCode: selectedVersion,
+        codeToUse,
+        hasDocument: !!props.document,
+        documentNodeId: props.document?.nodeId,
+        documentName: props.document?.name,
+        documentMimeType: props.document?.mimeType,
+      });
+
       if (isOpen && codeToUse && props.document) {
+        // Limpiar el viewer ANTES de cargar una nueva versión
+        // Esperar a que el cleanup termine completamente
+        console.log("🧹 [PreviewModal] Limpiando viewer antes de cargar versión:", codeToUse);
+        await cleanupViewer();
+        await nextTick();
+        console.log("✅ [PreviewModal] Viewer limpiado, preparando DocumentFile...");
+
+        // Obtener el mimeType de la versión específica si está seleccionada
+        let mimeTypeToUse = getDocumentMimeType();
+        let fileNameToUse = getDocumentName();
+
+        // Si hay una versión seleccionada específica, usar su mimeType
+        if (selectedVersion && versionsList.value.length > 0) {
+          const selectedVersionData = versionsList.value.find((v) => v.id === selectedVersion);
+          if (selectedVersionData) {
+            console.log("📋 [PreviewModal] Usando mimeType de versión seleccionada:", {
+              versionCode: selectedVersion,
+              versionMimeType: selectedVersionData.mimeType,
+              versionTitle: selectedVersionData.title,
+              previousMimeType: mimeTypeToUse,
+            });
+            mimeTypeToUse = selectedVersionData.mimeType || mimeTypeToUse;
+            fileNameToUse = selectedVersionData.title || fileNameToUse;
+          } else {
+            console.warn("⚠️ [PreviewModal] Versión seleccionada no encontrada en la lista:", {
+              selectedVersion,
+              availableVersions: versionsList.value.map((v) => v.id),
+            });
+          }
+        }
+
+        // Inferir mimeType desde el nombre si no está disponible
+        if (!mimeTypeToUse) {
+          const ext = fileNameToUse.toLowerCase().split(".").pop() || "";
+          const mimeTypeMap: Record<string, string> = {
+            pdf: "application/pdf",
+            docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            doc: "application/msword",
+            xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            xls: "application/vnd.ms-excel",
+            pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            ppt: "application/vnd.ms-powerpoint",
+          };
+          mimeTypeToUse = mimeTypeMap[ext] || "application/octet-stream";
+          console.log("🔍 [PreviewModal] mimeType inferido desde extensión:", {
+            fileName: fileNameToUse,
+            extension: ext,
+            inferredMimeType: mimeTypeToUse,
+          });
+        }
+
         // Crear objeto DocumentFile para el visor
-        // Extraer valores de forma segura con type guards explícitos
-        const docName = props.document.name;
-        const docType = props.document.type;
-        const docMimeType = props.document.mimeType;
-
-        // Type guards explícitos para asegurar tipos correctos
-        // Extraer valores y convertir a string de forma segura
-        const safeName = typeof docName === "string" ? docName : "documento";
-        const safeType = typeof docType === "string" ? docType : "application/octet-stream";
-        const safeMimeType = typeof docMimeType === "string" ? docMimeType : undefined;
-
         const documentFile: DocumentFile = {
           id: codeToUse,
-          name: safeName as string,
+          name: fileNameToUse,
           size: props.document.size || 0,
-          type: safeType as string,
-          mimeType: safeMimeType as string | undefined,
+          type: mimeTypeToUse,
+          mimeType: mimeTypeToUse,
           versionCode: codeToUse,
           nodeId: props.document.nodeId || undefined,
         };
 
+        console.log("📄 [PreviewModal] DocumentFile creado:", {
+          id: documentFile.id,
+          name: documentFile.name,
+          mimeType: documentFile.mimeType,
+          type: documentFile.type,
+          versionCode: documentFile.versionCode,
+          nodeId: documentFile.nodeId,
+          size: documentFile.size,
+        });
+
         try {
           // Cargar documento usando el visor
+          console.log("🚀 [PreviewModal] Iniciando carga del documento...");
           await loadDocument(documentFile);
+          console.log("✅ [PreviewModal] Documento cargado exitosamente");
         } catch (err: any) {
-          console.error("❌ [PreviewModal] Error al cargar documento:", err);
+          console.error("❌ [PreviewModal] Error al cargar documento:", {
+            error: err,
+            message: err?.message,
+            stack: err?.stack,
+            documentFile,
+          });
           // Fallback al método anterior si el visor falla
           isLoading.value = true;
           error.value = null;
           previewContent.value = null;
 
           try {
-            const docMimeType = props.document.mimeType;
-            const mimeTypeForPreview = (
-              typeof docMimeType === "string" ? docMimeType : ""
-            ) as string;
+            const mimeTypeForPreview = mimeTypeToUse || "";
+            console.log("🔄 [PreviewModal] Intentando fallback con preview:", {
+              versionCode: codeToUse,
+              mimeType: mimeTypeForPreview,
+            });
             const preview = await previsualizar(codeToUse, mimeTypeForPreview);
             previewContent.value = preview;
 
@@ -188,11 +261,18 @@
               canvasContainer.value.appendChild(preview.content as HTMLCanvasElement);
             }
           } catch (previewErr: any) {
+            console.error("❌ [PreviewModal] Error en fallback preview:", previewErr);
             error.value = previewErr.message || "Error al cargar la vista previa";
           } finally {
             isLoading.value = false;
           }
         }
+      } else {
+        console.log("⏭️ [PreviewModal] Condiciones no cumplidas, no se carga documento:", {
+          isOpen,
+          codeToUse,
+          hasDocument: !!props.document,
+        });
       }
     },
     { immediate: true }
@@ -225,25 +305,65 @@
 
   // Manejar selección de versión desde HistoryTab
   const handleVersionSelected = (versionCode: string, isCurrentVersion: boolean) => {
-    selectedVersionCode.value = versionCode;
-    console.log("🟡 [PreviewModal] Versión seleccionada:", {
+    console.log("🟡 [PreviewModal] Versión seleccionada desde HistoryTab:", {
       versionCode,
       isCurrentVersion,
+      previousSelectedVersion: selectedVersionCode.value,
+      totalVersions: versionsList.value.length,
+      availableVersions: versionsList.value.map((v) => ({ id: v.id, title: v.title, mimeType: v.mimeType })),
     });
+    
+    // Actualizar la versión seleccionada (esto disparará el watch principal que hará el cleanup)
+    selectedVersionCode.value = versionCode;
+    
+    const version = versionsList.value.find((v) => v.id === versionCode);
+    if (version) {
+      console.log("🟡 [PreviewModal] Versión encontrada en lista:", {
+        versionCode: version.id,
+        versionMimeType: version.mimeType,
+        versionTitle: version.title,
+        versionNumber: version.versionNumber,
+        isCurrentVersion: version.isCurrentVersion,
+      });
+    } else {
+      console.warn("⚠️ [PreviewModal] Versión NO encontrada en lista:", {
+        requestedVersionCode: versionCode,
+        availableVersions: versionsList.value.map((v) => v.id),
+      });
+    }
   };
 
   // Manejar restauración de versión
   const handleVersionRestored = async () => {
-    // Recargar el preview con la nueva versión actual
-    selectedVersionCode.value = "";
     console.log("🟢 [PreviewModal] Versión restaurada, recargando preview...");
 
     // Recargar versiones si tenemos nodeId
     if (props.document?.nodeId) {
       try {
+        // Limpiar completamente el viewer PRIMERO
+        await cleanupViewer();
+        await nextTick();
+
         await cargarVersionesDesdeNodo(props.document.nodeId);
+
+        // Obtener el nodo actualizado para actualizar el versionCode
+        const repository = new RepositorioDocumentosHttpRepository();
+        const updatedNode = await repository.obtenerNodoPorId(props.document.nodeId);
+
+        if (updatedNode && updatedNode.versions && updatedNode.versions.length > 0) {
+          // Encontrar la versión actual (isCurrentVersion = true)
+          const currentVersion = updatedNode.versions.find((v: any) => v.isCurrentVersion);
+          if (currentVersion) {
+            // Limpiar la versión seleccionada para cargar la actual
+            // Esto disparará el watch principal que recargará el documento
+            selectedVersionCode.value = "";
+            
+            // Esperar un tick adicional para asegurar que el cleanup terminó
+            await nextTick();
+          }
+        }
       } catch (error) {
-        console.error("Error al recargar versiones:", error);
+        console.error("❌ [PreviewModal] Error al recargar versiones:", error);
       }
     }
   };
@@ -252,12 +372,16 @@
   const handleUploadComplete = async () => {
     console.log("🟢 [PreviewModal] Nueva versión subida, recargando...");
 
+    // Limpiar completamente el viewer PRIMERO
+    await cleanupViewer();
+    await nextTick();
+
     // Recargar versiones en HistoryTab si está disponible
     if (historyTabRef.value) {
       try {
         historyTabRef.value.recargarVersiones();
       } catch (error) {
-        console.error("Error al recargar versiones en HistoryTab:", error);
+        console.error("❌ [PreviewModal] Error al recargar versiones en HistoryTab:", error);
       }
     }
 
@@ -269,23 +393,25 @@
         const updatedNode = await repository.obtenerNodoPorId(props.document.nodeId);
 
         if (updatedNode && updatedNode.versions && updatedNode.versions.length > 0) {
-          // Emitir evento para actualizar el documento en el componente padre
-          // No mutar props directamente
-          // Los valores se actualizarán en el componente padre a través del evento
-
-          // Emitir evento para actualizar el documento
-          emits("nameUpdated", getDocumentName()); // Esto actualizará el documento en el padre
-
           // Recargar versiones usando el composable
-          if (props.document?.nodeId) {
-            await cargarVersionesDesdeNodo(props.document.nodeId);
+          await cargarVersionesDesdeNodo(props.document.nodeId);
+
+          // Encontrar la versión actual (isCurrentVersion = true)
+          const currentVersion = updatedNode.versions.find((v: any) => v.isCurrentVersion);
+          if (currentVersion) {
+            // Limpiar la versión seleccionada para cargar la nueva versión actual
+            // Esto disparará el watch principal que recargará el documento
+            selectedVersionCode.value = "";
+            
+            // Esperar un tick adicional para asegurar que el cleanup terminó
+            await nextTick();
           }
 
-          // Recargar el preview con la nueva versión actual
-          selectedVersionCode.value = "";
+          // Emitir evento para actualizar el documento en el componente padre
+          emits("nameUpdated", localDocumentName.value);
         }
       } catch (error) {
-        console.error("Error al recargar versiones:", error);
+        console.error("❌ [PreviewModal] Error al recargar versiones:", error);
       }
     }
   };
@@ -331,6 +457,10 @@
 
       // Emitir evento para actualizar el documento en el componente padre
       emits("nameUpdated", localDocumentName.value);
+
+      // Actualizar también el nombre en el header usando localDocumentName
+      // El watch ya sincroniza localDocumentName cuando cambia props.document?.name
+      // Pero aquí forzamos la actualización después de guardar
     } catch (error: any) {
       console.error("❌ [PreviewModal] Error al actualizar nombre:", error);
       // El toast ya se muestra en el composable
@@ -346,10 +476,7 @@
 <template>
   <Teleport to="body">
     <Transition name="modal">
-      <div
-        v-if="isOpen"
-        class="fixed inset-0 bg-gray-900 flex flex-col z-50"
-      >
+      <div v-if="isOpen" class="fixed inset-0 bg-gray-900 flex flex-col z-50">
         <!-- Header -->
         <div
           class="flex items-center justify-between p-4 border-b bg-gray-800"
@@ -363,7 +490,7 @@
                 fontWeight: 600,
               }"
             >
-              {{ getDocumentName() || "Vista Previa" }}
+              {{ localDocumentName || "Vista Previa" }}
             </h3>
             <p class="text-xs mt-1 text-gray-400">
               {{ getDocumentType() }}
@@ -387,108 +514,110 @@
               'w-full': isPptx,
             }"
           >
-                <!-- Toolbar (solo para PDFs) -->
-                <DocumentToolbar
-                  v-if="isPdf && !isViewerLoading && !viewerError"
-                  :current-page="currentPage"
-                  :total-pages="totalPages"
-                  :zoom="zoom"
-                  :show-sidebar="showViewerSidebar"
-                  @zoom-in="zoomIn"
-                  @zoom-out="zoomOut"
-                  @zoom-change="setZoom"
-                  @page-change="setPage"
-                  @previous-page="previousPage"
-                  @next-page="nextPage"
-                  @toggle-sidebar="toggleViewerSidebar"
-                />
+            <!-- Toolbar (solo para PDFs) -->
+            <DocumentToolbar
+              v-if="isPdf && !isViewerLoading && !viewerError"
+              :current-page="currentPage"
+              :total-pages="totalPages"
+              :zoom="zoom"
+              :show-sidebar="showViewerSidebar"
+              @zoom-in="zoomIn"
+              @zoom-out="zoomOut"
+              @zoom-change="setZoom"
+              @page-change="setPage"
+              @previous-page="previousPage"
+              @next-page="nextPage"
+              @toggle-sidebar="toggleViewerSidebar"
+            />
 
-                <!-- Document Preview -->
-                <DocumentPreview
-                  :is-pdf="isPdf"
-                  :is-office="isOffice"
-                  :is-pptx="isPptx"
-                  :is-excel="isExcel"
-                  :is-loading="isViewerLoading || isLoading"
-                  :error="viewerError || error || ''"
-                  :file-name="getDocumentName()"
-                  :file-mime-type="getDocumentMimeType()"
-                  @mounted="setPdfViewerRef"
-                  @office-mounted="setOfficeViewerRef"
-                  @preview-container-mounted="setPreviewContainerRef"
-                />
+            <!-- Document Preview -->
+            <DocumentPreview
+              :is-pdf="isPdf"
+              :is-office="isOffice"
+              :is-pptx="isPptx"
+              :is-excel="isExcel"
+              :is-loading="isViewerLoading || isLoading"
+              :error="viewerError || error || ''"
+              :file-name="getDocumentName()"
+              :file-mime-type="getDocumentMimeType()"
+              @mounted="setPdfViewerRef"
+              @office-mounted="setOfficeViewerRef"
+              @excel-mounted="setExcelViewerRef"
+              @pptx-mounted="setPptxViewerRef"
+              @preview-container-mounted="setPreviewContainerRef"
+            />
 
-                <!-- Fallback: Preview anterior si el visor no está disponible -->
-                <div
-                  v-if="!isPdf && !isOffice && !isPptx && !isExcel && previewContent"
-                  class="flex-1 overflow-auto p-6"
-                >
-                  <div
-                    ref="previewContainer"
-                    class="w-full min-h-[500px] bg-gray-50 rounded-lg flex items-center justify-center border-2"
-                    :class="{
-                      'border-dashed': isLoading || error || !previewContent,
-                      'border-solid': previewContent && !isLoading && !error,
-                    }"
-                    :style="{ borderColor: 'var(--border-light)' }"
-                  >
-                    <!-- Loading -->
-                    <div v-if="isLoading" class="text-center">
-                      <Loader2
-                        class="w-8 h-8 animate-spin mx-auto mb-4"
-                        :style="{ color: 'var(--primary-600)' }"
-                      />
-                      <p class="text-sm" :style="{ color: 'var(--text-muted)' }">
-                        Cargando vista previa...
-                      </p>
-                    </div>
-
-                    <!-- Error -->
-                    <div v-else-if="error" class="text-center">
-                      <p class="text-lg mb-2" :style="{ color: 'var(--text-danger)' }">
-                        Error al cargar vista previa
-                      </p>
-                      <p class="text-sm" :style="{ color: 'var(--text-muted)' }">
-                        {{ error }}
-                      </p>
-                    </div>
-
-                    <!-- Preview Content -->
-                    <div v-else-if="previewContent" class="w-full h-full overflow-auto">
-                      <!-- Image Preview -->
-                      <img
-                        v-if="previewContent.type === 'image'"
-                        :src="previewContent.content as string"
-                        :alt="getDocumentName()"
-                        class="max-w-full h-auto mx-auto"
-                      />
-
-                      <!-- HTML Preview -->
-                      <div
-                        v-else-if="previewContent.type === 'html'"
-                        class="bg-white p-8 max-w-4xl mx-auto"
-                        v-html="previewContent.content as string"
-                      />
-
-                      <!-- Canvas Preview (PDF) -->
-                      <div
-                        v-else-if="previewContent.type === 'canvas'"
-                        class="flex justify-center items-center p-4"
-                        ref="canvasContainer"
-                      />
-                    </div>
-
-                    <!-- No Preview Available -->
-                    <div v-else class="text-center">
-                      <p class="text-lg mb-2" :style="{ color: 'var(--text-muted)' }">
-                        Vista previa no disponible
-                      </p>
-                      <p class="text-sm" :style="{ color: 'var(--text-muted)' }">
-                        El documento se abrirá en una nueva ventana al descargar
-                      </p>
-                    </div>
-                  </div>
+            <!-- Fallback: Preview anterior si el visor no está disponible -->
+            <div
+              v-if="!isPdf && !isOffice && !isPptx && !isExcel && previewContent"
+              class="flex-1 overflow-auto p-6"
+            >
+              <div
+                ref="previewContainer"
+                class="w-full min-h-[500px] bg-gray-50 rounded-lg flex items-center justify-center border-2"
+                :class="{
+                  'border-dashed': isLoading || error || !previewContent,
+                  'border-solid': previewContent && !isLoading && !error,
+                }"
+                :style="{ borderColor: 'var(--border-light)' }"
+              >
+                <!-- Loading -->
+                <div v-if="isLoading" class="text-center">
+                  <Loader2
+                    class="w-8 h-8 animate-spin mx-auto mb-4"
+                    :style="{ color: 'var(--primary-600)' }"
+                  />
+                  <p class="text-sm" :style="{ color: 'var(--text-muted)' }">
+                    Cargando vista previa...
+                  </p>
                 </div>
+
+                <!-- Error -->
+                <div v-else-if="error" class="text-center">
+                  <p class="text-lg mb-2" :style="{ color: 'var(--text-danger)' }">
+                    Error al cargar vista previa
+                  </p>
+                  <p class="text-sm" :style="{ color: 'var(--text-muted)' }">
+                    {{ error }}
+                  </p>
+                </div>
+
+                <!-- Preview Content -->
+                <div v-else-if="previewContent" class="w-full h-full overflow-auto">
+                  <!-- Image Preview -->
+                  <img
+                    v-if="previewContent.type === 'image'"
+                    :src="previewContent.content as string"
+                    :alt="getDocumentName()"
+                    class="max-w-full h-auto mx-auto"
+                  />
+
+                  <!-- HTML Preview -->
+                  <div
+                    v-else-if="previewContent.type === 'html'"
+                    class="bg-white p-8 max-w-4xl mx-auto"
+                    v-html="previewContent.content as string"
+                  />
+
+                  <!-- Canvas Preview (PDF) -->
+                  <div
+                    v-else-if="previewContent.type === 'canvas'"
+                    class="flex justify-center items-center p-4"
+                    ref="canvasContainer"
+                  />
+                </div>
+
+                <!-- No Preview Available -->
+                <div v-else class="text-center">
+                  <p class="text-lg mb-2" :style="{ color: 'var(--text-muted)' }">
+                    Vista previa no disponible
+                  </p>
+                  <p class="text-sm" :style="{ color: 'var(--text-muted)' }">
+                    El documento se abrirá en una nueva ventana al descargar
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Right Side: Sidebar with Tabs -->
@@ -497,99 +626,99 @@
             class="w-96 flex flex-col border-l bg-white"
             :style="{ borderColor: 'var(--border-light)' }"
           >
-                <!-- Header con botón de subir versión -->
-                <div
-                  class="flex items-center justify-between p-4 border-b overflow-visible"
-                  :style="{ borderColor: 'var(--border-light)' }"
+            <!-- Header con botón de subir versión -->
+            <div
+              class="flex items-center justify-between p-4 border-b overflow-visible"
+              :style="{ borderColor: 'var(--border-light)' }"
+            >
+              <div class="flex gap-2">
+                <button
+                  class="px-4 py-2 text-sm font-semibold transition-colors border-b-2"
+                  :class="
+                    activeTab === 'general'
+                      ? 'text-primary border-primary'
+                      : 'text-gray-700 border-transparent hover:text-primary'
+                  "
+                  @click="activeTab = 'general'"
                 >
-                  <div class="flex gap-2">
-                    <button
-                      class="px-4 py-2 text-sm font-semibold transition-colors border-b-2"
-                      :class="
-                        activeTab === 'general'
-                          ? 'text-primary border-primary'
-                          : 'text-gray-700 border-transparent hover:text-primary'
-                      "
-                      @click="activeTab = 'general'"
-                    >
-                      General
-                    </button>
-                    <button
-                      v-if="canShowHistory"
-                      class="px-4 py-2 text-sm font-semibold transition-colors border-b-2"
-                      :class="
-                        activeTab === 'history'
-                          ? 'text-primary border-primary'
-                          : 'text-gray-700 border-transparent hover:text-primary'
-                      "
-                      @click="activeTab = 'history'"
-                    >
-                      Historial
-                    </button>
-                  </div>
-
-                  <!-- Botón Subir Nueva Versión -->
-                  <div v-if="document?.documentCode" class="relative">
-                    <Button variant="outline" size="sm" @click.stop="uploadPopoverRef?.open()">
-                      <Upload class="w-4 h-4 mr-2" />
-                      Subir Versión
-                    </Button>
-
-                    <UploadVersionPopover
-                      ref="uploadPopoverRef"
-                      :document-code="document.documentCode"
-                      @upload-complete="handleUploadComplete"
-                      @show-history="handleShowHistory"
-                    />
-                  </div>
-                </div>
-
-                <!-- Tab Content -->
-                <div class="flex-1 overflow-auto p-6">
-                  <!-- General Tab -->
-                  <GeneralTab
-                    v-if="activeTab === 'general'"
-                    ref="generalTabRef"
-                    :document-name="localDocumentName"
-                    :upload-date="document?.dateModified || new Date()"
-                    :file-size="document?.size"
-                    :uploaded-by="document?.owner"
-                    :can-edit="true"
-                    @update-name="handleNameUpdate"
-                  />
-
-                  <!-- History Tab -->
-                  <HistoryTab
-                    v-else-if="
-                      activeTab === 'history' && document?.nodeId && document?.documentCode
-                    "
-                    ref="historyTabRef"
-                    :node-id="document.nodeId"
-                    :document-code="document.documentCode"
-                    :selected-version-code="selectedVersionCode"
-                    @version-selected="handleVersionSelected"
-                    @version-restored="handleVersionRestored"
-                  />
-                </div>
-
-                <!-- Botones de acción - Solo en pestaña General y si hay cambios -->
-                <div
-                  v-if="activeTab === 'general' && hasChanges"
-                  class="flex gap-3 p-6 border-t border-gray-200"
+                  General
+                </button>
+                <button
+                  v-if="canShowHistory"
+                  class="px-4 py-2 text-sm font-semibold transition-colors border-b-2"
+                  :class="
+                    activeTab === 'history'
+                      ? 'text-primary border-primary'
+                      : 'text-gray-700 border-transparent hover:text-primary'
+                  "
+                  @click="activeTab = 'history'"
                 >
-                  <button
-                    class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-sm font-medium text-gray-700"
-                    @click="handleRevertChanges"
-                  >
-                    Revertir
-                  </button>
-                  <button
-                    class="flex-1 px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors text-sm font-medium text-white"
-                    @click="handleSaveChanges"
-                  >
-                    Guardar
-                  </button>
-                </div>
+                  Historial
+                </button>
+              </div>
+
+              <!-- Botón Subir Nueva Versión -->
+              <div v-if="document?.documentCode" class="relative">
+                <Button variant="outline" size="sm" @click.stop="uploadPopoverRef?.open()">
+                  <Upload class="w-4 h-4 mr-2" />
+                  Subir Versión
+                </Button>
+
+                <UploadVersionPopover
+                  ref="uploadPopoverRef"
+                  :document-code="document.documentCode"
+                  @upload-complete="handleUploadComplete"
+                  @show-history="handleShowHistory"
+                />
+              </div>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="flex-1 overflow-auto p-6">
+              <!-- General Tab -->
+              <GeneralTab
+                v-if="activeTab === 'general'"
+                ref="generalTabRef"
+                :document-name="localDocumentName"
+                :upload-date="document?.dateModified || new Date()"
+                :file-size="document?.size"
+                :uploaded-by="document?.owner"
+                :can-edit="true"
+                @update-name="handleNameUpdate"
+              />
+
+              <!-- History Tab -->
+              <HistoryTab
+                v-else-if="
+                  activeTab === 'history' && document?.nodeId && document?.documentCode
+                "
+                ref="historyTabRef"
+                :node-id="document.nodeId"
+                :document-code="document.documentCode"
+                :selected-version-code="selectedVersionCode"
+                @version-selected="handleVersionSelected"
+                @version-restored="handleVersionRestored"
+              />
+            </div>
+
+            <!-- Botones de acción - Solo en pestaña General y si hay cambios -->
+            <div
+              v-if="activeTab === 'general' && hasChanges"
+              class="flex gap-3 p-6 border-t border-gray-200"
+            >
+              <button
+                class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-sm font-medium text-gray-700"
+                @click="handleRevertChanges"
+              >
+                Revertir
+              </button>
+              <button
+                class="flex-1 px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors text-sm font-medium text-white"
+                @click="handleSaveChanges"
+              >
+                Guardar
+              </button>
+            </div>
           </div>
         </div>
       </div>

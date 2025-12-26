@@ -278,7 +278,9 @@
     async (sociedadId) => {
       if (sociedadId && idSociety.value !== sociedadId) {
         // Redirigir a la nueva ruta con la sociedad correcta
-        const currentPath = routePath.value.join("/");
+        const routePathArray = routePath.value;
+        const currentPath =
+          routePathArray && Array.isArray(routePathArray) ? routePathArray.join("/") : "";
         if (currentPath) {
           router.push(`/storage/almacen/${sociedadId}/${currentPath}`);
         } else {
@@ -388,6 +390,51 @@
   const deleteConfirmModalOpen = ref(false);
   const itemToDelete = ref<any>(null);
 
+  // Manejar actualización de nombre del documento
+  const handleNameUpdated = (newName: string) => {
+    console.log("🟢 [AlmacenView] Nombre actualizado:", newName);
+
+    if (selectedDocument.value) {
+      // Actualizar el nombre en el documento seleccionado
+      selectedDocument.value = {
+        ...selectedDocument.value,
+        name: newName,
+      };
+    }
+
+    // Actualizar el nombre en la lista de documentos
+    const nodeId = selectedDocument.value?.nodeId;
+    if (nodeId) {
+      const nodeIdStr = nodeId.toString();
+      const docIndex = documentos.value.findIndex((doc) => doc.id === nodeIdStr);
+      if (docIndex !== -1) {
+        const existingDoc = documentos.value[docIndex];
+        if (existingDoc && existingDoc.id) {
+          // Mantener todos los campos requeridos del documento
+          documentos.value[docIndex] = {
+            id: existingDoc.id,
+            nombre: newName,
+            tipo: existingDoc.tipo || "file",
+            propietario: existingDoc.propietario || "",
+            fechaModificacion: existingDoc.fechaModificacion || new Date(),
+            mimeType: existingDoc.mimeType,
+            tamaño: existingDoc.tamaño,
+            parentId: existingDoc.parentId ?? null,
+            versionCode: existingDoc.versionCode,
+            code: existingDoc.code,
+            nodeId: existingDoc.nodeId,
+          };
+          console.log("✅ [AlmacenView] Nombre actualizado en la lista");
+        }
+      }
+    }
+
+    // Recargar documentos para asegurar sincronización completa
+    cargarDocumentos(carpetaActual.value).catch((error) => {
+      console.error("❌ [AlmacenView] Error al recargar documentos:", error);
+    });
+  };
+
   const handleDelete = async (doc: any) => {
     itemToDelete.value = doc;
     deleteConfirmModalOpen.value = true;
@@ -484,22 +531,46 @@
     }
   };
 
-  const handleUploadClick = () => {
-    if (!parentNodeIdForUpload.value) {
-      console.warn("⚠️ [AlmacenView] No se puede subir: parentNodeIdForUpload es null");
-      alert("No se pudo obtener la carpeta destino. Por favor, recarga la página.");
-      return;
-    }
-
+  const handleUploadClick = async () => {
     if (!dashboardStore.sociedadSeleccionada?.id) {
       console.warn("⚠️ [AlmacenView] No se puede subir: no hay sociedad seleccionada");
       alert("Por favor, selecciona una sociedad primero.");
       return;
     }
 
+    // Si no hay parentNodeIdForUpload o parece estar desincronizado, intentar obtenerlo de nuevo
+    if (!parentNodeIdForUpload.value) {
+      // Verificar que el parentNodeId corresponde a la sociedad actual
+      // Si estamos en la raíz, obtener la carpeta /core/ de nuevo para asegurarnos
+      if (!carpetaActual.value) {
+        console.log("🟡 [AlmacenView] Verificando carpeta /core/ antes de subir...");
+        try {
+          const carpetaCoreId = await obtenerCarpetaDocumentosSocietarios(
+            dashboardStore.sociedadSeleccionada.id
+          );
+          if (carpetaCoreId) {
+            console.log(
+              "🟢 [AlmacenView] Carpeta /core/ obtenida antes de subir:",
+              carpetaCoreId
+            );
+            parentNodeIdForUpload.value = carpetaCoreId;
+          }
+        } catch (error) {
+          console.error("🔴 [AlmacenView] Error al verificar carpeta /core/:", error);
+        }
+      }
+    }
+
+    if (!parentNodeIdForUpload.value) {
+      console.warn("⚠️ [AlmacenView] No se puede subir: parentNodeIdForUpload es null");
+      alert("No se pudo obtener la carpeta destino. Por favor, recarga la página.");
+      return;
+    }
+
     console.log("🔵 [AlmacenView] Abriendo modal de subida:", {
       structureId: dashboardStore.sociedadSeleccionada.id,
       parentNodeId: parentNodeIdForUpload.value,
+      carpetaActual: carpetaActual.value,
     });
 
     uploadModalOpen.value = true;
@@ -532,15 +603,46 @@
 
   // Obtener el parentNodeId para subir archivos
   // Si estamos en la raíz (carpetaActual es null), necesitamos obtener la carpeta /core/
+  // IMPORTANTE: Limpiar parentNodeIdForUpload cuando cambia la sociedad para evitar usar IDs de otra sociedad
+  watch(
+    () => dashboardStore.sociedadSeleccionada?.id,
+    (newStructureId, oldStructureId) => {
+      // Si cambió la sociedad, limpiar inmediatamente el parentNodeIdForUpload
+      if (oldStructureId && newStructureId !== oldStructureId) {
+        console.log("🟡 [AlmacenView] Sociedad cambió, limpiando parentNodeIdForUpload:", {
+          oldStructureId,
+          newStructureId,
+          currentParentNodeId: parentNodeIdForUpload.value,
+        });
+        parentNodeIdForUpload.value = null;
+      }
+    },
+    { immediate: false }
+  );
+
   watch(
     () => [carpetaActual.value, dashboardStore.sociedadSeleccionada?.id],
-    async ([carpetaId, structureId]) => {
-      console.log("🔵 [AlmacenView] Watch parentNodeIdForUpload:", { carpetaId, structureId });
+    async ([carpetaId, structureId], [oldCarpetaId, oldStructureId]) => {
+      console.log("🔵 [AlmacenView] Watch parentNodeIdForUpload:", {
+        carpetaId,
+        structureId,
+        oldCarpetaId,
+        oldStructureId,
+        currentParentNodeId: parentNodeIdForUpload.value,
+      });
 
       if (!structureId) {
         console.log("🔵 [AlmacenView] No hay structureId, limpiando parentNodeIdForUpload");
         parentNodeIdForUpload.value = null;
         return;
+      }
+
+      // Si cambió la sociedad, limpiar y recalcular
+      if (oldStructureId && structureId !== oldStructureId) {
+        console.log(
+          "🟡 [AlmacenView] Sociedad cambió en watch, limpiando parentNodeIdForUpload"
+        );
+        parentNodeIdForUpload.value = null;
       }
 
       if (carpetaId) {
@@ -554,9 +656,18 @@
         try {
           const carpetaCoreId = await obtenerCarpetaDocumentosSocietarios(structureId);
           console.log("🔵 [AlmacenView] Carpeta /core/ obtenida:", carpetaCoreId);
-          parentNodeIdForUpload.value = carpetaCoreId;
 
-          if (!carpetaCoreId) {
+          // Verificar que el structureId no haya cambiado mientras se obtenía la carpeta
+          if (dashboardStore.sociedadSeleccionada?.id === structureId) {
+            parentNodeIdForUpload.value = carpetaCoreId;
+          } else {
+            console.warn(
+              "⚠️ [AlmacenView] La sociedad cambió mientras se obtenía la carpeta /core/. No actualizando parentNodeIdForUpload."
+            );
+            parentNodeIdForUpload.value = null;
+          }
+
+          if (!carpetaCoreId && dashboardStore.sociedadSeleccionada?.id === structureId) {
             console.warn(
               "⚠️ [AlmacenView] No se pudo obtener la carpeta /core/. El botón de subir no funcionará."
             );
@@ -1045,6 +1156,7 @@
           previewModalOpen = false;
           selectedDocument = null;
         "
+        @name-updated="handleNameUpdated"
       />
 
       <!-- Delete Confirm Modal -->

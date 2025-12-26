@@ -1,11 +1,11 @@
 /**
  * Servicio para generar thumbnails de documentos
- * 
+ *
  * Soporta:
  * - PDF (usando PDF.js)
  * - Imágenes (JPEG, PNG, etc.)
  * - Office (Word, Excel, PowerPoint) - usando DocumentPreviewService
- * 
+ *
  * Integra con PreviewCacheService para subir thumbnails al servidor
  */
 
@@ -26,14 +26,16 @@ export class ThumbnailService {
    */
   private static configurePdfWorker() {
     // Usar el servicio centralizado
-    import("~/core/hexag/repositorio/infrastructure/services/pdf-worker.service").then(({ PdfWorkerService }) => {
-      PdfWorkerService.configure();
-    });
+    import("~/core/hexag/repositorio/infrastructure/services/pdf-worker.service").then(
+      ({ PdfWorkerService }) => {
+        PdfWorkerService.configure();
+      }
+    );
   }
 
   /**
    * Genera una miniatura de un archivo PDF
-   * 
+   *
    * @param file Archivo PDF
    * @param options Opciones de thumbnail
    * @returns Data URL del thumbnail
@@ -91,7 +93,7 @@ export class ThumbnailService {
 
   /**
    * Genera una miniatura de un archivo de imagen
-   * 
+   *
    * @param file Archivo de imagen
    * @param options Opciones de thumbnail
    * @returns Data URL del thumbnail
@@ -149,7 +151,7 @@ export class ThumbnailService {
 
   /**
    * Genera una miniatura de un archivo de Office (Word, Excel, PowerPoint)
-   * 
+   *
    * @param file Archivo de Office
    * @param options Opciones de thumbnail
    * @returns Data URL del thumbnail
@@ -163,40 +165,85 @@ export class ThumbnailService {
     try {
       // Intentar usar DocumentPreviewService para obtener preview real
       const mimeType = file instanceof File ? file.type : "application/octet-stream";
-      
+
       // Convertir Blob a File si es necesario
       const fileToProcess =
-        file instanceof File
-          ? file
-          : new File([file], "document", { type: mimeType });
+        file instanceof File ? file : new File([file], "document", { type: mimeType });
 
       // Generar preview usando DocumentPreviewService
-      const preview = await DocumentPreviewService.previewDocument(
-        fileToProcess,
-        mimeType
-      );
+      const preview = await DocumentPreviewService.previewDocument(fileToProcess, mimeType);
 
       // Si el preview es HTML o canvas, convertirlo a imagen
       if (preview.type === "html") {
         // Convertir HTML a imagen usando html2canvas
         const { default: html2canvas } = await import("html2canvas");
+
+        // Sanitizar HTML antes de renderizar (eliminar oklch y otros colores problemáticos)
+        let sanitizedHtml = preview.content as string;
+        sanitizedHtml = sanitizedHtml.replace(/oklch\([^)]+\)/gi, "#000000");
+        sanitizedHtml = sanitizedHtml.replace(/var\([^)]+\)/gi, "#000000");
+
         const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = preview.content as string;
+        tempDiv.innerHTML = sanitizedHtml;
+
+        // Estilos del contenedor (sin oklch)
         tempDiv.style.width = `${width}px`;
         tempDiv.style.height = `${height}px`;
         tempDiv.style.position = "absolute";
         tempDiv.style.left = "-9999px";
-        document.body.appendChild(tempDiv);
+        tempDiv.style.top = "0";
+        tempDiv.style.backgroundColor = "#ffffff";
+        tempDiv.style.color = "#000000";
+        tempDiv.style.fontFamily = "Arial, sans-serif";
+        tempDiv.style.fontSize = "14px";
+        tempDiv.style.lineHeight = "1.5";
+        tempDiv.style.padding = "20px";
+        tempDiv.style.boxSizing = "border-box";
+        tempDiv.style.overflow = "hidden";
 
-        const canvas = await html2canvas(tempDiv, {
-          width,
-          height,
-          scale: 1,
+        // Asegurar que todos los elementos hijos no usen oklch
+        const allElements = tempDiv.querySelectorAll("*");
+        allElements.forEach((el) => {
+          const htmlEl = el as HTMLElement;
+          // Limpiar estilos inline problemáticos
+          if (htmlEl.style.color && htmlEl.style.color.includes("oklch")) {
+            htmlEl.style.color = "#000000";
+          }
+          if (htmlEl.style.backgroundColor && htmlEl.style.backgroundColor.includes("oklch")) {
+            htmlEl.style.backgroundColor = "#ffffff";
+          }
+          if (htmlEl.style.background && htmlEl.style.background.includes("oklch")) {
+            htmlEl.style.background = "#ffffff";
+          }
         });
 
-        document.body.removeChild(tempDiv);
+        document.body.appendChild(tempDiv);
 
-        return canvas.toDataURL("image/jpeg", quality);
+        try {
+          const canvas = await html2canvas(tempDiv, {
+            width,
+            height,
+            scale: 1,
+            backgroundColor: "#ffffff",
+            useCORS: true,
+            logging: false,
+            // Ignorar elementos que puedan causar problemas
+            ignoreElements: (element) => {
+              const style = window.getComputedStyle(element);
+              return (
+                style.color.includes("oklch") ||
+                style.backgroundColor.includes("oklch") ||
+                style.background.includes("oklch")
+              );
+            },
+          });
+
+          document.body.removeChild(tempDiv);
+          return canvas.toDataURL("image/jpeg", quality);
+        } catch (error) {
+          document.body.removeChild(tempDiv);
+          throw error;
+        }
       } else if (preview.type === "canvas") {
         // Si es canvas, convertir directamente
         const canvas = preview.content as HTMLCanvasElement;
@@ -333,7 +380,7 @@ export class ThumbnailService {
 
   /**
    * Genera un thumbnail según el tipo de archivo
-   * 
+   *
    * @param file Archivo a procesar
    * @param options Opciones de thumbnail
    * @returns Data URL del thumbnail
@@ -369,13 +416,13 @@ export class ThumbnailService {
 
   /**
    * Genera thumbnail con cache del servidor (método optimizado)
-   * 
+   *
    * Flujo exacto igual que V2.5:
    * 1. Verificar si existe preview en el servidor (HEAD request)
    * 2. Si existe, descargarlo y retornarlo (GET request)
    * 3. Si NO existe, generar nuevo thumbnail localmente
    * 4. Subir el nuevo thumbnail al servidor (PUT request) en background
-   * 
+   *
    * @param file Archivo a procesar
    * @param nodeCode UUID del nodo
    * @param options Opciones de thumbnail
@@ -414,8 +461,11 @@ export class ThumbnailService {
             ? file
             : new File([file], "document", { type: file.type || "application/octet-stream" });
 
-        const preview = await DocumentPreviewService.previewDocument(fileToProcess, fileToProcess.type);
-        
+        const preview = await DocumentPreviewService.previewDocument(
+          fileToProcess,
+          fileToProcess.type
+        );
+
         if (preview.type === "image" && typeof preview.content === "string") {
           newThumbnail = preview.content;
         } else if (preview.type === "canvas" && preview.content instanceof HTMLCanvasElement) {
@@ -447,5 +497,3 @@ export class ThumbnailService {
     }
   }
 }
-
-

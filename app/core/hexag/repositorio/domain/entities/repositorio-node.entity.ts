@@ -25,6 +25,9 @@ export interface RepositorioNode {
   versions?: Array<{
     versionCode: string;
     documentCode: string;
+    title?: string;
+    mimeType?: string;
+    sizeInBytes?: number;
     createdAt: string;
     updatedAt: string;
     userId?: number | null;

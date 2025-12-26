@@ -1,11 +1,11 @@
 /**
  * Servicio para manejar el cache de previews en el servidor
- * 
+ *
  * Este servicio permite:
  * - Verificar si existe un preview en el servidor (HEAD request)
  * - Descargar un preview existente (GET request)
  * - Subir un preview al servidor (PUT request)
- * 
+ *
  * Endpoints V2:
  * - HEAD /api/v2/repository/nodes/{nodeCode}/preview
  * - GET /api/v2/repository/nodes/{nodeCode}/preview
@@ -37,7 +37,7 @@ export class PreviewCacheService {
 
   /**
    * Verifica si existe un preview para un nodo
-   * 
+   *
    * @param nodeCode UUID del nodo
    * @returns true si existe preview, false si no existe
    */
@@ -72,29 +72,49 @@ export class PreviewCacheService {
       });
 
       const hasPreview = response.status === 200;
-      
-      console.log("🔵 [PreviewCacheService] Preview existe:", hasPreview, "para nodeCode:", nodeCode);
+
+      console.log(
+        "🔵 [PreviewCacheService] Preview existe:",
+        hasPreview,
+        "para nodeCode:",
+        nodeCode
+      );
 
       return hasPreview;
     } catch (error: any) {
-      console.error("🔴 [PreviewCacheService] Error al verificar preview:", {
-        error,
-        message: error?.message,
-        stack: error?.stack,
-        nodeCode,
-      });
-      // Si hay error de red o 404, retornar false
-      if (error.response?.status === 404 || error.status === 404) {
-        console.log("🔵 [PreviewCacheService] Error 404 - preview no existe");
+      // 404 es normal cuando el preview no existe, no es un error real
+      // ERR_ABORTED puede ocurrir si el navegador cancela la petición (ej: nodo eliminado)
+      // Solo loggear como info, no como error
+      if (
+        error.name === "AbortError" ||
+        error.message?.includes("aborted") ||
+        error.message?.includes("404") ||
+        error.response?.status === 404 ||
+        error.status === 404
+      ) {
+        console.log(
+          "🔵 [PreviewCacheService] Preview no existe o fue cancelado (normal para nodos sin preview o eliminados):",
+          nodeCode
+        );
         return false;
       }
+
+      // Para otros errores, loggear como warning pero retornar false
+      console.warn(
+        "⚠️ [PreviewCacheService] Error al verificar preview (asumiendo que no existe):",
+        {
+          error,
+          message: error?.message,
+          nodeCode,
+        }
+      );
       return false;
     }
   }
 
   /**
    * Descarga un preview existente
-   * 
+   *
    * @param nodeCode UUID del nodo
    * @returns Data URL del preview o null si no existe
    */
@@ -149,7 +169,7 @@ export class PreviewCacheService {
 
   /**
    * Sube un preview al servidor
-   * 
+   *
    * @param nodeCode UUID del nodo
    * @param thumbnailDataUrl Data URL del thumbnail a subir
    * @returns true si se subió correctamente, false si hubo error
@@ -191,7 +211,10 @@ export class PreviewCacheService {
       });
 
       if (!uploadResponse.ok) {
-        console.error("🔴 [PreviewCacheService] Error al subir preview:", uploadResponse.statusText);
+        console.error(
+          "🔴 [PreviewCacheService] Error al subir preview:",
+          uploadResponse.statusText
+        );
         return false;
       }
 
@@ -205,7 +228,7 @@ export class PreviewCacheService {
 
   /**
    * Optimiza un blob para cumplir con el límite de 256KB
-   * 
+   *
    * @param blob Blob a optimizar
    * @returns Blob optimizado
    */
@@ -271,5 +294,3 @@ export class PreviewCacheService {
     });
   }
 }
-
-

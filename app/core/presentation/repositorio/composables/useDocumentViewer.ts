@@ -1,11 +1,18 @@
 import * as pdfjsLib from "pdfjs-dist";
-import { computed, ref } from "vue";
+import { computed, markRaw, nextTick, ref } from "vue";
 import { RepositorioDocumentosHttpRepository } from "~/core/hexag/repositorio/infrastructure/repositories/repositorio-documentos-http.repository";
 import { DocumentPreviewService } from "~/core/hexag/repositorio/infrastructure/services/document-preview.service";
-import { PdfWorkerService } from "~/core/hexag/repositorio/infrastructure/services/pdf-worker.service";
 
-// Configurar worker de PDF.js (centralizado)
-PdfWorkerService.configure();
+// Configurar worker de PDF.js directamente (como V2.5)
+const getWorkerSrc = (): string => {
+  // @ts-expect-error - import.meta is available in Nuxt/Vite
+  if (import.meta.env?.DEV) {
+    return "/pdf.worker.min.mjs";
+  }
+  return "/pdf.worker.min.mjs";
+};
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = getWorkerSrc();
 
 export interface DocumentFile {
   id: string;
@@ -30,10 +37,15 @@ export function useDocumentViewer() {
   const currentPdf = ref<any>(null);
   const pdfViewerRef = ref<HTMLElement | null>(null);
   const officeViewerRef = ref<HTMLElement | null>(null);
+  const excelViewerRef = ref<HTMLElement | null>(null);
+  const pptxViewerRef = ref<HTMLElement | null>(null);
   const previewContainerRef = ref<HTMLElement | null>(null);
 
   // Documento actual
   const currentDocument = ref<DocumentFile | null>(null);
+
+  // Documento pendiente (para manejar race conditions)
+  const pendingDocument = ref<DocumentFile | null>(null);
 
   // Métodos de navegación y zoom
   function toggleSidebar() {
@@ -79,8 +91,23 @@ export function useDocumentViewer() {
     renderedPagesCache.clear();
 
     // Re-renderizar el PDF con el nuevo zoom si está disponible
+    // IMPORTANTE: Verificar que el PDF aún sea válido (no destruido)
     if (currentPdf.value && pdfViewerRef.value) {
-      renderPdfInContainer(currentPdf.value, pdfViewerRef.value);
+      try {
+        // Verificar que el PDF tenga las propiedades necesarias (intenta acceder a una propiedad básica)
+        if (currentPdf.value.numPages && currentPdf.value.numPages > 0) {
+          renderPdfInContainer(currentPdf.value, pdfViewerRef.value);
+        } else {
+          console.warn("⚠️ [useDocumentViewer] PDF inválido, no se puede aplicar zoom");
+        }
+      } catch (error) {
+        console.error("❌ [useDocumentViewer] Error al aplicar zoom:", error);
+        // Si el PDF está destruido, intentar recargarlo
+        if (currentDocument.value) {
+          console.log("🟡 [useDocumentViewer] Intentando recargar documento...");
+          loadPdfDocumentWithPending(currentDocument.value);
+        }
+      }
     }
   }
 
@@ -179,49 +206,15 @@ export function useDocumentViewer() {
     }
   }
 
-  // Cache de páginas renderizadas para evitar re-renderizar
+  // Cache de páginas renderizadas para evitar re-renderizar (no usado actualmente pero se mantiene por compatibilidad)
   const renderedPagesCache = new Map<number, HTMLCanvasElement>();
 
-  // Función auxiliar para crear contenedor de página desde cache
-  function createPageContainer(pageNum: number, canvas: HTMLCanvasElement): HTMLElement {
-    const pageContainer = document.createElement("div");
-    pageContainer.style.position = "relative";
-    pageContainer.style.marginBottom = "20px";
-    pageContainer.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
-    pageContainer.style.borderRadius = "8px";
-    pageContainer.style.overflow = "hidden";
-    pageContainer.style.backgroundColor = "white";
-    pageContainer.setAttribute("data-page-number", pageNum.toString());
-
-    // Clonar el canvas del cache
-    const canvasClone = canvas.cloneNode(true) as HTMLCanvasElement;
-    canvasClone.style.maxWidth = "100%";
-    canvasClone.style.height = "auto";
-    canvasClone.style.display = "block";
-
-    pageContainer.appendChild(canvasClone);
-
-    // Agregar número de página
-    const pageNumberDiv = document.createElement("div");
-    pageNumberDiv.style.textAlign = "center";
-    pageNumberDiv.style.padding = "10px";
-    pageNumberDiv.style.backgroundColor = "#f8f9fa";
-    pageNumberDiv.style.borderTop = "1px solid #e9ecef";
-    pageNumberDiv.style.fontSize = "14px";
-    pageNumberDiv.style.color = "#6c757d";
-    pageNumberDiv.innerHTML = "";
-    pageNumberDiv.setAttribute("data-page-number", pageNum.toString());
-
-    pageContainer.appendChild(pageNumberDiv);
-
-    return pageContainer;
-  }
-
-  // Renderizar PDF en el contenedor con optimizaciones
+  // Renderizar PDF en el contenedor (simplificado como V2.5 - renderizar todas las páginas)
   async function renderPdfInContainer(pdf: any, container: HTMLElement) {
     try {
-      // Limpiar completamente el contenedor
+      // Limpiar completamente el contenedor para evitar caché visual
       container.innerHTML = "";
+      void container.offsetHeight;
 
       // Crear un contenedor para todas las páginas
       const pagesContainer = document.createElement("div");
@@ -230,127 +223,73 @@ export function useDocumentViewer() {
       pagesContainer.style.alignItems = "center";
       pagesContainer.style.gap = "20px";
       pagesContainer.style.padding = "20px";
+      pagesContainer.style.backgroundColor = "#f5f5f5"; // Fondo gris como V2.5
 
-      // Calcular escala una sola vez para todas las páginas
-      const firstPage = await pdf.getPage(1);
-      const viewport = firstPage.getViewport({ scale: 1 });
-      const containerWidth = container.clientWidth - 80; // Margen de 40px en cada lado
-      const baseScale = containerWidth / viewport.width;
-      const finalScale = baseScale * (zoom.value / 100);
+      // Renderizar todas las páginas (como V2.5)
+      for (let pageNum = 1; pageNum <= totalPages.value; pageNum++) {
+        // Obtener la página
+        const page = await pdf.getPage(pageNum);
 
-      // Renderizar páginas de forma optimizada
-      // Para PDFs grandes, renderizar solo las primeras páginas inicialmente
-      const initialPagesToRender = Math.min(totalPages.value, 10);
-      const renderBatch = async (startPage: number, endPage: number) => {
-        for (let pageNum = startPage; pageNum <= endPage; pageNum++) {
-          // Verificar si la página ya está en cache
-          if (renderedPagesCache.has(pageNum)) {
-            const cachedCanvas = renderedPagesCache.get(pageNum);
-            if (cachedCanvas) {
-              const pageContainer = createPageContainer(pageNum, cachedCanvas);
-              pagesContainer.appendChild(pageContainer);
-              continue;
-            }
-          }
+        // Crear contenedor para esta página
+        const pageContainer = document.createElement("div");
+        pageContainer.style.position = "relative";
+        pageContainer.style.marginBottom = "20px";
+        pageContainer.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+        pageContainer.style.borderRadius = "8px";
+        pageContainer.style.overflow = "hidden";
+        pageContainer.style.backgroundColor = "white";
+        pageContainer.setAttribute("data-page-number", pageNum.toString());
 
-          // Obtener la página
-          const page = await pdf.getPage(pageNum);
+        // Crear canvas para la página
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
 
-          // Crear contenedor para esta página
-          const pageContainer = document.createElement("div");
-          pageContainer.style.position = "relative";
-          pageContainer.style.marginBottom = "20px";
-          pageContainer.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
-          pageContainer.style.borderRadius = "8px";
-          pageContainer.style.overflow = "hidden";
-          pageContainer.style.backgroundColor = "white";
-          pageContainer.setAttribute("data-page-number", pageNum.toString());
-
-          // Crear canvas para la página
-          const canvas = document.createElement("canvas");
-          const context = canvas.getContext("2d");
-
-          if (!context) {
-            throw new Error("No se pudo obtener el contexto del canvas");
-          }
-
-          const scaledViewport = page.getViewport({ scale: finalScale });
-
-          // Configurar canvas
-          canvas.width = scaledViewport.width;
-          canvas.height = scaledViewport.height;
-          canvas.style.maxWidth = "100%";
-          canvas.style.height = "auto";
-          canvas.style.display = "block";
-
-          // Renderizar página
-          await page.render({
-            canvasContext: context,
-            viewport: scaledViewport,
-          }).promise;
-
-          // Guardar en cache (clonar el canvas para evitar problemas de referencia)
-          const cachedCanvas = canvas.cloneNode(true) as HTMLCanvasElement;
-          renderedPagesCache.set(pageNum, cachedCanvas);
-
-          // Agregar canvas al contenedor de la página
-          pageContainer.appendChild(canvas);
-
-          // Agregar número de página en la parte inferior
-          const pageNumberDiv = document.createElement("div");
-          pageNumberDiv.style.textAlign = "center";
-          pageNumberDiv.style.padding = "10px";
-          pageNumberDiv.style.backgroundColor = "#f8f9fa";
-          pageNumberDiv.style.borderTop = "1px solid #e9ecef";
-          pageNumberDiv.style.fontSize = "14px";
-          pageNumberDiv.style.color = "#6c757d";
-          pageNumberDiv.innerHTML = "";
-          pageNumberDiv.setAttribute("data-page-number", pageNum.toString());
-
-          pageContainer.appendChild(pageNumberDiv);
-
-          // Agregar la página al contenedor principal
-          pagesContainer.appendChild(pageContainer);
+        if (!context) {
+          throw new Error("No se pudo obtener el contexto del canvas");
         }
-      };
 
-      // Renderizar primeras páginas inmediatamente
-      await renderBatch(1, initialPagesToRender);
+        // Calcular escala para ajustar al contenedor
+        const viewport = page.getViewport({ scale: 1 });
+        const containerWidth = container.clientWidth - 80; // Margen de 40px en cada lado
+        const baseScale = containerWidth / viewport.width;
+        const finalScale = baseScale * (zoom.value / 100); // Aplicar zoom del usuario
+        const scaledViewport = page.getViewport({ scale: finalScale });
+
+        // Configurar canvas
+        canvas.width = scaledViewport.width;
+        canvas.height = scaledViewport.height;
+        canvas.style.maxWidth = "100%";
+        canvas.style.height = "auto";
+        canvas.style.display = "block";
+
+        // Renderizar página
+        await page.render({
+          canvasContext: context,
+          viewport: scaledViewport,
+        }).promise;
+
+        // Agregar canvas al contenedor de la página
+        pageContainer.appendChild(canvas);
+
+        // Agregar número de página en la parte inferior
+        const pageNumberDiv = document.createElement("div");
+        pageNumberDiv.style.textAlign = "center";
+        pageNumberDiv.style.padding = "10px";
+        pageNumberDiv.style.backgroundColor = "#f8f9fa";
+        pageNumberDiv.style.borderTop = "1px solid #e9ecef";
+        pageNumberDiv.style.fontSize = "14px";
+        pageNumberDiv.style.color = "#6c757d";
+        pageNumberDiv.innerHTML = "";
+        pageNumberDiv.setAttribute("data-page-number", pageNum.toString());
+
+        pageContainer.appendChild(pageNumberDiv);
+
+        // Agregar la página al contenedor principal
+        pagesContainer.appendChild(pageContainer);
+      }
 
       // Agregar el contenedor de páginas al contenedor principal
       container.appendChild(pagesContainer);
-
-      // Renderizar el resto de las páginas de forma lazy (solo cuando se necesiten)
-      if (totalPages.value > initialPagesToRender) {
-        // Usar Intersection Observer para renderizar páginas cuando se acerquen al viewport
-        const observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                const pageNum = parseInt(entry.target.getAttribute("data-page-number") || "0");
-                if (pageNum > initialPagesToRender && pageNum <= totalPages.value) {
-                  // Renderizar esta página
-                  renderBatch(pageNum, pageNum).then(() => {
-                    observer.unobserve(entry.target);
-                  });
-                }
-              }
-            });
-          },
-          { rootMargin: "200px" } // Renderizar cuando esté a 200px de ser visible
-        );
-
-        // Crear placeholders para las páginas restantes
-        for (let pageNum = initialPagesToRender + 1; pageNum <= totalPages.value; pageNum++) {
-          const placeholder = document.createElement("div");
-          placeholder.style.minHeight = "800px"; // Altura aproximada
-          placeholder.style.marginBottom = "20px";
-          placeholder.setAttribute("data-page-number", pageNum.toString());
-          placeholder.className = "pdf-page-placeholder";
-          pagesContainer.appendChild(placeholder);
-          observer.observe(placeholder);
-        }
-      }
     } catch (error) {
       console.error("Error renderizando PDF:", error);
       const errorMessage = error instanceof Error ? error.message : "Error desconocido";
@@ -370,14 +309,142 @@ export function useDocumentViewer() {
         throw new Error("No se encontró el código de versión del documento");
       }
 
+      // Limpiar PDF anterior antes de cargar uno nuevo
+      if (currentPdf.value) {
+        try {
+          // Intentar destruir el PDF anterior para liberar recursos
+          if (typeof currentPdf.value.destroy === "function") {
+            await currentPdf.value.destroy();
+          }
+        } catch (destroyError: any) {
+          // Ignorar errores si el PDF ya está destruido o en un estado inválido
+          console.warn(
+            "⚠️ [useDocumentViewer] Error al destruir PDF anterior:",
+            destroyError?.message || destroyError
+          );
+        } finally {
+          // Asegurar que siempre se limpia la referencia
+          currentPdf.value = null;
+        }
+      }
+
+      // Limpiar contenedor antes de cargar
+      const container = pdfViewer || pdfViewerRef.value;
+      if (container) {
+        container.innerHTML = "";
+      }
+
       const repository = new RepositorioDocumentosHttpRepository();
+
+      // Obtener mimeType del archivo antes de usar
+      const expectedMimeType = file.mimeType || file.type || "";
+
+      console.log("📥 [useDocumentViewer] Descargando versión del backend:", {
+        versionCode: file.versionCode,
+        expectedType: expectedMimeType,
+        fileName: file.name,
+      });
+
       const fileBlob = await repository.descargarVersion(file.versionCode);
+
+      // Validar que el blob no esté vacío y tenga el tipo correcto
+      if (fileBlob.size === 0) {
+        console.error("❌ [useDocumentViewer] Blob descargado está VACÍO");
+        throw new Error("El archivo descargado está vacío");
+      }
+
+      console.log("📦 [useDocumentViewer] Blob descargado del backend:", {
+        size: fileBlob.size,
+        blobType: fileBlob.type,
+        expectedMimeType: expectedMimeType,
+        versionCode: file.versionCode,
+        fileName: file.name,
+        sizeMatches: fileBlob.size === file.size,
+      });
+
+      // Validar que sea un PDF (opcional, pero ayuda a detectar problemas temprano)
+      const arrayBuffer = await fileBlob.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
+
+      // Verificar el header del archivo para detectar el tipo real
+      const header = String.fromCharCode.apply(null, Array.from(uint8Array.slice(0, 4)));
+      const firstBytes = String.fromCharCode.apply(null, Array.from(uint8Array.slice(0, 100)));
+
+      console.log("🔍 [useDocumentViewer] Validando header del archivo:", {
+        header,
+        firstBytesPreview: firstBytes.substring(0, 50),
+        expectedMimeType: expectedMimeType,
+        fileName: file.name,
+        versionCode: file.versionCode,
+        isPDFHeader: header.startsWith("%PDF"),
+        isOfficeHeader: header.startsWith("PK"),
+        isHTMLResponse:
+          firstBytes.trim().startsWith("<!DOCTYPE") || firstBytes.trim().startsWith("<html"),
+      });
+
+      // También verificar si es HTML (posible error del backend)
+      if (firstBytes.trim().startsWith("<!DOCTYPE") || firstBytes.trim().startsWith("<html")) {
+        console.error(
+          "❌ [useDocumentViewer] El backend devolvió HTML en lugar del archivo:",
+          {
+            header,
+            firstBytes: firstBytes.substring(0, 200),
+            versionCode: file.versionCode,
+            fileName: file.name,
+          }
+        );
+        throw new Error(
+          "Error del servidor: El archivo solicitado no está disponible. Por favor, intenta nuevamente."
+        );
+      }
+
+      // Validar que el archivo sea realmente un PDF antes de intentar cargarlo
+      if (!header.startsWith("%PDF")) {
+        // Verificar si el archivo es realmente un tipo Office (PK header indica ZIP/Office)
+        if (header.startsWith("PK")) {
+          const detectedMimeType = file.mimeType || file.type || fileBlob.type;
+          console.error(
+            "❌ [useDocumentViewer] DISCREPANCIA: Se intentó cargar como PDF pero el archivo es Office:",
+            {
+              header,
+              detectedMimeType,
+              fileName: file.name,
+              versionCode: file.versionCode,
+              expectedMimeType: expectedMimeType,
+              blobType: fileBlob.type,
+              fullFile: file,
+            }
+          );
+
+          // Si el archivo es realmente Office, redirigir a loadOfficeDocument
+          console.log("🔄 [useDocumentViewer] Redirigiendo a loadOfficeDocument...");
+          await loadOfficeDocumentWithPending(file);
+          return; // Salir de esta función, ya se cargó como Office
+        }
+
+        console.error(
+          "❌ [useDocumentViewer] El archivo descargado no parece ser un PDF válido:",
+          {
+            header,
+            firstBytes: firstBytes.substring(0, 50),
+            size: fileBlob.size,
+            type: fileBlob.type,
+            mimeType: file.mimeType || file.type,
+            versionCode: file.versionCode,
+          }
+        );
+        throw new Error(
+          `El archivo descargado no es un PDF válido (header: "${header}"). Puede estar corrupto, ser de un formato diferente, o la versión solicitada no existe.`
+        );
+      }
+
+      console.log("✅ [useDocumentViewer] Blob validado correctamente como PDF");
 
       // Detectar si es dispositivo móvil
       const isMobile = /mobile|android|iphone|ipad|phone/i.test(navigator.userAgent);
 
       const loadingTask = pdfjsLib.getDocument({
-        data: await fileBlob.arrayBuffer(),
+        data: arrayBuffer,
         ...(isMobile && {
           maxImageSize: 1024 * 1024,
           disableFontFace: true,
@@ -389,19 +456,55 @@ export function useDocumentViewer() {
       totalPages.value = pdf.numPages;
       currentPage.value = 1;
 
-      // Guardar referencias
-      currentPdf.value = pdf;
+      // Guardar referencias - usar markRaw para evitar que PDF.js se vuelva reactivo
+      // Esto previene errores al acceder a campos privados (#port, etc.)
+      currentPdf.value = markRaw(pdf);
       currentDocument.value = file;
 
       // Renderizar el PDF en el contenedor si se proporciona
-      const container = pdfViewer || pdfViewerRef.value;
       if (container) {
         await renderPdfInContainer(pdf, container);
       }
     } catch (err: any) {
-      console.error("Error loading PDF document:", err);
-      error.value = err.message || "Error al cargar el documento PDF";
+      const errorMessage =
+        err?.message || String(err) || "Error desconocido al cargar el documento PDF";
+      console.error("❌ [useDocumentViewer] Error loading PDF document:", {
+        error: err,
+        message: errorMessage,
+        stack: err?.stack,
+        fileName: file.name,
+        versionCode: file.versionCode,
+        mimeType: file.mimeType || file.type,
+      });
+      error.value = errorMessage;
+      // Limpiar estado en caso de error
+      currentPdf.value = null;
       throw err;
+    }
+  }
+
+  // Cargar documento PDF (versión con pending document pattern)
+  async function loadPdfDocumentWithPending(file: DocumentFile) {
+    // Si no hay referencia disponible, guardar como pendiente
+    if (!pdfViewerRef.value) {
+      pendingDocument.value = file;
+      return;
+    }
+
+    // Si hay referencia, cargar inmediatamente
+    try {
+      await loadPdfDocument(file, pdfViewerRef.value);
+    } catch (error: any) {
+      const errorMessage =
+        error?.message || String(error) || "Error desconocido al cargar PDF";
+      console.error("❌ [useDocumentViewer] Error cargando PDF:", {
+        error,
+        message: errorMessage,
+        stack: error?.stack,
+        fileName: file.name,
+        versionCode: file.versionCode,
+      });
+      throw error;
     }
   }
 
@@ -415,16 +518,45 @@ export function useDocumentViewer() {
       const repository = new RepositorioDocumentosHttpRepository();
       const fileBlob = await repository.descargarVersion(file.versionCode);
 
+      // Determinar qué contenedor usar según el tipo de archivo
       const mimeType = file.mimeType || file.type;
-      const preview = await DocumentPreviewService.previewDocument(fileBlob, mimeType);
+      const extension = file.name.toLowerCase().split(".").pop() || "";
+      const isExcelFile =
+        mimeType === "application/vnd.ms-excel" ||
+        mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+        extension === "xlsx" ||
+        extension === "xls";
+      const isPptxFile =
+        mimeType === "application/vnd.ms-powerpoint" ||
+        mimeType ===
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
+        extension === "pptx" ||
+        extension === "ppt";
+
+      // Seleccionar el contenedor correcto
+      let container: HTMLElement | null = officeViewer || null;
+      if (!container) {
+        if (isExcelFile) {
+          container = excelViewerRef.value;
+        } else if (isPptxFile) {
+          container = pptxViewerRef.value;
+        } else {
+          container = officeViewerRef.value;
+        }
+      }
 
       // Esperar a que el contenedor esté disponible (con retry)
-      let container = officeViewer || officeViewerRef.value;
       if (!container) {
         // Esperar hasta 2 segundos para que el contenedor esté disponible
         for (let i = 0; i < 20; i++) {
           await new Promise((resolve) => setTimeout(resolve, 100));
-          container = officeViewer || officeViewerRef.value;
+          if (isExcelFile) {
+            container = excelViewerRef.value;
+          } else if (isPptxFile) {
+            container = pptxViewerRef.value;
+          } else {
+            container = officeViewerRef.value;
+          }
           if (container) break;
         }
       }
@@ -432,6 +564,8 @@ export function useDocumentViewer() {
       if (!container) {
         throw new Error("No se encontró el contenedor para el documento de Office");
       }
+
+      const preview = await DocumentPreviewService.previewDocument(fileBlob, mimeType);
 
       // Limpiar el contenedor
       container.innerHTML = "";
@@ -462,15 +596,74 @@ export function useDocumentViewer() {
 
       currentDocument.value = file;
     } catch (err: any) {
-      console.error("Error loading Office document:", err);
-      error.value = err.message || "Error al cargar el documento de Office";
+      const errorMessage =
+        err?.message || String(err) || "Error desconocido al cargar el documento de Office";
+      console.error("❌ [useDocumentViewer] Error loading Office document:", {
+        error: err,
+        message: errorMessage,
+        stack: err?.stack,
+        fileName: file.name,
+        versionCode: file.versionCode,
+        mimeType: file.mimeType || file.type,
+      });
+      error.value = errorMessage;
       throw err;
     }
   }
 
-  // Cargar documento (detecta tipo automáticamente)
+  // Cargar documento Office (versión con pending document pattern)
+  async function loadOfficeDocumentWithPending(file: DocumentFile) {
+    // Determinar qué referencia necesitamos
+    const mimeType = file.mimeType || file.type;
+    const extension = file.name.toLowerCase().split(".").pop() || "";
+    const isExcelFile =
+      mimeType === "application/vnd.ms-excel" ||
+      mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+      extension === "xlsx" ||
+      extension === "xls";
+    const isPptxFile =
+      mimeType === "application/vnd.ms-powerpoint" ||
+      mimeType ===
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
+      extension === "pptx" ||
+      extension === "ppt";
+
+    // Verificar si la referencia necesaria está disponible
+    const neededRef = isExcelFile
+      ? excelViewerRef.value
+      : isPptxFile
+      ? pptxViewerRef.value
+      : officeViewerRef.value;
+
+    // Si no hay referencia disponible, guardar como pendiente
+    if (!neededRef) {
+      pendingDocument.value = file;
+      return;
+    }
+
+    // Si hay referencia, cargar inmediatamente
+    try {
+      await loadOfficeDocument(file, neededRef);
+    } catch (error: any) {
+      const errorMessage =
+        error?.message || String(error) || "Error desconocido al cargar documento Office";
+      console.error("❌ [useDocumentViewer] Error cargando Office:", {
+        error,
+        message: errorMessage,
+        stack: error?.stack,
+        fileName: file.name,
+        versionCode: file.versionCode,
+      });
+      throw error;
+    }
+  }
+
+  // Cargar documento (detecta tipo automáticamente) - usa pending document pattern
   async function loadDocument(file: DocumentFile) {
     try {
+      // Limpiar completamente antes de cargar un nuevo documento
+      await cleanup();
+
       isLoading.value = true;
       error.value = "";
       currentDocument.value = file;
@@ -478,8 +671,21 @@ export function useDocumentViewer() {
       const mimeType = file.mimeType || file.type;
       const extension = file.name.toLowerCase().split(".").pop() || "";
 
+      console.log("🔵 [useDocumentViewer] loadDocument INICIO:", {
+        fileName: file.name,
+        mimeType,
+        type: file.type,
+        extension,
+        versionCode: file.versionCode,
+        nodeId: file.nodeId,
+        size: file.size,
+        fullFile: file,
+      });
+
+      // Validar tipo de archivo antes de intentar cargar
       if (mimeType === "application/pdf" || extension === "pdf") {
-        await loadPdfDocument(file);
+        console.log("🔵 [useDocumentViewer] Detectado como PDF");
+        await loadPdfDocumentWithPending(file);
       } else if (
         mimeType === "application/msword" ||
         mimeType ===
@@ -487,14 +693,15 @@ export function useDocumentViewer() {
         extension === "docx" ||
         extension === "doc"
       ) {
-        await loadOfficeDocument(file);
+        console.log("🔵 [useDocumentViewer] Detectado como Word");
+        await loadOfficeDocumentWithPending(file);
       } else if (
         mimeType === "application/vnd.ms-excel" ||
         mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
         extension === "xlsx" ||
         extension === "xls"
       ) {
-        await loadOfficeDocument(file);
+        await loadOfficeDocumentWithPending(file);
       } else if (
         mimeType === "application/vnd.ms-powerpoint" ||
         mimeType ===
@@ -502,15 +709,34 @@ export function useDocumentViewer() {
         extension === "pptx" ||
         extension === "ppt"
       ) {
-        await loadOfficeDocument(file);
+        await loadOfficeDocumentWithPending(file);
       } else if (mimeType.startsWith("image/")) {
-        await loadOfficeDocument(file);
+        await loadOfficeDocumentWithPending(file);
       } else {
-        throw new Error(`Tipo de archivo no soportado: ${mimeType || extension}`);
+        // Para archivos no soportados, NO establecer error, solo retornar
+        // El componente DocumentPreview detectará que es no soportado automáticamente
+        console.log("🟡 [useDocumentViewer] Archivo no soportado detectado:", {
+          fileName: file.name,
+          mimeType,
+          extension,
+        });
+        isLoading.value = false;
+        error.value = ""; // Limpiar cualquier error previo
+        // Mantener currentDocument para que DocumentPreview pueda mostrar la info del archivo
+        return; // No lanzar error, solo retornar
       }
     } catch (err: any) {
-      console.error("Error loading document:", err);
-      error.value = err.message || "Error al cargar el documento";
+      const errorMessage =
+        err?.message || String(err) || "Error desconocido al cargar el documento";
+      console.error("❌ [useDocumentViewer] Error loading document:", {
+        error: err,
+        message: errorMessage,
+        stack: err?.stack,
+        fileName: file.name,
+        versionCode: file.versionCode,
+        mimeType: file.mimeType || file.type,
+      });
+      error.value = errorMessage;
     } finally {
       isLoading.value = false;
     }
@@ -561,13 +787,74 @@ export function useDocumentViewer() {
     );
   });
 
+  // Cargar documento pendiente
+  async function loadPendingDocument() {
+    if (!pendingDocument.value) return;
+
+    const file = pendingDocument.value;
+    pendingDocument.value = null;
+
+    try {
+      if (isPdf.value) {
+        await loadPdfDocument(file, pdfViewerRef.value || undefined);
+      } else if (isOffice.value || isExcel.value || isPptx.value) {
+        await loadOfficeDocument(file);
+      }
+    } catch (error: any) {
+      const errorMessage =
+        error?.message || String(error) || "Error desconocido al cargar documento pendiente";
+      console.error("❌ [useDocumentViewer] Error cargando documento pendiente:", {
+        error,
+        message: errorMessage,
+        stack: error?.stack,
+        pendingDocument: pendingDocument.value,
+      });
+    }
+  }
+
   // Establecer referencias
   function setPdfViewerRef(ref: HTMLElement | null) {
     pdfViewerRef.value = ref;
+
+    // Si hay un documento pendiente de carga, cargarlo ahora
+    if (ref && pendingDocument.value) {
+      nextTick(() => {
+        loadPendingDocument();
+      });
+    }
   }
 
   function setOfficeViewerRef(ref: HTMLElement | null) {
     officeViewerRef.value = ref;
+
+    // Si hay un documento pendiente de carga, cargarlo ahora
+    if (ref && pendingDocument.value) {
+      nextTick(() => {
+        loadPendingDocument();
+      });
+    }
+  }
+
+  function setExcelViewerRef(ref: HTMLElement | null) {
+    excelViewerRef.value = ref;
+
+    // Si hay un documento pendiente de carga, cargarlo ahora
+    if (ref && pendingDocument.value) {
+      nextTick(() => {
+        loadPendingDocument();
+      });
+    }
+  }
+
+  function setPptxViewerRef(ref: HTMLElement | null) {
+    pptxViewerRef.value = ref;
+
+    // Si hay un documento pendiente de carga, cargarlo ahora
+    if (ref && pendingDocument.value) {
+      nextTick(() => {
+        loadPendingDocument();
+      });
+    }
   }
 
   function setPreviewContainerRef(ref: HTMLElement | null) {
@@ -585,7 +872,7 @@ export function useDocumentViewer() {
   }
 
   // Limpiar al desmontar
-  function cleanup() {
+  async function cleanup() {
     removeScrollListener();
 
     // Limpiar timeout de zoom si existe
@@ -597,10 +884,43 @@ export function useDocumentViewer() {
     // Limpiar cache de páginas
     renderedPagesCache.clear();
 
-    currentPdf.value = null;
+    // Limpiar contenedores del DOM
+    if (pdfViewerRef.value) {
+      pdfViewerRef.value.innerHTML = "";
+    }
+    if (officeViewerRef.value) {
+      officeViewerRef.value.innerHTML = "";
+    }
+    if (excelViewerRef.value) {
+      excelViewerRef.value.innerHTML = "";
+    }
+    if (pptxViewerRef.value) {
+      pptxViewerRef.value.innerHTML = "";
+    }
+
+    // Limpiar PDF si existe - usar markRaw previene errores con campos privados
+    if (currentPdf.value) {
+      try {
+        // Verificar que el método destroy existe antes de llamarlo
+        if (typeof currentPdf.value.destroy === "function") {
+          await currentPdf.value.destroy();
+        }
+      } catch (err: any) {
+        // Ignorar errores al destruir PDF (puede ser que ya esté destruido)
+        console.warn(
+          "⚠️ [useDocumentViewer] Error al destruir PDF en cleanup:",
+          err?.message || err
+        );
+      }
+      currentPdf.value = null;
+    }
+
     currentDocument.value = null;
-    isLoading.value = true;
+    pendingDocument.value = null;
+    isLoading.value = false;
     error.value = "";
+    totalPages.value = 0;
+    currentPage.value = 1;
     currentPage.value = 1;
     totalPages.value = 1;
     zoom.value = 100;
@@ -619,6 +939,8 @@ export function useDocumentViewer() {
     // Referencias
     pdfViewerRef,
     officeViewerRef,
+    excelViewerRef,
+    pptxViewerRef,
     previewContainerRef,
 
     // Métodos de navegación
@@ -638,6 +960,8 @@ export function useDocumentViewer() {
     // Métodos de referencia
     setPdfViewerRef,
     setOfficeViewerRef,
+    setExcelViewerRef,
+    setPptxViewerRef,
     setPreviewContainerRef,
 
     // Computed

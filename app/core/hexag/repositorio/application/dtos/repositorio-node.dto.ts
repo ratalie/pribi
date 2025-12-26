@@ -33,6 +33,19 @@ export interface RepositorioNodeDTO {
     versionCode: string;
     documentCode?: string;
     title?: string;
+    mimeType?: string;
+    sizeInBytes?: number;
+    createdAt: string;
+    updatedAt: string;
+    userId?: number | null;
+    userIdV2?: string | null;
+    userName?: string | null;
+  }>;
+  versions?: Array<{
+    versionCode: string;
+    documentCode: string;
+    title?: string;
+    mimeType?: string;
     sizeInBytes?: number;
     createdAt: string;
     updatedAt: string;
