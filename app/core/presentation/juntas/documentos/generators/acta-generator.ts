@@ -1,5 +1,6 @@
 import { useActaAporteDinerario } from "../composables/useActaAporteDinerario";
 import { useDocumentosStore } from "../stores/documentos.store";
+import { useActaDocumentStore } from "../stores/acta-document.store";
 import { DocxtemplaterProcessor } from "~/core/hexag/documentos/infrastructure/processors/docxtemplater-processor";
 import { TemplateHttpRepository } from "~/core/hexag/documentos/infrastructure/repositories/template.http.repository";
 import type { Documento } from "~/core/hexag/documentos/domain/entities/documento.entity";
@@ -10,7 +11,7 @@ import { CategoriaDocumento } from "~/core/hexag/documentos/domain/enums/categor
  * Generador de Acta Completa
  *
  * Combina todos los puntos de agenda en una sola acta.
- * Usa los composables específicos para obtener las variables de cada punto.
+ * Usa el store ActaDocumentStore para obtener todas las variables.
  */
 export class ActaGenerator {
   /**
@@ -18,22 +19,32 @@ export class ActaGenerator {
    * @returns Blob del documento generado
    */
   static async generate(): Promise<Documento> {
-    const store = useDocumentosStore();
+    const actaDocumentStore = useActaDocumentStore();
+    const documentosStore = useDocumentosStore();
 
-    // Validar que tengamos datos básicos
-    if (!store.datosSociedad || !store.datosJunta) {
+    // 1. Actualizar cache antes de obtener variables
+    actaDocumentStore.actualizarCache();
+
+    // 2. Obtener variables completas del store
+    const variablesCompletas = actaDocumentStore.variablesCompletas;
+
+    if (!variablesCompletas) {
       throw new Error("No hay datos suficientes para generar el acta");
     }
 
-    // 1. Obtener variables base del acta (encabezado, instalación, etc.)
-    const variablesBase = this.buildBaseVariables(store);
+    // 2. Validar que se pueda abrir la junta
+    if (!variablesCompletas.quorum.apertura_junta) {
+      throw new Error(
+        "No se puede generar el acta: ningún punto de agenda cumple el quórum requerido"
+      );
+    }
 
-    // 2. Obtener variables de cada punto de agenda activo
-    const puntosAcuerdo = this.buildPuntosAcuerdo(store);
+    // 3. Obtener variables de cada punto de agenda activo (para puntos_acuerdo)
+    const puntosAcuerdo = this.buildPuntosAcuerdo(documentosStore);
 
-    // 3. Combinar todas las variables
-    const variablesCompletas = {
-      ...variablesBase,
+    // 4. Agregar puntos_acuerdo a las variables completas
+    const variablesFinales = {
+      ...variablesCompletas,
       puntos_acuerdo: puntosAcuerdo,
       total_puntos_acuerdo: puntosAcuerdo.length,
     };
@@ -41,11 +52,14 @@ export class ActaGenerator {
     // Log detallado para debugging
     console.log("📋 [ActaGenerator] Variables completas:", {
       // Variables base
-      acta_label: variablesCompletas.acta_label,
-      ciudad: variablesCompletas.ciudad,
-      nombre_empresa: variablesCompletas.nombre_empresa,
-      asistenciaCount: variablesCompletas.asistencia_lista?.length || 0,
-      agendaCount: variablesCompletas.agenda?.length || 0,
+      acta_label: variablesFinales.acta_label,
+      ciudad: variablesFinales.ciudad,
+      nombre_empresa: variablesFinales.nombre_empresa,
+      asistenciaCount: variablesFinales.asistencia_lista?.length || 0,
+      // Quórum
+      apertura_junta: variablesFinales.quorum.apertura_junta,
+      porcentaje_asistencia: variablesFinales.quorum.porcentaje_asistencia,
+      puntosAperturaCount: variablesFinales.puntos_agenda_apertura?.length || 0,
       // Puntos de acuerdo
       puntosAcuerdoCount: puntosAcuerdo.length,
       puntosAcuerdo: puntosAcuerdo.map((p) => ({
@@ -67,19 +81,19 @@ export class ActaGenerator {
       });
     }
 
-    // 4. Obtener template
+    // 5. Obtener template
     const templateBlob = await TemplateHttpRepository.getTemplate("acta/acta.docx");
 
-    // 5. Procesar template con datos
+    // 6. Procesar template con datos
     const documentoBlob = await DocxtemplaterProcessor.process(
       templateBlob,
-      variablesCompletas
+      variablesFinales
     );
 
-    // 6. Crear entidad Documento
+    // 7. Crear entidad Documento
     const documento: Documento = {
       id: crypto.randomUUID(),
-      nombre: `acta-${store.datosJunta.tipoJunta.toLowerCase().replace(/\s+/g, "-")}.docx`,
+      nombre: `acta-${documentosStore.datosJunta.tipoJunta.toLowerCase().replace(/\s+/g, "-")}.docx`,
       tipo: TipoDocumento.ACTA,
       categoria: CategoriaDocumento.ACTA_PRINCIPAL,
       blob: documentoBlob,
@@ -93,7 +107,9 @@ export class ActaGenerator {
 
   /**
    * Construye las variables base del acta (encabezado, instalación, quórum)
-   * Estructura compatible con template Mustache único
+   * DEPRECADO: Ahora se usa actaDocumentStore.variablesCompletas
+   * Se mantiene por compatibilidad temporal
+   * @deprecated Usar actaDocumentStore.variablesCompletas en su lugar
    */
   private static buildBaseVariables(store: ReturnType<typeof useDocumentosStore>) {
     const datosSociedad = store.datosSociedad!;

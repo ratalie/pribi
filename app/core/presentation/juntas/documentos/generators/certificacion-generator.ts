@@ -30,7 +30,18 @@ export class CertificacionGenerator {
     });
 
     // 1. Obtener template
-    const templateBlob = await TemplateHttpRepository.getTemplate("no-punto/certificacion.docx");
+    let templateBlob: Blob;
+    try {
+      templateBlob = await TemplateHttpRepository.getTemplate("no-punto/certificacion.docx");
+    } catch (error: any) {
+      // Si no existe certificacion.docx, intentar con certificado.docx como fallback
+      console.warn("⚠️ [CertificacionGenerator] Template certificacion.docx no encontrado, intentando certificado.docx...");
+      try {
+        templateBlob = await TemplateHttpRepository.getTemplate("no-punto/certificado.docx");
+      } catch (fallbackError: any) {
+        throw new Error(`No se pudo cargar el template de certificación. Verifica que exista 'certificacion.docx' o 'certificado.docx' en /public/templates/juntas/no-punto/. Error: ${fallbackError.message}`);
+      }
+    }
 
     // 2. Procesar template con datos
     const documentoBlob = await DocxtemplaterProcessor.process(templateBlob, vars);

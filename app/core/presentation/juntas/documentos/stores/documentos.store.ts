@@ -1,23 +1,28 @@
 import { defineStore } from "pinia";
-import type { DownloadDataDTO } from "~/core/hexag/documentos/application/dtos/download-data.dto";
 import { useDownloadDataStore } from "./download-data.store";
 import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
 import { numeroALetras } from "~/utils/numero-a-letras";
 
 /**
  * Store centralizado para Documentos de Juntas V3.0
- * 
+ *
  * Responsabilidades:
  * - Proporcionar getters computados para todos los datos necesarios para generar documentos
  * - Simplificar el acceso a datos desde downloadData y snapshot
  * - Una sola fuente de verdad para variables de templates
- * 
+ *
  * Arquitectura:
  * - Getters básicos: Datos comunes a todos los documentos
  * - Getters por punto de agenda: Datos específicos de cada punto
  * - Getters de documentos comunes: Lógica para determinar qué documentos generar
  */
 export const useDocumentosStore = defineStore("documentos", {
+  // ✅ PERSISTENCIA: Guardar en localStorage
+  persist: {
+    storage: typeof window !== "undefined" ? localStorage : undefined,
+    key: "probo-documentos-store",
+  },
+
   state: () => ({
     // Estado de generación
     isGenerating: false,
@@ -96,8 +101,11 @@ export const useDocumentosStore = defineStore("documentos", {
       }
 
       return {
-        tipoJunta: meetingDetails.meetingTypeFormatted || 
-          (meetingDetails.meetingType === "JUNTA_UNIVERSAL" ? "Junta Universal" : "Junta General"),
+        tipoJunta:
+          meetingDetails.meetingTypeFormatted ||
+          (meetingDetails.meetingType === "JUNTA_UNIVERSAL"
+            ? "Junta Universal"
+            : "Junta General"),
         esUniversal: meetingDetails.meetingType === "JUNTA_UNIVERSAL",
         fecha: meetingDetails.firstCall?.dateFormatted || "",
         hora: meetingDetails.firstCall?.timeFormatted || "",
@@ -128,13 +136,16 @@ export const useDocumentosStore = defineStore("documentos", {
         .filter((a) => a.accionesConDerechoVoto > 0)
         .map((a) => {
           const accionista = a.accionista;
-          const esPersonaNatural = accionista?.type === "NATURAL" || 
+          const esPersonaNatural =
+            accionista?.type === "NATURAL" ||
             (accionista?.firstName && !accionista?.legalName);
 
           return {
             id: accionista?.id || a.id,
             nombre: esPersonaNatural
-              ? `${accionista?.firstName || ""} ${accionista?.lastNamePaternal || ""} ${accionista?.lastNameMaternal || ""}`.trim()
+              ? `${accionista?.firstName || ""} ${accionista?.lastNamePaternal || ""} ${
+                  accionista?.lastNameMaternal || ""
+                }`.trim()
               : accionista?.legalName || "Accionista sin nombre",
             tipo: esPersonaNatural ? "NATURAL" : "JURIDICA",
             acciones: a.accionesConDerechoVoto,
@@ -145,9 +156,7 @@ export const useDocumentosStore = defineStore("documentos", {
             documento: esPersonaNatural
               ? accionista?.documentNumber || ""
               : accionista?.ruc || "",
-            tipoDocumento: esPersonaNatural
-              ? accionista?.documentType || "DNI"
-              : "RUC",
+            tipoDocumento: esPersonaNatural ? accionista?.documentType || "DNI" : "RUC",
           };
         });
     },
@@ -384,7 +393,9 @@ export const useDocumentosStore = defineStore("documentos", {
       }
 
       // Gestión Social
-      if (agendaItems.gestionSocialYResultadosEconomicos?.pronunciamientoGestionSocialYResultados) {
+      if (
+        agendaItems.gestionSocialYResultadosEconomicos?.pronunciamientoGestionSocialYResultados
+      ) {
         activos.push("gestionSocial");
       }
       if (agendaItems.gestionSocialYResultadosEconomicos?.aplicacionResultados) {
@@ -396,6 +407,117 @@ export const useDocumentosStore = defineStore("documentos", {
 
       return activos;
     },
+
+    // ============================================
+    // GETTERS NUEVOS - ESTRUCTURA POR FASES
+    // ============================================
+
+    /**
+     * FASE 1: Detalles de la Junta
+     * Compilación de datos básicos: nombre, cantidad de puntos, fecha, etc.
+     * Origen: datosSociedad + datosJunta
+     */
+    detallesDeLaJunta() {
+      const sociedad = this.datosSociedad;
+      const junta = this.datosJunta;
+      const puntosActivos = this.puntosAgendaActivos;
+
+      return {
+        nombreEmpresa: sociedad.razonSocial,
+        ruc: sociedad.ruc,
+        tipoJunta: junta.tipoJunta,
+        esUniversal: junta.esUniversal,
+        fecha: junta.fecha,
+        hora: junta.hora,
+        lugar: junta.lugar,
+        ciudad: sociedad.ciudad || "Lima",
+        cantidadPuntosAgenda: puntosActivos.length,
+        puntosAgenda: puntosActivos,
+        presidente: junta.presidente || "No especificado",
+        secretario: junta.secretario || "No especificado",
+        // Fecha formateada para el acta
+        fechaFormateada: junta.fecha || "",
+        horaFormateada: junta.hora || "",
+      };
+    },
+
+    /**
+     * FASE 2: Instalación y Quórum
+     * Datos de instalación: acciones, quórum, asistencia
+     * Origen: listaAccionistas + cálculos de quórum
+     */
+    instalacion() {
+      const asistentes = this.listaAccionistasAsistentes;
+      const totalAcciones = this.totalAccionesConDerechoVoto;
+      const porcentajeAsistencia = this.porcentajeAsistencia;
+      const faltaQuorum = this.faltaQuorum;
+      const datosJunta = this.datosJunta;
+      const listaAccionistas = this.listaAccionistasConDerechoAVoto;
+
+      // Calcular acciones totales de la sociedad (TODO: obtener desde snapshot cuando esté disponible)
+      // Por ahora usamos el total de acciones con derecho a voto de todos los accionistas
+      const accionesTotales = listaAccionistas.reduce(
+        (sum: number, a: any) => sum + a.acciones,
+        0
+      );
+
+      return {
+        // Acciones
+        accionesConDerechoAVoto: totalAcciones,
+        accionesTotales: accionesTotales,
+        porcentajeAcciones:
+          accionesTotales > 0
+            ? Math.round((totalAcciones / accionesTotales) * 100 * 100) / 100
+            : 0,
+
+        // Asistencia
+        cantidadAsistentes: asistentes.length,
+        listaAsistentes: asistentes,
+
+        // Quórum
+        porcentajeAsistencia: porcentajeAsistencia,
+        faltaQuorum: faltaQuorum,
+        quorumRequerido: datosJunta.esUniversal ? 100 : 50,
+        cumpleQuorum: !faltaQuorum,
+
+        // Texto formateado para el acta
+        totalAccionesTexto: totalAcciones.toLocaleString("es-PE"),
+        porcentajeAccionesTexto:
+          accionesTotales > 0
+            ? Math.round((totalAcciones / accionesTotales) * 100 * 100) / 100 + "%"
+            : "0%",
+      };
+    },
+
+    /**
+     * FASE 3: Quórum Status
+     * Status del quórum: "ok" | "pending" | "vacio"
+     * Por ahora hardcodeado como función que devuelve "ok"
+     * TODO: Implementar lógica de negocio más adelante
+     */
+    quorum() {
+      const instalacion = this.instalacion;
+
+      // Por ahora, lógica simple hardcodeada
+      if (instalacion.accionesConDerechoAVoto === 0) {
+        return {
+          status: "vacio" as const,
+          mensaje: "No hay acciones con derecho a voto",
+        };
+      }
+
+      if (instalacion.faltaQuorum) {
+        return {
+          status: "pending" as const,
+          mensaje: `Falta quórum. Se requiere ${instalacion.quorumRequerido}%, actual: ${instalacion.porcentajeAsistencia}%`,
+        };
+      }
+
+      return {
+        status: "ok" as const,
+        mensaje: `Quórum cumplido: ${instalacion.porcentajeAsistencia}%`,
+      };
+    },
   },
 
   actions: {
@@ -403,10 +525,12 @@ export const useDocumentosStore = defineStore("documentos", {
      * Agrupar aportes por aportante
      * Helper para facilitar el acceso a aportes por aportante
      */
-    agruparAportesPorAportante(aporteDinerario: NonNullable<ReturnType<typeof useDownloadDataStore>["aporteDinerario"]>) {
+    agruparAportesPorAportante(
+      aporteDinerario: NonNullable<ReturnType<typeof useDownloadDataStore>["aporteDinerario"]>
+    ) {
       const agrupados: Record<string, typeof aporteDinerario.aportesData> = {};
 
-      aporteDinerario.aportesData.forEach((aporte) => {
+      aporteDinerario.aportesData.forEach((aporte: any) => {
         const aportanteId = aporte.shareholderId;
         if (!agrupados[aportanteId]) {
           agrupados[aportanteId] = [];
@@ -416,7 +540,5 @@ export const useDocumentosStore = defineStore("documentos", {
 
       return agrupados;
     },
-
   },
 });
-

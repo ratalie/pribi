@@ -48,6 +48,11 @@ export const useMeetingDetailsStore = defineStore('meeting-details', {
      * Obtiene el tipo de junta actual
      */
     tipoJunta: (state) => state.meetingDetails?.tipoJunta || null,
+
+    /**
+     * Obtiene la convocatoria en la que se instaló la junta
+     */
+    instaladaEnConvocatoria: (state) => state.meetingDetails?.instaladaEnConvocatoria || null,
   },
 
   actions: {

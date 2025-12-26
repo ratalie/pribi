@@ -42,14 +42,19 @@ export class DocumentosOrchestrator {
       documentos.push(acta);
       console.log("✅ [DocumentosOrchestrator] Acta generada:", acta.nombre);
 
-      // 3. Generar Convocatoria (solo si es Junta General)
+      // 3. Generar Convocatoria (solo si es Junta General) - Manejar errores sin detener
       console.log("📄 [DocumentosOrchestrator] Verificando si se genera convocatoria...");
-      const convocatoria = await ConvocatoriaGenerator.generate();
-      if (convocatoria) {
-        documentos.push(convocatoria);
-        console.log("✅ [DocumentosOrchestrator] Convocatoria generada:", convocatoria.nombre);
-      } else {
-        console.log("ℹ️ [DocumentosOrchestrator] No se genera convocatoria (Junta Universal)");
+      try {
+        const convocatoria = await ConvocatoriaGenerator.generate();
+        if (convocatoria) {
+          documentos.push(convocatoria);
+          console.log("✅ [DocumentosOrchestrator] Convocatoria generada:", convocatoria.nombre);
+        } else {
+          console.log("ℹ️ [DocumentosOrchestrator] No se genera convocatoria (Junta Universal)");
+        }
+      } catch (error: any) {
+        console.warn("⚠️ [DocumentosOrchestrator] No se pudo generar convocatoria:", error.message);
+        // Continuar sin convocatoria
       }
 
       // 4. Generar Proxies (si hay representantes)
@@ -62,11 +67,17 @@ export class DocumentosOrchestrator {
         console.log("ℹ️ [DocumentosOrchestrator] No se generan proxies (no hay representantes)");
       }
 
-      // 5. Generar Certificación (siempre)
+      // 5. Generar Certificación (siempre) - Manejar errores sin detener todo
       console.log("📄 [DocumentosOrchestrator] Generando certificación...");
-      const certificacion = await CertificacionGenerator.generate();
-      documentos.push(certificacion);
-      console.log("✅ [DocumentosOrchestrator] Certificación generada:", certificacion.nombre);
+      try {
+        const certificacion = await CertificacionGenerator.generate();
+        documentos.push(certificacion);
+        console.log("✅ [DocumentosOrchestrator] Certificación generada:", certificacion.nombre);
+      } catch (error: any) {
+        console.warn("⚠️ [DocumentosOrchestrator] No se pudo generar certificación:", error.message);
+        console.warn("⚠️ [DocumentosOrchestrator] Continuando con otros documentos...");
+        // No lanzar error, continuar con otros documentos
+      }
 
       // 6. Generar Minuta (si hay aporte dinerario) - TODO
       const puntosActivos = store.puntosAgendaActivos;

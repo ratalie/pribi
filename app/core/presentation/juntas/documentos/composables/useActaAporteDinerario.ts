@@ -297,6 +297,7 @@ export function useActaAporteDinerario() {
 
       votacion: {
         cumple_votos: porcentajeAprobacion >= 50,
+        no_cumple_votos: porcentajeAprobacion < 50, // Flag explícito para negación
         porcentaje: porcentajeAprobacion.toFixed(2),
         lista_nombres: nombresAFavor.join(", "),
         accionistas_afavor: nombresAFavor.map((nombre) => obtenerInfoAccionista(nombre)),

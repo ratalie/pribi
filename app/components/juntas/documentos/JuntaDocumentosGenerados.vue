@@ -69,12 +69,12 @@
 
       <!-- Mensaje de error si existe -->
       <div
-        v-if="errorMessage"
+        v-if="errorMessage || errorGeneracion"
         class="mt-4 p-3 rounded-lg bg-red-50"
         style="border: 1px solid #fee2e2"
       >
         <p class="text-sm" style="color: var(--error-600); font-family: var(--font-secondary)">
-          {{ errorMessage }}
+          {{ errorMessage || errorGeneracion }}
         </p>
       </div>
     </div>
@@ -203,7 +203,10 @@
   import type { Documento } from "~/core/hexag/documentos/domain/entities/documento.entity";
   import { OrdenConvocatoria } from "~/core/hexag/juntas/domain/enums/orden-convocatoria.enum";
   import { RepositorioDocumentosHttpRepository } from "~/core/hexag/repositorio/infrastructure/repositories/repositorio-documentos-http.repository";
-  import { useDocumentosGeneradosStore } from "~/core/presentation/juntas/documentos/stores/documentos-generados.store";
+  import { DocumentosOrchestrator } from "~/core/presentation/juntas/documentos/orchestrator/documentos-orchestrator";
+  import { useDownloadDataStore } from "~/core/presentation/juntas/documentos/stores/download-data.store";
+  import { useActaDocumentStore } from "~/core/presentation/juntas/documentos/stores/acta-document.store";
+  import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
   import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
   import CategoriaDocumentos from "./CategoriaDocumentos.vue";
   import DocumentoDuplicadoModal from "./DocumentoDuplicadoModal.vue";
@@ -212,15 +215,32 @@
   const { downloadData, razonSocial, ruc, isLoading: isLoadingData } = useDownloadData();
 
   const route = useRoute();
-  const documentosStore = useDocumentosGeneradosStore();
+  const downloadDataStore = useDownloadDataStore();
+  const actaDocumentStore = useActaDocumentStore();
+  const snapshotStore = useSnapshotStore();
   const meetingDetailsStore = useMeetingDetailsStore();
   const { enviarDocumentos, isUploading, errorMessage, fechaJunta } = useEnviarDocumentosRepositorio();
   const { filtrarDuplicados } = useDocumentosDuplicados();
 
-  const documentos = computed(() => documentosStore.documentos);
-  const isGenerating = computed(() => documentosStore.status === "generating");
-  const documentosPorCategoria = computed(() => documentosStore.documentosPorCategoria);
-  const totalDocumentos = computed(() => documentosStore.totalDocumentos);
+  // Estado local para documentos generados
+  const documentos = ref<Documento[]>([]);
+  const isGenerating = ref(false);
+  const errorGeneracion = ref<string | null>(null);
+
+  // Computed para categorías y totales
+  const documentosPorCategoria = computed(() => {
+    const categorias: Record<string, Documento[]> = {};
+    documentos.value.forEach((doc) => {
+      const categoria = doc.categoria || "Otros";
+      if (!categorias[categoria]) {
+        categorias[categoria] = [];
+      }
+      categorias[categoria].push(doc);
+    });
+    return categorias;
+  });
+
+  const totalDocumentos = computed(() => documentos.value.length);
 
   // Composable para manejar selección de documentos
   const {
@@ -346,21 +366,44 @@
     return count;
   });
 
-  // Generar documentos cuando haya datos
+  // Generar documentos cuando haya datos (SISTEMA NUEVO v3.0)
   watch(
     [downloadData, razonSocial, ruc],
     async ([data, razon, rucValue]) => {
-      if (data && razon && rucValue && !documentosStore.hasDocumentos && !isGenerating.value) {
-        console.log("🔄 [JuntaDocumentosGenerados] Generando documentos...", {
+      if (data && razon && rucValue && documentos.value.length === 0 && !isGenerating.value) {
+        console.log("🔄 [JuntaDocumentosGenerados] Generando documentos con sistema v3.0...", {
           hasData: !!data,
           razonSocial: razon,
           ruc: rucValue,
         });
-        await documentosStore.generarDocumentos(data, razon, rucValue);
-        console.log(
-          "✅ [JuntaDocumentosGenerados] Documentos generados:",
-          documentos.value.length
-        );
+
+        isGenerating.value = true;
+        errorGeneracion.value = null;
+
+        try {
+          // 1. Cargar datos en stores necesarios
+          downloadDataStore.downloadData = data;
+          console.log("✅ [JuntaDocumentosGenerados] Datos cargados en downloadDataStore");
+
+          // 2. Actualizar cache de variables del acta
+          actaDocumentStore.actualizarCache();
+          console.log("✅ [JuntaDocumentosGenerados] Cache de acta actualizado");
+
+          // 3. Generar documentos con el nuevo sistema
+          const documentosGenerados = await DocumentosOrchestrator.generateAll();
+          documentos.value = documentosGenerados;
+
+          console.log(
+            "✅ [JuntaDocumentosGenerados] Documentos generados:",
+            documentos.value.length,
+            documentos.value.map((d) => d.nombre)
+          );
+        } catch (error: any) {
+          console.error("❌ [JuntaDocumentosGenerados] Error al generar documentos:", error);
+          errorGeneracion.value = error.message || "Error al generar documentos";
+        } finally {
+          isGenerating.value = false;
+        }
       }
     },
     { immediate: true }
