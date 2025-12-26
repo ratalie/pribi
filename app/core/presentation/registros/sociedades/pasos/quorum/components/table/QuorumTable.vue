@@ -3,11 +3,11 @@
     <table class="w-full border-collapse table-fixed">
       <!-- titulos -->
       <thead>
-        <tr class="border-b border-border-primary py-4 px-4">
+        <tr class="border-b border-border-primary py-4">
           <th
             v-for="(el, index) in headerList"
             :key="index"
-            class="text-button-primary text-b1 font-semibold font-primary text-start py-4 px-7"
+            class="text-button-primary text-b1 font-semibold font-primary text-start py-4 px-4 2xl:px-7"
             :style="
               headerList.length === 3
                 ? index === 0

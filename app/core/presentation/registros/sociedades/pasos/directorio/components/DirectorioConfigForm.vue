@@ -65,7 +65,7 @@
     <CardTitle title="Configuracion del Directorio" body="" />
 
     <Form
-      class="grid grid-cols-2 gap-14 w-full"
+      class="grid grid-cols-2 gap-10 2xl:gap-14 w-full"
       @submit="handleSubmit"
       @invalid-submit="handleInvalidSubmit"
     >

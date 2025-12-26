@@ -1,25 +1,28 @@
-import { defineStore } from 'pinia';
-import type { User } from '~/core/hexag/panel-administrativo/domain/entities/user.entity';
-import type { UserFlowAccess } from '~/core/hexag/panel-administrativo/domain/entities/permission.entity';
-import type { RoleName } from '~/core/hexag/panel-administrativo/domain/entities/role.entity';
-import type { SocietyInfo } from '~/core/hexag/panel-administrativo/domain/entities/society-assignment.entity';
-import { GetUsersUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/get-users.use-case';
-import { GetUserPermissionsUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/get-user-permissions.use-case';
-import { UpdateUserPermissionsUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/update-user-permissions.use-case';
-import { GetUserRoutePermissionsUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/get-user-route-permissions.use-case';
-import { UpdateUserRoutePermissionsUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/update-user-route-permissions.use-case';
-import { AssignUserToSocietiesUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/assign-user-to-societies.use-case';
-import { UpdateUserRoleUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/update-user-role.use-case';
-import { GetAllSocietiesUseCase } from '~/core/hexag/panel-administrativo/application/use-cases/get-all-societies.use-case';
-import { UserMockRepository } from '~/core/hexag/panel-administrativo/infrastructure/repositories/user-mock.repository';
+import { defineStore } from "pinia";
+import type { User } from "~/core/hexag/panel-administrativo/domain/entities/user.entity";
+import type { UserFlowAccess } from "~/core/hexag/panel-administrativo/domain/entities/permission.entity";
+import type { RoleName } from "~/core/hexag/panel-administrativo/domain/entities/role.entity";
+import type { SocietyInfo } from "~/core/hexag/panel-administrativo/domain/entities/society-assignment.entity";
+import { GetUsersUseCase } from "~/core/hexag/panel-administrativo/application/use-cases/get-users.use-case";
+import { GetUserPermissionsUseCase } from "~/core/hexag/panel-administrativo/application/use-cases/get-user-permissions.use-case";
+import { UpdateUserPermissionsUseCase } from "~/core/hexag/panel-administrativo/application/use-cases/update-user-permissions.use-case";
+import { GetUserRoutePermissionsUseCase } from "~/core/hexag/panel-administrativo/application/use-cases/get-user-route-permissions.use-case";
+import { UpdateUserRoutePermissionsUseCase } from "~/core/hexag/panel-administrativo/application/use-cases/update-user-route-permissions.use-case";
+import { AssignUserToSocietiesUseCase } from "~/core/hexag/panel-administrativo/application/use-cases/assign-user-to-societies.use-case";
+import { UpdateUserRoleUseCase } from "~/core/hexag/panel-administrativo/application/use-cases/update-user-role.use-case";
+import { GetAllSocietiesUseCase } from "~/core/hexag/panel-administrativo/application/use-cases/get-all-societies.use-case";
+import { CreateUserUseCase } from "~/core/hexag/panel-administrativo/application/use-cases/create-user.use-case";
+import { DeleteUserUseCase } from "~/core/hexag/panel-administrativo/application/use-cases/delete-user.use-case";
+import { UpdateUserStatusUseCase } from "~/core/hexag/panel-administrativo/application/use-cases/update-user-status.use-case";
+import { UserHttpRepository } from "~/core/hexag/panel-administrativo/infrastructure/repositories/user-http.repository";
 
-type Status = 'idle' | 'loading' | 'saving' | 'error';
+type Status = "idle" | "loading" | "saving" | "error";
 
 /**
  * Store para Gestión de Usuarios
  * Usa Option API según las reglas del proyecto
  */
-export const useUserManagementStore = defineStore('user-management', {
+export const useUserManagementStore = defineStore("user-management", {
   state: () => ({
     users: [] as User[],
     selectedUser: null as User | null,
@@ -27,14 +30,14 @@ export const useUserManagementStore = defineStore('user-management', {
     userRoutePermissions: [] as string[],
     userAssignedSocieties: [] as string[],
     availableSocieties: [] as SocietyInfo[],
-    status: 'idle' as Status,
+    status: "idle" as Status,
     errorMessage: null as string | null,
   }),
 
   getters: {
-    isLoading: (state) => state.status === 'loading',
-    isSaving: (state) => state.status === 'saving',
-    hasError: (state) => state.status === 'error',
+    isLoading: (state) => state.status === "loading",
+    isSaving: (state) => state.status === "saving",
+    hasError: (state) => state.status === "error",
     totalUsers: (state) => state.users.length,
     activeUsers: (state) => state.users.filter((u) => u.status),
     usersByRole: (state) => (roleName: RoleName) => {
@@ -49,19 +52,31 @@ export const useUserManagementStore = defineStore('user-management', {
      * Carga todos los usuarios
      */
     async loadUsers() {
-      this.status = 'loading';
+      this.status = "loading";
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new GetUsersUseCase(repository);
         const users = await useCase.execute();
+
+        // Verificar que recibimos usuarios
+        if (!Array.isArray(users)) {
+          console.error("[UserManagementStore] loadUsers: respuesta no es un array:", users);
+          this.users = [];
+          this.status = "error";
+          this.errorMessage = "Error: respuesta inválida del servidor";
+          return;
+        }
+
+        console.log("[UserManagementStore] loadUsers: usuarios cargados:", users.length);
         this.users = users;
-        this.status = 'idle';
+        this.status = "idle";
       } catch (error: any) {
-        console.error('[UserManagementStore] Error al cargar usuarios:', error);
-        this.status = 'error';
-        this.errorMessage = error?.message ?? 'No pudimos cargar los usuarios';
+        console.error("[UserManagementStore] Error al cargar usuarios:", error);
+        this.status = "error";
+        this.errorMessage = error?.message ?? "No pudimos cargar los usuarios";
+        // No limpiar usuarios existentes si hay error
       }
     },
 
@@ -84,19 +99,19 @@ export const useUserManagementStore = defineStore('user-management', {
      * Carga permisos de un usuario
      */
     async loadUserPermissions(userId: string) {
-      this.status = 'loading';
+      this.status = "loading";
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new GetUserPermissionsUseCase(repository);
         const permissions = await useCase.execute(userId);
         this.userPermissions = permissions;
-        this.status = 'idle';
+        this.status = "idle";
       } catch (error: any) {
-        console.error('[UserManagementStore] Error al cargar permisos:', error);
-        this.status = 'error';
-        this.errorMessage = error?.message ?? 'No pudimos cargar los permisos';
+        console.error("[UserManagementStore] Error al cargar permisos:", error);
+        this.status = "error";
+        this.errorMessage = error?.message ?? "No pudimos cargar los permisos";
       }
     },
 
@@ -104,20 +119,20 @@ export const useUserManagementStore = defineStore('user-management', {
      * Actualiza permisos de un usuario
      */
     async updateUserPermissions(userId: string, permissions: UserFlowAccess[]) {
-      this.status = 'saving';
+      this.status = "saving";
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new UpdateUserPermissionsUseCase(repository);
         const updatedPermissions = await useCase.execute(userId, permissions);
         this.userPermissions = updatedPermissions;
-        this.status = 'idle';
+        this.status = "idle";
         return updatedPermissions;
       } catch (error: any) {
-        console.error('[UserManagementStore] Error al actualizar permisos:', error);
-        this.status = 'error';
-        this.errorMessage = error?.message ?? 'No pudimos actualizar los permisos';
+        console.error("[UserManagementStore] Error al actualizar permisos:", error);
+        this.status = "error";
+        this.errorMessage = error?.message ?? "No pudimos actualizar los permisos";
         throw error;
       }
     },
@@ -126,19 +141,19 @@ export const useUserManagementStore = defineStore('user-management', {
      * Carga permisos de rutas de un usuario
      */
     async loadUserRoutePermissions(userId: string) {
-      this.status = 'loading';
+      this.status = "loading";
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new GetUserRoutePermissionsUseCase(repository);
         const routePermissions = await useCase.execute(userId);
         this.userRoutePermissions = routePermissions;
-        this.status = 'idle';
+        this.status = "idle";
       } catch (error: any) {
-        console.error('[UserManagementStore] Error al cargar permisos de rutas:', error);
-        this.status = 'error';
-        this.errorMessage = error?.message ?? 'No pudimos cargar los permisos de rutas';
+        console.error("[UserManagementStore] Error al cargar permisos de rutas:", error);
+        this.status = "error";
+        this.errorMessage = error?.message ?? "No pudimos cargar los permisos de rutas";
       }
     },
 
@@ -146,32 +161,33 @@ export const useUserManagementStore = defineStore('user-management', {
      * Actualiza permisos de rutas de un usuario
      */
     async updateUserRoutePermissions(userId: string, routePermissions: string[]) {
-      this.status = 'saving';
+      this.status = "saving";
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new UpdateUserRoutePermissionsUseCase(repository);
         const updatedPermissions = await useCase.execute(userId, routePermissions);
         this.userRoutePermissions = updatedPermissions;
-        
+
         // Actualizar también en el usuario seleccionado si es el mismo
         if (this.selectedUser && this.selectedUser.id === userId) {
           this.selectedUser.routePermissions = updatedPermissions;
         }
-        
+
         // Actualizar en la lista de usuarios
         const userIndex = this.users.findIndex((u) => u.id === userId);
-        if (userIndex !== -1 && this.users[userIndex]) {
-          this.users[userIndex].routePermissions = updatedPermissions;
+        const user = userIndex !== -1 ? this.users[userIndex] : null;
+        if (user) {
+          user.routePermissions = updatedPermissions;
         }
-        
-        this.status = 'idle';
+
+        this.status = "idle";
         return updatedPermissions;
       } catch (error: any) {
-        console.error('[UserManagementStore] Error al actualizar permisos de rutas:', error);
-        this.status = 'error';
-        this.errorMessage = error?.message ?? 'No pudimos actualizar los permisos de rutas';
+        console.error("[UserManagementStore] Error al actualizar permisos de rutas:", error);
+        this.status = "error";
+        this.errorMessage = error?.message ?? "No pudimos actualizar los permisos de rutas";
         throw error;
       }
     },
@@ -180,20 +196,19 @@ export const useUserManagementStore = defineStore('user-management', {
      * Carga sociedades asignadas de un usuario
      */
     async loadUserAssignedSocieties(userId: string) {
-      this.status = 'loading';
+      this.status = "loading";
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
-        const useCase = new AssignUserToSocietiesUseCase(repository);
+        const repository = new UserHttpRepository();
         // Para cargar, usamos el método del repositorio directamente
         const societies = await repository.getUserAssignedSocieties(userId);
         this.userAssignedSocieties = societies;
-        this.status = 'idle';
+        this.status = "idle";
       } catch (error: any) {
-        console.error('[UserManagementStore] Error al cargar sociedades asignadas:', error);
-        this.status = 'error';
-        this.errorMessage = error?.message ?? 'No pudimos cargar las sociedades asignadas';
+        console.error("[UserManagementStore] Error al cargar sociedades asignadas:", error);
+        this.status = "error";
+        this.errorMessage = error?.message ?? "No pudimos cargar las sociedades asignadas";
       }
     },
 
@@ -201,32 +216,33 @@ export const useUserManagementStore = defineStore('user-management', {
      * Asigna usuario a sociedades
      */
     async assignUserToSocieties(userId: string, societyIds: string[]) {
-      this.status = 'saving';
+      this.status = "saving";
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new AssignUserToSocietiesUseCase(repository);
         const assignedSocieties = await useCase.execute(userId, societyIds);
         this.userAssignedSocieties = assignedSocieties;
-        
+
         // Actualizar también en el usuario seleccionado si es el mismo
         if (this.selectedUser && this.selectedUser.id === userId) {
           this.selectedUser.assignedSocieties = assignedSocieties;
         }
-        
+
         // Actualizar en la lista de usuarios
         const userIndex = this.users.findIndex((u) => u.id === userId);
-        if (userIndex !== -1 && this.users[userIndex]) {
-          this.users[userIndex].assignedSocieties = assignedSocieties;
+        const user = userIndex !== -1 ? this.users[userIndex] : null;
+        if (user) {
+          user.assignedSocieties = assignedSocieties;
         }
-        
-        this.status = 'idle';
+
+        this.status = "idle";
         return assignedSocieties;
       } catch (error: any) {
-        console.error('[UserManagementStore] Error al asignar sociedades:', error);
-        this.status = 'error';
-        this.errorMessage = error?.message ?? 'No pudimos asignar las sociedades';
+        console.error("[UserManagementStore] Error al asignar sociedades:", error);
+        this.status = "error";
+        this.errorMessage = error?.message ?? "No pudimos asignar las sociedades";
         throw error;
       }
     },
@@ -235,51 +251,144 @@ export const useUserManagementStore = defineStore('user-management', {
      * Carga todas las sociedades disponibles
      */
     async loadAllSocieties() {
-      this.status = 'loading';
+      this.status = "loading";
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new GetAllSocietiesUseCase(repository);
         const societies = await useCase.execute();
         this.availableSocieties = societies;
-        this.status = 'idle';
+        this.status = "idle";
       } catch (error: any) {
-        console.error('[UserManagementStore] Error al cargar sociedades:', error);
-        this.status = 'error';
-        this.errorMessage = error?.message ?? 'No pudimos cargar las sociedades';
+        console.error("[UserManagementStore] Error al cargar sociedades:", error);
+        this.status = "error";
+        this.errorMessage = error?.message ?? "No pudimos cargar las sociedades";
       }
     },
 
     /**
      * Actualiza el rol de un usuario
      */
-    async updateUserRole(userId: string, role: 'lector' | 'editor' | 'admin' | 'user') {
-      this.status = 'saving';
+    async updateUserRole(userId: string, role: "lector" | "editor" | "admin" | "user" | "externo") {
+      this.status = "saving";
       this.errorMessage = null;
 
       try {
-        const repository = new UserMockRepository();
+        const repository = new UserHttpRepository();
         const useCase = new UpdateUserRoleUseCase(repository);
         const updatedUser = await useCase.execute(userId, role);
-        
+
         // Actualizar en la lista de usuarios
         const userIndex = this.users.findIndex((u) => u.id === userId);
         if (userIndex !== -1) {
           this.users[userIndex] = updatedUser;
         }
-        
+
         // Actualizar usuario seleccionado si es el mismo
         if (this.selectedUser && this.selectedUser.id === userId) {
           this.selectedUser = updatedUser;
         }
-        
-        this.status = 'idle';
+
+        this.status = "idle";
         return updatedUser;
       } catch (error: any) {
-        console.error('[UserManagementStore] Error al actualizar rol:', error);
-        this.status = 'error';
-        this.errorMessage = error?.message ?? 'No pudimos actualizar el rol';
+        console.error("[UserManagementStore] Error al actualizar rol:", error);
+        this.status = "error";
+        this.errorMessage = error?.message ?? "No pudimos actualizar el rol";
+        throw error;
+      }
+    },
+
+    /**
+     * Crea un nuevo usuario
+     */
+    async createUser(email: string, password: string, roleId: string) {
+      this.status = "saving";
+      this.errorMessage = null;
+
+      try {
+        const repository = new UserHttpRepository();
+        const useCase = new CreateUserUseCase(repository);
+        const newUser = await useCase.execute(email, password, roleId);
+
+        console.log("[UserManagementStore] Usuario creado:", newUser.id);
+
+        // Recargar TODOS los usuarios para asegurar consistencia
+        // Esto evita problemas de sincronización con el backend
+        console.log("[UserManagementStore] Recargando usuarios después de crear...");
+        await this.loadUsers();
+
+        console.log("[UserManagementStore] Usuarios después de recargar:", this.users.length);
+
+        this.status = "idle";
+        return newUser;
+      } catch (error: any) {
+        console.error("[UserManagementStore] Error al crear usuario:", error);
+        this.status = "error";
+        this.errorMessage = error?.message ?? "No pudimos crear el usuario";
+        throw error;
+      }
+    },
+
+    /**
+     * Elimina un usuario
+     */
+    async deleteUser(userId: string) {
+      this.status = "saving";
+      this.errorMessage = null;
+
+      try {
+        const repository = new UserHttpRepository();
+        const useCase = new DeleteUserUseCase(repository);
+        await useCase.execute(userId);
+
+        // Remover de la lista de usuarios
+        this.users = this.users.filter((u) => u.id !== userId);
+
+        // Si era el usuario seleccionado, limpiar selección
+        if (this.selectedUser && this.selectedUser.id === userId) {
+          this.clearSelection();
+        }
+
+        this.status = "idle";
+      } catch (error: any) {
+        console.error("[UserManagementStore] Error al eliminar usuario:", error);
+        this.status = "error";
+        this.errorMessage = error?.message ?? "No pudimos eliminar el usuario";
+        throw error;
+      }
+    },
+
+    /**
+     * Actualiza el estado de un usuario
+     */
+    async updateUserStatus(userId: string, status: boolean) {
+      this.status = "saving";
+      this.errorMessage = null;
+
+      try {
+        const repository = new UserHttpRepository();
+        const useCase = new UpdateUserStatusUseCase(repository);
+        const updatedUser = await useCase.execute(userId, status);
+
+        // Actualizar en la lista de usuarios
+        const userIndex = this.users.findIndex((u) => u.id === userId);
+        if (userIndex !== -1) {
+          this.users[userIndex] = updatedUser;
+        }
+
+        // Actualizar usuario seleccionado si es el mismo
+        if (this.selectedUser && this.selectedUser.id === userId) {
+          this.selectedUser = updatedUser;
+        }
+
+        this.status = "idle";
+        return updatedUser;
+      } catch (error: any) {
+        console.error("[UserManagementStore] Error al actualizar estado:", error);
+        this.status = "error";
+        this.errorMessage = error?.message ?? "No pudimos actualizar el estado";
         throw error;
       }
     },
@@ -295,4 +404,3 @@ export const useUserManagementStore = defineStore('user-management', {
     },
   },
 });
-
