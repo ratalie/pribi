@@ -1,10 +1,18 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { Plus, UserPlus } from "lucide-vue-next";
 import type { ActionsBarProps } from "../../types/user-management.types";
 import SearchBar from "../molecules/SearchBar.vue";
 import ViewModeToggle from "../molecules/ViewModeToggle.vue";
 
-const props = defineProps<ActionsBarProps>();
+interface Props {
+  searchQuery: string;
+  viewMode: "table" | "cards";
+  onCreateUser: () => void;
+  onAssignUsers: () => void;
+}
+
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
   "update:searchQuery": [query: string];

@@ -22,8 +22,12 @@ const {
   showAssignmentModal,
   availableRoles,
   isLoading,
-  createUserModal,
-  deleteUserModal,
+  showCreateUserModal,
+  createUserForm,
+  isCreating,
+  createError,
+  userToDelete,
+  isDeleting,
   canDeleteUser,
   openPermissionsEditor,
   handleCreateUser,
@@ -36,6 +40,8 @@ const {
   handleAssignUsers,
   handleRoleSelect,
   closePermissionsEditor,
+  updateCreateUserModalOpen,
+  updateCreateUserForm,
 } = useUserManagementPage();
 </script>
 
@@ -110,19 +116,21 @@ const {
 
       <!-- Modal Crear Usuario -->
       <CreateUserModal
-        v-model:is-open="createUserModal.isOpen"
-        v-model:form="createUserModal.form"
+        :is-open="showCreateUserModal"
+        :form="createUserForm"
         :available-roles="availableRoles"
-        :is-creating="createUserModal.isCreating"
-        :error="createUserModal.error"
+        :is-creating="isCreating"
+        :error="createError"
+        @update:is-open="updateCreateUserModalOpen"
+        @update:form="updateCreateUserForm"
         @save="handleSaveUser"
         @cancel="closeCreateUserModal"
       />
 
       <!-- Modal Confirmar Eliminar -->
       <DeleteUserModal
-        :user-to-delete="deleteUserModal.userToDelete"
-        :is-deleting="deleteUserModal.isDeleting"
+        :user-to-delete="userToDelete"
+        :is-deleting="isDeleting"
         @confirm="handleDeleteUser"
         @cancel="cancelDelete"
       />

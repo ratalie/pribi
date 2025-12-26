@@ -5,7 +5,7 @@ import { useAuthStore } from "~/core/presentation/auth/stores/auth.store";
 import { useUserManagement } from "~/core/presentation/panel-administrativo/composables/useUserManagement";
 import { useCreateUserModal } from "./useCreateUserModal";
 import { useDeleteUserModal } from "./useDeleteUserModal";
-import type { AvailableRole } from "../types/user-management.types";
+import type { AvailableRole, CreateUserForm } from "../types/user-management.types";
 import type { User } from "~/core/hexag/panel-administrativo/domain/entities/user.entity";
 import type { RoleName } from "~/core/hexag/panel-administrativo/domain/entities/role.entity";
 
@@ -284,9 +284,13 @@ export function useUserManagementPage() {
     showAssignmentModal,
     availableRoles,
 
-    // Modales
-    createUserModal,
-    deleteUserModal,
+    // Modales - valores desempaquetados
+    showCreateUserModal: computed(() => createUserModal.isOpen.value),
+    createUserForm: computed(() => createUserModal.form.value),
+    isCreating: computed(() => createUserModal.isCreating.value),
+    createError: computed(() => createUserModal.error.value),
+    userToDelete: computed(() => deleteUserModal.userToDelete.value),
+    isDeleting: computed(() => deleteUserModal.isDeleting.value),
 
     // Funciones
     canDeleteUser,
@@ -301,5 +305,13 @@ export function useUserManagementPage() {
     handleAssignUsers,
     handleRoleSelect,
     closePermissionsEditor,
+
+    // Funciones para actualizar modales
+    updateCreateUserModalOpen: (value: boolean) => {
+      createUserModal.isOpen.value = value;
+    },
+    updateCreateUserForm: (form: CreateUserForm) => {
+      createUserModal.form.value = form;
+    },
   };
 }

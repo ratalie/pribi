@@ -86,8 +86,6 @@ export interface RoleStatsCardProps {
 export interface ActionsBarProps {
   searchQuery: string;
   viewMode: ViewMode;
-  onSearchChange: (query: string) => void;
-  onViewModeChange: (mode: ViewMode) => void;
   onCreateUser: () => void;
   onAssignUsers: () => void;
 }
