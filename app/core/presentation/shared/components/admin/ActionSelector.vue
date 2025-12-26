@@ -84,8 +84,8 @@
   ];
 
   const isActionDisabled = (key: keyof ActionsConfig): boolean => {
-    // Si es Lector, solo 'view' está habilitado
-    if (props.role === "Lector" && key !== "view") {
+    // Si es Lector o Externo, solo 'view' está habilitado
+    if ((props.role === "Lector" || props.role === "Externo") && key !== "view") {
       return true;
     }
     return props.disabled;
@@ -102,13 +102,13 @@
       [key]: newValue,
     };
 
-    // Si es Lector, asegurar que solo 'view' esté habilitado
-    if (props.role === "Lector") {
+    // Si es Lector o Externo, asegurar que solo 'view' esté habilitado
+    if (props.role === "Lector" || props.role === "Externo") {
       newActions.create = false;
       newActions.update = false;
       newActions.delete = false;
       newActions.file = false;
-      // Si se desactiva 'view' en Lector, forzarlo a true
+      // Si se desactiva 'view' en Lector/Externo, forzarlo a true
       if (key === "view" && !newValue) {
         newActions.view = true;
       }
@@ -182,7 +182,7 @@
     </div>
 
     <div
-      v-if="role === 'Lector'"
+      v-if="role === 'Lector' || role === 'Externo'"
       class="action-selector-note"
       :style="{
         color: 'var(--text-muted)',
@@ -190,7 +190,7 @@
       }"
     >
       <p class="action-note-text">
-        Los usuarios con rol "Lector" solo pueden ver información. Las demás acciones están
+        Los usuarios con rol "{{ role === 'Lector' ? 'Lector' : 'Externo' }}" solo pueden ver información. Las demás acciones están
         deshabilitadas.
       </p>
     </div>

@@ -461,17 +461,18 @@ export class UserHttpRepository implements UserRepository {
    */
   async updateUserRole(
     userId: string,
-    role: "lector" | "editor" | "admin" | "user"
+    role: "lector" | "editor" | "admin" | "user" | "externo"
   ): Promise<User> {
     const url = this.getUrl(`/users/${userId}/role`);
 
     try {
       // Mapear rol simplificado a nombre de rol del backend
-      const roleNameMap: Record<"lector" | "editor" | "admin" | "user", RoleName> = {
+      const roleNameMap: Record<"lector" | "editor" | "admin" | "user" | "externo", RoleName> = {
         lector: "Lector",
         editor: "Usuario",
         admin: "Administrador",
         user: "Usuario",
+        externo: "Externo",
       };
 
       const roleName = roleNameMap[role];

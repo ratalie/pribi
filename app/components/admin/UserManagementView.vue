@@ -1,192 +1,282 @@
 <script setup lang="ts">
-import {
-  Shield,
-  Search,
-  Settings,
-  Trash2,
-  Grid3x3,
-  List,
-  UserPlus,
-  CheckCircle,
-  XCircle,
-  Plus,
-} from 'lucide-vue-next';
-import { useUserManagement } from '~/core/presentation/panel-administrativo/composables/useUserManagement';
-import { mockRoles, getRoleBadgeColor } from '~/data/mockDataAdmin';
-import type { RoleName } from '~/core/hexag/panel-administrativo/domain/entities/role.entity';
-import PermissionsEditor from './permissions/PermissionsEditor.vue';
-import UserAssignmentModal from './UserAssignmentModal.vue';
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { withAuthHeaders } from '~/core/shared/http/with-auth-headers';
+  import {
+    Shield,
+    Search,
+    Settings,
+    Trash2,
+    Grid3x3,
+    List,
+    UserPlus,
+    CheckCircle,
+    XCircle,
+    Plus,
+  } from "lucide-vue-next";
+  import { useUserManagement } from "~/core/presentation/panel-administrativo/composables/useUserManagement";
+  import { mockRoles, getRoleBadgeColor } from "~/data/mockDataAdmin";
+  import type { RoleName } from "~/core/hexag/panel-administrativo/domain/entities/role.entity";
+  import PermissionsEditor from "./permissions/PermissionsEditor.vue";
+  import UserAssignmentModal from "./UserAssignmentModal.vue";
+  import { ref, onMounted, computed, watch } from "vue";
+  import { useRouter } from "vue-router";
+  import { withAuthHeaders } from "~/core/shared/http/with-auth-headers";
+  import { useAuthStore } from "~/core/presentation/auth/stores/auth.store";
 
-const router = useRouter();
+  const router = useRouter();
+  const authStore = useAuthStore();
 
-const {
-  store,
-  filteredUsers,
-  userCountByRole,
-  selectedRole,
-  searchQuery,
-  viewMode,
-  showPermissionsEditor,
-  showAssignmentModal,
-  openPermissionsEditor: oldOpenPermissionsEditor,
-  closePermissionsEditor,
-  isLoading,
-  createUser,
-  deleteUser,
-  updateUserStatus,
-} = useUserManagement();
+  const {
+    store,
+    filteredUsers,
+    userCountByRole,
+    selectedRole,
+    searchQuery,
+    viewMode,
+    showPermissionsEditor,
+    showAssignmentModal,
+    openPermissionsEditor: _oldOpenPermissionsEditor,
+    closePermissionsEditor,
+    isLoading,
+    createUser,
+    deleteUser,
+    updateUserStatus,
+  } = useUserManagement();
 
-// Estados para crear usuario
-const showCreateUserModal = ref(false);
-const createUserForm = ref({
-  email: '',
-  password: '',
-  roleId: '',
-});
-const isCreating = ref(false);
-const createError = ref<string | null>(null);
+  // Obtener rol del usuario actual
+  const currentUserRole = computed(() => authStore.session?.roleName || null);
 
-// Estados para eliminar usuario
-const userToDelete = ref<{ id: string; email: string } | null>(null);
-const isDeleting = ref(false);
+  // Estados para crear usuario
+  const showCreateUserModal = ref(false);
+  const createUserForm = ref({
+    email: "",
+    password: "",
+    roleId: "",
+  });
+  const isCreating = ref(false);
+  const createError = ref<string | null>(null);
 
-// Cargar roles disponibles
-const availableRoles = ref<Array<{ id: string; name: string }>>([]);
+  // Estados para eliminar usuario
+  const userToDelete = ref<{ id: string; email: string } | null>(null);
+  const isDeleting = ref(false);
 
-// Función para cargar roles
-const loadRoles = async () => {
-  try {
-    const config = useRuntimeConfig();
-    const apiBase = (config.public?.apiBase as string | undefined) || '';
-    const origin = typeof window !== 'undefined' ? window.location.origin : '';
-    const baseUrl = apiBase || origin || 'http://localhost:3000';
-    // Construir URL correctamente sin duplicar /api/v2
-    const url = new URL('/api/v2/access-management/roles', baseUrl).toString();
-    
-    const response = await $fetch<{ success: boolean; data: Array<{ id: string; name: string }> }>(
-      url,
-      withAuthHeaders({
-        method: 'GET' as const,
-      })
-    );
-    if (response.success && response.data) {
-      availableRoles.value = response.data;
+  // Cargar roles disponibles
+  const availableRoles = ref<Array<{ id: string; name: string }>>([]);
+  const allRoles = ref<Array<{ id: string; name: string }>>([]);
+
+  // Función para cargar roles
+  const loadRoles = async () => {
+    try {
+      const config = useRuntimeConfig();
+      const apiBase = (config.public?.apiBase as string | undefined) || "";
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
+      const baseUrl = apiBase || origin || "http://localhost:3000";
+      // Construir URL correctamente sin duplicar /api/v2
+      const url = new URL("/api/v2/access-management/roles", baseUrl).toString();
+
+      const response = await $fetch<{
+        success: boolean;
+        data: Array<{ id: string; name: string }>;
+      }>(
+        url,
+        withAuthHeaders({
+          method: "GET" as const,
+        })
+      );
+      if (response.success && response.data) {
+        allRoles.value = response.data;
+        // Filtrar roles según el usuario actual
+        filterRolesByCurrentUser();
+      }
+    } catch (error) {
+      console.error("Error al cargar roles:", error);
     }
-  } catch (error) {
-    console.error('Error al cargar roles:', error);
-  }
-};
+  };
 
-// Cargar roles al montar
-onMounted(() => {
-  loadRoles();
-});
+  // Filtrar roles según el usuario actual
+  const filterRolesByCurrentUser = () => {
+    const role = currentUserRole.value;
 
-// Navegar a permisos en lugar de abrir modal
-const openPermissionsEditor = (user: any) => {
-  router.push(`/admin/usuarios/${user.id}/permisos`);
-};
+    // Si es Administrador, solo puede ver Usuario, Lector, Externo
+    if (role === "Administrador") {
+      availableRoles.value = allRoles.value.filter(
+        (r) =>
+          !["Administrador", "AdministradorEstudio", "SuperAdministrador"].includes(r.name)
+      );
+      return;
+    }
 
-// Abrir modal crear usuario
-const handleCreateUser = () => {
-  createUserForm.value = { email: '', password: '', roleId: '' };
-  createError.value = null;
-  showCreateUserModal.value = true;
-};
+    // Si es AdministradorEstudio, puede ver todos excepto AdministradorEstudio y SuperAdministrador
+    if (role === "AdministradorEstudio") {
+      availableRoles.value = allRoles.value.filter(
+        (r) => !["AdministradorEstudio", "SuperAdministrador"].includes(r.name)
+      );
+      return;
+    }
 
-// Cerrar modal crear usuario
-const closeCreateUserModal = () => {
-  showCreateUserModal.value = false;
-  createUserForm.value = { email: '', password: '', roleId: '' };
-  createError.value = null;
-};
+    // Si es SuperAdministrador o no hay rol, mostrar todos excepto SuperAdministrador
+    availableRoles.value = allRoles.value.filter((r) => r.name !== "SuperAdministrador");
+  };
 
-// Guardar nuevo usuario
-const handleSaveUser = async () => {
-  if (!createUserForm.value.email || !createUserForm.value.password || !createUserForm.value.roleId) {
-    createError.value = 'Todos los campos son requeridos';
-    return;
-  }
+  // Cargar roles al montar
+  onMounted(() => {
+    loadRoles();
+  });
 
-  isCreating.value = true;
-  createError.value = null;
+  // Observar cambios en el rol del usuario actual para re-filtrar roles
+  watch(
+    currentUserRole,
+    () => {
+      if (allRoles.value.length > 0) {
+        filterRolesByCurrentUser();
+      }
+    },
+    { immediate: true }
+  );
 
-  try {
-    await createUser(
-      createUserForm.value.email,
-      createUserForm.value.password,
-      createUserForm.value.roleId
-    );
-    // Forzar recarga de usuarios para asegurar reactividad
-    await store.loadUsers();
-    closeCreateUserModal();
-  } catch (error: any) {
-    createError.value = error?.message || 'Error al crear usuario';
-  } finally {
-    isCreating.value = false;
-  }
-};
+  // Función helper para verificar si se puede eliminar un usuario
+  const canDeleteUser = (user: any): boolean => {
+    const currentRole = currentUserRole.value;
+    if (currentRole === "Administrador") {
+      // Administrador NO puede eliminar Administrador ni AdministradorEstudio
+      return !(
+        user.role.name === "Administrador" || user.role.name === "AdministradorEstudio"
+      );
+    }
+    return true;
+  };
 
-// Confirmar eliminar usuario
-const confirmDeleteUser = (user: any) => {
-  userToDelete.value = { id: user.id, email: user.email };
-};
+  // Navegar a permisos en lugar de abrir modal
+  const openPermissionsEditor = (user: any) => {
+    router.push(`/admin/usuarios/${user.id}/permisos`);
+  };
 
-// Cancelar eliminar
-const cancelDelete = () => {
-  userToDelete.value = null;
-};
+  // Abrir modal crear usuario
+  const handleCreateUser = () => {
+    createUserForm.value = { email: "", password: "", roleId: "" };
+    createError.value = null;
+    showCreateUserModal.value = true;
+  };
 
-// Ejecutar eliminar
-const handleDeleteUser = async () => {
-  if (!userToDelete.value) return;
+  // Cerrar modal crear usuario
+  const closeCreateUserModal = () => {
+    showCreateUserModal.value = false;
+    createUserForm.value = { email: "", password: "", roleId: "" };
+    createError.value = null;
+  };
 
-  isDeleting.value = true;
-  try {
-    await deleteUser(userToDelete.value.id);
+  // Guardar nuevo usuario
+  const handleSaveUser = async () => {
+    if (
+      !createUserForm.value.email ||
+      !createUserForm.value.password ||
+      !createUserForm.value.roleId
+    ) {
+      createError.value = "Todos los campos son requeridos";
+      return;
+    }
+
+    // Validar que el rol seleccionado esté permitido
+    const selectedRole = allRoles.value.find((r) => r.id === createUserForm.value.roleId);
+    if (!selectedRole) {
+      createError.value = "Rol no válido";
+      return;
+    }
+
+    // Validar restricciones según el usuario actual
+    const currentRole = currentUserRole.value;
+    if (currentRole === "Administrador") {
+      // Administrador NO puede crear Administrador ni AdministradorEstudio
+      if (
+        selectedRole.name === "Administrador" ||
+        selectedRole.name === "AdministradorEstudio"
+      ) {
+        createError.value = "Los Administradores no pueden crear otros Administradores";
+        return;
+      }
+    }
+
+    isCreating.value = true;
+    createError.value = null;
+
+    try {
+      await createUser(
+        createUserForm.value.email,
+        createUserForm.value.password,
+        createUserForm.value.roleId
+      );
+      // Forzar recarga de usuarios para asegurar reactividad
+      await store.loadUsers();
+      closeCreateUserModal();
+    } catch (error: any) {
+      createError.value = error?.message || "Error al crear usuario";
+    } finally {
+      isCreating.value = false;
+    }
+  };
+
+  // Confirmar eliminar usuario
+  const confirmDeleteUser = (user: any) => {
+    // Validar restricciones según el usuario actual
+    const currentRole = currentUserRole.value;
+    if (currentRole === "Administrador") {
+      // Administrador NO puede eliminar Administrador ni AdministradorEstudio
+      if (user.role.name === "Administrador" || user.role.name === "AdministradorEstudio") {
+        alert("Los Administradores no pueden eliminar otros Administradores");
+        return;
+      }
+    }
+
+    userToDelete.value = { id: user.id, email: user.email };
+  };
+
+  // Cancelar eliminar
+  const cancelDelete = () => {
     userToDelete.value = null;
-    // Recargar usuarios
-    await store.loadUsers();
-  } catch (error: any) {
-    console.error('Error al eliminar usuario:', error);
-    alert(error?.message || 'Error al eliminar usuario');
-  } finally {
-    isDeleting.value = false;
-  }
-};
+  };
 
-// Toggle estado usuario
-const handleToggleStatus = async (user: any) => {
-  try {
-    await updateUserStatus(user.id, !user.status);
-    // No necesitamos recargar, el store actualiza localmente
-  } catch (error: any) {
-    console.error('Error al actualizar estado:', error);
-    alert(error?.message || 'Error al actualizar estado');
-    // Si falla, recargar para restaurar estado
-    await store.loadUsers();
-  }
-};
+  // Ejecutar eliminar
+  const handleDeleteUser = async () => {
+    if (!userToDelete.value) return;
 
-// Manejar asignación de usuarios desde el modal
-const handleAssignUsers = async (userIds: string[], societyId: string) => {
-  try {
-    // El modal ya hace la asignación, solo recargamos para reflejar cambios
-    await store.loadUsers();
-  } catch (error: any) {
-    console.error('Error al actualizar lista después de asignar:', error);
-  }
-};
+    isDeleting.value = true;
+    try {
+      await deleteUser(userToDelete.value.id);
+      userToDelete.value = null;
+      // Recargar usuarios
+      await store.loadUsers();
+    } catch (error: any) {
+      console.error("Error al eliminar usuario:", error);
+      alert(error?.message || "Error al eliminar usuario");
+    } finally {
+      isDeleting.value = false;
+    }
+  };
+
+  // Toggle estado usuario
+  const handleToggleStatus = async (user: any) => {
+    try {
+      await updateUserStatus(user.id, !user.status);
+      // No necesitamos recargar, el store actualiza localmente
+    } catch (error: any) {
+      console.error("Error al actualizar estado:", error);
+      alert(error?.message || "Error al actualizar estado");
+      // Si falla, recargar para restaurar estado
+      await store.loadUsers();
+    }
+  };
+
+  // Manejar asignación de usuarios desde el modal
+  const handleAssignUsers = async (_userIds: string[], _societyId: string) => {
+    try {
+      // El modal ya hace la asignación, solo recargamos para reflejar cambios
+      await store.loadUsers();
+    } catch (error: any) {
+      console.error("Error al actualizar lista después de asignar:", error);
+    }
+  };
 </script>
 
 <template>
-  <div
-    class="h-full overflow-y-auto"
-    style="background-color: var(--bg-muted)"
-  >
+  <div class="h-full overflow-y-auto" style="background-color: var(--bg-muted)">
     <div class="max-w-[1600px] mx-auto px-8 py-6">
       <!-- Header -->
       <div class="mb-6">
@@ -221,9 +311,7 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
           :style="{
             borderColor: getRoleBadgeColor(role.name).border,
             backgroundColor:
-              selectedRole === role.name
-                ? getRoleBadgeColor(role.name).lightBg
-                : 'white',
+              selectedRole === role.name ? getRoleBadgeColor(role.name).lightBg : 'white',
           }"
           @click="selectedRole = selectedRole === role.name ? 'all' : (role.name as RoleName)"
         >
@@ -232,10 +320,7 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
             class="w-12 h-12 rounded-full flex items-center justify-center mb-3"
             :style="{ backgroundColor: getRoleBadgeColor(role.name).bg }"
           >
-            <Shield
-              class="w-6 h-6"
-              :style="{ color: getRoleBadgeColor(role.name).text }"
-            />
+            <Shield class="w-6 h-6" :style="{ color: getRoleBadgeColor(role.name).text }" />
           </div>
 
           <!-- Nombre del rol -->
@@ -268,7 +353,7 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
               fontFamily: 'var(--font-secondary)',
             }"
           >
-            {{ (userCountByRole[role.name] || 0) === 1 ? 'usuario' : 'usuarios' }}
+            {{ (userCountByRole[role.name] || 0) === 1 ? "usuario" : "usuarios" }}
           </p>
         </button>
       </div>
@@ -295,12 +380,10 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
                 fontFamily: 'var(--font-secondary)',
               }"
               @focus="
-                ($event.target as HTMLInputElement).style.borderColor =
-                  'var(--primary-700)';
+                ($event.target as HTMLInputElement).style.borderColor = 'var(--primary-700)'
               "
               @blur="
-                ($event.target as HTMLInputElement).style.borderColor =
-                  'var(--border-light)';
+                ($event.target as HTMLInputElement).style.borderColor = 'var(--border-light)'
               "
             />
           </div>
@@ -315,10 +398,7 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
               <List
                 class="w-4 h-4"
                 :style="{
-                  color:
-                    viewMode === 'table'
-                      ? 'var(--primary-700)'
-                      : 'var(--text-muted)',
+                  color: viewMode === 'table' ? 'var(--primary-700)' : 'var(--text-muted)',
                 }"
               />
             </button>
@@ -330,10 +410,7 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
               <Grid3x3
                 class="w-4 h-4"
                 :style="{
-                  color:
-                    viewMode === 'cards'
-                      ? 'var(--primary-700)'
-                      : 'var(--text-muted)',
+                  color: viewMode === 'cards' ? 'var(--primary-700)' : 'var(--text-muted)',
                 }"
               />
             </button>
@@ -371,16 +448,8 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
       </div>
 
       <!-- Loading State -->
-      <div
-        v-if="isLoading"
-        class="flex items-center justify-center py-12"
-      >
-        <p
-          class="text-sm"
-          :style="{ color: 'var(--text-muted)' }"
-        >
-          Cargando usuarios...
-        </p>
+      <div v-if="isLoading" class="flex items-center justify-center py-12">
+        <p class="text-sm" :style="{ color: 'var(--text-muted)' }">Cargando usuarios...</p>
       </div>
 
       <!-- Tabla de Usuarios -->
@@ -390,7 +459,7 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
         :style="{ borderColor: 'var(--border-light)' }"
       >
         <table class="w-full">
-          <thead style="background-color: #F9FAFB">
+          <thead style="background-color: #f9fafb">
             <tr>
               <th
                 class="px-6 py-3 text-left text-xs uppercase"
@@ -529,11 +598,8 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
                 >
                   <CheckCircle v-if="user.status" class="w-4 h-4" />
                   <XCircle v-else class="w-4 h-4" />
-                  <span
-                    class="text-sm"
-                    :style="{ fontFamily: 'var(--font-secondary)' }"
-                  >
-                    {{ user.status ? 'Activo' : 'Inactivo' }}
+                  <span class="text-sm" :style="{ fontFamily: 'var(--font-secondary)' }">
+                    {{ user.status ? "Activo" : "Inactivo" }}
                   </span>
                 </button>
               </td>
@@ -546,7 +612,7 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
                   fontFamily: 'var(--font-secondary)',
                 }"
               >
-                {{ user.createdAt.toLocaleDateString('es-ES') }}
+                {{ user.createdAt.toLocaleDateString("es-ES") }}
               </td>
 
               <!-- Acciones -->
@@ -557,19 +623,24 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
                     title="Editar permisos"
                     @click="openPermissionsEditor(user)"
                   >
-                    <Settings
-                      class="w-4 h-4"
-                      :style="{ color: 'var(--text-muted)' }"
-                    />
+                    <Settings class="w-4 h-4" :style="{ color: 'var(--text-muted)' }" />
                   </button>
                   <button
-                    class="p-2 hover:bg-red-50 rounded transition-colors"
-                    title="Eliminar usuario"
-                    @click="confirmDeleteUser(user)"
+                    class="p-2 rounded transition-colors"
+                    :class="
+                      canDeleteUser(user) ? 'hover:bg-red-50' : 'opacity-50 cursor-not-allowed'
+                    "
+                    :title="
+                      canDeleteUser(user)
+                        ? 'Eliminar usuario'
+                        : 'No puedes eliminar este usuario'
+                    "
+                    :disabled="!canDeleteUser(user)"
+                    @click="canDeleteUser(user) && confirmDeleteUser(user)"
                   >
                     <Trash2
                       class="w-4 h-4"
-                      style="color: #EF4444"
+                      :style="{ color: canDeleteUser(user) ? '#EF4444' : '#9CA3AF' }"
                     />
                   </button>
                 </div>
@@ -602,18 +673,15 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
           >
             {{
               searchQuery
-                ? 'Intenta con otro término de búsqueda'
-                : 'No hay usuarios en el sistema'
+                ? "Intenta con otro término de búsqueda"
+                : "No hay usuarios en el sistema"
             }}
           </p>
         </div>
       </div>
 
       <!-- Vista de Cards (alternativa) -->
-      <div
-        v-else
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-      >
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div
           v-for="user in filteredUsers"
           :key="user.id"
@@ -675,7 +743,7 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
             }"
           >
             <p>{{ user.study.name }}</p>
-            <p>Creado: {{ user.createdAt.toLocaleDateString('es-ES') }}</p>
+            <p>Creado: {{ user.createdAt.toLocaleDateString("es-ES") }}</p>
           </div>
 
           <!-- Acciones -->
@@ -688,10 +756,7 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
               }"
               @click="openPermissionsEditor(user)"
             >
-              <Settings
-                class="w-4 h-4 mx-auto"
-                :style="{ color: 'var(--text-muted)' }"
-              />
+              <Settings class="w-4 h-4 mx-auto" :style="{ color: 'var(--text-muted)' }" />
             </button>
             <button
               class="flex-1 py-2 rounded-lg border hover:bg-red-50 transition-colors"
@@ -699,12 +764,9 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
                 borderColor: 'var(--border-light)',
                 fontFamily: 'var(--font-secondary)',
               }"
-              @click="confirmDeleteUser(user)"
+              @click="canDeleteUser(user) && confirmDeleteUser(user)"
             >
-              <Trash2
-                class="w-4 h-4 mx-auto"
-                style="color: #EF4444"
-              />
+              <Trash2 class="w-4 h-4 mx-auto" style="color: #ef4444" />
             </button>
           </div>
         </div>
@@ -733,8 +795,8 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
           >
             {{
               searchQuery
-                ? 'Intenta con otro término de búsqueda'
-                : 'No hay usuarios en el sistema'
+                ? "Intenta con otro término de búsqueda"
+                : "No hay usuarios en el sistema"
             }}
           </p>
         </div>
@@ -746,7 +808,12 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
         :is-open="showPermissionsEditor"
         :user="store.selectedUser"
         @close="closePermissionsEditor"
-        @save="() => { closePermissionsEditor(); store.loadUsers(); }"
+        @save="
+          () => {
+            closePermissionsEditor();
+            store.loadUsers();
+          }
+        "
       />
 
       <!-- Modal de Asignación -->
@@ -778,7 +845,10 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
             Crear Nuevo Usuario
           </h2>
 
-          <div v-if="createError" class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
+          <div
+            v-if="createError"
+            class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-600 text-sm"
+          >
             {{ createError }}
           </div>
 
@@ -819,11 +889,7 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
                 :style="{ borderColor: 'var(--border-light)' }"
               >
                 <option value="">Seleccionar rol...</option>
-                <option
-                  v-for="role in availableRoles"
-                  :key="role.id"
-                  :value="role.id"
-                >
+                <option v-for="role in availableRoles" :key="role.id" :value="role.id">
                   {{ role.name }}
                 </option>
               </select>
@@ -851,7 +917,7 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
                 opacity: isCreating ? 0.5 : 1,
               }"
             >
-              {{ isCreating ? 'Creando...' : 'Crear Usuario' }}
+              {{ isCreating ? "Creando..." : "Crear Usuario" }}
             </button>
           </div>
         </div>
@@ -880,8 +946,8 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
 
           <p class="mb-6" :style="{ color: 'var(--text-muted)' }">
             ¿Estás seguro de que deseas eliminar al usuario
-            <strong>{{ userToDelete.email }}</strong>?
-            Esta acción no se puede deshacer.
+            <strong>{{ userToDelete.email }}</strong>
+            ? Esta acción no se puede deshacer.
           </p>
 
           <div class="flex gap-3 justify-end">
@@ -905,7 +971,7 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
                 opacity: isDeleting ? 0.5 : 1,
               }"
             >
-              {{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
+              {{ isDeleting ? "Eliminando..." : "Eliminar" }}
             </button>
           </div>
         </div>
@@ -913,4 +979,3 @@ const handleAssignUsers = async (userIds: string[], societyId: string) => {
     </div>
   </div>
 </template>
-

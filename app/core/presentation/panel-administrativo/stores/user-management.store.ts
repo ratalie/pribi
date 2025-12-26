@@ -270,7 +270,7 @@ export const useUserManagementStore = defineStore("user-management", {
     /**
      * Actualiza el rol de un usuario
      */
-    async updateUserRole(userId: string, role: "lector" | "editor" | "admin" | "user") {
+    async updateUserRole(userId: string, role: "lector" | "editor" | "admin" | "user" | "externo") {
       this.status = "saving";
       this.errorMessage = null;
 

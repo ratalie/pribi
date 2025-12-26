@@ -34,10 +34,11 @@ export class ApplySimplePermissionsUseCase {
     console.log('[ApplySimplePermissionsUseCase] Rol a actualizar:', config.role, '->', backendRole);
     if (backendRole) {
       // Mapear rol simple a formato del repositorio
-      const roleMap: Record<string, "lector" | "editor" | "admin" | "user"> = {
+      const roleMap: Record<string, "lector" | "editor" | "admin" | "user" | "externo"> = {
         Administrador: "admin",
         Editor: "editor",
         Lector: "lector",
+        Externo: "externo",
       };
 
       const roleKey = roleMap[config.role] || "user";

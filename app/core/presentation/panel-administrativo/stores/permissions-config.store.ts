@@ -1,18 +1,24 @@
-import { defineStore } from 'pinia';
-import type { SimplePermissionsConfig, SimpleRole, ModuleConfig, SocietiesConfig, ActionsConfig } from '../vistas/configurar-permisos/types/configurar-permisos.types';
-import { AVAILABLE_AREAS } from '../vistas/configurar-permisos/types/configurar-permisos.types';
-import { getDefaultPermissionsForRole } from '../vistas/configurar-permisos/utils/role-permissions.utils';
+import { defineStore } from "pinia";
+import type {
+  SimplePermissionsConfig,
+  SimpleRole,
+  ModuleConfig,
+  SocietiesConfig,
+  ActionsConfig,
+} from "../vistas/configurar-permisos/types/configurar-permisos.types";
+import { AVAILABLE_AREAS } from "../vistas/configurar-permisos/types/configurar-permisos.types";
+import { getDefaultPermissionsForRole } from "../vistas/configurar-permisos/utils/role-permissions.utils";
 
 /**
  * Store para la configuración de permisos simplificada
  */
-export const usePermissionsConfigStore = defineStore('permissions-config', {
+export const usePermissionsConfigStore = defineStore("permissions-config", {
   state: () => ({
     // Configuración simple actual
-    selectedRole: 'Editor' as SimpleRole,
+    selectedRole: "Editor" as SimpleRole,
     selectedModules: [] as ModuleConfig[],
     selectedSocieties: {
-      mode: 'all' as 'all' | 'specific',
+      mode: "all" as "all" | "specific",
       ids: [] as string[],
     } as SocietiesConfig,
     selectedActions: {
@@ -24,7 +30,7 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
     } as ActionsConfig,
 
     // Modo de configuración
-    mode: 'simple' as 'simple' | 'advanced',
+    mode: "simple" as "simple" | "advanced",
 
     // Estado de carga
     isLoading: false,
@@ -52,7 +58,7 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
      */
     isValid(state): boolean {
       // Si es Administrador, no necesita validación adicional
-      if (state.selectedRole === 'Administrador') {
+      if (state.selectedRole === "Administrador") {
         return true;
       }
 
@@ -62,12 +68,15 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
       }
 
       // Si el modo es 'specific', debe tener al menos una sociedad seleccionada
-      if (state.selectedSocieties.mode === 'specific' && state.selectedSocieties.ids.length === 0) {
+      if (
+        state.selectedSocieties.mode === "specific" &&
+        state.selectedSocieties.ids.length === 0
+      ) {
         return false;
       }
 
       // Si es Lector, solo debe tener 'view' habilitado
-      if (state.selectedRole === 'Lector') {
+      if (state.selectedRole === "Lector") {
         return (
           state.selectedActions.view === true &&
           state.selectedActions.create === false &&
@@ -95,13 +104,18 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
      */
     setRole(role: SimpleRole) {
       this.selectedRole = role;
-      
+
       // Aplicar permisos base automáticamente según el rol
       this.applyRoleDefaults(role);
 
-      // Si es Administrador, resetear todo
-      if (role === 'Administrador') {
-        this.reset();
+      // Si es Administrador o Administrador Superior, no necesitamos módulos específicos
+      if (role === "Administrador" || role === "Administrador Superior") {
+        // Mantener el rol y permisos, pero resetear módulos y sociedades
+        this.selectedModules = [];
+        this.selectedSocieties = {
+          mode: "all",
+          ids: [],
+        };
         return;
       }
 
@@ -156,9 +170,9 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
     /**
      * Establece el modo de sociedades
      */
-    setSocietiesMode(mode: 'all' | 'specific') {
+    setSocietiesMode(mode: "all" | "specific") {
       this.selectedSocieties.mode = mode;
-      if (mode === 'all') {
+      if (mode === "all") {
         this.selectedSocieties.ids = [];
       }
     },
@@ -176,21 +190,19 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
      * Remueve una sociedad de la lista
      */
     removeSociety(societyId: string) {
-      this.selectedSocieties.ids = this.selectedSocieties.ids.filter(
-        (id) => id !== societyId,
-      );
+      this.selectedSocieties.ids = this.selectedSocieties.ids.filter((id) => id !== societyId);
     },
 
     /**
      * Establece las acciones seleccionadas
      */
     setActions(actions: ActionsConfig) {
-      console.log('[PermissionsConfigStore] setActions llamado con:', actions);
-      console.log('[PermissionsConfigStore] Rol actual:', this.selectedRole);
-      
+      console.log("[PermissionsConfigStore] setActions llamado con:", actions);
+      console.log("[PermissionsConfigStore] Rol actual:", this.selectedRole);
+
       // Si es Lector, solo permitir 'view'
-      if (this.selectedRole === 'Lector') {
-        console.log('[PermissionsConfigStore] Es Lector, forzando solo view');
+      if (this.selectedRole === "Lector") {
+        console.log("[PermissionsConfigStore] Es Lector, forzando solo view");
         this.selectedActions = {
           view: actions.view,
           create: false,
@@ -203,7 +215,7 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
 
       // Crear nueva referencia para asegurar reactividad
       this.selectedActions = { ...actions };
-      console.log('[PermissionsConfigStore] Acciones actualizadas:', this.selectedActions);
+      console.log("[PermissionsConfigStore] Acciones actualizadas:", this.selectedActions);
     },
 
     /**
@@ -211,7 +223,7 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
      */
     toggleAction(action: keyof ActionsConfig) {
       // Si es Lector, solo permitir 'view'
-      if (this.selectedRole === 'Lector' && action !== 'view') {
+      if (this.selectedRole === "Lector" && action !== "view") {
         return;
       }
 
@@ -221,7 +233,7 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
     /**
      * Establece el modo de configuración
      */
-    setMode(mode: 'simple' | 'advanced') {
+    setMode(mode: "simple" | "advanced") {
       this.mode = mode;
     },
 
@@ -242,70 +254,91 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
       try {
         // Cargar permisos completos del usuario desde el backend
         const { PermissionsHttpRepository } = await import(
-          '~/core/hexag/permissions/infrastructure/repositories/permissions.http.repository'
+          "~/core/hexag/permissions/infrastructure/repositories/permissions.http.repository"
         );
         const { mapOverridesToSimpleConfig } = await import(
-          '~/core/hexag/permissions/application/mappers/overrides-to-simple-config.mapper'
+          "~/core/hexag/permissions/application/mappers/overrides-to-simple-config.mapper"
         );
         const { UserHttpRepository } = await import(
-          '~/core/hexag/panel-administrativo/infrastructure/repositories/user-http.repository'
+          "~/core/hexag/panel-administrativo/infrastructure/repositories/user-http.repository"
         );
 
         const permissionsRepository = new PermissionsHttpRepository();
         const userRepository = new UserHttpRepository();
 
-        console.log('[PermissionsConfigStore] Cargando datos del usuario:', userId);
+        console.log("[PermissionsConfigStore] Cargando datos del usuario:", userId);
 
         // Obtener información del usuario primero (para validar que existe)
         const user = await userRepository.findById(userId);
         if (!user) {
-          throw new Error('Usuario no encontrado');
+          throw new Error("Usuario no encontrado");
         }
-        console.log('[PermissionsConfigStore] Usuario encontrado:', user.email);
+        console.log("[PermissionsConfigStore] Usuario encontrado:", user.email);
 
         // Obtener permisos completos del usuario
         const accessAreas = await permissionsRepository.getUserAccessFull(userId);
-        console.log('[PermissionsConfigStore] Permisos cargados del backend:', accessAreas.length, 'áreas');
-        console.log('[PermissionsConfigStore] Datos completos del backend:', JSON.stringify(accessAreas, null, 2));
+        console.log(
+          "[PermissionsConfigStore] Permisos cargados del backend:",
+          accessAreas.length,
+          "áreas"
+        );
+        console.log(
+          "[PermissionsConfigStore] Datos completos del backend:",
+          JSON.stringify(accessAreas, null, 2)
+        );
 
         // Convertir permisos del backend a configuración simple
         const config = mapOverridesToSimpleConfig(
           accessAreas,
-          user.role.name as 'Administrador' | 'AdministradorEstudio' | 'Usuario' | 'Lector' | 'Externo',
+          user.role.name as
+            | "Administrador"
+            | "AdministradorEstudio"
+            | "Usuario"
+            | "Lector"
+            | "Externo"
         );
-        console.log('[PermissionsConfigStore] Configuración mapeada:', JSON.stringify(config, null, 2));
+        console.log(
+          "[PermissionsConfigStore] Configuración mapeada:",
+          JSON.stringify(config, null, 2)
+        );
 
         // Aplicar configuración al store
-        console.log('[PermissionsConfigStore] Aplicando configuración al store...');
-        console.log('[PermissionsConfigStore] Rol a asignar:', config.role);
-        console.log('[PermissionsConfigStore] Módulos a asignar:', config.modules);
-        console.log('[PermissionsConfigStore] Acciones a asignar:', config.actions);
-        
+        console.log("[PermissionsConfigStore] Aplicando configuración al store...");
+        console.log("[PermissionsConfigStore] Rol a asignar:", config.role);
+        console.log("[PermissionsConfigStore] Módulos a asignar:", config.modules);
+        console.log("[PermissionsConfigStore] Acciones a asignar:", config.actions);
+
         this.selectedRole = config.role;
         this.selectedModules = [...config.modules]; // Crear nueva referencia para reactividad
         this.selectedActions = { ...config.actions }; // Crear nueva referencia para reactividad
-        
-        console.log('[PermissionsConfigStore] Store actualizado:');
-        console.log('[PermissionsConfigStore] - selectedRole:', this.selectedRole);
-        console.log('[PermissionsConfigStore] - selectedActions:', this.selectedActions);
+
+        console.log("[PermissionsConfigStore] Store actualizado:");
+        console.log("[PermissionsConfigStore] - selectedRole:", this.selectedRole);
+        console.log("[PermissionsConfigStore] - selectedActions:", this.selectedActions);
 
         // Cargar sociedades asignadas
         const assignedSocieties = await userRepository.getUserAssignedSocieties(userId);
-        console.log('[PermissionsConfigStore] Sociedades asignadas:', assignedSocieties.length);
+        console.log(
+          "[PermissionsConfigStore] Sociedades asignadas:",
+          assignedSocieties.length
+        );
         if (assignedSocieties.length > 0) {
           this.selectedSocieties = {
-            mode: 'specific',
+            mode: "specific",
             ids: assignedSocieties,
           };
         } else {
           this.selectedSocieties = {
-            mode: 'all',
+            mode: "all",
             ids: [],
           };
         }
       } catch (error: any) {
-        console.error('[PermissionsConfigStore] Error al cargar configuración del usuario:', error);
-        console.error('[PermissionsConfigStore] Error details:', {
+        console.error(
+          "[PermissionsConfigStore] Error al cargar configuración del usuario:",
+          error
+        );
+        console.error("[PermissionsConfigStore] Error details:", {
           message: error?.message,
           stack: error?.stack,
           userId,
@@ -322,10 +355,10 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
      * Resetea la configuración
      */
     reset() {
-      this.selectedRole = 'Editor';
+      this.selectedRole = "Editor";
       this.selectedModules = [];
       this.selectedSocieties = {
-        mode: 'all',
+        mode: "all",
         ids: [],
       };
       this.selectedActions = {
@@ -339,4 +372,3 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
     },
   },
 });
-

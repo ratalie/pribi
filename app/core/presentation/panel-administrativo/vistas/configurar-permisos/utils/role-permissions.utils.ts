@@ -1,12 +1,12 @@
-import type { SimpleRole } from '../types/configurar-permisos.types';
-import type { ActionsConfig } from '../types/configurar-permisos.types';
+import type { SimpleRole } from "../types/configurar-permisos.types";
+import type { ActionsConfig } from "../types/configurar-permisos.types";
 
 /**
  * Permisos base por rol
  * Estos son los permisos que se aplican automáticamente al seleccionar un rol
  */
 export const ROLE_DEFAULT_PERMISSIONS: Record<SimpleRole, ActionsConfig> = {
-  'Administrador Superior': {
+  "Administrador Superior": {
     view: true,
     create: true,
     update: true,
@@ -66,12 +66,12 @@ export function isPermissionValidForRole(
 ): boolean {
   const defaults = ROLE_DEFAULT_PERMISSIONS[role];
 
-  // Si es Lector, solo puede tener 'view' activado
-  if (role === 'Lector') {
-    if (action === 'view') {
-      return value === true; // Lector siempre debe tener view
+  // Si es Lector o Externo, solo puede tener 'view' activado
+  if (role === "Lector" || role === "Externo") {
+    if (action === "view") {
+      return value === true; // Lector/Externo siempre debe tener view
     }
-    return value === false; // Lector no puede tener otras acciones
+    return value === false; // Lector/Externo no puede tener otras acciones
   }
 
   // Para otros roles, validar según los defaults
@@ -83,7 +83,3 @@ export function isPermissionValidForRole(
   // Desactivar permisos siempre es válido (excepto view para Lector)
   return true;
 }
-
-
-
-

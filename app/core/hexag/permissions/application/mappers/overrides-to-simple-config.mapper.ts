@@ -26,11 +26,16 @@ export function mapOverridesToSimpleConfig(
     simpleRole = "Administrador Superior";
   } else if (currentRole === "Administrador" || currentRole === "SuperAdministrador") {
     simpleRole = "Administrador";
+  } else if (currentRole === "Usuario") {
+    simpleRole = "Editor"; // Usuario del backend = Editor en frontend
   } else if (currentRole === "Lector") {
     simpleRole = "Lector";
   } else if (currentRole === "Externo") {
     simpleRole = "Externo";
   }
+  
+  console.log('[mapOverridesToSimpleConfig] currentRole recibido:', currentRole);
+  console.log('[mapOverridesToSimpleConfig] simpleRole determinado:', simpleRole);
 
   console.log('[mapOverridesToSimpleConfig] Rol simple determinado:', simpleRole);
 
