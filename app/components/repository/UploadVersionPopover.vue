@@ -12,7 +12,7 @@
   const props = defineProps<Props>();
 
   const emit = defineEmits<{
-    uploadComplete: [];
+    uploadComplete: [fileName: string];
     showHistory: [];
   }>();
 
@@ -40,10 +40,14 @@
   const handleConfirmUpload = async () => {
     if (!canUpload.value || !props.documentCode) return;
 
+    // Guardar el nombre del archivo ANTES de subir (porque se limpia después)
+    const fileName = selectedFile.value?.name || "";
+
     try {
       const success = await subirNuevaVersion(props.documentCode);
       if (success) {
-        emit("uploadComplete");
+        // Emitir el nombre del archivo que se subió
+        emit("uploadComplete", fileName);
         emit("showHistory");
         closePopover();
       }

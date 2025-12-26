@@ -360,7 +360,7 @@
     { immediate: true }
   );
 
-  // Limpiar preview al cerrar
+  // Limpiar preview al cerrar y asegurar sidebar visible al abrir
   watch(
     () => props.isOpen,
     (isOpen) => {
@@ -370,6 +370,11 @@
         activeTab.value = "general";
         selectedVersionCode.value = "";
         cleanupViewer();
+      } else {
+        // Cuando se abre el modal, asegurar que el sidebar esté visible
+        if (showViewerSidebar.value === false) {
+          showViewerSidebar.value = true;
+        }
       }
     }
   );
@@ -487,11 +492,22 @@
         await cleanupViewer();
         await nextTick();
 
-        // Recargar versiones
+        // Recargar versiones en PreviewModal
         await cargarVersionesDesdeNodo(props.document.nodeId);
+
+        // Recargar versiones en HistoryTab si está disponible
+        if (
+          historyTabRef.value &&
+          typeof historyTabRef.value.recargarVersiones === "function"
+        ) {
+          console.log("🔄 [PreviewModal] Recargando versiones en HistoryTab...");
+          await historyTabRef.value.recargarVersiones();
+          await nextTick();
+        }
 
         // Esperar a que las versiones se carguen completamente
         await nextTick();
+        await new Promise((resolve) => setTimeout(resolve, 100));
 
         // Encontrar la versión actual en la lista de versiones recargada
         const currentVersion = versionsList.value.find((v) => v.isCurrentVersion);
@@ -510,8 +526,10 @@
   };
 
   // Manejar subida completa de nueva versión
-  const handleUploadComplete = async () => {
-    console.log("🟢 [PreviewModal] Nueva versión subida, recargando...");
+  const handleUploadComplete = async (uploadedFileName?: string) => {
+    console.log("🟢 [PreviewModal] Nueva versión subida, recargando...", {
+      uploadedFileName,
+    });
 
     // Limpiar completamente el viewer PRIMERO
     await cleanupViewer();
@@ -520,20 +538,113 @@
     // Recargar versiones si tenemos nodeId
     if (props.document?.nodeId) {
       try {
-        // Solo recargar usando el composable (HistoryTab se actualizará automáticamente)
+        // Recargar versiones en PreviewModal
         await cargarVersionesDesdeNodo(props.document.nodeId);
+
+        // Recargar versiones en HistoryTab si está disponible
+        if (
+          historyTabRef.value &&
+          typeof historyTabRef.value.recargarVersiones === "function"
+        ) {
+          console.log("🔄 [PreviewModal] Recargando versiones en HistoryTab...");
+          await historyTabRef.value.recargarVersiones();
+          await nextTick();
+        }
 
         // Esperar a que las versiones se carguen completamente
         await nextTick();
+        await new Promise((resolve) => setTimeout(resolve, 200));
 
         // Encontrar la versión actual en la lista de versiones recargada
         const currentVersion = versionsList.value.find((v) => v.isCurrentVersion);
         if (currentVersion && currentVersion.id) {
+          console.log("🔍 [PreviewModal] Versión actual encontrada:", {
+            versionId: currentVersion.id,
+            versionNumber: currentVersion.versionNumber,
+            isCurrentVersion: currentVersion.isCurrentVersion,
+            previousSelectedVersion: selectedVersionCode.value,
+          });
+
           // Establecer el nuevo versionCode para disparar el watch y recargar el documento
-          selectedVersionCode.value = currentVersion.id;
+          // Si el versionCode es diferente, cambiarlo directamente
+          if (selectedVersionCode.value !== currentVersion.id) {
+            selectedVersionCode.value = currentVersion.id;
+            console.log(
+              "✅ [PreviewModal] Versión actualizada después de subir:",
+              currentVersion.id
+            );
+          } else {
+            // Si es el mismo versionCode, forzar recarga del documento
+            console.log(
+              "🔄 [PreviewModal] Mismo versionCode, forzando recarga del documento..."
+            );
+            // Forzar recarga cambiando temporalmente el valor
+            const tempValue = selectedVersionCode.value;
+            selectedVersionCode.value = "";
+            await nextTick();
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            selectedVersionCode.value = tempValue;
+            console.log("✅ [PreviewModal] Recarga forzada completada");
+          }
+        } else {
+          console.warn("⚠️ [PreviewModal] No se encontró versión actual después de subir");
+        }
+
+        // Si se subió un archivo con diferente extensión, actualizar SOLO la extensión del nombre
+        if (uploadedFileName && props.document?.nodeId) {
+          const currentName = getDocumentName();
+          const currentExtension = currentName.split(".").pop()?.toLowerCase() || "";
+          const uploadedExtension = uploadedFileName.split(".").pop()?.toLowerCase() || "";
+
+          console.log("🔍 [PreviewModal] Comparando extensiones:", {
+            currentName,
+            currentExtension,
+            uploadedFileName,
+            uploadedExtension,
+            areDifferent: currentExtension !== uploadedExtension,
+          });
+
+          // Solo actualizar si la extensión es diferente
+          if (currentExtension !== uploadedExtension && uploadedExtension) {
+            // Remover extensión actual y agregar la nueva (mantener el nombre base)
+            const baseName = currentName.replace(/\.[^/.]+$/, ""); // Remover extensión actual
+            const newName = `${baseName}.${uploadedExtension}`;
+
+            console.log(
+              "📝 [PreviewModal] Extensión diferente detectada, actualizando SOLO extensión:",
+              {
+                oldName: currentName,
+                newName,
+                baseName,
+                oldExtension: currentExtension,
+                newExtension: uploadedExtension,
+              }
+            );
+
+            try {
+              await actualizarNombre(props.document.nodeId, newName);
+              localDocumentName.value = newName;
+              emits("nameUpdated", newName);
+              console.log("✅ [PreviewModal] Extensión actualizada exitosamente:", newName);
+            } catch (error: any) {
+              console.error("❌ [PreviewModal] Error al actualizar extensión:", error);
+            }
+          } else {
+            console.log(
+              "ℹ️ [PreviewModal] Misma extensión, no se actualiza el nombre:",
+              currentExtension
+            );
+          }
+        }
+
+        // Si estamos en la pestaña General, cambiar a History para mostrar la nueva versión
+        if (activeTab.value === "general") {
+          // Esperar un poco más antes de cambiar de pestaña para asegurar que todo esté cargado
+          await nextTick();
+          await new Promise((resolve) => setTimeout(resolve, 200));
+          activeTab.value = "history";
           console.log(
-            "✅ [PreviewModal] Versión actualizada después de subir:",
-            currentVersion.id
+            "📋 [PreviewModal] Cambiando a pestaña History para mostrar nueva versión"
           );
         }
 
@@ -893,7 +1004,7 @@
 
           <!-- Right Side: Sidebar with Tabs -->
           <div
-            v-if="showViewerSidebar && !isPptx"
+            v-if="showViewerSidebar"
             class="w-96 flex flex-col border-l bg-white"
             :style="{ borderColor: 'var(--border-light)' }"
           >
