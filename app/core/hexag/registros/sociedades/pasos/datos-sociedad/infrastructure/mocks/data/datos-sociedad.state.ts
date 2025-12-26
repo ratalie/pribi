@@ -2,7 +2,7 @@ import {
   normalizeRegistryOfficeCode,
   normalizeTypeSocietyCode,
 } from "~/constants/inputs/enum-helpers";
-import { getRecord, putRecord } from "../../../../../../shared/mock-database";
+import { getRecord, putRecord } from "~/core/hexag/registros/shared/mock-database";
 import type { DatosSociedadDTO } from "../../../application/dtos/datos-sociedad.dto";
 import type { SociedadDatosGenerales } from "../../../domain";
 

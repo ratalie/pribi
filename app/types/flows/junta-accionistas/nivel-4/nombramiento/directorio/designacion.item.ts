@@ -7,11 +7,11 @@ export const nombramientoDirectorioDesignacionItem: FlowItem = {
   identity: {
     id: "nombramiento-directorio-designacion",
     type: FlowItemType.STEP,
-    label: "Designación",
+    label: "Designación de Directores",
   },
   hierarchy: {
     level: 4,
-    order: 1,
+    order: 4,
     parentId: "nombramiento-directorio-contenido",
     children: [],
   },
@@ -23,7 +23,7 @@ export const nombramientoDirectorioDesignacionItem: FlowItem = {
   rightSidebar: { enabled: false },
   validation: defaultValidation,
   metadata: {
-    description: "Designación de los integrantes del directorio",
+    description: "Designación de los directores del nuevo directorio",
     tags: ["nivel-4", "nombramiento", "directorio"],
     version: "1.0.0",
   },

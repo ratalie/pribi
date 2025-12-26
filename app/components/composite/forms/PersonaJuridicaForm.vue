@@ -9,13 +9,14 @@
     numeroRucSchema,
     provinciaSchema,
     razonSocialSchema,
-  } from "~/modules/registro-sociedades/schemas/modalPersonaJuridica";
+  } from "~/schemas/registro-sociedades/modalPersonaJuridica";
   import { usePersonaJuridicaStore } from "~/stores/usePersonaJuridicaStore";
   const personaJuridicaStore = usePersonaJuridicaStore();
 
   onMounted(() => {
-    if (personaJuridicaStore.jurisdiccion !== "peruana") {
-      personaJuridicaStore.setJurisdiccion("peruana");
+    // El store ya tiene seConstituyoEnPeru en true por defecto
+    if (!personaJuridicaStore.seConstituyoEnPeru) {
+      personaJuridicaStore.seConstituyoEnPeru = true;
     }
   });
 </script>

@@ -66,9 +66,35 @@
     isCollapsedFlow.value = !isCollapsedFlow.value;
   };
 
+  /**
+   * Resuelve una ruta reemplazando placeholders con valores reales
+   */
+  const resolveRoute = (href?: string): string => {
+    if (!href) return "#";
+    
+    let resolved = href;
+    
+    // Reemplazar :societyId con el ID real de la ruta actual
+    const societyId = route.params.societyId;
+    if (societyId) {
+      const id = typeof societyId === "string" ? societyId : String(societyId[0] || "");
+      resolved = resolved.replace(/:societyId/g, id);
+    }
+    
+    // Reemplazar :flowId con el ID real de la ruta actual (si existe)
+    const flowId = route.params.flowId;
+    if (flowId) {
+      const id = typeof flowId === "string" ? flowId : String(flowId[0] || "");
+      resolved = resolved.replace(/:flowId/g, id);
+    }
+    
+    return resolved;
+  };
+
   const isActive = (href?: string): boolean => {
     if (!href) return false;
-    return route.path === href || route.path.startsWith(href + "/");
+    const resolved = resolveRoute(href);
+    return route.path === resolved || route.path.startsWith(resolved + "/");
   };
 </script>
 
@@ -176,7 +202,7 @@
                             <template v-for="subItem in item.submenuItems" :key="subItem.id">
                               <NuxtLink
                                 v-if="canViewModule(subItem.id)"
-                                :to="subItem.href || '#'"
+                                :to="resolveRoute(subItem.href)"
                                 class="font-secondary flex items-center gap-3 rounded-lg px-3 py-2 text-[15px] text-[#e2e2e4] transition-colors hover:bg-white/10 hover:text-white"
                                 :class="{
                                   'bg-white/10 text-white font-semibold': isActive(
@@ -199,7 +225,7 @@
                       <!-- Regular item without submenu -->
                       <template v-else>
                         <NuxtLink
-                          :to="item.href || '#'"
+                          :to="resolveRoute(item.href)"
                           class="font-secondary flex items-center gap-3 rounded-lg px-3 py-3 text-[15px] text-[#e2e2e4] transition-colors hover:bg-white/10 hover:text-white"
                           :class="{
                             'bg-white/10 text-white font-semibold': isActive(item.href),

@@ -131,12 +131,11 @@ export const DirectorioMapper = {
     };
 
     // Solo incluir presidenteId si tiene un valor válido (no null, no undefined, no string vacía)
+    // Si no hay valor, omitir el campo completamente (no enviar null)
     if (dto.presidenteId && dto.presidenteId.trim().length > 0) {
       payload.presidenteId = dto.presidenteId;
-    } else {
-      // Si no hay valor, enviar null explícitamente
-      payload.presidenteId = null;
     }
+    // Si no hay valor, no incluimos el campo en el payload
 
     // Si conteoPersonalizado = false: enviar cantidadDirectores, NO enviar minimoDirectores/maximoDirectores
     // Si conteoPersonalizado = true: NO enviar cantidadDirectores, enviar minimoDirectores y maximoDirectores (obligatorios)

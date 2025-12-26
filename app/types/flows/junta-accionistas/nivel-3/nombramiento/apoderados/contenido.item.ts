@@ -14,7 +14,8 @@ export const nombramientoApoderadosContenidoItem: FlowItem = {
     order: 1,
     parentId: "nombramiento-apoderados",
     children: [
-      "nombramiento-apoderados-designacion",
+      "nombramiento-apoderados-nombramiento",
+      "nombramiento-apoderados-seleccion",
       "nombramiento-apoderados-otorgamiento",
       "nombramiento-apoderados-votacion",
     ],

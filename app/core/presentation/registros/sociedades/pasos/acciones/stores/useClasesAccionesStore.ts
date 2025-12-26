@@ -55,7 +55,7 @@ export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
     },
 
     removeDerechosEspecialesClaseMetadata(fileId: string) {
-      const index = this.metadataDerechosEspecialesClase.findIndex((m) => m.fileId === fileId);
+      const index = this.metadataDerechosEspecialesClase.findIndex((m) => m.archivoId === fileId);
       if (index !== -1) {
         this.metadataDerechosEspecialesClase.splice(index, 1);
       }
@@ -66,7 +66,7 @@ export const useClasesAccionesStore = defineStore("clasesAccionesModal", {
     },
 
     removeObligacionesClaseMetadata(fileId: string) {
-      const index = this.metadataObligacionesClase.findIndex((m) => m.fileId === fileId);
+      const index = this.metadataObligacionesClase.findIndex((m) => m.archivoId === fileId);
       if (index !== -1) {
         this.metadataObligacionesClase.splice(index, 1);
       }

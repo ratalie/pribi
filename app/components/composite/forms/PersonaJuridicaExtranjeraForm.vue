@@ -8,7 +8,7 @@
     paisSchema,
     razonSocialSchema,
     tipoDocumentoSchema,
-  } from "~/modules/registro-sociedades/schemas/modalPersonaJuridica";
+  } from "~/schemas/registro-sociedades/modalPersonaJuridica";
   import { usePersonaJuridicaStore } from "~/stores/usePersonaJuridicaStore";
 
   const personaJuridicaStore = usePersonaJuridicaStore();
@@ -17,7 +17,7 @@
 <template>
   <div class="grid grid-cols-2 gap-12">
     <SelectInputZod
-      v-model="personaJuridicaStore.pais"
+      v-model="(personaJuridicaStore as any).pais"
       name="pais"
       label="País"
       :schema="paisSchema"

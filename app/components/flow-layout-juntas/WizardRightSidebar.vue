@@ -1,0 +1,77 @@
+<script setup lang="ts">
+  import { useJuntasRightSidebarExpansion } from "~/composables/useJuntasRightSidebarExpansion";
+  import type { SectionItem } from "~/types/junta-navigation.types";
+  import { isSectionActive } from "~/utils/juntas/right-sidebar.utils";
+  import RightSidebarHeader from "./RightSidebarHeader.vue";
+  import RightSidebarSectionItem from "./RightSidebarSectionItem.vue";
+  import RightSidebarSubSectionItem from "./RightSidebarSubSectionItem.vue";
+
+  interface Props {
+    sections: SectionItem[];
+    currentSectionId: string;
+    onSectionClick: (sectionId: string) => void;
+    title?: string;
+    showCloseButton?: boolean;
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    title: "Secciones",
+    showCloseButton: false,
+  });
+
+  // Usar composable para gestión de expansión
+  const { expandedSections, toggleSection, isSectionExpanded } =
+    useJuntasRightSidebarExpansion(
+      computed(() => props.sections),
+      computed(() => props.currentSectionId)
+    );
+</script>
+
+<template>
+  <div class="w-[360px] bg-white border-l border-gray-200 flex flex-col overflow-y-auto">
+    <!-- Header (solo si showCloseButton es true, porque el sheet tiene su propio header) -->
+    <RightSidebarHeader v-if="showCloseButton" :title="title" />
+
+    <!-- Sections List -->
+    <div class="flex-1 px-6 py-4">
+      <div class="space-y-0.5">
+        <div v-for="section in sections" :key="section.id" class="relative">
+          <!-- Sección Principal -->
+          <RightSidebarSectionItem
+            :section="section"
+            :current-section-id="currentSectionId"
+            :sections="sections"
+            :is-expanded="isSectionExpanded(section)"
+            :is-in-expanded-list="expandedSections.includes(section.id)"
+            :on-toggle="() => toggleSection(section.id)"
+            :on-section-click="onSectionClick"
+          />
+
+          <!-- Sub-secciones (anclas dentro de la misma página o rutas) -->
+          <div
+            v-if="
+              section.subSections &&
+              section.subSections.length > 0 &&
+              isSectionExpanded(section)
+            "
+            class="ml-6 mt-1 space-y-0.5 border-l-2 pl-4"
+            :class="[
+              isSectionActive(section, currentSectionId) ||
+              expandedSections.includes(section.id)
+                ? 'border-primary-800'
+                : 'border-gray-200',
+            ]"
+          >
+            <RightSidebarSubSectionItem
+              v-for="subSection in section.subSections"
+              :key="subSection.id"
+              :sub-section="subSection"
+              :current-section-id="currentSectionId"
+              :on-section-click="onSectionClick"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

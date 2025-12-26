@@ -9,7 +9,7 @@
     nombreAccionistaSchema,
     numeroDocumentoSchema,
     tipoDocumentoSchema,
-  } from "~/modules/registro-sociedades/schemas/modalAccionistas";
+  } from "~/schemas/registro-sociedades/modalAccionistas";
 
   const personaNaturalStore = usePersonaNaturalStore();
 </script>

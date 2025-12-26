@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useSummarySection } from "@/modules/junta-accionistas/summaries";
-import type { SummarySection } from "@/modules/junta-accionistas/summaries/types";
+import { useSummarySection } from "~/core/hexag/juntas/summaries";
+import type { SummarySection } from "~/core/hexag/juntas/summaries/types";
 
 interface Props {
   sectionId: string;
@@ -76,9 +76,9 @@ const resolvedSection = computed<SummarySection | null>(() => {
 
 .summary-section__title {
   font-family: var(--font-primary);
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 600;
-  color: #2e293d;
+  color: var(--color-gray-800);
 }
 
 .summary-section__description {

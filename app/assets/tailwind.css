@@ -254,6 +254,26 @@
   --gray-700: var(--color-gray-700);
   --gray-800: var(--color-gray-800);
   --gray-900: var(--color-gray-900);
+
+  /* === REPOSITORIO VARIABLES === */
+  --text-primary: #1F2937;
+  --text-muted: #6B7280;
+  --bg-muted: #F9FAFB;
+  --border-light: #E5E7EB;
+  
+  /* Backgrounds de iconos (muy claros) */
+  --icon-bg-primary: #EEF2FF;    /* Morado muy claro */
+  --icon-bg-info: #DBEAFE;       /* Azul muy claro */
+  --icon-bg-purple: #F3E8FF;     /* Púrpura muy claro */
+  --icon-bg-warning: #FEF3C7;    /* Amarillo muy claro */
+  --icon-bg-success: #D1FAE5;    /* Verde muy claro */
+  --icon-bg-error: #FEE2E2;       /* Rojo muy claro */
+  
+  /* Colores de estado */
+  --success: #10B981;
+  --warning: #F59E0B;
+  --error: #DC2626;
+  --info: #3B82F6;
 }
 
 /* ============================================
@@ -558,6 +578,10 @@ html.purple {
     font-size: 8.8px !important;
     line-height: 12.8px !important;
   }
+
+
+
+  
 
   body {
     font-family: var(--font-primary, Inter, ui-sans-serif, system-ui, sans-serif);

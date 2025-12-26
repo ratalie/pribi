@@ -2,8 +2,8 @@
   <div class="flow-sidebar-item" :style="{ paddingLeft: `${level * 12}px` }">
     <!-- Item Principal -->
     <NuxtLink
-      v-if="item.navigation.route"
-      :to="item.navigation.route"
+      v-if="resolvedRoute"
+      :to="resolvedRoute"
       class="flex items-center gap-2 p-2 rounded-md hover:bg-accent transition-colors group"
       :class="{
         'bg-accent font-semibold': isActive,
@@ -114,9 +114,36 @@
     return props.item.children && props.item.children.length > 0;
   });
 
+  /**
+   * Resuelve la ruta reemplazando placeholders con valores reales de la ruta actual
+   */
+  const resolvedRoute = computed(() => {
+    if (!props.item.navigation.route) return null;
+    
+    let resolved = props.item.navigation.route;
+    
+    // Reemplazar :societyId con el ID real de la ruta actual
+    const societyId = route.params.societyId;
+    if (societyId && typeof societyId === "string") {
+      resolved = resolved.replace(/:societyId/g, societyId);
+    } else if (Array.isArray(societyId) && societyId[0]) {
+      resolved = resolved.replace(/:societyId/g, String(societyId[0]));
+    }
+    
+    // Reemplazar :flowId con el ID real de la ruta actual (si existe)
+    const flowId = route.params.flowId;
+    if (flowId && typeof flowId === "string") {
+      resolved = resolved.replace(/:flowId/g, flowId);
+    } else if (Array.isArray(flowId) && flowId[0]) {
+      resolved = resolved.replace(/:flowId/g, String(flowId[0]));
+    }
+    
+    return resolved;
+  });
+
   const isActive = computed(() => {
-    if (!props.item.navigation.route) return false;
-    return route.path === props.item.navigation.route;
+    if (!resolvedRoute.value) return false;
+    return route.path === resolvedRoute.value;
   });
 
   // Métodos
@@ -133,9 +160,33 @@
     }
   };
 
+  /**
+   * Resuelve una ruta de un item (helper recursivo)
+   */
+  const resolveItemRoute = (item: FlowItemTree): string | null => {
+    if (!item.navigation.route) return null;
+    
+    let resolved = item.navigation.route;
+    const societyId = route.params.societyId;
+    const flowId = route.params.flowId;
+    
+    if (societyId) {
+      const id = typeof societyId === "string" ? societyId : String(societyId[0] || "");
+      resolved = resolved.replace(/:societyId/g, id);
+    }
+    
+    if (flowId) {
+      const id = typeof flowId === "string" ? flowId : String(flowId[0] || "");
+      resolved = resolved.replace(/:flowId/g, id);
+    }
+    
+    return resolved;
+  };
+
   // Auto-expandir si algún hijo está activo
   const checkIfChildActive = (item: FlowItemTree): boolean => {
-    if (item.navigation.route === route.path) return true;
+    const itemRoute = resolveItemRoute(item);
+    if (itemRoute === route.path) return true;
     if (item.children) {
       return item.children.some(checkIfChildActive);
     }

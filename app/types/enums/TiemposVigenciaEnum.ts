@@ -1,4 +1,4 @@
 export enum TiemposVigenciaEnum {
-  DETERMIADO = "determinado",
+  DETERMINADO = "determinado",  // ✅ Typo corregido
   INDEFINIDO = "indefinido",
 }

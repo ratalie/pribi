@@ -41,24 +41,50 @@ export class QuorumHttpRepository implements QuorumRepository {
     // El id del quorum es el mismo que el societyProfileId (ej: /api/v2/society-profile/2/quorum => id = 2)
     // Siempre usar societyProfileId como id porque el backend no lo retorna
     const idToUse = fallbackId ?? societyProfileId;
-    const response = await $fetch<{ data: any }>(
-      url,
-      withAuthHeaders({ method: "GET" as const })
-    );
-    return QuorumMapper.toDomain(response?.data, idToUse) ?? null;
+    
+    try {
+      console.log("[Repository][QuorumHttp] get:request", { url, societyProfileId });
+      const response = await $fetch<{ success?: boolean; data?: any; message?: string }>(
+        url,
+        withAuthHeaders({ method: "GET" as const })
+      );
+      console.log("[Repository][QuorumHttp] get:response", JSON.stringify(response, null, 2));
+      
+      if (response?.data) {
+        return QuorumMapper.toDomain(response.data, idToUse) ?? null;
+      }
+      return null;
+    } catch (error: any) {
+      // Si el backend devuelve 404, significa que no hay quórums configurados
+      const statusCode = error?.statusCode ?? error?.response?.status ?? null;
+      if (statusCode === 404) {
+        console.log("[Repository][QuorumHttp] get:404 - No hay quórums configurados");
+        return null;
+      }
+      console.error("[Repository][QuorumHttp] get:error", error);
+      throw error;
+    }
   }
 
   async create(societyProfileId: string, payload: QuorumDTO): Promise<QuorumConfig> {
+    // El backend ya crea la estructura inicial en el POST root,
+    // entonces usamos PUT para actualizar/crear los quórums
     const url = this.resolveQuorumPath(societyProfileId);
-    await $fetch(
+    const mappedPayload = QuorumMapper.toPayload(payload);
+    
+    console.log("[Repository][QuorumHttp] create:request", { url, payload: JSON.stringify(mappedPayload, null, 2) });
+    const response = await $fetch(
       url,
       withAuthHeaders({
-        method: "POST" as const,
-        body: QuorumMapper.toPayload(payload),
+        method: "PUT" as const,
+        body: mappedPayload,
       })
     );
+    console.log("[Repository][QuorumHttp] create:response", JSON.stringify(response, null, 2));
 
     // Usar el societyProfileId como fallback si el backend no retorna id
+    // Esperar un poco antes de hacer GET para que el backend procese el PUT
+    await new Promise(resolve => setTimeout(resolve, 100));
     const fresh = await this.get(societyProfileId, societyProfileId);
     if (!fresh) {
       throw new Error("No pudimos obtener el quórum después de crearlo.");
@@ -68,15 +94,21 @@ export class QuorumHttpRepository implements QuorumRepository {
 
   async update(societyProfileId: string, payload: QuorumDTO): Promise<QuorumConfig> {
     const url = this.resolveQuorumPath(societyProfileId);
-    await $fetch(
+    const mappedPayload = QuorumMapper.toPayload(payload);
+    
+    console.log("[Repository][QuorumHttp] update:request", { url, payload: JSON.stringify(mappedPayload, null, 2) });
+    const response = await $fetch(
       url,
       withAuthHeaders({
         method: "PUT" as const,
-        body: QuorumMapper.toPayload(payload),
+        body: mappedPayload,
       })
     );
+    console.log("[Repository][QuorumHttp] update:response", JSON.stringify(response, null, 2));
 
     // Siempre usar societyProfileId como id porque el backend no lo retorna
+    // Esperar un poco antes de hacer GET para que el backend procese el PUT
+    await new Promise(resolve => setTimeout(resolve, 100));
     const fresh = await this.get(societyProfileId, societyProfileId);
     if (!fresh) {
       throw new Error("No pudimos obtener el quórum después de actualizarlo.");

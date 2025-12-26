@@ -3,28 +3,28 @@ import type { FlowItem } from "@/types/flow-system";
 import { FlowItemType, NavigationBehavior } from "@/types/flow-system";
 import { defaultBehavior, defaultValidation } from "../../../defaults";
 
-export const remocionGerenteSeleccionItem: FlowItem = {
+export const remocionGerenteGerenteGeneralItem: FlowItem = {
   identity: {
-    id: "remocion-gerente-seleccion",
+    id: "remocion-gerente-gerente-general",
     type: FlowItemType.STEP,
     label: "Gerente General",
   },
   hierarchy: {
     level: 4,
-    order: 1,
+    order: 2,
     parentId: "remocion-gerente-contenido",
     children: [],
   },
   navigation: {
-    route: JuntaRoutes.REMOCION_GERENTE,
+    route: JuntaRoutes.REMOCION_GERENTE_DETALLE,
     behavior: NavigationBehavior.PUSH,
-    hash: "#seleccion",
+    hash: "#gerente-general",
   },
   behavior: defaultBehavior,
   rightSidebar: { enabled: false },
   validation: defaultValidation,
   metadata: {
-    description: "Selecciona los cargos o personas a evaluar para la remoción",
+    description: "Información del gerente general a remover",
     tags: ["nivel-4", "remociones", "gerente"],
     version: "1.0.0",
   },

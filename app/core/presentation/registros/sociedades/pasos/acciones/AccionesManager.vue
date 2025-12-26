@@ -42,6 +42,10 @@
     accionesActions,
     valorNominalStore,
     confirmDelete,
+    isConfirmChangeTypeModalOpen,
+    handleConfirmChangeType,
+    handleCancelChangeType,
+    handleSwitchTabsChange,
   } = useAccionesComputed(props.societyId ?? "");
 </script>
 
@@ -50,7 +54,7 @@
     :class="[
       'h-full w-full flex flex-col gap-12',
       mode !== EntityModeEnum.RESUMEN
-        ? ' p-14 '
+        ? ' py-8 px-10 2xl:py-14 2xl:px-14 '
         : 'border border-gray-100 rounded-xl py-12 px-10',
     ]"
   >
@@ -89,25 +93,75 @@
 
     <!-- datos del tipo de acciones y el valor nominal -->
     <div class="grid grid-cols-2 gap-8">
+      <!-- Card: Tipo de Acciones (Clickeable) -->
       <div
-        class="flex justify-between items-center px-6 py-3.5 border-2 bg-gray-25 rounded-lg"
+        :class="[
+          'flex justify-between items-center px-6 py-3.5 border-2 bg-gray-25 rounded-lg transition-all',
+          mode !== EntityModeEnum.RESUMEN
+            ? 'cursor-pointer hover:border-primary-500 hover:bg-primary-50 hover:shadow-sm'
+            : 'cursor-default',
+        ]"
+        @click="mode !== EntityModeEnum.RESUMEN ? openValorNominalModal() : null"
       >
         <p class="font-primary font-semibold t-h6 text-gray-800">Tipo de acciones</p>
-        <p class="font-secondary font-medium t-t1 text-gray-800">
-          {{
-            switchTabs === "opcion-a" ? "Comunes y sin derecho a voto" : "Clases de Acciones"
-          }}
-        </p>
+        <div class="flex items-center gap-2">
+          <p class="font-secondary font-medium t-t1 text-gray-800">
+            {{
+              switchTabs === "opcion-a" ? "Comunes y sin derecho a voto" : "Clases de Acciones"
+            }}
+          </p>
+          <svg
+            v-if="mode !== EntityModeEnum.RESUMEN"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+            />
+          </svg>
+        </div>
       </div>
 
+      <!-- Card: Valor Nominal (Clickeable) -->
       <div
-        class="flex justify-between items-center px-6 py-3.5 border-2 bg-gray-25 rounded-lg"
+        :class="[
+          'flex justify-between items-center px-6 py-3.5 border-2 bg-gray-25 rounded-lg transition-all',
+          mode !== EntityModeEnum.RESUMEN
+            ? 'cursor-pointer hover:border-primary-500 hover:bg-primary-50 hover:shadow-sm'
+            : 'cursor-default',
+        ]"
+        @click="mode !== EntityModeEnum.RESUMEN ? openValorNominalModal() : null"
       >
         <div class="flex items-center gap-2">
           <img :src="IconCoinValue" alt="Valor Nominal" />
           <p class="font-primary font-semibold t-h6 text-gray-800">Valor Nominal:</p>
         </div>
-        <p class="font-secondary font-medium t-t1 text-gray-800">{{ valorNominalDisplay }}</p>
+        <div class="flex items-center gap-2">
+          <p class="font-secondary font-medium t-t1 text-gray-800">
+            {{ valorNominalDisplay }}
+          </p>
+          <svg
+            v-if="mode !== EntityModeEnum.RESUMEN"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+            />
+          </svg>
+        </div>
       </div>
     </div>
 
@@ -135,7 +189,15 @@
       v-model="isValorNominalModalOpen"
       v-model:switch-tabs="switchTabs"
       :valor-nominal="valorNominalStore.valor"
+      :tipo-acciones-sociedad="
+        valorNominalStore.tipoAccionesSociedad === 'COMUNES_SIN_DERECHO_VOTO'
+          ? 'opcion-a'
+          : valorNominalStore.tipoAccionesSociedad === 'CON_CLASES'
+          ? 'opcion-b'
+          : null
+      "
       :handle-save-valor-nominal="handleSaveValorNominal"
+      :on-switch-tabs-change="handleSwitchTabsChange"
       @close="closeValorNominalModal"
     />
 
@@ -161,6 +223,18 @@
       :is-loading="confirmDelete.isLoading.value"
       @confirm="confirmDelete.handleConfirm"
       @cancel="confirmDelete.handleCancel"
+    />
+
+    <!-- Modal de confirmación de cambio de tipo de acciones -->
+    <ConfirmDeleteModal
+      v-model="isConfirmChangeTypeModalOpen"
+      title="Cambiar tipo de acciones"
+      message="Al cambiar el tipo de acciones, se eliminarán todas las acciones existentes de la sociedad. Esta acción no se puede deshacer. ¿Deseas continuar?"
+      confirm-label="Sí, cambiar tipo"
+      cancel-label="Cancelar"
+      :is-loading="isLoading"
+      @confirm="handleConfirmChangeType"
+      @cancel="handleCancelChangeType"
     />
   </div>
 </template>

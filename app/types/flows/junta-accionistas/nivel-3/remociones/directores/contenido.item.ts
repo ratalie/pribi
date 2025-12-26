@@ -14,7 +14,8 @@ export const remocionDirectoresContenidoItem: FlowItem = {
     order: 1,
     parentId: "remocion-directores",
     children: [
-      "remocion-directores-seleccion",
+      "remocion-directores-remocion",
+      "remocion-directores-directores",
       "remocion-directores-votacion",
     ],
   },

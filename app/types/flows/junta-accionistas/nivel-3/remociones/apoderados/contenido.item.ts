@@ -14,8 +14,8 @@ export const remocionApoderadosContenidoItem: FlowItem = {
     order: 1,
     parentId: "remocion-apoderados",
     children: [
+      "remocion-apoderados-remocion",
       "remocion-apoderados-seleccion",
-      "remocion-apoderados-revocatoria",
       "remocion-apoderados-votacion",
     ],
   },

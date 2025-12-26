@@ -7,7 +7,7 @@ import {
   UpdateAsignacionAccionUseCase,
 } from "~/core/hexag/registros/sociedades/pasos/asignacion-acciones/application";
 import { AsignacionAccionHttpRepository } from "~/core/hexag/registros/sociedades/pasos/asignacion-acciones/infrastructure";
-import { useRegistroAccionistasStore } from "../../../../../../../modules/registro-sociedades/stores/useRegistroAccionistasStore";
+import { useRegistroAccionistasStore } from "../../accionistas/stores/useRegistroAccionistasStore";
 import { useRegistroAccionesStore } from "../../acciones/stores/useRegistroAccionesStore";
 import { useValorNominalStore } from "../../acciones/stores/useValorNominalStore";
 import { AsignacionAccionPresentationMapper } from "../mappers/asignacion-accion-presentation.mapper";

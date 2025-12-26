@@ -302,7 +302,7 @@ export class OtorgamientoPoderesMapper {
     const tipoVigencia = tieneFechaFin
       ? {
           esIrrevocable: response.esIrrevocable as true,
-          vigencia: TiempoVigenciaUIEnum.DETERMIADO,
+          vigencia: TiempoVigenciaUIEnum.DETERMINADO,
           fecha_inicio: this.formatearFecha(response.fechaInicio),
           fecha_fin: this.formatearFecha(response.fechaFin!),
         }

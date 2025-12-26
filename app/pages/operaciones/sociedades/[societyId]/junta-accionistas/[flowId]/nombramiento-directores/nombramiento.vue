@@ -1,0 +1,827 @@
+<template>
+  <SlotWrapper>
+    <TitleH2 title="Datos de los directores" subtitle="Asignar Directores" />
+    <div class="flex flex-col gap-10">
+      <!-- Cards de Información -->
+      <div class="flex w-full gap-4">
+        <!-- Card 1: Cantidad de Directores -->
+        <div
+          class="flex flex-col flex-1 h-[80px] border border-gray-100 bg-gray-25 rounded-xl px-4 py-3 items-center justify-center gap-4"
+        >
+          <p class="font-primary font-semibold text-gray-700 t-t2">Cantidad de Directores</p>
+          <p class="font-secondary font-medium text-gray-700 t-t2">{{ cantidadDirectores }}</p>
+        </div>
+
+        <!-- Card 2: Duración del Directorio -->
+        <div
+          class="flex flex-col flex-1 h-[80px] border border-gray-100 bg-gray-25 rounded-xl px-4 py-3 items-center justify-center gap-4"
+        >
+          <p class="font-primary font-semibold text-gray-700 t-t2 mb-0.5">
+            Duración del Directorio
+          </p>
+          <p class="font-secondary font-medium text-gray-700 t-t2">1 año</p>
+        </div>
+
+        <!-- Card 3: Fechas de Inicio y Fin -->
+        <div
+          class="flex flex-col flex-1 h-[80px] border border-gray-100 bg-gray-25 rounded-xl px-4 py-3 justify-center gap-1.5"
+        >
+          <div class="flex justify-between items-center w-full">
+            <p class="font-primary font-semibold text-gray-700 t-t2">Fecha de Inicio:</p>
+            <p class="font-secondary font-medium text-gray-700 t-t2">11/06/2025</p>
+          </div>
+          <div class="flex justify-between items-center w-full">
+            <p class="font-primary font-semibold text-gray-700 t-t2">Fecha de Fin:</p>
+            <p class="font-secondary font-medium text-gray-700 t-t2">11/06/2026</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección: Directores Titulares -->
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <p class="t-h5 text-gray-800 font-primary">Directores titulares</p>
+          <button
+            @click="
+              () => {
+                directorToEdit = null;
+                isModalOpen = true;
+              }
+            "
+            class="bg-gray-700 text-white px-4 py-2 flex items-center gap-2 rounded-md text-sm font-secondary font-medium hover:bg-gray-700/80 transition-all"
+          >
+            <UserPlus class="w-4 h-4" />
+            Designar
+          </button>
+        </div>
+        <SimpleCard>
+          <SimpleTable
+            :columns="columns"
+            :data="tableData"
+            :actions="actions"
+            :show-actions-for="showActionsFor"
+          />
+        </SimpleCard>
+        <!-- Mensaje informativo cuando hay más postulantes que cargos -->
+        <div
+          v-if="mostrarMensajePostulantes"
+          class="w-full bg-[#C2E2FF] p-2.5 border rounded-[5px] flex items-center gap-2"
+        >
+          <Info class="w-5 h-5 text-[#0B76B7] shrink-0" />
+          <p class="text-gray-600 font-secondary t-b1">
+            Hay más postulantes que cargos disponibles. Más adelante, en la votación, se
+            definirá quiénes ocuparán los cargos.
+          </p>
+        </div>
+      </div>
+
+      <!-- Sección: Directores Suplentes y Alternos -->
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <p class="t-h5 text-gray-800 font-primary">Directores suplentes y alternos</p>
+          <button
+            @click="
+              () => {
+                directorSuplenteAlternoToEdit = null;
+                isModalSuplenteAlternoOpen = true;
+              }
+            "
+            class="bg-gray-700 text-white px-4 py-2 flex items-center gap-2 rounded-md text-sm font-secondary font-medium hover:bg-gray-700/80 transition-all"
+          >
+            <UserPlus class="w-4 h-4" />
+            Designar
+          </button>
+        </div>
+        <SimpleCard>
+          <SimpleTable
+            :columns="columnsSuplentesAlternos"
+            :data="tableDataSuplentesAlternos"
+            :actions="actionsSuplentesAlternos"
+            :show-actions-for="showActionsForSuplentesAlternos"
+          />
+        </SimpleCard>
+      </div>
+    </div>
+
+    <!-- Modal para Designar Director Titular -->
+    <DesignarDirectorModal
+      v-model="isModalOpen"
+      :mode="modalMode"
+      :director-to-edit="directorToEdit"
+      :is-saving="isLoadingGuardar"
+      @saved="handleDirectorSaved"
+      @close="handleModalClose"
+    />
+
+    <!-- Modal para Designar Director Suplente/Alterno -->
+    <DesignarSuplenteAlternoModal
+      v-model="isModalSuplenteAlternoOpen"
+      :mode="modalSuplenteAlternoMode"
+      :director-to-edit="directorSuplenteAlternoToEdit"
+      :titulares-options="titularesOptions"
+      :is-saving="isLoadingGuardar"
+      @saved="handleSuplenteAlternoSaved"
+      @close="handleSuplenteAlternoModalClose"
+    />
+  </SlotWrapper>
+</template>
+
+<script setup lang="ts">
+  import type { ColumnDef } from "@tanstack/vue-table";
+  import { Info, UserPlus } from "lucide-vue-next";
+  import { computed, h, onMounted, ref, watch } from "vue";
+  import { useRoute } from "vue-router";
+  import SimpleCard from "~/components/base/cards/SimpleCard.vue";
+  import SimpleTable from "~/components/base/tables/simple-table/SimpleTable.vue";
+  import { useJuntasFlowNext } from "~/composables/useJuntasFlowNext";
+  import type { PersonNaturalDTO } from "~/core/hexag/juntas/application/dtos/designation-attorney.dto";
+  import { useNombramientoDirectoresPage } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/composables/useNombramientoDirectoresPage";
+  import { useDirectoryConfigurationStore } from "~/core/presentation/juntas/puntos-acuerdo/nombramiento-directores/stores/useDirectoryConfigurationStore";
+  import { useSnapshotStore } from "~/core/presentation/juntas/stores/snapshot.store";
+  import DesignarDirectorModal from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/components/DesignarDirectorModal.vue";
+  import DesignarSuplenteAlternoModal from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/components/DesignarSuplenteAlternoModal.vue";
+  import { useDirectoresStore } from "~/core/presentation/operaciones/junta-accionistas/pasos/nombramiento-directores/composables/useDirectoresStore";
+
+  definePageMeta({
+    layout: "registros",
+    flowLayoutJuntas: true,
+  });
+
+  interface DirectorData {
+    nombreCompleto: string;
+    tipoDirector: "titular" | "suplente" | "alterno";
+    tipoDocumento: string;
+    numeroDocumento: string;
+    nombre: string;
+    apellidoPaterno: string;
+    apellidoMaterno: string;
+    paisPasaporte?: string;
+    reemplazaId?: string;
+    candidato: boolean;
+  }
+
+  interface Director extends DirectorData {
+    id: string; // Cambiar a string porque ahora viene del backend
+    esCandidato?: boolean;
+    esDelSnapshot?: boolean; // ✅ Flag para identificar si viene del snapshot (read-only)
+    fueRemovido?: boolean; // ✅ Flag para identificar si fue removido (candidateStatus === "ELECTED")
+  }
+
+  const route = useRoute();
+  const societyId = computed(() => Number(route.params.societyId));
+  const flowId = computed(() => Number(route.params.flowId));
+
+  // ✅ Composable para datos del backend
+  const {
+    isLoading,
+    directoresTitulares: directoresTitularesFromComposable,
+    directoresSuplentesAlternos: directoresSuplentesAlternosFromComposable,
+    loadData,
+    guardarDirector,
+    nombramientoStore,
+  } = useNombramientoDirectoresPage();
+
+  const snapshotStore = useSnapshotStore();
+  const directoryConfigStore = useDirectoryConfigurationStore();
+
+  // Store local para compartir datos con votacion.vue (compatibilidad)
+  const directoresStore = useDirectoresStore();
+
+  // ✅ Cantidad de directores: Prioridad a directoryConfigStore, fallback a snapshot
+  const cantidadDirectores = computed(() => {
+    // 1. Prioridad: Si se configuró en cantidad.vue
+    if (directoryConfigStore.configuration?.cantidadDirectores) {
+      return directoryConfigStore.configuration.cantidadDirectores;
+    }
+
+    // 2. Fallback: Snapshot (valor original de la sociedad)
+    return snapshotStore.snapshot?.directory?.cantidadDirectores || 5;
+  });
+
+  // Estado del modal para titulares
+  const isModalOpen = ref(false);
+  const directorToEdit = ref<Director | null>(null);
+  const modalMode = computed<"create" | "edit">(() =>
+    directorToEdit.value ? "edit" : "create"
+  );
+  const isLoadingGuardar = ref(false);
+
+  // Estado del modal para suplentes/alternos
+  const isModalSuplenteAlternoOpen = ref(false);
+  const directorSuplenteAlternoToEdit = ref<{
+    id: number;
+    nombreCompleto: string;
+    tipoDirector: "suplente" | "alterno";
+    tipoDocumento: string;
+    numeroDocumento: string;
+    nombre: string;
+    apellidoPaterno: string;
+    apellidoMaterno: string;
+    paisPasaporte?: string;
+    reemplazaId?: string;
+  } | null>(null);
+  const modalSuplenteAlternoMode = computed<"create" | "edit">(() =>
+    directorSuplenteAlternoToEdit.value ? "edit" : "create"
+  );
+
+  // Cargar datos al montar
+  loadData();
+
+  /**
+   * ✅ Mapear directores desde el composable (que ya tiene DirectorRow) a formato Director para la UI
+   * El composable devuelve DirectorRow con nombre completo, aquí lo separamos para los campos individuales
+   */
+  const mapearDirectoresParaUI = (
+    directores: typeof directoresTitularesFromComposable.value
+  ): Director[] => {
+    return directores.map((director) => {
+      // El composable ya tiene el nombre completo formateado, pero necesitamos separarlo
+      // para los campos individuales que espera la vista
+      const partesNombre = director.nombre.split(" ");
+      const nombre = partesNombre[0] || "";
+      const apellidoPaterno = partesNombre[1] || "";
+      const apellidoMaterno = partesNombre.slice(2).join(" ") || "";
+
+      // ✅ Asegurar que esDelSnapshot sea explícitamente boolean (true o false, nunca undefined)
+      // Si esDelSnapshot es true, mantenerlo como true
+      // Si esDelSnapshot es false, undefined, o cualquier otro valor, tratarlo como false (director nuevo)
+      const esDelSnapshot = director.esDelSnapshot === true ? true : false;
+
+      const directorMapeado: Director = {
+        id: director.id, // ID del registro de designación
+        nombreCompleto: director.nombre, // Ya viene formateado del composable
+        tipoDirector: director.directorRole.toLowerCase() as
+          | "titular"
+          | "suplente"
+          | "alterno",
+        tipoDocumento: director.tipoDocumento,
+        numeroDocumento: director.numeroDocumento,
+        nombre,
+        apellidoPaterno,
+        apellidoMaterno,
+        candidato: director.isCandidate,
+        esDelSnapshot, // ✅ Flag para identificar si viene del snapshot (explícitamente boolean: true o false)
+        fueRemovido: director.fueRemovido || false, // ✅ Flag para identificar si fue removido
+        ...(director.replacesId ? { reemplazaId: director.replacesId } : {}),
+      };
+
+      // ✅ Debug: Log para verificar el flag esDelSnapshot (VERIFICAR EN CONSOLA SI ESTE VALOR ES CORRECTO)
+      console.log(
+        `[mapearDirectoresParaUI] Director: ${directorMapeado.nombreCompleto}, esDelSnapshot en mapeo: ${esDelSnapshot}, raw de composable: ${director.esDelSnapshot}, fueRemovido: ${directorMapeado.fueRemovido}, directorId: ${director.directorId}`
+      );
+
+      return directorMapeado;
+    });
+  };
+
+  /**
+   * ✅ Función para identificar si un director viene del snapshot (read-only)
+   * Los directores del snapshot NO deben tener acciones de editar/eliminar
+   */
+  const esDirectorDelSnapshot = (directorId: string): boolean => {
+    // Buscar el director en ambas listas (titulares y suplentes/alternos)
+    const directorEnTitulares = directoresTitulares.value.find((d) => d.id === directorId);
+    const directorEnSuplentesAlternos = directoresSuplentesAlternos.value.find(
+      (d) => d.id === directorId
+    );
+    const director = directorEnTitulares || directorEnSuplentesAlternos;
+
+    // Si tiene el flag esDelSnapshot === true, es del snapshot (read-only)
+    return director?.esDelSnapshot === true;
+  };
+
+  // ✅ Directores titulares desde backend (mapeados a formato Director)
+  const directoresTitulares = computed(() =>
+    mapearDirectoresParaUI(directoresTitularesFromComposable.value)
+  );
+
+  // Agregar fila de "Sin Asignar"
+  const filaSinAsignar = computed((): Director => {
+    const cantidadTitulares = directoresTitulares.value.length;
+    return {
+      id: `sin-asignar-${cantidadTitulares}`, // ID único para "Sin Asignar"
+      nombreCompleto: "Sin Asignar",
+      tipoDirector: "titular",
+      tipoDocumento: "-",
+      numeroDocumento: "",
+      nombre: "",
+      apellidoPaterno: "",
+      apellidoMaterno: "",
+      candidato: false,
+      esCandidato: true,
+    };
+  });
+
+  // Datos para la tabla de titulares
+  const tableData = computed(() => [...directoresTitulares.value, filaSinAsignar.value]);
+
+  // ✅ Directores suplentes y alternos desde backend (mapeados a formato Director)
+  const directoresSuplentesAlternos = computed(() =>
+    mapearDirectoresParaUI(directoresSuplentesAlternosFromComposable.value)
+  );
+
+  // Agregar fila de "Sin Asignar" para suplentes/alternos
+  const filaSinAsignarSuplenteAlterno = computed((): Director => {
+    const cantidadSuplentesAlternos = directoresSuplentesAlternos.value.length;
+    return {
+      id: `sin-asignar-sa-${cantidadSuplentesAlternos}`, // ID único para "Sin Asignar"
+      nombreCompleto: "Sin Asignar",
+      tipoDirector: "suplente",
+      tipoDocumento: "-",
+      numeroDocumento: "",
+      nombre: "",
+      apellidoPaterno: "",
+      apellidoMaterno: "",
+      candidato: false,
+      esCandidato: true,
+    };
+  });
+
+  // Datos para la tabla de suplentes/alternos
+  const tableDataSuplentesAlternos = computed(() => [
+    ...directoresSuplentesAlternos.value,
+    filaSinAsignarSuplenteAlterno.value,
+  ]);
+
+  // Opciones de titulares para el select de reemplazo (usar directorId desde el store)
+  const titularesOptions = computed(() => {
+    // Obtener directorId desde el store (usar directoresTitulares del store)
+    return nombramientoStore.directoresTitulares.map((t) => ({
+      id: t.directorId, // Usar directorId para reemplazaId
+      value: t.directorId,
+      label: `${t.person.nombre} ${t.person.apellidoPaterno} ${
+        t.person.apellidoMaterno || ""
+      }`.trim(),
+    }));
+  });
+
+  // ✅ Sincronizar datos con el store local (para compatibilidad con votacion.vue)
+  // Mapear a formato DirectorData para el store local
+  watch(
+    [directoresTitulares, directoresSuplentesAlternos, cantidadDirectores],
+    ([titulares, suplentesAlternos, cantidad]) => {
+      const todosDirectores: DirectorData[] = [
+        ...titulares.map((d) => ({
+          nombreCompleto: d.nombreCompleto,
+          tipoDirector: d.tipoDirector,
+          tipoDocumento: d.tipoDocumento,
+          numeroDocumento: d.numeroDocumento,
+          nombre: d.nombre,
+          apellidoPaterno: d.apellidoPaterno,
+          apellidoMaterno: d.apellidoMaterno,
+          candidato: d.candidato,
+          ...(d.reemplazaId ? { reemplazaId: d.reemplazaId } : {}),
+        })),
+        ...suplentesAlternos.map((d) => ({
+          nombreCompleto: d.nombreCompleto,
+          tipoDirector: d.tipoDirector,
+          tipoDocumento: d.tipoDocumento,
+          numeroDocumento: d.numeroDocumento,
+          nombre: d.nombre,
+          apellidoPaterno: d.apellidoPaterno,
+          apellidoMaterno: d.apellidoMaterno,
+          candidato: d.candidato,
+          ...(d.reemplazaId ? { reemplazaId: d.reemplazaId } : {}),
+        })),
+      ];
+
+      directoresStore.setDirectoresData(todosDirectores);
+      directoresStore.setCantidadDirectores(cantidad);
+    },
+    { immediate: true, deep: true }
+  );
+
+  // Mostrar mensaje cuando hay más postulantes que cargos disponibles
+  const mostrarMensajePostulantes = computed(() => {
+    // Contar solo los directores titulares asignados (excluyendo "Sin Asignar")
+    const cantidadTitularesAsignados = directoresTitulares.value.length;
+    return cantidadTitularesAsignados > cantidadDirectores.value;
+  });
+
+  // Definir columnas
+  const columns: ColumnDef<Director>[] = [
+    {
+      accessorKey: "id",
+      header: "ID",
+      // ✅ Mostrar numeración secuencial (1, 2, 3...) en lugar del UUID
+      cell: (info) => {
+        // Usar el índice de la fila en el modelo de la tabla
+        const rowIndex = info.row.index;
+        return h("div", String(rowIndex + 1));
+      },
+    },
+    {
+      accessorKey: "nombreCompleto",
+      header: "Nombre Apellido / Razón Social",
+      cell: ({ row }) => {
+        const esCandidato = row.original.esCandidato;
+        const fueRemovido = row.original.fueRemovido === true;
+        return h(
+          "div",
+          {
+            class: esCandidato || fueRemovido ? "text-gray-400 opacity-50" : "",
+          },
+          row.getValue("nombreCompleto")
+        );
+      },
+    },
+    {
+      accessorKey: "tipoDirector",
+      header: "Tipo de Director",
+      cell: ({ row }) => {
+        const tipo = row.getValue("tipoDirector") as string;
+        const esCandidato = row.original.candidato || row.original.esCandidato;
+        const fueRemovido = row.original.fueRemovido === true;
+
+        // ✅ Si fue removido, mostrar "REMOVIDO" en lugar del tipo
+        const texto = fueRemovido
+          ? "REMOVIDO"
+          : esCandidato
+          ? "CANDIDATO"
+          : tipo.toUpperCase();
+
+        return h(
+          "div",
+          {
+            class: [
+              "inline-flex items-center px-4 py-2 rounded-[54px] border text-primary-800 border-primary-800",
+              esCandidato || fueRemovido ? "opacity-50" : "",
+              fueRemovido ? "border-red-600 text-red-600" : "",
+            ],
+          },
+          texto
+        );
+      },
+    },
+    {
+      accessorKey: "tipoDocumento",
+      header: "Tipo de Documento",
+      cell: ({ row }) => h("div", row.getValue("tipoDocumento")),
+    },
+    {
+      accessorKey: "numeroDocumento",
+      header: "No de Documento",
+      cell: ({ row }) => {
+        const esCandidato = row.original.esCandidato;
+        if (esCandidato) {
+          return h("div", "-");
+        }
+        return h("div", row.getValue("numeroDocumento"));
+      },
+    },
+    {
+      id: "empty",
+      header: "",
+      cell: () => h("div"),
+    },
+  ];
+
+  // Definir columnas para suplentes/alternos (similar a titulares)
+  const columnsSuplentesAlternos: ColumnDef<Director>[] = [
+    {
+      accessorKey: "id",
+      header: "ID",
+      // ✅ Mostrar numeración secuencial (1, 2, 3...) en lugar del UUID
+      cell: ({ row, table }) => {
+        const rowIndex = table.getRowModel().rows.findIndex((r) => r.id === row.id);
+        return h("div", String(rowIndex + 1));
+      },
+    },
+    {
+      accessorKey: "nombreCompleto",
+      header: "Nombre Apellido / Razón Social",
+      cell: ({ row }) => {
+        const esCandidato = row.original.esCandidato;
+        const fueRemovido = row.original.fueRemovido === true;
+        return h(
+          "div",
+          {
+            class: esCandidato || fueRemovido ? "text-gray-400 opacity-50" : "",
+          },
+          row.getValue("nombreCompleto")
+        );
+      },
+    },
+    {
+      accessorKey: "tipoDirector",
+      header: "Tipo de Director",
+      cell: ({ row }) => {
+        const tipo = row.getValue("tipoDirector") as string;
+        const esCandidato = row.original.candidato || row.original.esCandidato;
+        const fueRemovido = row.original.fueRemovido === true;
+
+        // ✅ Si fue removido, mostrar "REMOVIDO" en lugar del tipo
+        const texto = fueRemovido
+          ? "REMOVIDO"
+          : esCandidato
+          ? "CANDIDATO"
+          : tipo.toUpperCase();
+
+        return h(
+          "div",
+          {
+            class: [
+              "inline-flex items-center px-4 py-2 rounded-[54px] border text-primary-800 border-primary-800",
+              esCandidato || fueRemovido ? "opacity-50" : "",
+              fueRemovido ? "border-red-600 text-red-600" : "",
+            ],
+          },
+          texto
+        );
+      },
+    },
+    {
+      accessorKey: "tipoDocumento",
+      header: "Tipo de Documento",
+      cell: ({ row }) => h("div", row.getValue("tipoDocumento")),
+    },
+    {
+      accessorKey: "numeroDocumento",
+      header: "No de Documento",
+      cell: ({ row }) => {
+        const esCandidato = row.original.esCandidato;
+        if (esCandidato) {
+          return h("div", "-");
+        }
+        return h("div", row.getValue("numeroDocumento"));
+      },
+    },
+    {
+      id: "empty",
+      header: "",
+      cell: () => h("div"),
+    },
+  ];
+
+  // ✅ Acciones para el menú de 3 puntos (solo para directores nuevos, no del snapshot)
+  const actions = [
+    {
+      label: "Editar",
+      onClick: (id: string) => {
+        // ✅ No permitir editar directores del snapshot
+        if (esDirectorDelSnapshot(id)) {
+          console.log("⚠️ No se puede editar un director del snapshot:", id);
+          return;
+        }
+
+        // Buscar el director en la lista de titulares
+        const director = directoresTitulares.value.find((d) => d.id === id);
+        if (director) {
+          directorToEdit.value = {
+            ...director,
+            id: director.id,
+          };
+          isModalOpen.value = true;
+        }
+      },
+    },
+    {
+      label: "Eliminar",
+      onClick: async (id: string) => {
+        // ✅ No permitir eliminar directores del snapshot
+        if (esDirectorDelSnapshot(id)) {
+          console.log("⚠️ No se puede eliminar un director del snapshot:", id);
+          return;
+        }
+
+        // ✅ Implementar DELETE
+        try {
+          console.log("[Nombramiento.vue] Intentando eliminar director:", id);
+          await nombramientoStore.deleteDirector(societyId.value, flowId.value, id);
+          console.log("✅ Director eliminado exitosamente:", id);
+          // El store ya recarga los directores, pero también recargamos aquí para actualizar la vista completa
+          await loadData();
+        } catch (error: any) {
+          console.error("❌ Error al eliminar director:", error);
+          // Re-lanzar el error para que se muestre al usuario
+          throw error;
+        }
+      },
+    },
+  ];
+
+  // ✅ Mostrar acciones SOLO para directores nuevos (candidatos creados en este flujo)
+  // NO mostrar acciones para:
+  // - Directores del snapshot (esDelSnapshot === true) - estos son read-only
+  // - La fila "Sin Asignar" (esCandidato === true y es fila especial)
+  const showActionsFor = (row: Director) => {
+    // ✅ Verificar explícitamente: solo mostrar si NO es del snapshot y NO es candidato (fila "Sin Asignar")
+    // Si esDelSnapshot es true, NO mostrar acciones (es del snapshot)
+    // Si esDelSnapshot es false o undefined, mostrar acciones (es nuevo)
+    const esDelSnapshot = row.esDelSnapshot === true;
+    const esCandidatoFilaEspecial = row.esCandidato === true;
+
+    // Si es del snapshot o es la fila "Sin Asignar", NO mostrar acciones
+    const shouldShow = !esDelSnapshot && !esCandidatoFilaEspecial;
+
+    // Debug: Log para verificar qué está recibiendo
+    console.log(
+      `[showActionsFor] Director: ${row.nombreCompleto}, esDelSnapshot: ${esDelSnapshot} (raw: ${row.esDelSnapshot}), esCandidato: ${esCandidatoFilaEspecial} (raw: ${row.esCandidato}), shouldShow: ${shouldShow}`
+    );
+
+    return shouldShow;
+  };
+
+  // ✅ Acciones para suplentes/alternos (solo para directores nuevos, no del snapshot)
+  const actionsSuplentesAlternos = [
+    {
+      label: "Editar",
+      onClick: (id: string) => {
+        // ✅ No permitir editar directores del snapshot
+        if (esDirectorDelSnapshot(id)) {
+          console.log("⚠️ No se puede editar un director del snapshot:", id);
+          return;
+        }
+
+        // Buscar el director en la lista de suplentes/alternos
+        const director = directoresSuplentesAlternos.value.find((d) => d.id === id);
+        if (
+          director &&
+          (director.tipoDirector === "suplente" || director.tipoDirector === "alterno")
+        ) {
+          directorSuplenteAlternoToEdit.value = {
+            id: Number(director.id), // Para compatibilidad con el modal
+            nombreCompleto: director.nombreCompleto,
+            tipoDirector: director.tipoDirector,
+            tipoDocumento: director.tipoDocumento,
+            numeroDocumento: director.numeroDocumento,
+            nombre: director.nombre,
+            apellidoPaterno: director.apellidoPaterno,
+            apellidoMaterno: director.apellidoMaterno,
+            ...(director.paisPasaporte ? { paisPasaporte: director.paisPasaporte } : {}),
+            ...(director.reemplazaId ? { reemplazaId: director.reemplazaId } : {}),
+          };
+          isModalSuplenteAlternoOpen.value = true;
+        }
+      },
+    },
+    {
+      label: "Eliminar",
+      onClick: async (id: string) => {
+        // ✅ No permitir eliminar directores del snapshot
+        if (esDirectorDelSnapshot(id)) {
+          console.log("⚠️ No se puede eliminar un director del snapshot:", id);
+          return;
+        }
+
+        // ✅ Implementar DELETE
+        try {
+          console.log("[Nombramiento.vue] Intentando eliminar director suplente/alterno:", id);
+          await nombramientoStore.deleteDirector(societyId.value, flowId.value, id);
+          console.log("✅ Director suplente/alterno eliminado exitosamente:", id);
+          // El store ya recarga los directores, pero también recargamos aquí para actualizar la vista completa
+          await loadData();
+        } catch (error: any) {
+          console.error("❌ Error al eliminar director suplente/alterno:", error);
+          // Re-lanzar el error para que se muestre al usuario
+          throw error;
+        }
+      },
+    },
+  ];
+
+  // ✅ Mostrar acciones SOLO para directores nuevos (candidatos creados en este flujo)
+  // NO mostrar acciones para:
+  // - Directores del snapshot (esDelSnapshot === true) - estos son read-only
+  // - La fila "Sin Asignar" (esCandidato === true y es fila especial)
+  const showActionsForSuplentesAlternos = (row: Director) => {
+    // ✅ Verificar explícitamente: solo mostrar si NO es del snapshot y NO es candidato (fila "Sin Asignar")
+    // Si esDelSnapshot es true, NO mostrar acciones (es del snapshot)
+    // Si esDelSnapshot es false o undefined, mostrar acciones (es nuevo)
+    const esDelSnapshot = row.esDelSnapshot === true;
+    const esCandidatoFilaEspecial = row.esCandidato === true;
+
+    // Si es del snapshot o es la fila "Sin Asignar", NO mostrar acciones
+    const shouldShow = !esDelSnapshot && !esCandidatoFilaEspecial;
+
+    // Debug: Log para verificar qué está recibiendo
+    console.log(
+      `[showActionsForSuplentesAlternos] Director: ${row.nombreCompleto}, esDelSnapshot: ${esDelSnapshot} (raw: ${row.esDelSnapshot}), esCandidato: ${esCandidatoFilaEspecial} (raw: ${row.esCandidato}), shouldShow: ${shouldShow}`
+    );
+
+    return shouldShow;
+  };
+
+  // ✅ Función para deshabilitar acciones de directores del snapshot
+  const getActionDisabled = (directorId: string, actionLabel: string): boolean => {
+    if (actionLabel === "Editar" || actionLabel === "Eliminar") {
+      return esDirectorDelSnapshot(directorId);
+    }
+    return false;
+  };
+
+  // Manejar cuando se cierra el modal de titulares
+  const handleModalClose = () => {
+    directorToEdit.value = null;
+  };
+
+  // Manejar cuando se cierra el modal de suplentes/alternos
+  const handleSuplenteAlternoModalClose = () => {
+    directorSuplenteAlternoToEdit.value = null;
+  };
+
+  // ✅ Manejar cuando se guarda un nuevo director titular o se edita uno existente
+  const handleDirectorSaved = async (director: {
+    id?: number | string;
+    nombreCompleto: string;
+    tipoDirector: "titular";
+    tipoDocumento: string;
+    numeroDocumento: string;
+    nombre: string;
+    apellidoPaterno: string;
+    apellidoMaterno: string;
+    paisPasaporte?: string;
+  }) => {
+    isLoadingGuardar.value = true;
+    try {
+      // ✅ Si director.id existe, es edición - usar PUT
+      if (director.id) {
+        // Buscar el director original para obtener su designationId (el id del DirectorFlowAction)
+        const directorOriginal = directoresTitulares.value.find(
+          (d) => d.id === String(director.id)
+        );
+
+        if (!directorOriginal) {
+          throw new Error("No se encontró el director a editar");
+        }
+
+        // Construir PersonNaturalDTO desde los datos del director editado
+        const person: PersonNaturalDTO = {
+          firstName: director.nombre,
+          lastNamePaternal: director.apellidoPaterno,
+          lastNameMaternal: director.apellidoMaterno,
+          typeDocument: director.tipoDocumento,
+          documentNumber: director.numeroDocumento,
+          issuingCountry: director.paisPasaporte || null,
+        };
+
+        // ✅ Usar PUT para actualizar el director
+        await nombramientoStore.updateDirector(
+          societyId.value,
+          flowId.value,
+          directorOriginal.id, // designationId (ID del DirectorFlowAction)
+          person,
+          "TITULAR" // directorRole
+        );
+
+        console.log("✅ Director titular actualizado exitosamente");
+      } else {
+        // ✅ Si no hay id, es creación - usar POST
+        await guardarDirector("TITULAR");
+        console.log("✅ Director titular creado exitosamente");
+      }
+
+      isModalOpen.value = false;
+      directorToEdit.value = null;
+    } catch (error) {
+      console.error("Error al guardar director:", error);
+      // El error ya fue manejado en el composable/store
+      // No cerrar el modal si hay error
+    } finally {
+      isLoadingGuardar.value = false;
+    }
+  };
+
+  // ✅ Manejar cuando se guarda un suplente/alterno
+  const handleSuplenteAlternoSaved = async (director: {
+    id?: number;
+    nombreCompleto: string;
+    tipoDirector: "suplente" | "alterno";
+    tipoDocumento: string;
+    numeroDocumento: string;
+    nombre: string;
+    apellidoPaterno: string;
+    apellidoMaterno: string;
+    paisPasaporte?: string;
+    reemplazaId?: string;
+  }) => {
+    isLoadingGuardar.value = true;
+    try {
+      // Por ahora solo crear (editar se implementará después si es necesario)
+      // TODO: Si director.id existe, implementar edición
+      const directorRole = director.tipoDirector === "suplente" ? "SUPLENTE" : "ALTERNO";
+      await guardarDirector(directorRole, director.reemplazaId || null);
+      console.log("✅ Director suplente/alterno creado exitosamente");
+      isModalSuplenteAlternoOpen.value = false;
+      directorSuplenteAlternoToEdit.value = null;
+    } catch (error) {
+      console.error("Error al guardar director suplente/alterno:", error);
+      // El error ya fue manejado en el composable/store
+      // No cerrar el modal si hay error
+    } finally {
+      isLoadingGuardar.value = false;
+    }
+  };
+
+  // Cargar datos al montar
+  onMounted(() => {
+    loadData();
+  });
+
+  // ✅ Configurar el botón "Siguiente" para navegar a votaciones
+  useJuntasFlowNext(async () => {
+    // No necesitamos validaciones adicionales aquí,
+    // useJuntasFlowNext automáticamente detecta la siguiente sección (votacion)
+    console.log("✅ Navegando a votaciones desde nombramiento");
+  });
+</script>

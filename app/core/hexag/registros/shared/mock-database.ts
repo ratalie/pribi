@@ -1,13 +1,21 @@
 const DB_NAME = "probo-registros-msw";
-const DB_VERSION = 1;
+const DB_VERSION = 3; // Incrementado para agregar asistencias store
 
 const STORE_SCHEMAS = {
   sociedades: { keyPath: "idSociety" },
   datosSociedad: { keyPath: "idSociety" },
   quorumConfig: { keyPath: "id" },
   accionistas: { keyPath: "id" },
+  acciones: { keyPath: "id" },
+  asignacionAcciones: { keyPath: "id" },
+  directorioConfig: { keyPath: "societyProfileId" },
+  directores: { keyPath: "id" },
   apoderadosClases: { keyPath: "id" },
   apoderadosRegistro: { keyPath: "id" },
+  juntas: { keyPath: "id" },
+  "agenda-items": { keyPath: "key" },
+  "meeting-details": { keyPath: "key" },
+  "asistencias": { keyPath: "key" },
 } as const;
 
 type StoreName = keyof typeof STORE_SCHEMAS;
@@ -88,7 +96,9 @@ export async function getRecord<T>(storeName: StoreName, id: string): Promise<T 
 
     request.onsuccess = () => resolve((request.result as T) ?? null);
     request.onerror = () =>
-      reject(request.error ?? new Error(`No se pudo obtener el registro ${id} de ${storeName}`));
+      reject(
+        request.error ?? new Error(`No se pudo obtener el registro ${id} de ${storeName}`)
+      );
 
     transaction.oncomplete = () => db.close();
   });
@@ -131,7 +141,9 @@ export async function deleteRecord(storeName: StoreName, id: string): Promise<bo
 
     request.onsuccess = () => resolve(true);
     request.onerror = () =>
-      reject(request.error ?? new Error(`No se pudo eliminar el registro ${id} de ${storeName}`));
+      reject(
+        request.error ?? new Error(`No se pudo eliminar el registro ${id} de ${storeName}`)
+      );
 
     transaction.oncomplete = () => db.close();
   });
@@ -157,3 +169,10 @@ export async function clearStore(storeName: StoreName): Promise<void> {
   });
 }
 
+/**
+ * Limpia todos los stores de mock (útil para tests)
+ */
+export async function clearAllMockData(): Promise<void> {
+  const storeNames = Object.keys(STORE_SCHEMAS) as StoreName[];
+  await Promise.all(storeNames.map((storeName) => clearStore(storeName)));
+}

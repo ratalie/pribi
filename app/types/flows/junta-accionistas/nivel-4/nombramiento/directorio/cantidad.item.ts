@@ -3,11 +3,11 @@ import type { FlowItem } from "@/types/flow-system";
 import { FlowItemType, NavigationBehavior } from "@/types/flow-system";
 import { defaultBehavior, defaultValidation } from "../../../defaults";
 
-export const nombramientoDirectorioCantidadItem: FlowItem = {
+export const nombramientoDirectorioConfigurarItem: FlowItem = {
   identity: {
-    id: "nombramiento-directorio-cantidad",
+    id: "nombramiento-directorio-configurar",
     type: FlowItemType.STEP,
-    label: "Cantidad de Directores",
+    label: "Configurar Directorio",
   },
   hierarchy: {
     level: 4,
@@ -23,7 +23,7 @@ export const nombramientoDirectorioCantidadItem: FlowItem = {
   rightSidebar: { enabled: false },
   validation: defaultValidation,
   metadata: {
-    description: "Define el número de integrantes para el nuevo directorio",
+    description: "Configuración del directorio: número de integrantes y alternos",
     tags: ["nivel-4", "nombramiento", "directorio"],
     version: "1.0.0",
   },

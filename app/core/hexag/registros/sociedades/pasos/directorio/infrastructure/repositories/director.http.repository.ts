@@ -114,11 +114,18 @@ export class DirectorHttpRepository implements DirectorRepository {
 
   async create(societyProfileId: string, payload: DirectorDTO): Promise<DirectorConfig> {
     const url = this.resolveDirectoresPath(societyProfileId);
+    const mappedPayload = DirectorMapper.toPayload(payload);
     const config = withAuthHeaders({
       method: "POST" as const,
-      body: DirectorMapper.toPayload(payload),
+      body: mappedPayload,
     });
-    this.log("create:request", { url, societyProfileId, rolDirector: payload.rolDirector });
+    this.log("create:request", { 
+      url, 
+      societyProfileId, 
+      rolDirector: payload.rolDirector,
+      payload: JSON.stringify(payload, null, 2),
+      mappedPayload: JSON.stringify(mappedPayload, null, 2)
+    });
 
     try {
       const response = await $fetch<ApiResponse<any>>(url, config);
@@ -137,11 +144,20 @@ export class DirectorHttpRepository implements DirectorRepository {
       // Pero si el GET falla, construir el director desde el payload
       try {
         const list = await this.get(societyProfileId);
-        const fallback = list.find(
+        
+        // ✅ Buscar por documento y rol
+        let fallback = list.find(
           (item) =>
             item.persona.numeroDocumento === payload.persona.numeroDocumento &&
             item.rolDirector === payload.rolDirector
         );
+        
+        // ✅ Si no encuentra por coincidencia exacta, usar el último de la lista
+        // (asumiendo que es el recién creado)
+        if (!fallback && list.length > 0) {
+          fallback = list[list.length - 1];
+          this.log("create:using-last-from-list", { directorId: fallback!.id });
+        }
 
         if (fallback) {
           this.log("create:success-fallback", { directorId: fallback.id });

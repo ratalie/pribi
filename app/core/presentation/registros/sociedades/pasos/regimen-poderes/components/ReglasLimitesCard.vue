@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { Plus, X } from "lucide-vue-next";
   import { v4 as uuidv4 } from "uuid";
+  import { computed } from "vue";
   import CustomSwitch from "~/components/base/Switch/CustomSwitch.vue";
   import BaseButton from "~/components/base/buttons/BaseButton.vue";
   import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
@@ -13,6 +14,7 @@
     TipoMontoUIEnum,
   } from "~/core/hexag/registros/sociedades/pasos/regimen-poderes/domain";
   import {
+    cantidadFirmantesLibreSchema,
     montoDesdeSchema,
     montoHastaSchema,
     selectCantidadFirmantesSchema,
@@ -28,29 +30,35 @@
   const regimenFacultadesStore = useRegimenFacultadesStore();
 
   // Computed para obtener opciones de cantidad basadas en el grupo del firmante
+  // Usa el getter del store que maneja tanto snapshot como store de regimen
   const getCantidadFirmantesOptions = (grupoId: string | null | undefined) => {
-    if (!grupoId) {
-      return Array.from({ length: 10 }, (_, index) => ({
-        id: index + 1,
-        label: String(index + 1),
-        value: index + 1,
-      }));
-    }
+    // Actualizar claseFirmanteSeleccionada para que el getter se actualice
+    apoderadoFacultadStore.claseFirmanteSeleccionada = grupoId || null;
 
-    const clase = regimenFacultadesStore.clasesApoderadosDisponibles.find(
-      (c) => c.id === grupoId
-    );
+    // Usar el getter del store que maneja snapshot y store de regimen
+    const options = apoderadoFacultadStore.cantidadFirmantesOptions;
 
-    if (!clase || clase.cantidadApoderados === 0) {
-      return [];
-    }
-
-    return Array.from({ length: clase.cantidadApoderados }, (_, index) => ({
-      id: index + 1,
-      label: String(index + 1),
-      value: index + 1,
-    }));
+    // Si retorna null, significa que debe usarse input libre, pero en ese caso
+    // no deberíamos llegar aquí porque el v-if debería mostrar NumberInputZod
+    // Retornar array vacío como fallback
+    return options || [];
   };
+
+  // Indica si debe usarse input libre (cuando el apoderado principal es Gerente General)
+  // Los getters de Pinia se acceden como propiedades reactivas (sin paréntesis)
+  const debeUsarInputLibre = computed(() => {
+    // Verificar que el getter exista antes de accederlo
+    if (
+      !apoderadoFacultadStore ||
+      !("usarInputLibreCantidadFirmantes" in apoderadoFacultadStore)
+    ) {
+      return false;
+    }
+    // Acceder como propiedad (los getters de Pinia son propiedades computadas)
+    const valor = apoderadoFacultadStore.usarInputLibreCantidadFirmantes;
+    // Si es una función (no debería serlo), llamarla; si no, retornar el valor
+    return typeof valor === "function" ? valor() : valor ?? false;
+  });
 
   const crearLimiteVacio = () => ({
     id: uuidv4(),
@@ -304,7 +312,20 @@
               <div class="flex justify-center items-center gap-4 border p-4 rounded-md">
                 <span class="t-t2 font-secondary text-gray-700 font-medium">con</span>
                 <div>
+                  <!-- Input libre para Gerente General -->
+                  <NumberInputZod
+                    v-if="debeUsarInputLibre"
+                    :model-value="firmante.cantidad ? Number(firmante.cantidad) : 0"
+                    @update:model-value="(val: number) => firmante.cantidad = String(val)"
+                    :name="`cantidad-firmantes-${limite.id}-${firmante.id}`"
+                    placeholder="0"
+                    format="integer"
+                    :decimals="0"
+                    :schema="cantidadFirmantesLibreSchema"
+                  />
+                  <!-- Select normal para otras clases -->
                   <SelectInputZod
+                    v-else
                     v-model="firmante.cantidad"
                     :name="`cantidad-firmantes-${limite.id}-${firmante.id}`"
                     placeholder="0"

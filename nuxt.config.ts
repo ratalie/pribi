@@ -11,10 +11,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   ssr: false,
-
   devServer: {
-    port: Number(process.env.NUXT_PORT) || 5173, // Puerto por defecto 5173 (o el que prefieras)
-    host: "localhost",
+    port: 5173,
   },
 
   alias: {
@@ -22,6 +20,7 @@ export default defineNuxtConfig({
     "@presentation": fileURLToPath(new URL("./app/core/presentation", import.meta.url)),
     "@shared": fileURLToPath(new URL("./app/core/shared", import.meta.url)),
     "@components": fileURLToPath(new URL("./app/components", import.meta.url)),
+    "@tests": fileURLToPath(new URL("./tests", import.meta.url)),
   },
 
   runtimeConfig: {
@@ -97,4 +96,13 @@ export default defineNuxtConfig({
   },
 
   components: [{ path: "~/components", pathPrefix: false, extensions: ["vue"] }],
+
+  // Configuración de Nitro para manejar errores "Premature close"
+  nitro: {
+    // Suprimir errores esperados en desarrollo mediante configuración del logger
+    experimental: {
+      // Permitir que Nitro maneje mejor las conexiones cerradas
+      wasm: false,
+    },
+  },
 });

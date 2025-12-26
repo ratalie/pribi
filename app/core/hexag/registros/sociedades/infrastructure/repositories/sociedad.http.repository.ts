@@ -6,6 +6,15 @@ import type { SociedadResumenDTO } from "../../application/dtos";
 import type { SociedadRepository } from "../../domain/ports";
 import { SocietyRegisterStep } from "../../domain/enums/society-register-step.enum";
 
+// Mock para tests - useRuntimeConfig será mockeado en tests/setup.ts
+declare const useRuntimeConfig: () => {
+  public?: {
+    apiBase?: string;
+    societyProfileEndpoint?: string;
+    societyProfileListSuffix?: string;
+  };
+};
+
 export class SociedadHttpRepository implements SociedadRepository {
   private readonly basePath = (() => {
     const config = useRuntimeConfig();
@@ -28,13 +37,17 @@ export class SociedadHttpRepository implements SociedadRepository {
       profile?.societyProfile ??
       profile;
 
-    const id =
+    // El backend devuelve 'id' como número, necesitamos convertirlo a string
+    const idRaw =
       profile?.id ??
       profile?.societyProfileId ??
       profile?.idSociety ??
       society?.societyId ??
       society?.id ??
       "";
+    
+    // Convertir a string si es número
+    const id = idRaw !== "" ? String(idRaw) : "";
 
     const pasoActualRaw =
       profile?.pasoActual ??

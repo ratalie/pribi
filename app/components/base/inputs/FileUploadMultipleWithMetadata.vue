@@ -108,6 +108,7 @@
           };
 
           // Emitir evento con la metadata
+          console.log("📤 [FileUploadMultipleWithMetadata] Emitiendo evento file-uploaded:", metadata);
           emit("file-uploaded", metadata);
 
           // Eliminar el archivo del array temporal

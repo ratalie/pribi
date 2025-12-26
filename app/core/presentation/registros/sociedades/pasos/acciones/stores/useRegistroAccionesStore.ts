@@ -135,6 +135,30 @@ export const useRegistroAccionesStore = defineStore("registroAcciones", {
       }
     },
 
+    /**
+     * Elimina todas las acciones del backend y del estado local.
+     * @param profileId ID del perfil de sociedad
+     */
+    async removeAllAcciones(profileId: string) {
+      try {
+        if (this.acciones.length === 0) {
+          return; // No hay acciones que eliminar
+        }
+
+        // Obtener todos los IDs de las acciones
+        const accionIds = this.acciones.map((accion) => accion.id);
+
+        // Eliminar en el backend
+        await deleteUseCase.execute(profileId, accionIds);
+
+        // Limpiar el estado local
+        this.acciones = [];
+      } catch (error) {
+        console.error("[useRegistroAccionesStore] Error al eliminar todas las acciones:", error);
+        throw error;
+      }
+    },
+
     getAccionById(id: string): Accion | null {
       return this.acciones.find((accion) => accion.id === id) ?? null;
     },

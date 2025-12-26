@@ -22,7 +22,7 @@
     const path = route.path;
 
     // Juntas de Accionistas
-    if (path.startsWith("/operaciones/junta-accionistas")) {
+    if (path.includes("/operaciones/sociedades") && path.includes("/junta-accionistas")) {
       const treeItems = buildFlowItemTree(juntaAccionistasFlowConfig.items);
       return {
         ...juntaAccionistasFlowConfig,

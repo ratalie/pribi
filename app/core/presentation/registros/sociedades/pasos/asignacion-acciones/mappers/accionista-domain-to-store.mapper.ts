@@ -1,6 +1,6 @@
 import type { Accionista as AccionistaDomain } from "~/core/hexag/registros/sociedades/pasos/accionistas/domain";
-import type { Accionista as AccionistaStore } from "~/modules/registro-sociedades/types/accionistas";
-import { TipoAccionistaEnum } from "~/modules/registro-sociedades/types/accionistas";
+import type { Accionista as AccionistaStore } from "~/core/presentation/registros/sociedades/pasos/accionistas/types/accionistas";
+import { TipoAccionistaEnum } from "~/core/presentation/registros/sociedades/pasos/accionistas/types/accionistas";
 
 /**
  * Mapea un Accionista del dominio (hexagonal) al formato del store (presentation)

@@ -82,17 +82,13 @@
 
 <template>
   <div class="flex w-full flex-col gap-2">
-    <div class="flex flex-col gap-1 min-h-[44px]">
-      <span v-if="label" class="t-t2 font-secondary font-semibold text-gray-800">
+    <div v-if="label" class="flex flex-col gap-1 min-h-[44px]">
+      <span class="t-t2 font-secondary font-semibold text-gray-800">
         {{ label }}
-      </span>
-      <span v-else class="t-t2 font-secondary font-semibold text-transparent select-none">
-        &nbsp;
       </span>
       <span v-if="subLabel" class="t-b2 font-secondary text-gray-500">
         {{ subLabel }}
       </span>
-      <span v-else class="t-b2 font-secondary text-transparent select-none">&nbsp;</span>
     </div>
 
     <div :class="['grid gap-3', gridClass]">

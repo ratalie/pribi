@@ -35,7 +35,7 @@ export const transformarModalAFacultad = (
       }
     : {
         esIrrevocable: true as const,
-        vigencia: TiempoVigenciaUIEnum.DETERMIADO,
+        vigencia: TiempoVigenciaUIEnum.DETERMINADO,  // ✅ Corregido typo
         fecha_inicio: modalStore.fechaInicio,
         fecha_fin: modalStore.fechaFin,
       };
@@ -70,7 +70,7 @@ export const transformarModalAFacultad = (
     ...baseFacultad,
     ...tipoVigencia,
     ...tipoReglas,
-  } as Facultad;
+  } as unknown as Facultad;
 };
 
 export const transformarFacultadAModal = (
@@ -90,15 +90,19 @@ export const transformarFacultadAModal = (
     tipoFacultad: tipoFacultadEncontrada.id,
     esIrrevocable: facultad.esIrrevocable,
     vigencia: facultad.vigencia,
-    fechaInicio: !facultad.esIrrevocable ? "" : facultad.fecha_inicio,
-    fechaFin: !facultad.esIrrevocable ? "" : facultad.fecha_fin,
+    fechaInicio:
+      !facultad.esIrrevocable || !("fecha_inicio" in facultad) ? "" : facultad.fecha_inicio,
+    fechaFin: !facultad.esIrrevocable || !("fecha_fin" in facultad) ? "" : facultad.fecha_fin,
+    claseApoderadoIdSeleccionada: null,
+    claseFirmanteSeleccionada: null,
+    esOtrosApoderados: false,
   };
 
   const reglas = facultad.reglasYLimites
     ? {
         reglasYLimites: true,
         tipoMoneda: facultad.tipoMoneda,
-        limiteMonetario: facultad.limiteMonetario.map((limite) => ({
+        limiteMonetario: facultad.limiteMonetario.map((limite: any) => ({
           id: limite.id,
           desde: limite.desde,
           tipoMonto: limite.tipoMonto,
@@ -106,7 +110,7 @@ export const transformarFacultadAModal = (
           tipoFirma: limite.tipoFirma,
           firmantes:
             limite.tipoFirma === TipoFirmasUIEnum.FIRMA_CONJUNTA
-              ? limite.firmantes.map((firmante) => ({
+              ? limite.firmantes.map((firmante: any) => ({
                   id: firmante.id,
                   cantidad: String(firmante.cantidad),
                   grupo: firmante.grupo,

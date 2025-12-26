@@ -9,7 +9,8 @@
       "@hexag/*": ["app/core/hexag/*"],
       "@presentation/*": ["app/core/presentation/*"],
       "@shared/*": ["app/core/shared/*"],
-      "@components/*": ["app/components/*"]
+      "@components/*": ["app/components/*"],
+      "@tests/*": ["tests/*"]
     }
   },
   "files": [],

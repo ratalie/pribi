@@ -42,6 +42,7 @@
     Storage: true,
     "Espacios de Trabajo": true,
     "Chat IA": true,
+    Seeds: true,
   });
 
   const expandedItems = ref<Record<string, boolean>>({
@@ -217,7 +218,7 @@
                   <Button variant="ghost" class="probo-section-title">
                     <div class="flex items-center gap-2">
                       <!-- Sin iconos en nivel 1 para ahorrar espacio -->
-                      <span>{{ t(section.translationKey) }}</span>
+                      <span>{{ section.title || t(section.translationKey) }}</span>
                     </div>
                     <ChevronDown
                       :class="
@@ -247,7 +248,7 @@
                                   v-if="getIcon(item.icon || '')"
                                   class="probo-icon-subsection"
                                 />
-                                <span>{{ t(item.translationKey) }}</span>
+                                <span>{{ item.label || t(item.translationKey) }}</span>
                               </div>
                               <ChevronRight
                                 :class="
@@ -270,7 +271,7 @@
                                   'probo-item-active': isActive(subItem.href),
                                 }"
                               >
-                                <span>{{ t(subItem.translationKey) }}</span>
+                                <span>{{ subItem.label || t(subItem.translationKey) }}</span>
                               </NuxtLink>
                             </template>
                           </CollapsibleContent>
@@ -291,7 +292,7 @@
                             v-if="getIcon(item.icon || '')"
                             class="probo-icon-principal"
                           />
-                          <span>{{ t(item.translationKey) }}</span>
+                          <span>{{ item.label || t(item.translationKey) }}</span>
                         </NuxtLink>
                       </template>
                     </div>
@@ -318,7 +319,7 @@
                 >
                   <!-- NO mostrar icono en nivel 1 cuando está contraído -->
                   <span class="probo-collapsed-label">
-                    {{ t(section.translationKey) }}
+                    {{ section.title || t(section.translationKey) }}
                   </span>
                 </button>
 
@@ -348,7 +349,7 @@
                           class="probo-collapsed-icon-img"
                         />
                         <span class="probo-collapsed-label">
-                          {{ t(item.translationKey) }}
+                          {{ item.label || t(item.translationKey) }}
                         </span>
                       </button>
                     </template>

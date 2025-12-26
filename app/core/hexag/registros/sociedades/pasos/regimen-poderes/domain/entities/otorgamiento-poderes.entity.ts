@@ -29,7 +29,7 @@ interface VigenciaIndefinida {
 
 interface VigenciaDeterminada {
   esIrrevocable: true;
-  vigencia: TiempoVigenciaUIEnum.DETERMIADO;
+  vigencia: TiempoVigenciaUIEnum.DETERMINADO;  // ✅ Typo corregido
   fecha_inicio: string;
   fecha_fin: string;
 }

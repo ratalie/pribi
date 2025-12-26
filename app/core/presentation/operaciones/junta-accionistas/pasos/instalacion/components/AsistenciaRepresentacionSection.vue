@@ -1,0 +1,417 @@
+<script setup lang="ts">
+  import { storeToRefs } from "pinia";
+  import { computed, ref } from "vue";
+  import ActionButton from "~/components/base/buttons/composite/ActionButton.vue";
+  import DataTableDropDown from "~/components/base/tables/DataTableDropDown.vue";
+  import Checkbox from "~/components/ui/checkbox/Checkbox.vue";
+  import Table from "~/components/ui/table/Table.vue";
+  import TableBody from "~/components/ui/table/TableBody.vue";
+  import TableCell from "~/components/ui/table/TableCell.vue";
+  import TableHead from "~/components/ui/table/TableHead.vue";
+  import TableHeader from "~/components/ui/table/TableHeader.vue";
+  import TableRow from "~/components/ui/table/TableRow.vue";
+  import { TipoJunta } from "~/core/hexag/juntas/domain/enums/tipo-junta.enum";
+  import { useAsistenciaStore } from "~/core/presentation/juntas/stores/asistencia.store";
+  import { useMeetingDetailsStore } from "~/core/presentation/juntas/stores/meeting-details.store";
+  import RepresentanteModal from "./RepresentanteModal.vue";
+
+  interface Props {
+    societyId: number;
+    flowId: string;
+  }
+
+  const props = defineProps<Props>();
+
+  // ========================================
+  // STORES (ORIGINALES que funcionaban)
+  // ========================================
+  const meetingDetailsStore = useMeetingDetailsStore();
+  const asistenciaStore = useAsistenciaStore();
+  const { asistenciasEnriquecidas, totalAcciones, accionesPresentes } =
+    storeToRefs(asistenciaStore);
+
+  // ========================================
+  // STATE
+  // ========================================
+  const isRepresentanteModalOpen = ref(false);
+  const selectedAccionistaId = ref<string | null>(null);
+  const representanteDataToEdit = ref<{
+    nombre: string;
+    apellidoPaterno: string;
+    apellidoMaterno?: string | null;
+    tipoDocumento: string;
+    numeroDocumento: string;
+    paisEmision?: string | null;
+  } | null>(null);
+
+  // Acciones para el menú de representante (DataTableDropDown)
+  const representanteActions = computed(() => [
+    {
+      label: "Editar",
+      icon: "SquarePen",
+      onClick: (id: string) => openRepresentanteModalForEdit(id),
+    },
+    {
+      label: "Eliminar",
+      icon: "Trash2",
+      onClick: (id: string) => removeRepresentante(id),
+    },
+  ]);
+
+  // ========================================
+  // COMPUTED
+  // ========================================
+
+  /**
+   * Tipo de junta (para checkbox behavior)
+   */
+  const tipoJunta = computed(() => meetingDetailsStore.meetingDetails?.tipoJunta);
+
+  /**
+   * Si es universal, todos asisten automáticamente
+   */
+  const isUniversal = computed(() => {
+    const esUniversal = tipoJunta.value === TipoJunta.UNIVERSAL;
+    console.log(
+      "🔍 [isUniversal] Tipo junta:",
+      tipoJunta.value,
+      "→ Es universal:",
+      esUniversal
+    );
+    return esUniversal;
+  });
+
+  /**
+   * Porcentaje de participación total
+   */
+  const porcentajeTotal = computed(() => {
+    if (totalAcciones.value === 0) return 0;
+    return (accionesPresentes.value / totalAcciones.value) * 100;
+  });
+
+  // ========================================
+  // METHODS
+  // ========================================
+
+  /**
+   * Toggle asistencia de un accionista
+   */
+  async function toggleAsistencia(registroId: string) {
+    // Si es universal, no permitir toggle
+    if (isUniversal.value) {
+      console.log("⚠️ [toggleAsistencia] Bloqueado por UNIVERSAL");
+      return;
+    }
+
+    try {
+      await asistenciaStore.toggleAsistencia(
+        props.societyId,
+        Number(props.flowId),
+        registroId
+      );
+    } catch (error) {
+      console.error("❌ [toggleAsistencia] Error:", error);
+    }
+  }
+
+  /**
+   * Abrir modal para agregar representante (nuevo)
+   */
+  function openRepresentanteModal(accionistaId: string) {
+    selectedAccionistaId.value = accionistaId;
+    representanteDataToEdit.value = null; // Modo crear
+    isRepresentanteModalOpen.value = true;
+  }
+
+  /**
+   * Abrir modal para editar representante (existente)
+   */
+  function openRepresentanteModalForEdit(accionistaId: string) {
+    const asistencia = asistenciasEnriquecidas.value.find((a) => a.id === accionistaId);
+    if (!asistencia || !asistencia.representante) {
+      console.warn("[AsistenciaSection] No se encontró representante para editar");
+      return;
+    }
+
+    selectedAccionistaId.value = accionistaId;
+    representanteDataToEdit.value = asistencia.representante; // Modo editar
+    isRepresentanteModalOpen.value = true;
+  }
+
+  /**
+   * Cerrar modal
+   */
+  function closeRepresentanteModal() {
+    isRepresentanteModalOpen.value = false;
+    selectedAccionistaId.value = null;
+    representanteDataToEdit.value = null;
+  }
+
+  /**
+   * Guardar representante
+   */
+  async function saveRepresentante(representanteData: any) {
+    if (!selectedAccionistaId.value) return;
+
+    try {
+      // ✅ Llamar al store con el objeto completo (backend crea PersonV2 automáticamente)
+      await asistenciaStore.asignarRepresentante(
+        props.societyId,
+        Number(props.flowId),
+        selectedAccionistaId.value,
+        representanteData
+      );
+
+      closeRepresentanteModal();
+    } catch (error) {
+      console.error("❌ [AsistenciaSection] Error al guardar representante:", error);
+    }
+  }
+
+  /**
+   * Remover representante
+   */
+  async function removeRepresentante(accionistaId: string) {
+    console.log("[AsistenciaSection] Removiendo representante:", accionistaId);
+
+    try {
+      await asistenciaStore.eliminarRepresentante(
+        props.societyId,
+        Number(props.flowId),
+        accionistaId
+      );
+      console.log("✅ [AsistenciaSection] Representante removido");
+    } catch (error) {
+      console.error("❌ [AsistenciaSection] Error al remover representante:", error);
+    }
+  }
+
+  /**
+   * Obtener clases CSS para el tipo de accionista (mismo estilo que Sociedades)
+   */
+  function getTipoClasses(tipo: string): string {
+    const variants: Record<string, string> = {
+      NATURAL: "px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium",
+      JURIDICA: "px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium",
+      SUCURSAL: "px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium",
+      SUCESIONES_INDIVISAS:
+        "px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium",
+      FIDEICOMISOS: "px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-sm font-medium",
+    };
+    return (
+      variants[tipo] || "px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium"
+    );
+  }
+
+  /**
+   * Tipos que requieren representante obligatorio cuando asistio=true
+   */
+  const TIPOS_CON_REPRESENTANTE_OBLIGATORIO = [
+    "JURIDICA",
+    "SUCURSAL",
+    "FONDO_INVERSION",
+    "FIDEICOMISO",
+    "SUCESION_INDIVISA",
+  ] as const;
+
+  /**
+   * ¿Requiere representante obligatorio? (cuando asistio=true)
+   */
+  function requiereRepresentanteObligatorio(tipo: string): boolean {
+    return TIPOS_CON_REPRESENTANTE_OBLIGATORIO.includes(tipo as any);
+  }
+
+  // Acciones del menú de representante (DataTableDropDown con 3 puntos)
+</script>
+
+<template>
+  <div class="flex flex-col gap-5">
+    <TitleH4
+      title="Asistencia y Representación en la Junta"
+      subtitle="Marque la asistencia de los socios y agregue representantes si es que se requiere."
+    />
+
+    <!-- TABLA DE ASISTENCIA -->
+    <div class="overflow-hidden bg-white">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <!-- Checkbox header (vacío) -->
+            <TableHead class="w-12" />
+
+            <TableHead
+              class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
+            >
+              Nombre Apellido / Razón Social
+            </TableHead>
+
+            <TableHead
+              class="font-primary text-center text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
+            >
+              Tipo de Accionista
+            </TableHead>
+
+            <TableHead
+              class="font-primary text-center text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
+            >
+              Acciones con derecho a voto
+            </TableHead>
+
+            <TableHead
+              class="font-primary text-center text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
+            >
+              Porcentaje de Participación
+            </TableHead>
+
+            <TableHead
+              class="font-primary text-gray-800 dark:text-gray-700 t-t2 font-semibold h-16"
+            >
+              Representado por
+            </TableHead>
+
+            <!-- Nueva columna para botones -->
+            <TableHead class="w-12 h-16" />
+          </TableRow>
+        </TableHeader>
+
+        <TableBody>
+          <!-- Mensaje si no hay datos -->
+          <TableRow v-if="asistenciasEnriquecidas.length === 0">
+            <TableCell colspan="7" class="text-center py-6 text-slate-500">
+              Aún no se ha registrado ninguna asistencia
+            </TableCell>
+          </TableRow>
+
+          <!-- Filas de accionistas -->
+          <TableRow
+            v-for="asistencia in asistenciasEnriquecidas"
+            :key="asistencia.id"
+            :class="asistencia.asistio ? 'bg-primary-50/30' : ''"
+          >
+            <!-- Checkbox de asistencia -->
+            <TableCell>
+              <Checkbox
+                :model-value="asistencia.asistio"
+                :is-disabled="isUniversal"
+                @update:model-value="() => toggleAsistencia(asistencia.id)"
+              />
+            </TableCell>
+
+            <!-- Nombre -->
+            <TableCell
+              class="font-secondary text-gray-600 dark:text-gray-900 t-t2 font-medium h-16"
+            >
+              {{ asistencia.nombreCompleto }}
+            </TableCell>
+
+            <!-- Tipo (Badge style como Sociedades) -->
+            <TableCell class="text-center h-16">
+              <span :class="getTipoClasses(asistencia.tipoPersona)">
+                {{ asistencia.tipoPersona }}
+              </span>
+            </TableCell>
+
+            <!-- Acciones -->
+            <TableCell
+              class="font-secondary text-gray-600 text-center dark:text-gray-900 t-t2 font-medium h-16"
+            >
+              {{ asistencia.accionesConDerechoVoto }}
+            </TableCell>
+
+            <!-- Porcentaje -->
+            <TableCell
+              class="font-secondary text-gray-600 text-center dark:text-gray-900 t-t2 font-medium h-16"
+            >
+              {{ asistencia.porcentajeParticipacion.toFixed(2) }}%
+            </TableCell>
+
+            <!-- Representado por (Columna 1: Nombre o mensaje) -->
+            <TableCell class="h-16">
+              <!-- CASO 1: Asistió -->
+              <template v-if="asistencia.asistio">
+                <template v-if="asistencia.nombreRepresentante">
+                  <!-- Ya tiene representante: mostrar nombre -->
+                  <span class="t-t2 font-secondary text-gray-700">
+                    {{ asistencia.nombreRepresentante }}
+                  </span>
+                </template>
+                <template v-else-if="requiereRepresentanteObligatorio(asistencia.tipoPersona)">
+                  <!-- Requiere representante obligatorio -->
+                  <span class="t-b2 font-secondary text-red-600 italic font-semibold">
+                    ⚠️ Requiere representante
+                  </span>
+                </template>
+                <template v-else>
+                  <!-- No requiere -->
+                  <span class="t-t2 font-secondary text-gray-500">—</span>
+                </template>
+              </template>
+
+              <!-- CASO 2: NO Asistió - Mostrar mensaje -->
+              <template v-else>
+                <span class="t-t2 font-secondary text-gray-500">—</span>
+              </template>
+            </TableCell>
+
+            <!-- Acciones (Columna 2: Botón Agregar o DataTableDropDown) -->
+            <TableCell class="h-16 text-right">
+              <div class="flex justify-end">
+                <!-- Si tiene representante: mostrar DataTableDropDown (3 puntos) -->
+                <template v-if="asistencia.nombreRepresentante">
+                  <DataTableDropDown
+                    :item-id="asistencia.id"
+                    title-menu="Acciones"
+                    :actions="representanteActions"
+                    icon-type="vertical"
+                  />
+                </template>
+
+                <!-- Si NO tiene representante Y asistió: mostrar botón Agregar -->
+                <template v-else-if="asistencia.asistio">
+                  <ActionButton
+                    variant="secondary"
+                    size="sm"
+                    icon="Plus"
+                    label="Agregar"
+                    @click="openRepresentanteModal(asistencia.id)"
+                  />
+                </template>
+
+                <!-- Si NO asistió: no mostrar nada -->
+              </div>
+            </TableCell>
+          </TableRow>
+
+          <!-- Fila de totales -->
+          <TableRow
+            v-if="asistenciasEnriquecidas.length > 0"
+            class="bg-gray-50 border-t-2 border-gray-300"
+          >
+            <TableCell />
+            <TableCell class="font-secondary text-gray-800 t-t2 font-bold h-16">
+              Total de acciones presentes
+            </TableCell>
+            <TableCell />
+            <TableCell class="font-secondary text-gray-800 text-center t-t2 font-bold h-16">
+              {{ accionesPresentes }}
+            </TableCell>
+            <TableCell class="font-secondary text-gray-800 text-center t-t2 font-bold h-16">
+              {{ porcentajeTotal.toFixed(2) }}%
+            </TableCell>
+            <TableCell />
+            <TableCell />
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
+  </div>
+
+  <!-- MODAL DE REPRESENTANTE -->
+  <RepresentanteModal
+    v-model:is-open="isRepresentanteModalOpen"
+    :accionista-id="selectedAccionistaId"
+    :representante-data="representanteDataToEdit"
+    @close="closeRepresentanteModal"
+    @save="saveRepresentante"
+  />
+</template>

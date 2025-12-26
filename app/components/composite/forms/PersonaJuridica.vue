@@ -16,7 +16,7 @@
     provinciaAccSchema,
     razonSocialAccSchema,
     tipoDocumentoAccSchema,
-  } from "~/modules/registro-sociedades/schemas/accionistasSchemas";
+  } from "~/schemas/registro-sociedades/accionistasSchemas";
 
   const personaJuridicaStore = usePersonaJuridicaStore();
 </script>

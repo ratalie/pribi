@@ -41,10 +41,33 @@ type BackendSocietyResponse =
       updatedAt?: string;
     };
 
+/**
+ * Convierte fecha de formato dd-mm-aaaa a formato ISO aaaa-mm-dd
+ */
+function convertDateToISO(dateString: string | null | undefined): string | null {
+  if (!dateString || dateString.trim().length === 0) return null;
+  
+  // Si ya está en formato ISO (aaaa-mm-dd), retornarlo tal cual
+  const isoMatch = dateString.match(/^\d{4}-\d{2}-\d{2}/);
+  if (isoMatch) return isoMatch[0];
+  
+  // Intentar convertir de dd-mm-aaaa a aaaa-mm-dd
+  const ddmmyyyyMatch = dateString.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+  if (ddmmyyyyMatch) {
+    const [, day, month, year] = ddmmyyyyMatch;
+    return `${year}-${month}-${day}`;
+  }
+  
+  // Si no coincide con ningún formato conocido, retornar null
+  console.warn(`[DatosSociedadMapper] Formato de fecha no reconocido: ${dateString}`);
+  return null;
+}
+
 export const DatosSociedadMapper = {
   toDomain(response: BackendSocietyResponse | null): SociedadDatosGenerales | null {
     if (!response) return null;
     const source = response as Record<string, unknown>;
+    console.debug("[DatosSociedadMapper] toDomain() input:", JSON.stringify(response, null, 2));
     const pick = <T = string>(keys: Array<string>, fallback: T): T => {
       for (const key of keys) {
         if (key in source) {
@@ -119,9 +142,9 @@ export const DatosSociedadMapper = {
       distrito: dto.distrito,
       provincia: dto.provincia,
       departamento: dto.departamento,
-      fechaRegistro: dto.fechaInscripcionRuc || null,
+      fechaRegistro: convertDateToISO(dto.fechaInscripcionRuc),
       actividadExtranjera: dto.actividadExterior,
-      fechaEscritura: dto.fechaEscrituraPublica || null,
+      fechaEscritura: convertDateToISO(dto.fechaEscrituraPublica),
       oficinaRegistral: normalizeRegistryOfficeCode(dto.oficinaRegistral),
       partidaRegistral: dto.partidaRegistral,
     };

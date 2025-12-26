@@ -1,7 +1,7 @@
 import type { MaybeRef } from "vue";
 import { computed, onMounted, ref, unref, watch } from "vue";
 import { useRoute } from "vue-router";
-import { useRegistroAccionistasStore } from "~/modules/registro-sociedades/stores/useRegistroAccionistasStore";
+import { useRegistroAccionistasStore } from "~/core/presentation/registros/sociedades/pasos/accionistas/stores/useRegistroAccionistasStore";
 import { useRegistroAccionesStore } from "../../acciones/stores/useRegistroAccionesStore";
 import { useValorNominalStore } from "../../acciones/stores/useValorNominalStore";
 import { useRegistroAsignacionAccionesStore } from "../stores/useRegistroAsignacionAccionesStore";
