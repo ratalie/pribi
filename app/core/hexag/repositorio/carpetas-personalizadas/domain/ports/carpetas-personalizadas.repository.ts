@@ -44,5 +44,48 @@ export interface CarpetasPersonalizadasRepository {
    * Elimina un enlace de documento de una carpeta
    */
   removeEnlace(sociedadId: string, carpetaId: string, enlaceId: string): Promise<void>;
+
+  /**
+   * Asigna permisos a un usuario para una carpeta virtual
+   */
+  asignarPermisos(
+    carpetaId: string,
+    usuarioId: string,
+    expireAt?: Date
+  ): Promise<void>;
+
+  /**
+   * Remueve permisos de un usuario para una carpeta virtual
+   */
+  removerPermisos(carpetaId: string, usuarioId: string): Promise<void>;
+
+  /**
+   * Lista los usuarios con permisos en una carpeta virtual
+   */
+  listarUsuariosConPermisos(carpetaId: string): Promise<Array<{
+    id: string;
+    email: string;
+    name: string;
+    expireAt?: Date;
+  }>>;
+
+  /**
+   * Obtiene el peso (tamaño y conteo) de una carpeta virtual
+   */
+  obtenerPesoCarpetaVirtual(carpetaId: string): Promise<{
+    sizeInBytes: number;
+    folderCount: number;
+    fileCount: number;
+  }>;
+
+  /**
+   * Crea un árbol de carpetas virtuales desde una carpeta real
+   */
+  crearArbolCarpetas(
+    sociedadId: string,
+    nodeId: number,
+    nombre: string,
+    descripcion?: string
+  ): Promise<CarpetaPersonalizada>;
 }
 

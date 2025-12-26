@@ -23,6 +23,7 @@
   import CreateFolderModal from "./CreateFolderModal.vue";
   import DeleteConfirmModal from "./DeleteConfirmModal.vue";
   import PreviewModal from "./PreviewModal.vue";
+  import FileThumbnail from "./FileThumbnail.vue";
   import type { AdvancedFilters } from "./types";
   import UploadModal from "./UploadModal.vue";
   // import DocumentCard from "./DocumentCard.vue"; // No usado
@@ -37,7 +38,6 @@
   const {
     documentos,
     carpetaActual,
-    breadcrumb,
     vista,
     isLoading,
     carpetas: _carpetas,
@@ -45,7 +45,6 @@
     cargarDocumentos,
     navegarACarpeta: _navegarACarpetaStore,
     navegarAtras: _navegarAtras,
-    obtenerDocumento,
     descargarDocumento,
     eliminarDocumento,
     crearCarpeta,
@@ -101,10 +100,10 @@
     // Construir breadcrumb desde la ruta
     routePath.value.forEach((folderId) => {
       // Primero buscar en el cache
-      if (folderNamesCache.value[folderId]) {
+      if (folderId && folderNamesCache.value[folderId]) {
         items.push({
           id: folderId,
-          nombre: folderNamesCache.value[folderId],
+          nombre: folderNamesCache.value[folderId] || "",
         });
         return;
       }
@@ -207,16 +206,32 @@
       router.push(`/storage/almacen/${idSociety.value}/${pathString}`);
 
       // Cargar documentos de la carpeta objetivo
-      const carpetaId = targetPath[targetPath.length - 1];
-      await _navegarACarpetaStore(carpetaId);
+      if (targetPath.length > 0) {
+        const carpetaId = targetPath[targetPath.length - 1];
+        if (carpetaId) {
+          await _navegarACarpetaStore(carpetaId);
+        }
+      }
     }
   };
 
   // Sincronizar ruta con store cuando cambia la ruta
   watch(
-    () => [routePath.value, idSociety.value],
-    async ([newPath, societyId], [oldPath]) => {
-      console.log("🔵 [AlmacenView] Ruta cambió:", { newPath, oldPath, societyId });
+    () => {
+      const path = routePath.value;
+      const society = idSociety.value;
+      return { path: Array.isArray(path) ? path : [], society };
+    },
+    async ({ path: newPath, society: societyId }, oldValue) => {
+      console.log("🔵 [AlmacenView] Ruta cambió:", { newPath, oldValue, societyId });
+
+      // Manejar caso donde oldValue puede ser undefined en la primera ejecución
+      const oldPathArray = oldValue?.path
+        ? Array.isArray(oldValue.path)
+          ? oldValue.path
+          : []
+        : [];
+      const newPathArray = Array.isArray(newPath) ? newPath : [];
 
       if (!societyId) {
         console.log("🔵 [AlmacenView] No hay societyId, esperando...");
@@ -224,27 +239,31 @@
       }
 
       // Limpiar cache si cambió el path completamente
-      if (oldPath && oldPath.length > 0 && newPath.length === 0) {
+      if (oldPathArray.length > 0 && newPathArray.length === 0) {
         folderNamesCache.value = {};
       }
 
       try {
-        if (newPath.length === 0) {
+        if (newPathArray.length === 0) {
           // Estamos en la raíz
           console.log("🔵 [AlmacenView] Cargando documentos de raíz...");
           await cargarDocumentos(null);
         } else {
           // Cargar nombres de todas las carpetas del path si no están en cache
-          for (const folderId of newPath) {
-            if (!folderNamesCache.value[folderId]) {
+          for (const folderId of newPathArray) {
+            if (folderId && !folderNamesCache.value[folderId]) {
               await loadFolderName(folderId);
             }
           }
 
           // Navegar a la última carpeta del path
-          const carpetaId = newPath[newPath.length - 1];
-          console.log("🔵 [AlmacenView] Navegando a carpeta:", carpetaId);
-          await _navegarACarpetaStore(carpetaId);
+          if (newPathArray.length > 0) {
+            const carpetaId = newPathArray[newPathArray.length - 1];
+            if (carpetaId) {
+              console.log("🔵 [AlmacenView] Navegando a carpeta:", carpetaId);
+              await _navegarACarpetaStore(carpetaId);
+            }
+          }
         }
       } catch (error: any) {
         console.error("❌ [AlmacenView] Error al sincronizar ruta:", error);
@@ -259,7 +278,9 @@
     async (sociedadId) => {
       if (sociedadId && idSociety.value !== sociedadId) {
         // Redirigir a la nueva ruta con la sociedad correcta
-        const currentPath = routePath.value.join("/");
+        const routePathArray = routePath.value;
+        const currentPath =
+          routePathArray && Array.isArray(routePathArray) ? routePathArray.join("/") : "";
         if (currentPath) {
           router.push(`/storage/almacen/${sociedadId}/${currentPath}`);
         } else {
@@ -288,6 +309,10 @@
         // Si el documento ya tiene versionCode, usarlo directamente
         if (doc.versionCode && doc.mimeType) {
           console.log("🟢 [AlmacenView] Usando versionCode del documento:", doc.versionCode);
+
+          // Intentar obtener nodeId y documentCode si están disponibles
+          const nodeIdNumber = doc.nodeId ? parseInt(doc.nodeId, 10) : undefined;
+
           selectedDocument.value = {
             name: doc.nombre,
             type: doc.mimeType || "documento",
@@ -296,6 +321,8 @@
             size: doc.tamaño,
             versionCode: doc.versionCode,
             mimeType: doc.mimeType,
+            nodeId: nodeIdNumber && !isNaN(nodeIdNumber) ? nodeIdNumber : undefined,
+            documentCode: doc.documentCode || doc.code,
           };
           previewModalOpen.value = true;
           return;
@@ -320,11 +347,19 @@
           throw new Error("El nodo no es un documento");
         }
 
-        // Obtener versionCode de las versiones del nodo
+        // Obtener versionCode y userName de las versiones del nodo
         let versionCode: string | undefined;
-        if (node.versions && node.versions.length > 0) {
+        let userName: string | null = null;
+        if (
+          node.versions &&
+          Array.isArray(node.versions) &&
+          node.versions.length > 0 &&
+          node.versions[0]
+        ) {
           versionCode = node.versions[0].versionCode;
+          userName = node.versions[0].userName || null;
           console.log("🟢 [AlmacenView] versionCode obtenido del nodo:", versionCode);
+          console.log("🟢 [AlmacenView] userName obtenido del nodo:", userName);
         }
 
         if (!versionCode) {
@@ -336,11 +371,13 @@
         selectedDocument.value = {
           name: node.name,
           type: node.mimeType || "documento",
-          owner: "Sistema",
+          owner: userName || "Usuario desconocido",
           dateModified: new Date(node.updatedAt),
           size: node.sizeInBytes,
           versionCode: versionCode,
           mimeType: node.mimeType,
+          nodeId: nodeIdNumber, // Agregar nodeId para el tab de historial
+          documentCode: node.code, // Agregar documentCode para restaurar versiones
         };
         previewModalOpen.value = true;
       } catch (error: any) {
@@ -352,6 +389,51 @@
 
   const deleteConfirmModalOpen = ref(false);
   const itemToDelete = ref<any>(null);
+
+  // Manejar actualización de nombre del documento
+  const handleNameUpdated = (newName: string) => {
+    console.log("🟢 [AlmacenView] Nombre actualizado:", newName);
+
+    if (selectedDocument.value) {
+      // Actualizar el nombre en el documento seleccionado
+      selectedDocument.value = {
+        ...selectedDocument.value,
+        name: newName,
+      };
+    }
+
+    // Actualizar el nombre en la lista de documentos
+    const nodeId = selectedDocument.value?.nodeId;
+    if (nodeId) {
+      const nodeIdStr = nodeId.toString();
+      const docIndex = documentos.value.findIndex((doc) => doc.id === nodeIdStr);
+      if (docIndex !== -1) {
+        const existingDoc = documentos.value[docIndex];
+        if (existingDoc && existingDoc.id) {
+          // Mantener todos los campos requeridos del documento
+          documentos.value[docIndex] = {
+            id: existingDoc.id,
+            nombre: newName,
+            tipo: existingDoc.tipo || "file",
+            propietario: existingDoc.propietario || "",
+            fechaModificacion: existingDoc.fechaModificacion || new Date(),
+            mimeType: existingDoc.mimeType,
+            tamaño: existingDoc.tamaño,
+            parentId: existingDoc.parentId ?? null,
+            versionCode: existingDoc.versionCode,
+            code: existingDoc.code,
+            nodeId: existingDoc.nodeId,
+          };
+          console.log("✅ [AlmacenView] Nombre actualizado en la lista");
+        }
+      }
+    }
+
+    // Recargar documentos para asegurar sincronización completa
+    cargarDocumentos(carpetaActual.value).catch((error) => {
+      console.error("❌ [AlmacenView] Error al recargar documentos:", error);
+    });
+  };
 
   const handleDelete = async (doc: any) => {
     itemToDelete.value = doc;
@@ -449,26 +531,46 @@
     }
   };
 
-  const navegarARaiz = async () => {
-    await cargarDocumentos(null);
-  };
-
-  const handleUploadClick = () => {
-    if (!parentNodeIdForUpload.value) {
-      console.warn("⚠️ [AlmacenView] No se puede subir: parentNodeIdForUpload es null");
-      alert("No se pudo obtener la carpeta destino. Por favor, recarga la página.");
-      return;
-    }
-
+  const handleUploadClick = async () => {
     if (!dashboardStore.sociedadSeleccionada?.id) {
       console.warn("⚠️ [AlmacenView] No se puede subir: no hay sociedad seleccionada");
       alert("Por favor, selecciona una sociedad primero.");
       return;
     }
 
+    // Si no hay parentNodeIdForUpload o parece estar desincronizado, intentar obtenerlo de nuevo
+    if (!parentNodeIdForUpload.value) {
+      // Verificar que el parentNodeId corresponde a la sociedad actual
+      // Si estamos en la raíz, obtener la carpeta /core/ de nuevo para asegurarnos
+      if (!carpetaActual.value) {
+        console.log("🟡 [AlmacenView] Verificando carpeta /core/ antes de subir...");
+        try {
+          const carpetaCoreId = await obtenerCarpetaDocumentosSocietarios(
+            dashboardStore.sociedadSeleccionada.id
+          );
+          if (carpetaCoreId) {
+            console.log(
+              "🟢 [AlmacenView] Carpeta /core/ obtenida antes de subir:",
+              carpetaCoreId
+            );
+            parentNodeIdForUpload.value = carpetaCoreId;
+          }
+        } catch (error) {
+          console.error("🔴 [AlmacenView] Error al verificar carpeta /core/:", error);
+        }
+      }
+    }
+
+    if (!parentNodeIdForUpload.value) {
+      console.warn("⚠️ [AlmacenView] No se puede subir: parentNodeIdForUpload es null");
+      alert("No se pudo obtener la carpeta destino. Por favor, recarga la página.");
+      return;
+    }
+
     console.log("🔵 [AlmacenView] Abriendo modal de subida:", {
       structureId: dashboardStore.sociedadSeleccionada.id,
       parentNodeId: parentNodeIdForUpload.value,
+      carpetaActual: carpetaActual.value,
     });
 
     uploadModalOpen.value = true;
@@ -501,15 +603,50 @@
 
   // Obtener el parentNodeId para subir archivos
   // Si estamos en la raíz (carpetaActual es null), necesitamos obtener la carpeta /core/
+  // IMPORTANTE: Limpiar parentNodeIdForUpload cuando cambia la sociedad para evitar usar IDs de otra sociedad
+  watch(
+    () => dashboardStore.sociedadSeleccionada?.id,
+    (newStructureId, oldStructureId) => {
+      // Si cambió la sociedad, limpiar inmediatamente el parentNodeIdForUpload
+      if (oldStructureId && newStructureId !== oldStructureId) {
+        console.log("🟡 [AlmacenView] Sociedad cambió, limpiando parentNodeIdForUpload:", {
+          oldStructureId,
+          newStructureId,
+          currentParentNodeId: parentNodeIdForUpload.value,
+        });
+        parentNodeIdForUpload.value = null;
+      }
+    },
+    { immediate: false }
+  );
+
   watch(
     () => [carpetaActual.value, dashboardStore.sociedadSeleccionada?.id],
-    async ([carpetaId, structureId]) => {
-      console.log("🔵 [AlmacenView] Watch parentNodeIdForUpload:", { carpetaId, structureId });
+    async ([carpetaId, structureId], oldValue) => {
+      // Manejar caso donde oldValue puede ser undefined en la primera ejecución
+      const oldArray = oldValue && Array.isArray(oldValue) ? oldValue : [undefined, undefined];
+      const [oldCarpetaId, oldStructureId] = oldArray;
+      
+      console.log("🔵 [AlmacenView] Watch parentNodeIdForUpload:", {
+        carpetaId,
+        structureId,
+        oldCarpetaId,
+        oldStructureId,
+        currentParentNodeId: parentNodeIdForUpload.value,
+      });
 
       if (!structureId) {
         console.log("🔵 [AlmacenView] No hay structureId, limpiando parentNodeIdForUpload");
         parentNodeIdForUpload.value = null;
         return;
+      }
+
+      // Si cambió la sociedad, limpiar y recalcular
+      if (oldStructureId && structureId !== oldStructureId) {
+        console.log(
+          "🟡 [AlmacenView] Sociedad cambió en watch, limpiando parentNodeIdForUpload"
+        );
+        parentNodeIdForUpload.value = null;
       }
 
       if (carpetaId) {
@@ -523,9 +660,18 @@
         try {
           const carpetaCoreId = await obtenerCarpetaDocumentosSocietarios(structureId);
           console.log("🔵 [AlmacenView] Carpeta /core/ obtenida:", carpetaCoreId);
-          parentNodeIdForUpload.value = carpetaCoreId;
 
-          if (!carpetaCoreId) {
+          // Verificar que el structureId no haya cambiado mientras se obtenía la carpeta
+          if (dashboardStore.sociedadSeleccionada?.id === structureId) {
+            parentNodeIdForUpload.value = carpetaCoreId;
+          } else {
+            console.warn(
+              "⚠️ [AlmacenView] La sociedad cambió mientras se obtenía la carpeta /core/. No actualizando parentNodeIdForUpload."
+            );
+            parentNodeIdForUpload.value = null;
+          }
+
+          if (!carpetaCoreId && dashboardStore.sociedadSeleccionada?.id === structureId) {
             console.warn(
               "⚠️ [AlmacenView] No se pudo obtener la carpeta /core/. El botón de subir no funcionará."
             );
@@ -712,10 +858,21 @@
           :style="{ borderColor: 'var(--border-light)' }"
           @click="handleDocumentClick(doc)"
         >
-          <!-- Icono -->
+          <!-- Thumbnail o Icono -->
           <div class="flex items-center justify-center mb-3">
+            <!-- Para archivos, mostrar FileThumbnail si está en modo grid -->
+            <FileThumbnail
+              v-if="doc.tipo === 'file' && vista === 'grid'"
+              :file-name="doc.nombre"
+              :node-code="doc.code"
+              :version-code="doc.versionCode"
+              :mime-type="doc.mimeType"
+              :show-thumbnail="true"
+              class="w-full"
+            />
+            <!-- Para carpetas o modo lista, mostrar icono -->
             <div
-              v-if="doc.tipo === 'folder'"
+              v-else-if="doc.tipo === 'folder'"
               class="p-4 rounded-lg"
               style="background-color: #eef2ff"
             >
@@ -1003,6 +1160,7 @@
           previewModalOpen = false;
           selectedDocument = null;
         "
+        @name-updated="handleNameUpdated"
       />
 
       <!-- Delete Confirm Modal -->

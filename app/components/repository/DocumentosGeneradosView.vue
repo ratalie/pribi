@@ -26,6 +26,7 @@
   import AdvancedSearchBar from "./AdvancedSearchBar.vue";
   import DeleteConfirmModal from "./DeleteConfirmModal.vue";
   import PreviewModal from "./PreviewModal.vue";
+  import FileThumbnail from "./FileThumbnail.vue";
   import type { AdvancedFilters } from "./types";
 
   const router = useRouter();
@@ -89,15 +90,28 @@
       pathArray = [path];
     }
 
-    // Si el path está vacío, verificar si estamos en una ruta específica
-    // Esto ocurre cuando usamos /operaciones/[...path] o /registros/[...path]
-    if (pathArray.length === 0) {
-      if (isOperacionesRoute.value) {
-        pathArray = ["operaciones"];
-      } else if (isRegistrosRoute.value) {
-        pathArray = ["registros"];
+    // Si estamos en una ruta específica de operaciones o registros,
+    // siempre incluir ese segmento al inicio del path
+    if (isOperacionesRoute.value) {
+      // Si el path no empieza con "operaciones", agregarlo al inicio
+      if (pathArray.length === 0 || pathArray[0] !== "operaciones") {
+        pathArray = ["operaciones", ...pathArray];
+      }
+    } else if (isRegistrosRoute.value) {
+      // Si el path no empieza con "registros", agregarlo al inicio
+      if (pathArray.length === 0 || pathArray[0] !== "registros") {
+        pathArray = ["registros", ...pathArray];
       }
     }
+
+    console.log("🔵 [DocumentosGeneradosView] routePath calculado:", {
+      routeFullPath: route.fullPath,
+      routePath: route.path,
+      routeParamsPath: route.params.path,
+      isOperacionesRoute: isOperacionesRoute.value,
+      isRegistrosRoute: isRegistrosRoute.value,
+      pathArrayFinal: pathArray,
+    });
 
     return pathArray;
   });
@@ -151,6 +165,11 @@
             id: "junta-accionistas",
             nombre: "Juntas de Accionistas",
           });
+        } else if (nivel2 === "estados-financieros") {
+          items.push({
+            id: "estados-financieros",
+            nombre: "Estados Financieros",
+          });
         }
       } else if (nivel1 === "registros") {
         if (nivel2 === "sociedades") {
@@ -162,6 +181,27 @@
           items.push({
             id: "sucursales",
             nombre: "Sucursales",
+          });
+        }
+      }
+    }
+
+    // Nivel 3: Subcarpetas dentro de sociedades
+    if (routePath.value.length >= 3) {
+      const nivel1 = routePath.value[0];
+      const nivel2 = routePath.value[1];
+      const nivel3 = routePath.value[2];
+
+      if (nivel1 === "registros" && nivel2 === "sociedades") {
+        if (nivel3 === "capital-social-y-acciones") {
+          items.push({
+            id: "capital-social-y-acciones",
+            nombre: "Capital Social y Acciones",
+          });
+        } else if (nivel3 === "acuerdos-especiales") {
+          items.push({
+            id: "acuerdos-especiales",
+            nombre: "Acuerdos Especiales",
           });
         }
       }
@@ -239,6 +279,8 @@
       tamaño?: number;
       tipo?: string;
       versionCode?: string;
+      code?: string; // UUID del nodo (nodeCode) para previews
+      nodeId?: string; // ID numérico del nodo
     }> = [];
 
     // Nivel 0: Raíz - mostrar "Operaciones" y "Registros"
@@ -267,9 +309,10 @@
       const nivel1 = routePath.value[0];
 
       if (nivel1 === "operaciones") {
-        // Mostrar "Directorio" y "Juntas de Accionistas"
+        // Mostrar "Directorio", "Juntas de Accionistas" y "Estados Financieros"
         const directorio = estructuraOperaciones.value?.directorio;
         const juntas = estructuraOperaciones.value?.juntas;
+        const estadosFinancieros = estructuraOperaciones.value?.estadosFinancieros;
 
         if (directorio) {
           folders.push({
@@ -300,6 +343,24 @@
           folders.push({
             id: "junta-accionistas",
             nombre: "Juntas de Accionistas",
+            tipo: "carpeta",
+            color: "#6366F1",
+          });
+        }
+
+        // NUEVA: Estados Financieros
+        if (estadosFinancieros) {
+          folders.push({
+            id: "estados-financieros",
+            nombre: "Estados Financieros",
+            tipo: "carpeta",
+            color: "#6366F1",
+            nodeId: estadosFinancieros.id,
+          });
+        } else {
+          folders.push({
+            id: "estados-financieros",
+            nombre: "Estados Financieros",
             tipo: "carpeta",
             color: "#6366F1",
           });
@@ -376,12 +437,14 @@
                 tamaño: item.sizeInBytes,
                 tipo: item.mimeType,
                 versionCode: item.versions?.[0]?.versionCode,
+                code: item.code, // UUID del nodo (nodeCode) para previews
+                nodeId: item.id, // ID numérico del nodo
               });
             }
           });
         }
-      } else if (nivel1 === "registros" && nivel2 === "sociedades") {
-        const nodeId = estructuraRegistros.value?.sociedades?.id;
+      } else if (nivel1 === "operaciones" && nivel2 === "estados-financieros") {
+        const nodeId = estructuraOperaciones.value?.estadosFinancieros?.id;
         if (
           nodeId &&
           carpetaActual.value === String(nodeId) &&
@@ -404,6 +467,65 @@
                 tamaño: item.sizeInBytes,
                 tipo: item.mimeType,
                 versionCode: item.versions?.[0]?.versionCode,
+                code: item.code, // UUID del nodo (nodeCode) para previews
+                nodeId: item.id, // ID numérico del nodo
+              });
+            }
+          });
+        }
+      } else if (nivel1 === "registros" && nivel2 === "sociedades") {
+        const estructura = estructuraRegistros.value?.sociedades;
+        const nodeId = estructura?.id;
+
+        // Mostrar subcarpetas V2 (FILTRAR V1)
+        if (estructura?.capitalSocialYAcciones) {
+          folders.push({
+            id: estructura.capitalSocialYAcciones.id,
+            nombre: "Capital Social y Acciones",
+            tipo: "carpeta",
+            color: "#10B981",
+            nodeId: estructura.capitalSocialYAcciones.id,
+          });
+        }
+
+        if (estructura?.acuerdosEspeciales) {
+          folders.push({
+            id: estructura.acuerdosEspeciales.id,
+            nombre: "Acuerdos Especiales",
+            tipo: "carpeta",
+            color: "#10B981",
+            nodeId: estructura.acuerdosEspeciales.id,
+          });
+        }
+
+        // Mostrar documentos si están cargados (FILTRAR V1)
+        if (
+          nodeId &&
+          carpetaActual.value === String(nodeId) &&
+          documentosCarpeta.value.length > 0
+        ) {
+          documentosCarpeta.value.forEach((item) => {
+            if (item.type === "folder") {
+              // FILTRAR V1: No mostrar "registro sociedades"
+              if (item.name.toLowerCase() !== "registro sociedades") {
+                folders.push({
+                  id: item.id,
+                  nombre: item.name,
+                  tipo: "carpeta",
+                  color: "#10B981",
+                  nodeId: item.id,
+                });
+              }
+            } else if (item.type === "document") {
+              files.push({
+                id: item.id,
+                nombre: item.name,
+                fecha: new Date(item.createdAt),
+                tamaño: item.sizeInBytes,
+                tipo: item.mimeType,
+                versionCode: item.versions?.[0]?.versionCode,
+                code: item.code, // UUID del nodo (nodeCode) para previews
+                nodeId: item.id, // ID numérico del nodo
               });
             }
           });
@@ -432,6 +554,8 @@
                 tamaño: item.sizeInBytes,
                 tipo: item.mimeType,
                 versionCode: item.versions?.[0]?.versionCode,
+                code: item.code, // UUID del nodo (nodeCode) para previews
+                nodeId: item.id, // ID numérico del nodo
               });
             }
           });
@@ -447,7 +571,15 @@
       routePath.value[0] === "operaciones" &&
       routePath.value[1] === "junta-accionistas"
     ) {
+      console.log("🔵 [DocumentosGeneradosView] Mostrando carpetas de juntas:", {
+        routePath: routePath.value,
+        documentosGenerados: documentosGenerados.value,
+        estructuraOperaciones: estructuraOperaciones.value,
+      });
+
       const juntas = documentosGenerados.value?.operaciones?.carpetas?.juntas?.juntas || [];
+      console.log("🔵 [DocumentosGeneradosView] Juntas encontradas:", juntas);
+
       juntas.forEach((junta: any) => {
         folders.push({
           id: `carpeta-${junta.nodeId || junta.id}`,
@@ -457,6 +589,8 @@
           nodeId: junta.nodeId || junta.id,
         });
       });
+
+      console.log("🔵 [DocumentosGeneradosView] Folders generados:", folders);
       return { folders, files };
     }
 
@@ -519,6 +653,51 @@
         }
       }
 
+      // Si estamos en nivel 3: subcarpetas de sociedades (capital social y acciones, acuerdos especiales)
+      if (routePath.value.length === 3) {
+        const nivel1 = routePath.value[0];
+        const nivel2 = routePath.value[1];
+        const nivel3 = routePath.value[2];
+
+        if (nivel1 === "registros" && nivel2 === "sociedades") {
+          const estructura = estructuraRegistros.value?.sociedades;
+          let nodeId: string | undefined;
+
+          if (nivel3 === "capital-social-y-acciones" && estructura?.capitalSocialYAcciones) {
+            nodeId = estructura.capitalSocialYAcciones.id;
+          } else if (nivel3 === "acuerdos-especiales" && estructura?.acuerdosEspeciales) {
+            nodeId = estructura.acuerdosEspeciales.id;
+          }
+
+          if (
+            nodeId &&
+            carpetaActual.value === String(nodeId) &&
+            documentosCarpeta.value.length > 0
+          ) {
+            documentosCarpeta.value.forEach((item) => {
+              if (item.type === "folder") {
+                folders.push({
+                  id: item.id,
+                  nombre: item.name,
+                  tipo: "carpeta",
+                  color: "#10B981",
+                  nodeId: item.id,
+                });
+              } else if (item.type === "document") {
+                files.push({
+                  id: item.id,
+                  nombre: item.name,
+                  fecha: new Date(item.createdAt),
+                  tamaño: item.sizeInBytes,
+                  tipo: item.mimeType,
+                  versionCode: item.versions?.[0]?.versionCode,
+                });
+              }
+            });
+          }
+        }
+      }
+
       // Si estamos en una subcarpeta (nivel 4+)
       if (routePath.value.length > 3) {
         const carpetaId = routePath.value[routePath.value.length - 1];
@@ -534,6 +713,8 @@
                 tamaño: item.sizeInBytes,
                 tipo: item.mimeType,
                 versionCode: item.versions?.[0]?.versionCode,
+                code: item.code, // UUID del nodo (nodeCode) para previews
+                nodeId: item.id, // ID numérico del nodo
               });
             }
           });
@@ -557,15 +738,43 @@
   });
 
   // Navegar a carpeta
-  const navegarACarpeta = async (carpetaId: string) => {
-    console.log("🔵 [DocumentosGeneradosView] Navegando a carpeta:", carpetaId);
+  const navegarACarpeta = async (carpetaId: string, carpetaNombre?: string) => {
+    console.log("🔵 [DocumentosGeneradosView] Navegando a carpeta:", carpetaId, carpetaNombre);
 
     if (!idSociety.value) {
       console.error("❌ [DocumentosGeneradosView] No hay idSociety en la ruta");
       return;
     }
 
-    // Actualizar la ruta
+    // Si estamos en registros/sociedades y es una subcarpeta V2, usar nombre en lugar de ID
+    if (
+      routePath.value.length === 2 &&
+      routePath.value[0] === "registros" &&
+      routePath.value[1] === "sociedades"
+    ) {
+      const estructura = estructuraRegistros.value?.sociedades;
+
+      // Verificar si es una subcarpeta V2
+      if (estructura?.capitalSocialYAcciones?.id === carpetaId) {
+        const newPath = [...routePath.value, "capital-social-y-acciones"];
+        const pathString = newPath.join("/");
+        const newRoute = `/storage/documentos-generados/${idSociety.value}/${pathString}`;
+        console.log("🔵 [DocumentosGeneradosView] Navegando a subcarpeta V2:", newRoute);
+        router.push(newRoute);
+        return;
+      }
+
+      if (estructura?.acuerdosEspeciales?.id === carpetaId) {
+        const newPath = [...routePath.value, "acuerdos-especiales"];
+        const pathString = newPath.join("/");
+        const newRoute = `/storage/documentos-generados/${idSociety.value}/${pathString}`;
+        console.log("🔵 [DocumentosGeneradosView] Navegando a subcarpeta V2:", newRoute);
+        router.push(newRoute);
+        return;
+      }
+    }
+
+    // Para otras carpetas, usar el ID directamente
     const newPath = [...routePath.value, carpetaId];
     const pathString = newPath.join("/");
     const newRoute = `/storage/documentos-generados/${idSociety.value}/${pathString}`;
@@ -672,25 +881,56 @@
           }
         }
 
-        // Si estamos en nivel 3 (carpeta de junta), cargar documentos
-        if (
-          Array.isArray(newPath) &&
-          newPath.length === 3 &&
-          newPath[0] === "operaciones" &&
-          newPath[1] === "junta-accionistas" &&
-          newPath[2]?.startsWith("carpeta-")
-        ) {
-          const nodeId = newPath[2].replace("carpeta-", "");
-          // Normalizar IDs para comparación (ambos como string)
-          const nodeIdStr = String(nodeId);
-          const carpetaActualStr = carpetaActual.value ? String(carpetaActual.value) : null;
+        // Si estamos en nivel 3: subcarpetas de sociedades o carpetas de junta
+        if (Array.isArray(newPath) && newPath.length === 3) {
+          const nivel1 = newPath[0];
+          const nivel2 = newPath[1];
+          const nivel3 = newPath[2];
 
-          if (carpetaActualStr !== nodeIdStr) {
-            console.log("🔵 [DocumentosGeneradosView] Cargando documentos de carpeta:", {
-              nodeId: nodeIdStr,
-              carpetaActual: carpetaActualStr,
-            });
-            await cargarDocumentosDeCarpeta(nodeIdStr);
+          // Subcarpetas de sociedades (capital social y acciones, acuerdos especiales)
+          if (nivel1 === "registros" && nivel2 === "sociedades") {
+            const estructura = estructuraRegistros.value?.sociedades;
+            let nodeId: string | undefined;
+
+            if (nivel3 === "capital-social-y-acciones" && estructura?.capitalSocialYAcciones) {
+              nodeId = estructura.capitalSocialYAcciones.id;
+            } else if (nivel3 === "acuerdos-especiales" && estructura?.acuerdosEspeciales) {
+              nodeId = estructura.acuerdosEspeciales.id;
+            }
+
+            if (nodeId && carpetaActual.value !== String(nodeId)) {
+              console.log("🔵 [DocumentosGeneradosView] Cargando documentos de subcarpeta:", {
+                nivel3,
+                nodeId,
+                carpetaActual: carpetaActual.value,
+              });
+              await cargarDocumentosDeCarpeta(String(nodeId));
+            }
+          }
+          // Carpetas de junta
+          else if (
+            nivel1 === "operaciones" &&
+            nivel2 === "junta-accionistas" &&
+            nivel3?.startsWith("carpeta-")
+          ) {
+            const nodeId = nivel3.replace("carpeta-", "");
+            const nodeIdStr = String(nodeId);
+            const carpetaActualStr = carpetaActual.value ? String(carpetaActual.value) : null;
+
+            if (carpetaActualStr !== nodeIdStr) {
+              console.log("🔵 [DocumentosGeneradosView] Cargando documentos de carpeta:", {
+                nodeId: nodeIdStr,
+                carpetaActual: carpetaActualStr,
+              });
+              await cargarDocumentosDeCarpeta(nodeIdStr);
+            }
+          }
+          // Estados financieros
+          else if (nivel1 === "operaciones" && nivel2 === "estados-financieros") {
+            const nodeId = estructuraOperaciones.value?.estadosFinancieros?.id;
+            if (nodeId && carpetaActual.value !== String(nodeId)) {
+              await cargarDocumentosDeCarpeta(String(nodeId));
+            }
           }
         }
 
@@ -743,13 +983,37 @@
 
         let versionCode = item.versionCode;
         let mimeType = item.tipo;
+        let nodeId: number | undefined;
+        let documentCode: string | undefined;
 
-        if (!versionCode) {
+        if (!versionCode || !item.nodeId) {
           const doc = await obtenerDocumento(String(item.id));
           if (doc && doc.versions && doc.versions.length > 0) {
             versionCode = doc.versions[0].versionCode;
             mimeType = doc.mimeType || mimeType;
           }
+
+          // Intentar obtener nodeId y documentCode
+          if (item.id) {
+            const nodeIdNumber = parseInt(item.id, 10);
+            if (!isNaN(nodeIdNumber)) {
+              nodeId = nodeIdNumber;
+            }
+          }
+
+          // Obtener documentCode del documento si está disponible
+          if (doc && "code" in doc) {
+            documentCode = doc.code as string;
+          }
+        } else {
+          // Si ya tenemos versionCode, intentar obtener nodeId del item
+          if (item.nodeId) {
+            const nodeIdNumber = parseInt(item.nodeId, 10);
+            if (!isNaN(nodeIdNumber)) {
+              nodeId = nodeIdNumber;
+            }
+          }
+          documentCode = item.documentCode || item.code;
         }
 
         if (!versionCode) {
@@ -757,14 +1021,29 @@
           return;
         }
 
+        // Obtener userName del documento si está disponible
+        let userName: string | null = null;
+        if (item.propietario && item.propietario !== "Sistema") {
+          userName = item.propietario;
+        } else if (
+          doc &&
+          doc.versions &&
+          doc.versions.length > 0 &&
+          doc.versions[0].userName
+        ) {
+          userName = doc.versions[0].userName;
+        }
+
         selectedDocument.value = {
           name: item.nombre,
           type: mimeType || "documento",
-          owner: "Sistema",
+          owner: userName || "Usuario desconocido",
           dateModified: item.fecha || new Date(),
           size: item.tamaño,
           versionCode: versionCode,
           mimeType: mimeType,
+          nodeId: nodeId,
+          documentCode: documentCode,
         };
         previewModalOpen.value = true;
       } catch (error: any) {
@@ -991,9 +1270,20 @@
           :style="{ borderColor: 'var(--border-light)' }"
           @click="handleDocumentClick(file)"
         >
-          <!-- Icono -->
+          <!-- Thumbnail o Icono -->
           <div class="flex items-center justify-center mb-3">
-            <div class="p-4 rounded-lg" style="background-color: #fee2e2">
+            <!-- Para archivos, mostrar FileThumbnail si está en modo grid -->
+            <FileThumbnail
+              v-if="vista === 'grid'"
+              :file-name="file.nombre"
+              :node-code="file.code"
+              :version-code="file.versionCode"
+              :mime-type="file.tipo"
+              :show-thumbnail="true"
+              class="w-full"
+            />
+            <!-- Para modo lista, mostrar icono -->
+            <div v-else class="p-4 rounded-lg" style="background-color: #fee2e2">
               <FileText class="w-8 h-8" style="color: #dc2626" />
             </div>
           </div>

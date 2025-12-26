@@ -12,7 +12,11 @@ export interface RepositorioDocumentosRepository {
    * @param folderName Nombre opcional de la carpeta (ej: "20 de diciembre del 2025"). Si no se proporciona, usa flowId.toString()
    * @returns ID de la carpeta creada o existente
    */
-  obtenerFolderIdJunta(structureId: string, flowId: string, folderName?: string): Promise<number>;
+  obtenerFolderIdJunta(
+    structureId: string,
+    flowId: string,
+    folderName?: string
+  ): Promise<number>;
 
   /**
    * Envía documentos al repositorio
@@ -171,5 +175,117 @@ export interface RepositorioDocumentosRepository {
     sizeInBytes: number;
     createdAt: string;
   }>;
-}
 
+  /**
+   * Obtiene el peso (tamaño y conteo) de una carpeta
+   * @param nodeId ID del nodo carpeta
+   * @returns Información del peso de la carpeta
+   */
+  obtenerPesoCarpeta(nodeId: number): Promise<{
+    sizeInBytes: number;
+    folderCount: number;
+    fileCount: number;
+  }>;
+
+  /**
+   * Restaura una versión anterior de un documento como versión actual
+   * @param documentCode Código del documento (UUID)
+   * @param versionCode Código de la versión a restaurar (UUID)
+   * @returns Información de la nueva versión creada (restaurada)
+   */
+  restaurarVersion(
+    documentCode: string,
+    versionCode: string
+  ): Promise<{
+    versionCode: string;
+    documentCode: string;
+    versionNumber: number;
+    title: string;
+    sizeInBytes: number;
+    createdAt: string;
+  }>;
+
+  /**
+   * Búsqueda semántica de documentos usando embeddings de IA
+   * @param structureId ID de la estructura de la sociedad
+   * @param params Parámetros de búsqueda semántica
+   * @returns Resultados de búsqueda con paginación
+   */
+  busquedaSemantica(
+    structureId: string,
+    params: {
+      semanticInput?: string;
+      searchID?: string;
+      filters?: {
+        page?: number;
+        limit?: number;
+        scopedFolderNodeID?: number;
+        mimeType?: string;
+      };
+    }
+  ): Promise<{
+    searchId: string;
+    documents: Array<{
+      versionCode: string;
+      documentCode: string;
+      title: string;
+      sizeInBytes: number;
+      createdAt: string;
+      proximity: number;
+      node?: {
+        id: number;
+        code: string;
+        name: string;
+        path: string;
+        type: number;
+      };
+    }>;
+    pagination: {
+      total: number;
+      page: number;
+      perPage: number;
+      totalPages: number;
+    };
+  }>;
+
+  /**
+   * Búsqueda por coincidencia de texto en el título del documento
+   * @param structureId ID de la estructura de la sociedad
+   * @param params Parámetros de búsqueda por coincidencia
+   * @returns Resultados de búsqueda con paginación
+   */
+  busquedaPorCoincidencia(
+    structureId: string,
+    params: {
+      search?: string;
+      page?: number;
+      limit?: number;
+      order?: "name" | "createdAt";
+      sort?: "asc" | "desc";
+      mimeType?: string;
+      updatedFrom?: string;
+      updatedTo?: string;
+    }
+  ): Promise<{
+    documents: Array<{
+      versionCode: string;
+      documentCode: string;
+      title: string;
+      sizeInBytes: number;
+      createdAt: string;
+      node?: {
+        id: number;
+        code: string;
+        name: string;
+        path: string;
+        type: number;
+      };
+    }>;
+    pagination: {
+      total: number;
+      page: number;
+      perPage: number;
+      totalPages: number;
+    };
+  }>;
+}

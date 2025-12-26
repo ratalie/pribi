@@ -13,10 +13,12 @@ export class DocumentoSocietarioMapper {
    * Convierte un RepositorioNode a DocumentoSocietario
    */
   static toDocumentoSocietario(node: RepositorioNode): DocumentoSocietario {
-    // Obtener versionCode de la primera versión si está disponible
-    const versionCode = node.versions && node.versions.length > 0 
-      ? node.versions[0].versionCode 
-      : undefined;
+    // Obtener versionCode y userName de la primera versión si está disponible
+    const firstVersion = node.versions && node.versions.length > 0 
+      ? node.versions[0] 
+      : null;
+    const versionCode = firstVersion?.versionCode;
+    const userName = firstVersion?.userName || null;
     
     return {
       id: node.id,
@@ -24,9 +26,11 @@ export class DocumentoSocietarioMapper {
       tipo: node.type === 'folder' ? 'folder' : 'file',
       tamaño: node.sizeInBytes,
       fechaModificacion: new Date(node.updatedAt),
-      propietario: 'Sistema', // TODO: Obtener del backend si está disponible
+      propietario: userName || 'Usuario desconocido',
       mimeType: node.mimeType,
       versionCode: versionCode,
+      code: node.code, // UUID del nodo (nodeCode) para previews
+      nodeId: node.id, // ID numérico del nodo
     };
   }
 

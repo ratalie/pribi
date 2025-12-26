@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { Search } from "lucide-vue-next";
+import { useRouter } from "vue-router";
+import { useRepositorioDashboardStore } from "~/core/presentation/repositorio/stores/repositorio-dashboard.store";
+import { storeToRefs } from "pinia";
 
 interface Props {
   modelValue: string;
@@ -14,12 +17,40 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emits = defineEmits<{
   (e: "update:modelValue", value: string): void;
+  (e: "search", query: string): void;
 }>();
+
+const router = useRouter();
+const dashboardStore = useRepositorioDashboardStore();
+const { sociedadSeleccionada } = storeToRefs(dashboardStore);
 
 const searchValue = computed({
   get: () => props.modelValue,
   set: (value: string) => emits("update:modelValue", value),
 });
+
+const handleSearch = () => {
+  if (!searchValue.value.trim()) return;
+  
+  // Si hay sociedad seleccionada, navegar a la página de resultados
+  if (sociedadSeleccionada.value?.id) {
+    router.push({
+      path: "/storage/busqueda",
+      query: {
+        q: searchValue.value.trim(),
+      },
+    });
+  } else {
+    // Si no hay sociedad, emitir evento para que el componente padre maneje
+    emits("search", searchValue.value.trim());
+  }
+};
+
+const handleKeyPress = (event: KeyboardEvent) => {
+  if (event.key === "Enter") {
+    handleSearch();
+  }
+};
 </script>
 
 <template>
@@ -43,6 +74,7 @@ const searchValue = computed({
       @blur="
         ($event.target as HTMLInputElement).style.borderColor = 'var(--border-light)';
       "
+      @keyup.enter="handleSearch"
     />
   </div>
 </template>

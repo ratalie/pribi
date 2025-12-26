@@ -257,12 +257,27 @@ export class ObtenerDocumentosJuntasUseCase {
           node.path === "/core/documentos-generados/operaciones/"
       );
 
+      // NUEVA: Buscar estados financieros
+      const nodoEstadosFinancieros = nodos.find(
+        (node) =>
+          node.type === "folder" &&
+          node.name === "estados financieros" &&
+          node.path === "/core/documentos-generados/operaciones/"
+      );
+
       console.log("🟡 [ObtenerDocumentosJuntasUseCase] Nodos encontrados (V2):", {
         directorio: nodoDirectorio
           ? { id: nodoDirectorio.id, name: nodoDirectorio.name, path: nodoDirectorio.path }
           : null,
         juntas: nodoJuntas
           ? { id: nodoJuntas.id, name: nodoJuntas.name, path: nodoJuntas.path }
+          : null,
+        estadosFinancieros: nodoEstadosFinancieros
+          ? {
+              id: nodoEstadosFinancieros.id,
+              name: nodoEstadosFinancieros.name,
+              path: nodoEstadosFinancieros.path,
+            }
           : null,
       });
       console.log(
@@ -272,6 +287,7 @@ export class ObtenerDocumentosJuntasUseCase {
       return {
         directorio: nodoDirectorio || null,
         juntas: nodoJuntas || null,
+        estadosFinancieros: nodoEstadosFinancieros || null,
       };
     } catch (error: any) {
       console.error("🔴 [ObtenerDocumentosJuntasUseCase] ERROR:", error);
@@ -340,7 +356,11 @@ export class ObtenerDocumentosJuntasUseCase {
    * @returns Estructura de registros con sociedades y sucursales
    */
   async obtenerEstructuraRegistros(structureId: string): Promise<{
-    sociedades: RepositorioNode | null;
+    sociedades: {
+      id: string;
+      capitalSocialYAcciones: RepositorioNode | null;
+      acuerdosEspeciales: RepositorioNode | null;
+    } | null;
     sucursales: RepositorioNode | null;
   }> {
     console.log(
@@ -374,9 +394,58 @@ export class ObtenerDocumentosJuntasUseCase {
           node.path === "/core/documentos-generados/registros/"
       );
 
+      // 3. Si encontramos sociedades, buscar subcarpetas V2
+      let capitalSocialYAcciones: RepositorioNode | null = null;
+      let acuerdosEspeciales: RepositorioNode | null = null;
+
+      if (nodoSociedades) {
+        // Obtener hijos de "sociedades" para buscar subcarpetas V2
+        const hijosSociedades = await this.repositorioDocumentosRepository.obtenerNodoPorId(
+          parseInt(nodoSociedades.id)
+        );
+
+        // Buscar subcarpetas V2 directamente en "sociedades/" (FILTRAR V1)
+        capitalSocialYAcciones =
+          hijosSociedades.children?.find(
+            (node) =>
+              node.type === "folder" &&
+              node.name === "capital social y acciones" &&
+              node.path === "/core/documentos-generados/registros/sociedades/" &&
+              // FILTRAR V1: NO debe estar dentro de "registro sociedades"
+              !node.path.includes("/registro sociedades/")
+          ) || null;
+
+        acuerdosEspeciales =
+          hijosSociedades.children?.find(
+            (node) =>
+              node.type === "folder" &&
+              node.name === "acuerdos especiales" &&
+              node.path === "/core/documentos-generados/registros/sociedades/" &&
+              // FILTRAR V1: NO debe estar dentro de "registro sociedades"
+              !node.path.includes("/registro sociedades/")
+          ) || null;
+
+        console.log("🟡 [ObtenerDocumentosJuntasUseCase] Subcarpetas encontradas:", {
+          capitalSocialYAcciones: capitalSocialYAcciones
+            ? { id: capitalSocialYAcciones.id, name: capitalSocialYAcciones.name }
+            : null,
+          acuerdosEspeciales: acuerdosEspeciales
+            ? { id: acuerdosEspeciales.id, name: acuerdosEspeciales.name }
+            : null,
+        });
+      }
+
       console.log("🟡 [ObtenerDocumentosJuntasUseCase] Nodos encontrados (V2):", {
         sociedades: nodoSociedades
-          ? { id: nodoSociedades.id, name: nodoSociedades.name, path: nodoSociedades.path }
+          ? {
+              id: nodoSociedades.id,
+              name: nodoSociedades.name,
+              path: nodoSociedades.path,
+              subcarpetas: {
+                capitalSocialYAcciones: capitalSocialYAcciones?.id || null,
+                acuerdosEspeciales: acuerdosEspeciales?.id || null,
+              },
+            }
           : null,
         sucursales: nodoSucursales
           ? { id: nodoSucursales.id, name: nodoSucursales.name, path: nodoSucursales.path }
@@ -387,7 +456,13 @@ export class ObtenerDocumentosJuntasUseCase {
       );
 
       return {
-        sociedades: nodoSociedades || null,
+        sociedades: nodoSociedades
+          ? {
+              id: nodoSociedades.id,
+              capitalSocialYAcciones,
+              acuerdosEspeciales,
+            }
+          : null,
         sucursales: nodoSucursales || null,
       };
     } catch (error: any) {

@@ -12,6 +12,9 @@ import {
   Lock,
   Check,
 } from "lucide-vue-next";
+import { useRouter } from "vue-router";
+import { useRepositorioDashboardStore } from "~/core/presentation/repositorio/stores/repositorio-dashboard.store";
+import { storeToRefs } from "pinia";
 import type { SearchScope, AdvancedFilters } from "./types";
 
 interface Props {
@@ -32,12 +35,42 @@ const props = withDefaults(defineProps<Props>(), {
 const emits = defineEmits<{
   (e: "update:modelValue", value: string): void;
   (e: "update:filters", filters: AdvancedFilters): void;
+  (e: "search", query: string): void;
 }>();
+
+const router = useRouter();
+const dashboardStore = useRepositorioDashboardStore();
+const { sociedadSeleccionada } = storeToRefs(dashboardStore);
 
 const searchValue = computed({
   get: () => props.modelValue,
   set: (value: string) => emits("update:modelValue", value),
 });
+
+const handleSearch = () => {
+  if (!searchValue.value.trim()) return;
+  
+  // Si hay sociedad seleccionada, navegar a la página de resultados
+  if (sociedadSeleccionada.value?.id) {
+    // Detectar tipo de búsqueda
+    const hasQuestionMark = searchValue.value.includes("?");
+    const hasQuestionWords =
+      /\b(qué|que|cuál|cual|dónde|donde|cuándo|cuando|cómo|como|quién|quien)\b/i.test(searchValue.value);
+    const isLongQuery = searchValue.value.split(" ").length > 3;
+    const searchType = hasQuestionMark || hasQuestionWords || isLongQuery ? "semantic" : "match";
+    
+    router.push({
+      path: "/storage/busqueda",
+      query: {
+        q: searchValue.value.trim(),
+        type: searchType,
+      },
+    });
+  } else {
+    // Si no hay sociedad, emitir evento para que el componente padre maneje
+    emits("search", searchValue.value.trim());
+  }
+};
 
 const showFilters = ref(false);
 const dropdownRef = ref<HTMLElement | null>(null);
@@ -201,14 +234,15 @@ const computedPlaceholder = computed(() => {
           borderColor: 'var(--border-light)',
           fontFamily: 'var(--font-secondary)',
         }"
-      @focus="
-        ($event.target as HTMLInputElement).style.borderColor =
-          'var(--primary-700)';
-      "
-      @blur="
-        ($event.target as HTMLInputElement).style.borderColor =
-          'var(--border-light)';
-      "
+        @focus="
+          ($event.target as HTMLInputElement).style.borderColor =
+            'var(--primary-700)';
+        "
+        @blur="
+          ($event.target as HTMLInputElement).style.borderColor =
+            'var(--border-light)';
+        "
+        @keyup.enter="handleSearch"
       />
 
       <!-- Botones de acción -->

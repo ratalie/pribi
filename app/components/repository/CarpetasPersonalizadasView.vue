@@ -1,183 +1,209 @@
 <script setup lang="ts">
-import {
-  // Folder, // No usado
-  FolderOpen,
-  FileText,
-  Grid,
-  List,
-  MoreVertical,
-  Eye,
-  // Download, // No usado
-  Trash2,
-  Plus,
-  ChevronRight,
-  ArrowLeft,
-  X,
-  // Users, // No usado
-  // Globe, // No usado
-  // Lock, // No usado
-} from "lucide-vue-next";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import AdvancedSearchBar from "./AdvancedSearchBar.vue";
-import type { AdvancedFilters } from "./types";
-import PreviewModal from "./PreviewModal.vue";
-import { useCarpetasPersonalizadas } from "~/core/presentation/repositorio/composables/useCarpetasPersonalizadas";
-import { useRepositorioDashboardStore } from "~/core/presentation/repositorio/stores/repositorio-dashboard.store";
+  import {
+    // Folder, // No usado
+    FolderOpen,
+    FileText,
+    Grid,
+    List,
+    MoreVertical,
+    Eye,
+    // Download, // No usado
+    Trash2,
+    Plus,
+    ChevronRight,
+    ArrowLeft,
+    X,
+    Bot,
+    // Users, // No usado
+    // Globe, // No usado
+    // Lock, // No usado
+  } from "lucide-vue-next";
+  import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+  } from "@/components/ui/dropdown-menu";
+  import AdvancedSearchBar from "./AdvancedSearchBar.vue";
+  import type { AdvancedFilters } from "./types";
+  import PreviewModal from "./PreviewModal.vue";
+  import AddDocumentModal from "./modals/AddDocumentModal.vue";
+  import { useCarpetasPersonalizadas } from "~/core/presentation/repositorio/composables/useCarpetasPersonalizadas";
+  import { useRepositorioDashboardStore } from "~/core/presentation/repositorio/stores/repositorio-dashboard.store";
+  import { useRouter } from "vue-router";
 
-const {
-  carpetas,
-  carpetaActual,
-  enlacesActuales,
-  isLoading,
-  crearCarpeta,
-  cargarDetalleCarpeta,
-  eliminarEnlace,
-} = useCarpetasPersonalizadas();
+  const {
+    carpetas,
+    carpetaActual,
+    enlacesActuales,
+    isLoading,
+    crearCarpeta,
+    cargarDetalleCarpeta,
+    eliminarEnlace,
+  } = useCarpetasPersonalizadas();
 
-const dashboardStore = useRepositorioDashboardStore();
+  const dashboardStore = useRepositorioDashboardStore();
+  const router = useRouter();
 
-const searchQuery = ref("");
-const createModalOpen = ref(false);
-const newCarpetaNombre = ref("");
-const newCarpetaDescripcion = ref("");
-const newCarpetaIsChatIA = ref(false);
-const selectedFolderId = ref<string | null>(null);
-const vista = ref<"grid" | "list">("grid");
-const previewModalOpen = ref(false);
-const selectedDocument = ref<any>(null);
+  const searchQuery = ref("");
+  const createModalOpen = ref(false);
+  const newCarpetaNombre = ref("");
+  const newCarpetaDescripcion = ref("");
+  const newCarpetaIsChatIA = ref(false);
+  const selectedFolderId = ref<string | null>(null);
+  const vista = ref<"grid" | "list">("grid");
+  const previewModalOpen = ref(false);
+  const selectedDocument = ref<any>(null);
+  const addDocumentModalOpen = ref(false);
 
-// Estado de filtros avanzados
-const filters = ref<AdvancedFilters>({ scope: "personalizadas" });
+  // Estado de filtros avanzados
+  const filters = ref<AdvancedFilters>({ scope: "personalizadas" });
 
-// Cargar carpetas cuando cambie la sociedad
-watch(
-  () => dashboardStore.sociedadSeleccionada?.id,
-  async (sociedadId) => {
-    if (sociedadId && carpetas.value.length === 0) {
-      // El composable ya carga automáticamente
-    }
-  },
-  { immediate: true }
-);
-
-// Cargar detalle cuando se seleccione una carpeta
-watch(
-  () => selectedFolderId.value,
-  async (carpetaId) => {
-    if (carpetaId) {
-      await cargarDetalleCarpeta(carpetaId);
-    }
-  }
-);
-
-// Filtrar carpetas por búsqueda (solo en vista principal)
-const carpetasFiltradas = computed(() => {
-  if (selectedFolderId.value) return [];
-  if (!searchQuery.value.trim()) return carpetas.value;
-  const query = searchQuery.value.toLowerCase();
-  return carpetas.value.filter(
-    (carpeta) =>
-      carpeta.nombre.toLowerCase().includes(query) ||
-      carpeta.descripcion?.toLowerCase().includes(query)
+  // Cargar carpetas cuando cambie la sociedad
+  watch(
+    () => dashboardStore.sociedadSeleccionada?.id,
+    async (sociedadId) => {
+      if (sociedadId && carpetas.value.length === 0) {
+        // El composable ya carga automáticamente
+      }
+    },
+    { immediate: true }
   );
-});
 
-// Filtrar enlaces por búsqueda (cuando está dentro de carpeta)
-const enlacesFiltrados = computed(() => {
-  if (!selectedFolderId.value) return [];
-  if (!searchQuery.value.trim()) return enlacesActuales.value;
-  const query = searchQuery.value.toLowerCase();
-  return enlacesActuales.value.filter(
-    (enlace) => enlace.nombre.toLowerCase().includes(query)
+  // Cargar detalle cuando se seleccione una carpeta
+  watch(
+    () => selectedFolderId.value,
+    async (carpetaId) => {
+      if (carpetaId) {
+        await cargarDetalleCarpeta(carpetaId);
+      }
+    }
   );
-});
 
-const handleCreateCarpeta = async () => {
-  if (!newCarpetaNombre.value.trim()) return;
-
-  await crearCarpeta({
-    nombre: newCarpetaNombre.value,
-    descripcion: newCarpetaDescripcion.value || undefined,
-    isChatIA: newCarpetaIsChatIA.value,
+  // Filtrar carpetas por búsqueda (solo en vista principal)
+  const carpetasFiltradas = computed(() => {
+    if (selectedFolderId.value) return [];
+    if (!searchQuery.value.trim()) return carpetas.value;
+    const query = searchQuery.value.toLowerCase();
+    return carpetas.value.filter(
+      (carpeta) =>
+        carpeta.nombre.toLowerCase().includes(query) ||
+        carpeta.descripcion?.toLowerCase().includes(query)
+    );
   });
 
-  newCarpetaNombre.value = "";
-  newCarpetaDescripcion.value = "";
-  newCarpetaIsChatIA.value = false;
-  createModalOpen.value = false;
-};
+  // Filtrar enlaces por búsqueda (cuando está dentro de carpeta)
+  const enlacesFiltrados = computed(() => {
+    if (!selectedFolderId.value) return [];
+    if (!searchQuery.value.trim()) return enlacesActuales.value;
+    const query = searchQuery.value.toLowerCase();
+    return enlacesActuales.value.filter((enlace) =>
+      enlace.nombre.toLowerCase().includes(query)
+    );
+  });
 
-const handleCarpetaClick = (carpetaId: string) => {
-  selectedFolderId.value = carpetaId;
-};
+  const handleCreateCarpeta = async () => {
+    if (!newCarpetaNombre.value.trim()) return;
 
-const handleBack = () => {
-  selectedFolderId.value = null;
-};
+    await crearCarpeta({
+      nombre: newCarpetaNombre.value,
+      descripcion: newCarpetaDescripcion.value || undefined,
+      isChatIA: newCarpetaIsChatIA.value,
+    });
 
-const handleDocumentClick = async (enlace: any) => {
-  selectedDocument.value = {
-    name: enlace.nombre,
-    type: enlace.tipo === "societario" ? "documento societario" : "documento generado",
-    owner: "Sistema",
-    dateModified: enlace.fechaEnlace,
-    size: undefined,
+    newCarpetaNombre.value = "";
+    newCarpetaDescripcion.value = "";
+    newCarpetaIsChatIA.value = false;
+    createModalOpen.value = false;
   };
-  previewModalOpen.value = true;
-};
 
-const handleRemoveEnlace = async (enlaceId: string) => {
-  if (confirm("¿Estás seguro de eliminar este enlace?")) {
-    await eliminarEnlace(enlaceId);
+  const handleCarpetaClick = (carpetaId: string) => {
+    selectedFolderId.value = carpetaId;
+  };
+
+  const handleBack = () => {
+    selectedFolderId.value = null;
+  };
+
+  const handleDocumentClick = async (enlace: any) => {
+    selectedDocument.value = {
+      name: enlace.nombre,
+      type: enlace.tipo === "societario" ? "documento societario" : "documento generado",
+      owner: "Sistema",
+      dateModified: enlace.fechaEnlace,
+      size: undefined,
+    };
+    previewModalOpen.value = true;
+  };
+
+  const handleRemoveEnlace = async (enlaceId: string) => {
+    if (confirm("¿Estás seguro de eliminar este enlace?")) {
+      await eliminarEnlace(enlaceId);
+      if (selectedFolderId.value) {
+        await cargarDetalleCarpeta(selectedFolderId.value);
+      }
+    }
+  };
+
+  const handleDocumentsAdded = async () => {
+    // Refrescar la lista de enlaces después de agregar documentos
     if (selectedFolderId.value) {
       await cargarDetalleCarpeta(selectedFolderId.value);
     }
-  }
-};
+  };
 
-// Mock de miembros (hasta que se implemente en la entidad)
-const miembrosMock = computed(() => {
-  if (!carpetaActual.value) return [];
-  // Simular miembros basado en el creador
-  return [
-    {
-      id: carpetaActual.value.creadorId,
-      nombre: carpetaActual.value.creadorNombre,
-      permisos: ["Ver", "Editar", "Eliminar"],
-    },
-  ];
-});
+  const handleStartChatIA = () => {
+    if (!carpetaActual.value || !carpetaActual.value.isChatIA) {
+      return;
+    }
 
-const formatDate = (date: Date) => {
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    // Navegar al chat con el contexto de la carpeta
+    router.push({
+      path: "/chat-ia",
+      query: {
+        folderId: carpetaActual.value.id,
+        folderName: carpetaActual.value.nombre,
+        context: "folder",
+        societyId: dashboardStore.sociedadSeleccionada?.id || "",
+      },
+    });
+  };
 
-  if (days === 0) return "Hoy";
-  if (days === 1) return "Ayer";
-  if (days < 7) return `Hace ${days} días`;
-  if (days < 30) return `Hace ${Math.floor(days / 7)} semanas`;
-  return `Hace ${Math.floor(days / 30)} meses`;
-};
+  // Mock de miembros (hasta que se implemente en la entidad)
+  const miembrosMock = computed(() => {
+    if (!carpetaActual.value) return [];
+    // Simular miembros basado en el creador
+    return [
+      {
+        id: carpetaActual.value.creadorId,
+        nombre: carpetaActual.value.creadorNombre,
+        permisos: ["Ver", "Editar", "Eliminar"],
+      },
+    ];
+  });
+
+  const formatDate = (date: Date) => {
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    if (days === 0) return "Hoy";
+    if (days === 1) return "Ayer";
+    if (days < 7) return `Hace ${days} días`;
+    if (days < 30) return `Hace ${Math.floor(days / 7)} semanas`;
+    return `Hace ${Math.floor(days / 30)} meses`;
+  };
 
   const _formatSize = (bytes?: number) => {
-  if (!bytes) return "";
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-};
+    if (!bytes) return "";
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
 </script>
 
 <template>
-  <div
-    class="h-full overflow-y-auto"
-    style="background-color: var(--bg-muted)"
-  >
+  <div class="h-full overflow-y-auto" style="background-color: var(--bg-muted)">
     <div class="max-w-[1600px] mx-auto px-8 py-6">
       <!-- Vista Principal: Lista de Carpetas -->
       <template v-if="!selectedFolderId">
@@ -206,10 +232,7 @@ const formatDate = (date: Date) => {
                   <Grid
                     class="w-4 h-4"
                     :style="{
-                      color:
-                        vista === 'grid'
-                          ? 'var(--primary-700)'
-                          : 'var(--text-muted)',
+                      color: vista === 'grid' ? 'var(--primary-700)' : 'var(--text-muted)',
                     }"
                   />
                 </button>
@@ -221,10 +244,7 @@ const formatDate = (date: Date) => {
                   <List
                     class="w-4 h-4"
                     :style="{
-                      color:
-                        vista === 'list'
-                          ? 'var(--primary-700)'
-                          : 'var(--text-muted)',
+                      color: vista === 'list' ? 'var(--primary-700)' : 'var(--text-muted)',
                     }"
                   />
                 </button>
@@ -258,26 +278,15 @@ const formatDate = (date: Date) => {
 
         <!-- Contenido -->
         <div v-if="isLoading" class="flex items-center justify-center py-12">
-          <p
-            class="text-sm"
-            :style="{ color: 'var(--text-muted)' }"
-          >
-            Cargando carpetas...
-          </p>
+          <p class="text-sm" :style="{ color: 'var(--text-muted)' }">Cargando carpetas...</p>
         </div>
 
         <div
           v-else-if="carpetasFiltradas.length === 0"
           class="flex flex-col items-center justify-center py-12"
         >
-          <div
-            class="p-6 rounded-full mb-4"
-            style="background-color: #F3E8FF"
-          >
-            <FolderOpen
-              class="w-12 h-12"
-              style="color: #A855F7"
-            />
+          <div class="p-6 rounded-full mb-4" style="background-color: #f3e8ff">
+            <FolderOpen class="w-12 h-12" style="color: #a855f7" />
           </div>
           <p
             class="text-lg mb-2"
@@ -289,10 +298,7 @@ const formatDate = (date: Date) => {
           >
             No hay carpetas personalizadas
           </p>
-          <p
-            class="text-sm"
-            :style="{ color: 'var(--text-muted)' }"
-          >
+          <p class="text-sm" :style="{ color: 'var(--text-muted)' }">
             Crea tu primera carpeta para organizar tus documentos
           </p>
         </div>
@@ -310,14 +316,8 @@ const formatDate = (date: Date) => {
             @click="handleCarpetaClick(carpeta.id)"
           >
             <div class="flex items-center justify-center mb-3">
-              <div
-                class="p-4 rounded-lg"
-                style="background-color: #F3E8FF"
-              >
-                <FolderOpen
-                  class="w-8 h-8"
-                  style="color: #A855F7"
-                />
+              <div class="p-4 rounded-lg" style="background-color: #f3e8ff">
+                <FolderOpen class="w-8 h-8" style="color: #a855f7" />
               </div>
             </div>
             <h4
@@ -348,10 +348,7 @@ const formatDate = (date: Date) => {
         >
           <table class="w-full">
             <thead>
-              <tr
-                class="bg-gray-50 border-b"
-                :style="{ borderColor: 'var(--border-light)' }"
-              >
+              <tr class="bg-gray-50 border-b" :style="{ borderColor: 'var(--border-light)' }">
                 <th
                   class="px-6 py-3 text-left text-xs font-medium"
                   :style="{
@@ -391,14 +388,8 @@ const formatDate = (date: Date) => {
               >
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-3">
-                    <div
-                      class="p-2 rounded-lg"
-                      style="background-color: #F3E8FF"
-                    >
-                      <FolderOpen
-                        class="w-4 h-4"
-                        style="color: #A855F7"
-                      />
+                    <div class="p-2 rounded-lg" style="background-color: #f3e8ff">
+                      <FolderOpen class="w-4 h-4" style="color: #a855f7" />
                     </div>
                     <div>
                       <span
@@ -454,10 +445,7 @@ const formatDate = (date: Date) => {
         <!-- Header con Breadcrumb -->
         <div class="mb-6">
           <div class="flex items-center gap-2 mb-4">
-            <FolderOpen
-              class="w-5 h-5"
-              :style="{ color: 'var(--primary-700)' }"
-            />
+            <FolderOpen class="w-5 h-5" :style="{ color: 'var(--primary-700)' }" />
             <span
               class="text-sm"
               :style="{
@@ -467,10 +455,7 @@ const formatDate = (date: Date) => {
             >
               Carpetas Personalizadas
             </span>
-            <ChevronRight
-              class="w-4 h-4"
-              :style="{ color: 'var(--text-muted)' }"
-            />
+            <ChevronRight class="w-4 h-4" :style="{ color: 'var(--text-muted)' }" />
             <span
               class="text-sm"
               :style="{
@@ -508,6 +493,21 @@ const formatDate = (date: Date) => {
             />
 
             <div class="flex items-center gap-3">
+              <!-- Botón Agregar Documento -->
+              <button
+                class="flex items-center gap-2 px-4 py-2 rounded-lg transition-all"
+                style="
+                  background-color: var(--primary-700);
+                  color: white;
+                  font-family: var(--font-secondary);
+                  font-weight: 500;
+                "
+                @click="addDocumentModalOpen = true"
+              >
+                <Plus class="w-4 h-4" />
+                <span>Agregar Documento</span>
+              </button>
+
               <!-- Toggle Grid/List -->
               <div class="flex items-center gap-2 bg-white rounded-lg border p-1">
                 <button
@@ -518,10 +518,7 @@ const formatDate = (date: Date) => {
                   <Grid
                     class="w-4 h-4"
                     :style="{
-                      color:
-                        vista === 'grid'
-                          ? 'var(--primary-700)'
-                          : 'var(--text-muted)',
+                      color: vista === 'grid' ? 'var(--primary-700)' : 'var(--text-muted)',
                     }"
                   />
                 </button>
@@ -533,10 +530,7 @@ const formatDate = (date: Date) => {
                   <List
                     class="w-4 h-4"
                     :style="{
-                      color:
-                        vista === 'list'
-                          ? 'var(--primary-700)'
-                          : 'var(--text-muted)',
+                      color: vista === 'list' ? 'var(--primary-700)' : 'var(--text-muted)',
                     }"
                   />
                 </button>
@@ -551,14 +545,8 @@ const formatDate = (date: Date) => {
           :style="{ borderColor: 'var(--border-light)' }"
         >
           <div class="flex items-start gap-4 mb-6">
-            <div
-              class="p-4 rounded-xl"
-              style="background-color: #F3E8FF"
-            >
-              <FolderOpen
-                class="w-8 h-8"
-                style="color: #A855F7"
-              />
+            <div class="p-4 rounded-xl" style="background-color: #f3e8ff">
+              <FolderOpen class="w-8 h-8" style="color: #a855f7" />
             </div>
             <div class="flex-1">
               <h2
@@ -588,6 +576,26 @@ const formatDate = (date: Date) => {
                 <span :style="{ color: 'var(--text-muted)' }">
                   Creada: {{ formatDate(carpetaActual.fechaCreacion) }}
                 </span>
+              </div>
+
+              <!-- Botón Iniciar Chat con IA (solo si está habilitado) -->
+              <div v-if="carpetaActual.isChatIA" class="mt-4">
+                <button
+                  class="flex items-center gap-2 px-4 py-2 rounded-lg transition-all"
+                  style="
+                    background-color: var(--primary-700);
+                    color: white;
+                    font-family: var(--font-secondary);
+                    font-weight: 500;
+                  "
+                  @click="handleStartChatIA"
+                >
+                  <Bot class="w-4 h-4" />
+                  <span>Iniciar Chat con IA</span>
+                </button>
+                <p class="text-xs mt-2" :style="{ color: 'var(--text-muted)' }">
+                  Consulta los documentos de esta carpeta mediante chat con IA
+                </p>
               </div>
             </div>
           </div>
@@ -635,10 +643,7 @@ const formatDate = (date: Date) => {
                   >
                     {{ miembro.nombre }}
                   </p>
-                  <p
-                    class="text-xs"
-                    :style="{ color: 'var(--text-muted)' }"
-                  >
+                  <p class="text-xs" :style="{ color: 'var(--text-muted)' }">
                     {{ miembro.permisos.join(", ") }}
                   </p>
                 </div>
@@ -673,14 +678,8 @@ const formatDate = (date: Date) => {
               @click="handleDocumentClick(enlace)"
             >
               <div class="flex items-center justify-center mb-3">
-                <div
-                  class="p-4 rounded-lg"
-                  style="background-color: #FEE2E2"
-                >
-                  <FileText
-                    class="w-8 h-8"
-                    style="color: #DC2626"
-                  />
+                <div class="p-4 rounded-lg" style="background-color: #fee2e2">
+                  <FileText class="w-8 h-8" style="color: #dc2626" />
                 </div>
               </div>
               <h4
@@ -699,15 +698,13 @@ const formatDate = (date: Date) => {
                 <div
                   class="inline-block px-2 py-1 rounded-full text-xs"
                   :style="{
-                    backgroundColor:
-                      enlace.tipo === 'societario' ? '#EEF2FF' : '#DBEAFE',
-                    color:
-                      enlace.tipo === 'societario' ? '#3C28A4' : '#3B82F6',
+                    backgroundColor: enlace.tipo === 'societario' ? '#EEF2FF' : '#DBEAFE',
+                    color: enlace.tipo === 'societario' ? '#3C28A4' : '#3B82F6',
                     fontFamily: 'var(--font-secondary)',
                     fontWeight: 500,
                   }"
                 >
-                  {{ enlace.tipo === 'societario' ? 'Societario' : 'Generado' }}
+                  {{ enlace.tipo === "societario" ? "Societario" : "Generado" }}
                 </div>
               </div>
 
@@ -722,10 +719,7 @@ const formatDate = (date: Date) => {
                       class="p-1 rounded-lg hover:bg-gray-100 transition-colors"
                       @click.stop
                     >
-                      <MoreVertical
-                        class="w-4 h-4"
-                        :style="{ color: 'var(--text-muted)' }"
-                      />
+                      <MoreVertical class="w-4 h-4" :style="{ color: 'var(--text-muted)' }" />
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
@@ -815,14 +809,8 @@ const formatDate = (date: Date) => {
                 >
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-3">
-                      <div
-                        class="p-2 rounded-lg"
-                        style="background-color: #FEE2E2"
-                      >
-                        <FileText
-                          class="w-4 h-4"
-                          style="color: #DC2626"
-                        />
+                      <div class="p-2 rounded-lg" style="background-color: #fee2e2">
+                        <FileText class="w-4 h-4" style="color: #dc2626" />
                       </div>
                       <span
                         class="text-sm"
@@ -840,15 +828,13 @@ const formatDate = (date: Date) => {
                     <div
                       class="inline-block px-2 py-1 rounded-full text-xs"
                       :style="{
-                        backgroundColor:
-                          enlace.tipo === 'societario' ? '#EEF2FF' : '#DBEAFE',
-                        color:
-                          enlace.tipo === 'societario' ? '#3C28A4' : '#3B82F6',
+                        backgroundColor: enlace.tipo === 'societario' ? '#EEF2FF' : '#DBEAFE',
+                        color: enlace.tipo === 'societario' ? '#3C28A4' : '#3B82F6',
                         fontFamily: 'var(--font-secondary)',
                         fontWeight: 500,
                       }"
                     >
-                      {{ enlace.tipo === 'societario' ? 'Societario' : 'Generado' }}
+                      {{ enlace.tipo === "societario" ? "Societario" : "Generado" }}
                     </div>
                   </td>
                   <td class="px-6 py-4">
@@ -912,10 +898,7 @@ const formatDate = (date: Date) => {
             class="flex flex-col items-center justify-center py-12 bg-white rounded-xl border"
             :style="{ borderColor: 'var(--border-light)' }"
           >
-            <FileText
-              class="w-12 h-12 mb-4"
-              :style="{ color: 'var(--text-muted)' }"
-            />
+            <FileText class="w-12 h-12 mb-4" :style="{ color: 'var(--text-muted)' }" />
             <p
               class="text-lg mb-2"
               :style="{
@@ -926,11 +909,8 @@ const formatDate = (date: Date) => {
             >
               No hay documentos enlazados
             </p>
-            <p
-              class="text-sm"
-              :style="{ color: 'var(--text-muted)' }"
-            >
-              {{ searchQuery ? 'No se encontraron resultados' : 'Esta carpeta está vacía' }}
+            <p class="text-sm" :style="{ color: 'var(--text-muted)' }">
+              {{ searchQuery ? "No se encontraron resultados" : "Esta carpeta está vacía" }}
             </p>
           </div>
         </div>
@@ -946,6 +926,16 @@ const formatDate = (date: Date) => {
         "
       />
 
+      <!-- Add Document Modal -->
+      <AddDocumentModal
+        v-if="carpetaActual"
+        :is-open="addDocumentModalOpen"
+        :carpeta-id="carpetaActual.id"
+        :carpeta-nombre="carpetaActual.nombre"
+        @close="addDocumentModalOpen = false"
+        @documents-added="handleDocumentsAdded"
+      />
+
       <!-- Modal Crear Carpeta -->
       <Teleport to="body">
         <Transition name="modal">
@@ -958,9 +948,7 @@ const formatDate = (date: Date) => {
               class="absolute inset-0 bg-black/50 backdrop-blur-sm"
               @click="createModalOpen = false"
             />
-            <div
-              class="relative bg-white rounded-xl shadow-2xl w-full max-w-md z-10"
-            >
+            <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md z-10">
               <div
                 class="flex items-center justify-between p-6 border-b"
                 :style="{ borderColor: 'var(--border-light)' }"
@@ -979,10 +967,7 @@ const formatDate = (date: Date) => {
                   class="p-2 rounded-lg hover:bg-gray-100 transition-colors"
                   @click="createModalOpen = false"
                 >
-                  <X
-                    class="w-5 h-5"
-                    :style="{ color: 'var(--text-muted)' }"
-                  />
+                  <X class="w-5 h-5" :style="{ color: 'var(--text-muted)' }" />
                 </button>
               </div>
               <div class="p-6 space-y-4">
@@ -1052,10 +1037,7 @@ const formatDate = (date: Date) => {
                       >
                         Habilitar chat con IA
                       </span>
-                      <p
-                        class="text-xs mt-1"
-                        :style="{ color: 'var(--text-muted)' }"
-                      >
+                      <p class="text-xs mt-1" :style="{ color: 'var(--text-muted)' }">
                         Permite consultar documentos de esta carpeta mediante chat con IA
                       </p>
                     </div>
@@ -1098,24 +1080,24 @@ const formatDate = (date: Date) => {
 </template>
 
 <style scoped>
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.3s ease;
-}
+  .modal-enter-active,
+  .modal-leave-active {
+    transition: opacity 0.3s ease;
+  }
 
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
-}
+  .modal-enter-from,
+  .modal-leave-to {
+    opacity: 0;
+  }
 
-.modal-enter-active .relative,
-.modal-leave-active .relative {
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
+  .modal-enter-active .relative,
+  .modal-leave-active .relative {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
 
-.modal-enter-from .relative,
-.modal-leave-to .relative {
-  transform: scale(0.95);
-  opacity: 0;
-}
+  .modal-enter-from .relative,
+  .modal-leave-to .relative {
+    transform: scale(0.95);
+    opacity: 0;
+  }
 </style>

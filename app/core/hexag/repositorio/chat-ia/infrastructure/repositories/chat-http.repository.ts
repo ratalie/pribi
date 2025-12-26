@@ -52,8 +52,13 @@ export class ChatHttpRepository implements ChatRepository {
 
   async getConversation(conversationId: number): Promise<Conversation> {
     try {
-      const response = await $fetch<PopulateConversationResponse>(
-        `/api/v2/repository/conversations/${conversationId}`,
+      const response = await $fetch<{
+        success: boolean;
+        code: number;
+        message: string;
+        data: Conversation;
+      }>(
+        `/api/v2/repository/society-profile/conversations/${conversationId}`,
         {
           ...withAuthHeaders(),
           method: 'GET' as const,
@@ -62,45 +67,41 @@ export class ChatHttpRepository implements ChatRepository {
 
       return response.data;
     } catch (error) {
+      console.error('Error al obtener la conversación:', error);
       throw new Error('Error al obtener la conversación');
     }
   }
 
   async createConversation(virtualNodeId: number): Promise<Conversation> {
     try {
-      const response = await $fetch<BaseConversationInformation>(
-        `/api/v2/repository/virtual-nodes/${virtualNodeId}/conversations`,
+      const response = await $fetch<{
+        success: boolean;
+        code: number;
+        message: string;
+        data: Conversation;
+      }>(
+        `/api/v2/repository/society-profile/conversations/virtual-nodes/${virtualNodeId}`,
         {
           ...withAuthHeaders(),
           method: 'POST' as const,
         }
       );
 
-      // Convertir la respuesta a Conversation completa
-      const conversation: Conversation = {
-        id: response.data.data.id,
-        code: response.data.data.code,
-        title: response.data.data.title,
-        virtualFolderId: response.data.data.virtualFolderId,
-        userId: response.data.data.userId,
-        createdAt: response.data.data.createdAt,
-        updatedAt: response.data.data.updatedAt,
-        messages: [],
-      };
-
-      return conversation;
+      return response.data;
     } catch (error) {
+      console.error('Error al crear la conversación:', error);
       throw new Error('Error al crear la conversación');
     }
   }
 
   async deleteConversation(conversationId: number): Promise<void> {
     try {
-      await $fetch(`/api/v2/repository/conversations/${conversationId}`, {
+      await $fetch(`/api/v2/repository/society-profile/conversations/${conversationId}`, {
         ...withAuthHeaders(),
         method: 'DELETE' as const,
       });
     } catch (error) {
+      console.error('Error al eliminar la conversación:', error);
       throw new Error('Error al eliminar la conversación');
     }
   }
