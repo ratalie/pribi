@@ -265,7 +265,7 @@
   <div
     :class="[
       mode !== EntityModeEnum.RESUMEN
-        ? 'bg-white p-14'
+        ? 'bg-white py-8 px-10 2xl:py-14 2xl:px-14'
         : 'border border-gray-100 rounded-xl py-12 px-10',
     ]"
   >
@@ -352,7 +352,7 @@
       </div>
     </div>
 
-    <form v-else class="grid grid-cols-2 gap-14" @submit.prevent>
+    <form v-else class="grid grid-cols-2 gap-10 2xl:gap-14" @submit.prevent>
       <SearchInputZod
         v-model="form.numeroRuc"
         name="numero-ruc"

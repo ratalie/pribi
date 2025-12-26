@@ -1,21 +1,21 @@
 <script setup lang="ts">
-  import { ref } from "vue";
-  import { useRouter } from "vue-router";
   import { Button } from "@/components/ui/button";
   import {
-    LoaderCircle,
-    Building2,
-    FileText,
-    Users,
-    DollarSign,
-    Share2,
-    UserCog,
     Briefcase,
-    Shield,
-    Scale,
+    Building2,
     CheckCircle2,
+    DollarSign,
     FileCheck,
+    FileText,
+    LoaderCircle,
+    Scale,
+    Share2,
+    Shield,
+    UserCog,
+    Users,
   } from "lucide-vue-next";
+  import { ref } from "vue";
+  import { useRouter } from "vue-router";
   import { useSociedadHistorialStore } from "~/core/presentation/registros/sociedades/stores/sociedad-historial.store";
 
   definePageMeta({
@@ -154,19 +154,13 @@
           <div>
             <h1
               class="text-3xl font-bold mb-1"
-              style="
-                color: var(--text-primary);
-                font-family: var(--font-primary);
-              "
+              style="color: var(--text-primary); font-family: var(--font-primary)"
             >
               Crear Nueva Sociedad
             </h1>
             <p
               class="text-base"
-              style="
-                color: var(--text-muted);
-                font-family: var(--font-secondary);
-              "
+              style="color: var(--text-muted); font-family: var(--font-secondary)"
             >
               Completa el formulario guiado de 10 pasos para registrar una nueva sociedad
             </p>
@@ -178,16 +172,20 @@
     <!-- Contenido Principal -->
     <div class="max-w-[1600px] mx-auto px-8 py-12">
       <!-- Timeline -->
-      <div class="bg-white rounded-2xl border border-gray-200 shadow-lg p-8 lg:p-12">
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 2xl:p-10">
         <div class="relative">
           <!-- Línea de Timeline Principal (Desktop) -->
-          <div class="hidden lg:block absolute top-12 left-0 right-0 h-1.5 bg-gradient-to-r from-primary-200 via-primary-300 to-primary-200 rounded-full" />
-          
+          <div
+            class="hidden lg:block absolute top-12 left-0 right-0 h-1.5 bg-gradient-to-r from-primary-200 via-primary-300 to-primary-200 rounded-full"
+          />
+
           <!-- Línea de Timeline Principal (Mobile) -->
-          <div class="lg:hidden absolute left-12 top-0 bottom-0 w-1.5 bg-gradient-to-b from-primary-200 via-primary-300 to-primary-200 rounded-full" />
+          <div
+            class="lg:hidden absolute left-12 top-0 bottom-0 w-1.5 bg-gradient-to-b from-primary-200 via-primary-300 to-primary-200 rounded-full"
+          />
 
           <!-- Pasos del Timeline -->
-          <div class="space-y-12 lg:space-y-0 lg:flex lg:justify-between">
+          <div class="space-y-12 lg:space-y-0 lg:flex lg:gap-2 lg:justify-between">
             <div
               v-for="(step, index) in sociedadSteps"
               :key="step.number"
@@ -201,25 +199,37 @@
                 <!-- Círculo Exterior Animado -->
                 <div
                   class="absolute inset-0 rounded-full animate-ping opacity-20"
-                  :class="getColorClasses(step.color).bg"
-                  style="animation-duration: 2s; width: 80px; height: 80px; top: -8px; left: -8px;"
+                  :class="getColorClasses(step.color)?.bg"
+                  style="
+                    animation-duration: 2s;
+                    width: 80px;
+                    height: 80px;
+                    top: -8px;
+                    left: -8px;
+                  "
                 />
-                
+
                 <!-- Círculo Principal -->
                 <div
                   class="relative w-16 h-16 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 group-hover:scale-125 group-hover:shadow-2xl cursor-pointer"
-                  :class="getColorClasses(step.color).bg"
-                  style="background: linear-gradient(135deg, var(--primary-600), var(--primary-400))"
+                  :class="getColorClasses(step.color)?.bg"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      var(--primary-600),
+                      var(--primary-400)
+                    );
+                  "
                 >
                   <component
                     :is="step.icon"
                     class="w-8 h-8 text-white transition-transform duration-300 group-hover:rotate-12"
                   />
-                  
+
                   <!-- Número del Paso -->
                   <div
                     class="absolute -bottom-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shadow-lg border-2 border-white"
-                    :class="getColorClasses(step.color).bg"
+                    :class="getColorClasses(step.color)?.bg"
                   >
                     {{ step.number }}
                   </div>
@@ -230,19 +240,13 @@
               <div class="mt-6 text-center max-w-[140px]">
                 <h3
                   class="text-sm font-bold mb-1"
-                  style="
-                    color: var(--text-primary);
-                    font-family: var(--font-primary);
-                  "
+                  style="color: var(--text-primary); font-family: var(--font-primary)"
                 >
                   {{ step.title }}
                 </h3>
                 <p
                   class="text-xs leading-relaxed"
-                  style="
-                    color: var(--text-muted);
-                    font-family: var(--font-secondary);
-                  "
+                  style="color: var(--text-muted); font-family: var(--font-secondary)"
                 >
                   {{ step.description }}
                 </p>
@@ -252,7 +256,7 @@
               <div
                 v-if="index < sociedadSteps.length - 1"
                 class="hidden lg:block absolute top-12 left-1/2 w-full h-1.5 bg-gradient-to-r from-primary-300 to-primary-200 rounded-full"
-                style="width: calc(100% - 4rem); transform: translateX(2rem);"
+                style="width: calc(100% - 4rem); transform: translateX(2rem)"
               />
             </div>
           </div>
@@ -264,10 +268,7 @@
         <div class="flex flex-col items-center gap-4 md:flex-row md:justify-between">
           <div
             class="text-sm flex items-center gap-2 text-center md:text-left"
-            style="
-              color: var(--text-muted);
-              font-family: var(--font-secondary);
-            "
+            style="color: var(--text-muted); font-family: var(--font-secondary)"
           >
             <CheckCircle2 class="w-4 h-4 text-green-500 flex-shrink-0" />
             <p>
@@ -286,7 +287,7 @@
             <Button
               variant="primary"
               size="lg"
-              class="w-full md:w-auto shadow-lg hover:shadow-xl transition-all"
+              class="w-full px-2 md:w-auto shadow-lg hover:shadow-xl transition-all"
               :disabled="isSubmitting"
               @click="handleStartFlow"
               style="
@@ -295,14 +296,8 @@
                 font-weight: 600;
               "
             >
-              <LoaderCircle
-                v-if="isSubmitting"
-                class="mr-2 h-5 w-5 animate-spin"
-              />
-              <FileCheck
-                v-else
-                class="mr-2 h-5 w-5"
-              />
+              <LoaderCircle v-if="isSubmitting" class="mr-2 h-5 w-5 animate-spin" />
+              <FileCheck v-else class="mr-2 h-5 w-5" />
               Comenzar formulario guiado
             </Button>
           </div>

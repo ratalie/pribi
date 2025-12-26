@@ -24,7 +24,7 @@
 </script>
 
 <template>
-  <div class="p-14 flex flex-col gap-12">
+  <div class="py-8 px-10 2xl:py-14 2xl:px-14 flex flex-col gap-10 2xl:gap-12">
     <CardTitle title="Resumen" body="Visualiza toda la información" />
 
     <DatosSociedadForm :mode="mode" :society-id="societyId" />
