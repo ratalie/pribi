@@ -79,6 +79,7 @@
     zoom,
     showSidebar: showViewerSidebar,
     loadDocument,
+    loadPptxDocument,
     setPdfViewerRef,
     setOfficeViewerRef,
     setExcelViewerRef,
@@ -117,6 +118,9 @@
   // Referencias a los tabs
   const generalTabRef = ref<InstanceType<typeof GeneralTab> | null>(null);
   const historyTabRef = ref<InstanceType<typeof HistoryTab> | null>(null);
+
+  // Referencia al componente DocumentPreview (para cargar PPTX)
+  const documentPreviewRef = ref<InstanceType<typeof DocumentPreview> | null>(null);
 
   // Funciones de formato (no usadas actualmente, pero pueden ser útiles)
   // const formatDate = (date: Date) => {
@@ -249,13 +253,51 @@
           console.log("🚀 [PreviewModal] Iniciando carga del documento...");
           // Asegurar que isViewerLoading se establece correctamente
           isViewerLoading.value = true;
-          
+
           // Esperar un poco más después del cleanup para asegurar que el DOM esté listo
           await nextTick();
           await new Promise((resolve) => setTimeout(resolve, 50));
-          
+
           await loadDocument(documentFile);
           console.log("✅ [PreviewModal] Documento cargado exitosamente");
+
+          // Verificar isPptx después de loadDocument
+          console.log("🔍 [PreviewModal] Verificando isPptx después de loadDocument:", {
+            isPptx: isPptx.value,
+            documentFileName: documentFile.name,
+            documentMimeType: documentFile.mimeType,
+            hasDocumentPreviewRef: !!documentPreviewRef.value,
+          });
+
+          // Si es PPTX, cargar el blob en el componente DocumentPreview
+          if (isPptx.value && documentPreviewRef.value) {
+            console.log("📊 [PreviewModal] PPTX detectado, cargando en componente...");
+            try {
+              // Esperar más tiempo para que el DOM esté completamente listo
+              await nextTick();
+              await nextTick();
+              await new Promise((resolve) => setTimeout(resolve, 200));
+
+              const pptxBlob = await loadPptxDocument(documentFile);
+
+              // Esperar más tiempo después de descargar para que el contenedor esté listo
+              await nextTick();
+              await nextTick();
+              await new Promise((resolve) => setTimeout(resolve, 150));
+
+              if (
+                documentPreviewRef.value &&
+                typeof documentPreviewRef.value.loadPptx === "function"
+              ) {
+                await documentPreviewRef.value.loadPptx(pptxBlob);
+                console.log("✅ [PreviewModal] PPTX cargado en componente");
+              } else {
+                console.warn("⚠️ [PreviewModal] loadPptx no disponible en DocumentPreview");
+              }
+            } catch (pptxErr: any) {
+              console.error("❌ [PreviewModal] Error cargando PPTX en componente:", pptxErr);
+            }
+          }
 
           // Esperar a que Vue termine de renderizar antes de actualizar el estado de loading
           await nextTick();
@@ -605,6 +647,7 @@
 
             <!-- Document Preview -->
             <DocumentPreview
+              ref="documentPreviewRef"
               :is-pdf="isPdf"
               :is-office="isOffice"
               :is-pptx="isPptx"

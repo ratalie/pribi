@@ -697,8 +697,16 @@ export function useDocumentViewer() {
 
       // Esperar a que el contenedor esté disponible (con retry)
       if (!container) {
-        // Esperar hasta 2 segundos para que el contenedor esté disponible
-        for (let i = 0; i < 20; i++) {
+        console.log("⏳ [useDocumentViewer] Esperando contenedor para Office document:", {
+          isExcelFile,
+          isPptxFile,
+          excelViewerRefExists: !!excelViewerRef.value,
+          pptxViewerRefExists: !!pptxViewerRef.value,
+          officeViewerRefExists: !!officeViewerRef.value,
+        });
+
+        // Esperar hasta 3 segundos para que el contenedor esté disponible (aumentado de 2 a 3)
+        for (let i = 0; i < 30; i++) {
           await new Promise((resolve) => setTimeout(resolve, 100));
           if (isExcelFile) {
             container = excelViewerRef.value;
@@ -707,7 +715,12 @@ export function useDocumentViewer() {
           } else {
             container = officeViewerRef.value;
           }
-          if (container) break;
+          if (container) {
+            console.log(
+              `✅ [useDocumentViewer] Contenedor encontrado después de ${i + 1} intentos`
+            );
+            break;
+          }
         }
       }
 
@@ -715,7 +728,64 @@ export function useDocumentViewer() {
         throw new Error("No se encontró el contenedor para el documento de Office");
       }
 
+      // Verificar que el contenedor esté conectado al DOM
+      if (!container.isConnected) {
+        console.warn(
+          "⚠️ [useDocumentViewer] Contenedor no está conectado al DOM, esperando..."
+        );
+        // Esperar hasta 1 segundo para que se conecte
+        for (let i = 0; i < 10; i++) {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          if (container.isConnected) {
+            console.log(
+              `✅ [useDocumentViewer] Contenedor conectado después de ${i + 1} intentos`
+            );
+            break;
+          }
+        }
+        if (!container.isConnected) {
+          throw new Error("El contenedor no está conectado al DOM");
+        }
+      }
+
+      // Para PPTX, necesitamos usar VueOfficePptx en lugar de DocumentPreviewService
+      // El componente DocumentPreview manejará el renderizado usando VueOfficePptx
+      // Esta función no debería ser llamada para PPTX, pero por si acaso, manejamos el caso
+      if (isPptxFile) {
+        console.log(
+          "📊 [useDocumentViewer] PPTX detectado en loadOfficeDocument (no debería pasar):",
+          {
+            fileName: file.name,
+            mimeType,
+          }
+        );
+
+        // Guardar el documento actual
+        currentDocument.value = file;
+
+        // No renderizar nada aquí, el componente DocumentPreview lo hará
+        // Esta función no debería ser llamada para PPTX desde loadDocument
+        return; // Salir temprano
+      }
+
+      console.log("🔄 [useDocumentViewer] Generando preview de Office document:", {
+        fileName: file.name,
+        mimeType,
+        isExcelFile,
+        isPptxFile,
+        containerId: container.id,
+        containerClassName: container.className,
+        containerIsConnected: container.isConnected,
+        containerClientWidth: container.clientWidth,
+        containerClientHeight: container.clientHeight,
+      });
+
       const preview = await DocumentPreviewService.previewDocument(fileBlob, mimeType);
+
+      console.log("✅ [useDocumentViewer] Preview generado:", {
+        type: preview.type,
+        contentLength: preview.type === "html" ? (preview.content as string).length : "N/A",
+      });
 
       // Limpiar el contenedor
       container.innerHTML = "";
@@ -751,6 +821,10 @@ export function useDocumentViewer() {
           `;
         }
         container.appendChild(previewDiv);
+        console.log("✅ [useDocumentViewer] HTML renderizado en contenedor:", {
+          isExcelFile,
+          containerHasContent: container.innerHTML.length > 0,
+        });
       } else if (preview.type === "image") {
         const img = document.createElement("img");
         img.src = preview.content as string;
@@ -759,11 +833,19 @@ export function useDocumentViewer() {
         img.style.display = "block";
         img.style.margin = "0 auto";
         container.appendChild(img);
+        console.log("✅ [useDocumentViewer] Imagen renderizada en contenedor");
       } else if (preview.type === "canvas") {
         container.appendChild(preview.content as HTMLCanvasElement);
+        console.log("✅ [useDocumentViewer] Canvas renderizado en contenedor");
       }
 
       currentDocument.value = file;
+      console.log("✅ [useDocumentViewer] Office document cargado exitosamente:", {
+        fileName: file.name,
+        mimeType,
+        isExcelFile,
+        isPptxFile,
+      });
     } catch (err: any) {
       const errorMessage =
         err?.message || String(err) || "Error desconocido al cargar el documento de Office";
@@ -828,6 +910,56 @@ export function useDocumentViewer() {
   }
 
   // Cargar documento (detecta tipo automáticamente) - usa pending document pattern
+  // Variable para almacenar el blob de PPTX descargado
+  const pptxBlobCache = ref<Blob | null>(null);
+
+  // Cargar documento PowerPoint
+  async function loadPptxDocument(file: DocumentFile): Promise<Blob> {
+    try {
+      if (!file.versionCode) {
+        throw new Error("No se encontró el código de versión del documento");
+      }
+
+      // Si ya tenemos el blob en cache y es el mismo archivo, reutilizarlo
+      if (pptxBlobCache.value && currentDocument.value?.versionCode === file.versionCode) {
+        console.log("♻️ [useDocumentViewer] Reutilizando blob PPTX del cache");
+        return pptxBlobCache.value;
+      }
+
+      console.log("📊 [useDocumentViewer] loadPptxDocument: Descargando PPTX:", {
+        fileName: file.name,
+        versionCode: file.versionCode,
+      });
+
+      const repository = new RepositorioDocumentosHttpRepository();
+      const fileBlob = await repository.descargarVersion(file.versionCode);
+
+      console.log("✅ [useDocumentViewer] PPTX descargado:", {
+        fileName: file.name,
+        blobSize: fileBlob.size,
+        blobType: fileBlob.type,
+      });
+
+      // Guardar el documento actual y el blob en cache
+      currentDocument.value = file;
+      pptxBlobCache.value = fileBlob;
+
+      return fileBlob;
+    } catch (err: any) {
+      const errorMessage =
+        err?.message || String(err) || "Error desconocido al cargar el documento PowerPoint";
+      console.error("❌ [useDocumentViewer] Error loading PPTX document:", {
+        error: err,
+        message: errorMessage,
+        stack: err?.stack,
+        fileName: file.name,
+        versionCode: file.versionCode,
+      });
+      error.value = errorMessage;
+      throw err;
+    }
+  }
+
   async function loadDocument(file: DocumentFile) {
     try {
       // Limpiar completamente antes de cargar un nuevo documento
@@ -878,7 +1010,17 @@ export function useDocumentViewer() {
         extension === "pptx" ||
         extension === "ppt"
       ) {
-        await loadOfficeDocumentWithPending(file);
+        console.log("🔵 [useDocumentViewer] Detectado como PowerPoint");
+        // Para PPTX, solo marcamos que el documento está cargado
+        // El blob se descargará desde PreviewModal cuando se llame a loadPptxDocument()
+        // IMPORTANTE: currentDocument.value ya está establecido arriba (línea 960)
+        // Esto asegura que isPptx se evalúe correctamente
+        console.log("✅ [useDocumentViewer] PPTX detectado, currentDocument establecido:", {
+          fileName: currentDocument.value?.name,
+          mimeType: currentDocument.value?.mimeType,
+          isPptx: isPptx.value,
+        });
+        // No descargamos aquí, se hará desde PreviewModal para evitar doble descarga
       } else if (mimeType.startsWith("image/")) {
         await loadOfficeDocumentWithPending(file);
       } else {
@@ -944,16 +1086,27 @@ export function useDocumentViewer() {
   });
 
   const isPptx = computed(() => {
-    if (!currentDocument.value) return false;
+    if (!currentDocument.value) {
+      console.log("🔍 [useDocumentViewer] isPptx: No hay currentDocument");
+      return false;
+    }
     const mimeType = currentDocument.value.mimeType || currentDocument.value.type;
     const extension = currentDocument.value.name.toLowerCase().split(".").pop() || "";
-    return (
+    const isPptxFile =
       mimeType === "application/vnd.ms-powerpoint" ||
       mimeType ===
         "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
       extension === "pptx" ||
-      extension === "ppt"
-    );
+      extension === "ppt";
+
+    console.log("🔍 [useDocumentViewer] isPptx evaluado:", {
+      fileName: currentDocument.value.name,
+      mimeType,
+      extension,
+      isPptxFile,
+    });
+
+    return isPptxFile;
   });
 
   // Cargar documento pendiente
@@ -969,8 +1122,15 @@ export function useDocumentViewer() {
     console.log("🚀 [useDocumentViewer] loadPendingDocument: Cargando documento pendiente:", {
       fileName: file.name,
       versionCode: file.versionCode,
+      mimeType: file.mimeType || file.type,
       isPdf: isPdf.value,
+      isOffice: isOffice.value,
+      isExcel: isExcel.value,
+      isPptx: isPptx.value,
       pdfViewerRefExists: !!pdfViewerRef.value,
+      officeViewerRefExists: !!officeViewerRef.value,
+      excelViewerRefExists: !!excelViewerRef.value,
+      pptxViewerRefExists: !!pptxViewerRef.value,
     });
 
     try {
@@ -983,6 +1143,38 @@ export function useDocumentViewer() {
         }
         await loadPdfDocument(file, pdfViewerRef.value);
       } else if (isOffice.value || isExcel.value || isPptx.value) {
+        // Verificar que la referencia necesaria esté disponible
+        const mimeType = file.mimeType || file.type;
+        const extension = file.name.toLowerCase().split(".").pop() || "";
+        const isExcelFile =
+          mimeType === "application/vnd.ms-excel" ||
+          mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+          extension === "xlsx" ||
+          extension === "xls";
+        const isPptxFile =
+          mimeType === "application/vnd.ms-powerpoint" ||
+          mimeType ===
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
+          extension === "pptx" ||
+          extension === "ppt";
+
+        if (isExcelFile && !excelViewerRef.value) {
+          console.error(
+            "❌ [useDocumentViewer] loadPendingDocument: excelViewerRef no disponible para Excel pendiente"
+          );
+          return;
+        } else if (isPptxFile && !pptxViewerRef.value) {
+          console.error(
+            "❌ [useDocumentViewer] loadPendingDocument: pptxViewerRef no disponible para PPTX pendiente"
+          );
+          return;
+        } else if (!isExcelFile && !isPptxFile && !officeViewerRef.value) {
+          console.error(
+            "❌ [useDocumentViewer] loadPendingDocument: officeViewerRef no disponible para Office pendiente"
+          );
+          return;
+        }
+
         await loadOfficeDocument(file);
       }
       console.log(
@@ -1042,11 +1234,27 @@ export function useDocumentViewer() {
   function setExcelViewerRef(ref: HTMLElement | null) {
     excelViewerRef.value = ref;
 
+    console.log("🔗 [useDocumentViewer] setExcelViewerRef:", {
+      refExists: !!ref,
+      refId: ref?.id,
+      refClassName: ref?.className,
+      refIsConnected: ref?.isConnected,
+      refClientWidth: ref?.clientWidth,
+      refClientHeight: ref?.clientHeight,
+      hasPendingDocument: !!pendingDocument.value,
+      pendingDocumentName: pendingDocument.value?.name,
+    });
+
     // Si hay un documento pendiente de carga, cargarlo ahora
     if (ref && pendingDocument.value) {
-      nextTick(() => {
-        loadPendingDocument();
-      });
+      // Esperar a que el contenedor esté completamente listo (similar a PDF)
+      nextTick()
+        .then(() => {
+          return new Promise((resolve) => setTimeout(resolve, 100));
+        })
+        .then(() => {
+          loadPendingDocument();
+        });
     }
   }
 
@@ -1138,6 +1346,7 @@ export function useDocumentViewer() {
 
     currentDocument.value = null;
     pendingDocument.value = null;
+    pptxBlobCache.value = null; // Limpiar cache de PPTX
     isLoading.value = false;
     error.value = "";
     totalPages.value = 0;
@@ -1177,6 +1386,7 @@ export function useDocumentViewer() {
     loadDocument,
     loadPdfDocument,
     loadOfficeDocument,
+    loadPptxDocument,
 
     // Métodos de referencia
     setPdfViewerRef,

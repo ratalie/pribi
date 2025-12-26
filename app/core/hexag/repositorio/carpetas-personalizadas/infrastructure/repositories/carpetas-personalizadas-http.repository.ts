@@ -6,11 +6,78 @@ import { CarpetasPersonalizadasMapper } from '../mappers/carpetas-personalizadas
 
 /**
  * Repositorio HTTP para Carpetas Personalizadas
+ * 
+ * NOTA: El backend espera `structureId` (número) en las rutas, no `societyProfileId` (UUID).
+ * El `structureId` es el ID numérico de `SocietyProfileStructureV2`.
+ * 
+ * Si se recibe un UUID (societyProfileV2Id), se debe convertir a structureId primero.
+ * Por ahora, asumimos que el `sociedadId` recibido es el `structureId` numérico.
  */
 export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonalizadasRepository {
+  /**
+   * Resuelve la URL base del backend
+   * Usa el mismo patrón que otros repositorios en V3
+   */
+  private resolveBaseUrl(): string {
+    const config = useRuntimeConfig();
+    const apiBase = (config.public?.apiBase as string | undefined) || "";
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const candidates = [apiBase, origin, "http://localhost:3000"];
+
+    for (const base of candidates) {
+      if (!base) continue;
+      try {
+        return new URL(base, origin || "http://localhost:3000").origin;
+      } catch {
+        continue;
+      }
+    }
+    return "";
+  }
+
+  /**
+   * Convierte sociedadId a structureId (número)
+   * 
+   * El backend espera `structureId` (número) en las rutas `/v2/repository/society-profile/:structureId/virtual-nodes`
+   * 
+   * Si `sociedadId` es un número, lo retorna directamente.
+   * Si es un UUID, intenta obtener el structureId desde el backend o lanza un error.
+   * 
+   * NOTA: Por ahora, asumimos que `sociedadId` es el `structureId` numérico.
+   * Si se recibe un UUID, necesitaremos implementar la conversión.
+   */
+  private getStructureId(sociedadId: string): number {
+    // Intentar convertir a número
+    const numId = Number(sociedadId);
+    
+    // Si es un número válido y positivo, usarlo directamente
+    if (!isNaN(numId) && numId > 0 && Number.isInteger(numId)) {
+      return numId;
+    }
+
+    // Si es un UUID (formato con guiones), necesitamos obtener el structureId
+    // Por ahora, lanzamos un error claro
+    if (sociedadId.includes('-') && sociedadId.length > 10) {
+      console.error('[CarpetasPersonalizadasHttpRepository] UUID recibido, se requiere structureId numérico:', sociedadId);
+      throw new Error(
+        `Se recibió un UUID (${sociedadId}) pero se requiere el structureId numérico. ` +
+        `Por favor, asegúrate de usar el structureId correcto de la sociedad.`
+      );
+    }
+
+    // Si no es ni número ni UUID reconocible, lanzar error
+    throw new Error(
+      `ID de sociedad inválido: ${sociedadId}. Se requiere un structureId numérico.`
+    );
+  }
+
   async list(sociedadId: string): Promise<CarpetaPersonalizada[]> {
+    const structureId = this.getStructureId(sociedadId);
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/virtual-nodes`;
+    
     const response = await $fetch<{ data: any[] }>(
-      `/api/v2/repository/society-profile/${sociedadId}/virtual-nodes`,
+      url,
       {
         ...withAuthHeaders(),
         method: 'GET' as const,
@@ -20,8 +87,11 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
   }
 
   async getById(sociedadId: string, carpetaId: string): Promise<CarpetaPersonalizada | null> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/virtual-nodes/${carpetaId}`;
+    
     const response = await $fetch<{ data: any }>(
-      `/api/v2/repository/virtual-nodes/${carpetaId}`,
+      url,
       {
         ...withAuthHeaders(),
         method: 'GET' as const,
@@ -31,8 +101,12 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
   }
 
   async create(sociedadId: string, nombre: string, descripcion?: string, isChatIA?: boolean): Promise<CarpetaPersonalizada> {
+    const structureId = this.getStructureId(sociedadId);
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/virtual-nodes`;
+    
     const response = await $fetch<{ data: any }>(
-      `/api/v2/repository/society-profile/${sociedadId}/virtual-nodes`,
+      url,
       {
         ...withAuthHeaders(),
         method: 'POST' as const,
@@ -47,8 +121,11 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
   }
 
   async update(sociedadId: string, carpetaId: string, nombre: string, descripcion?: string, isChatIA?: boolean): Promise<CarpetaPersonalizada> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/virtual-nodes/${carpetaId}`;
+    
     const response = await $fetch<{ data: any }>(
-      `/api/v2/repository/virtual-nodes/${carpetaId}`,
+      url,
       {
         ...withAuthHeaders(),
         method: 'PUT' as const,
@@ -63,15 +140,21 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
   }
 
   async delete(sociedadId: string, carpetaId: string): Promise<void> {
-    await $fetch(`/api/v2/repository/virtual-nodes/${carpetaId}`, {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/virtual-nodes/${carpetaId}`;
+    
+    await $fetch(url, {
       ...withAuthHeaders(),
       method: 'DELETE' as const,
     });
   }
 
   async listEnlaces(sociedadId: string, carpetaId: string): Promise<EnlaceDocumento[]> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/virtual-nodes/${carpetaId}/nodes`;
+    
     const response = await $fetch<{ data: any[] }>(
-      `/api/v2/repository/virtual-nodes/${carpetaId}/nodes`,
+      url,
       {
         ...withAuthHeaders(),
         method: 'GET' as const,
@@ -81,8 +164,11 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
   }
 
   async addEnlace(sociedadId: string, carpetaId: string, documentoId: string, tipo: 'societario' | 'generado', origen: string): Promise<EnlaceDocumento> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/virtual-nodes/${carpetaId}/nodes/${documentoId}`;
+    
     const response = await $fetch<{ data: any }>(
-      `/api/v2/repository/virtual-nodes/${carpetaId}/nodes/${documentoId}`,
+      url,
       {
         ...withAuthHeaders(),
         method: 'POST' as const,
@@ -181,8 +267,9 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
     nombre: string,
     descripcion?: string
   ): Promise<CarpetaPersonalizada> {
+    const structureId = await this.getStructureId(sociedadId);
     const response = await $fetch<{ data: any }>(
-      `/api/v2/repository/society-profile/${sociedadId}/virtual-nodes/tree`,
+      `/api/v2/repository/society-profile/${structureId}/virtual-nodes/tree`,
       {
         ...withAuthHeaders(),
         method: 'POST' as const,

@@ -90,15 +90,28 @@
       pathArray = [path];
     }
 
-    // Si el path está vacío, verificar si estamos en una ruta específica
-    // Esto ocurre cuando usamos /operaciones/[...path] o /registros/[...path]
-    if (pathArray.length === 0) {
-      if (isOperacionesRoute.value) {
-        pathArray = ["operaciones"];
-      } else if (isRegistrosRoute.value) {
-        pathArray = ["registros"];
+    // Si estamos en una ruta específica de operaciones o registros,
+    // siempre incluir ese segmento al inicio del path
+    if (isOperacionesRoute.value) {
+      // Si el path no empieza con "operaciones", agregarlo al inicio
+      if (pathArray.length === 0 || pathArray[0] !== "operaciones") {
+        pathArray = ["operaciones", ...pathArray];
+      }
+    } else if (isRegistrosRoute.value) {
+      // Si el path no empieza con "registros", agregarlo al inicio
+      if (pathArray.length === 0 || pathArray[0] !== "registros") {
+        pathArray = ["registros", ...pathArray];
       }
     }
+
+    console.log("🔵 [DocumentosGeneradosView] routePath calculado:", {
+      routeFullPath: route.fullPath,
+      routePath: route.path,
+      routeParamsPath: route.params.path,
+      isOperacionesRoute: isOperacionesRoute.value,
+      isRegistrosRoute: isRegistrosRoute.value,
+      pathArrayFinal: pathArray,
+    });
 
     return pathArray;
   });
@@ -558,7 +571,15 @@
       routePath.value[0] === "operaciones" &&
       routePath.value[1] === "junta-accionistas"
     ) {
+      console.log("🔵 [DocumentosGeneradosView] Mostrando carpetas de juntas:", {
+        routePath: routePath.value,
+        documentosGenerados: documentosGenerados.value,
+        estructuraOperaciones: estructuraOperaciones.value,
+      });
+
       const juntas = documentosGenerados.value?.operaciones?.carpetas?.juntas?.juntas || [];
+      console.log("🔵 [DocumentosGeneradosView] Juntas encontradas:", juntas);
+
       juntas.forEach((junta: any) => {
         folders.push({
           id: `carpeta-${junta.nodeId || junta.id}`,
@@ -568,6 +589,8 @@
           nodeId: junta.nodeId || junta.id,
         });
       });
+
+      console.log("🔵 [DocumentosGeneradosView] Folders generados:", folders);
       return { folders, files };
     }
 

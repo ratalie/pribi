@@ -61,7 +61,30 @@
         class="w-full min-h-full overflow-auto"
         ref="pptxViewer"
         :style="{ display: isPptx ? '' : 'none' }"
-      ></div>
+      >
+        <!-- Usar v-if con múltiples verificaciones para asegurar que todo esté listo -->
+        <VueOfficePptx
+          v-if="isPptx && pptxSource && pptxReady && pptxViewer && pptxViewer.isConnected"
+          :src="pptxSource"
+          style="width: 100%; height: 100%; border: none"
+          @rendered="onPptxRendered"
+          @error="onPptxError"
+        />
+        <div
+          v-else-if="isPptx && (!pptxSource || !pptxReady) && !error"
+          class="flex items-center justify-center h-full"
+        >
+          <div class="text-center">
+            <Icon
+              icon="eos-icons:loading"
+              width="48"
+              height="48"
+              class="animate-spin text-white mx-auto mb-4"
+            />
+            <p class="text-white">Cargando presentación...</p>
+          </div>
+        </div>
+      </div>
 
       <!-- Unsupported Files -->
       <div
@@ -88,7 +111,8 @@
           </p>
           <div class="bg-white rounded-lg border p-4 shadow-sm">
             <p class="text-xs text-gray-600">
-              <strong>Extensión:</strong> .{{ fileName.split(".").pop()?.toUpperCase() || "N/A" }}
+              <strong>Extensión:</strong>
+              .{{ fileName.split(".").pop()?.toUpperCase() || "N/A" }}
             </p>
             <p class="text-xs text-gray-600 mt-2">
               Por favor, descarga el archivo para verlo con una aplicación compatible.
@@ -102,6 +126,7 @@
 
 <script setup lang="ts">
   import { Icon } from "@iconify/vue";
+  import VueOfficePptx from "@vue-office/pptx";
   import { nextTick, onMounted, onUnmounted, ref, watch, computed } from "vue";
 
   interface Props {
@@ -137,24 +162,43 @@
   const excelViewer = ref<HTMLElement>();
   const pptxViewer = ref<HTMLElement>();
 
+  // Variables para PowerPoint
+  const pptxSource = ref<string | ArrayBuffer | null>(null);
+  const pptxError = ref<string>("");
+  const pptxReady = ref(false); // Flag para indicar que el contenedor está listo
+
   // Detectar si es un archivo no soportado
   const isUnsupported = computed(() => {
     // Si está cargando, no mostrar como no soportado todavía
     if (props.isLoading) {
       return false;
     }
-    
+
+    // Log para debug
+    console.log("🔍 [DocumentPreview] isUnsupported evaluado:", {
+      isPdf: props.isPdf,
+      isOffice: props.isOffice,
+      isExcel: props.isExcel,
+      isPptx: props.isPptx,
+      isLoading: props.isLoading,
+      error: props.error,
+      fileName: props.fileName,
+      fileMimeType: props.fileMimeType,
+    });
+
     // Si es un tipo soportado, no es no soportado
     if (props.isPdf || props.isOffice || props.isExcel || props.isPptx) {
+      console.log("✅ [DocumentPreview] Archivo soportado detectado");
       return false;
     }
-    
+
     // Si hay un error real (no de archivo no soportado), mostrar error
     if (props.error && !props.error.includes("no soportado")) {
       return false; // Mostrar el error en lugar del mensaje de no soportado
     }
-    
+
     // Si no es ninguno de los tipos soportados y no hay error real, es no soportado
+    console.log("❌ [DocumentPreview] Archivo NO soportado");
     return true;
   });
 
@@ -205,13 +249,123 @@
     return colorMap[extension] || "#6B7280";
   };
 
-  // Exponer referencias para el componente padre
+  // Funciones para PowerPoint
+  async function loadPptx(blob: Blob) {
+    console.log("🔄 [DocumentPreview] loadPptx llamado:", {
+      blobSize: blob.size,
+      blobType: blob.type,
+      pptxViewerExists: !!pptxViewer.value,
+      pptxViewerIsConnected: pptxViewer.value?.isConnected,
+    });
+
+    // Limpiar URL anterior si existe
+    if (pptxSource.value && typeof pptxSource.value === "string") {
+      URL.revokeObjectURL(pptxSource.value);
+    }
+    pptxSource.value = null;
+    pptxError.value = "";
+    pptxReady.value = false; // Resetear flag de ready
+
+    // Esperar múltiples ticks para que Vue termine de actualizar el DOM
+    await nextTick();
+    await nextTick();
+    await nextTick();
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Verificar que el contenedor esté conectado y tenga dimensiones antes de crear la URL
+    if (!pptxViewer.value || !pptxViewer.value.isConnected) {
+      console.warn("⚠️ [DocumentPreview] pptxViewer no está conectado, esperando...");
+      // Esperar hasta 2 segundos para que se conecte
+      for (let i = 0; i < 20; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        if (pptxViewer.value && pptxViewer.value.isConnected) {
+          console.log(
+            `✅ [DocumentPreview] pptxViewer conectado después de ${i + 1} intentos`
+          );
+          break;
+        }
+      }
+
+      if (!pptxViewer.value || !pptxViewer.value.isConnected) {
+        console.error("❌ [DocumentPreview] pptxViewer no está conectado después de esperar");
+        return;
+      }
+    }
+
+    // Verificar que el contenedor tenga dimensiones
+    if (pptxViewer.value.clientWidth === 0 || pptxViewer.value.clientHeight === 0) {
+      console.warn("⚠️ [DocumentPreview] pptxViewer no tiene dimensiones, esperando...");
+      // Esperar hasta 1 segundo para que tenga dimensiones
+      for (let i = 0; i < 10; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        if (
+          pptxViewer.value &&
+          pptxViewer.value.clientWidth > 0 &&
+          pptxViewer.value.clientHeight > 0
+        ) {
+          console.log(
+            `✅ [DocumentPreview] pptxViewer tiene dimensiones después de ${i + 1} intentos`
+          );
+          break;
+        }
+      }
+    }
+
+    // Crear nueva URL para el blob
+    const url = URL.createObjectURL(blob);
+
+    // Esperar múltiples ticks y delays antes de asignar para asegurar que Vue esté completamente listo
+    await nextTick();
+    await nextTick();
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    // Asignar la URL
+    pptxSource.value = url;
+
+    // Esperar un tick más antes de marcar como ready
+    await nextTick();
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Marcar como ready solo si el contenedor sigue conectado
+    if (pptxViewer.value && pptxViewer.value.isConnected) {
+      pptxReady.value = true;
+      console.log("✅ [DocumentPreview] PPTX URL creada y marcado como ready:", url);
+    } else {
+      console.error("❌ [DocumentPreview] Contenedor desconectado después de crear URL");
+      pptxSource.value = null;
+      URL.revokeObjectURL(url);
+    }
+
+    // Limpiar URL después de 5 minutos
+    setTimeout(() => {
+      if (pptxSource.value === url) {
+        URL.revokeObjectURL(url);
+        pptxSource.value = null;
+        pptxReady.value = false;
+      }
+    }, 300000); // 5 minutos
+  }
+
+  function onPptxRendered() {
+    console.log("✅ [DocumentPreview] PPTX renderizado exitosamente");
+    pptxError.value = "";
+    pptxReady.value = true; // Asegurar que está marcado como ready
+  }
+
+  function onPptxError(error: any) {
+    console.error("❌ [DocumentPreview] Error renderizando PPTX:", error);
+    pptxError.value = "Error al renderizar la presentación PowerPoint";
+    pptxReady.value = false;
+  }
+
+  // Exponer referencias y funciones para el componente padre
   defineExpose({
     previewContainer,
     pdfViewer,
     officeViewer,
     excelViewer,
     pptxViewer,
+    loadPptx,
   });
 
   // Emitir evento cuando se monte el componente
@@ -254,12 +408,12 @@
   // Emitir evento cuando cambie el tipo de archivo
   watch(
     () => props.isPdf,
-    async (newIsPdf, oldIsPdf) => {
+    async (newIsPdf) => {
       // Esperar múltiples ticks para asegurar que el DOM esté completamente actualizado
       await nextTick();
       await nextTick();
       await new Promise((resolve) => setTimeout(resolve, 100));
-      
+
       if (newIsPdf) {
         // Asegurar que el contenedor esté visible y conectado
         if (pdfViewer.value) {
@@ -268,7 +422,9 @@
           if (pdfViewer.value.isConnected) {
             emit("mounted", pdfViewer.value);
           } else {
-            console.warn("⚠️ [DocumentPreview] pdfViewer no está conectado al DOM, esperando...");
+            console.warn(
+              "⚠️ [DocumentPreview] pdfViewer no está conectado al DOM, esperando..."
+            );
             // Reintentar después de un delay
             setTimeout(() => {
               if (pdfViewer.value && pdfViewer.value.isConnected) {
@@ -325,12 +481,37 @@
     () => props.isExcel,
     async (newIsExcel) => {
       if (newIsExcel) {
+        // Esperar múltiples ticks para asegurar que el DOM esté completamente actualizado (similar a PDF)
         await nextTick();
+        await nextTick();
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
         if (excelViewer.value) {
-          emit("excelMounted", excelViewer.value);
+          // Asegurar que el contenedor esté visible y conectado
+          excelViewer.value.style.display = "";
+          // Verificar que esté conectado antes de emitir
+          if (excelViewer.value.isConnected) {
+            emit("excelMounted", excelViewer.value);
+          } else {
+            console.warn(
+              "⚠️ [DocumentPreview] excelViewer no está conectado al DOM, esperando..."
+            );
+            // Reintentar después de un delay
+            setTimeout(() => {
+              if (excelViewer.value && excelViewer.value.isConnected) {
+                emit("excelMounted", excelViewer.value);
+              }
+            }, 200);
+          }
+        }
+      } else {
+        // Ocultar el contenedor cuando no es Excel, pero mantenerlo montado
+        if (excelViewer.value) {
+          excelViewer.value.style.display = "none";
         }
       }
-    }
+    },
+    { immediate: true }
   );
 
   // Emitir evento cuando cambie el tipo de archivo a PowerPoint
@@ -338,12 +519,37 @@
     () => props.isPptx,
     async (newIsPptx) => {
       if (newIsPptx) {
+        // Esperar múltiples ticks para asegurar que el DOM esté completamente actualizado (similar a PDF y Excel)
         await nextTick();
+        await nextTick();
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
         if (pptxViewer.value) {
-          emit("pptxMounted", pptxViewer.value);
+          // Asegurar que el contenedor esté visible y conectado
+          pptxViewer.value.style.display = "";
+          // Verificar que esté conectado antes de emitir
+          if (pptxViewer.value.isConnected) {
+            emit("pptxMounted", pptxViewer.value);
+          } else {
+            console.warn(
+              "⚠️ [DocumentPreview] pptxViewer no está conectado al DOM, esperando..."
+            );
+            // Reintentar después de un delay
+            setTimeout(() => {
+              if (pptxViewer.value && pptxViewer.value.isConnected) {
+                emit("pptxMounted", pptxViewer.value);
+              }
+            }, 200);
+          }
+        }
+      } else {
+        // Ocultar el contenedor cuando no es PPTX, pero mantenerlo montado
+        if (pptxViewer.value) {
+          pptxViewer.value.style.display = "none";
         }
       }
-    }
+    },
+    { immediate: true }
   );
 
   // Cleanup al desmontar
@@ -382,4 +588,3 @@
     scrollbar-color: #6b7280 transparent;
   }
 </style>
-
