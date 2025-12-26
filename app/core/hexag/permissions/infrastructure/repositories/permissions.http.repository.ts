@@ -32,26 +32,55 @@ export class PermissionsHttpRepository implements PermissionsRepository {
     const candidates = [apiBase, origin, "http://localhost:3000"];
 
     for (const base of candidates) {
-      if (!base) continue;
+      if (!base || base.trim() === "") continue;
       try {
+        // Si base ya es una URL completa, usarla directamente
+        if (base.startsWith("http://") || base.startsWith("https://")) {
+          const url = new URL(base);
+          return url.origin;
+        }
+        // Si no, construirla con el origin
         const baseUrl = new URL(base, origin || "http://localhost:3000");
         return baseUrl.origin;
-      } catch {
+      } catch (error) {
+        console.warn(`[PermissionsHttpRepository] URL base inválida: ${base}`, error);
         continue;
       }
     }
 
-    return origin || "http://localhost:3000";
+    // Fallback seguro
+    const fallback = origin || "http://localhost:3000";
+    console.warn(`[PermissionsHttpRepository] Usando URL fallback: ${fallback}`);
+    return fallback;
   }
 
   /**
    * Construye la URL completa para un endpoint
    */
   private getUrl(path: string): string {
-    const baseUrl = this.resolveBaseUrl();
-    const basePath = this.basePath.startsWith("/") ? this.basePath : `/${this.basePath}`;
-    const fullPath = `${basePath}${path.startsWith("/") ? path : `/${path}`}`;
-    return new URL(fullPath, baseUrl).toString();
+    try {
+      const baseUrl = this.resolveBaseUrl();
+      
+      // Validar que baseUrl sea válida
+      if (!baseUrl || baseUrl.trim() === "") {
+        throw new Error("URL base inválida");
+      }
+
+      // Limpiar path (remover espacios, etc)
+      const cleanPath = path.trim();
+      const basePath = this.basePath.startsWith("/") ? this.basePath : `/${this.basePath}`;
+      const fullPath = `${basePath}${cleanPath.startsWith("/") ? cleanPath : `/${cleanPath}`}`;
+      
+      // Construir URL
+      const url = new URL(fullPath, baseUrl);
+      return url.toString();
+    } catch (error) {
+      console.error(`[PermissionsHttpRepository] Error al construir URL para path: ${path}`, error);
+      // Fallback seguro
+      const fallback = `http://localhost:3000${this.basePath}${path.startsWith("/") ? path : `/${path}`}`;
+      console.warn(`[PermissionsHttpRepository] Usando URL fallback: ${fallback}`);
+      return fallback;
+    }
   }
 
   /**

@@ -16,6 +16,10 @@ export function mapOverridesToSimpleConfig(
   accessAreas: AccessArea[],
   currentRole: "Administrador" | "Usuario" | "Lector"
 ): SimplePermissionsConfig {
+  console.log('[mapOverridesToSimpleConfig] INICIO - Datos recibidos del backend:');
+  console.log('[mapOverridesToSimpleConfig] accessAreas:', JSON.stringify(accessAreas, null, 2));
+  console.log('[mapOverridesToSimpleConfig] currentRole:', currentRole);
+
   // Determinar rol simple
   let simpleRole: "Administrador" | "Editor" | "Lector" = "Editor";
   if (currentRole === "Administrador" || currentRole === "SuperAdministrador") {
@@ -24,8 +28,11 @@ export function mapOverridesToSimpleConfig(
     simpleRole = "Lector";
   }
 
+  console.log('[mapOverridesToSimpleConfig] Rol simple determinado:', simpleRole);
+
   // Si es Administrador, retornar configuración por defecto
   if (simpleRole === "Administrador") {
+    console.log('[mapOverridesToSimpleConfig] Es Administrador, retornando configuración por defecto');
     return {
       role: "Administrador",
       modules: AVAILABLE_AREAS.map((area) => ({
@@ -57,11 +64,12 @@ export function mapOverridesToSimpleConfig(
     if (areaEnabled && area.routes && area.routes.length > 0) {
       // Verificar si hay al menos una ruta habilitada
       const hasEnabledRoute = area.routes.some(
-        (route) => route.status !== false && route.actions && route.actions.length > 0
+        (route) => route.status !== false && (route.actions?.length > 0 || route.modules?.length > 0)
       );
 
       if (hasEnabledRoute) {
         enabledAreas.add(area.area);
+        console.log('[mapOverridesToSimpleConfig] Área habilitada:', area.area);
       }
     }
   }
@@ -71,6 +79,8 @@ export function mapOverridesToSimpleConfig(
     enabled: enabledAreas.has(area as AccessAreaEnum),
     submodules: [],
   }));
+
+  console.log('[mapOverridesToSimpleConfig] Módulos mapeados:', modules);
 
   // Determinar acciones permitidas
   // Analizar las rutas para ver qué acciones están disponibles y habilitadas
@@ -85,12 +95,22 @@ export function mapOverridesToSimpleConfig(
       if (route.status === false) continue;
 
       // Revisar acciones en la ruta
-      for (const action of route.actions || []) {
-        // El backend puede usar 'status' (boolean) o 'enabled' (boolean)
-        // En PermissionAction entity, 'enabled' es el campo principal
-        const actionEnabled = action.enabled !== false && action.status !== false;
-        if (actionEnabled) {
-          availableActions.add(action.action);
+      // El backend puede devolver acciones como array de strings ["view", "create"] 
+      // o como array de objetos { action: "view", status: true }
+      if (Array.isArray(route.actions)) {
+        for (const action of route.actions) {
+          if (typeof action === 'string') {
+            // Es un string directo: "view", "create", etc.
+            availableActions.add(action);
+            console.log('[mapOverridesToSimpleConfig] Acción encontrada en ruta (string):', action);
+          } else if (typeof action === 'object' && action !== null) {
+            // Es un objeto: { action: "view", status: true, enabled: true }
+            const actionEnabled = (action as any).enabled !== false && (action as any).status !== false;
+            if (actionEnabled && (action as any).action) {
+              availableActions.add((action as any).action);
+              console.log('[mapOverridesToSimpleConfig] Acción encontrada en ruta (objeto):', (action as any).action);
+            }
+          }
         }
       }
 
@@ -98,16 +118,27 @@ export function mapOverridesToSimpleConfig(
       for (const module of route.modules || []) {
         if (module.status === false) continue;
 
-        for (const action of module.actions || []) {
-          // El backend puede usar 'status' (boolean) o 'enabled' (boolean)
-          const actionEnabled = action.enabled !== false && action.status !== false;
-          if (actionEnabled) {
-            availableActions.add(action.action);
+        if (Array.isArray(module.actions)) {
+          for (const action of module.actions) {
+            if (typeof action === 'string') {
+              // Es un string directo: "view", "create", etc.
+              availableActions.add(action);
+              console.log('[mapOverridesToSimpleConfig] Acción encontrada en módulo (string):', action);
+            } else if (typeof action === 'object' && action !== null) {
+              // Es un objeto: { action: "view", status: true, enabled: true }
+              const actionEnabled = (action as any).enabled !== false && (action as any).status !== false;
+              if (actionEnabled && (action as any).action) {
+                availableActions.add((action as any).action);
+                console.log('[mapOverridesToSimpleConfig] Acción encontrada en módulo (objeto):', (action as any).action);
+              }
+            }
           }
         }
       }
     }
   }
+
+  console.log('[mapOverridesToSimpleConfig] Acciones disponibles encontradas:', Array.from(availableActions));
 
   // Mapear acciones (el backend puede usar 'read'/'write' o 'view'/'create')
   const actions = {
@@ -118,6 +149,8 @@ export function mapOverridesToSimpleConfig(
     file: availableActions.has("file"),
   };
 
+  console.log('[mapOverridesToSimpleConfig] Acciones mapeadas:', actions);
+
   // Si es Lector, forzar solo 'view'
   if (simpleRole === "Lector") {
     actions.create = false;
@@ -126,7 +159,7 @@ export function mapOverridesToSimpleConfig(
     actions.file = false;
   }
 
-  return {
+  const result = {
     role: simpleRole,
     modules,
     societies: {
@@ -135,4 +168,8 @@ export function mapOverridesToSimpleConfig(
     },
     actions,
   };
+
+  console.log('[mapOverridesToSimpleConfig] RESULTADO FINAL:', JSON.stringify(result, null, 2));
+
+  return result;
 }

@@ -125,3 +125,5 @@ src/modules/access-management/
 **Fecha:** $(date)  
 **Estado:** ⚠️ PENDIENTE CREAR V2 EN BACKEND
 
+
+

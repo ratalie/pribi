@@ -90,8 +90,6 @@ const handleShowAdvanced = () => {
       <!-- Formulario Simple -->
       <div v-if="!showSummary" class="configurar-permisos-form">
         <PermisosSimpleForm
-          v-model="config"
-          :societies="societies"
           @show-advanced="handleShowAdvanced"
         />
       </div>

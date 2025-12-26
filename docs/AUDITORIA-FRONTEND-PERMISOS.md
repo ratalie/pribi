@@ -306,3 +306,5 @@ El sistema de permisos está **bien implementado** y **conectado correctamente**
 **Fecha:** $(date)  
 **Versión del sistema:** v30
 
+
+

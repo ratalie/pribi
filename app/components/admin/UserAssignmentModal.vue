@@ -44,9 +44,12 @@ const loadSocieties = async () => {
   isLoadingSocieties.value = true;
   try {
     const societiesRepo = new SocietiesHttpRepository();
-    availableSocieties.value = await societiesRepo.getAllSocieties();
+    const societies = await societiesRepo.getAllSocieties();
+    availableSocieties.value = societies;
+    console.log('[UserAssignmentModal] Sociedades cargadas:', societies.length, societies);
   } catch (error) {
-    console.error('Error al cargar sociedades:', error);
+    console.error('[UserAssignmentModal] Error al cargar sociedades:', error);
+    availableSocieties.value = [];
   } finally {
     isLoadingSocieties.value = false;
   }
@@ -55,16 +58,19 @@ const loadSocieties = async () => {
 // Cargar sociedades cuando se abre el modal
 watch(
   () => props.isOpen,
-  (isOpen) => {
+  async (isOpen) => {
     if (isOpen) {
-      loadSocieties();
-      // Reset estado
+      // Reset estado primero
       selectedSociety.value = '';
       selectedUsers.value = [];
       searchQuery.value = '';
       selectedRole.value = 'all';
+      // Luego cargar sociedades
+      await loadSocieties();
+      console.log('[UserAssignmentModal] Sociedades cargadas:', availableSocieties.value.length);
     }
-  }
+  },
+  { immediate: true }
 );
 
 // Usuarios disponibles filtrados (desde el store)

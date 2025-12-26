@@ -252,3 +252,5 @@ Si el backend v2 cambia la estructura de respuestas:
 
 **Fecha:** $(date)  
 **Estado:** ⚠️ PENDIENTE CREAR V2 EN BACKEND
+
+

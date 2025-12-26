@@ -163,3 +163,5 @@ GET http://localhost:3000/api/v2/access-management/users/{userId}
 **Fecha:** $(date)  
 **Estado:** ✅ **CORRECCIONES APLICADAS - REQUIERE REINICIO DEL BACKEND**
 
+
+

@@ -273,3 +273,5 @@ Si ya tienes un **SuperAdmin**, este puede crear usuarios para cualquier estudio
 - Create User DTO: `probo-api-v30/src/modules/access-management/domain/dtos/create-user.dto.ts`
 - Repository: `probo-api-v30/src/modules/access-management/infrastructure/repositories/access-management.repository.impl.ts`
 
+
+

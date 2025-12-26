@@ -1,31 +1,46 @@
 <script setup lang="ts">
+import { usePermissionsConfigStore } from '~/core/presentation/panel-administrativo/stores/permissions-config.store';
 import RoleSelector from '~/core/presentation/shared/components/admin/RoleSelector.vue';
-import ModuleSelector from '~/core/presentation/shared/components/admin/ModuleSelector.vue';
-import SocietySelector from '~/core/presentation/shared/components/admin/SocietySelector.vue';
 import ActionSelector from '~/core/presentation/shared/components/admin/ActionSelector.vue';
-import type { SimplePermissionsConfig } from '~/core/presentation/panel-administrativo/vistas/configurar-permisos/types/configurar-permisos.types';
-import type { SocietyInfo } from '~/core/hexag/panel-administrativo/domain/entities/society-assignment.entity';
+import type { SimpleRole, ActionsConfig } from '~/core/presentation/panel-administrativo/vistas/configurar-permisos/types/configurar-permisos.types';
 
 interface Props {
-  modelValue: SimplePermissionsConfig;
-  societies: SocietyInfo[];
   disabled?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   disabled: false,
-  societies: () => [],
 });
 
 const emit = defineEmits<{
-  'update:modelValue': [value: SimplePermissionsConfig];
   'showAdvanced': [];
 }>();
 
-const config = computed({
-  get: () => props.modelValue,
-  set: (value: SimplePermissionsConfig) => emit('update:modelValue', value),
+// Usar el store directamente en lugar de v-model
+const store = usePermissionsConfigStore();
+
+// Computed para el rol actual - solo lectura, el cambio se maneja en handleRoleChanged
+const currentRole = computed(() => store.selectedRole);
+
+// Computed para las acciones actuales
+const currentActions = computed({
+  get: () => {
+    console.log('[PermisosSimpleForm] get currentActions - store.selectedActions:', store.selectedActions);
+    return store.selectedActions;
+  },
+  set: (value: ActionsConfig) => {
+    console.log('[PermisosSimpleForm] set currentActions - nuevo valor:', value);
+    store.setActions(value);
+  },
 });
+
+// Manejar cambio de rol y aplicar permisos base automáticamente
+const handleRoleChanged = (role: SimpleRole, permissions: ActionsConfig) => {
+  console.log('[PermisosSimpleForm] Rol cambiado:', role, 'Permisos base:', permissions);
+  // Actualizar el store directamente
+  store.setRole(role);
+  store.setActions(permissions); // Aplicar permisos base automáticamente
+};
 
 const showAdvanced = () => {
   emit('showAdvanced');
@@ -37,52 +52,30 @@ const showAdvanced = () => {
     <div class="permisos-form-section">
       <!-- Paso 1: Seleccionar Rol -->
       <div class="permisos-form-step">
+        <h3 class="permisos-step-title">Tipo de Usuario</h3>
         <RoleSelector
-          v-model="config.role"
+          :model-value="currentRole"
           :disabled="disabled"
+          @role-changed="handleRoleChanged"
         />
       </div>
 
-      <!-- Paso 2: Configurar Módulos (si no es Administrador) -->
+      <!-- Paso 2: Configurar Permisos (para Editor y Lector) -->
       <div
-        v-if="config.role !== 'Administrador'"
+        v-if="currentRole !== 'Administrador'"
         class="permisos-form-step"
       >
-        <ModuleSelector
-          v-model="config.modules"
-          mode="simple"
-          :disabled="disabled"
-          @show-advanced="showAdvanced"
-        />
-      </div>
-
-      <!-- Paso 3: Configurar Sociedades (si no es Administrador) -->
-      <div
-        v-if="config.role !== 'Administrador'"
-        class="permisos-form-step"
-      >
-        <SocietySelector
-          v-model="config.societies"
-          :societies="societies"
-          :disabled="disabled"
-        />
-      </div>
-
-      <!-- Paso 4: Configurar Acciones (solo Editor) -->
-      <div
-        v-if="config.role === 'Editor'"
-        class="permisos-form-step"
-      >
+        <h3 class="permisos-step-title">¿Qué acciones puede realizar?</h3>
         <ActionSelector
-          v-model="config.actions"
-          role="Editor"
+          v-model="currentActions"
+          :role="currentRole"
           :disabled="disabled"
         />
       </div>
 
       <!-- Mensaje para Administrador -->
       <div
-        v-if="config.role === 'Administrador'"
+        v-if="currentRole === 'Administrador'"
         class="permisos-admin-message"
         :style="{
           color: 'var(--text-muted)',
@@ -114,7 +107,7 @@ const showAdvanced = () => {
 .permisos-form-step {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 1rem;
   padding-bottom: 2rem;
   border-bottom: 1px solid var(--border-light);
 }
@@ -122,6 +115,14 @@ const showAdvanced = () => {
 .permisos-form-step:last-child {
   border-bottom: none;
   padding-bottom: 0;
+}
+
+.permisos-step-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  font-family: var(--font-primary);
 }
 
 .permisos-admin-message {
@@ -156,5 +157,7 @@ const showAdvanced = () => {
   }
 }
 </style>
+
+
 
 

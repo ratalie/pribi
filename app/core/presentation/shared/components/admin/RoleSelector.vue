@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Shield, Edit, Eye } from 'lucide-vue-next';
 import type { SimpleRole } from '~/core/presentation/panel-administrativo/vistas/configurar-permisos/types/configurar-permisos.types';
+import { getDefaultPermissionsForRole } from '~/core/presentation/panel-administrativo/vistas/configurar-permisos/utils/role-permissions.utils';
+import type { ActionsConfig } from '~/core/presentation/panel-administrativo/vistas/configurar-permisos/types/configurar-permisos.types';
 
 interface Props {
   modelValue: SimpleRole;
@@ -13,11 +15,25 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   'update:modelValue': [value: SimpleRole];
+  'role-changed': [role: SimpleRole, permissions: ActionsConfig];
 }>();
 
 const selectedRole = computed({
   get: () => props.modelValue,
-  set: (value: SimpleRole) => emit('update:modelValue', value),
+  set: (value: SimpleRole) => {
+    console.log('[RoleSelector] Cambiando rol a:', value);
+    // Emitir evento con permisos base cuando cambia el rol
+    const defaultPermissions = getDefaultPermissionsForRole(value);
+    console.log('[RoleSelector] Permisos base para', value, ':', defaultPermissions);
+    // Emitir ambos eventos: update:modelValue y role-changed
+    emit('update:modelValue', value);
+    emit('role-changed', value, defaultPermissions);
+  },
+});
+
+// Computed para obtener permisos base del rol seleccionado
+const defaultPermissions = computed(() => {
+  return getDefaultPermissionsForRole(props.modelValue);
 });
 
 const roles: Array<{
@@ -270,5 +286,7 @@ const roles: Array<{
   }
 }
 </style>
+
+
 
 

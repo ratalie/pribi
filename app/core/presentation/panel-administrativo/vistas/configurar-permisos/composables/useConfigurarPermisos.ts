@@ -67,8 +67,8 @@ export function useConfigurarPermisos(userId: string) {
       // Aplicar permisos usando el use case
       await applyPermissionsUseCase.execute(userId, configToSave);
 
-      // Redirigir a la lista de usuarios después de guardar
-      await router.push('/admin/usuarios');
+      // Redirigir al panel administrativo después de guardar
+      await router.push('/admin/panel');
     } catch (error: any) {
       errorMessage.value = error?.message ?? 'Error al guardar permisos';
       console.error('[useConfigurarPermisos] Error al guardar:', error);
@@ -82,7 +82,7 @@ export function useConfigurarPermisos(userId: string) {
    * Cancela la configuración y regresa
    */
   const cancel = () => {
-    router.push('/admin/usuarios');
+    router.push('/admin/panel');
   };
 
   /**
@@ -108,5 +108,7 @@ export function useConfigurarPermisos(userId: string) {
     reset,
   };
 }
+
+
 
 

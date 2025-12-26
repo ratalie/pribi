@@ -134,3 +134,5 @@ src/modules/access-management/
 
 **Fecha:** $(date)  
 **Estado:** ⚠️ PENDIENTE DECISIÓN
+
+

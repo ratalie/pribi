@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import type { SimplePermissionsConfig, SimpleRole, ModuleConfig, SocietiesConfig, ActionsConfig } from '../vistas/configurar-permisos/types/configurar-permisos.types';
 import { AVAILABLE_AREAS } from '../vistas/configurar-permisos/types/configurar-permisos.types';
+import { getDefaultPermissionsForRole } from '../vistas/configurar-permisos/utils/role-permissions.utils';
 
 /**
  * Store para la configuración de permisos simplificada
@@ -81,37 +82,27 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
 
   actions: {
     /**
+     * Aplica los permisos base por defecto para un rol
+     * Este método se llama automáticamente cuando cambia el rol
+     */
+    applyRoleDefaults(role: SimpleRole) {
+      const defaultPermissions = getDefaultPermissionsForRole(role);
+      this.selectedActions = { ...defaultPermissions };
+    },
+
+    /**
      * Establece el rol seleccionado
      */
     setRole(role: SimpleRole) {
       this.selectedRole = role;
+      
+      // Aplicar permisos base automáticamente según el rol
+      this.applyRoleDefaults(role);
 
       // Si es Administrador, resetear todo
       if (role === 'Administrador') {
         this.reset();
         return;
-      }
-
-      // Si es Lector, solo habilitar 'view'
-      if (role === 'Lector') {
-        this.selectedActions = {
-          view: true,
-          create: false,
-          update: false,
-          delete: false,
-          file: false,
-        };
-      }
-
-      // Si es Editor, habilitar acciones por defecto (excepto delete)
-      if (role === 'Editor') {
-        this.selectedActions = {
-          view: true,
-          create: true,
-          update: true,
-          delete: false,
-          file: true,
-        };
       }
 
       // Inicializar módulos si no hay ninguno
@@ -194,8 +185,12 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
      * Establece las acciones seleccionadas
      */
     setActions(actions: ActionsConfig) {
+      console.log('[PermissionsConfigStore] setActions llamado con:', actions);
+      console.log('[PermissionsConfigStore] Rol actual:', this.selectedRole);
+      
       // Si es Lector, solo permitir 'view'
       if (this.selectedRole === 'Lector') {
+        console.log('[PermissionsConfigStore] Es Lector, forzando solo view');
         this.selectedActions = {
           view: actions.view,
           create: false,
@@ -206,7 +201,9 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
         return;
       }
 
-      this.selectedActions = actions;
+      // Crear nueva referencia para asegurar reactividad
+      this.selectedActions = { ...actions };
+      console.log('[PermissionsConfigStore] Acciones actualizadas:', this.selectedActions);
     },
 
     /**
@@ -257,28 +254,44 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
         const permissionsRepository = new PermissionsHttpRepository();
         const userRepository = new UserHttpRepository();
 
-        // Obtener permisos completos del usuario
-        const accessAreas = await permissionsRepository.getUserAccessFull(userId);
+        console.log('[PermissionsConfigStore] Cargando datos del usuario:', userId);
 
-        // Obtener información del usuario para saber su rol
+        // Obtener información del usuario primero (para validar que existe)
         const user = await userRepository.findById(userId);
         if (!user) {
           throw new Error('Usuario no encontrado');
         }
+        console.log('[PermissionsConfigStore] Usuario encontrado:', user.email);
+
+        // Obtener permisos completos del usuario
+        const accessAreas = await permissionsRepository.getUserAccessFull(userId);
+        console.log('[PermissionsConfigStore] Permisos cargados del backend:', accessAreas.length, 'áreas');
+        console.log('[PermissionsConfigStore] Datos completos del backend:', JSON.stringify(accessAreas, null, 2));
 
         // Convertir permisos del backend a configuración simple
         const config = mapOverridesToSimpleConfig(
           accessAreas,
           user.role.name as 'Administrador' | 'Usuario' | 'Lector',
         );
+        console.log('[PermissionsConfigStore] Configuración mapeada:', JSON.stringify(config, null, 2));
 
         // Aplicar configuración al store
+        console.log('[PermissionsConfigStore] Aplicando configuración al store...');
+        console.log('[PermissionsConfigStore] Rol a asignar:', config.role);
+        console.log('[PermissionsConfigStore] Módulos a asignar:', config.modules);
+        console.log('[PermissionsConfigStore] Acciones a asignar:', config.actions);
+        
         this.selectedRole = config.role;
-        this.selectedModules = config.modules;
-        this.selectedActions = config.actions;
+        this.selectedModules = [...config.modules]; // Crear nueva referencia para reactividad
+        this.selectedActions = { ...config.actions }; // Crear nueva referencia para reactividad
+        
+        console.log('[PermissionsConfigStore] Store actualizado:');
+        console.log('[PermissionsConfigStore] - selectedRole:', this.selectedRole);
+        console.log('[PermissionsConfigStore] - selectedActions:', this.selectedActions);
 
         // Cargar sociedades asignadas
         const assignedSocieties = await userRepository.getUserAssignedSocieties(userId);
+        console.log('[PermissionsConfigStore] Sociedades asignadas:', assignedSocieties.length);
         if (assignedSocieties.length > 0) {
           this.selectedSocieties = {
             mode: 'specific',
@@ -290,8 +303,13 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
             ids: [],
           };
         }
-      } catch (error) {
-        console.error('Error al cargar configuración del usuario:', error);
+      } catch (error: any) {
+        console.error('[PermissionsConfigStore] Error al cargar configuración del usuario:', error);
+        console.error('[PermissionsConfigStore] Error details:', {
+          message: error?.message,
+          stack: error?.stack,
+          userId,
+        });
         // En caso de error, inicializar con valores por defecto
         this.initializeModules();
         throw error;

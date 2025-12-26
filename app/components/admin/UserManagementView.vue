@@ -120,7 +120,8 @@ const handleSaveUser = async () => {
       createUserForm.value.password,
       createUserForm.value.roleId
     );
-    // El store ya recarga los usuarios automáticamente
+    // Forzar recarga de usuarios para asegurar reactividad
+    await store.loadUsers();
     closeCreateUserModal();
   } catch (error: any) {
     createError.value = error?.message || 'Error al crear usuario';

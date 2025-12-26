@@ -104,37 +104,77 @@ export function mapSimpleConfigToOverrides(
     }
   }
 
-  // 2. Procesar acciones deshabilitadas (solo para Editor)
+  // 2. Procesar acciones para Editor
+  // El rol "Usuario" (Editor) en el backend solo tiene READ, WRITE, FILE por defecto
+  // NO tiene UPDATE ni DELETE por defecto
   if (config.role === "Editor") {
-    const disabledActions: string[] = [];
+    console.log('[mapSimpleConfigToOverrides] Procesando acciones para Editor');
+    console.log('[mapSimpleConfigToOverrides] Acciones en config:', config.actions);
+    
+    const enabledModules = config.modules.filter((m) => m.enabled);
+    
+    // Permisos por defecto del rol Editor en el backend
+    // userActions = [READ, WRITE, FILE] → En frontend: view, create, file
+    const defaultEditorActions = {
+      view: true,    // READ
+      create: true,  // WRITE
+      update: false, // NO está en userActions
+      delete: false, // NO está en userActions
+      file: true,    // FILE
+    };
 
-    // Identificar acciones deshabilitadas
-    if (!config.actions.view) disabledActions.push("view");
-    if (!config.actions.create) disabledActions.push("create");
-    if (!config.actions.update) disabledActions.push("update");
-    if (!config.actions.delete) disabledActions.push("delete");
-    if (!config.actions.file) disabledActions.push("file");
+    console.log('[mapSimpleConfigToOverrides] Acciones por defecto del rol Editor:', defaultEditorActions);
 
-    // Si hay acciones deshabilitadas, quitar permisos en todos los módulos habilitados
-    if (disabledActions.length > 0) {
-      const enabledModules = config.modules.filter((m) => m.enabled);
+    // Identificar acciones que necesitan override
+    const actionsToOverride: Array<{ action: string; status: boolean }> = [];
 
+    // Si update está habilitado pero no está en defaults → Habilitar con override
+    if (config.actions.update && !defaultEditorActions.update) {
+      console.log('[mapSimpleConfigToOverrides] update está habilitado pero no está en defaults → Agregando override para habilitar');
+      actionsToOverride.push({ action: "update", status: true });
+    }
+    
+    // Si delete está habilitado pero no está en defaults → Habilitar con override
+    if (config.actions.delete && !defaultEditorActions.delete) {
+      console.log('[mapSimpleConfigToOverrides] delete está habilitado pero no está en defaults → Agregando override para habilitar');
+      actionsToOverride.push({ action: "delete", status: true });
+    }
+
+    // Si file está deshabilitado pero está en defaults → Deshabilitar con override
+    if (!config.actions.file && defaultEditorActions.file) {
+      console.log('[mapSimpleConfigToOverrides] file está deshabilitado pero está en defaults → Agregando override para deshabilitar');
+      actionsToOverride.push({ action: "file", status: false });
+    }
+
+    // Si view está deshabilitado → Deshabilitar con override (aunque no debería pasar)
+    if (!config.actions.view) {
+      console.log('[mapSimpleConfigToOverrides] view está deshabilitado → Agregando override para deshabilitar');
+      actionsToOverride.push({ action: "view", status: false });
+    }
+
+    // Si create está deshabilitado → Deshabilitar con override (aunque no debería pasar)
+    if (!config.actions.create) {
+      console.log('[mapSimpleConfigToOverrides] create está deshabilitado → Agregando override para deshabilitar');
+      actionsToOverride.push({ action: "create", status: false });
+    }
+
+    console.log('[mapSimpleConfigToOverrides] Acciones que necesitan override:', actionsToOverride);
+
+    // Si hay acciones que necesitan override, aplicarlas a todos los módulos habilitados
+    if (actionsToOverride.length > 0) {
       for (const module of enabledModules) {
         const area = module.area as AccessAreaEnum;
         const flowCode = AREA_TO_FLOW_MAP[area];
         const moduleName = AREA_TO_MODULE_MAP[area];
 
         if (flowCode && moduleName) {
-          // Quitar acciones específicas usando ModuleOverrideSchema
-          const actionOverrides = disabledActions.map((action) => {
-            // El backend acepta tanto 'view' como 'read', etc.
-            // Usamos el formato del frontend directamente
-            return {
-              action, // El backend acepta 'view', 'create', etc.
-              status: false, // Deshabilitar
-              isOverride: true, // Es un override negativo (quitar permiso)
-            };
-          });
+          const actionOverrides = actionsToOverride.map(({ action, status }) => ({
+            action,
+            status,
+            isOverride: true,
+          }));
+
+          console.log('[mapSimpleConfigToOverrides] Agregando override para módulo:', moduleName, 'con acciones:', actionOverrides);
 
           overrides.push({
             module: moduleName,
@@ -143,6 +183,8 @@ export function mapSimpleConfigToOverrides(
           });
         }
       }
+    } else {
+      console.log('[mapSimpleConfigToOverrides] No hay acciones que necesiten override');
     }
   }
 
