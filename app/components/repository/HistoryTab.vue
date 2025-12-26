@@ -75,11 +75,18 @@ const isVersionSelected = (version: DocumentVersion) => {
 
 // Manejar selección de versión
 const handleSelectVersion = (versionCode: string) => {
-  selectedVersionCode.value = versionCode;
+  // Buscar la versión en la lista
   const version = versions.value.find((v) => v.id === versionCode);
-  if (version) {
-    emit("versionSelected", versionCode, version.isCurrentVersion);
+  if (!version) {
+    console.warn("⚠️ [HistoryTab] Versión no encontrada en la lista:", {
+      requestedVersionCode: versionCode,
+      availableVersions: versions.value.map((v) => v.id),
+    });
+    return;
   }
+  
+  selectedVersionCode.value = versionCode;
+  emit("versionSelected", versionCode, version.isCurrentVersion);
 };
 
 // Manejar restauración de versión

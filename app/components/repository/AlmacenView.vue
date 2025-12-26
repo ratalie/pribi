@@ -622,7 +622,11 @@
 
   watch(
     () => [carpetaActual.value, dashboardStore.sociedadSeleccionada?.id],
-    async ([carpetaId, structureId], [oldCarpetaId, oldStructureId]) => {
+    async ([carpetaId, structureId], oldValue) => {
+      // Manejar caso donde oldValue puede ser undefined en la primera ejecución
+      const oldArray = oldValue && Array.isArray(oldValue) ? oldValue : [undefined, undefined];
+      const [oldCarpetaId, oldStructureId] = oldArray;
+      
       console.log("🔵 [AlmacenView] Watch parentNodeIdForUpload:", {
         carpetaId,
         structureId,

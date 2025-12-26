@@ -31,113 +31,137 @@ export function useVersionesDocumento() {
   const versions = ref<DocumentVersion[]>([]);
   const isLoading = ref(false);
   const error = ref<string | null>(null);
+  
+  // Guard para evitar múltiples llamadas simultáneas
+  let loadingPromise: Promise<void> | null = null;
+  let currentLoadingNodeId: number | null = null;
 
   /**
    * Carga las versiones de un documento desde un nodo
    */
   const cargarVersionesDesdeNodo = async (nodeId: number): Promise<void> => {
+    // Si ya hay una carga en progreso para este nodo, retornar la promesa existente
+    if (loadingPromise && currentLoadingNodeId === nodeId) {
+      console.log("⏳ [useVersionesDocumento] Ya hay una carga en progreso para este nodo, esperando...");
+      return loadingPromise;
+    }
+    
+    // Si hay una carga en progreso para otro nodo, esperar a que termine
+    if (loadingPromise && currentLoadingNodeId !== nodeId) {
+      console.log("⏳ [useVersionesDocumento] Esperando que termine la carga anterior...");
+      await loadingPromise;
+    }
+    
     isLoading.value = true;
     error.value = null;
+    currentLoadingNodeId = nodeId;
 
-    try {
-      console.log("📋 [useVersionesDocumento] Cargando versiones desde nodo:", nodeId);
+    // Crear la promesa de carga
+    loadingPromise = (async () => {
+      try {
+        console.log("📋 [useVersionesDocumento] Cargando versiones desde nodo:", nodeId);
 
-      // Obtener el nodo completo
-      const node = await repository.obtenerNodoPorId(nodeId);
+        // Obtener el nodo completo
+        const node = await repository.obtenerNodoPorId(nodeId);
 
-      if (!node) {
-        throw new Error("No se pudo obtener el nodo del servidor");
-      }
-
-      // Verificar que es un documento
-      if (node.type !== "document") {
-        throw new Error("El nodo seleccionado no es un documento");
-      }
-
-      // Extraer las versiones del nodo
-      // El backend devuelve documentVersions en el DTO, pero el mapper lo convierte a versions
-      const documentVersions = node.versions || [];
-
-      if (documentVersions.length === 0) {
-        versions.value = [];
-        return;
-      }
-
-      // Obtener información del usuario logueado (temporal, hasta tener store de usuario)
-      const userName = localStorage.getItem("nameUser") || "Usuario";
-      const userEmail = localStorage.getItem("emailUser") || "usuario@probo.com";
-
-      // Convertir las versiones al formato esperado
-      const versionsList: DocumentVersion[] = documentVersions.map(
-        (version: any, index: number) => {
-          // Calcular el número de versión correcto
-          // Las versiones vienen ordenadas de más reciente a más antigua
-          // La versión actual (index 0) debe tener el número más alto
-          const versionNumber = documentVersions.length - index;
-
-          // Inferir mimeType desde el nombre si no viene del backend
-          const inferMimeType = (fileName: string): string => {
-            const ext = fileName.toLowerCase().split(".").pop() || "";
-            switch (ext) {
-              case "pdf": return "application/pdf";
-              case "docx": return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-              case "doc": return "application/msword";
-              case "xlsx": return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-              case "xls": return "application/vnd.ms-excel";
-              case "pptx": return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-              case "ppt": return "application/vnd.ms-powerpoint";
-              default: return "application/octet-stream";
-            }
-          };
-
-          const title = version.title || node.name;
-          const mimeType = version.mimeType || inferMimeType(title);
-
-          console.log("📋 [useVersionesDocumento] Mapeando versión:", {
-            versionCode: version.versionCode,
-            title,
-            mimeTypeFromBackend: version.mimeType,
-            mimeTypeInferido: !version.mimeType ? inferMimeType(title) : undefined,
-            mimeTypeFinal: mimeType,
-            index,
-            isCurrentVersion: index === 0,
-          });
-
-          return {
-            id: version.versionCode || `version-${versionNumber}`,
-            versionNumber,
-            title,
-            mimeType, // Incluir mimeType
-            sizeInBytes: version.sizeInBytes || 0,
-            createdAt: version.createdAt || new Date().toISOString(),
-            updatedAt: version.updatedAt || version.createdAt || new Date().toISOString(),
-            isCurrentVersion: index === 0, // La primera versión es la más reciente
-            uploadedBy: {
-              id: version.userId?.toString() || version.userIdV2 || "user-1",
-              name: version.userName || userName,
-              email: userEmail,
-            },
-          };
+        if (!node) {
+          throw new Error("No se pudo obtener el nodo del servidor");
         }
-      );
 
-      versions.value = versionsList;
-      console.log("✅ [useVersionesDocumento] Versiones cargadas:", versionsList.length);
-    } catch (err: any) {
-      console.error("❌ [useVersionesDocumento] Error al cargar versiones:", err);
-      error.value = err.message || "No se pudieron cargar las versiones del documento";
-      versions.value = [];
+        // Verificar que es un documento
+        if (node.type !== "document") {
+          throw new Error("El nodo seleccionado no es un documento");
+        }
 
-      toast({
-        title: "Error al cargar versiones",
-        description: error.value || "Error desconocido",
-        variant: "destructive",
-      });
+        // Extraer las versiones del nodo
+        // El backend devuelve documentVersions en el DTO, pero el mapper lo convierte a versions
+        const documentVersions = node.versions || [];
 
-      throw err;
-    } finally {
-      isLoading.value = false;
-    }
+        if (documentVersions.length === 0) {
+          versions.value = [];
+          return;
+        }
+
+        // Obtener información del usuario logueado (temporal, hasta tener store de usuario)
+        const userName = localStorage.getItem("nameUser") || "Usuario";
+        const userEmail = localStorage.getItem("emailUser") || "usuario@probo.com";
+
+        // Convertir las versiones al formato esperado
+        const versionsList: DocumentVersion[] = documentVersions.map(
+          (version: any, index: number) => {
+            // Calcular el número de versión correcto
+            // Las versiones vienen ordenadas de más reciente a más antigua
+            // La versión actual (index 0) debe tener el número más alto
+            const versionNumber = documentVersions.length - index;
+
+            // Inferir mimeType desde el nombre si no viene del backend
+            const inferMimeType = (fileName: string): string => {
+              const ext = fileName.toLowerCase().split(".").pop() || "";
+              switch (ext) {
+                case "pdf": return "application/pdf";
+                case "docx": return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                case "doc": return "application/msword";
+                case "xlsx": return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                case "xls": return "application/vnd.ms-excel";
+                case "pptx": return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+                case "ppt": return "application/vnd.ms-powerpoint";
+                default: return "application/octet-stream";
+              }
+            };
+
+            const title = version.title || node.name;
+            const mimeType = version.mimeType || inferMimeType(title);
+
+            console.log("📋 [useVersionesDocumento] Mapeando versión:", {
+              versionCode: version.versionCode,
+              title,
+              mimeTypeFromBackend: version.mimeType,
+              mimeTypeInferido: !version.mimeType ? inferMimeType(title) : undefined,
+              mimeTypeFinal: mimeType,
+              index,
+              isCurrentVersion: index === 0,
+            });
+
+            return {
+              id: version.versionCode || `version-${versionNumber}`,
+              versionNumber,
+              title,
+              mimeType, // Incluir mimeType
+              sizeInBytes: version.sizeInBytes || 0,
+              createdAt: version.createdAt || new Date().toISOString(),
+              updatedAt: version.updatedAt || version.createdAt || new Date().toISOString(),
+              isCurrentVersion: index === 0, // La primera versión es la más reciente
+              uploadedBy: {
+                id: version.userId?.toString() || version.userIdV2 || "user-1",
+                name: version.userName || userName,
+                email: userEmail,
+              },
+            };
+          }
+        );
+
+        versions.value = versionsList;
+        console.log("✅ [useVersionesDocumento] Versiones cargadas:", versionsList.length);
+      } catch (err: any) {
+        console.error("❌ [useVersionesDocumento] Error al cargar versiones:", err);
+        error.value = err.message || "No se pudieron cargar las versiones del documento";
+        versions.value = [];
+
+        toast({
+          title: "Error al cargar versiones",
+          description: error.value || "Error desconocido",
+          variant: "destructive",
+        });
+
+        throw err;
+      } finally {
+        isLoading.value = false;
+        loadingPromise = null;
+        currentLoadingNodeId = null;
+      }
+    })();
+    
+    return loadingPromise;
   };
 
   /**

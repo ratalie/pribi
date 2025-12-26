@@ -212,6 +212,14 @@ export function useDocumentViewer() {
   // Renderizar PDF en el contenedor (simplificado como V2.5 - renderizar todas las páginas)
   async function renderPdfInContainer(pdf: any, container: HTMLElement) {
     try {
+      // Verificar que el contenedor esté conectado antes de limpiarlo
+      if (!container.isConnected) {
+        console.error(
+          "❌ [useDocumentViewer] renderPdfInContainer: Contenedor no está conectado al DOM"
+        );
+        throw new Error("El contenedor no está conectado al DOM");
+      }
+
       // Limpiar completamente el contenedor para evitar caché visual
       container.innerHTML = "";
       void container.offsetHeight;
@@ -227,6 +235,12 @@ export function useDocumentViewer() {
 
       // Renderizar todas las páginas (como V2.5)
       for (let pageNum = 1; pageNum <= totalPages.value; pageNum++) {
+        // Verificar que el PDF no haya sido destruido antes de obtener la página
+        if (!pdf || (pdf.destroyed !== undefined && pdf.destroyed)) {
+          console.error("❌ [useDocumentViewer] PDF destruido durante el renderizado");
+          throw new Error("El PDF fue destruido durante el renderizado");
+        }
+
         // Obtener la página
         const page = await pdf.getPage(pageNum);
 
@@ -262,11 +276,26 @@ export function useDocumentViewer() {
         canvas.style.height = "auto";
         canvas.style.display = "block";
 
-        // Renderizar página
-        await page.render({
-          canvasContext: context,
-          viewport: scaledViewport,
-        }).promise;
+        // Renderizar página (con manejo de errores para "Transport destroyed")
+        try {
+          await page.render({
+            canvasContext: context,
+            viewport: scaledViewport,
+          }).promise;
+        } catch (renderError: any) {
+          // Si el error es "Transport destroyed", significa que el PDF fue destruido durante el renderizado
+          if (
+            renderError?.message?.includes("Transport destroyed") ||
+            renderError?.message?.includes("destroyed")
+          ) {
+            console.error(
+              "❌ [useDocumentViewer] PDF destruido durante el renderizado de la página:",
+              pageNum
+            );
+            throw new Error("El PDF fue destruido durante el renderizado");
+          }
+          throw renderError;
+        }
 
         // Agregar canvas al contenedor de la página
         pageContainer.appendChild(canvas);
@@ -290,8 +319,14 @@ export function useDocumentViewer() {
 
       // Agregar el contenedor de páginas al contenedor principal
       container.appendChild(pagesContainer);
+
+      console.log("✅ [useDocumentViewer] renderPdfInContainer COMPLETADO:", {
+        totalPages: totalPages.value,
+        containerHasContent: container.children.length > 0,
+        pagesContainerChildren: pagesContainer.children.length,
+      });
     } catch (error) {
-      console.error("Error renderizando PDF:", error);
+      console.error("❌ [useDocumentViewer] Error renderizando PDF:", error);
       const errorMessage = error instanceof Error ? error.message : "Error desconocido";
       container.innerHTML = `
         <div style="text-align: center; padding: 40px; color: #666;">
@@ -312,9 +347,20 @@ export function useDocumentViewer() {
       // Limpiar PDF anterior antes de cargar uno nuevo
       if (currentPdf.value) {
         try {
-          // Intentar destruir el PDF anterior para liberar recursos
-          if (typeof currentPdf.value.destroy === "function") {
-            await currentPdf.value.destroy();
+          // Verificar si el PDF ya está destruido antes de intentar destruirlo
+          const isDestroyed =
+            currentPdf.value.destroyed !== undefined && currentPdf.value.destroyed;
+          if (isDestroyed) {
+            console.log(
+              "ℹ️ [useDocumentViewer] PDF ya está destruido, solo limpiando referencia"
+            );
+            currentPdf.value = null;
+          } else {
+            // Intentar destruir el PDF anterior para liberar recursos
+            if (typeof currentPdf.value.destroy === "function") {
+              await currentPdf.value.destroy();
+            }
+            currentPdf.value = null;
           }
         } catch (destroyError: any) {
           // Ignorar errores si el PDF ya está destruido o en un estado inválido
@@ -322,16 +368,41 @@ export function useDocumentViewer() {
             "⚠️ [useDocumentViewer] Error al destruir PDF anterior:",
             destroyError?.message || destroyError
           );
-        } finally {
-          // Asegurar que siempre se limpia la referencia
+          // Asegurar que siempre se limpia la referencia incluso si hay error
           currentPdf.value = null;
         }
       }
 
-      // Limpiar contenedor antes de cargar
+      // Limpiar contenedor antes de cargar (solo si está conectado al DOM)
       const container = pdfViewer || pdfViewerRef.value;
       if (container) {
-        container.innerHTML = "";
+        // Verificar que el contenedor esté conectado antes de limpiarlo
+        if (container.isConnected) {
+          console.log("🧹 [useDocumentViewer] Limpiando contenedor PDF antes de cargar:", {
+            containerExists: !!container,
+            containerId: container.id,
+            containerClassName: container.className,
+            containerClientWidth: container.clientWidth,
+            containerClientHeight: container.clientHeight,
+            containerIsConnected: container.isConnected,
+          });
+          container.innerHTML = "";
+          // Forzar un reflow para asegurar que el DOM esté actualizado
+          void container.offsetHeight;
+        } else {
+          console.warn(
+            "⚠️ [useDocumentViewer] Contenedor no está conectado al DOM, no se puede limpiar aún"
+          );
+          // Esperar un poco y verificar de nuevo
+          await nextTick();
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          if (container.isConnected) {
+            container.innerHTML = "";
+            void container.offsetHeight;
+          }
+        }
+      } else {
+        console.warn("⚠️ [useDocumentViewer] No hay contenedor disponible para limpiar");
       }
 
       const repository = new RepositorioDocumentosHttpRepository();
@@ -463,7 +534,58 @@ export function useDocumentViewer() {
 
       // Renderizar el PDF en el contenedor si se proporciona
       if (container) {
-        await renderPdfInContainer(pdf, container);
+        // Esperar a que el contenedor esté completamente listo (conectado al DOM y con dimensiones)
+        let retries = 0;
+        const maxRetries = 10;
+        while (retries < maxRetries) {
+          await nextTick();
+          await new Promise((resolve) => setTimeout(resolve, 100));
+
+          const isConnected = container.isConnected;
+          const hasDimensions = container.clientWidth > 0 && container.clientHeight > 0;
+
+          console.log(
+            `🔄 [useDocumentViewer] Intento ${
+              retries + 1
+            }/${maxRetries} - Verificando contenedor:`,
+            {
+              containerExists: !!container,
+              containerId: container.id,
+              containerClassName: container.className,
+              containerClientWidth: container.clientWidth,
+              containerClientHeight: container.clientHeight,
+              containerIsConnected: isConnected,
+              hasDimensions,
+              pdfNumPages: pdf.numPages,
+            }
+          );
+
+          if (isConnected && hasDimensions) {
+            console.log("✅ [useDocumentViewer] Contenedor listo, renderizando PDF...");
+            await renderPdfInContainer(pdf, container);
+            console.log("✅ [useDocumentViewer] PDF renderizado exitosamente en contenedor");
+            break;
+          }
+
+          retries++;
+          if (retries >= maxRetries) {
+            console.error(
+              "❌ [useDocumentViewer] El contenedor no está listo después de múltiples intentos:",
+              {
+                isConnected: container.isConnected,
+                clientWidth: container.clientWidth,
+                clientHeight: container.clientHeight,
+              }
+            );
+            throw new Error(
+              "El contenedor PDF no está listo para renderizar (no conectado o sin dimensiones)"
+            );
+          }
+        }
+      } else {
+        console.warn(
+          "⚠️ [useDocumentViewer] No hay contenedor disponible para renderizar PDF"
+        );
       }
     } catch (err: any) {
       const errorMessage =
@@ -485,14 +607,32 @@ export function useDocumentViewer() {
 
   // Cargar documento PDF (versión con pending document pattern)
   async function loadPdfDocumentWithPending(file: DocumentFile) {
+    console.log("🔵 [useDocumentViewer] loadPdfDocumentWithPending:", {
+      fileName: file.name,
+      versionCode: file.versionCode,
+      pdfViewerRefExists: !!pdfViewerRef.value,
+      pdfViewerRefId: pdfViewerRef.value?.id,
+      pdfViewerRefClassName: pdfViewerRef.value?.className,
+    });
+
     // Si no hay referencia disponible, guardar como pendiente
     if (!pdfViewerRef.value) {
+      console.log(
+        "⏳ [useDocumentViewer] pdfViewerRef no disponible, guardando como pendiente:",
+        {
+          fileName: file.name,
+          versionCode: file.versionCode,
+        }
+      );
       pendingDocument.value = file;
       return;
     }
 
     // Si hay referencia, cargar inmediatamente
     try {
+      console.log(
+        "✅ [useDocumentViewer] pdfViewerRef disponible, cargando PDF inmediatamente"
+      );
       await loadPdfDocument(file, pdfViewerRef.value);
     } catch (error: any) {
       const errorMessage =
@@ -573,14 +713,33 @@ export function useDocumentViewer() {
       // Renderizar según el tipo de preview
       if (preview.type === "html") {
         const previewDiv = document.createElement("div");
-        previewDiv.className = "w-full h-full overflow-auto p-4";
-        previewDiv.innerHTML = `
-          <div class="max-w-4xl mx-auto">
-            <div style="background: white; color: black; padding: 40px 60px; border-radius: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-height: 800px;">
-              ${preview.content as string}
+        previewDiv.className = "w-full h-full overflow-auto p-4 bg-gray-100";
+
+        // Para Excel, necesitamos estilos especiales para las tablas
+        if (isExcelFile) {
+          previewDiv.innerHTML = `
+            <div class="max-w-full mx-auto">
+              <div style="background: white; color: black; padding: 20px; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow-x: auto;">
+                <style>
+                  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+                  td, th { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                  th { background-color: #f2f2f2; font-weight: bold; }
+                  tr:nth-child(even) { background-color: #f9f9f9; }
+                </style>
+                ${preview.content as string}
+              </div>
             </div>
-          </div>
-        `;
+          `;
+        } else {
+          // Para Word y otros documentos Office
+          previewDiv.innerHTML = `
+            <div class="max-w-4xl mx-auto">
+              <div style="background: white; color: black; padding: 40px 60px; border-radius: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-height: 800px;">
+                ${preview.content as string}
+              </div>
+            </div>
+          `;
+        }
         container.appendChild(previewDiv);
       } else if (preview.type === "image") {
         const img = document.createElement("img");
@@ -789,17 +948,36 @@ export function useDocumentViewer() {
 
   // Cargar documento pendiente
   async function loadPendingDocument() {
-    if (!pendingDocument.value) return;
+    if (!pendingDocument.value) {
+      console.log("⏭️ [useDocumentViewer] loadPendingDocument: No hay documento pendiente");
+      return;
+    }
 
     const file = pendingDocument.value;
     pendingDocument.value = null;
 
+    console.log("🚀 [useDocumentViewer] loadPendingDocument: Cargando documento pendiente:", {
+      fileName: file.name,
+      versionCode: file.versionCode,
+      isPdf: isPdf.value,
+      pdfViewerRefExists: !!pdfViewerRef.value,
+    });
+
     try {
       if (isPdf.value) {
-        await loadPdfDocument(file, pdfViewerRef.value || undefined);
+        if (!pdfViewerRef.value) {
+          console.error(
+            "❌ [useDocumentViewer] loadPendingDocument: pdfViewerRef no disponible para PDF pendiente"
+          );
+          return;
+        }
+        await loadPdfDocument(file, pdfViewerRef.value);
       } else if (isOffice.value || isExcel.value || isPptx.value) {
         await loadOfficeDocument(file);
       }
+      console.log(
+        "✅ [useDocumentViewer] loadPendingDocument: Documento pendiente cargado exitosamente"
+      );
     } catch (error: any) {
       const errorMessage =
         error?.message || String(error) || "Error desconocido al cargar documento pendiente";
@@ -807,7 +985,8 @@ export function useDocumentViewer() {
         error,
         message: errorMessage,
         stack: error?.stack,
-        pendingDocument: pendingDocument.value,
+        fileName: file.name,
+        versionCode: file.versionCode,
       });
     }
   }
@@ -884,26 +1063,17 @@ export function useDocumentViewer() {
     // Limpiar cache de páginas
     renderedPagesCache.clear();
 
-    // Limpiar contenedores del DOM
-    if (pdfViewerRef.value) {
-      pdfViewerRef.value.innerHTML = "";
-    }
-    if (officeViewerRef.value) {
-      officeViewerRef.value.innerHTML = "";
-    }
-    if (excelViewerRef.value) {
-      excelViewerRef.value.innerHTML = "";
-    }
-    if (pptxViewerRef.value) {
-      pptxViewerRef.value.innerHTML = "";
-    }
-
-    // Limpiar PDF si existe - usar markRaw previene errores con campos privados
+    // Limpiar PDF si existe PRIMERO (antes de limpiar contenedores)
     if (currentPdf.value) {
       try {
-        // Verificar que el método destroy existe antes de llamarlo
-        if (typeof currentPdf.value.destroy === "function") {
-          await currentPdf.value.destroy();
+        // Verificar si el PDF ya está destruido
+        const isDestroyed =
+          currentPdf.value.destroyed !== undefined && currentPdf.value.destroyed;
+        if (!isDestroyed) {
+          // Verificar que el método destroy existe antes de llamarlo
+          if (typeof currentPdf.value.destroy === "function") {
+            await currentPdf.value.destroy();
+          }
         }
       } catch (err: any) {
         // Ignorar errores al destruir PDF (puede ser que ya esté destruido)
@@ -913,6 +1083,24 @@ export function useDocumentViewer() {
         );
       }
       currentPdf.value = null;
+    }
+
+    // Limpiar contenedores del DOM (solo si están conectados)
+    // Esperar un poco para asegurar que el PDF se haya destruido completamente
+    await nextTick();
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    if (pdfViewerRef.value && pdfViewerRef.value.isConnected) {
+      pdfViewerRef.value.innerHTML = "";
+    }
+    if (officeViewerRef.value && officeViewerRef.value.isConnected) {
+      officeViewerRef.value.innerHTML = "";
+    }
+    if (excelViewerRef.value && excelViewerRef.value.isConnected) {
+      excelViewerRef.value.innerHTML = "";
+    }
+    if (pptxViewerRef.value && pptxViewerRef.value.isConnected) {
+      pptxViewerRef.value.innerHTML = "";
     }
 
     currentDocument.value = null;

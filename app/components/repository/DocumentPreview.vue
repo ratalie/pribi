@@ -42,38 +42,10 @@
       ></div>
 
       <!-- Excel Viewer -->
-      <div v-else-if="isExcel" class="w-full h-full overflow-hidden" ref="excelViewer">
-        <div class="flex flex-col items-center justify-center h-full p-8">
-          <div class="text-center">
-            <div class="text-6xl mb-4">📊</div>
-            <h2 class="text-2xl font-bold text-gray-700 mb-4">Archivo Excel</h2>
-            <p class="text-gray-500 mb-6">{{ fileName }}</p>
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-              <p class="text-blue-800 text-sm">Cargando visor de Excel...</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div v-else-if="isExcel" class="w-full min-h-full overflow-auto" ref="excelViewer"></div>
 
       <!-- PowerPoint Viewer -->
-      <div v-else-if="isPptx" class="w-full h-full overflow-hidden" ref="pptxViewer">
-        <div class="flex flex-col items-center justify-center h-full p-8">
-          <div class="text-center">
-            <div class="text-6xl mb-4">📊</div>
-            <h2 class="text-2xl font-bold text-gray-700 mb-4">Presentación PowerPoint</h2>
-            <p class="text-gray-500 mb-6">{{ fileName }}</p>
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-              <p class="text-blue-800 text-sm">
-                La visualización completa de PowerPoint requiere una licencia premium.
-                <br />
-                <a href="#" class="text-blue-600 underline hover:text-blue-800">
-                  Contactar para obtener acceso completo
-                </a>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div v-else-if="isPptx" class="w-full min-h-full overflow-auto" ref="pptxViewer"></div>
 
       <!-- Unsupported Files -->
       <div

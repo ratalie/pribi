@@ -3,7 +3,6 @@
   import { usePrevisualizarDocumento } from "~/core/presentation/repositorio/composables/usePrevisualizarDocumento";
   import { useActualizarNombreDocumento } from "~/core/presentation/repositorio/composables/useActualizarNombreDocumento";
   import { useVersionesDocumento } from "~/core/presentation/repositorio/composables/useVersionesDocumento";
-  import { RepositorioDocumentosHttpRepository } from "~/core/hexag/repositorio/infrastructure/repositories/repositorio-documentos-http.repository";
   import {
     useDocumentViewer,
     type DocumentFile,
@@ -145,7 +144,8 @@
     () => [props.isOpen, props.document?.versionCode, selectedVersionCode.value],
     async ([isOpen, versionCode, selectedVersion]) => {
       // Usar la versión seleccionada si existe, sino la del documento
-      const codeToUse = selectedVersion || versionCode;
+      // Asegurar que codeToUse siempre sea string
+      const codeToUse: string = (selectedVersion || versionCode) as string;
 
       console.log("🔵 [PreviewModal] Watch activado:", {
         isOpen,
@@ -163,25 +163,34 @@
         // Esperar a que el cleanup termine completamente
         console.log("🧹 [PreviewModal] Limpiando viewer antes de cargar versión:", codeToUse);
         await cleanupViewer();
+        // Esperar múltiples ticks y un delay para asegurar que Vue termine de actualizar el DOM
         await nextTick();
+        await nextTick();
+        await new Promise((resolve) => setTimeout(resolve, 150));
         console.log("✅ [PreviewModal] Viewer limpiado, preparando DocumentFile...");
 
         // Obtener el mimeType de la versión específica si está seleccionada
-        let mimeTypeToUse = getDocumentMimeType();
-        let fileNameToUse = getDocumentName();
+        const rawMimeType = getDocumentMimeType();
+        let mimeTypeToUse: string | undefined =
+          typeof rawMimeType === "string" ? rawMimeType : undefined;
+        let fileNameToUse: string = getDocumentName();
 
-        // Si hay una versión seleccionada específica, usar su mimeType
+        // Si hay una versión seleccionada específica, usar su información completa
+        let versionSize = props.document.size || 0;
         if (selectedVersion && versionsList.value.length > 0) {
           const selectedVersionData = versionsList.value.find((v) => v.id === selectedVersion);
           if (selectedVersionData) {
-            console.log("📋 [PreviewModal] Usando mimeType de versión seleccionada:", {
+            console.log("📋 [PreviewModal] Usando información de versión seleccionada:", {
               versionCode: selectedVersion,
               versionMimeType: selectedVersionData.mimeType,
               versionTitle: selectedVersionData.title,
+              versionSize: selectedVersionData.sizeInBytes,
               previousMimeType: mimeTypeToUse,
+              previousFileName: fileNameToUse,
             });
             mimeTypeToUse = selectedVersionData.mimeType || mimeTypeToUse;
             fileNameToUse = selectedVersionData.title || fileNameToUse;
+            versionSize = selectedVersionData.sizeInBytes || versionSize;
           } else {
             console.warn("⚠️ [PreviewModal] Versión seleccionada no encontrada en la lista:", {
               selectedVersion,
@@ -191,7 +200,7 @@
         }
 
         // Inferir mimeType desde el nombre si no está disponible
-        if (!mimeTypeToUse) {
+        if (!mimeTypeToUse || typeof mimeTypeToUse !== "string") {
           const ext = fileNameToUse.toLowerCase().split(".").pop() || "";
           const mimeTypeMap: Record<string, string> = {
             pdf: "application/pdf",
@@ -210,13 +219,17 @@
           });
         }
 
-        // Crear objeto DocumentFile para el visor
+        // Asegurar que mimeTypeToUse es string (ya está garantizado arriba, pero TypeScript no lo sabe)
+        const finalMimeType: string =
+          typeof mimeTypeToUse === "string" ? mimeTypeToUse : "application/octet-stream";
+
+        // Crear objeto DocumentFile para el visor con la información de la versión seleccionada
         const documentFile: DocumentFile = {
           id: codeToUse,
           name: fileNameToUse,
-          size: props.document.size || 0,
-          type: mimeTypeToUse,
-          mimeType: mimeTypeToUse,
+          size: versionSize,
+          type: finalMimeType,
+          mimeType: finalMimeType,
           versionCode: codeToUse,
           nodeId: props.document.nodeId || undefined,
         };
@@ -234,8 +247,21 @@
         try {
           // Cargar documento usando el visor
           console.log("🚀 [PreviewModal] Iniciando carga del documento...");
+          // Asegurar que isViewerLoading se establece correctamente
+          isViewerLoading.value = true;
+          
+          // Esperar un poco más después del cleanup para asegurar que el DOM esté listo
+          await nextTick();
+          await new Promise((resolve) => setTimeout(resolve, 50));
+          
           await loadDocument(documentFile);
           console.log("✅ [PreviewModal] Documento cargado exitosamente");
+
+          // Esperar a que Vue termine de renderizar antes de actualizar el estado de loading
+          await nextTick();
+          await nextTick();
+          await new Promise((resolve) => setTimeout(resolve, 150));
+          isViewerLoading.value = false;
         } catch (err: any) {
           console.error("❌ [PreviewModal] Error al cargar documento:", {
             error: err,
@@ -249,7 +275,7 @@
           previewContent.value = null;
 
           try {
-            const mimeTypeForPreview = mimeTypeToUse || "";
+            const mimeTypeForPreview: string = finalMimeType;
             console.log("🔄 [PreviewModal] Intentando fallback con preview:", {
               versionCode: codeToUse,
               mimeType: mimeTypeForPreview,
@@ -292,6 +318,31 @@
     }
   );
 
+  // Cargar versiones cuando se abre el modal
+  watch(
+    () => [props.isOpen, props.document?.nodeId],
+    async ([isOpen, nodeId]) => {
+      // Asegurar que nodeId es un número válido
+      const nodeIdNumber = typeof nodeId === "number" ? nodeId : undefined;
+      if (isOpen && nodeIdNumber) {
+        console.log(
+          "📋 [PreviewModal] Modal abierto, cargando versiones para nodeId:",
+          nodeIdNumber
+        );
+        try {
+          await cargarVersionesDesdeNodo(nodeIdNumber);
+          console.log(
+            "✅ [PreviewModal] Versiones cargadas al abrir modal:",
+            versionsList.value.length
+          );
+        } catch (error) {
+          console.error("❌ [PreviewModal] Error al cargar versiones al abrir modal:", error);
+        }
+      }
+    },
+    { immediate: true }
+  );
+
   // Configurar referencias del visor cuando se monta
   onMounted(async () => {
     await nextTick();
@@ -304,31 +355,67 @@
   });
 
   // Manejar selección de versión desde HistoryTab
-  const handleVersionSelected = (versionCode: string, isCurrentVersion: boolean) => {
+  const handleVersionSelected = async (versionCode: string, isCurrentVersion: boolean) => {
     console.log("🟡 [PreviewModal] Versión seleccionada desde HistoryTab:", {
       versionCode,
       isCurrentVersion,
       previousSelectedVersion: selectedVersionCode.value,
       totalVersions: versionsList.value.length,
-      availableVersions: versionsList.value.map((v) => ({ id: v.id, title: v.title, mimeType: v.mimeType })),
+      availableVersions: versionsList.value.map((v) => ({
+        id: v.id,
+        title: v.title,
+        mimeType: v.mimeType,
+      })),
     });
-    
-    // Actualizar la versión seleccionada (esto disparará el watch principal que hará el cleanup)
+
+    // Verificar que la versión existe en la lista antes de seleccionarla
+    let version = versionsList.value.find((v) => v.id === versionCode);
+
+    // Si no se encuentra, esperar múltiples ticks y verificar de nuevo (las versiones pueden estar cargando)
+    if (!version) {
+      console.warn(
+        "⚠️ [PreviewModal] Versión NO encontrada en lista, esperando a que se carguen las versiones...",
+        {
+          requestedVersionCode: versionCode,
+          availableVersions: versionsList.value.map((v) => v.id),
+        }
+      );
+
+      // Esperar múltiples ticks para dar tiempo a que las versiones se carguen
+      for (let i = 0; i < 5; i++) {
+        await nextTick();
+        await new Promise((resolve) => setTimeout(resolve, 50)); // Esperar 50ms entre cada intento
+        version = versionsList.value.find((v) => v.id === versionCode);
+        if (version) {
+          console.log(`✅ [PreviewModal] Versión encontrada después de ${i + 1} intentos`);
+          break;
+        }
+      }
+
+      if (!version) {
+        console.error(
+          "❌ [PreviewModal] Versión no encontrada después de esperar:",
+          versionCode,
+          {
+            availableVersions: versionsList.value.map((v) => v.id),
+            totalVersions: versionsList.value.length,
+          }
+        );
+        return;
+      }
+    }
+
+    // Actualizar la versión seleccionada (esto disparará el watch principal que hará el cleanup y cargará el nuevo documento)
+    // El watch principal ya maneja el cleanup, así que no necesitamos hacerlo aquí
     selectedVersionCode.value = versionCode;
-    
-    const version = versionsList.value.find((v) => v.id === versionCode);
+
     if (version) {
-      console.log("🟡 [PreviewModal] Versión encontrada en lista:", {
+      console.log("✅ [PreviewModal] Versión encontrada y seleccionada:", {
         versionCode: version.id,
         versionMimeType: version.mimeType,
         versionTitle: version.title,
         versionNumber: version.versionNumber,
         isCurrentVersion: version.isCurrentVersion,
-      });
-    } else {
-      console.warn("⚠️ [PreviewModal] Versión NO encontrada en lista:", {
-        requestedVersionCode: versionCode,
-        availableVersions: versionsList.value.map((v) => v.id),
       });
     }
   };
@@ -344,23 +431,21 @@
         await cleanupViewer();
         await nextTick();
 
+        // Recargar versiones
         await cargarVersionesDesdeNodo(props.document.nodeId);
 
-        // Obtener el nodo actualizado para actualizar el versionCode
-        const repository = new RepositorioDocumentosHttpRepository();
-        const updatedNode = await repository.obtenerNodoPorId(props.document.nodeId);
+        // Esperar a que las versiones se carguen completamente
+        await nextTick();
 
-        if (updatedNode && updatedNode.versions && updatedNode.versions.length > 0) {
-          // Encontrar la versión actual (isCurrentVersion = true)
-          const currentVersion = updatedNode.versions.find((v: any) => v.isCurrentVersion);
-          if (currentVersion) {
-            // Limpiar la versión seleccionada para cargar la actual
-            // Esto disparará el watch principal que recargará el documento
-            selectedVersionCode.value = "";
-            
-            // Esperar un tick adicional para asegurar que el cleanup terminó
-            await nextTick();
-          }
+        // Encontrar la versión actual en la lista de versiones recargada
+        const currentVersion = versionsList.value.find((v) => v.isCurrentVersion);
+        if (currentVersion && currentVersion.id) {
+          // Establecer el nuevo versionCode para disparar el watch y recargar el documento
+          selectedVersionCode.value = currentVersion.id;
+          console.log(
+            "✅ [PreviewModal] Versión actualizada después de restaurar:",
+            currentVersion.id
+          );
         }
       } catch (error) {
         console.error("❌ [PreviewModal] Error al recargar versiones:", error);
@@ -376,40 +461,28 @@
     await cleanupViewer();
     await nextTick();
 
-    // Recargar versiones en HistoryTab si está disponible
-    if (historyTabRef.value) {
-      try {
-        historyTabRef.value.recargarVersiones();
-      } catch (error) {
-        console.error("❌ [PreviewModal] Error al recargar versiones en HistoryTab:", error);
-      }
-    }
-
-    // También recargar usando el composable como fallback
+    // Recargar versiones si tenemos nodeId
     if (props.document?.nodeId) {
       try {
-        // Obtener el nuevo nodo para actualizar el documentCode y versionCode
-        const repository = new RepositorioDocumentosHttpRepository();
-        const updatedNode = await repository.obtenerNodoPorId(props.document.nodeId);
+        // Solo recargar usando el composable (HistoryTab se actualizará automáticamente)
+        await cargarVersionesDesdeNodo(props.document.nodeId);
 
-        if (updatedNode && updatedNode.versions && updatedNode.versions.length > 0) {
-          // Recargar versiones usando el composable
-          await cargarVersionesDesdeNodo(props.document.nodeId);
+        // Esperar a que las versiones se carguen completamente
+        await nextTick();
 
-          // Encontrar la versión actual (isCurrentVersion = true)
-          const currentVersion = updatedNode.versions.find((v: any) => v.isCurrentVersion);
-          if (currentVersion) {
-            // Limpiar la versión seleccionada para cargar la nueva versión actual
-            // Esto disparará el watch principal que recargará el documento
-            selectedVersionCode.value = "";
-            
-            // Esperar un tick adicional para asegurar que el cleanup terminó
-            await nextTick();
-          }
-
-          // Emitir evento para actualizar el documento en el componente padre
-          emits("nameUpdated", localDocumentName.value);
+        // Encontrar la versión actual en la lista de versiones recargada
+        const currentVersion = versionsList.value.find((v) => v.isCurrentVersion);
+        if (currentVersion && currentVersion.id) {
+          // Establecer el nuevo versionCode para disparar el watch y recargar el documento
+          selectedVersionCode.value = currentVersion.id;
+          console.log(
+            "✅ [PreviewModal] Versión actualizada después de subir:",
+            currentVersion.id
+          );
         }
+
+        // Emitir evento para actualizar el documento en el componente padre
+        emits("nameUpdated", localDocumentName.value);
       } catch (error) {
         console.error("❌ [PreviewModal] Error al recargar versiones:", error);
       }
