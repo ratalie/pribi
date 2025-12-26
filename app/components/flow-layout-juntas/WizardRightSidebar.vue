@@ -11,10 +11,12 @@
     currentSectionId: string;
     onSectionClick: (sectionId: string) => void;
     title?: string;
+    showCloseButton?: boolean;
   }
 
   const props = withDefaults(defineProps<Props>(), {
     title: "Secciones",
+    showCloseButton: false,
   });
 
   // Usar composable para gestión de expansión
@@ -27,8 +29,8 @@
 
 <template>
   <div class="w-[360px] bg-white border-l border-gray-200 flex flex-col overflow-y-auto">
-    <!-- Header -->
-    <RightSidebarHeader :title="title" />
+    <!-- Header (solo si showCloseButton es true, porque el sheet tiene su propio header) -->
+    <RightSidebarHeader v-if="showCloseButton" :title="title" />
 
     <!-- Sections List -->
     <div class="flex-1 px-6 py-4">
