@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import UserManagementView from '@/components/admin/UserManagementView.vue';
+import UserManagementManager from '~/core/presentation/panel-administrativo/vistas/gestion-usuarios/components/UserManagementManager.vue';
 
 definePageMeta({
   layout: 'default',
@@ -11,6 +11,6 @@ useHead({
 </script>
 
 <template>
-  <UserManagementView />
+  <UserManagementManager />
 </template>
 
