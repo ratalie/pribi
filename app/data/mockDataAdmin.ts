@@ -109,6 +109,7 @@ export const actionsConfig: ActionConfig[] = [
  */
 export const rolePermissionsConfig: Record<RoleName, ActionType[]> = {
   Administrador: ['read', 'write', 'update', 'delete', 'file'],
+  AdministradorEstudio: ['read', 'write', 'update', 'delete', 'file'],
   Usuario: ['read', 'write', 'update', 'file'],
   Lector: ['read'],
   Externo: ['read'],
@@ -498,6 +499,13 @@ export function getRoleBadgeColor(role: RoleName): {
         border: '#A78BFA',
         lightBg: '#EDE9FE',
       };
+    case 'AdministradorEstudio':
+      return {
+        bg: '#8B5CF6', // Púrpura para distinguirlo de Administrador
+        text: '#FFFFFF',
+        border: '#C4B5FD',
+        lightBg: '#EDE9FE',
+      };
     case 'Usuario':
       return {
         bg: '#10B981',
@@ -513,6 +521,14 @@ export function getRoleBadgeColor(role: RoleName): {
         lightBg: '#FEF3C7',
       };
     case 'Externo':
+      return {
+        bg: '#6B7280',
+        text: '#FFFFFF',
+        border: '#D1D5DB',
+        lightBg: '#F3F4F6',
+      };
+    default:
+      // Fallback para roles desconocidos
       return {
         bg: '#6B7280',
         text: '#FFFFFF',

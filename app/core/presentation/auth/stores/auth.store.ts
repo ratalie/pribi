@@ -28,6 +28,17 @@ export const useAuthStore = defineStore(
         const result = await loginUseCase.execute(credentials);
         session.value = result;
         status.value = "idle";
+        
+        // Cargar permisos después del login
+        try {
+          const { usePermissionsStore } = await import("~/core/presentation/permissions/stores/permissions.store");
+          const permissionsStore = usePermissionsStore();
+          await permissionsStore.loadMyPermissions();
+        } catch (permError) {
+          // No bloquear el login si falla la carga de permisos
+          console.warn("[AuthStore] Error al cargar permisos después del login:", permError);
+        }
+        
         return result;
       } catch (error: any) {
         status.value = "error";
@@ -37,7 +48,16 @@ export const useAuthStore = defineStore(
       }
     }
 
-    function logout() {
+    async function logout() {
+      // Limpiar permisos antes de hacer logout
+      try {
+        const { usePermissionsStore } = await import("~/core/presentation/permissions/stores/permissions.store");
+        const permissionsStore = usePermissionsStore();
+        permissionsStore.clearPermissions();
+      } catch (permError) {
+        console.warn("[AuthStore] Error al limpiar permisos:", permError);
+      }
+      
       session.value = null;
       status.value = "idle";
       errorMessage.value = null;

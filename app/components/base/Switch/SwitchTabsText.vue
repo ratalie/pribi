@@ -6,11 +6,22 @@
     opcionA: string;
     opcionB: string;
     isDisabled?: boolean;
+    size?: "sm" | "md";
   }
 
   const props = withDefaults(defineProps<Props>(), {
     modelValue: "opcion-a",
     isDisabled: false,
+    size: "md",
+  });
+
+  // Clases de padding según el tamaño
+  const paddingClasses = computed(() => {
+    if (props.size === "sm") {
+      return "px-5 py-3";
+    }
+    // md (default)
+    return "px-5 py-4";
   });
 
   const emit = defineEmits<{
@@ -43,7 +54,8 @@
     <button
       type="button"
       :class="[
-        'flex-1 flex gap-[10px] items-center justify-center px-5 py-4 relative self-stretch transition-all duration-200 outline-none',
+        'flex-1 flex gap-[10px] items-center justify-center relative self-stretch transition-all duration-200 outline-none',
+        paddingClasses,
         props.isDisabled
           ? 'cursor-not-allowed opacity-50'
           : 'cursor-pointer focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
@@ -69,7 +81,8 @@
     <button
       type="button"
       :class="[
-        'flex-1 flex gap-[10px] items-center justify-center px-5 py-4 relative self-stretch transition-all duration-200 outline-none',
+        'flex-1 flex gap-[10px] items-center justify-center relative self-stretch transition-all duration-200 outline-none',
+        paddingClasses,
         props.isDisabled
           ? 'cursor-not-allowed opacity-50'
           : 'cursor-pointer focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',

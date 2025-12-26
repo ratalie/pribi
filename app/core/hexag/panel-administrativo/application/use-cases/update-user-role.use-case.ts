@@ -9,7 +9,7 @@ export class UpdateUserRoleUseCase {
 
   async execute(
     userId: string,
-    role: 'lector' | 'editor' | 'admin' | 'user'
+    role: 'lector' | 'editor' | 'admin' | 'user' | 'externo'
   ): Promise<User> {
     return await this.userRepository.updateUserRole(userId, role);
   }

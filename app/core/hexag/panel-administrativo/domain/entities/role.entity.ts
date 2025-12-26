@@ -9,5 +9,5 @@ export interface Role {
   updatedAt: Date;
 }
 
-export type RoleName = 'Administrador' | 'Usuario' | 'Lector' | 'Externo';
+export type RoleName = 'Administrador' | 'AdministradorEstudio' | 'Usuario' | 'Lector' | 'Externo';
 
