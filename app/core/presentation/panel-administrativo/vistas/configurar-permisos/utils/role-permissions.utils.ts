@@ -6,6 +6,13 @@ import type { ActionsConfig } from '../types/configurar-permisos.types';
  * Estos son los permisos que se aplican automáticamente al seleccionar un rol
  */
 export const ROLE_DEFAULT_PERMISSIONS: Record<SimpleRole, ActionsConfig> = {
+  'Administrador Superior': {
+    view: true,
+    create: true,
+    update: true,
+    delete: true,
+    file: true,
+  },
   Administrador: {
     view: true,
     create: true,
@@ -21,6 +28,13 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<SimpleRole, ActionsConfig> = {
     file: false, // Editor no puede archivar por defecto
   },
   Lector: {
+    view: true,
+    create: false,
+    update: false,
+    delete: false,
+    file: false,
+  },
+  Externo: {
     view: true,
     create: false,
     update: false,
@@ -69,6 +83,7 @@ export function isPermissionValidForRole(
   // Desactivar permisos siempre es válido (excepto view para Lector)
   return true;
 }
+
 
 
 

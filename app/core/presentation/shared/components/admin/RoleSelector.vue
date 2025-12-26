@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { Shield, Edit, Eye } from 'lucide-vue-next';
+import { Shield, Edit, Eye, UserX } from 'lucide-vue-next';
 import type { SimpleRole } from '~/core/presentation/panel-administrativo/vistas/configurar-permisos/types/configurar-permisos.types';
 import { getDefaultPermissionsForRole } from '~/core/presentation/panel-administrativo/vistas/configurar-permisos/utils/role-permissions.utils';
 import type { ActionsConfig } from '~/core/presentation/panel-administrativo/vistas/configurar-permisos/types/configurar-permisos.types';
+import { useAuthStore } from '~/core/presentation/auth/stores/auth.store';
 
 interface Props {
   modelValue: SimpleRole;
@@ -36,13 +37,42 @@ const defaultPermissions = computed(() => {
   return getDefaultPermissionsForRole(props.modelValue);
 });
 
-const roles: Array<{
+// Obtener rol del usuario actual
+const authStore = useAuthStore();
+const currentUserRoleName = computed(() => authStore.session?.roleName || null);
+
+// Mapear rol del backend a SimpleRole
+const mapBackendRoleToSimpleRole = (backendRole: string | null | undefined): SimpleRole | null => {
+  if (!backendRole) return null;
+  
+  const roleMap: Record<string, SimpleRole> = {
+    'AdministradorEstudio': 'Administrador Superior',
+    'Administrador': 'Administrador',
+    'Usuario': 'Editor',
+    'Lector': 'Lector',
+    'Externo': 'Externo',
+  };
+  
+  return roleMap[backendRole] || null;
+};
+
+const currentUserSimpleRole = computed(() => mapBackendRoleToSimpleRole(currentUserRoleName.value));
+
+// Array completo de roles disponibles
+const allRoles: Array<{
   value: SimpleRole;
   label: string;
   description: string;
   icon: any;
   color: string;
 }> = [
+  {
+    value: 'Administrador Superior',
+    label: 'Administrador Superior',
+    description: 'Puede gestionar todos los usuarios del estudio, incluyendo Administradores.',
+    icon: Shield,
+    color: '#8b5cf6', // Color púrpura para distinguirlo
+  },
   {
     value: 'Administrador',
     label: 'Administrador',
@@ -64,7 +94,35 @@ const roles: Array<{
     icon: Eye,
     color: 'var(--text-muted)',
   },
+  {
+    value: 'Externo',
+    label: 'Externo',
+    description: 'Acceso limitado. Solo lectura de información específica.',
+    icon: UserX,
+    color: 'var(--text-muted)',
+  },
 ];
+
+// Filtrar roles según el usuario actual
+const roles = computed(() => {
+  const currentRole = currentUserSimpleRole.value;
+  
+  // Si es Administrador, solo puede ver Editor, Lector, Externo
+  if (currentRole === 'Administrador') {
+    return allRoles.filter(
+      (r) => !['Administrador Superior', 'Administrador'].includes(r.value)
+    );
+  }
+  
+  // Si es Administrador Superior, puede ver todos excepto Administrador Superior
+  if (currentRole === 'Administrador Superior') {
+    return allRoles.filter((r) => r.value !== 'Administrador Superior');
+  }
+  
+  // Si es SuperAdministrador (no se maneja en SimpleRole, pero por si acaso)
+  // o si no hay rol, mostrar todos excepto Administrador Superior
+  return allRoles.filter((r) => r.value !== 'Administrador Superior');
+});
 </script>
 
 <template>

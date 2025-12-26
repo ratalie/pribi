@@ -14,27 +14,31 @@ import { AVAILABLE_AREAS } from "~/core/presentation/panel-administrativo/vistas
  */
 export function mapOverridesToSimpleConfig(
   accessAreas: AccessArea[],
-  currentRole: "Administrador" | "Usuario" | "Lector"
+  currentRole: "Administrador" | "AdministradorEstudio" | "Usuario" | "Lector" | "Externo"
 ): SimplePermissionsConfig {
   console.log('[mapOverridesToSimpleConfig] INICIO - Datos recibidos del backend:');
   console.log('[mapOverridesToSimpleConfig] accessAreas:', JSON.stringify(accessAreas, null, 2));
   console.log('[mapOverridesToSimpleConfig] currentRole:', currentRole);
 
   // Determinar rol simple
-  let simpleRole: "Administrador" | "Editor" | "Lector" = "Editor";
-  if (currentRole === "Administrador" || currentRole === "SuperAdministrador") {
+  let simpleRole: "Administrador Superior" | "Administrador" | "Editor" | "Lector" | "Externo" = "Editor";
+  if (currentRole === "AdministradorEstudio") {
+    simpleRole = "Administrador Superior";
+  } else if (currentRole === "Administrador" || currentRole === "SuperAdministrador") {
     simpleRole = "Administrador";
   } else if (currentRole === "Lector") {
     simpleRole = "Lector";
+  } else if (currentRole === "Externo") {
+    simpleRole = "Externo";
   }
 
   console.log('[mapOverridesToSimpleConfig] Rol simple determinado:', simpleRole);
 
-  // Si es Administrador, retornar configuración por defecto
-  if (simpleRole === "Administrador") {
-    console.log('[mapOverridesToSimpleConfig] Es Administrador, retornando configuración por defecto');
+  // Si es Administrador o Administrador Superior, retornar configuración por defecto
+  if (simpleRole === "Administrador" || simpleRole === "Administrador Superior") {
+    console.log('[mapOverridesToSimpleConfig] Es Administrador o Administrador Superior, retornando configuración por defecto');
     return {
-      role: "Administrador",
+      role: simpleRole,
       modules: AVAILABLE_AREAS.map((area) => ({
         area,
         enabled: true,

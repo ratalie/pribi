@@ -271,7 +271,7 @@ export const usePermissionsConfigStore = defineStore('permissions-config', {
         // Convertir permisos del backend a configuración simple
         const config = mapOverridesToSimpleConfig(
           accessAreas,
-          user.role.name as 'Administrador' | 'Usuario' | 'Lector',
+          user.role.name as 'Administrador' | 'AdministradorEstudio' | 'Usuario' | 'Lector' | 'Externo',
         );
         console.log('[PermissionsConfigStore] Configuración mapeada:', JSON.stringify(config, null, 2));
 

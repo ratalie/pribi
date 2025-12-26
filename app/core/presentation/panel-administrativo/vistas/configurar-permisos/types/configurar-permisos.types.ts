@@ -5,7 +5,7 @@
 /**
  * Rol simplificado según la UI
  */
-export type SimpleRole = 'Administrador' | 'Editor' | 'Lector';
+export type SimpleRole = 'Administrador Superior' | 'Administrador' | 'Editor' | 'Lector' | 'Externo';
 
 /**
  * Configuración de módulos
@@ -52,9 +52,11 @@ export interface SimplePermissionsConfig {
  * Mapeo de roles simplificados a roles del backend
  */
 export const ROLE_MAPPING: Record<SimpleRole, string> = {
+  'Administrador Superior': 'AdministradorEstudio',
   Administrador: 'Administrador',
   Editor: 'Usuario',
   Lector: 'Lector',
+  Externo: 'Externo',
 };
 
 /**
