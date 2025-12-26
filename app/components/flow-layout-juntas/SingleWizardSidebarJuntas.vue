@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import type { NavigationStep } from "~/types/navigationSteps";
+  import { useJuntasResponsive } from "~/composables/useJuntasResponsive";
   import ProgressBarJuntas from "./ProgressBarJuntas.vue";
   import SidebarHeader from "./SidebarHeader.vue";
   import SidebarStepsList from "./SidebarStepsList.vue";
@@ -16,11 +17,19 @@
   }
 
   defineProps<Props>(); // Props usado en template
+  
+  // Detectar si estamos en mobile para ajustar el width
+  const { isMobileLayout } = useJuntasResponsive();
 </script>
 
 <template>
-  <div class="w-[401px] shrink-0 border-r bg-white overflow-y-auto h-full">
-    <div class="px-6 py-10">
+  <div
+    :class="[
+      'shrink-0 border-r bg-white overflow-y-auto h-full transition-all duration-300',
+      isMobileLayout ? 'w-[280px]' : 'w-[401px]',
+    ]"
+  >
+    <div :class="[isMobileLayout ? 'px-4 py-6' : 'px-6 py-10']">
       <!-- Header con ícono y título -->
       <SidebarHeader
         :title="title"

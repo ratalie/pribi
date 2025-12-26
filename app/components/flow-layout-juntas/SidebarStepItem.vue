@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import type { NavigationStep } from "~/types/navigationSteps";
   import { getIcon } from "~/utils/iconMapper";
+  import { useJuntasResponsive } from "~/composables/useJuntasResponsive";
 
   interface Props {
     step: NavigationStep;
@@ -13,6 +14,7 @@
   }
 
   const props = defineProps<Props>();
+  const { isMobileLayout } = useJuntasResponsive();
 
   const stepSlug = computed(() => props.step.route.split("/").pop() || "");
 </script>
@@ -40,6 +42,7 @@
         </p>
 
         <span
+          v-if="!isMobileLayout"
           :class="[
             'font-secondary text-sm transition-colors',
             isCurrent ? 'font-semibold text-gray-800' : 'font-normal text-gray-600',
@@ -74,6 +77,7 @@
             {{ step.title }}
           </p>
           <span
+            v-if="!isMobileLayout"
             :class="[
               'font-secondary font-medium text-sm transition-colors',
               isCurrent ? 'text-gray-800' : 'text-gray-600',
@@ -114,6 +118,7 @@
           {{ step.title }}
         </p>
         <span
+          v-if="!isMobileLayout"
           :class="[
             'font-secondary text-sm transition-colors',
             isCurrent ? 'font-semibold text-gray-700' : 'font-medium text-gray-600',
