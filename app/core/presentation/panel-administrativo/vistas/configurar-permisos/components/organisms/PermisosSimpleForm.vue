@@ -87,6 +87,7 @@
           v-model="currentModules"
           :disabled="disabled"
           :role="currentRole"
+          :selected-global-actions="currentActions"
         />
       </div>
 

@@ -6,12 +6,14 @@ import ActionCheckboxes from "./ActionCheckboxes.vue";
 import type {
   SubModuleConfig,
   SimpleRole,
+  ActionsConfig,
 } from "~/core/presentation/panel-administrativo/vistas/configurar-permisos/types/configurar-permisos.types";
 
 interface Props {
   submodule: SubModuleConfig;
   disabled?: boolean;
   role: SimpleRole;
+  selectedGlobalActions?: ActionsConfig; // ⭐ Nuevo: acciones seleccionadas globalmente
 }
 
 const props = defineProps<Props>();
@@ -114,6 +116,7 @@ const updateActions = (actions: SubModuleConfig["actions"]) => {
           :disabled="disabled"
           :show-delete="submodule.actions.delete !== undefined"
           :show-file="submodule.actions.file !== undefined"
+          :selected-global-actions="selectedGlobalActions"
           @update:model-value="updateActions"
         />
       </div>
