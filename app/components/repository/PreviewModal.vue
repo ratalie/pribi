@@ -12,6 +12,9 @@
   import UploadVersionPopover from "./UploadVersionPopover.vue";
   import DocumentToolbar from "./DocumentToolbar.vue";
   import DocumentPreview from "./DocumentPreview.vue";
+  import VueOfficePptx from "@vue-office/pptx";
+  import { Icon } from "@iconify/vue";
+  import { RepositorioDocumentosHttpRepository } from "~/core/hexag/repositorio/infrastructure/repositories/repositorio-documentos-http.repository";
   import { Button } from "@/components/ui/button";
   import { ref, watch, computed, onMounted, onUnmounted, nextTick } from "vue";
 
@@ -121,6 +124,10 @@
 
   // Referencia al componente DocumentPreview (para cargar PPTX)
   const documentPreviewRef = ref<InstanceType<typeof DocumentPreview> | null>(null);
+
+  // Variables para PowerPoint (similar a v2.5)
+  const pptxSource = ref<string | ArrayBuffer | null>(null);
+  const pptxError = ref<string>("");
 
   // Funciones de formato (no usadas actualmente, pero pueden ser útiles)
   // const formatDate = (date: Date) => {
@@ -269,33 +276,40 @@
             hasDocumentPreviewRef: !!documentPreviewRef.value,
           });
 
-          // Si es PPTX, cargar el blob en el componente DocumentPreview
-          if (isPptx.value && documentPreviewRef.value) {
-            console.log("📊 [PreviewModal] PPTX detectado, cargando en componente...");
+          // Si es PPTX, cargar el blob directamente (similar a v2.5)
+          if (isPptx.value) {
+            console.log("📊 [PreviewModal] PPTX detectado, cargando...");
             try {
-              // Esperar más tiempo para que el DOM esté completamente listo
-              await nextTick();
-              await nextTick();
-              await new Promise((resolve) => setTimeout(resolve, 200));
+              pptxError.value = "";
 
+              // Limpiar fuente anterior
+              if (pptxSource.value && typeof pptxSource.value === "string") {
+                URL.revokeObjectURL(pptxSource.value);
+              }
+              pptxSource.value = null;
+
+              // Descargar el archivo
               const pptxBlob = await loadPptxDocument(documentFile);
 
-              // Esperar más tiempo después de descargar para que el contenedor esté listo
-              await nextTick();
-              await nextTick();
-              await new Promise((resolve) => setTimeout(resolve, 150));
+              // Crear URL para visualización
+              const url = URL.createObjectURL(pptxBlob);
 
-              if (
-                documentPreviewRef.value &&
-                typeof documentPreviewRef.value.loadPptx === "function"
-              ) {
-                await documentPreviewRef.value.loadPptx(pptxBlob);
-                console.log("✅ [PreviewModal] PPTX cargado en componente");
-              } else {
-                console.warn("⚠️ [PreviewModal] loadPptx no disponible en DocumentPreview");
-              }
-            } catch (pptxErr: any) {
-              console.error("❌ [PreviewModal] Error cargando PPTX en componente:", pptxErr);
+              // Forzar actualización con timeout para asegurar recarga (similar a v2.5)
+              await new Promise((resolve) => setTimeout(resolve, 100));
+              pptxSource.value = url;
+
+              console.log("✅ [PreviewModal] PPTX cargado:", url);
+
+              // Limpiar URL después de 5 minutos
+              setTimeout(() => {
+                if (pptxSource.value === url) {
+                  URL.revokeObjectURL(url);
+                  pptxSource.value = null;
+                }
+              }, 300000); // 5 minutos
+            } catch (error: any) {
+              console.error("❌ [PreviewModal] Error loading PowerPoint document:", error);
+              pptxError.value = "Error al cargar la presentación PowerPoint";
             }
           }
 
@@ -586,6 +600,57 @@
   const handleRevertChanges = () => {
     localDocumentName.value = getDocumentName();
   };
+
+  // Callbacks para VueOfficePptx (similar a v2.5)
+  function onPptxRendered() {
+    console.log("✅ [PreviewModal] PowerPoint presentation rendered successfully");
+    pptxError.value = "";
+  }
+
+  function onPptxError(error: any) {
+    console.error("❌ [PreviewModal] PowerPoint rendering error:", error);
+    pptxError.value = "Error al renderizar la presentación PowerPoint";
+  }
+
+  // Descargar presentación PowerPoint
+  async function handleDownloadPptx() {
+    if (!props.document?.versionCode && !selectedVersionCode.value) {
+      console.error("❌ [PreviewModal] No hay versionCode para descargar");
+      return;
+    }
+
+    try {
+      const versionCodeToUse = selectedVersionCode.value || props.document?.versionCode;
+      if (!versionCodeToUse) {
+        console.error("❌ [PreviewModal] No se encontró versionCode");
+        return;
+      }
+
+      const repository = new RepositorioDocumentosHttpRepository();
+      const blob = await repository.descargarVersion(versionCodeToUse);
+
+      // Crear URL temporal y descargar
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = getDocumentName();
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      console.log("✅ [PreviewModal] PPTX descargado exitosamente");
+    } catch (error: any) {
+      console.error("❌ [PreviewModal] Error al descargar PPTX:", error);
+    }
+  }
+
+  // Abrir presentación PowerPoint en nueva pestaña
+  function handleOpenPptxInNewTab() {
+    if (pptxSource.value && typeof pptxSource.value === "string") {
+      window.open(pptxSource.value, "_blank");
+    }
+  }
 </script>
 
 <template>
@@ -626,7 +691,8 @@
             class="flex-1 flex flex-col bg-gray-100 overflow-hidden"
             :class="{
               'w-2/3 max-w-2/3': showViewerSidebar && !isPptx,
-              'w-full': isPptx,
+              'w-full': isPptx && !showViewerSidebar,
+              'w-2/3': isPptx && showViewerSidebar,
             }"
           >
             <!-- Toolbar (solo para PDFs) -->
@@ -645,6 +711,46 @@
               @toggle-sidebar="toggleViewerSidebar"
             />
 
+            <!-- Barra de herramientas simplificada para PowerPoint (similar a v2.5) -->
+            <div
+              v-if="isPptx && !isViewerLoading"
+              class="bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between"
+            >
+              <div class="flex items-center gap-4">
+                <h3 class="text-sm font-medium text-gray-700">{{ getDocumentName() }}</h3>
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  @click="toggleViewerSidebar"
+                  class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                  :title="
+                    showViewerSidebar ? 'Ocultar panel lateral' : 'Mostrar panel lateral'
+                  "
+                >
+                  <Icon
+                    :icon="showViewerSidebar ? 'heroicons:x-mark' : 'heroicons:bars-3'"
+                    width="20"
+                    height="20"
+                  />
+                </button>
+                <button
+                  @click="handleDownloadPptx"
+                  class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                  title="Descargar presentación"
+                >
+                  <Icon icon="heroicons:arrow-down-tray" width="20" height="20" />
+                </button>
+                <button
+                  @click="handleOpenPptxInNewTab"
+                  v-if="typeof pptxSource === 'string'"
+                  class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                  title="Abrir en nueva pestaña"
+                >
+                  <Icon icon="heroicons:arrow-top-right-on-square" width="20" height="20" />
+                </button>
+              </div>
+            </div>
+
             <!-- Document Preview -->
             <DocumentPreview
               ref="documentPreviewRef"
@@ -661,7 +767,56 @@
               @excel-mounted="setExcelViewerRef"
               @pptx-mounted="setPptxViewerRef"
               @preview-container-mounted="setPreviewContainerRef"
-            />
+            >
+              <!-- Slot para PowerPoint (similar a v2.5) -->
+              <template #pptx-viewer>
+                <div v-if="isPptx" class="w-full h-full flex flex-col">
+                  <!-- Vista previa completa con VueOfficePptx -->
+                  <div
+                    v-if="pptxSource && typeof pptxSource === 'string'"
+                    class="flex-1 w-full h-full"
+                  >
+                    <VueOfficePptx
+                      :src="pptxSource"
+                      style="height: 100%; width: 100%; border: none"
+                      @rendered="onPptxRendered"
+                      @error="onPptxError"
+                    />
+                  </div>
+
+                  <!-- Fallback UI si no hay fuente o hay error -->
+                  <div v-else class="flex-1 flex flex-col items-center justify-center p-8">
+                    <div class="text-center">
+                      <div class="text-6xl mb-4">📊</div>
+                      <h2 class="text-2xl font-bold text-gray-700 mb-4">
+                        Presentación PowerPoint
+                      </h2>
+                      <p class="text-gray-500 mb-6">{{ getDocumentName() }}</p>
+                      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <p class="text-blue-800 text-sm">
+                          {{ pptxError || "Cargando presentación..." }}
+                        </p>
+                      </div>
+                      <div class="flex gap-4 justify-center">
+                        <button
+                          @click="handleDownloadPptx"
+                          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        >
+                          📥 Descargar Presentación
+                        </button>
+                        <button
+                          @click="handleOpenPptxInNewTab"
+                          v-if="typeof pptxSource === 'string'"
+                          class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                        >
+                          🔗 Abrir en Nueva Pestaña
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </DocumentPreview>
 
             <!-- Fallback: Preview anterior si el visor no está disponible -->
             <div

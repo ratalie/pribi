@@ -178,8 +178,11 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
   }
 
   async removeEnlace(sociedadId: string, carpetaId: string, enlaceId: string): Promise<void> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/virtual-nodes/${carpetaId}/nodes/${enlaceId}`;
+    
     await $fetch(
-      `/api/v2/repository/virtual-nodes/${carpetaId}/nodes/${enlaceId}`,
+      url,
       {
         ...withAuthHeaders(),
         method: 'DELETE' as const,
@@ -192,8 +195,11 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
     usuarioId: string,
     expireAt?: Date
   ): Promise<void> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/virtual-nodes/${carpetaId}/users/${usuarioId}`;
+    
     await $fetch(
-      `/api/v2/repository/virtual-nodes/${carpetaId}/users/${usuarioId}`,
+      url,
       {
         ...withAuthHeaders(),
         method: 'POST' as const,
@@ -203,8 +209,11 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
   }
 
   async removerPermisos(carpetaId: string, usuarioId: string): Promise<void> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/virtual-nodes/${carpetaId}/users/${usuarioId}`;
+    
     await $fetch(
-      `/api/v2/repository/virtual-nodes/${carpetaId}/users/${usuarioId}`,
+      url,
       {
         ...withAuthHeaders(),
         method: 'DELETE' as const,
@@ -218,6 +227,9 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
     name: string;
     expireAt?: Date;
   }>> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/virtual-nodes/${carpetaId}/users`;
+    
     const response = await $fetch<{ data: Array<{
       user: {
         id: number;
@@ -226,7 +238,7 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
       };
       expireAt?: string;
     }> }>(
-      `/api/v2/repository/virtual-nodes/${carpetaId}/users`,
+      url,
       {
         ...withAuthHeaders(),
         method: 'GET' as const,
@@ -246,12 +258,15 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
     folderCount: number;
     fileCount: number;
   }> {
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/virtual-nodes/${carpetaId}/weight`;
+    
     const response = await $fetch<{ data: {
       sizeInBytes: number;
       folderCount: number;
       fileCount: number;
     } }>(
-      `/api/v2/repository/virtual-nodes/${carpetaId}/weight`,
+      url,
       {
         ...withAuthHeaders(),
         method: 'GET' as const,
@@ -267,9 +282,12 @@ export class CarpetasPersonalizadasHttpRepository implements CarpetasPersonaliza
     nombre: string,
     descripcion?: string
   ): Promise<CarpetaPersonalizada> {
-    const structureId = await this.getStructureId(sociedadId);
+    const structureId = this.getStructureId(sociedadId);
+    const baseUrl = this.resolveBaseUrl();
+    const url = `${baseUrl}/api/v2/repository/society-profile/${structureId}/virtual-nodes/tree`;
+    
     const response = await $fetch<{ data: any }>(
-      `/api/v2/repository/society-profile/${structureId}/virtual-nodes/tree`,
+      url,
       {
         ...withAuthHeaders(),
         method: 'POST' as const,

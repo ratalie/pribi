@@ -5,8 +5,8 @@
       class="h-full w-full mx-auto"
       :class="[
         { 'flex flex-col items-center justify-center': isLoading || error },
-        { 'max-w-6xl rounded-lg shadow-sm my-4': !isPptx },
-        { 'max-w-full px-2 h-full': isPptx },
+        { 'max-w-6xl rounded-lg shadow-sm my-4': !isPptx && !isLoading && !error },
+        { 'max-w-full px-2 h-full': isPptx && !isLoading && !error },
       ]"
     >
       <!-- Loading -->
@@ -56,34 +56,20 @@
       ></div>
 
       <!-- PowerPoint Viewer -->
-      <div
-        v-show="isPptx"
-        class="w-full min-h-full overflow-auto"
-        ref="pptxViewer"
-        :style="{ display: isPptx ? '' : 'none' }"
-      >
-        <!-- Usar v-if con múltiples verificaciones para asegurar que todo esté listo -->
-        <VueOfficePptx
-          v-if="isPptx && pptxSource && pptxReady && pptxViewer && pptxViewer.isConnected"
-          :src="pptxSource"
-          style="width: 100%; height: 100%; border: none"
-          @rendered="onPptxRendered"
-          @error="onPptxError"
-        />
-        <div
-          v-else-if="isPptx && (!pptxSource || !pptxReady) && !error"
-          class="flex items-center justify-center h-full"
-        >
-          <div class="text-center">
-            <Icon
-              icon="eos-icons:loading"
-              width="48"
-              height="48"
-              class="animate-spin text-white mx-auto mb-4"
-            />
-            <p class="text-white">Cargando presentación...</p>
+      <div v-if="isPptx" class="w-full h-full overflow-hidden" ref="pptxViewer">
+        <slot name="pptx-viewer">
+          <!-- Fallback UI si no se proporciona slot -->
+          <div class="flex flex-col items-center justify-center h-full p-8">
+            <div class="text-center">
+              <div class="text-6xl mb-4">📊</div>
+              <h2 class="text-2xl font-bold text-gray-700 mb-4">Presentación PowerPoint</h2>
+              <p class="text-gray-500 mb-6">{{ fileName }}</p>
+              <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <p class="text-blue-800 text-sm">Cargando presentación...</p>
+              </div>
+            </div>
           </div>
-        </div>
+        </slot>
       </div>
 
       <!-- Unsupported Files -->
@@ -126,7 +112,6 @@
 
 <script setup lang="ts">
   import { Icon } from "@iconify/vue";
-  import VueOfficePptx from "@vue-office/pptx";
   import { nextTick, onMounted, onUnmounted, ref, watch, computed } from "vue";
 
   interface Props {
@@ -161,11 +146,6 @@
   const officeViewer = ref<HTMLElement>();
   const excelViewer = ref<HTMLElement>();
   const pptxViewer = ref<HTMLElement>();
-
-  // Variables para PowerPoint
-  const pptxSource = ref<string | ArrayBuffer | null>(null);
-  const pptxError = ref<string>("");
-  const pptxReady = ref(false); // Flag para indicar que el contenedor está listo
 
   // Detectar si es un archivo no soportado
   const isUnsupported = computed(() => {
@@ -249,123 +229,13 @@
     return colorMap[extension] || "#6B7280";
   };
 
-  // Funciones para PowerPoint
-  async function loadPptx(blob: Blob) {
-    console.log("🔄 [DocumentPreview] loadPptx llamado:", {
-      blobSize: blob.size,
-      blobType: blob.type,
-      pptxViewerExists: !!pptxViewer.value,
-      pptxViewerIsConnected: pptxViewer.value?.isConnected,
-    });
-
-    // Limpiar URL anterior si existe
-    if (pptxSource.value && typeof pptxSource.value === "string") {
-      URL.revokeObjectURL(pptxSource.value);
-    }
-    pptxSource.value = null;
-    pptxError.value = "";
-    pptxReady.value = false; // Resetear flag de ready
-
-    // Esperar múltiples ticks para que Vue termine de actualizar el DOM
-    await nextTick();
-    await nextTick();
-    await nextTick();
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    // Verificar que el contenedor esté conectado y tenga dimensiones antes de crear la URL
-    if (!pptxViewer.value || !pptxViewer.value.isConnected) {
-      console.warn("⚠️ [DocumentPreview] pptxViewer no está conectado, esperando...");
-      // Esperar hasta 2 segundos para que se conecte
-      for (let i = 0; i < 20; i++) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        if (pptxViewer.value && pptxViewer.value.isConnected) {
-          console.log(
-            `✅ [DocumentPreview] pptxViewer conectado después de ${i + 1} intentos`
-          );
-          break;
-        }
-      }
-
-      if (!pptxViewer.value || !pptxViewer.value.isConnected) {
-        console.error("❌ [DocumentPreview] pptxViewer no está conectado después de esperar");
-        return;
-      }
-    }
-
-    // Verificar que el contenedor tenga dimensiones
-    if (pptxViewer.value.clientWidth === 0 || pptxViewer.value.clientHeight === 0) {
-      console.warn("⚠️ [DocumentPreview] pptxViewer no tiene dimensiones, esperando...");
-      // Esperar hasta 1 segundo para que tenga dimensiones
-      for (let i = 0; i < 10; i++) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        if (
-          pptxViewer.value &&
-          pptxViewer.value.clientWidth > 0 &&
-          pptxViewer.value.clientHeight > 0
-        ) {
-          console.log(
-            `✅ [DocumentPreview] pptxViewer tiene dimensiones después de ${i + 1} intentos`
-          );
-          break;
-        }
-      }
-    }
-
-    // Crear nueva URL para el blob
-    const url = URL.createObjectURL(blob);
-
-    // Esperar múltiples ticks y delays antes de asignar para asegurar que Vue esté completamente listo
-    await nextTick();
-    await nextTick();
-    await new Promise((resolve) => setTimeout(resolve, 150));
-
-    // Asignar la URL
-    pptxSource.value = url;
-
-    // Esperar un tick más antes de marcar como ready
-    await nextTick();
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    // Marcar como ready solo si el contenedor sigue conectado
-    if (pptxViewer.value && pptxViewer.value.isConnected) {
-      pptxReady.value = true;
-      console.log("✅ [DocumentPreview] PPTX URL creada y marcado como ready:", url);
-    } else {
-      console.error("❌ [DocumentPreview] Contenedor desconectado después de crear URL");
-      pptxSource.value = null;
-      URL.revokeObjectURL(url);
-    }
-
-    // Limpiar URL después de 5 minutos
-    setTimeout(() => {
-      if (pptxSource.value === url) {
-        URL.revokeObjectURL(url);
-        pptxSource.value = null;
-        pptxReady.value = false;
-      }
-    }, 300000); // 5 minutos
-  }
-
-  function onPptxRendered() {
-    console.log("✅ [DocumentPreview] PPTX renderizado exitosamente");
-    pptxError.value = "";
-    pptxReady.value = true; // Asegurar que está marcado como ready
-  }
-
-  function onPptxError(error: any) {
-    console.error("❌ [DocumentPreview] Error renderizando PPTX:", error);
-    pptxError.value = "Error al renderizar la presentación PowerPoint";
-    pptxReady.value = false;
-  }
-
-  // Exponer referencias y funciones para el componente padre
+  // Exponer referencias para el componente padre
   defineExpose({
     previewContainer,
     pdfViewer,
     officeViewer,
     excelViewer,
     pptxViewer,
-    loadPptx,
   });
 
   // Emitir evento cuando se monte el componente
